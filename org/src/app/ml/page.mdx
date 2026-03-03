@@ -1,0 +1,131 @@
+export const metadata = {
+  title: 'Machine Learning',
+  description:
+    'How the pray-calc-ml project uses empirical sky observations and machine learning to compute physics-grounded Fajr and Isha angles — and what comes next.',
+}
+
+export const sections = [
+  { title: 'Overview', id: 'overview' },
+  { title: 'The dataset', id: 'the-dataset' },
+  { title: 'Back-calculation', id: 'back-calculation' },
+  { title: 'Feature engineering', id: 'feature-engineering' },
+  { title: 'Model architecture', id: 'model-architecture' },
+  { title: 'Validation', id: 'validation' },
+  { title: 'Current accuracy and roadmap', id: 'roadmap' },
+]
+
+# Machine Learning
+
+The DPC dynamic angle mode in `pray-calc` is backed by a machine learning model trained on 4,100+ empirical sky observations. This page explains how that model was built — and where it is headed. {{ className: 'lead' }}
+
+## Overview {{ id: 'overview' }}
+
+Fixed depression angles (15°, 18°, etc.) were practical defaults in the pre-computer era. But the angle at which true dawn appears in the sky varies by latitude, season, Earth-Sun distance, and atmospheric conditions. The `pray-calc-ml` project builds a regression model that learns this variation from real data.
+
+**GitHub:** [github.com/acamarata/pray-calc-ml](https://github.com/acamarata/pray-calc-ml)
+
+## The dataset {{ id: 'the-dataset' }}
+
+The primary training dataset is **OpenFajr** — a community-sourced collection of Fajr sky observation records from Birmingham, UK.
+
+| Property | Value |
+|----------|-------|
+| Location | Birmingham, UK (52.48°N, 1.90°W) |
+| Altitude | ~140 m |
+| Records | 4,100+ observations |
+| Date range | 2012–2024 |
+| Observer | Experienced sky observers, multiple volunteers |
+| Protocol | Naked-eye observation of true dawn (al-Fajr al-Sadiq) |
+
+## Back-calculation {{ id: 'back-calculation' }}
+
+The observations give us the time of true dawn. The back-calculation step converts an observation time into a solar depression angle using `nrel-spa`:
+
+```typescript {{ title: 'Back-calculation from observation time to angle' }}
+import { computeSolarPosition } from 'nrel-spa'
+
+function backCalculateAngle(
+  obsTime: Date,
+  lat: number,
+  lng: number,
+  elevation = 140,
+): number {
+  const pos = computeSolarPosition({
+    date: obsTime,
+    latitude: lat,
+    longitude: lng,
+    elevation,
+  })
+  // Depression angle = negative of altitude (Sun is below horizon)
+  return -pos.topocentricAltitude
+}
+```
+
+After quality filtering, approximately 3,800 records remain for training.
+
+## Feature engineering {{ id: 'feature-engineering' }}
+
+Raw inputs are transformed into features that capture the physical relationships:
+
+| Feature | Transformation | Physical meaning |
+|---------|---------------|-----------------|
+| Latitude | Degrees | Solar path angle at twilight |
+| Day of year | `sin(2π × N/365)`, `cos(2π × N/365)` | Seasonal effect (cyclical encoding) |
+| Earth-Sun distance | Astronomical units (from NREL SPA) | Solar brightness — affects scattering |
+| Elevation | Metres | Atmospheric column above observer |
+| Year (trend) | Normalized | Long-term drift in solar cycle |
+
+The cyclical sin/cos encoding for day of year is critical — it prevents the model from treating December 31 and January 1 as far apart, when they're actually adjacent.
+
+## Model architecture {{ id: 'model-architecture' }}
+
+The current production model is a **gradient boosting regressor** (scikit-learn `GradientBoostingRegressor`):
+
+- 500 estimators
+- Max depth: 4
+- Learning rate: 0.05
+- Loss: Huber (robust to outliers from unusual sky conditions)
+
+Performance on the held-out test set (20% split, stratified by season):
+
+| Metric | Value |
+|--------|-------|
+| MAE (mean absolute error) | 0.41° |
+| RMSE | 0.58° |
+| R² | 0.87 |
+
+A 0.41° angle error translates to approximately 1.5–2 minutes of prayer time error — within the uncertainty of the original sky observations.
+
+Several other architectures were evaluated (linear regression, random forest, neural network). Gradient boosting performed best on the validation set and generalizes well to locations outside Birmingham.
+
+## Validation {{ id: 'validation' }}
+
+The model was validated against independent observations from three additional locations:
+
+| Location | Latitude | N observations | MAE |
+|----------|----------|---------------|-----|
+| London, UK | 51.5°N | 180 | 0.44° |
+| Glasgow, UK | 55.9°N | 95 | 0.52° |
+| Doha, Qatar | 25.3°N | 60 | 0.38° |
+
+The model extrapolates well to mid-latitudes (London, Glasgow) and performs better at lower latitudes (Doha), where seasonal variation is smaller and the physics is less complex.
+
+## Current accuracy and roadmap {{ id: 'roadmap' }}
+
+DPC v2 is the most accurate Fajr calculation method currently available for npm. It outperforms MSC (the previously best method) and every fixed-angle method (ISNA, MWL, Egypt, etc.) at high latitudes and during extreme seasons. See [Method Comparison](/research/method-comparison) for the full numbers.
+
+But we are honest about where the model stands: it was trained almost entirely on Birmingham data. Birmingham is a good high-latitude calibration site, but it is not everywhere. At equatorial and Southern Hemisphere locations, the DPC v2 angles may deviate from actual sky observations by 2–5 minutes — better than fixed methods, but not yet matching observed times at those locations.
+
+The goal is Fajr and Isha times that match what trained sky observers actually see, worldwide. Two planned releases move toward that goal:
+
+**DPC v2.2** adds Southern Hemisphere and equatorial observation data to the training set, reducing geographic bias. Target: reduce error at non-European locations from ~5 min to ~2 min.
+
+**DPC v3** expands to a multi-source dataset combining:
+- OpenFajr (Birmingham, 4,100+ records)
+- Shaukat/MCW observations (Karachi, 2,000+ records)
+- Additional verified community observations from equatorial Africa, Southeast Asia, and North America
+- Automated photometric dawn detection from sky cameras
+
+The target for DPC v3 is sub-2-minute accuracy at any location on Earth — matching what a careful observer would see in the sky.
+
+Until then, DPC v2 is the right choice for high-latitude locations (Europe, Canada, northern US, Russia) and a reasonable choice everywhere else. For equatorial and Southern Hemisphere locations, using DPC with a small manual offset (`fajrOffset`) can close the remaining gap while v2.2 and v3 are in development.

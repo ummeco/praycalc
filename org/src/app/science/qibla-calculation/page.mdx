@@ -1,0 +1,118 @@
+export const metadata = {
+  title: 'Qibla Calculation',
+  description:
+    'The great-circle bearing algorithm used to calculate Qibla direction — the angle from any location on Earth toward the Kaaba in Mecca.',
+}
+
+export const sections = [
+  { title: 'The great-circle bearing', id: 'great-circle-bearing' },
+  { title: 'Step-by-step calculation', id: 'step-by-step' },
+  { title: 'Distance to Mecca', id: 'distance' },
+  { title: 'Compass direction', id: 'compass-direction' },
+  { title: 'Accuracy and limitations', id: 'accuracy' },
+]
+
+# Qibla Calculation
+
+The Qibla is the direction of prayer toward the Kaaba in Mecca. PrayCalc calculates the precise great-circle bearing from any location on Earth using spherical trigonometry. {{ className: 'lead' }}
+
+## The great-circle bearing {{ id: 'great-circle-bearing' }}
+
+The shortest path between two points on a sphere follows a **great circle** — the intersection of a sphere with a plane through its center. Qibla direction is the initial bearing of the great-circle path from the observer's location to the Kaaba.
+
+**Kaaba coordinates:** 21.3891° N, 39.8579° E (Al-Masjid al-Haram, Mecca)
+
+The bearing formula uses the **spherical law of cosines** adapted to forward azimuths:
+
+```
+θ = atan2(sin(Δλ) · cos(φ₂),
+          cos(φ₁) · sin(φ₂) − sin(φ₁) · cos(φ₂) · cos(Δλ))
+```
+
+Where:
+- `φ₁` = observer latitude in radians
+- `φ₂` = Kaaba latitude in radians (21.3891° × π/180)
+- `Δλ` = difference in longitude in radians (Kaaba longitude − observer longitude)
+- `θ` = bearing in radians (convert to degrees, normalize to 0°–360°)
+
+## Step-by-step calculation {{ id: 'step-by-step' }}
+
+**Example:** Observer at New York City (40.7128° N, 74.0060° W)
+
+1. Convert to radians:
+   - φ₁ = 40.7128 × π/180 = 0.7105 rad
+   - φ₂ = 21.3891 × π/180 = 0.3733 rad
+   - Δλ = (39.8579 − (−74.0060)) × π/180 = 113.8639 × π/180 = 1.9872 rad
+
+2. Calculate components:
+   - sin(Δλ) = sin(1.9872) = 0.9152
+   - cos(φ₂) = cos(0.3733) = 0.9311
+   - cos(φ₁) = cos(0.7105) = 0.7603
+   - sin(φ₂) = sin(0.3733) = 0.3647
+   - sin(φ₁) = sin(0.7105) = 0.6497
+   - cos(Δλ) = cos(1.9872) = −0.4027
+
+3. Numerator: sin(Δλ) · cos(φ₂) = 0.9152 × 0.9311 = 0.8522
+
+4. Denominator: cos(φ₁) · sin(φ₂) − sin(φ₁) · cos(φ₂) · cos(Δλ)
+   = (0.7603 × 0.3647) − (0.6497 × 0.9311 × (−0.4027))
+   = 0.2773 − (−0.2439)
+   = 0.5212
+
+5. θ = atan2(0.8522, 0.5212) = 58.5°
+
+**Result:** From New York City, the Qibla is approximately **58.5° (NE)**
+
+This matches the well-known fact that Qibla from North America points northeast over the Atlantic and Europe — not southeast as the flat-map "south toward Arabia" intuition suggests.
+
+## Distance to Mecca {{ id: 'distance' }}
+
+PrayCalc also calculates the surface distance from the observer to the Kaaba using the **Haversine formula**, which is numerically stable for small distances (unlike the spherical law of cosines):
+
+```
+a = sin²(Δφ/2) + cos(φ₁) · cos(φ₂) · sin²(Δλ/2)
+c = 2 · atan2(√a, √(1−a))
+d = R · c
+```
+
+Where R = 6,371.0 km (Earth's mean radius) and Δφ = φ₂ − φ₁.
+
+**From New York City:**
+- Δφ = (21.3891 − 40.7128) × π/180 = −0.3372 rad
+- Δλ = 1.9872 rad (as above)
+- a = sin²(−0.1686) + cos(0.7105) · cos(0.3733) · sin²(0.9936)
+- a = 0.02834 + 0.7603 · 0.9311 · 0.6978 ≈ 0.5225
+- d = 6371 · 2 · atan2(0.7228, 0.7228) ≈ **9,141 km**
+
+## Compass direction {{ id: 'compass-direction' }}
+
+PrayCalc converts the bearing angle to a cardinal direction string for display:
+
+| Range | Direction |
+|-------|-----------|
+| 348.75°–360° or 0°–11.25° | N |
+| 11.25°–33.75° | NNE |
+| 33.75°–56.25° | NE |
+| 56.25°–78.75° | ENE |
+| 78.75°–101.25° | E |
+| 101.25°–123.75° | ESE |
+| 123.75°–146.25° | SE |
+| 146.25°–168.75° | SSE |
+| 168.75°–191.25° | S |
+| 191.25°–213.75° | SSW |
+| 213.75°–236.25° | SW |
+| 236.25°–258.75° | WSW |
+| 258.75°–281.25° | W |
+| 281.25°–303.75° | WNW |
+| 303.75°–326.25° | NW |
+| 326.25°–348.75° | NNW |
+
+The Qibla compass in the app shows a live heading synchronized with the device's magnetometer via the [Device Orientation API](https://developer.mozilla.org/en-US/docs/Web/API/DeviceOrientationEvent). The compass needle rotates to always point toward Mecca.
+
+## Accuracy and limitations {{ id: 'accuracy' }}
+
+**Earth's shape:** The calculation assumes a perfect sphere. The Earth is an oblate spheroid (slightly flattened at the poles), making equatorial radius ~0.3% larger than polar. For Qibla purposes, the spherical approximation introduces an error of less than 0.2° at worst-case latitudes — well within the width of a typical prayer rug.
+
+**True vs. magnetic north:** The bearing is relative to **true geographic north**, not magnetic north. Magnetic north drifts annually (currently about 50km/year) and varies by location by up to 20°+ in some regions. For high-precision applications, apply the local magnetic declination from the NOAA World Magnetic Model (WMM). For devotional use, the difference is not significant.
+
+**Coordinate precision:** PrayCalc uses GPS-quality coordinates (7+ decimal places from browser geolocation) for maximum accuracy. The Kaaba coordinates are fixed at 21.38900° N, 39.85790° E.

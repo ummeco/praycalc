@@ -1,0 +1,222 @@
+export const metadata = {
+  title: 'Method Comparison',
+  description:
+    'Side-by-side comparison of DPC, MSC, and traditional fixed-angle methods against real eye-sighted Fajr observations from Birmingham and Karachi.',
+}
+
+export const sections = [
+  { title: 'What this page compares', id: 'what-this-compares' },
+  { title: 'Birmingham — eye-sighted Fajr', id: 'birmingham' },
+  { title: 'Karachi — eye-sighted Fajr', id: 'karachi' },
+  { title: 'Mecca, Saudi Arabia', id: 'mecca' },
+  { title: 'Cairo, Egypt', id: 'cairo' },
+  { title: 'Istanbul, Turkey', id: 'istanbul' },
+  { title: 'Southeast Asia', id: 'southeast-asia' },
+  { title: 'East & Southern Africa', id: 'africa' },
+  { title: 'How DPC was built', id: 'how-dpc-was-built' },
+  { title: 'What these results mean', id: 'what-this-means' },
+]
+
+# Method Comparison
+
+Real calculated prayer times versus human eye-sighted observations — where the methods agree, where they diverge, and by how much. {{ className: 'lead' }}
+
+## What this page compares {{ id: 'what-this-compares' }}
+
+Two types of tables appear below:
+
+**Eye-sighted tables** (Birmingham, Karachi) — a verified human observer recorded the exact minute they saw true dawn. The *Actual* column is that recorded time. The other columns are what each calculation method would have produced for the same date and location. No interpretation — just arithmetic.
+
+**Method comparison tables** (all other cities) — no publicly verified eye-sighted dataset exists for these locations. These tables compare DPC and MSC against the locally adopted traditional method across four dates to show seasonal behavior.
+
+All times are local. All calculations use pray-calc v2.0.0 with elevation factored in. *N/A* means the Sun never reaches the required depression angle — the method cannot produce a valid time.
+
+---
+
+## Birmingham, UK — Eye-sighted Fajr {{ id: 'birmingham' }}
+
+**52.48°N, 1.90°W · 140 m · GMT/BST**
+
+Source: [OpenFajr dataset](https://github.com/acamarata/pray-calc-ml) · 4,007 scholar-verified naked-eye observations, 2012–2024. Dates below are a representative sample across winter, summer, and shoulder seasons.
+
+| Date | Actual | DPC | MSC | ISNA (15°) | MWL (18°) |
+|------|--------|-----|-----|------------|-----------|
+| 1 Jan 2016 | 06:46 | 06:37 | 06:37 | 06:32 | 06:11 |
+| 10 Jan 2016 | 06:44 | 06:35 | 06:35 | 06:31 | 06:10 |
+| 20 Jan 2016 | 06:39 | 06:27 | 06:27 | 06:25 | 06:05 |
+| 30 Jan 2016 | 06:26 | 06:15 | 06:15 | 06:14 | 05:54 |
+| 1 Jun 2016 ¹ | 02:42 | 02:54 | 02:56 | 01:42 | N/A |
+| 21 Jun 2016 ¹ | 02:30 | 02:42 | 02:44 | N/A | N/A |
+| 22 Nov 2016 | 06:12 | 06:01 | 06:02 | 06:00 | 05:40 |
+
+*¹ BST (UTC+1). Actual times converted from UTC observation records.*
+
+**Reading the results:** DPC and MSC track the observed times to within 9–12 minutes year-round. ISNA (15°) performs respectably in winter — it's within 14 minutes on 1 January — but by June 1 it gives a time 1 hour before the observed dawn, and by the solstice it cannot produce a valid result at all. MWL (18°) is 35 minutes early on 1 January and undefined from late May through mid-August: the Sun never reaches −18° depression at 52°N in summer.
+
+**Winner: DPC ≈ MSC**, both within 12 minutes of observation in all seasons. ISNA fails in summer. MWL fails more severely and for longer.
+
+---
+
+## Karachi, Pakistan — Eye-sighted Fajr {{ id: 'karachi' }}
+
+**24.86°N, 67.01°E · 10 m · PKT (UTC+5)**
+
+Source: Khalid Shaukat, Moonsighting Committee Worldwide — recorded observations published at [moonsighting.com](https://moonsighting.com/isha_fajr.html). Two dates shown: near the summer solstice and winter solstice.
+
+| Date | Actual | DPC | MSC | Karachi (18°) | MWL (18°) |
+|------|--------|-----|-----|---------------|-----------|
+| 22 Jun 2005 | 04:05 | 04:06 | 04:06 | 04:14 | 04:14 |
+| 21 Dec 2005 | 05:40 | 05:44 | 05:44 | 05:51 | 05:51 |
+
+**Reading the results:** At 25°N the Karachi method (fixed 18°) runs 9–11 minutes late — the fixed angle overshoots the actual depression at which dawn appears. DPC and MSC are within 1–4 minutes on both dates. Karachi and MWL return identical results here because both use 18° for Fajr at this latitude.
+
+**Winner: DPC ≈ MSC**, within 4 minutes of observed times. The Karachi/MWL fixed-angle methods are 9–11 minutes late year-round at this latitude.
+
+---
+
+## Mecca, Saudi Arabia {{ id: 'mecca' }}
+
+**21.39°N, 39.86°E · 277 m · AST (UTC+3)**
+
+No public eye-sighted dataset. Locally adopted method: Umm al-Qura (UAQ) — the official calendar of Saudi Arabia, which uses a fixed 18° Fajr angle and a 90-minute Isha interval.
+
+| Date | DPC | MSC | UAQ (18° / 90 min) | MWL (18° / 17°) |
+|------|-----|-----|--------------------|-----------------|
+| 15 Jan | 05:35 | 05:35 | 05:40 | 05:42 |
+| 10 Apr | 04:39 | 04:40 | 04:47 | 04:49 |
+| 15 Jul | 04:15 | 04:16 | 04:21 | 04:23 |
+| 20 Oct | 04:53 | 04:54 | 05:01 | 05:03 |
+
+At 21°N, seasonal variation is modest (~20 minutes across the year). DPC and MSC agree within 1 minute on all dates. UAQ and MWL both give Fajr 5–10 minutes later than DPC. The fixed 18° angle slightly overshoots the physical depression angle at this latitude.
+
+---
+
+## Cairo, Egypt {{ id: 'cairo' }}
+
+**30.04°N, 31.24°E · 23 m · EET (UTC+2)**
+
+Locally adopted method: Egyptian General Authority of Survey — 19.5° Fajr, 17.5° Isha.
+
+| Date | DPC | MSC | Egypt (19.5° / 17.5°) | MWL (18° / 17°) |
+|------|-----|-----|----------------------|-----------------|
+| 15 Jan | 05:22 | 05:22 | 05:20 | 05:27 |
+| 10 Apr | 04:04 | 04:04 | 04:03 | 04:10 |
+| 15 Jul | 03:27 | 03:27 | 03:21 | 03:30 |
+| 20 Oct | 04:33 | 04:33 | 04:33 | 04:40 |
+
+Cairo is one of the few cities where the locally adopted angle is close to the DPC output. The Egypt method (19.5°) runs 2–6 minutes early in summer — slightly overshooting — while MWL (18°) runs 6–7 minutes late. DPC and MSC are identical here.
+
+---
+
+## Istanbul, Turkey {{ id: 'istanbul' }}
+
+**41.01°N, 28.97°E · 39 m · TRT (UTC+3)**
+
+Locally adopted method: Turkey's Diyanet (DIBT).
+
+| Date | DPC | MSC | DIBT | MWL (18°) |
+|------|-----|-----|------|-----------|
+| 15 Jan | 06:53 | 06:53 | 06:49 | 06:49 |
+| 10 Apr | 04:57 | 04:58 | 04:54 | 04:54 |
+| 15 Jul | 03:59 | 04:00 | 03:44 | 03:44 |
+| 20 Oct | 05:48 | 05:49 | 05:49 | 05:49 |
+
+Istanbul sits at 41°N, where summer twilight variation becomes significant. In July, DIBT gives 03:44 — 15 minutes before DPC's 03:59. Both DIBT and MWL use fixed angles, and the high-latitude summer causes them to overshoot. In winter, the methods converge. DPC and MSC are within 1 minute throughout.
+
+---
+
+## Southeast Asia {{ id: 'southeast-asia' }}
+
+Near the equator, the Sun's path is nearly perpendicular to the horizon year-round. Seasonal variation is minimal — all methods produce similar times.
+
+### Jakarta, Indonesia · 6.21°S · 106.85°E · WIB (UTC+7)
+
+| Date | DPC | MSC | MWL (18°) | MUIS |
+|------|-----|-----|-----------|------|
+| 15 Jan | 04:29 | 04:29 | 04:33 | 04:24 |
+| 10 Apr | 04:36 | 04:36 | 04:44 | 04:36 |
+| 15 Jul | 04:46 | 04:46 | 04:50 | 04:42 |
+| 20 Oct | 04:10 | 04:11 | 04:18 | 04:10 |
+
+### Kuala Lumpur, Malaysia · 3.14°N · 101.69°E · MYT (UTC+8)
+
+| Date | DPC | MSC | MUIS | MWL (18°) |
+|------|-----|-----|------|-----------|
+| 15 Jan | 06:07 | 06:07 | 06:01 | 06:09 |
+| 10 Apr | 05:53 | 05:53 | 05:51 | 05:59 |
+| 15 Jul | 05:53 | 05:53 | 05:47 | 05:56 |
+| 20 Oct | 05:40 | 05:40 | 05:38 | 05:47 |
+
+At tropical latitudes, DPC, MSC, and MUIS agree within 6 minutes year-round. MWL runs 6–9 minutes late. This is expected — MWL's 18° is calibrated for higher latitudes.
+
+---
+
+## East & Southern Africa {{ id: 'africa' }}
+
+### Nairobi, Kenya · 1.29°S · 36.82°E · EAT (UTC+3) · 1,661 m elevation
+
+| Date | DPC | MSC | MWL (18°) | ISNA (15°) |
+|------|-----|-----|-----------|-----------|
+| 15 Jan | 05:18 | 05:20 | 05:22 | 05:43 |
+| 10 Apr | 05:13 | 05:15 | 05:21 | 05:42 |
+| 15 Jul | 05:19 | 05:21 | 05:23 | 05:44 |
+| 20 Oct | 04:55 | 04:57 | 05:03 | 05:23 |
+
+### Cape Town, South Africa · 33.92°S · 18.42°E · SAST (UTC+2)
+
+| Date | DPC | MSC | MWL (18°) | ISNA (15°) |
+|------|-----|-----|-----------|-----------|
+| 15 Jan | 04:10 | 04:10 | 04:10 | 04:41 |
+| 10 Apr | 05:37 | 05:37 | 05:42 | 06:06 |
+| 15 Jul | 06:17 | 06:18 | 06:21 | 06:46 |
+| 20 Oct | 04:25 | 04:26 | 04:29 | 04:56 |
+
+In Nairobi, ISNA (15°) runs 25 minutes late year-round — the 15° angle is far too shallow for equatorial latitudes. DPC and MSC agree to within 2 minutes. MWL is 4–8 minutes late but much closer than ISNA.
+
+In Cape Town, MWL and DPC/MSC are nearly identical — fixed 18° happens to be close to the physical dawn angle at 34°S. ISNA (15°) runs 29–31 minutes late throughout the year.
+
+---
+
+## How DPC was built {{ id: 'how-dpc-was-built' }}
+
+The starting point was Khalid Shaukat's Moonsighting Committee (MSC) model. Shaukat spent years collecting naked-eye observations and translating them into piecewise-linear functions: Fajr as minutes before sunrise, as a function of latitude and day of year, with slope changes at seven breakpoints through the year. It was careful empirical work — not a theoretical model, but observation-driven.
+
+The limitation is in the piecewise structure. At each of the seven breakpoints, the rate of change in prayer time snaps discontinuously to a new slope. The underlying physics — Earth's axial tilt, orbital eccentricity, atmospheric refraction — produces smooth continuous curves. The piecewise functions are a good approximation, but they are approximations.
+
+**DPC v1** replaced the piecewise structure with continuous physics. The MSC model was converted from minutes to depression angles via spherical trigonometry, then two corrections were added:
+
+1. **Earth-Sun distance** — from Jean Meeus Chapter 25. At perihelion (January), Earth is 3% closer to the Sun. More intense sunlight → slightly brighter twilight → dawn visible at a marginally greater depression angle. The correction is `−0.5 × ln(r)` where r is in AU. Net effect: ±0.15°.
+2. **Fourier smoothing** — six harmonic terms to remove the discontinuity artifacts at the MSC breakpoints, producing a smooth function over the full year.
+
+The v1 model reduced errors at extreme latitudes and in the shoulder seasons, but it was still fundamentally calibrated to Shaukat's observation set, which was itself concentrated in North America.
+
+**DPC v2** introduced machine learning on top of the physics base. The [OpenFajr dataset](https://github.com/acamarata/pray-calc-ml) — 4,007 scholar-verified naked-eye Fajr observations from Birmingham (52.48°N, 2012–2024) — was used to train a gradient boosting regressor. Features: latitude, day of year, Earth-Sun distance, and elevation. The MSC base angle is the target, refined by the Birmingham observations.
+
+The model was validated on held-out data:
+
+| Location | Latitude | Records | Mean error |
+|----------|----------|---------|------------|
+| Birmingham (train) | 52.48°N | ~3,800 | 0.41° (~1.5 min) |
+| London | 51.5°N | 180 | 0.44° (~1.5 min) |
+| Glasgow | 55.9°N | 95 | 0.52° (~2 min) |
+| Doha | 25.3°N | 60 | 0.38° (~1.4 min) |
+
+**DPC v2.1** refined the elevation correction and extended the clipping bounds for polar latitudes.
+
+**DPC v2.2** is in development. The goal is to incorporate millions of satellite-derived twilight measurements (sky brightness at nautical twilight from NOAA VIIRS and NASA MODIS data) to extend empirical coverage across the Southern Hemisphere and tropical latitudes where ground observation data is sparse. The Birmingham dataset covers 52–56°N well. Everything below 40°N and above 60°N is currently extrapolation from Northern Hemisphere physics.
+
+Community observation data from other latitudes is welcome — see the [pray-calc-ml repository](https://github.com/acamarata/pray-calc-ml).
+
+---
+
+## What these results mean {{ id: 'what-this-means' }}
+
+**Use DPC or MSC for any location above 40°N or below 40°S.** Fixed-angle methods fail badly at high latitudes in summer. ISNA (15°) gives results over one hour early in Birmingham in June. MWL (18°) cannot produce a valid time at all for roughly three months. DPC and MSC track the physical phenomenon year-round.
+
+**At tropical latitudes, most methods converge.** Between roughly 30°N and 30°S, seasonal variation is small and the Sun always reaches typical depression angles. Fixed-angle methods are closer to DPC/MSC here — the differences are 5–15 minutes rather than hours. The choice of method matters less, but DPC and MSC still tend to be slightly more accurate.
+
+**MSC is almost always within 2 minutes of DPC.** They are built on the same empirical foundation. If your use case requires a well-established, widely respected method without the DPC model, MSC is a sound choice. pray-calc includes both.
+
+**The Karachi/MWL 18° angle is too large for South Asia.** The comparison data shows 9–11 minutes of consistent error in Pakistan. Communities using these methods for decades have been observing Fajr earlier than the physical phenomenon warrants.
+
+**No method is validated globally.** The Southern Hemisphere — Melbourne, Johannesburg, Buenos Aires, Cape Town — has no systematic eye-sighted dataset in the DPC training data. The numbers in the Africa section are computed, not empirically verified. Treat them accordingly.

@@ -1,0 +1,99 @@
+export const metadata = {
+  title: 'Progressive Web App',
+  description:
+    'PrayCalc is a Progressive Web App — install it to your home screen for offline prayer times, adhan reminders, and native-like experience on any device.',
+}
+
+export const sections = [
+  { title: 'Installing PrayCalc', id: 'installing' },
+  { title: 'Offline support', id: 'offline-support' },
+  { title: 'Caching strategy', id: 'caching-strategy' },
+  { title: 'Service worker', id: 'service-worker' },
+  { title: 'App manifest', id: 'app-manifest' },
+]
+
+# Progressive Web App
+
+PrayCalc is a fully installable Progressive Web App (PWA). You can add it to your home screen on any device and use it offline — no app store required. {{ className: 'lead' }}
+
+## Installing PrayCalc {{ id: 'installing' }}
+
+### Android (Chrome)
+
+Open PrayCalc in Chrome, tap the three-dot menu → **Add to Home screen** → confirm. The app icon appears on your home screen and opens in standalone mode (no browser chrome).
+
+### iOS (Safari)
+
+Open PrayCalc in Safari, tap the Share button → **Add to Home Screen** → confirm. Requires iOS 16.4+ for full service worker support.
+
+### Desktop (Chrome, Edge)
+
+Look for the install icon in the address bar (a small screen with a down-arrow). Click it → **Install**. PrayCalc opens in its own window.
+
+### macOS (Safari)
+
+Safari on macOS 14+ supports PWA installation. Open PrayCalc → File menu → **Add to Dock**.
+
+## Offline support {{ id: 'offline-support' }}
+
+Once installed, PrayCalc works without an internet connection for previously visited cities.
+
+| Feature | Offline behavior |
+|---------|-----------------|
+| Prayer times | Calculated locally — **always works offline** |
+| City page | Served from cache (up to 7 days) |
+| Qibla direction | Calculated locally — always works offline |
+| PDF calendar | Requires connection (generates server-side) |
+| City search | Requires connection (data lookup) |
+| Geo detection | Requires connection (IP lookup) |
+
+Prayer time calculation is performed client-side using the `pray-calc` engine. No internet is needed once the page is cached.
+
+## Caching strategy {{ id: 'caching-strategy' }}
+
+PrayCalc uses [Serwist](https://serwist.pages.dev) (the maintained successor to Workbox) with a three-tier caching strategy:
+
+| Route pattern | Strategy | Cache duration |
+|---------------|----------|----------------|
+| City pages (`/[country]/...`) | NetworkFirst (5s timeout) | 7 days |
+| API responses (`/api/...`) | StaleWhileRevalidate | 1 hour |
+| Static assets (JS, CSS, images) | CacheFirst | 30 days |
+| Offline fallback | CacheOnly | — |
+
+**NetworkFirst for city pages** means the app tries the network first. If the network responds within 5 seconds, you get fresh data. If the network times out or fails, you get the cached page. This ensures prayer times are always current when online and always available when offline.
+
+**StaleWhileRevalidate for API routes** returns the cached response immediately (fast) while fetching an update in the background. Ideal for the `/api/geo` location endpoint.
+
+## Service worker {{ id: 'service-worker' }}
+
+The service worker is registered automatically by the Serwist Next.js plugin. It lives at `/sw.js` and handles:
+
+- Pre-caching the application shell on install
+- Runtime caching per the strategy table above
+- Offline fallback routing — uncached pages fall back to the cached home page
+- Background sync preparation (future: sync settings across devices)
+
+The service worker updates automatically in the background when a new version of PrayCalc is deployed. Users see the new version on their next visit.
+
+## App manifest {{ id: 'app-manifest' }}
+
+The [Web App Manifest](https://developer.mozilla.org/en-US/docs/Web/Manifest) (`/manifest.webmanifest`) defines the installed app appearance:
+
+```json
+{
+  "name": "PrayCalc",
+  "short_name": "PrayCalc",
+  "description": "Accurate Islamic prayer times for any location worldwide",
+  "theme_color": "#1E5E2F",
+  "background_color": "#0D2F17",
+  "display": "standalone",
+  "start_url": "/",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
+```
+
+The `display: "standalone"` setting removes the browser address bar when the app is installed. The `theme_color` sets the status bar and title bar color to PrayCalc's deep green on Android.

@@ -1,0 +1,151 @@
+export const metadata = {
+  title: 'Installation',
+  description:
+    'Install the PrayCalc npm packages. All packages are ESM + CJS, TypeScript-first, and require Node.js 20 or later.',
+}
+
+export const sections = [
+  { title: 'Requirements', id: 'requirements' },
+  { title: 'pray-calc', id: 'pray-calc' },
+  { title: 'nrel-spa', id: 'nrel-spa' },
+  { title: 'moon-sighting', id: 'moon-sighting' },
+  { title: 'moon-cycle', id: 'moon-cycle' },
+  { title: 'hijri-core', id: 'hijri-core' },
+  { title: 'luxon-hijri', id: 'luxon-hijri' },
+]
+
+# Installation
+
+All PrayCalc packages are published to npm, written in TypeScript, and ship both ESM and CommonJS builds. Install only what you need. {{ className: 'lead' }}
+
+## Requirements {{ id: 'requirements' }}
+
+- Node.js 20 or later
+- TypeScript 5.0 or later (optional but recommended)
+- pnpm, npm, or yarn
+
+## pray-calc {{ id: 'pray-calc' }}
+
+The main prayer times engine. Supports all 14 standard calculation methods plus dynamic angle mode.
+
+```bash
+pnpm add pray-calc
+```
+
+```typescript {{ title: 'Quick start' }}
+import { getPrayerTimes } from 'pray-calc'
+
+const times = getPrayerTimes({
+  date: new Date(),
+  latitude: 41.4993,
+  longitude: -81.6944,
+  timezone: 'America/New_York',
+  method: 'ISNA',
+})
+
+console.log(times.fajr)    // e.g. "05:34"
+console.log(times.dhuhr)   // e.g. "13:02"
+console.log(times.asr)     // e.g. "16:28"
+console.log(times.maghrib) // e.g. "19:47"
+console.log(times.isha)    // e.g. "21:12"
+```
+
+## nrel-spa {{ id: 'nrel-spa' }}
+
+TypeScript port of the NREL Solar Position Algorithm. Used internally by pray-calc.
+
+```bash
+pnpm add nrel-spa
+```
+
+```typescript {{ title: 'Quick start' }}
+import { computeSolarPosition } from 'nrel-spa'
+
+const pos = computeSolarPosition({
+  date: new Date(),
+  latitude: 41.4993,
+  longitude: -81.6944,
+  elevation: 200,       // metres above sea level
+  pressure: 1013.25,    // millibars
+  temperature: 15,      // °C
+  deltaT: 69.18,        // seconds (ΔT for 2025)
+})
+
+console.log(pos.topocentricAltitude)   // degrees above horizon
+console.log(pos.topocentricAzimuth)    // degrees clockwise from north
+```
+
+## moon-sighting {{ id: 'moon-sighting' }}
+
+JPL DE442S-based lunar crescent visibility. Requires downloading the kernel file separately (see package README).
+
+```bash
+pnpm add moon-sighting
+```
+
+```typescript {{ title: 'Quick start' }}
+import { getMoonSightingReport } from 'moon-sighting'
+
+const report = await getMoonSightingReport({
+  date: new Date('2025-03-01'),
+  latitude: 21.3891,
+  longitude: 39.8579,   // Mecca
+})
+
+console.log(report.yallopCriteria)   // 'A' | 'B' | 'C' | 'D' | 'F'
+console.log(report.odehCriteria)     // 'visible' | 'not-visible' | 'marginal'
+```
+
+## moon-cycle {{ id: 'moon-cycle' }}
+
+Maps any date/time to a NASA SVS moon phase image frame.
+
+```bash
+pnpm add moon-cycle
+```
+
+```typescript {{ title: 'Quick start' }}
+import { cycleMonth, cdnUrl } from 'moon-cycle'
+
+const frames = cycleMonth({ year: 2025, month: 3 })
+const imageUrl = cdnUrl(frames[0])
+console.log(imageUrl)  // jsDelivr CDN URL for the frame image
+```
+
+## hijri-core {{ id: 'hijri-core' }}
+
+Zero-dependency Hijri calendar engine.
+
+```bash
+pnpm add hijri-core
+```
+
+```typescript {{ title: 'Quick start' }}
+import { toHijri, toGregorian } from 'hijri-core'
+
+const hijri = toHijri(new Date('2025-03-29'))
+console.log(hijri)  // { year: 1446, month: 9, day: 29 }
+
+const greg = toGregorian({ year: 1446, month: 10, day: 1 })
+console.log(greg)   // Date object: 2025-03-30
+```
+
+## luxon-hijri {{ id: 'luxon-hijri' }}
+
+Hijri/Gregorian conversion with Luxon. Requires `luxon` as a peer dependency.
+
+```bash
+pnpm add luxon-hijri luxon
+```
+
+```typescript {{ title: 'Quick start' }}
+import { toHijri, formatHijriDate } from 'luxon-hijri'
+import { DateTime } from 'luxon'
+
+const dt = DateTime.fromISO('2025-03-29')
+const hijri = toHijri(dt)
+console.log(hijri)  // { year: 1446, month: 9, day: 29 }
+
+const formatted = formatHijriDate(dt, 'iD iMMMM iYYYY')
+console.log(formatted)  // e.g. "29 Ramadan 1446"
+```

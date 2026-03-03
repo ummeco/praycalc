@@ -1,0 +1,115 @@
+export const metadata = {
+  title: 'nrel-spa',
+  description:
+    'TypeScript port of the NREL Solar Position Algorithm. Sub-arcsecond accuracy over a 2,000-year window.',
+}
+
+export const sections = [
+  { title: 'Overview', id: 'overview' },
+  { title: 'Installation', id: 'installation' },
+  { title: 'computeSolarPosition', id: 'computesolarposition' },
+  { title: 'Accuracy', id: 'accuracy' },
+  { title: 'Algorithm reference', id: 'algorithm-reference' },
+]
+
+# nrel-spa
+
+A faithful TypeScript port of the NREL Solar Position Algorithm by Ibrahim Reda and Afshin Andreas (2008). Achieves ±0.0003° over the years −2000 to +6000. {{ className: 'lead' }}
+
+## Overview {{ id: 'overview' }}
+
+`nrel-spa` is the solar position engine used internally by `pray-calc`. You can use it directly for any application that needs precise solar coordinates.
+
+- Based on NREL/TP-560-34302 (Reda & Andreas, 2008)
+- ±0.0003° accuracy
+- Outputs topocentric altitude, azimuth, right ascension, declination, hour angle
+- Full atmospheric refraction model (pressure + temperature)
+- TypeScript-first, ESM + CJS
+
+**GitHub:** [github.com/acamarata/nrel-spa](https://github.com/acamarata/nrel-spa)
+
+## Installation {{ id: 'installation' }}
+
+```bash
+pnpm add nrel-spa
+```
+
+## computeSolarPosition {{ id: 'computesolarposition' }}
+
+```typescript
+computeSolarPosition(options: SolarPositionOptions): SolarPosition
+```
+
+### Options
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `date` | `Date` | Yes | — | Date and time (UTC) |
+| `latitude` | `number` | Yes | — | Decimal degrees |
+| `longitude` | `number` | Yes | — | Decimal degrees |
+| `elevation` | `number` | No | `0` | Metres above sea level |
+| `pressure` | `number` | No | `1013.25` | Millibars |
+| `temperature` | `number` | No | `15` | Celsius |
+| `deltaT` | `number` | No | `69.18` | ΔT in seconds |
+| `slope` | `number` | No | `0` | Surface tilt angle (0 = horizontal) |
+| `azimuthRotation` | `number` | No | `0` | Surface azimuth rotation |
+| `atmosphericRefraction` | `number` | No | `0.5667` | Horizon refraction in degrees |
+
+### Returns
+
+| Field | Unit | Description |
+|-------|------|-------------|
+| `topocentricAltitude` | degrees | Sun's altitude above horizon (corrected for refraction) |
+| `topocentricAzimuth` | degrees | Sun's azimuth clockwise from north |
+| `topocentricRightAscension` | hours | Equatorial RA (topocentric) |
+| `topocentricDeclination` | degrees | Equatorial declination (topocentric) |
+| `localHourAngle` | degrees | Hour angle from meridian |
+| `zenithAngle` | degrees | Angle from zenith (90° − altitude) |
+| `geocentricSunDistance` | AU | Earth-Sun distance in astronomical units |
+| `equationOfTime` | minutes | ΔT between solar noon and 12:00 local mean time |
+
+```typescript {{ title: 'Example' }}
+import { computeSolarPosition } from 'nrel-spa'
+
+const pos = computeSolarPosition({
+  date: new Date('2025-06-21T09:00:00Z'),
+  latitude: 21.4225,
+  longitude: 39.8262,  // Mecca
+  elevation: 270,
+  pressure: 982,       // adjusted for 270m elevation
+  temperature: 38,     // summer temperature in Mecca
+})
+
+console.log(`Altitude: ${pos.topocentricAltitude.toFixed(3)}°`)
+console.log(`Azimuth: ${pos.topocentricAzimuth.toFixed(3)}°`)
+console.log(`Equation of time: ${pos.equationOfTime.toFixed(2)} min`)
+```
+
+## Accuracy {{ id: 'accuracy' }}
+
+The algorithm achieves **±0.0003°** (about 1 arcsecond) for the years −2000 to +6000. For comparison:
+
+| Algorithm | Accuracy | Source |
+|-----------|----------|--------|
+| NREL SPA | ±0.0003° | Reda & Andreas (2008) |
+| Jean Meeus (simplified) | ±0.01° | _Astronomical Algorithms_ (1991) |
+| VSOP87 (full) | ±0.0001° | Bretagnon & Francou (1988) |
+| SunCalc.js | ~±0.1° | Web-optimized approximation |
+
+For prayer times, ±0.0003° corresponds to a timing error of less than 1 second. The simplified Meeus method produces errors up to 30 seconds at equinoxes and near solstices at high latitudes.
+
+## Algorithm reference {{ id: 'algorithm-reference' }}
+
+The NREL SPA implements the following computational chain:
+
+1. Julian Day and Julian Ephemeris Day
+2. Heliocentric longitude and latitude (Fourier series, 2,500+ terms from VSOP87D)
+3. Geocentric longitude and latitude
+4. Nutation in longitude (Δψ) and obliquity (Δε)
+5. Aberration correction
+6. Apparent Sun longitude and right ascension
+7. Observer local hour angle
+8. Topocentric coordinates (parallax correction)
+9. Atmospheric refraction correction
+
+Reference: Reda, I.; Andreas, A. (2008). _Solar Position Algorithm for Solar Radiation Applications_. NREL/TP-560-34302. Golden, CO: National Renewable Energy Laboratory.

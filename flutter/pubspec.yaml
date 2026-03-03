@@ -1,0 +1,109 @@
+name: praycalc_app
+description: PrayCalc — GPS-accurate Islamic prayer times for iOS and Android.
+publish_to: 'none'
+
+version: 0.4.1+1
+
+environment:
+  sdk: ^3.7.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # Prayer time engine
+  pray_calc_dart:
+    path: packages/pray_calc_dart
+
+  # State management
+  flutter_riverpod: ^2.6.1
+  riverpod_annotation: ^2.6.1
+
+  # Navigation
+  go_router: ^14.6.3
+
+  # Icons + UI
+  cupertino_icons: ^1.0.8
+
+  # Persistence
+  shared_preferences: ^2.3.4
+
+  # Localization
+  flutter_localizations:
+    sdk: flutter
+  intl: ^0.20.2
+
+  # Location
+  geolocator: ^13.0.4
+  geocoding: ^3.0.0
+
+  # Network
+  http: ^1.2.2
+  hijri: ^3.0.0
+  sqflite: ^2.4.2
+  path_provider: ^2.1.5
+  path: ^1.9.1
+  timezone: ^0.11.0
+  flutter_compass: ^0.8.1
+  share_plus: ^12.0.1
+  flutter_local_notifications: ^21.0.0-dev.2
+  workmanager: ^0.9.0+3
+  home_widget: ^0.9.0
+  just_audio: ^0.10.5
+  audio_session: ^0.2.2
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+  camera: ^0.12.0
+  fl_chart: ^1.1.1
+  in_app_review: ^2.0.10
+  sentry_flutter: ^9.0.0
+
+  # OTA auto-update
+  shorebird_code_push: ^1.1.0
+  url_launcher: ^6.3.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  riverpod_generator: ^2.4.3
+  build_runner: ^2.4.13
+  flutter_launcher_icons: ^0.14.4
+  flutter_native_splash: ^2.4.7
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/brand/icon.png"
+  remove_alpha_ios: true
+  # Adaptive icon (Android 8+) — rounded green background
+  adaptive_icon_background: "#1E5E2F"
+  adaptive_icon_foreground: "assets/brand/icon.png"
+
+flutter_native_splash:
+  color: "#1E5E2F"
+  image: "assets/brand/icon.png"
+  image_dark: "assets/brand/icon.png"
+  color_dark: "#0D2F17"
+  android_12:
+    icon_background_color: "#1E5E2F"
+    icon_background_color_dark: "#0D2F17"
+    image: "assets/brand/icon.png"
+    image_dark: "assets/brand/icon.png"
+  fullscreen: false
+
+flutter:
+  uses-material-design: true
+  generate: true
+
+  assets:
+    - assets/data/
+    - assets/brand/
+    - assets/audio/
+
+  fonts:
+    - family: Amiri
+      fonts:
+        - asset: assets/fonts/Amiri-Regular.ttf
+        - asset: assets/fonts/Amiri-Bold.ttf
+          weight: 700

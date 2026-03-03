@@ -1,0 +1,85 @@
+export const metadata = {
+  title: 'PDF Calendar Export',
+  description:
+    'Download prayer time calendars as PDF — monthly, full-year, or Ramadan format with Hijri dates, Suhoor, and Iftar times.',
+}
+
+export const sections = [
+  { title: 'Calendar formats', id: 'calendar-formats' },
+  { title: 'Monthly calendar', id: 'monthly' },
+  { title: 'Yearly calendar', id: 'yearly' },
+  { title: 'Ramadan calendar', id: 'ramadan' },
+  { title: 'API endpoint', id: 'api' },
+]
+
+# PDF Calendar Export
+
+PrayCalc generates prayer time calendars as downloadable PDFs — monthly, yearly, or Ramadan-specific. All formats include Hijri dates and support every calculation method. {{ className: 'lead' }}
+
+## Calendar formats {{ id: 'calendar-formats' }}
+
+| Format | Pages | Layout | Best for |
+|--------|-------|--------|----------|
+| Monthly | 1 | Portrait A4 | Printing and posting |
+| Yearly | 12 | Landscape A4 | Annual planning |
+| Ramadan | 1 | Portrait A4 | Iftar/Suhoor schedule |
+
+All PDFs include:
+- All six daily prayers (Fajr, Sunrise, Dhuhr, Asr, Maghrib, Isha)
+- Hijri date alongside the Gregorian date
+- City name, calculation method, and madhab in the header
+- High-latitude handling — "—" displayed when a prayer cannot be calculated
+
+## Monthly calendar {{ id: 'monthly' }}
+
+The monthly format produces a single portrait A4 page with a table of all prayer times for every day of the selected month. Columns: Gregorian date | Hijri date | Fajr | Sunrise | Dhuhr | Asr | Maghrib | Isha.
+
+Access it from any city page via the **Calendar** tile → **Monthly PDF** → select month and year → Download.
+
+## Yearly calendar {{ id: 'yearly' }}
+
+The yearly format produces 12 landscape A4 pages — one per month. Each page uses the same column layout as the monthly format. The document is generated with a cover section showing city, year, and calculation method.
+
+Access it from the Calendar tile → **Yearly PDF** → select year → Download.
+
+## Ramadan calendar {{ id: 'ramadan' }}
+
+The Ramadan calendar adds two columns: **Suhoor** (the Fajr time, marking when fasting begins) and **Iftar** (the Maghrib time, marking when fasting ends). The calendar auto-detects the Ramadan month for the requested year from the Hijri calendar.
+
+Format: Portrait A4, one row per Ramadan day (1–29 or 30 days), with the Islamic date (e.g., 1 Ramadan 1446) and Gregorian date shown for each day.
+
+Access it from the Calendar tile → **Ramadan PDF** → select year → Download.
+
+## API endpoint {{ id: 'api' }}
+
+Calendars are generated server-side and streamed as `application/pdf`. The endpoint accepts the following parameters:
+
+```
+GET /api/calendar/pdf
+```
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `lat` | number | Yes | Latitude |
+| `lng` | number | Yes | Longitude |
+| `tz` | string | Yes | IANA timezone (e.g., `America/New_York`) |
+| `city` | string | Yes | City name for the PDF header |
+| `country` | string | Yes | Country name for the PDF header |
+| `year` | number | Yes | Calendar year |
+| `month` | number | Monthly only | Month number (1–12) |
+| `type` | string | Yes | `monthly`, `yearly`, or `ramadan` |
+| `madhab` | string | No | `standard` or `hanafi` (default: `standard`) |
+| `method` | number | No | Calculation method ID (default: 2 — ISNA) |
+| `timeFormat` | string | No | `12h` or `24h` (default: `12h`) |
+
+**Example — monthly:**
+```
+GET /api/calendar/pdf?lat=40.7128&lng=-74.0060&tz=America%2FNew_York&city=New%20York&country=United%20States&year=2026&month=3&type=monthly
+```
+
+**Example — Ramadan:**
+```
+GET /api/calendar/pdf?lat=21.3891&lng=39.8579&tz=Asia%2FRiyadh&city=Mecca&country=Saudi%20Arabia&year=2026&type=ramadan&method=5
+```
+
+The response is a binary PDF stream. In a browser, this triggers the native download dialog. From code, pipe the response to a file.

@@ -1,0 +1,66 @@
+export const metadata = {
+  title: 'Elliptical Orbit',
+  description:
+    "How Earth's elliptical orbit around the Sun affects solar irradiance, day length, and prayer times through the year.",
+}
+
+export const sections = [
+  { title: "Kepler's first law", id: 'keplers-first-law' },
+  { title: 'Perihelion and aphelion', id: 'perihelion-and-aphelion' },
+  { title: 'Effect on solar irradiance', id: 'effect-on-solar-irradiance' },
+  { title: 'Effect on prayer times', id: 'effect-on-prayer-times' },
+  { title: 'Orbital mechanics', id: 'orbital-mechanics' },
+]
+
+# Elliptical Orbit
+
+Earth does not orbit the Sun in a perfect circle. The orbit is an ellipse — slightly flattened — and the varying Earth-Sun distance has measurable effects on the Sun's apparent size and the equation of time. {{ className: 'lead' }}
+
+## Kepler's first law {{ id: 'keplers-first-law' }}
+
+Johannes Kepler's first law of planetary motion (1609): **the orbit of a planet is an ellipse with the Sun at one focus.**
+
+An ellipse is defined by two parameters:
+- **Semi-major axis (a)** — half the longest diameter (~149.6 million km for Earth, the definition of 1 AU)
+- **Eccentricity (e)** — how elongated the ellipse is (0 = circle, 1 = parabola). Earth's eccentricity is currently 0.0167 — nearly circular but not quite.
+
+## Perihelion and aphelion {{ id: 'perihelion-and-aphelion' }}
+
+Because the orbit is an ellipse, Earth's distance from the Sun varies:
+
+| Event | Date (approx.) | Earth-Sun distance |
+|-------|---------------|-------------------|
+| Perihelion (closest) | ~January 3 | 147.1 million km (0.983 AU) |
+| Aphelion (farthest) | ~July 4 | 152.1 million km (1.017 AU) |
+
+This is counterintuitive to people in the Northern Hemisphere — Earth is actually closest to the Sun in January (Northern winter) and farthest in July (Northern summer). The seasons are caused by axial tilt, not orbital distance.
+
+## Effect on solar irradiance {{ id: 'effect-on-solar-irradiance' }}
+
+Solar irradiance follows an **inverse-square law** — doubling the distance reduces the irradiance by a factor of four. Over Earth's orbit, the variation is:
+
+- At perihelion (January): irradiance ~1,412 W/m² — about 7% above the annual average
+- At aphelion (July): irradiance ~1,321 W/m² — about 3% below average
+
+This 7% variation in energy input contributes to the Northern Hemisphere's relatively mild winters (more solar energy) and Southern Hemisphere's more extreme seasons.
+
+For prayer times, the direct irradiance effect is negligible. The relevant effect is on the Sun's **apparent angular diameter**: at perihelion, the Sun's disk subtends ~32.5 arcminutes; at aphelion, ~31.5 arcminutes. This affects the exact moment of sunrise and sunset by about 2–3 seconds. The NREL SPA accounts for this through the Sun's topocentric horizontal parallax correction.
+
+## Effect on prayer times {{ id: 'effect-on-prayer-times' }}
+
+The elliptical orbit's main prayer time effect is through the **equation of time**. Because Earth moves faster near perihelion (by Kepler's second law — equal areas in equal times), the Sun appears to move faster along the ecliptic in January than in July. This contributes to the equation of time variation:
+
+- In February, Dhuhr occurs about 14 minutes before 12:00 local mean time
+- In November, Dhuhr occurs about 16 minutes after 12:00 local mean time
+
+The difference between the fastest and slowest orbital speeds is about 1° per day — Earth travels ~0.986° per day on average, but ~1.019°/day at perihelion and ~0.953°/day at aphelion.
+
+## Orbital mechanics {{ id: 'orbital-mechanics' }}
+
+The NREL SPA computes Earth's position using three anomaly angles:
+
+- **Mean anomaly (M)** — where Earth would be if the orbit were circular, advancing at constant rate
+- **Eccentric anomaly (E)** — the actual angle in the ellipse, solved iteratively from Kepler's equation: `M = E − e × sin(E)`
+- **True anomaly (ν)** — the actual angle from perihelion to Earth's current position, derived from E
+
+From the true anomaly and orbital elements, the algorithm computes Earth's heliocentric longitude and latitude, then transforms to geocentric and topocentric coordinates. PrayCalc uses this full chain to achieve the sub-arcsecond accuracy that makes its prayer times precise to within seconds.

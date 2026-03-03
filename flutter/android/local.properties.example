@@ -1,0 +1,13 @@
+# Android local.properties — copy to local.properties and fill in values
+# This file is gitignored. local.properties.example is tracked.
+
+# Flutter SDK path (required)
+flutter.sdk=/Users/your-username/.fluttersdk
+
+# Release signing credentials (required for release builds)
+# Generate a keystore: keytool -genkey -v -keystore praycalc.jks -alias praycalc -keyalg RSA -keysize 2048 -validity 10000
+# storeFile = absolute path to .jks/.keystore file
+storeFile=/path/to/praycalc.jks
+storePassword=your-store-password
+keyAlias=praycalc
+keyPassword=your-key-password

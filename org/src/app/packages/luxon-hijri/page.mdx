@@ -1,0 +1,119 @@
+export const metadata = {
+  title: 'luxon-hijri',
+  description:
+    'Hijri/Gregorian date conversion and formatting built on Luxon. Full iFormat pattern support with locale-aware month names.',
+}
+
+export const sections = [
+  { title: 'Overview', id: 'overview' },
+  { title: 'Installation', id: 'installation' },
+  { title: 'API', id: 'api' },
+  { title: 'Format patterns', id: 'format-patterns' },
+  { title: 'Locale support', id: 'locale-support' },
+]
+
+# luxon-hijri
+
+Hijri calendar support for Luxon. Convert between Hijri and Gregorian, format dates in Arabic or English, and work with Hijri months in Luxon's DateTime API. {{ className: 'lead' }}
+
+## Overview {{ id: 'overview' }}
+
+`luxon-hijri` wraps `hijri-core` with a Luxon-compatible API, adding formatting, locale support, and integration with Luxon's `Duration` and `Interval` types.
+
+- Convert any Luxon `DateTime` to Hijri
+- Format Hijri dates with `iFormat` patterns
+- Locale-aware month and day names (Arabic, English, more)
+- Built on `hijri-core` (supports Umm al-Qura and FCNA systems)
+- Peer dependency: `luxon ^3.0.0`
+
+**GitHub:** [github.com/acamarata/luxon-hijri](https://github.com/acamarata/luxon-hijri)
+
+## Installation {{ id: 'installation' }}
+
+```bash
+pnpm add luxon-hijri luxon
+```
+
+## API {{ id: 'api' }}
+
+### toHijri
+
+`toHijri(dt: DateTime, system?: HijriSystem): HijriDate` — converts a Luxon `DateTime` to Hijri.
+
+```typescript {{ title: 'Convert DateTime to Hijri' }}
+import { toHijri } from 'luxon-hijri'
+import { DateTime } from 'luxon'
+
+const dt = DateTime.fromISO('2025-03-29')
+const hijri = toHijri(dt)
+console.log(hijri)
+// { year: 1446, month: 9, day: 29, monthName: 'Ramadan', system: 'ummAlQura' }
+```
+
+### toGregorian
+
+`toGregorian(hijri: HijriDate): DateTime` — converts a Hijri date to a Luxon `DateTime`.
+
+```typescript {{ title: 'Convert Hijri to DateTime' }}
+import { toGregorian } from 'luxon-hijri'
+
+const dt = toGregorian({ year: 1446, month: 10, day: 1 })
+console.log(dt.toISODate())  // "2025-03-30"
+```
+
+### formatHijriDate
+
+`formatHijriDate(dt: DateTime, fmt: string, locale?: string): string` — formats a date using Hijri format tokens.
+
+```typescript {{ title: 'Format a Hijri date' }}
+import { formatHijriDate } from 'luxon-hijri'
+import { DateTime } from 'luxon'
+
+const dt = DateTime.fromISO('2025-03-29')
+
+console.log(formatHijriDate(dt, 'iD iMMMM iYYYY'))          // "29 Ramadan 1446"
+console.log(formatHijriDate(dt, 'iD iMMMM iYYYY', 'ar'))    // "٢٩ رمضان ١٤٤٦"
+console.log(formatHijriDate(dt, 'ioooo/iMM/iDD'))            // "1446/09/29"
+console.log(formatHijriDate(dt, 'iEEEE, iD iMMMM iYYYY'))   // "Saturday, 29 Ramadan 1446"
+```
+
+## Format patterns {{ id: 'format-patterns' }}
+
+All Hijri format tokens are prefixed with `i` to distinguish from Gregorian tokens.
+
+| Token | Description | Example |
+|-------|-------------|---------|
+| `iD` | Day of month, 1–30 | `29` |
+| `iDD` | Day of month, zero-padded | `29` |
+| `iM` | Month number, 1–12 | `9` |
+| `iMM` | Month number, zero-padded | `09` |
+| `iMMM` | Abbreviated month name | `Ram.` |
+| `iMMMM` | Full month name | `Ramadan` |
+| `iooo` | Hijri year (3 digits) | `446` |
+| `ioooo` | Hijri year (4 digits) | `1446` |
+| `iYYYY` | Hijri year (4 digits, same as ioooo) | `1446` |
+| `iEEEE` | Day of week (full) | `Saturday` |
+| `iEEE` | Day of week (abbreviated) | `Sat` |
+
+Standard Luxon tokens (non-prefixed) still work and produce Gregorian output, so you can mix them: `formatHijriDate(dt, 'iD iMMMM iYYYY (yyyy-MM-dd)')` produces `"29 Ramadan 1446 (2025-03-29)"`.
+
+## Locale support {{ id: 'locale-support' }}
+
+Month and day names are available in multiple locales:
+
+```typescript {{ title: 'Arabic locale' }}
+import { formatHijriDate } from 'luxon-hijri'
+import { DateTime } from 'luxon'
+
+const dt = DateTime.fromISO('2025-03-29')
+
+// Arabic
+console.log(formatHijriDate(dt, 'iEEEE iD iMMMM iYYYY', 'ar'))
+// "السبت ٢٩ رمضان ١٤٤٦"
+
+// Urdu
+console.log(formatHijriDate(dt, 'iD iMMMM iYYYY', 'ur'))
+// "٢٩ رمضان ١٤٤٦"
+```
+
+Supported locales: `en`, `ar`, `ur`, `tr`, `id`, `ms`, `fr`. Additional locales can be registered via `registerLocale()`.

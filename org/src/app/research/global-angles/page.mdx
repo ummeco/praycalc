@@ -1,0 +1,340 @@
+export const metadata = {
+  title: 'DPC Angles by City & Month',
+  description:
+    'DPC-computed Fajr and Isha depression angles for 12 cities across 5 continents, broken down by month. All values computed from the pray-calc getAngles() function.',
+}
+
+export const sections = [
+  { title: 'How to read these tables', id: 'how-to-read-these-tables' },
+  { title: 'Northern Europe', id: 'northern-europe' },
+  { title: 'Mediterranean & Middle East', id: 'mediterranean-and-middle-east' },
+  { title: 'South Asia', id: 'south-asia' },
+  { title: 'Southeast Asia & Oceania', id: 'southeast-asia-and-oceania' },
+  { title: 'Africa', id: 'africa' },
+  { title: 'Southern Hemisphere', id: 'southern-hemisphere' },
+  { title: 'What the patterns show', id: 'what-the-patterns-show' },
+]
+
+# DPC Angles by City & Month
+
+All values on this page are computed from `pray-calc` v2.0.0 `getAngles()` using the 15th of each month in 2025. These are DPC model predictions — not empirically measured angles — except where noted. {{ className: 'lead' }}
+
+## How to read these tables {{ id: 'how-to-read-these-tables' }}
+
+**Fajr angle**: the solar depression angle (degrees below the geometric horizon) at which the DPC model predicts true dawn (al-Fajr al-Sadiq) begins. The NREL SPA then computes the exact local time when the Sun reaches this altitude.
+
+**Isha angle**: the depression angle at which the DPC model predicts night (disappearance of redness from the western sky) begins. A `—` indicates the Sun's minimum nocturnal altitude does not fall below the computed angle (summer perpetual twilight); Islamic authorities apply fallback rules in these cases.
+
+**Clipping**: DPC outputs are clamped to [10°, 22°]. Values of 10.000 indicate the model computed a lower value that was clipped — this occurs at extreme latitudes in summer where the twilight physics produces angles below 10°. Real sky conditions at these times are ambiguous; the 10° floor represents the minimum physiologically meaningful "dark sky" threshold.
+
+**Fixed method reference**:
+- ISNA: 15°/15° (North America)
+- MWL: 18°/17° (global default)
+- Egypt: 19.5°/17.5°
+- MUIS: 20°/18° (Malaysia/Singapore)
+
+---
+
+## Northern Europe {{ id: 'northern-europe' }}
+
+### Reykjavik, Iceland — 64.14°N, 21.90°W — elevation 18 m
+
+At 64°N, summer sun barely grazes the horizon. Isha is unreachable for nearly the entire year. Fajr angles hit the 10° floor from April through September.
+
+| Month | Fajr | Isha | Notes |
+|-------|------|------|-------|
+| Jan | 10.000° | 10.000° | Clipped; minimum night depth near 10° |
+| Feb | 11.423° | 10.000° | |
+| Mar | 11.355° | 10.000° | |
+| Apr | 10.000° | 10.000° | Clipped both; perpetual civil twilight begins |
+| May | 10.000° | 10.000° | Midnight sun conditions approaching |
+| Jun | 10.000° | 10.000° | Midnight sun; no true night |
+| Jul | 10.000° | 10.000° | |
+| Aug | 10.000° | 10.000° | |
+| Sep | 11.142° | 10.000° | Night recovering |
+| Oct | 11.688° | 10.000° | |
+| Nov | 10.345° | 10.000° | |
+| Dec | 10.000° | 10.000° | Polar conditions; very short days |
+
+*MWL (18°) is unreachable for Fajr from approximately April through October. Any MWL Fajr times computed for Reykjavik during this period rely on fallback rules, not actual angle computation.*
+
+---
+
+### Glasgow, UK — 55.86°N, 4.26°W — elevation 18 m
+
+Glasgow's strong seasonal variation makes it a challenging case for fixed methods. The Birmingham OpenFajr validation set (Glasgow, 95 records, MAE 0.52°) closely tracks these DPC predictions.
+
+| Month | Fajr | Isha | Notes |
+|-------|------|------|-------|
+| Jan | 13.397° | 12.333° | Both methods within ~3° of MWL/ISNA |
+| Feb | 14.234° | 12.552° | |
+| Mar | 13.988° | 11.831° | |
+| Apr | 13.172° | 10.000° | Isha begins to clip |
+| May | 11.029° | 10.000° | Fajr drops sharply |
+| Jun | 10.000° | 10.000° | Near-midnight sun; no valid Isha |
+| Jul | 10.187° | 10.000° | |
+| Aug | 12.541° | 10.000° | |
+| Sep | 13.916° | 11.108° | |
+| Oct | 14.439° | 12.481° | Autumn convergence |
+| Nov | 13.744° | 12.519° | |
+| Dec | 12.939° | 12.423° | |
+
+*MWL (18°) would be 4–6° above the DPC Fajr angle in summer — representing 25–45 minutes of systematic error.*
+
+---
+
+### London, UK — 51.51°N, 0.13°W — elevation 5 m
+
+London is the latitude band best supported by empirical data (OpenFajr London validation: 180 records, MAE 0.44°).
+
+| Month | Fajr | Isha | Notes |
+|-------|------|------|-------|
+| Jan | 14.747° | 13.849° | |
+| Feb | 15.605° | 13.738° | Peak winter Fajr angle |
+| Mar | 15.272° | 13.020° | |
+| Apr | 14.596° | 10.889° | |
+| May | 12.892° | 10.000° | Isha clips |
+| Jun | 11.796° | 10.000° | |
+| Jul | 12.334° | 10.000° | |
+| Aug | 14.047° | 10.000° | |
+| Sep | 15.124° | 12.254° | |
+| Oct | 15.606° | 13.744° | Seasonal peak |
+| Nov | 15.122° | 13.904° | |
+| Dec | 14.571° | 14.131° | |
+
+*ISNA (15°) and London DPC are within 1° for most of the year — the reason ISNA works well in the UK. In June, the DPC angle is 11.8° vs ISNA's 15°, producing ~20 minutes difference.*
+
+---
+
+## Mediterranean & Middle East {{ id: 'mediterranean-and-middle-east' }}
+
+### Istanbul, Turkey — 41.01°N, 28.98°E — elevation 100 m
+
+| Month | Fajr | Isha | Notes |
+|-------|------|------|-------|
+| Jan | 17.470° | 16.552° | |
+| Feb | 17.995° | 16.298° | |
+| Mar | 17.751° | 15.539° | |
+| Apr | 17.466° | 13.658° | |
+| May | 16.428° | 12.063° | |
+| Jun | 16.083° | 12.289° | Minimum; Isha remains valid |
+| Jul | 16.240° | 12.178° | |
+| Aug | 17.253° | 12.884° | |
+| Sep | 17.728° | 14.868° | |
+| Oct | 18.086° | 16.203° | Approaches MWL Fajr range |
+| Nov | 17.890° | 16.590° | |
+| Dec | 17.498° | 16.955° | |
+
+*Istanbul's DPC Fajr averages ~17.2° — below the MWL 18° standard but close. The Turkish Diyanet uses 18°/17° (DIBT), which closely tracks DPC here.*
+
+---
+
+### Cairo, Egypt — 30.04°N, 31.24°E — elevation 23 m
+
+| Month | Fajr | Isha | Notes |
+|-------|------|------|-------|
+| Jan | 19.031° | 18.191° | |
+| Feb | 19.624° | 18.112° | |
+| Mar | 19.394° | 17.469° | |
+| Apr | 19.164° | 15.979° | |
+| May | 18.616° | 14.507° | |
+| Jun | 18.603° | 14.827° | |
+| Jul | 18.594° | 14.663° | |
+| Aug | 19.227° | 15.213° | |
+| Sep | 19.489° | 16.974° | |
+| Oct | 19.694° | 17.963° | |
+| Nov | 19.409° | 18.347° | |
+| Dec | 18.960° | 18.545° | |
+
+*Egypt's DPC Fajr averages ~19.2° — the Egyptian standard (19.5°) is a close match. This confirms that the Egypt method was calibrated for this latitude band.*
+
+---
+
+### Mecca, Saudi Arabia — 21.39°N, 39.86°E — elevation 270 m
+
+| Month | Fajr | Isha | Notes |
+|-------|------|------|-------|
+| Jan | 19.650° | 18.978° | |
+| Feb | 20.213° | 19.056° | |
+| Mar | 20.260° | 18.870° | Peak Fajr angle |
+| Apr | 20.065° | 17.646° | |
+| May | 19.687° | 16.244° | |
+| Jun | 19.630° | 16.387° | |
+| Jul | 19.642° | 16.307° | |
+| Aug | 20.083° | 16.884° | |
+| Sep | 20.210° | 18.382° | |
+| Oct | 20.286° | 19.122° | Highest Fajr |
+| Nov | 20.016° | 19.109° | |
+| Dec | 19.611° | 19.169° | |
+
+*At Mecca, DPC Fajr averages ~19.9°. The higher DPC values (~20°) suggest Umm al-Qura's 18.5° may set Fajr slightly late.*
+
+---
+
+## South Asia {{ id: 'south-asia' }}
+
+### Islamabad, Pakistan — 33.68°N, 73.05°E — elevation 508 m
+
+| Month | Fajr | Isha | Notes |
+|-------|------|------|-------|
+| Jan | 18.866° | 18.057° | |
+| Feb | 19.280° | 17.826° | |
+| Mar | 19.040° | 16.991° | |
+| Apr | 18.883° | 15.487° | |
+| May | 18.309° | 13.973° | |
+| Jun | 18.117° | 14.183° | |
+| Jul | 18.195° | 14.073° | |
+| Aug | 18.862° | 14.716° | |
+| Sep | 19.099° | 16.497° | |
+| Oct | 19.354° | 17.690° | |
+| Nov | 19.050° | 18.027° | |
+| Dec | 18.774° | 18.374° | |
+
+*The Karachi method (18°/18°) is widely used in Pakistan. DPC Fajr averages ~18.8° — the Karachi Fajr angle of 18° is slightly low.*
+
+---
+
+### Dhaka, Bangladesh — 23.81°N, 90.41°E — elevation 8 m
+
+| Month | Fajr | Isha | Notes |
+|-------|------|------|-------|
+| Jan | 19.410° | 18.748° | |
+| Feb | 19.977° | 18.839° | |
+| Mar | 20.005° | 18.415° | |
+| Apr | 19.746° | 16.956° | |
+| May | 19.282° | 15.746° | |
+| Jun | 19.340° | 16.032° | |
+| Jul | 19.203° | 15.786° | |
+| Aug | 19.728° | 16.406° | |
+| Sep | 19.937° | 17.924° | |
+| Oct | 20.048° | 18.676° | |
+| Nov | 19.778° | 18.885° | |
+| Dec | 19.365° | 18.929° | |
+
+*DPC Fajr for Dhaka averages ~19.7°. The MUIS standard (20°) is a closer match to DPC here than Karachi (18°).*
+
+---
+
+## Southeast Asia & Oceania {{ id: 'southeast-asia-and-oceania' }}
+
+### Jakarta, Indonesia — 6.21°S, 106.85°E — elevation 8 m
+
+Near the equator, seasonal variation is small but measurable.
+
+| Month | Fajr | Isha | Notes |
+|-------|------|------|-------|
+| Jan | 18.893° | 17.989° | |
+| Feb | 19.607° | 18.649° | |
+| Mar | 19.936° | 19.440° | |
+| Apr | 19.753° | 19.507° | Highest Isha of year |
+| May | 19.264° | 19.028° | |
+| Jun | 18.736° | 18.736° | Minimum |
+| Jul | 18.989° | 18.756° | |
+| Aug | 19.780° | 19.295° | |
+| Sep | 20.053° | 19.556° | Highest Fajr of year |
+| Oct | 20.007° | 19.277° | |
+| Nov | 19.296° | 18.145° | |
+| Dec | 18.828° | 17.721° | |
+
+*DPC Fajr for Jakarta averages ~19.5°. The MUIS standard (20°) is close.*
+
+---
+
+### Melbourne, Australia — 37.81°S, 144.96°E — elevation 32 m
+
+Southern Hemisphere: seasons are inverted. Melbourne summer = December/January; Melbourne winter = June/July.
+
+| Month | Fajr | Isha | Notes |
+|-------|------|------|-------|
+| Jan | 17.013° | 12.803° | Southern summer |
+| Feb | 18.045° | 13.615° | |
+| Mar | 18.310° | 15.466° | Autumn transition |
+| Apr | 18.545° | 16.768° | |
+| May | 18.238° | 17.073° | |
+| Jun | 17.994° | 17.615° | Southern winter |
+| Jul | 18.109° | 17.151° | |
+| Aug | 18.570° | 16.994° | |
+| Sep | 18.444° | 16.111° | Spring transition |
+| Oct | 18.249° | 14.498° | |
+| Nov | 17.452° | 13.004° | |
+| Dec | 17.037° | 13.111° | |
+
+*Melbourne's DPC Fajr averages ~18.1°, making MWL (18°) a reasonable fit for the annual average.*
+
+---
+
+## Africa {{ id: 'africa' }}
+
+### Nairobi, Kenya — 1.29°S, 36.82°E — elevation 1,795 m
+
+Near the equator but at high elevation (1,795 m), Nairobi's pressure correction affects the refraction term slightly.
+
+| Month | Fajr | Isha | Notes |
+|-------|------|------|-------|
+| Jan | 18.841° | 18.611° | |
+| Feb | 19.705° | 19.463° | |
+| Mar | 20.207° | 19.957° | Both near maximum |
+| Apr | 19.964° | 19.718° | |
+| May | 19.206° | 18.971° | |
+| Jun | 18.673° | 18.673° | Minimum |
+| Jul | 18.928° | 18.697° | |
+| Aug | 19.733° | 19.491° | |
+| Sep | 20.049° | 20.049° | Maximum; very high |
+| Oct | 20.077° | 19.831° | |
+| Nov | 19.218° | 18.984° | |
+| Dec | 18.582° | 18.355° | |
+
+*Nairobi shows some of the highest DPC Fajr values (up to 20.2°). MWL at 18° would place Fajr 1.5–2° early on average. MUIS (20°) is a close match for most of the year.*
+
+---
+
+## Southern Hemisphere {{ id: 'southern-hemisphere' }}
+
+### Johannesburg, South Africa — 26.20°S, 28.05°E — elevation 1,753 m
+
+| Month | Fajr | Isha | Notes |
+|-------|------|------|-------|
+| Jan | 19.440° | 15.760° | Southern summer |
+| Feb | 19.960° | 16.485° | |
+| Mar | 20.107° | 17.912° | |
+| Apr | 20.186° | 18.841° | |
+| May | 19.960° | 19.083° | |
+| Jun | 19.623° | 19.195° | Southern winter |
+| Jul | 19.675° | 19.026° | |
+| Aug | 20.233° | 18.896° | |
+| Sep | 20.349° | 18.566° | Highest Fajr |
+| Oct | 20.328° | 17.164° | |
+| Nov | 19.644° | 15.829° | |
+| Dec | 19.497° | 15.963° | |
+
+*Johannesburg's DPC Fajr averages ~19.9° — the Egypt method (19.5°) is a reasonable proxy.*
+
+---
+
+## What the patterns show {{ id: 'what-the-patterns-show' }}
+
+Several global patterns emerge from these 12 cities:
+
+**1. Latitude drives seasonal variation**
+
+Cities above 40° latitude (Istanbul, London, Glasgow, Reykjavik) show dramatic month-to-month angle swings — up to 5–6° for Fajr and even larger for Isha. Cities near the equator (Jakarta, Nairobi) show much smaller variation, typically 1–2° across the year.
+
+**2. Tropical cities have higher angles**
+
+Cities between 25°S and 25°N consistently produce DPC Fajr angles in the 19–20° range. The 35–45°N band averages 17–18°. High latitudes (50°N+) average 13–15°. This means:
+
+- The MWL standard (18°) is a reasonable fit for mid-latitudes but too low for the tropics
+- The MUIS standard (20°) is well-calibrated for Southeast Asia and equatorial Africa
+- Neither standard is adequate for 50°N+ in summer
+
+**3. DPC and MSC are nearly identical**
+
+In all tables above, if you were to compute the MSC column it would differ from DPC by less than 5 minutes for most dates. Both methods track the same underlying physics — the difference is that DPC applies the Earth-Sun distance correction and smooth Fourier harmonics on top of the MSC seasonal base.
+
+**4. Fixed methods are appropriate for narrow latitude and season ranges**
+
+The Egypt method (19.5°) was calibrated for Cairo (30°N) and performs well there year-round. If you apply it to London (51.5°N), the summer error exceeds 30 minutes. Each method is only truly accurate for the latitude band and season it was calibrated against.
+
+**5. These are computed values, not empirically verified angles for each city**
+
+The Birmingham-latitude band (London, Glasgow) is the only region with empirical validation in the DPC training data. The Southern Hemisphere and tropical values are physics-based extrapolations. Where available, local Islamic authorities' established standards (validated by regional observation) should take precedence over DPC for official scheduling.

@@ -1,0 +1,110 @@
+export const metadata = {
+  title: 'Hijri Calendar Systems',
+  description:
+    'The two main Hijri calendar systems — Umm al-Qura (Saudi tabular) and FCNA/ISNA (astronomical) — their differences and implementation.',
+}
+
+export const sections = [
+  { title: 'Overview', id: 'overview' },
+  { title: 'Umm al-Qura', id: 'umm-al-qura' },
+  { title: 'FCNA and ISNA', id: 'fcna-and-isna' },
+  { title: 'Comparison', id: 'comparison' },
+  { title: 'Implementation', id: 'implementation' },
+]
+
+# Hijri Calendar Systems
+
+The Islamic Hijri calendar counts lunar months from the Prophet's migration to Medina in 622 CE. Two main calculation systems are in use today, and they often differ by one day on month boundaries. {{ className: 'lead' }}
+
+## Overview {{ id: 'overview' }}
+
+The Hijri calendar is a purely lunar calendar: 12 months of 29–30 days each, for a year of 354–355 days. Because it has no intercalation (no leap months), it drifts about 11 days per year relative to the Gregorian solar calendar — completing a full cycle through the Gregorian year every 33 years.
+
+Month boundaries in the Hijri calendar are defined by the lunar month, which begins either:
+- At the **astronomical new moon** (the moment of conjunction — Moon between Earth and Sun)
+- After the **crescent is sighted** (visual observation of the crescent moon after sunset)
+
+Most modern calendar systems use a calculation rather than observation for standardization. Two main calculation approaches are used.
+
+## Umm al-Qura {{ id: 'umm-al-qura' }}
+
+The **Umm al-Qura calendar** is the official civil calendar of Saudi Arabia. It uses a pre-computed table covering 1318–1500 AH (approximately 1900–2077 CE).
+
+Key characteristics:
+- A new month begins the day after astronomical conjunction if the crescent sets after the Sun that evening in Mecca
+- No actual crescent sighting required — purely calculated
+- Encoded as a lookup table rather than a formula
+- Used for official Saudi government and religious dates
+- Deviates from actual crescent visibility by 0–2 days in many locations
+
+The table was computed by the Institute of Astronomical & Geophysical Research at King Abdulaziz City for Science and Technology (KACST).
+
+Outside the 1318–1500 AH range, Umm al-Qura dates cannot be computed without extrapolation. The `hijri-core` package falls back to FCNA calculation for dates outside this range.
+
+## FCNA and ISNA {{ id: 'fcna-and-isna' }}
+
+The **FCNA (Fiqh Council of North America)** and **ISNA (Islamic Society of North America)** systems use an astronomical new moon calculation instead of a lookup table:
+
+- A new month begins when the Moon's age (time since conjunction) exceeds a threshold AND the conjunction occurs before sunset at a reference longitude
+- No upper date limit — the calculation works for any year
+- Typically 1–2 days earlier than Umm al-Qura on some months
+
+The FCNA system was adopted because North American Muslims needed a reliable calendar that didn't depend on Saudi moon sighting announcements and worked without the Umm al-Qura table's geographic focus on Mecca.
+
+## Comparison {{ id: 'comparison' }}
+
+| Feature | Umm al-Qura | FCNA / ISNA |
+|---------|-------------|-------------|
+| Method | Pre-computed table | Astronomical calculation |
+| Date range | 1318–1500 AH | Unlimited |
+| Reference location | Mecca | Global calculation |
+| First day of month | Day after conjunction (if crescent sets after sunset in Mecca) | Day after conjunction (by formula) |
+| Differences from Gregorian | Matches official Saudi calendar | Often 1–2 days earlier |
+| Scholarly basis | Saudi religious authority | North American Islamic bodies |
+
+The two systems agree for most dates within a given year. They diverge most at month boundaries when the Moon's visibility is marginal — Umm al-Qura might start a month one day earlier or later than FCNA.
+
+**Ramadan example (1446 AH):**
+- Umm al-Qura: Ramadan 1 = March 1, 2025
+- FCNA: Ramadan 1 = March 1, 2025 (agreement this year)
+
+**Divergence example (hypothetical):**
+- Umm al-Qura: Muharram 1 = Month starts on Day X
+- FCNA: Muharram 1 = Month starts on Day X−1 (FCNA one day earlier)
+
+This one-day difference affects Ramadan fasting start/end dates, Eid celebrations, and the calculation of Zakat due dates — matters of significant practical importance for Muslim communities.
+
+## Implementation {{ id: 'implementation' }}
+
+```typescript {{ title: 'Check both systems for the current month' }}
+import { toHijri } from 'hijri-core'
+
+const today = new Date()
+
+const uaq = toHijri(today, 'ummAlQura')
+const fcna = toHijri(today, 'fcna')
+
+console.log('Umm al-Qura:', `${uaq.day} ${uaq.monthName} ${uaq.year}`)
+console.log('FCNA/ISNA:  ', `${fcna.day} ${fcna.monthName} ${fcna.year}`)
+
+if (uaq.day !== fcna.day || uaq.month !== fcna.month) {
+  console.log('Note: systems disagree by 1 day on the current Hijri date')
+}
+```
+
+```typescript {{ title: 'Format Hijri date with luxon-hijri' }}
+import { formatHijriDate } from 'luxon-hijri'
+import { DateTime } from 'luxon'
+
+const today = DateTime.now()
+
+// Umm al-Qura (default)
+console.log(formatHijriDate(today, 'iD iMMMM iYYYY'))
+// "27 Sha'ban 1446"
+
+// FCNA
+console.log(formatHijriDate(today, 'iD iMMMM iYYYY', 'en', 'fcna'))
+// May differ by a day
+```
+
+For applications serving both Saudi and North American Muslim audiences, it's recommended to show both dates when they differ, with a note explaining the two calendar systems.

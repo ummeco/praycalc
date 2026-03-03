@@ -1,0 +1,3375 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ummat-light: #C9F27A;
+  --color-ummat-mid: #79C24C;
+  --color-ummat-dark: #1E5E2F;
+  --color-ummat-deep: #0A2010;
+
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+}
+
+html,
+body {
+  background-color: #0A2010;
+  color: #fff;
+  min-height: 100dvh;
+}
+
+/* Arabic text */
+.arabic {
+  font-family: "Amiri", "Scheherazade New", "Traditional Arabic", "Geeza Pro",
+    serif;
+  direction: rtl;
+}
+
+/* ── Logo sunrise ─────────────────────────────────────────────────────────── */
+
+/* Outer wrapper — overflow:visible so the glow can bleed above the horizon.
+   .home-main has no horizontal padding so this sits edge-to-edge naturally. */
+.logo-sunrise-outer {
+  position: relative;
+  width: 100%;
+}
+
+.logo-sunrise {
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  /* Height = the horizon line. Logo (191px tall) at y=0 overflows the bottom
+     by ~16px — that clipped portion stays "behind" the search box below. */
+  height: 215px;
+  overflow: hidden;
+}
+
+/* Glow lives on the outer wrapper so it fades naturally above the horizon
+   without getting hard-clipped by overflow:hidden on .logo-sunrise */
+.logo-sunrise-glow {
+  position: absolute;
+  top: -60px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse 80% 80% at 50% 100%,
+    rgba(121, 194, 76, 0.22) 0%,
+    transparent 70%
+  );
+}
+
+/* ── Location search ──────────────────────────────────────────────────────── */
+
+.search-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.875rem 1.25rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(121, 194, 76, 0.35);
+  background: rgba(30, 94, 47, 0.55);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+.search-input-wrap--compact {
+  padding: 0.625rem 1rem;
+  border-radius: 0.75rem;
+}
+
+.search-icon {
+  color: rgba(201, 242, 122, 0.6);
+}
+
+.search-spinner {
+  border-color: rgba(201, 242, 122, 0.5);
+  border-top-color: transparent;
+}
+
+.search-dropdown {
+  background: rgba(6, 24, 12, 0.98);
+  border: 1px solid rgba(121, 194, 76, 0.25);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+}
+
+.search-dropdown-item {
+  border-bottom-color: rgba(255, 255, 255, 0.06);
+}
+
+.gps-spinner {
+  border-color: rgba(201, 242, 122, 0.4);
+  border-top-color: transparent;
+}
+
+/* ── Home page ────────────────────────────────────────────────────────────── */
+
+.home-main {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  /* No horizontal padding — LogoSunrise needs edge-to-edge. Content elements
+     use their own max-width or px-4 class for breathing room. */
+  padding-top: 4rem;
+  background:
+    radial-gradient(ellipse 90% 60% at 50% 0%, rgba(30, 94, 47, 0.5) 0%, transparent 70%),
+    #0A2010;
+}
+
+/* ── Popular city chips (PC-P2-1.1) ──────────────────────────────────────── */
+
+.popular-city-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.3rem 0.85rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border: 1px solid rgba(201, 242, 122, 0.3);
+  color: #C9F27A;
+  background: rgba(121, 194, 76, 0.1);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+  white-space: nowrap;
+}
+
+.popular-city-chip:hover {
+  background: rgba(121, 194, 76, 0.22);
+  border-color: rgba(201, 242, 122, 0.55);
+  color: #fff;
+}
+
+/* ── Last-visited resume button (PC-P2-1.2) ──────────────────────────────── */
+
+.last-visited-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.6rem;
+  padding: 0.3rem 0.85rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border: 1px solid rgba(121, 194, 76, 0.25);
+  color: rgba(201, 242, 122, 0.75);
+  background: rgba(121, 194, 76, 0.08);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.last-visited-btn:hover {
+  background: rgba(121, 194, 76, 0.18);
+  border-color: rgba(201, 242, 122, 0.45);
+  color: #C9F27A;
+}
+
+/* ── Geolocation prompt card (PC-P2-1.5) ─────────────────────────────────── */
+
+.geo-prompt-card {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 60;
+  width: min(calc(100vw - 2rem), 340px);
+  padding: 1rem 1.25rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(121, 194, 76, 0.2);
+  background: rgba(10, 32, 16, 0.72);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.geo-prompt-close {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.6rem;
+  color: rgba(255, 255, 255, 0.35);
+  padding: 0.25rem;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  transition: color 0.15s;
+}
+
+.geo-prompt-close:hover {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.geo-prompt-text {
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.85);
+  padding-right: 1.5rem;
+}
+
+.geo-prompt-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1.25rem;
+  border-radius: 9999px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  background: #79C24C;
+  color: #0A2010;
+  cursor: pointer;
+  transition: background 0.15s, opacity 0.15s;
+  align-self: flex-start;
+}
+
+.geo-prompt-btn:hover {
+  background: #C9F27A;
+}
+
+.geo-prompt-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.geo-prompt-tooltip {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 60;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.75rem;
+  color: #C9F27A;
+  background: rgba(10, 32, 16, 0.85);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(121, 194, 76, 0.2);
+  white-space: nowrap;
+}
+
+/* Animation: slide up from below */
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .motion-safe\:animate-slide-up {
+    animation: slide-up 0.3s ease-out both;
+  }
+  .motion-safe\:animate-fade-in {
+    animation: fade-in 0.25s ease both;
+  }
+}
+
+/* ── Light theme overrides ───────────────────────────────────────────────── */
+
+html[data-theme="light"] .popular-city-chip {
+  border-color: rgba(30, 94, 47, 0.3);
+  color: #1E5E2F;
+  background: rgba(121, 194, 76, 0.12);
+}
+
+html[data-theme="light"] .popular-city-chip:hover {
+  background: rgba(121, 194, 76, 0.28);
+  border-color: rgba(30, 94, 47, 0.5);
+  color: #0D2F17;
+}
+
+html[data-theme="light"] .last-visited-btn {
+  border-color: rgba(30, 94, 47, 0.25);
+  color: rgba(30, 94, 47, 0.75);
+  background: rgba(121, 194, 76, 0.1);
+}
+
+html[data-theme="light"] .last-visited-btn:hover {
+  background: rgba(121, 194, 76, 0.22);
+  color: #1E5E2F;
+}
+
+html[data-theme="light"] .geo-prompt-card {
+  background: rgba(235, 248, 216, 0.88);
+  border-color: rgba(30, 94, 47, 0.2);
+}
+
+html[data-theme="light"] .geo-prompt-text {
+  color: rgba(13, 47, 23, 0.85);
+}
+
+html[data-theme="light"] .geo-prompt-close {
+  color: rgba(13, 47, 23, 0.35);
+}
+
+html[data-theme="light"] .geo-prompt-close:hover {
+  color: rgba(13, 47, 23, 0.7);
+}
+
+html[data-theme="light"] .geo-prompt-tooltip {
+  background: rgba(235, 248, 216, 0.95);
+  border-color: rgba(30, 94, 47, 0.2);
+  color: #1E5E2F;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────── */
+
+.home-divider {
+  margin-top: 3.5rem;
+  width: 1px;
+  height: 40px;
+  background: linear-gradient(to bottom, rgba(121, 194, 76, 0.3), transparent);
+}
+
+.home-moon-card {
+  margin-top: 2rem;
+  border-radius: 1rem;
+  padding: 1.5rem 2rem;
+  border: 1px solid rgba(121, 194, 76, 0.15);
+  background: rgba(13, 47, 23, 0.55);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+
+/* ── Page shells ──────────────────────────────────────────────────────────── */
+
+.city-page-main {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.5rem 1rem 4rem;
+  background:
+    radial-gradient(ellipse 90% 40% at 50% 0%, rgba(30, 94, 47, 0.45) 0%, transparent 65%),
+    #0A2010;
+}
+
+/* City page top bar: logo left, compact search right */
+.city-page-header {
+  width: 100%;
+  max-width: 56rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.city-page-logo {
+  width: auto;
+  height: 44px;
+  opacity: 0.92;
+}
+.city-page-logo:hover {
+  opacity: 1;
+}
+
+/* ── Settings panel ───────────────────────────────────────────────────────── */
+
+.settings-gear-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  color: rgba(255, 255, 255, 0.4);
+  transition: color 150ms, background 150ms;
+}
+.settings-gear-btn:hover {
+  color: #C9F27A;
+  background: rgba(121, 194, 76, 0.08);
+}
+
+.settings-panel {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: 0;
+  z-index: 100;
+  min-width: 200px;
+  padding: 0.875rem 1rem;
+  border-radius: 0.875rem;
+  background: rgba(6, 24, 12, 0.98);
+  border: 1px solid rgba(121, 194, 76, 0.2);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+}
+
+.settings-panel-title {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(201, 242, 122, 0.5);
+  margin-bottom: 0.75rem;
+}
+
+.settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 0.375rem 0;
+}
+
+.settings-label {
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.settings-label-hint {
+  font-size: 0.75rem;
+  color: rgba(201, 242, 122, 0.5);
+  font-weight: 400;
+}
+
+/* ── Prayer times grid ────────────────────────────────────────────────────── */
+
+.prayer-grid {
+  border-radius: 1rem;
+  overflow: hidden;
+  border: 1px solid rgba(121, 194, 76, 0.2);
+  background: rgba(13, 47, 23, 0.6);
+}
+
+.prayer-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  background: transparent;
+  transition: background 150ms;
+}
+.prayer-row:last-child {
+  border-bottom: none;
+}
+.prayer-row--current {
+  background: rgba(121, 194, 76, 0.12);
+}
+
+/* Sunrise (time marker) and Qiyam (optional) — visually secondary */
+.prayer-row--secondary:not(.prayer-row--current) {
+  border-bottom-color: rgba(255, 255, 255, 0.04);
+}
+.prayer-row--secondary:not(.prayer-row--current) .prayer-name {
+  color: rgba(255, 255, 255, 0.38);
+  font-weight: 500;
+}
+.prayer-row--secondary:not(.prayer-row--current) .prayer-time {
+  color: rgba(255, 255, 255, 0.35);
+}
+.prayer-row--secondary:not(.prayer-row--current) .prayer-period { opacity: 0.55; }
+.prayer-row--secondary:not(.prayer-row--current) .prayer-arabic-inline { opacity: 0.5; }
+.prayer-row--secondary:not(.prayer-row--current) .prayer-mute-btn { opacity: 0.45; }
+
+.next-badge {
+  font-size: 0.75rem;
+  padding: 0.125rem 0.5rem;
+  border-radius: 9999px;
+  font-weight: 500;
+  background: rgba(121, 194, 76, 0.2);
+  color: #C9F27A;
+  border: 1px solid rgba(121, 194, 76, 0.35);
+  white-space: nowrap;
+}
+
+.next-badge--countdown {
+  font-family: ui-monospace, SFMono-Regular, monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.01em;
+  min-width: 7rem;
+  text-align: center;
+}
+
+/* ── Hanafi toggle ────────────────────────────────────────────────────────── */
+
+.hanafi-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.4);
+  transition: color 150ms;
+}
+.hanafi-toggle:hover {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.hanafi-track {
+  display: inline-block;
+  position: relative;
+  width: 2rem;
+  height: 1rem;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.15);
+  transition: background 200ms;
+}
+.hanafi-track--on {
+  background: rgba(121, 194, 76, 0.6);
+}
+
+.hanafi-thumb {
+  position: absolute;
+  top: 0.125rem;
+  left: 0.125rem;
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 9999px;
+  background: #fff;
+  transition: left 200ms;
+}
+.hanafi-thumb--on {
+  left: calc(100% - 0.875rem);
+}
+
+/* ── Moon card ────────────────────────────────────────────────────────────── */
+
+.moon-card {
+  border-radius: 1rem;
+  padding: 1.5rem 2rem;
+  border: 1px solid rgba(121, 194, 76, 0.15);
+  background: rgba(13, 47, 23, 0.5);
+}
+
+/* ── Footer ───────────────────────────────────────────────────────────────── */
+
+.site-footer {
+  width: 100%;
+  margin-top: 3rem;
+  padding: 1.75rem 1.5rem 1.25rem;
+  background: rgba(3, 12, 6, 0.6);
+  border-top: 1px solid rgba(121, 194, 76, 0.07);
+}
+
+/* 2fr 1fr 1fr — brand col is half, nav cols are quarter each */
+.site-footer-cols {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 2rem;
+  max-width: 64rem;
+  margin: 0 auto 1.25rem;
+}
+
+@media (max-width: 560px) {
+  .site-footer-cols {
+    grid-template-columns: 1fr 1fr;
+  }
+  .site-footer-col--brand {
+    grid-column: 1 / -1;
+  }
+}
+
+.site-footer-brand-name {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.01em;
+}
+
+.site-footer-brand-desc {
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.28);
+}
+
+.site-footer-col-title {
+  font-size: 0.625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: rgba(201, 242, 122, 0.45);
+  margin-bottom: 0.6rem;
+}
+
+.site-footer-col a {
+  display: block;
+  font-size: 0.8125rem;
+  color: rgba(255, 255, 255, 0.32);
+  margin-bottom: 0.375rem;
+  transition: color 150ms;
+}
+.site-footer-col a:hover {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.site-footer-bottom {
+  max-width: 64rem;
+  margin: 0 auto;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.site-footer-legal-link {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.28);
+  transition: color 150ms;
+}
+.site-footer-legal-link:hover {
+  color: #C9F27A;
+}
+
+/* ── City page client ─────────────────────────────────────────────────────── */
+
+/* Right side of top bar: search + gear — fills all remaining header space */
+.city-page-header-right {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1;
+  min-width: 0;
+}
+
+/* City info header: city+date+clock on left, moon+hijri on right */
+.city-info-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+/* City name row: heading + home-city pin button inline */
+.city-name-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* City name heading */
+.city-name {
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: #fff;
+}
+
+/* "Set as home city" pin button beside city name */
+.city-home-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.2rem;
+  border-radius: 0.3rem;
+  color: rgba(255, 255, 255, 0.2);
+  transition: color 150ms;
+  flex-shrink: 0;
+}
+.city-home-btn:hover {
+  color: rgba(201, 242, 122, 0.6);
+}
+.city-home-btn--active {
+  color: #C9F27A;
+}
+.city-home-btn--active:hover {
+  color: rgba(201, 242, 122, 0.65);
+}
+
+/* Weekday • real-time clock on one line */
+.city-clock-inline {
+  display: block;
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.45);
+  margin-top: 0.25rem;
+  letter-spacing: 0.01em;
+}
+
+.city-clock-bullet {
+  color: rgba(255, 255, 255, 0.2);
+  margin: 0 0.375rem;
+}
+
+/* Hijri / Gregorian dates (right side of city header) */
+.city-hijri-date {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.city-gregorian-date {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.35);
+  margin-top: 0.125rem;
+}
+
+/* Moon + hijri right-aligned in city header */
+.city-moon-hijri {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  flex-shrink: 0;
+}
+
+/* Green real-time clock digits */
+.city-clock-time {
+  color: rgba(201, 242, 122, 0.7);
+}
+
+/* 30px moon circle for city page (header + card) */
+.city-moon-circle {
+  position: relative;
+  width: 30px;
+  height: 30px;
+  border-radius: 9999px;
+  overflow: hidden;
+  flex-shrink: 0;
+  box-shadow: 0 0 12px rgba(121, 194, 76, 0.22), 0 0 0 1px rgba(121, 194, 76, 0.15);
+}
+
+/* Small moon card row at bottom of city prayer times */
+.city-moon-card-row {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+}
+
+/* Prayer row text */
+.prayer-name {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+}
+.prayer-name--current {
+  color: #C9F27A;
+}
+
+.prayer-time {
+  font-size: 1rem;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.8);
+}
+.prayer-time--current {
+  color: #C9F27A;
+}
+
+.prayer-period {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.35);
+  margin-left: 0.25rem;
+}
+
+/* Arabic prayer name inline in () */
+.prayer-arabic-inline {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.3);
+  margin-left: 0.375rem;
+  font-weight: 400;
+}
+
+/* Spacer matching mute button dimensions — keeps Sunrise row aligned */
+.prayer-mute-spacer {
+  display: inline-flex;
+  width: 1.375rem;
+  height: 1.375rem;
+  flex-shrink: 0;
+}
+
+/* Per-prayer mute button */
+.prayer-mute-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem;
+  border-radius: 0.25rem;
+  color: rgba(255, 255, 255, 0.25);
+  transition: color 150ms;
+}
+.prayer-mute-btn:hover {
+  color: rgba(255, 255, 255, 0.6);
+}
+.prayer-mute-btn--muted {
+  color: rgba(255, 255, 255, 0.15);
+}
+.prayer-mute-btn--muted:hover {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.prayer-mute-btn--disabled {
+  color: rgba(255, 255, 255, 0.13);
+  cursor: default;
+}
+.prayer-mute-btn--disabled:hover {
+  color: rgba(255, 255, 255, 0.13);
+}
+
+/* Settings panel section gap */
+.settings-panel-section {
+  margin-top: 0.875rem;
+}
+
+/* Sound option buttons (None / Beep / Adhan) */
+.settings-sound-opts {
+  display: flex;
+  gap: 0.375rem;
+  margin-top: 0.375rem;
+}
+
+.settings-sound-opt {
+  flex: 1;
+  padding: 0.3125rem 0;
+  border-radius: 0.5rem;
+  font-size: 0.8125rem;
+  color: rgba(255, 255, 255, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: color 150ms, background 150ms, border-color 150ms;
+}
+.settings-sound-opt:hover {
+  color: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.05);
+}
+.settings-sound-opt--on {
+  color: #C9F27A;
+  background: rgba(121, 194, 76, 0.12);
+  border-color: rgba(121, 194, 76, 0.35);
+}
+
+/* ── Navigation home-city selector (None / City / Location / ×) ─────────── */
+
+.settings-nav-opts {
+  display: flex;
+  gap: 0.375rem;
+  margin-top: 0.375rem;
+  align-items: stretch;
+}
+
+.settings-nav-opt {
+  flex: 1;
+  min-width: 0;
+  padding: 0.3125rem 0.375rem;
+  border-radius: 0.5rem;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: color 150ms, background 150ms, border-color 150ms;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
+}
+.settings-nav-opt:hover {
+  color: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.05);
+}
+.settings-nav-opt--on {
+  color: #C9F27A;
+  background: rgba(121, 194, 76, 0.12);
+  border-color: rgba(121, 194, 76, 0.35);
+}
+.settings-nav-opt:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+/* × clear button */
+.settings-nav-clear {
+  flex-shrink: 0;
+  width: 1.75rem;
+  padding: 0;
+  border-radius: 0.5rem;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  color: rgba(255, 255, 255, 0.22);
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: color 150ms, border-color 150ms;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.settings-nav-clear:hover {
+  color: rgba(255, 255, 255, 0.7);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* ── Settings panel divider + auth button ─────────────────────────────────── */
+
+.settings-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.08);
+  margin: 8px 0;
+}
+
+.settings-auth-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(201, 242, 122, 0.2);
+  background: transparent;
+  color: #C9F27A;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  text-align: left;
+}
+.settings-auth-btn:hover {
+  background: rgba(201, 242, 122, 0.07);
+  border-color: rgba(201, 242, 122, 0.4);
+}
+.settings-auth-btn--account {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.12);
+}
+.settings-auth-btn--account:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+.settings-auth-avatar {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #1E5E2F;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.625rem;
+  font-weight: 700;
+  color: #C9F27A;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+/* Light mode overrides */
+html[data-theme="light"] .settings-divider {
+  background: rgba(0, 0, 0, 0.08);
+}
+html[data-theme="light"] .settings-auth-btn {
+  color: #1E5E2F;
+  border-color: rgba(30, 94, 47, 0.25);
+}
+html[data-theme="light"] .settings-auth-btn:hover {
+  background: rgba(30, 94, 47, 0.06);
+  border-color: rgba(30, 94, 47, 0.5);
+}
+html[data-theme="light"] .settings-auth-btn--account {
+  color: #111;
+  border-color: rgba(0, 0, 0, 0.12);
+}
+html[data-theme="light"] .settings-auth-avatar {
+  background: #C9F27A;
+  color: #1E5E2F;
+}
+
+/* Signed-in state: account link + sign-out */
+.settings-auth-signed-in {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.settings-signout-link {
+  font-size: 0.75rem;
+  color: rgba(201, 242, 122, 0.35);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0 0 0 0.25rem;
+  text-align: left;
+  transition: color 0.15s;
+}
+
+.settings-signout-link:hover { color: rgba(201, 242, 122, 0.65); }
+
+/* "Manage in Account" row when signed in */
+.settings-manage-link {
+  font-size: 0.75rem;
+  color: rgba(201, 242, 122, 0.55);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.15s;
+  white-space: nowrap;
+}
+
+.settings-manage-link:hover { color: #C9F27A; }
+
+html[data-theme="light"] .settings-signout-link { color: rgba(30, 94, 47, 0.35); }
+html[data-theme="light"] .settings-signout-link:hover { color: rgba(30, 94, 47, 0.65); }
+html[data-theme="light"] .settings-manage-link { color: rgba(30, 94, 47, 0.5); }
+html[data-theme="light"] .settings-manage-link:hover { color: #1E5E2F; }
+
+/* ── Account / sign-in page ──────────────────────────────────────────────── */
+
+.account-page {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #0D2F17;
+  padding: 2rem 1rem;
+  gap: 0;
+}
+
+.account-card {
+  width: 100%;
+  max-width: 360px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.account-logo {
+  margin-bottom: 0.5rem;
+}
+
+.account-heading {
+  font-size: 1.375rem;
+  font-weight: 700;
+  color: #C9F27A;
+  text-align: center;
+  margin: 0;
+}
+
+.account-sub {
+  font-size: 0.875rem;
+  color: rgba(201, 242, 122, 0.6);
+  text-align: center;
+  margin: -0.75rem 0 0;
+  line-height: 1.5;
+}
+
+.account-mode-toggle {
+  background: none;
+  border: none;
+  color: rgba(201, 242, 122, 0.6);
+  font-size: 0.8125rem;
+  cursor: pointer;
+  padding: 0.25rem 0;
+  text-align: center;
+  transition: color 0.15s;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-decoration-color: rgba(201, 242, 122, 0.3);
+}
+.account-mode-toggle:hover { color: #C9F27A; }
+
+.account-social-row {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+}
+
+.account-social-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  padding: 0.625rem 0.25rem;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(201, 242, 122, 0.2);
+  background: rgba(201, 242, 122, 0.04);
+  color: #C9F27A;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+.account-social-btn:hover:not(:disabled) {
+  background: rgba(201, 242, 122, 0.1);
+  border-color: rgba(201, 242, 122, 0.45);
+}
+.account-social-btn--disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.account-divider {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: rgba(201, 242, 122, 0.4);
+  font-size: 0.8125rem;
+}
+.account-divider::before,
+.account-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: rgba(201, 242, 122, 0.12);
+}
+
+.account-email-group {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.account-input {
+  width: 100%;
+  padding: 0.625rem 0.875rem;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(201, 242, 122, 0.2);
+  background: rgba(201, 242, 122, 0.04);
+  color: #C9F27A;
+  font-size: 0.9375rem;
+  outline: none;
+  transition: border-color 0.15s;
+  box-sizing: border-box;
+}
+.account-input::placeholder { color: rgba(201, 242, 122, 0.35); }
+.account-input:focus { border-color: rgba(201, 242, 122, 0.5); }
+
+.account-submit-btn {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 0.625rem;
+  border: none;
+  background: #1E5E2F;
+  color: #C9F27A;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.account-submit-btn:hover { background: #245e35; }
+.account-submit-btn:disabled { opacity: 0.5; cursor: default; }
+
+.account-sent {
+  width: 100%;
+  padding: 0.875rem 1rem;
+  border-radius: 0.625rem;
+  border: 1px solid rgba(201, 242, 122, 0.3);
+  background: rgba(201, 242, 122, 0.08);
+  color: #C9F27A;
+  font-size: 0.875rem;
+  text-align: center;
+  line-height: 1.5;
+}
+
+.account-back {
+  color: #79C24C;
+  font-size: 0.875rem;
+  text-decoration: none;
+  margin-top: 0.25rem;
+}
+.account-back:hover { text-decoration: underline; }
+
+/* Light mode */
+html[data-theme="light"] .account-page { background: #f8fef0; }
+html[data-theme="light"] .account-heading { color: #1E5E2F; }
+html[data-theme="light"] .account-sub { color: rgba(30, 94, 47, 0.6); }
+html[data-theme="light"] .account-mode-toggle {
+  color: rgba(30, 94, 47, 0.55);
+}
+html[data-theme="light"] .account-mode-toggle:hover { color: #1E5E2F; }
+html[data-theme="light"] .account-social-btn {
+  color: #1E5E2F;
+  border-color: rgba(30, 94, 47, 0.2);
+  background: rgba(30, 94, 47, 0.03);
+}
+html[data-theme="light"] .account-social-btn:hover:not(:disabled) {
+  background: rgba(30, 94, 47, 0.08);
+  border-color: rgba(30, 94, 47, 0.4);
+}
+html[data-theme="light"] .account-divider { color: rgba(30, 94, 47, 0.45); }
+html[data-theme="light"] .account-divider::before,
+html[data-theme="light"] .account-divider::after { background: rgba(30, 94, 47, 0.15); }
+html[data-theme="light"] .account-input {
+  color: #1E5E2F;
+  border-color: rgba(30, 94, 47, 0.2);
+  background: rgba(30, 94, 47, 0.04);
+}
+html[data-theme="light"] .account-input::placeholder { color: rgba(30, 94, 47, 0.35); }
+html[data-theme="light"] .account-input:focus { border-color: rgba(30, 94, 47, 0.5); }
+html[data-theme="light"] .account-submit-btn { background: #1E5E2F; color: #fff; }
+html[data-theme="light"] .account-sent {
+  color: #1E5E2F;
+  border-color: rgba(30, 94, 47, 0.3);
+  background: rgba(30, 94, 47, 0.07);
+}
+html[data-theme="light"] .account-back { color: #1E5E2F; }
+
+/* ── Account dashboard ───────────────────────────────────────────────────── */
+
+.dashboard-page {
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 0;
+}
+
+/* Profile card */
+.dashboard-profile-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: rgba(201, 242, 122, 0.06);
+  border: 1px solid rgba(201, 242, 122, 0.14);
+  border-radius: 12px;
+  padding: 1.125rem 1.25rem;
+}
+
+.dashboard-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 9999px;
+  background: rgba(201, 242, 122, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #C9F27A;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.dashboard-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.dashboard-profile-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.dashboard-display-name {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #C9F27A;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.dashboard-owner-badge {
+  font-size: 0.625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #0D2F17;
+  background: #C9F27A;
+  border-radius: 4px;
+  padding: 0.15em 0.45em;
+  line-height: 1.5;
+}
+
+.dashboard-email {
+  font-size: 0.8125rem;
+  color: rgba(201, 242, 122, 0.5);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Settings / Premium cards */
+.dashboard-card {
+  background: rgba(201, 242, 122, 0.04);
+  border: 1px solid rgba(201, 242, 122, 0.1);
+  border-radius: 12px;
+  padding: 1.125rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.dashboard-card-title {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(201, 242, 122, 0.45);
+  margin: 0 0 0.875rem 0;
+}
+
+.dashboard-settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.625rem 0;
+  border-bottom: 1px solid rgba(201, 242, 122, 0.07);
+}
+
+.dashboard-settings-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+/* Premium items */
+.dashboard-premium-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid rgba(201, 242, 122, 0.07);
+  opacity: 0.55;
+}
+
+.dashboard-premium-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.dashboard-premium-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.dashboard-premium-title {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #C9F27A;
+}
+
+.dashboard-premium-desc {
+  font-size: 0.75rem;
+  color: rgba(201, 242, 122, 0.5);
+}
+
+.dashboard-lock-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: rgba(201, 242, 122, 0.5);
+  background: rgba(201, 242, 122, 0.08);
+  border: 1px solid rgba(201, 242, 122, 0.12);
+  border-radius: 6px;
+  padding: 0.25em 0.5em;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.dashboard-lock-icon {
+  color: rgba(201, 242, 122, 0.5);
+  flex-shrink: 0;
+}
+
+/* Ummat+ upsell */
+.dashboard-plus-card {
+  background: linear-gradient(135deg, rgba(30, 94, 47, 0.5) 0%, rgba(13, 47, 23, 0.7) 100%);
+  border: 1px solid rgba(201, 242, 122, 0.2);
+  border-radius: 12px;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.dashboard-plus-header {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+}
+
+.dashboard-plus-name {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #C9F27A;
+}
+
+.dashboard-coming-soon-badge {
+  font-size: 0.625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #0D2F17;
+  background: #79C24C;
+  border-radius: 4px;
+  padding: 0.2em 0.5em;
+  line-height: 1.5;
+}
+
+.dashboard-plus-tagline {
+  font-size: 0.875rem;
+  color: rgba(201, 242, 122, 0.7);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.dashboard-plus-price {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #C9F27A;
+}
+
+.dashboard-plus-btn {
+  width: 100%;
+  padding: 0.625rem 1rem;
+  background: rgba(201, 242, 122, 0.12);
+  border: 1px solid rgba(201, 242, 122, 0.2);
+  border-radius: 8px;
+  color: rgba(201, 242, 122, 0.5);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: default;
+  transition: none;
+}
+
+/* Footer: sign out + back */
+.dashboard-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding-top: 0.25rem;
+}
+
+.dashboard-signout-btn {
+  font-size: 0.8125rem;
+  color: rgba(201, 242, 122, 0.45);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.25rem 0;
+  transition: color 0.15s;
+}
+
+.dashboard-signout-btn:hover {
+  color: rgba(201, 242, 122, 0.8);
+}
+
+/* Light mode */
+html[data-theme="light"] .dashboard-profile-card {
+  background: rgba(30, 94, 47, 0.05);
+  border-color: rgba(30, 94, 47, 0.12);
+}
+
+html[data-theme="light"] .dashboard-avatar {
+  background: rgba(30, 94, 47, 0.12);
+  color: #1E5E2F;
+}
+
+html[data-theme="light"] .dashboard-owner-badge {
+  color: #fff;
+  background: #1E5E2F;
+}
+
+html[data-theme="light"] .dashboard-display-name { color: #1E5E2F; }
+html[data-theme="light"] .dashboard-email { color: rgba(30, 94, 47, 0.5); }
+
+html[data-theme="light"] .dashboard-card {
+  background: rgba(30, 94, 47, 0.04);
+  border-color: rgba(30, 94, 47, 0.1);
+}
+
+html[data-theme="light"] .dashboard-card-title { color: rgba(30, 94, 47, 0.45); }
+
+html[data-theme="light"] .dashboard-settings-row,
+html[data-theme="light"] .dashboard-premium-item {
+  border-bottom-color: rgba(30, 94, 47, 0.08);
+}
+
+html[data-theme="light"] .dashboard-premium-title { color: #1E5E2F; }
+html[data-theme="light"] .dashboard-premium-desc { color: rgba(30, 94, 47, 0.5); }
+
+html[data-theme="light"] .dashboard-lock-badge {
+  color: rgba(30, 94, 47, 0.5);
+  background: rgba(30, 94, 47, 0.06);
+  border-color: rgba(30, 94, 47, 0.12);
+}
+
+html[data-theme="light"] .dashboard-lock-icon { color: rgba(30, 94, 47, 0.5); }
+
+html[data-theme="light"] .dashboard-plus-card {
+  background: linear-gradient(135deg, rgba(121, 194, 76, 0.12) 0%, rgba(30, 94, 47, 0.06) 100%);
+  border-color: rgba(30, 94, 47, 0.2);
+}
+
+html[data-theme="light"] .dashboard-plus-name { color: #1E5E2F; }
+html[data-theme="light"] .dashboard-plus-tagline { color: rgba(30, 94, 47, 0.65); }
+html[data-theme="light"] .dashboard-plus-price { color: #1E5E2F; }
+html[data-theme="light"] .dashboard-plus-btn {
+  background: rgba(30, 94, 47, 0.08);
+  border-color: rgba(30, 94, 47, 0.15);
+  color: rgba(30, 94, 47, 0.45);
+}
+
+html[data-theme="light"] .dashboard-signout-btn { color: rgba(30, 94, 47, 0.4); }
+html[data-theme="light"] .dashboard-signout-btn:hover { color: rgba(30, 94, 47, 0.8); }
+
+/* ── Moon circle (home page MoonPhase component) ──────────────────────────── */
+
+.moon-circle {
+  position: relative;
+  width: 60px;
+  height: 60px;
+  border-radius: 9999px;
+  overflow: hidden;
+  flex-shrink: 0;
+  box-shadow: 0 0 20px rgba(121, 194, 76, 0.25), 0 0 0 1px rgba(121, 194, 76, 0.18);
+}
+
+/* ── Date era suffix (AH / CE) ────────────────────────────────────────────── */
+
+.date-era {
+  font-size: 0.625rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.3);
+  letter-spacing: 0.06em;
+  margin-left: 0.3em;
+}
+
+/* ── Hijri +1 badge (shown after Maghrib — Islamic day has advanced) ──────── */
+
+.hijri-next-day {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 9999px;
+  font-size: 0.5rem;
+  font-weight: 700;
+  line-height: 1;
+  background: rgba(121, 194, 76, 0.2);
+  color: #C9F27A;
+  border: 1px solid rgba(121, 194, 76, 0.4);
+  letter-spacing: -0.02em;
+  margin-left: 0.3em;
+  vertical-align: middle;
+  cursor: help;
+}
+
+/* ── Light mode ───────────────────────────────────────────────────────────── */
+
+html[data-theme="light"],
+html[data-theme="light"] body {
+  background-color: #EBF8D8;
+  color: #0D2F17;
+}
+
+html[data-theme="light"] .home-main {
+  background:
+    radial-gradient(ellipse 90% 60% at 50% 0%, rgba(121, 194, 76, 0.3) 0%, transparent 70%),
+    #EBF8D8;
+}
+
+html[data-theme="light"] .city-page-main {
+  background:
+    radial-gradient(ellipse 90% 40% at 50% 0%, rgba(121, 194, 76, 0.25) 0%, transparent 65%),
+    #EBF8D8;
+}
+
+html[data-theme="light"] .home-moon-card {
+  background: rgba(255, 255, 255, 0.75);
+  border-color: rgba(121, 194, 76, 0.25);
+}
+
+html[data-theme="light"] .search-input-wrap {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(121, 194, 76, 0.45);
+}
+
+html[data-theme="light"] .search-icon {
+  color: rgba(30, 94, 47, 0.55);
+}
+
+html[data-theme="light"] .search-input-wrap input {
+  color: rgba(13, 47, 23, 0.9);
+}
+
+html[data-theme="light"] .search-input-wrap input::placeholder {
+  color: rgba(13, 47, 23, 0.35);
+}
+
+html[data-theme="light"] .search-dropdown {
+  background: rgba(240, 252, 224, 0.99);
+  border-color: rgba(121, 194, 76, 0.3);
+}
+
+html[data-theme="light"] .search-dropdown-item {
+  border-bottom-color: rgba(0, 0, 0, 0.06);
+}
+
+html[data-theme="light"] .search-result-name {
+  color: #1E5E2F;
+}
+
+html[data-theme="light"] .search-result-slug {
+  color: rgba(13, 47, 23, 0.4);
+}
+
+html[data-theme="light"] .gps-location-btn {
+  color: rgba(13, 47, 23, 0.45);
+}
+
+html[data-theme="light"] .gps-location-btn:hover {
+  color: #1E5E2F;
+}
+
+html[data-theme="light"] .prayer-grid {
+  background: rgba(255, 255, 255, 0.8);
+  border-color: rgba(121, 194, 76, 0.25);
+}
+
+html[data-theme="light"] .prayer-row {
+  border-bottom-color: rgba(0, 0, 0, 0.05);
+}
+
+html[data-theme="light"] .prayer-row--current {
+  background: rgba(121, 194, 76, 0.25);
+}
+
+html[data-theme="light"] .prayer-name {
+  color: rgba(13, 47, 23, 0.85);
+}
+html[data-theme="light"] .prayer-name--current {
+  color: #1E5E2F;
+}
+
+html[data-theme="light"] .prayer-time {
+  color: rgba(13, 47, 23, 0.8);
+}
+html[data-theme="light"] .prayer-time--current {
+  color: #1E5E2F;
+}
+
+html[data-theme="light"] .prayer-period {
+  color: rgba(13, 47, 23, 0.4);
+}
+
+html[data-theme="light"] .prayer-arabic-inline {
+  color: rgba(13, 47, 23, 0.35);
+}
+
+html[data-theme="light"] .prayer-mute-btn {
+  color: rgba(13, 47, 23, 0.3);
+}
+html[data-theme="light"] .prayer-mute-btn:hover {
+  color: rgba(13, 47, 23, 0.65);
+}
+
+html[data-theme="light"] .next-badge {
+  background: rgba(30, 94, 47, 0.12);
+  color: #1E5E2F;
+  border-color: rgba(30, 94, 47, 0.3);
+}
+
+html[data-theme="light"] .city-name {
+  color: #0D2F17;
+}
+
+html[data-theme="light"] .city-clock-inline {
+  color: rgba(13, 47, 23, 0.5);
+}
+
+html[data-theme="light"] .city-clock-time {
+  color: rgba(30, 94, 47, 0.8);
+}
+
+html[data-theme="light"] .city-clock-bullet {
+  color: rgba(13, 47, 23, 0.2);
+}
+
+html[data-theme="light"] .city-hijri-date {
+  color: rgba(13, 47, 23, 0.85);
+}
+
+html[data-theme="light"] .city-gregorian-date {
+  color: rgba(13, 47, 23, 0.4);
+}
+
+html[data-theme="light"] .date-era {
+  color: rgba(13, 47, 23, 0.35);
+}
+
+html[data-theme="light"] .hijri-next-day {
+  background: rgba(30, 94, 47, 0.1);
+  color: #1E5E2F;
+  border-color: rgba(30, 94, 47, 0.35);
+}
+
+html[data-theme="light"] .settings-gear-btn {
+  color: rgba(13, 47, 23, 0.45);
+}
+html[data-theme="light"] .settings-gear-btn:hover {
+  color: #1E5E2F;
+  background: rgba(121, 194, 76, 0.12);
+}
+
+html[data-theme="light"] .settings-panel {
+  background: rgba(240, 252, 224, 0.99);
+  border-color: rgba(121, 194, 76, 0.3);
+}
+
+html[data-theme="light"] .settings-panel-title {
+  color: rgba(30, 94, 47, 0.6);
+}
+
+html[data-theme="light"] .settings-label {
+  color: rgba(13, 47, 23, 0.75);
+}
+
+html[data-theme="light"] .settings-label-hint {
+  color: rgba(30, 94, 47, 0.5);
+}
+
+html[data-theme="light"] .city-home-btn {
+  color: rgba(13, 47, 23, 0.2);
+}
+html[data-theme="light"] .city-home-btn:hover {
+  color: rgba(30, 94, 47, 0.6);
+}
+html[data-theme="light"] .city-home-btn--active {
+  color: #1E5E2F;
+}
+html[data-theme="light"] .city-home-btn--active:hover {
+  color: rgba(30, 94, 47, 0.7);
+}
+
+html[data-theme="light"] .settings-nav-opt {
+  color: rgba(13, 47, 23, 0.45);
+  border-color: rgba(0, 0, 0, 0.1);
+}
+html[data-theme="light"] .settings-nav-opt:hover {
+  color: rgba(13, 47, 23, 0.85);
+  background: rgba(0, 0, 0, 0.03);
+}
+html[data-theme="light"] .settings-nav-opt--on {
+  color: #1E5E2F;
+  background: rgba(121, 194, 76, 0.2);
+  border-color: rgba(121, 194, 76, 0.45);
+}
+
+html[data-theme="light"] .settings-nav-clear {
+  border-color: rgba(0, 0, 0, 0.08);
+  color: rgba(13, 47, 23, 0.25);
+}
+html[data-theme="light"] .settings-nav-clear:hover {
+  color: rgba(13, 47, 23, 0.7);
+  border-color: rgba(0, 0, 0, 0.2);
+}
+
+html[data-theme="light"] .settings-sound-opt {
+  color: rgba(13, 47, 23, 0.55);
+  border-color: rgba(0, 0, 0, 0.1);
+}
+html[data-theme="light"] .settings-sound-opt:hover {
+  color: rgba(13, 47, 23, 0.9);
+  background: rgba(0, 0, 0, 0.04);
+}
+html[data-theme="light"] .settings-sound-opt--on {
+  color: #1E5E2F;
+  background: rgba(121, 194, 76, 0.18);
+  border-color: rgba(121, 194, 76, 0.45);
+}
+
+html[data-theme="light"] .site-footer {
+  background: rgba(200, 240, 175, 0.55);
+  border-top-color: rgba(121, 194, 76, 0.15);
+}
+
+html[data-theme="light"] .site-footer-brand-name {
+  color: rgba(13, 47, 23, 0.65);
+}
+
+html[data-theme="light"] .site-footer-brand-desc {
+  color: rgba(13, 47, 23, 0.35);
+}
+
+html[data-theme="light"] .site-footer-col-title {
+  color: rgba(30, 94, 47, 0.55);
+}
+
+html[data-theme="light"] .site-footer-col a {
+  color: rgba(13, 47, 23, 0.4);
+}
+html[data-theme="light"] .site-footer-col a:hover {
+  color: rgba(13, 47, 23, 0.85);
+}
+
+html[data-theme="light"] .site-footer-legal-link {
+  color: rgba(13, 47, 23, 0.35);
+}
+html[data-theme="light"] .site-footer-legal-link:hover {
+  color: #1E5E2F;
+}
+
+html[data-theme="light"] .prayer-mute-btn--disabled {
+  color: rgba(13, 47, 23, 0.15);
+}
+html[data-theme="light"] .prayer-mute-btn--disabled:hover {
+  color: rgba(13, 47, 23, 0.15);
+}
+html[data-theme="light"] .prayer-row--secondary:not(.prayer-row--current) .prayer-name {
+  color: rgba(13, 47, 23, 0.35);
+}
+html[data-theme="light"] .prayer-row--secondary:not(.prayer-row--current) .prayer-time {
+  color: rgba(13, 47, 23, 0.32);
+}
+
+/* ── Prayer arrival overlay ───────────────────────────────────────────────── */
+
+.prayer-arrival-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.68);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  animation: prayer-overlay-in 0.25s ease;
+}
+
+@keyframes prayer-overlay-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.prayer-arrival-card {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 2.75rem 3.5rem 2.25rem;
+  border-radius: 1.5rem;
+  background: linear-gradient(155deg, #1b5e30 0%, #0e2f19 55%, #060f08 100%);
+  border: 1px solid rgba(121, 194, 76, 0.35);
+  min-width: 18rem;
+  max-width: min(88vw, 30rem);
+  animation:
+    prayer-card-in 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+    prayer-glow-pulse 2.8s ease-in-out 0.5s infinite;
+}
+
+@keyframes prayer-card-in {
+  from { transform: scale(0.82) translateY(18px); opacity: 0; }
+  to   { transform: scale(1)    translateY(0);    opacity: 1; }
+}
+
+@keyframes prayer-glow-pulse {
+  0%, 100% {
+    box-shadow:
+      0 0  60px rgba(121, 194, 76, 0.10),
+      0 28px 72px rgba(0, 0, 0, 0.65);
+    border-color: rgba(121, 194, 76, 0.30);
+  }
+  50% {
+    box-shadow:
+      0 0 110px rgba(121, 194, 76, 0.24),
+      0 28px 72px rgba(0, 0, 0, 0.65);
+    border-color: rgba(121, 194, 76, 0.58);
+  }
+}
+
+/* Diffuse glow orb behind the Arabic text */
+.prayer-arrival-glow {
+  position: absolute;
+  top: -6rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20rem;
+  height: 20rem;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(121, 194, 76, 0.18) 0%,
+    transparent 65%
+  );
+  pointer-events: none;
+}
+
+.prayer-arrival-label {
+  position: relative;
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(201, 242, 122, 0.5);
+  margin-bottom: 0.75rem;
+}
+
+.prayer-arrival-arabic {
+  position: relative;
+  font-size: 4rem;
+  line-height: 1.2;
+  color: #C9F27A;
+  text-shadow:
+    0 0 32px rgba(201, 242, 122, 0.5),
+    0 0 80px rgba(121, 194, 76, 0.25);
+  margin-bottom: 0.2rem;
+}
+
+.prayer-arrival-name {
+  position: relative;
+  font-size: 1.375rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.88);
+  letter-spacing: 0.04em;
+}
+
+.prayer-arrival-divider {
+  width: 3rem;
+  height: 1px;
+  margin: 1.375rem 0 1.5rem;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(121, 194, 76, 0.5),
+    transparent
+  );
+}
+
+.prayer-arrival-actions {
+  position: relative;
+  display: flex;
+  gap: 0.625rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.prayer-arrival-close-btn {
+  padding: 0.5rem 1.875rem;
+  border-radius: 0.5rem;
+  background: rgba(121, 194, 76, 0.18);
+  border: 1px solid rgba(121, 194, 76, 0.42);
+  color: #C9F27A;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 150ms;
+}
+.prayer-arrival-close-btn:hover {
+  background: rgba(121, 194, 76, 0.3);
+}
+
+.prayer-arrival-stop-btn {
+  padding: 0.5rem 1.5rem;
+  border-radius: 0.5rem;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.58);
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: border-color 150ms, color 150ms;
+}
+.prayer-arrival-stop-btn:hover {
+  border-color: rgba(255, 255, 255, 0.3);
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* ── Feature tiles ────────────────────────────────────────────────────────── */
+
+.ftiles {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.875rem;
+  padding-bottom: 0.5rem;
+}
+
+/* Square tile base */
+.ftile {
+  position: relative;
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  border-radius: 1.25rem;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: rgba(255, 255, 255, 0.03);
+  padding: 1rem;
+  text-align: center;
+  color: inherit;
+  cursor: default;
+  overflow: hidden;
+  transition: background 180ms, border-color 180ms, box-shadow 180ms, transform 120ms;
+}
+
+/* Dim / coming-soon tiles */
+.ftile--dim {
+  opacity: 0.5;
+}
+
+/* Live / interactive tile */
+.ftile--live {
+  cursor: pointer;
+  border-color: rgba(121, 194, 76, 0.18);
+  background: rgba(121, 194, 76, 0.04);
+}
+.ftile--live:hover {
+  background: rgba(121, 194, 76, 0.1);
+  border-color: rgba(121, 194, 76, 0.4);
+  transform: translateY(-2px);
+  box-shadow:
+    0 8px 28px rgba(0, 0, 0, 0.35),
+    0 0 0 1px rgba(121, 194, 76, 0.15),
+    0 0 20px rgba(121, 194, 76, 0.08);
+}
+.ftile--live:active {
+  transform: translateY(0);
+  transition-duration: 60ms;
+}
+
+/* "Soon" badge — top-right corner */
+.ftile-soon {
+  position: absolute;
+  top: 0.65rem;
+  right: 0.65rem;
+  font-size: 0.58rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  padding: 0.15rem 0.45rem;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.07);
+  color: rgba(255, 255, 255, 0.28);
+}
+
+/* Calendar icon */
+.ftile-icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  color: rgba(121, 194, 76, 0.55);
+}
+.ftile-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* Compass ring (Qibla tile) */
+.ftile-compass-ring {
+  position: relative;
+  width: 3.125rem;
+  height: 3.125rem;
+  border-radius: 50%;
+  border: 1.5px solid rgba(121, 194, 76, 0.28);
+  background: radial-gradient(circle at 50% 50%, rgba(121, 194, 76, 0.08) 0%, transparent 65%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 180ms, box-shadow 180ms;
+}
+.ftile--live:hover .ftile-compass-ring {
+  border-color: rgba(121, 194, 76, 0.55);
+  box-shadow: 0 0 14px rgba(121, 194, 76, 0.2);
+}
+
+/* North dot marker at 12 o'clock */
+.ftile-compass-n {
+  position: absolute;
+  top: 5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 3.5px;
+  height: 3.5px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.35);
+}
+
+/* Needle SVG — rotated via CSS custom property */
+.ftile-compass-needle {
+  width: 1.875rem;
+  height: 1.875rem;
+  transform: rotate(var(--ftile-bearing, 0deg));
+  transform-origin: center;
+}
+
+/* Tile labels */
+.ftile-name {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.75);
+  line-height: 1.3;
+}
+.ftile--live .ftile-name {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.ftile-bearing {
+  font-size: 0.7rem;
+  font-variant-numeric: tabular-nums;
+  color: rgba(201, 242, 122, 0.7);
+  line-height: 1;
+  margin-top: -0.2rem;
+}
+
+/* Light mode */
+html[data-theme="light"] .ftile {
+  border-color: rgba(13, 47, 23, 0.09);
+  background: rgba(13, 47, 23, 0.025);
+}
+html[data-theme="light"] .ftile--live {
+  border-color: rgba(30, 94, 47, 0.18);
+  background: rgba(30, 94, 47, 0.04);
+}
+html[data-theme="light"] .ftile--live:hover {
+  background: rgba(30, 94, 47, 0.09);
+  border-color: rgba(30, 94, 47, 0.38);
+}
+html[data-theme="light"] .ftile-name {
+  color: rgba(13, 47, 23, 0.75);
+}
+html[data-theme="light"] .ftile--live .ftile-name {
+  color: rgba(13, 47, 23, 0.88);
+}
+html[data-theme="light"] .ftile-bearing {
+  color: rgba(30, 94, 47, 0.8);
+}
+html[data-theme="light"] .ftile-soon {
+  background: rgba(13, 47, 23, 0.07);
+  color: rgba(13, 47, 23, 0.3);
+}
+html[data-theme="light"] .ftile-icon {
+  color: rgba(30, 94, 47, 0.5);
+}
+html[data-theme="light"] .ftile-compass-ring {
+  border-color: rgba(30, 94, 47, 0.28);
+  background: radial-gradient(circle at 50% 50%, rgba(30, 94, 47, 0.07) 0%, transparent 65%);
+}
+html[data-theme="light"] .ftile-compass-n {
+  background: rgba(13, 47, 23, 0.3);
+}
+
+/* ── Qibla modal ──────────────────────────────────────────────────────────── */
+
+.qibla-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  background: rgba(0, 0, 0, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  animation: qibla-fade-in 180ms ease;
+}
+
+@keyframes qibla-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.qibla-modal {
+  width: 100%;
+  max-width: 540px;
+  max-height: 90dvh;
+  display: flex;
+  flex-direction: column;
+  background: #0F2A18;
+  border: 1px solid rgba(121, 194, 76, 0.18);
+  border-radius: 1.125rem;
+  overflow: hidden;
+  animation: qibla-modal-in 220ms cubic-bezier(0.34, 1.4, 0.64, 1);
+}
+
+@keyframes qibla-modal-in {
+  from { transform: scale(0.93); opacity: 0; }
+  to   { transform: scale(1);    opacity: 1; }
+}
+
+.qibla-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 1.125rem 1.25rem 0.875rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.qibla-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #C9F27A;
+  line-height: 1.2;
+}
+
+.qibla-subtitle {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.48);
+  margin-top: 0.2rem;
+}
+
+.qibla-close {
+  padding: 0.25rem;
+  border-radius: 0.375rem;
+  color: rgba(255, 255, 255, 0.45);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: color 150ms, background 150ms;
+}
+.qibla-close:hover {
+  color: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.qibla-bearing {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 1rem 1.375rem;
+}
+
+.qibla-needle-wrap {
+  flex-shrink: 0;
+  width: 3.5rem;
+  height: 3.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 50%;
+}
+.qibla-needle {
+  width: 2rem;
+  height: 2rem;
+  transform: rotate(var(--qibla-deg, 0deg));
+  transform-origin: center;
+}
+
+.qibla-bearing-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+.qibla-degrees {
+  font-size: 1.75rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: #C9F27A;
+  line-height: 1;
+}
+.qibla-dir {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+.qibla-geo-note {
+  font-size: 0.72rem;
+  color: rgba(121, 194, 76, 0.65);
+  margin-top: 0.15rem;
+}
+
+.qibla-map-wrap {
+  flex: 1;
+  min-height: 280px;
+  position: relative;
+}
+
+.qibla-map-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.qibla-map-fill {
+  width: 100%;
+  height: 100%;
+}
+
+/* Leaflet container needs explicit height */
+.qibla-map-wrap .leaflet-container {
+  width: 100%;
+  height: 100%;
+  min-height: 280px;
+}
+
+.qibla-map-loading {
+  width: 100%;
+  height: 280px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.35);
+  font-size: 0.85rem;
+}
+
+.qibla-map-caption {
+  padding: 0.625rem 1.25rem;
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.32);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  text-align: center;
+}
+
+/* Light mode overrides for feature cards + Qibla modal */
+
+html[data-theme="light"] .feature-card {
+  border-color: rgba(13, 47, 23, 0.1);
+  background: rgba(13, 47, 23, 0.03);
+}
+html[data-theme="light"] .feature-card--qibla:hover {
+  background: rgba(121, 194, 76, 0.1);
+  border-color: rgba(121, 194, 76, 0.35);
+}
+html[data-theme="light"] .feature-card-title {
+  color: rgba(13, 47, 23, 0.85);
+}
+html[data-theme="light"] .feature-card-desc {
+  color: rgba(13, 47, 23, 0.45);
+}
+html[data-theme="light"] .feature-card--qibla .feature-card-desc {
+  color: rgba(30, 94, 47, 0.7);
+}
+html[data-theme="light"] .feature-card-badge {
+  background: rgba(13, 47, 23, 0.07);
+  color: rgba(13, 47, 23, 0.35);
+}
+html[data-theme="light"] .feature-card-icon {
+  color: rgba(30, 94, 47, 0.5);
+}
+
+html[data-theme="light"] .qibla-modal {
+  background: #f5faf0;
+  border-color: rgba(30, 94, 47, 0.2);
+  color: #0D2F17;
+}
+html[data-theme="light"] .qibla-header {
+  border-bottom-color: rgba(13, 47, 23, 0.1);
+}
+html[data-theme="light"] .qibla-title {
+  color: #1E5E2F;
+}
+html[data-theme="light"] .qibla-subtitle {
+  color: rgba(13, 47, 23, 0.5);
+}
+html[data-theme="light"] .qibla-close {
+  color: rgba(13, 47, 23, 0.45);
+}
+html[data-theme="light"] .qibla-close:hover {
+  color: #0D2F17;
+  background: rgba(13, 47, 23, 0.06);
+}
+html[data-theme="light"] .qibla-needle-wrap {
+  background: rgba(13, 47, 23, 0.04);
+  border-color: rgba(13, 47, 23, 0.1);
+}
+html[data-theme="light"] .qibla-degrees {
+  color: #1E5E2F;
+}
+html[data-theme="light"] .qibla-dir {
+  color: rgba(13, 47, 23, 0.6);
+}
+html[data-theme="light"] .qibla-map-caption {
+  color: rgba(13, 47, 23, 0.38);
+  border-top-color: rgba(13, 47, 23, 0.08);
+}
+
+/* ── Prayer Calendar Modal ────────────────────────────────────────────────── */
+
+.cal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.72);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 60;
+  padding: 1rem;
+}
+
+.cal-modal {
+  background: #0D2F17;
+  border: 1px solid rgba(121, 194, 76, 0.2);
+  border-radius: 14px;
+  width: 100%;
+  max-width: 900px;
+  max-height: 88dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  color: #fff;
+}
+
+/* Header */
+.cal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.125rem 1.375rem 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  flex-shrink: 0;
+}
+
+.cal-title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #C9F27A;
+  margin: 0;
+}
+
+.cal-subtitle {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.45);
+  margin: 0.15rem 0 0;
+}
+
+.cal-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.3rem;
+  border-radius: 6px;
+  color: rgba(255, 255, 255, 0.4);
+  line-height: 0;
+  flex-shrink: 0;
+  transition: color 0.15s, background 0.15s;
+}
+.cal-close:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* Controls row */
+.cal-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.625rem 1.375rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+
+/* Prev / Label / Next */
+.cal-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.cal-nav-btn {
+  background: none;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  cursor: pointer;
+  padding: 0.3rem;
+  color: rgba(255, 255, 255, 0.55);
+  line-height: 0;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+.cal-nav-btn:hover {
+  color: #C9F27A;
+  border-color: rgba(121, 194, 76, 0.35);
+  background: rgba(121, 194, 76, 0.07);
+}
+
+.cal-period {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #fff;
+  min-width: 12ch;
+  text-align: center;
+}
+
+/* Hijri / Standard toggle */
+.cal-mode-toggle {
+  display: flex;
+  gap: 0;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 7px;
+  overflow: hidden;
+}
+
+.cal-mode-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.3rem 0.8rem;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.45);
+  transition: color 0.15s, background 0.15s;
+}
+.cal-mode-btn--on {
+  background: rgba(121, 194, 76, 0.18);
+  color: #C9F27A;
+}
+.cal-mode-btn:hover:not(.cal-mode-btn--on) {
+  color: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* Body */
+.cal-body {
+  flex: 1;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+/* Loading */
+.cal-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 3rem 1rem;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 0.875rem;
+}
+
+.cal-spinner {
+  width: 22px;
+  height: 22px;
+  animation: cal-spin 0.9s linear infinite;
+  color: #79C24C;
+}
+
+@keyframes cal-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Error */
+.cal-error {
+  padding: 2.5rem 1.5rem;
+  text-align: center;
+  color: rgba(255, 100, 100, 0.75);
+  font-size: 0.875rem;
+}
+
+/* Table wrapper — horizontal scroll for narrow screens */
+.cal-table-wrap {
+  overflow-x: auto;
+}
+
+/* Table */
+.cal-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.78rem;
+  min-width: 520px;
+}
+
+.cal-th {
+  padding: 0.45rem 0.6rem;
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.72rem;
+  color: rgba(201, 242, 122, 0.7);
+  background: rgba(30, 94, 47, 0.35);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  white-space: nowrap;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+.cal-th--day { width: 2.8rem; }
+.cal-th--date { width: 4.5rem; }
+.cal-th--secondary { color: rgba(201, 242, 122, 0.35); }
+
+.cal-tr:nth-child(even) {
+  background: rgba(255, 255, 255, 0.02);
+}
+.cal-tr--today {
+  background: rgba(121, 194, 76, 0.13) !important;
+}
+.cal-tr--today .cal-td {
+  font-weight: 600;
+  color: #C9F27A;
+}
+.cal-tr--today .cal-td--secondary {
+  color: rgba(201, 242, 122, 0.55);
+}
+
+.cal-td {
+  padding: 0.38rem 0.6rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.035);
+  vertical-align: middle;
+  white-space: nowrap;
+}
+.cal-td--day {
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 0.72rem;
+}
+.cal-td--date {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  padding-top: 0.4rem;
+  padding-bottom: 0.4rem;
+}
+.cal-td--time {
+  font-variant-numeric: tabular-nums;
+  color: rgba(255, 255, 255, 0.88);
+}
+.cal-td--secondary {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.cal-date-primary {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.1;
+}
+.cal-date-secondary {
+  font-size: 0.67rem;
+  color: rgba(255, 255, 255, 0.32);
+  line-height: 1.1;
+}
+
+/* Yearly layout — section per month */
+.cal-year-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.cal-year-month {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+.cal-year-month:last-child {
+  border-bottom: none;
+}
+
+.cal-year-month-label {
+  padding: 0.55rem 1rem 0.3rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #79C24C;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+/* Footer */
+.cal-footer {
+  padding: 0.75rem 1.375rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.cal-pdf-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: #1E5E2F;
+  border: 1px solid rgba(121, 194, 76, 0.3);
+  border-radius: 8px;
+  padding: 0.45rem 1rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #C9F27A;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+.cal-pdf-btn:hover:not(:disabled) {
+  background: #256b38;
+  border-color: rgba(121, 194, 76, 0.5);
+}
+.cal-pdf-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* ── Light mode overrides — calendar modal ────────────────────────────────── */
+
+html[data-theme="light"] .cal-modal {
+  background: #f5faf0;
+  border-color: rgba(30, 94, 47, 0.2);
+  color: #0D2F17;
+}
+html[data-theme="light"] .cal-header {
+  border-bottom-color: rgba(13, 47, 23, 0.1);
+}
+html[data-theme="light"] .cal-title {
+  color: #1E5E2F;
+}
+html[data-theme="light"] .cal-subtitle {
+  color: rgba(13, 47, 23, 0.5);
+}
+html[data-theme="light"] .cal-close {
+  color: rgba(13, 47, 23, 0.4);
+}
+html[data-theme="light"] .cal-close:hover {
+  color: #0D2F17;
+  background: rgba(13, 47, 23, 0.06);
+}
+html[data-theme="light"] .cal-controls {
+  border-bottom-color: rgba(13, 47, 23, 0.08);
+}
+html[data-theme="light"] .cal-period {
+  color: #0D2F17;
+}
+html[data-theme="light"] .cal-nav-btn {
+  border-color: rgba(13, 47, 23, 0.15);
+  color: rgba(13, 47, 23, 0.5);
+}
+html[data-theme="light"] .cal-nav-btn:hover {
+  color: #1E5E2F;
+  border-color: rgba(30, 94, 47, 0.4);
+  background: rgba(30, 94, 47, 0.06);
+}
+html[data-theme="light"] .cal-mode-toggle {
+  border-color: rgba(13, 47, 23, 0.15);
+}
+html[data-theme="light"] .cal-mode-btn {
+  color: rgba(13, 47, 23, 0.45);
+}
+html[data-theme="light"] .cal-mode-btn--on {
+  background: rgba(30, 94, 47, 0.1);
+  color: #1E5E2F;
+}
+html[data-theme="light"] .cal-th {
+  background: rgba(30, 94, 47, 0.08);
+  color: rgba(30, 94, 47, 0.65);
+  border-bottom-color: rgba(13, 47, 23, 0.1);
+}
+html[data-theme="light"] .cal-th--secondary {
+  color: rgba(30, 94, 47, 0.3);
+}
+html[data-theme="light"] .cal-tr:nth-child(even) {
+  background: rgba(13, 47, 23, 0.025);
+}
+html[data-theme="light"] .cal-tr--today {
+  background: rgba(121, 194, 76, 0.15) !important;
+}
+html[data-theme="light"] .cal-tr--today .cal-td {
+  color: #1E5E2F;
+}
+html[data-theme="light"] .cal-td {
+  border-bottom-color: rgba(13, 47, 23, 0.06);
+}
+html[data-theme="light"] .cal-td--day {
+  color: rgba(13, 47, 23, 0.4);
+}
+html[data-theme="light"] .cal-td--time {
+  color: rgba(13, 47, 23, 0.85);
+}
+html[data-theme="light"] .cal-td--secondary {
+  color: rgba(13, 47, 23, 0.3);
+}
+html[data-theme="light"] .cal-date-primary {
+  color: rgba(13, 47, 23, 0.88);
+}
+html[data-theme="light"] .cal-date-secondary {
+  color: rgba(13, 47, 23, 0.32);
+}
+html[data-theme="light"] .cal-year-month {
+  border-bottom-color: rgba(13, 47, 23, 0.07);
+}
+html[data-theme="light"] .cal-year-month-label {
+  color: #1E5E2F;
+}
+html[data-theme="light"] .cal-footer {
+  border-top-color: rgba(13, 47, 23, 0.1);
+}
+html[data-theme="light"] .cal-pdf-btn {
+  background: #1E5E2F;
+  color: #C9F27A;
+  border-color: rgba(30, 94, 47, 0.4);
+}
+html[data-theme="light"] .cal-pdf-btn:hover:not(:disabled) {
+  background: #256b38;
+}
+
+/* ── Calendar header left (back btn + title) ─────────────────────────────── */
+
+.cal-header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+}
+
+/* ── Back button ─────────────────────────────────────────────────────────── */
+
+.cal-back-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: transparent;
+  border: 1px solid rgba(121, 194, 76, 0.25);
+  border-radius: 6px;
+  padding: 0.3rem 0.6rem;
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: rgba(201, 242, 122, 0.65);
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.cal-back-btn:hover {
+  border-color: rgba(121, 194, 76, 0.5);
+  color: #C9F27A;
+  background: rgba(121, 194, 76, 0.08);
+}
+
+html[data-theme="light"] .cal-back-btn {
+  border-color: rgba(30, 94, 47, 0.2);
+  color: rgba(30, 94, 47, 0.6);
+}
+html[data-theme="light"] .cal-back-btn:hover {
+  border-color: rgba(30, 94, 47, 0.4);
+  color: #1E5E2F;
+  background: rgba(30, 94, 47, 0.06);
+}
+
+/* ── Secondary PDF button (outline style) ───────────────────────────────── */
+
+.cal-pdf-btn--secondary {
+  background: transparent;
+  border-color: rgba(121, 194, 76, 0.3);
+  color: rgba(201, 242, 122, 0.8);
+}
+.cal-pdf-btn--secondary:hover:not(:disabled) {
+  background: rgba(30, 94, 47, 0.4);
+  border-color: rgba(121, 194, 76, 0.5);
+}
+
+html[data-theme="light"] .cal-pdf-btn--secondary {
+  background: transparent;
+  border-color: rgba(30, 94, 47, 0.25);
+  color: #1E5E2F;
+}
+html[data-theme="light"] .cal-pdf-btn--secondary:hover:not(:disabled) {
+  background: rgba(30, 94, 47, 0.08);
+  border-color: rgba(30, 94, 47, 0.4);
+}
+
+/* ── Year overview: month card grid ─────────────────────────────────────── */
+
+.cal-year-overview {
+  padding: 1rem 1.375rem 1.5rem;
+}
+
+.cal-year-months-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+}
+
+.cal-year-month-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 0.5rem;
+  background: rgba(30, 94, 47, 0.2);
+  border: 1px solid rgba(121, 194, 76, 0.15);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  text-align: center;
+}
+.cal-year-month-card:hover {
+  background: rgba(30, 94, 47, 0.4);
+  border-color: rgba(121, 194, 76, 0.35);
+}
+.cal-year-month-card--current {
+  background: rgba(121, 194, 76, 0.15);
+  border-color: rgba(121, 194, 76, 0.45);
+}
+.cal-year-month-card--current:hover {
+  background: rgba(121, 194, 76, 0.22);
+}
+.cal-year-month-card-name {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: rgba(201, 242, 122, 0.85);
+}
+
+html[data-theme="light"] .cal-year-month-card {
+  background: rgba(30, 94, 47, 0.05);
+  border-color: rgba(30, 94, 47, 0.12);
+}
+html[data-theme="light"] .cal-year-month-card:hover {
+  background: rgba(30, 94, 47, 0.1);
+  border-color: rgba(30, 94, 47, 0.3);
+}
+html[data-theme="light"] .cal-year-month-card--current {
+  background: rgba(121, 194, 76, 0.15);
+  border-color: rgba(121, 194, 76, 0.5);
+}
+html[data-theme="light"] .cal-year-month-card-name {
+  color: #1E5E2F;
+}
+
+/* ── Month calendar grid (wall-calendar style) ──────────────────────────── */
+
+.month-cal-grid {
+  display: flex;
+  flex-direction: column;
+  min-width: 560px;
+}
+
+.month-cal-header-row {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  background: rgba(30, 94, 47, 0.4);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.month-cal-dow {
+  padding: 0.45rem 0.25rem;
+  text-align: center;
+  font-size: 0.67rem;
+  font-weight: 700;
+  color: rgba(201, 242, 122, 0.7);
+  letter-spacing: 0.03em;
+}
+
+.month-cal-week {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+.month-cal-week:last-child {
+  border-bottom: none;
+}
+
+.month-cal-cell {
+  min-height: 5.5rem;
+  padding: 0.35rem 0.4rem;
+  border-right: 1px solid rgba(255, 255, 255, 0.04);
+  display: flex;
+  flex-direction: column;
+}
+.month-cal-cell:last-child {
+  border-right: none;
+}
+.month-cal-cell--empty {
+  background: rgba(0, 0, 0, 0.06);
+}
+.month-cal-cell--today {
+  background: rgba(121, 194, 76, 0.1);
+  outline: 1px solid rgba(121, 194, 76, 0.3);
+  outline-offset: -1px;
+}
+
+.month-cal-day-num {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.88);
+  line-height: 1.1;
+}
+
+.month-cal-hijri-ref {
+  font-size: 0.56rem;
+  color: rgba(255, 255, 255, 0.28);
+  margin-bottom: 0.25rem;
+  line-height: 1.2;
+}
+
+.month-cal-prayers {
+  display: flex;
+  flex-direction: column;
+  gap: 0.08rem;
+  margin-top: auto;
+}
+
+.month-cal-prayer {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.15rem;
+}
+
+.month-cal-prayer-name {
+  font-size: 0.53rem;
+  color: rgba(121, 194, 76, 0.6);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.month-cal-prayer-time {
+  font-size: 0.53rem;
+  font-family: var(--font-mono);
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* Light mode overrides — month calendar grid */
+html[data-theme="light"] .month-cal-header-row {
+  background: rgba(30, 94, 47, 0.1);
+  border-bottom-color: rgba(13, 47, 23, 0.08);
+}
+html[data-theme="light"] .month-cal-dow {
+  color: rgba(30, 94, 47, 0.65);
+}
+html[data-theme="light"] .month-cal-week {
+  border-bottom-color: rgba(13, 47, 23, 0.05);
+}
+html[data-theme="light"] .month-cal-cell {
+  border-right-color: rgba(13, 47, 23, 0.05);
+}
+html[data-theme="light"] .month-cal-cell--empty {
+  background: rgba(0, 0, 0, 0.02);
+}
+html[data-theme="light"] .month-cal-cell--today {
+  background: rgba(121, 194, 76, 0.12);
+  outline-color: rgba(121, 194, 76, 0.4);
+}
+html[data-theme="light"] .month-cal-day-num {
+  color: rgba(13, 47, 23, 0.88);
+}
+html[data-theme="light"] .month-cal-hijri-ref {
+  color: rgba(13, 47, 23, 0.3);
+}
+html[data-theme="light"] .month-cal-prayer-name {
+  color: rgba(30, 94, 47, 0.55);
+}
+html[data-theme="light"] .month-cal-prayer-time {
+  color: rgba(13, 47, 23, 0.7);
+}
+
+/* ── Accessibility (PC-1.7) ──────────────────────────────────────────────── */
+
+/* Skip-to-content link — visually hidden until focused */
+.skip-to-content {
+  position: absolute;
+  top: -100%;
+  left: 0.5rem;
+  z-index: 99999;
+  padding: 0.5rem 1.125rem;
+  background: #79C24C;
+  color: #0A2010;
+  font-size: 0.9rem;
+  font-weight: 700;
+  border-radius: 0 0 0.5rem 0.5rem;
+  text-decoration: none;
+  transition: top 150ms;
+}
+.skip-to-content:focus {
+  top: 0;
+  outline: 3px solid #C9F27A;
+  outline-offset: 2px;
+}
+
+/* Global focus-visible ring — green brand color for all interactive elements */
+:focus-visible {
+  outline: 2px solid #79C24C;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Override for elements that already have rounded styles */
+.ftile:focus-visible,
+.popular-city-chip:focus-visible,
+.last-visited-btn:focus-visible,
+.geo-prompt-btn:focus-visible {
+  outline: 2px solid #79C24C;
+  outline-offset: 3px;
+  border-radius: 0.75rem;
+}
+
+.settings-gear-btn:focus-visible,
+.prayer-mute-btn:focus-visible,
+.city-home-btn:focus-visible,
+.cal-nav-btn:focus-visible,
+.cal-back-btn:focus-visible,
+.cal-close:focus-visible,
+.qibla-close:focus-visible,
+.cal-year-month-card:focus-visible {
+  outline: 2px solid #79C24C;
+  outline-offset: 2px;
+  border-radius: 0.375rem;
+}
+
+.hanafi-track:focus-visible {
+  outline: 2px solid #79C24C;
+  outline-offset: 3px;
+  border-radius: 9999px;
+}
+
+/* Screen reader only utility */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Visually-hidden-focusable — like .sr-only but shows on focus */
+.sr-only-focusable:focus {
+  position: static;
+  width: auto;
+  height: auto;
+  padding: inherit;
+  margin: inherit;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+}
+
+/* Minimum touch target enforcement — 44x44px for small tap targets */
+.touch-target {
+  min-width: 44px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── Skeleton loaders (PC-1.11) ──────────────────────────────────────────── */
+
+/* Base shimmer keyframe — uses translateX on a pseudo-element so the
+   animation stays on the compositor (GPU-only, no paint trigger). */
+@keyframes skeleton-shimmer {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* Shimmer bar — use this for individual skeleton items.
+   The ::after pseudo-element carries the highlight and slides across. */
+.skeleton-bar {
+  position: relative;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.07);
+  border-radius: 0.375rem;
+}
+
+.skeleton-bar::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.13) 50%,
+    transparent 100%
+  );
+  animation: skeleton-shimmer 1.4s ease-in-out infinite;
+}
+
+html[data-theme="light"] .skeleton-bar {
+  background: rgba(13, 47, 23, 0.07);
+}
+
+html[data-theme="light"] .skeleton-bar::after {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(13, 47, 23, 0.12) 50%,
+    transparent 100%
+  );
+}
+
+/* Skeleton prayer grid — mirrors .prayer-grid layout */
+.skeleton-prayer-grid {
+  border-radius: 1rem;
+  overflow: hidden;
+  border: 1px solid rgba(121, 194, 76, 0.15);
+  background: rgba(13, 47, 23, 0.45);
+}
+
+html[data-theme="light"] .skeleton-prayer-grid {
+  border-color: rgba(121, 194, 76, 0.2);
+  background: rgba(255, 255, 255, 0.7);
+}
+
+/* Skeleton prayer row — mirrors .prayer-row layout */
+.skeleton-prayer-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+.skeleton-prayer-row:last-child {
+  border-bottom: none;
+}
+
+html[data-theme="light"] .skeleton-prayer-row {
+  border-bottom-color: rgba(0, 0, 0, 0.04);
+}
+
+/* Left side: prayer name block */
+.skeleton-prayer-name {
+  height: 0.875rem;
+  width: 6rem;
+}
+
+/* Right side: time block */
+.skeleton-prayer-time {
+  height: 1rem;
+  width: 4.5rem;
+}
+
+/* Skeleton page header (city name + date row) */
+.skeleton-city-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.skeleton-city-name {
+  height: 1.5rem;
+  width: 12rem;
+  margin-bottom: 0.5rem;
+}
+
+.skeleton-city-sub {
+  height: 0.875rem;
+  width: 8rem;
+}
+
+.skeleton-moon {
+  width: 30px;
+  height: 30px;
+  border-radius: 9999px;
+}
+
+/* Skeleton feature tiles row */
+.skeleton-ftiles {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.875rem;
+}
+
+.skeleton-ftile {
+  aspect-ratio: 1;
+  border-radius: 1.25rem;
+  border: 1px solid rgba(121, 194, 76, 0.1);
+}
+
+/* ── Print styles (PC-1.12) ──────────────────────────────────────────────── */
+
+@media print {
+  /* Hide non-essential chrome */
+  .city-page-header,
+  .settings-gear-btn,
+  .prayer-mute-btn,
+  .prayer-mute-btn--disabled,
+  .prayer-mute-spacer,
+  .site-footer,
+  .ftiles,
+  .prayer-arrival-overlay,
+  .geo-prompt-card,
+  .geo-prompt-tooltip,
+  .skip-to-content {
+    display: none !important;
+  }
+
+  /* Reset backgrounds to plain white */
+  html,
+  html[data-theme="light"],
+  html body,
+  .city-page-main,
+  .home-main {
+    background: #fff !important;
+    color: #000 !important;
+    min-height: unset !important;
+  }
+
+  /* Prayer grid — black on white, no transparency */
+  .prayer-grid {
+    border: 1px solid #ccc !important;
+    background: #fff !important;
+    border-radius: 0 !important;
+    break-inside: avoid;
+  }
+
+  .prayer-row {
+    border-bottom-color: #e0e0e0 !important;
+    background: transparent !important;
+  }
+
+  .prayer-row--current {
+    background: #f0f7e8 !important;
+  }
+
+  .prayer-name {
+    color: #000 !important;
+  }
+
+  .prayer-name--current {
+    color: #1E5E2F !important;
+  }
+
+  .prayer-time {
+    color: #000 !important;
+  }
+
+  .prayer-time--current {
+    color: #1E5E2F !important;
+  }
+
+  .prayer-period {
+    color: #555 !important;
+  }
+
+  .prayer-arabic-inline {
+    color: #666 !important;
+  }
+
+  .next-badge {
+    background: #e8f5d8 !important;
+    color: #1E5E2F !important;
+    border-color: #c4e09c !important;
+  }
+
+  /* City header */
+  .city-info-header {
+    margin-bottom: 1rem;
+  }
+
+  .city-name {
+    color: #000 !important;
+    font-size: 1.25rem !important;
+  }
+
+  .city-clock-inline,
+  .city-clock-time,
+  .city-clock-bullet {
+    color: #555 !important;
+  }
+
+  .city-hijri-date {
+    color: #333 !important;
+  }
+
+  .city-gregorian-date,
+  .date-era {
+    color: #666 !important;
+  }
+
+  /* Print header: show city name as page title */
+  .city-page-main {
+    padding: 1rem !important;
+  }
+
+  /* Remove backdrop filters and shadows */
+  * {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  /* Page break management */
+  .prayer-grid {
+    page-break-inside: avoid;
+  }
+}

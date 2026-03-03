@@ -1,0 +1,35 @@
+import { Guides } from '@/components/Guides'
+import { Resources } from '@/components/Resources'
+import { HeroPattern } from '@/components/HeroPattern'
+
+export const metadata = {
+  title: 'PrayCalc Documentation',
+  description:
+    'Scientific documentation for PrayCalc — solar physics, twilight optics, orbital mechanics, and npm packages for Islamic prayer time calculation.',
+}
+
+export const sections = [
+  { title: 'The Science', id: 'science' },
+  { title: 'Packages', id: 'packages' },
+]
+
+<HeroPattern />
+
+# The Science of Islamic Prayer Times
+
+PrayCalc is an open-source Islamic prayer time calculator built on rigorous astronomical science — NREL solar position algorithms, JPL ephemeris data, empirical twilight observations, and machine learning. {{ className: 'lead' }}
+
+<div className="not-prose mt-6 mb-16 flex gap-3">
+  <Button href="/science/solar-position" arrow="right">
+    <>Start with Solar Position</>
+  </Button>
+  <Button href="/installation" variant="outline">
+    <>Install the packages</>
+  </Button>
+</div>
+
+PrayCalc was built by [Ali Camarata](https://alicamarata.com) — an independent developer focused on Islamic technology. The underlying packages are open source and used to power [praycalc.com](https://praycalc.com) and the [Ummat](https://ummat.app) super-app. {{ className: 'lead' }}
+
+<Guides />
+
+<Resources />

@@ -1,0 +1,117 @@
+export const metadata = {
+  title: 'Calculation Methods',
+  description:
+    'The 14 standard Islamic prayer time calculation methods — Fajr and Isha depression angles, organization, and region of use.',
+}
+
+export const sections = [
+  { title: 'Standard methods', id: 'standard-methods' },
+  { title: 'Asr calculation', id: 'asr-calculation' },
+  { title: 'High latitude rules', id: 'high-latitude-rules' },
+  { title: 'Choosing a method', id: 'choosing-a-method' },
+  { title: 'Qibla direction', id: 'qibla-direction' },
+]
+
+# Calculation Methods
+
+Islamic prayer time calculation methods differ primarily in the depression angles used for Fajr and Isha. These angles were established by Islamic organizations in the 20th century based on observations at specific latitudes. {{ className: 'lead' }}
+
+## Standard methods {{ id: 'standard-methods' }}
+
+All methods share the same calculation for Sunrise, Dhuhr, Maghrib, and Asr. They differ only in Fajr and Isha.
+
+| Method | Fajr | Isha | Region / Organization |
+|--------|------|------|-----------------------|
+| ISNA | 15° | 15° | North America — Islamic Society of North America |
+| MWL | 18° | 17° | Global — Muslim World League |
+| Egypt | 19.5° | 17.5° | Egypt, many Arab countries — Egyptian General Authority of Survey |
+| Umm al-Qura | 18° | 90 min after Maghrib | Saudi Arabia |
+| Tehran | 17.7° | 14° | Iran — Institute of Geophysics, University of Tehran |
+| Karachi | 18° | 18° | Pakistan, parts of South Asia — University of Islamic Sciences, Karachi |
+| Kuwait | 18° | 17.5° | Kuwait |
+| Qatar | 18° | 90 min after Maghrib | Qatar |
+| Singapore | 20° | 18° | Singapore — Majlis Ugama Islam Singapura (MUIS) |
+| France | 12° | 12° | France — Union des Organisations Islamiques de France |
+| Russia | 16° | 15° | Russia — Spiritual Administration of Muslims of Russia |
+| Gulf | 19.5° | 90 min after Maghrib | Gulf States |
+| FCNA | 15° | 15° | North America — Fiqh Council of North America (same as ISNA) |
+| JAKIM | 20° | 18° | Malaysia — Jabatan Kemajuan Islam Malaysia |
+
+**Notes:**
+
+- **Umm al-Qura** uses a fixed interval of 90 minutes after Maghrib for Isha instead of a depression angle. During Ramadan, it uses 120 minutes.
+- **Egypt** at 19.5° is one of the highest Fajr angles in common use, based on observations in the Nile Delta around Cairo.
+- **ISNA** at 15° was established partly to provide reasonable times for North American latitudes. At higher latitudes, even 15° can cause problems.
+
+## Asr calculation {{ id: 'asr-calculation' }}
+
+All schools agree that Asr begins when an object's shadow equals its noon shadow plus a multiple of the object's height. The disagreement is on the multiple:
+
+- **Shafi'i, Maliki, Hanbali**: shadow = noon shadow + 1× height (earlier Asr)
+- **Hanafi**: shadow = noon shadow + 2× height (later Asr)
+
+The difference is typically 30–60 minutes, larger at high latitudes and near solstices.
+
+In the NREL SPA framework, Asr time is computed by finding when the Sun's altitude equals:
+
+```
+altitude_asr = arccot(shadow_multiplier + tan(|latitude − declination|))
+```
+
+Where `shadow_multiplier` is 1 (Shafi'i) or 2 (Hanafi).
+
+The standard Asr formula calculates the shadow ratio based on solar elevation at noon:
+
+```
+shadow_ratio = 1 (Shafi'i/Maliki/Hanbali) or 2 (Hanafi)
+elevation = atan(1 / (shadow_ratio + tan(|latitude - solar_declination|)))
+```
+
+Asr begins when the shadow of a gnomon (vertical rod) is shadow_ratio times its length plus the shadow at noon.
+
+## High latitude rules {{ id: 'high-latitude-rules' }}
+
+At latitudes above ~48°, depression angles can become unreachable in summer. When the Sun's minimum nocturnal altitude exceeds the required depression angle, Fajr and/or Isha cannot be computed normally. Standard fallback rules:
+
+| Rule | Description |
+|------|-------------|
+| **1/7 of the night** | Fajr = Sunset + 1/7 of the night duration; Isha = Sunset + 6/7 of the night |
+| **1/2 of the night** | Fajr and Isha split the night equally from Maghrib |
+| **Angle-based** | Use a reduced angle (e.g., 12°) when the standard angle is unreachable |
+| **Nearest city** | Use times from the nearest city where angles are valid |
+| **Nearest day** | Use times from the nearest day in the year when angles were valid |
+
+None of these rules has universal scholarly consensus. The `pray-calc` package lets you configure which rule to apply.
+
+## Choosing a method {{ id: 'choosing-a-method' }}
+
+For most Muslims, the practical advice is to follow the method endorsed by the Islamic authority in your region. For developers building global apps:
+
+- Use **MWL (18°/17°)** as a safe default — moderate angles, globally applicable
+- For North American audiences, **ISNA (15°/15°)** is standard
+- For Saudi Arabia and the Gulf, **Umm al-Qura** is the official method
+- Expose method selection to users — no single method suits all locations and madhabs
+
+The [Dynamic vs. Fixed Angles](/science/dynamic-vs-fixed) page describes an alternative approach that computes optimal angles from first principles rather than using fixed organizational values.
+
+## Qibla direction {{ id: 'qibla-direction' }}
+
+Qibla direction is the bearing from any location toward the Kaaba in Mecca (21.3891° N, 39.8579° E). PrayCalc calculates the great-circle bearing using the spherical law of cosines:
+
+```
+θ = atan2(sin(Δλ) · cos(φ₂),
+          cos(φ₁) · sin(φ₂) − sin(φ₁) · cos(φ₂) · cos(Δλ))
+```
+
+Where φ₁ and φ₂ are latitudes and Δλ is the longitude difference (all in radians). The result is a bearing in degrees from true north (0°–360°, clockwise).
+
+**Magnetic vs. true north:** PrayCalc reports the bearing from **true north**, not magnetic north. Magnetic declination varies by location and year. For devotional use, the visual Qibla compass is accurate enough without declination correction. For high-precision applications, apply the local magnetic declination from NOAA's World Magnetic Model.
+
+**Distance to Kaaba:** Straight-line surface distance using the Haversine formula:
+
+```
+a = sin²(Δφ/2) + cos(φ₁) · cos(φ₂) · sin²(Δλ/2)
+d = 2R · asin(√a)
+```
+
+where R = 6,371 km (Earth mean radius).

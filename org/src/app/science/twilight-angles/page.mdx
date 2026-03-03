@@ -1,0 +1,82 @@
+export const metadata = {
+  title: 'Twilight & Depression Angles',
+  description:
+    'What happens optically when the Sun is below the horizon and why Islamic Fajr and Isha are defined by twilight depression angles.',
+}
+
+export const sections = [
+  { title: 'Twilight phases', id: 'twilight-phases' },
+  { title: 'Depression angles', id: 'depression-angles' },
+  { title: 'Why Islamic law uses twilight', id: 'why-islamic-law-uses-twilight' },
+  { title: 'The fixed-angle convention', id: 'the-fixed-angle-convention' },
+  { title: 'Problems at extreme latitudes', id: 'problems-at-extreme-latitudes' },
+]
+
+# Twilight & Depression Angles
+
+Fajr and Isha are the two prayers directly tied to twilight — the period when the Sun is below the horizon but its light still illuminates the upper atmosphere. The angle matters. {{ className: 'lead' }}
+
+## Twilight phases {{ id: 'twilight-phases' }}
+
+Twilight has three standard astronomical phases, each defined by how far the Sun's center is below the geometric horizon:
+
+| Phase | Sun altitude | Sky condition |
+|-------|-------------|---------------|
+| Civil twilight | 0° to −6° | Enough light to read outdoors without artificial light |
+| Nautical twilight | −6° to −12° | Horizon just visible; stars bright enough for celestial navigation |
+| Astronomical twilight | −12° to −18° | Sky dark enough for most astronomical observation |
+| Night | below −18° | True astronomical darkness |
+
+These phases are defined by the International Astronomical Union. The negative sign means the Sun is below the horizon.
+
+## Depression angles {{ id: 'depression-angles' }}
+
+A **depression angle** measures how far below the geometric horizon the Sun's center lies. If the Sun's altitude is −15°, the depression angle is 15°.
+
+For Fajr and Isha, the Sun must reach a specific depression angle before the prayer time begins or ends:
+
+- At **Fajr**, the depression angle marks the start of astronomical dawn — when the first light of the false dawn (al-Fajr al-Kadhib) gives way to true dawn (al-Fajr al-Sadiq), the spreading whiteness on the horizon.
+- At **Isha**, the depression angle marks when redness has fully disappeared from the western horizon and true night has begun.
+
+The exact depression angle for each event is what different Islamic organizations disagree on.
+
+## Why Islamic law uses twilight {{ id: 'why-islamic-law-uses-twilight' }}
+
+Islamic jurisprudence defines Fajr as beginning when the "true dawn" spreads across the horizon — a visible astronomical phenomenon. The classical scholars (fuqaha) described this as the spreading white light that appears across the entire horizon, distinct from the earlier "false dawn" (a vertical streak).
+
+This visible phenomenon corresponds precisely to a solar depression angle between roughly 15° and 20°, depending on:
+
+- Atmospheric conditions (humidity, dust, aerosols)
+- Observer's latitude and season
+- Elevation above sea level
+- Local horizon obstructions
+
+Before modern astronomy, scholars relied on direct sky observation. The fixed-angle convention was an attempt to codify these observations into a single reproducible number.
+
+## The fixed-angle convention {{ id: 'the-fixed-angle-convention' }}
+
+In the 20th century, Islamic organizations adopted fixed depression angles for standardized prayer time calculation. The most common values:
+
+| Organization | Fajr angle | Isha angle | Region |
+|-------------|-----------|-----------|--------|
+| ISNA | 15° | 15° | North America |
+| MWL | 18° | 17° | Global (Muslim World League) |
+| Egypt | 19.5° | 17.5° | Egypt, many Arab countries |
+| Umm al-Qura | 18° | 90 min after Maghrib | Saudi Arabia |
+| Tehran | 17.7° | 14° | Iran |
+| Karachi | 18° | 18° | Pakistan, parts of South Asia |
+
+The variation reflects both different observational traditions and the conditions at the latitudes where each organization is based. Egypt's 19.5° was calibrated for the Nile Delta. ISNA's 15° was calibrated for North American mid-latitudes.
+
+See [Calculation Methods](/science/calculation-methods) for the complete table.
+
+## Problems at extreme latitudes {{ id: 'problems-at-extreme-latitudes' }}
+
+At high latitudes (above ~48°N or S), fixed depression angles break down:
+
+- During summer, the Sun may never reach −18° below the horizon — meaning Isha by the MWL method never begins
+- During winter, twilight is brief and compression occurs — Fajr and Isha times are abnormally close together
+
+Various fallback rules exist (1/7 of the night, proportional time, nearest city), but none are satisfying from a physical standpoint.
+
+The [Dynamic vs. Fixed Angles](/science/dynamic-vs-fixed) page explains how the DPC (Dynamic PrayCalc) algorithm addresses this using physics-grounded adaptive angles instead of fixed values.

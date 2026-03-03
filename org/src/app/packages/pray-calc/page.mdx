@@ -1,0 +1,159 @@
+export const metadata = {
+  title: 'pray-calc',
+  description:
+    'Islamic prayer times engine for Node.js and the browser. All 14 standard methods, dynamic angle mode, TypeScript-first.',
+}
+
+export const sections = [
+  { title: 'Overview', id: 'overview' },
+  { title: 'Installation', id: 'installation' },
+  { title: 'getPrayerTimes', id: 'getprayertimes' },
+  { title: 'Methods', id: 'methods' },
+  { title: 'Dynamic mode', id: 'dynamic-mode' },
+  { title: 'TypeScript types', id: 'typescript-types' },
+]
+
+# pray-calc
+
+The main PrayCalc prayer times engine. Built on NREL SPA for solar position, covering all 14 major calculation methods and a physics-grounded dynamic angle mode. {{ className: 'lead' }}
+
+## Overview {{ id: 'overview' }}
+
+`pray-calc` computes the six daily Islamic prayer times (Fajr, Sunrise, Dhuhr, Asr, Maghrib, Isha) for any location on Earth, any date, and any standard calculation method.
+
+- 14 standard methods (ISNA, MWL, Egypt, Umm al-Qura, Tehran, Karachi, and more)
+- Dynamic angle mode (DPC) for physics-grounded Fajr and Isha
+- Asr: Shafi'i (shadow = 1×) and Hanafi (shadow = 2×)
+- High latitude fallback rules (1/7 night, angle-based, nearest day)
+- TypeScript-first, full type exports
+- ESM + CommonJS builds
+- Zero runtime dependencies (NREL SPA bundled)
+
+**GitHub:** [github.com/acamarata/pray-calc](https://github.com/acamarata/pray-calc)
+
+## Installation {{ id: 'installation' }}
+
+```bash
+pnpm add pray-calc
+```
+
+Requires Node.js 20+.
+
+## getPrayerTimes {{ id: 'getprayertimes' }}
+
+```typescript
+getPrayerTimes(options: PrayerTimesOptions): PrayerTimes
+```
+
+### Options
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `date` | `Date` | Yes | Date to compute times for |
+| `latitude` | `number` | Yes | Observer latitude in decimal degrees |
+| `longitude` | `number` | Yes | Observer longitude in decimal degrees |
+| `timezone` | `string` | Yes | IANA timezone string (e.g. `'America/New_York'`) |
+| `method` | `CalculationMethod` | No | Calculation method (default: `'MWL'`) |
+| `asrMethod` | `'shafii' \| 'hanafi'` | No | Asr shadow multiplier (default: `'shafii'`) |
+| `elevation` | `number` | No | Metres above sea level (default: `0`) |
+| `pressure` | `number` | No | Millibars (default: `1013.25`) |
+| `temperature` | `number` | No | Celsius (default: `15`) |
+| `highLatRule` | `HighLatRule` | No | Fallback for extreme latitudes |
+
+### Returns
+
+```typescript
+{
+  fajr: string        // "HH:MM" in local time
+  sunrise: string
+  dhuhr: string
+  asr: string
+  maghrib: string
+  isha: string
+  midnight: string
+  date: string        // ISO 8601 date
+  timezone: string
+  method: string
+}
+```
+
+```typescript {{ title: 'Basic usage' }}
+import { getPrayerTimes } from 'pray-calc'
+
+const times = getPrayerTimes({
+  date: new Date(),
+  latitude: 41.4993,
+  longitude: -81.6944,
+  timezone: 'America/New_York',
+  method: 'ISNA',
+})
+
+console.log(times)
+// {
+//   fajr: "05:34",
+//   sunrise: "06:52",
+//   dhuhr: "13:02",
+//   asr: "16:28",
+//   maghrib: "19:47",
+//   isha: "21:12",
+//   ...
+// }
+```
+
+## Methods {{ id: 'methods' }}
+
+```typescript {{ title: 'All supported methods' }}
+import type { CalculationMethod } from 'pray-calc'
+
+const methods: CalculationMethod[] = [
+  'ISNA',        // 15°/15° — North America
+  'MWL',         // 18°/17° — Muslim World League
+  'EGYPT',       // 19.5°/17.5° — Egypt
+  'UMM_AL_QURA', // 18°/90min — Saudi Arabia
+  'TEHRAN',      // 17.7°/14° — Iran
+  'KARACHI',     // 18°/18° — Pakistan
+  'KUWAIT',      // 18°/17.5° — Kuwait
+  'QATAR',       // 18°/90min — Qatar
+  'SINGAPORE',   // 20°/18° — Singapore
+  'FRANCE',      // 12°/12° — France
+  'RUSSIA',      // 16°/15° — Russia
+  'GULF',        // 19.5°/90min — Gulf states
+  'FCNA',        // 15°/15° — North America (Fiqh Council)
+  'JAKIM',       // 20°/18° — Malaysia
+  'DPC',         // Dynamic PrayCalc — physics-grounded
+]
+```
+
+## Dynamic mode {{ id: 'dynamic-mode' }}
+
+Use `method: 'DPC'` to enable dynamic angle computation. The algorithm adapts Fajr and Isha depression angles based on latitude, day of year, Earth-Sun distance, and elevation.
+
+```typescript {{ title: 'Dynamic mode example' }}
+const times = getPrayerTimes({
+  date: new Date(),
+  latitude: 52.48,
+  longitude: -1.90,
+  timezone: 'Europe/London',
+  method: 'DPC',  // dynamic angles
+})
+```
+
+Dynamic mode is especially useful at latitudes above 45° or for applications where sky-accurate times are required. See [Dynamic vs. Fixed Angles](/science/dynamic-vs-fixed) for the full explanation.
+
+## TypeScript types {{ id: 'typescript-types' }}
+
+```typescript {{ title: 'Full type definitions' }}
+import type {
+  PrayerTimesOptions,
+  PrayerTimes,
+  CalculationMethod,
+  AsrMethod,
+  HighLatRule,
+} from 'pray-calc'
+
+type HighLatRule =
+  | 'seventh-of-night'   // 1/7 of the night
+  | 'half-of-night'      // 1/2 of the night
+  | 'angle-based'        // reduced angle fallback
+  | 'nearest-day'        // nearest valid day
+```

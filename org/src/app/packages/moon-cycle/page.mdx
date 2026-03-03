@@ -1,0 +1,105 @@
+export const metadata = {
+  title: 'moon-cycle',
+  description:
+    'Maps any date and time to a NASA SVS moon phase image frame. 8,760 hourly frames per year via jsDelivr CDN.',
+}
+
+export const sections = [
+  { title: 'Overview', id: 'overview' },
+  { title: 'Installation', id: 'installation' },
+  { title: 'API', id: 'api' },
+  { title: 'CDN delivery', id: 'cdn-delivery' },
+  { title: 'Dataset details', id: 'dataset-details' },
+]
+
+# moon-cycle
+
+Maps dates and times to NASA SVS moon phase imagery. 8,760 hourly frames covering a full year, delivered via jsDelivr CDN. {{ className: 'lead' }}
+
+## Overview {{ id: 'overview' }}
+
+The NASA Scientific Visualization Studio publishes annual moon phase video sequences — one frame per hour for an entire year, showing the Moon from Earth's perspective with accurate libration, phase illumination, and orientation.
+
+`moon-cycle` provides a TypeScript API to map any date/time to the correct frame index and generate a CDN URL for that image.
+
+**GitHub:** [github.com/acamarata/moon-cycle](https://github.com/acamarata/moon-cycle)
+
+## Installation {{ id: 'installation' }}
+
+```bash
+pnpm add moon-cycle
+```
+
+## API {{ id: 'api' }}
+
+### cycleMonth
+
+Returns an array of frame descriptors for every hour of a given month.
+
+```typescript
+cycleMonth(options: { year: number; month: number }): MoonFrame[]
+```
+
+```typescript {{ title: 'Get all frames for March 2025' }}
+import { cycleMonth, cdnUrl } from 'moon-cycle'
+
+const frames = cycleMonth({ year: 2025, month: 3 })
+console.log(frames.length)  // 744 (31 days × 24 hours)
+
+const firstFrame = frames[0]
+console.log(firstFrame.date)   // 2025-03-01T00:00:00Z
+console.log(firstFrame.index)  // frame index in the NASA dataset
+console.log(cdnUrl(firstFrame)) // jsDelivr CDN URL
+```
+
+### cycleYear
+
+Returns frame descriptors for every hour of a full year (8,760 frames for non-leap years, 8,784 for leap years).
+
+```typescript
+cycleYear(options: { year: number }): MoonFrame[]
+```
+
+```typescript {{ title: 'Get the frame for right now' }}
+import { cycleYear, cdnUrl } from 'moon-cycle'
+
+const frames = cycleYear({ year: new Date().getFullYear() })
+const now = new Date()
+const hourIndex = Math.floor((now.getTime() - new Date(now.getFullYear(), 0, 1).getTime()) / 3_600_000)
+const currentFrame = frames[hourIndex]
+
+const imageUrl = cdnUrl(currentFrame)
+// Use in an <img> tag or Next.js <Image> component
+```
+
+### cdnUrl
+
+Returns the jsDelivr CDN URL for a given frame.
+
+```typescript
+cdnUrl(frame: MoonFrame): string
+```
+
+## CDN delivery {{ id: 'cdn-delivery' }}
+
+The ~438 MB NASA image dataset is hosted on jsDelivr via the `moon-cycle-data` npm package. jsDelivr serves all npm package files from their global CDN at no cost.
+
+```typescript {{ title: 'Example CDN URL' }}
+// https://cdn.jsdelivr.net/npm/moon-cycle-data@2025/frames/2025-03-15-14.jpg
+```
+
+Images are 512×512 JPEG, approximately 20–40 KB each. They show the Moon against a black background with accurate libration (wobble), phase illumination, and orientation relative to the horizon.
+
+## Dataset details {{ id: 'dataset-details' }}
+
+| Property | Value |
+|----------|-------|
+| Source | NASA Scientific Visualization Studio |
+| Frames per year | 8,760 (non-leap) or 8,784 (leap) |
+| Frame interval | 1 hour |
+| Resolution | 512×512 |
+| Format | JPEG |
+| Dataset size | ~438 MB per year |
+| Coverage | 2020–2030 (packaged) |
+
+NASA publishes a new annual sequence each year. The `moon-cycle-data` npm package is updated annually with the new dataset.

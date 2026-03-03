@@ -1,0 +1,136 @@
+export const metadata = {
+  title: 'moon-sighting',
+  description:
+    'JPL DE442S-based lunar crescent visibility reports. Yallop and Odeh criteria for Islamic month determination.',
+}
+
+export const sections = [
+  { title: 'Overview', id: 'overview' },
+  { title: 'Installation', id: 'installation' },
+  { title: 'Kernel download', id: 'kernel-download' },
+  { title: 'getMoonSightingReport', id: 'getmoonsightingreport' },
+  { title: 'Visibility criteria', id: 'visibility-criteria' },
+  { title: 'CLI usage', id: 'cli-usage' },
+]
+
+# moon-sighting
+
+High-accuracy lunar crescent visibility using the JPL DE442S planetary ephemeris. Implements both Yallop (NAO TN 69) and Odeh criteria for Islamic new moon determination. {{ className: 'lead' }}
+
+## Overview {{ id: 'overview' }}
+
+`moon-sighting` computes the probability of naked-eye lunar crescent visibility for any location on Earth. This is used to determine the start of Islamic lunar months (Ramadan, Dhul Hijjah, etc.) by astronomical calculation.
+
+- JPL DE442S ephemeris (accurate lunar positions to arcsecond level)
+- Yallop criteria (NAO Technical Note 69, 1997)
+- Odeh criteria (2004, updated Yallop)
+- Topocentric Moon and Sun positions
+- Best time and best azimuth for sighting
+- Crescent width, altitude, elongation, arc of vision
+
+**GitHub:** [github.com/acamarata/moon-sighting](https://github.com/acamarata/moon-sighting)
+
+## Installation {{ id: 'installation' }}
+
+```bash
+pnpm add moon-sighting
+```
+
+## Kernel download {{ id: 'kernel-download' }}
+
+`moon-sighting` requires the JPL DE442S SPICE kernel file. This is a binary ephemeris file (~37 MB) that contains precise planetary positions.
+
+```bash
+npx moon-sighting download-kernel
+```
+
+This downloads `de442s.bsp` to `~/.moon-sighting/kernels/`. The kernel covers the years 1950–2050 at high precision, and extends to approximately 3000 BC / 3000 AD at reduced precision.
+
+## getMoonSightingReport {{ id: 'getmoonsightingreport' }}
+
+```typescript
+getMoonSightingReport(options: MoonSightingOptions): Promise<MoonSightingReport>
+```
+
+### Options
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `date` | `Date` | Yes | Date of the expected new moon |
+| `latitude` | `number` | Yes | Observer latitude |
+| `longitude` | `number` | Yes | Observer longitude |
+| `elevation` | `number` | No | Metres above sea level (default: `0`) |
+
+### Returns
+
+```typescript
+{
+  date: string
+  location: { latitude: number; longitude: number; elevation: number }
+  bestTime: Date          // UTC time of best sighting opportunity
+  bestAzimuth: number     // degrees from north
+  moonAltitude: number    // degrees above horizon at best time
+  sunAltitude: number     // Sun altitude at best time (negative = below horizon)
+  elongation: number      // angular separation Moon-Sun (degrees)
+  arcOfVision: number     // altitude difference Moon-Sun (degrees)
+  crescentWidth: number   // topocentric crescent width (arcminutes)
+  yallopCriteria: 'A' | 'B' | 'C' | 'D' | 'E' | 'F'
+  odehCriteria: 'visible' | 'not-visible' | 'marginal'
+  yallopQ: number         // Yallop q-value
+}
+```
+
+```typescript {{ title: 'Ramadan 1447 crescent check' }}
+import { getMoonSightingReport } from 'moon-sighting'
+
+const report = await getMoonSightingReport({
+  date: new Date('2026-02-17'),  // expected new moon date
+  latitude: 21.3891,
+  longitude: 39.8579,            // Mecca
+  elevation: 270,
+})
+
+console.log(report.yallopCriteria)  // 'A' — easily visible
+console.log(report.odehCriteria)    // 'visible'
+console.log(`Best time: ${report.bestTime.toUTCString()}`)
+console.log(`Crescent width: ${report.crescentWidth.toFixed(1)}′`)
+```
+
+## Visibility criteria {{ id: 'visibility-criteria' }}
+
+### Yallop criteria (NAO TN 69)
+
+The Yallop q-value determines naked-eye visibility:
+
+| q-value | Category | Meaning |
+|---------|----------|---------|
+| q > +0.216 | A | Easily visible |
+| 0.216 ≥ q > −0.014 | B | Visible under perfect conditions |
+| −0.014 ≥ q > −0.160 | C | May need optical aid to find |
+| −0.160 ≥ q > −0.232 | D | Only visible with optical aid |
+| −0.232 ≥ q > −0.293 | E | Not visible with optical aid |
+| q ≤ −0.293 | F | Below the new moon limit |
+
+### Odeh criteria
+
+Mohammad Odeh (2004) updated the Yallop model with additional observational data:
+
+| Category | Meaning |
+|----------|---------|
+| visible | Crescent visible to the naked eye |
+| marginal | Crescent visibility uncertain |
+| not-visible | Crescent not visible (optical aid only or invisible) |
+
+## CLI usage {{ id: 'cli-usage' }}
+
+```bash
+# Check crescent visibility for Riyadh
+npx moon-sighting --date 2026-02-17 --lat 24.6877 --lng 46.7219
+
+# Output:
+# Yallop: A (easily visible)
+# Best time: 17:43 local (19:43 UTC)
+# Azimuth: 248°
+# Moon altitude: 12.3°
+# Crescent width: 0.8′
+```

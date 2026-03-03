@@ -1,0 +1,72 @@
+export const metadata = {
+  title: "Earth's Axial Tilt",
+  description:
+    "How Earth's 23.44° axial tilt causes seasons, affects solar declination, and produces the extreme latitude prayer time problems.",
+}
+
+export const sections = [
+  { title: 'Axial tilt and the seasons', id: 'axial-tilt-and-the-seasons' },
+  { title: 'Solar declination', id: 'solar-declination' },
+  { title: 'Effect on prayer times', id: 'effect-on-prayer-times' },
+  { title: 'Obliquity variations', id: 'obliquity-variations' },
+  { title: 'Equation of time', id: 'equation-of-time' },
+]
+
+# Earth's Axial Tilt
+
+Earth's rotational axis is tilted 23.44° relative to the plane of its orbit. This single geometric fact explains seasons, the midnight sun, and why Fajr and Isha break at high latitudes. {{ className: 'lead' }}
+
+## Axial tilt and the seasons {{ id: 'axial-tilt-and-the-seasons' }}
+
+As Earth orbits the Sun, the direction its pole points remains roughly fixed in space (toward Polaris). This means the angle between the Sun and Earth's equatorial plane changes throughout the year:
+
+- **June solstice** — North Pole tilted toward the Sun. Northern hemisphere receives sunlight at a steeper angle and for longer each day. The Sun's highest daily altitude is maximized.
+- **December solstice** — North Pole tilted away from the Sun. Southern hemisphere's summer; Northern hemisphere's winter. Shortest days in the north.
+- **Equinoxes (March and September)** — Neither pole tilted toward the Sun. Day and night roughly equal everywhere on Earth.
+
+The tilt explains why prayer times shift dramatically through the year. In Reykjavik, Iceland (64°N), summer Fajr might be at 2:40 AM and Isha never occurs. In winter, Fajr might be at 8:45 AM and Isha at 4:30 PM.
+
+## Solar declination {{ id: 'solar-declination' }}
+
+**Declination** is the Sun's angular distance north or south of the celestial equator. It varies between −23.44° (December solstice) and +23.44° (June solstice) with a sinusoidal pattern.
+
+The formula for approximate declination:
+
+```
+δ = −23.44° × cos(360° / 365 × (N + 10))
+```
+
+Where N is the day of year (1 = January 1). A more accurate computation uses the NREL SPA algorithm, which accounts for orbital eccentricity, nutation, and aberration.
+
+Declination directly affects:
+
+- The Sun's maximum altitude at solar noon: `altitude_noon = 90° − |latitude − declination|`
+- The length of the day
+- How deep below the horizon the Sun goes at twilight
+
+## Effect on prayer times {{ id: 'effect-on-prayer-times' }}
+
+The relationship between declination and prayer times is strongest at high latitudes.
+
+**At the equator (0°):** Day length is nearly constant year-round (about 12 hours). Prayer times shift by only a few minutes between seasons.
+
+**At mid-latitudes (~40°N):** Day length varies from about 9 hours (winter solstice) to 15 hours (summer solstice). Fajr and Isha shift by 2–3 hours between seasons.
+
+**At high latitudes (~60°N):** Day length varies from 5 hours (winter) to 19 hours (summer). In summer, the Sun may not reach the depression angle required for Fajr/Isha under fixed-angle methods — it stays in perpetual civil or nautical twilight.
+
+**Above the Arctic Circle (~66.5°N):** In midsummer, the Sun never sets at all (midnight sun). In midwinter, it never rises (polar night). No fixed-angle method can handle these cases without fallback rules.
+
+## Obliquity variations {{ id: 'obliquity-variations' }}
+
+Earth's axial tilt is not constant. It varies between 22.1° and 24.5° over a **41,000-year cycle** (the obliquity cycle, one of the Milankovitch cycles). Currently at 23.44° and slowly decreasing.
+
+For prayer time calculation, this is negligible — the change is about 0.47° per century, too slow to affect any practical calculation. The NREL SPA algorithm accounts for this automatically using the Julian Ephemeris Day.
+
+## Equation of time {{ id: 'equation-of-time' }}
+
+The **equation of time** is the difference between apparent solar time (when the Sun actually crosses the meridian) and mean solar time (what clocks measure). It arises from two effects:
+
+1. **Orbital eccentricity** — Earth moves faster near perihelion (January) and slower near aphelion (July), so the Sun appears to drift east and west of its average position
+2. **Axial tilt** — The projection of Earth's tilted orbit onto the equatorial plane is not uniform
+
+The combined effect means solar noon can occur up to 16 minutes before or after 12:00 local mean time. The NREL SPA computes this correction automatically as part of the hour angle calculation. The `pray-calc` package uses it to accurately place Dhuhr at true solar noon.

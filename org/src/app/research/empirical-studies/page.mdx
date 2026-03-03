@@ -1,0 +1,226 @@
+export const metadata = {
+  title: 'Research & Empirical Foundations',
+  description:
+    'The academic and observational foundations behind PrayCalc — from Jean Meeus orbital mechanics to the OpenFajr community observation dataset.',
+}
+
+export const sections = [
+  { title: 'The core problem', id: 'the-core-problem' },
+  { title: 'Primary references', id: 'primary-references' },
+  { title: 'The OpenFajr dataset', id: 'the-openfajr-dataset' },
+  { title: 'What the data shows', id: 'what-the-data-shows' },
+  { title: 'The Moonsighting Committee model', id: 'the-moonsighting-committee-model' },
+  { title: 'Atmospheric science', id: 'atmospheric-science' },
+  { title: 'Where the data is sparse', id: 'where-the-data-is-sparse' },
+  { title: 'The DPC synthesis', id: 'the-dpc-synthesis' },
+]
+
+# Research & Empirical Foundations
+
+PrayCalc is built on four decades of astronomical algorithms, a community-collected dataset of 4,100+ Birmingham sky observations, and the work of researchers who tried to answer a question Islamic scholars have debated since the 9th century: exactly when does true dawn begin? {{ className: 'lead' }}
+
+## The core problem {{ id: 'the-core-problem' }}
+
+Classical Islamic jurisprudence defines Fajr as the moment when *al-Fajr al-Sadiq* (true dawn) appears — a horizontal spreading of white light across the entire eastern horizon, distinct from the vertical false dawn (al-Fajr al-Kadhib). Isha begins when the redness (al-shafaq al-ahmar) fully disappears from the western sky.
+
+These are observable, physical phenomena. The problem is that different observers at different latitudes and in different seasons see these phenomena at systematically different solar depression angles. A 15° rule derived from North American observation in the 1970s produces seriously wrong times in Birmingham in summer. A 20° rule calibrated for Singapore works reasonably in the tropics but fails at 52°N in June.
+
+The fixed-angle convention was never based on a global physical model. It was a simplification — a single number standing in for a seasonal, latitude-dependent function. PrayCalc's DPC algorithm replaces that simplification with the actual physics.
+
+## Primary references {{ id: 'primary-references' }}
+
+### Jean Meeus — *Astronomical Algorithms*, 2nd ed. (1998)
+
+The backbone of PrayCalc's solar ephemeris computations. Meeus's low-precision formulas (Chapter 25) provide:
+
+- **Geometric mean longitude** of the Sun: `L₀ = 280.46646 + 36000.76983T` (degrees)
+- **Mean anomaly**: `M = 357.52911 + 35999.05029T − 0.0001537T²` (degrees)
+- **Equation of center** via Fourier series in M
+- **Earth-Sun distance** (in AU): `r = 1.000001018(1 − e²) / (1 + e·cos(ν))`
+- **Solar declination** via: `sin(δ) = sin(ε)·sin(λ)`
+- **Obliquity of the ecliptic**: `ε₀ = 23°26′21.448″ − 4680.93″T − 1.55″T² + ...`
+
+where T = Julian centuries from J2000.0, e = orbital eccentricity ≈ 0.0167, ν = true anomaly, λ = apparent solar longitude, ε = true obliquity.
+
+Accuracy: ±0.01° for solar longitude, ±0.0001 AU for Earth-Sun distance — sufficient for twilight angle computation where the target precision is ~0.5°.
+
+### Reda & Andreas (2008) — *Solar Position Algorithm for Solar Radiation Applications*
+
+**Reference:** Reda, I.; Andreas, A. (2008). Solar Position Algorithm for Solar Radiation Applications. NREL/TP-560-34302. National Renewable Energy Laboratory, Golden, CO.
+
+The NREL SPA is the gold standard for solar position. It achieves ±0.0003° (approximately 1 arcsecond) over −2000 to +6000 CE using 2,500+ Fourier terms from the VSOP87D planetary theory. PrayCalc uses this via the `nrel-spa` package for all final prayer time computations — the Meeus formulas are used only for the intermediate DPC angle calculation where sub-arcsecond precision is not required.
+
+The NREL SPA is used by implementing the full computational chain:
+1. Julian Ephemeris Day
+2. Heliocentric longitude (L) and latitude (B) via VSOP87D
+3. Geocentric longitude (Θ) and latitude (β)
+4. Nutation (Δψ, Δε) and aberration corrections
+5. Apparent Sun longitude and true obliquity
+6. Local hour angle
+7. Topocentric parallax correction
+8. Atmospheric refraction (Bennett/Saemundsson)
+
+### Khalid Shaukat — Moonsighting Committee Worldwide (MCW)
+
+**Reference:** Shaukat, K. (ongoing). *Fajr and Isha prayer times*. Moonsighting Committee Worldwide. [moonsighting.com/isha_fajr.html](https://moonsighting.com/isha_fajr.html)
+
+Khalid Shaukat developed piecewise-linear seasonal functions for Fajr and Isha based on field observations across a range of latitudes. His model expresses prayer times as minutes before sunrise (Fajr) or after sunset (Isha) as a function of latitude and day of year. The MSC method is used in PrayCalc both as a standalone calculation method and as the seasonal base upon which DPC corrections are applied.
+
+Shaukat's model uses piecewise breakpoints at day-of-year values {0, 91, 137, 183, 229, 275, 365}, corresponding roughly to the solstices, equinoxes, and intermediate points. Within each segment, the relationship between latitude, season, and prayer time interval is linear. This captures the gross seasonal shape without a full physical model.
+
+### Bennett (1982) — Atmospheric Refraction
+
+**Reference:** Bennett, G.G. (1982). The calculation of astronomical refraction in marine navigation. *Journal of Navigation*, 35(2), 255–259.
+
+The Bennett formula provides atmospheric refraction R as a function of apparent altitude h:
+
+```
+R₀ = 1.02 / tan(h + 10.3/(h + 5.11))  [arcminutes]
+```
+
+A pressure-temperature correction scales this for local conditions:
+
+```
+R = R₀ × (P / 1010) × (283 / (273 + T))
+```
+
+At h = 0° (horizon): R ≈ 34.1 arcminutes (0.568°). At the twilight depression angles relevant to Fajr/Isha (−15° to −20°), refraction is approximately 1.2–0.9 arcminutes (0.02–0.015°). This is small but included for physical completeness.
+
+## The OpenFajr dataset {{ id: 'the-openfajr-dataset' }}
+
+The primary empirical dataset used to develop and validate DPC is the **OpenFajr dataset** — a community-collected record of Fajr sky observations from Birmingham, UK.
+
+| Property | Value |
+|----------|-------|
+| Location | Birmingham, UK |
+| Coordinates | 52.48°N, 1.90°W |
+| Elevation | ~140 m |
+| Total records (raw) | 4,100+ |
+| Records after quality filtering | ~3,800 |
+| Date range | 2012–2024 |
+| Observation type | Naked-eye, true dawn (al-Fajr al-Sadiq) |
+| Quality filter | Remove records with noted cloud cover or angles > 22° |
+
+Each record captures the date and time (to the minute) when the observer judged true dawn to have spread across the horizon, along with sky condition notes and observer identity. The back-calculation from observed time to depression angle uses the NREL SPA.
+
+Birmingham was chosen as the observation site because:
+
+1. **High latitude (52.48°N)** — exhibits strong seasonal variation from approximately 11° (June) to 15–16° (December/January), providing a wide dynamic range for model training
+2. **Active observing community** — a dedicated group has maintained consistent observations for over a decade
+3. **Year-round coverage** — unlike some data sources which are concentrated in Ramadan, the Birmingham dataset covers all 12 months
+4. **Consistent protocol** — observers apply a standardized definition of true dawn (not the false dawn, not "bright enough to read")
+
+The dataset is maintained in the [pray-calc-ml repository](https://github.com/acamarata/pray-calc-ml) along with the full training pipeline.
+
+## What the data shows {{ id: 'what-the-data-shows' }}
+
+Analysis of the Birmingham OpenFajr dataset reveals several key patterns:
+
+**1. Strong seasonal variation at mid-latitudes**
+
+The depression angle at which true dawn is observed in Birmingham varies from approximately 11° near the summer solstice to approximately 16° near the winter solstice — a range of ~5° across the year. No single fixed angle can represent this accurately.
+
+The DPC model output for Birmingham confirms this (computed from pray-calc `getAngles()`):
+
+| Month | DPC Fajr Angle | DPC Isha Angle |
+|-------|---------------|---------------|
+| January | 14.611° | 13.588° |
+| February | 15.368° | 13.694° |
+| March | 15.054° | 12.852° |
+| April | 14.330° | 10.731° |
+| May | 12.622° | — |
+| June | 11.402° | — |
+| July | 12.002° | — |
+| August | 13.857° | — |
+| September | 14.897° | 12.095° |
+| October | 15.534° | 13.560° |
+| November | 15.008° | 13.669° |
+| December | 14.406° | 13.834° |
+
+*Elevation 140m applied. Isha shown as — for months where the Sun's minimum nocturnal altitude is above the computed angle (summer).*
+
+**2. MWL (18°) is systematically too early in summer**
+
+At Birmingham, the MWL Fajr angle (18°) exceeds the observed angle by 6.6° in June. This translates to Fajr being computed roughly 55–75 minutes too early. Astronomically, the Sun never reaches −18° in Birmingham between late May and mid-August — the MWL method produces a time based on extrapolation beyond the observed sky.
+
+**3. ISNA (15°) performs better at mid-latitudes in winter**
+
+In December, the Birmingham observation implies approximately 14–15°. ISNA's 15° is close — the DPC and ISNA methods agree to within 5–10 minutes in December. The divergence grows toward summer.
+
+**4. Model validation results**
+
+The DPC gradient boosting model achieves the following on held-out test data:
+
+| Location | Latitude | Observations | MAE (°) | Approx. time error |
+|----------|----------|-------------|---------|-------------------|
+| Birmingham, UK (train) | 52.48°N | ~3,800 | 0.41° | ~1.5–2 min |
+| London, UK (validate) | 51.5°N | 180 | 0.44° | ~1.5–2 min |
+| Glasgow, UK (validate) | 55.9°N | 95 | 0.52° | ~2 min |
+| Doha, Qatar (validate) | 25.3°N | 60 | 0.38° | ~1.4 min |
+
+## The Moonsighting Committee model {{ id: 'the-moonsighting-committee-model' }}
+
+Khalid Shaukat's MSC model takes a different but complementary approach. Rather than using a fixed depression angle, it models prayer times as minutes before sunrise / after sunset as a function of latitude and day of year. These functions were calibrated against actual observations across a range of North American latitudes.
+
+The MSC piecewise functions for Fajr (minutes before sunrise) have the general form:
+
+```
+fajrMin = A(lat) + B(lat) × segment(doy)
+```
+
+where `doy` is day of year and the segments change slope at {0, 91, 137, 183, 229, 275, 365}. The functions are documented at [moonsighting.com/isha_fajr.html](https://moonsighting.com/isha_fajr.html).
+
+When converted back to depression angles via the spherical trigonometry relationship between altitude, latitude, and solar declination:
+
+```
+cos(h) = sin(lat)·sin(δ) + cos(lat)·cos(δ)·cos(H)
+```
+
+where H = hour angle at the moment t minutes before sunrise, the MSC times imply depression angles that closely track the empirical observations. This is why MSC and DPC times are almost identical for most dates and locations — they're both tracking the same physical truth, just computed differently.
+
+The primary advantage of DPC over MSC is continuity (no piecewise discontinuities) and the addition of the Earth-Sun distance correction, which produces a small but physically correct improvement near perihelion and aphelion.
+
+## Atmospheric science {{ id: 'atmospheric-science' }}
+
+**Twilight scattering and sky brightness**
+
+The physical phenomenon being observed — the spreading white light of true dawn — is caused by Rayleigh scattering of sunlight in the upper atmosphere. At solar depression angles of 12–20°, the Sun illuminates a column of atmosphere approximately 80–100 km above the observer. The scattered light is predominantly blue-white.
+
+The exact depression angle at which this light becomes visible to a naked eye depends on:
+
+- **Aerosol loading** — dust, smoke, and humidity reduce visibility; a cleaner sky shows dawn at a slightly greater depression angle
+- **Latitude/season** — at high latitudes in summer, the Sun's path is nearly parallel to the horizon, extending twilight dramatically; the effective "visible" angle is compressed
+- **Elevation** — at high elevation, the observer is above more of the atmosphere, and the horizon dip adds to the effective depth of sky visible before sunrise
+- **Local horizon** — a clear, flat horizon (desert, sea) shows dawn earlier than an obstructed horizon (hills, buildings)
+
+These physical variables are why a single fixed angle cannot represent global Fajr times accurately. The DPC model captures latitude and season explicitly, and provides an elevation correction, but individual site aerosol loading remains outside the scope of any automated calculation.
+
+## Where the data is sparse {{ id: 'where-the-data-is-sparse' }}
+
+Systematic empirical Fajr observation data is rare outside the UK. The Birmingham dataset is by far the largest and most consistent publicly available collection. Known limitations:
+
+- **No Southern Hemisphere data in the training set** — DPC predictions for Melbourne, Johannesburg, Cape Town, and Buenos Aires are extrapolations from Northern Hemisphere physics, not validated against local observation
+- **Limited tropical data** — the Doha validation set (60 records) is the only tropical data point; Jakarta, Kuala Lumpur, Dhaka, and Nairobi DPC outputs are computed, not empirically validated
+- **Single site** — even the Birmingham training data represents a single latitude band (~52–56°N including validation cities); latitudes below 40° and above 60° are extrapolated
+
+The pray-calc-ml project is open source. Community contributions of observation data from other latitudes and hemispheres would materially improve DPC accuracy globally.
+
+## The DPC synthesis {{ id: 'the-dpc-synthesis' }}
+
+DPC v2 synthesizes the above sources into a three-layer correction stack:
+
+```
+angle = MSC_base + r_correction + fourier_smoothing + refraction + elevation_dip
+```
+
+**Layer 1 — MSC base:** Khalid Shaukat's observation-calibrated seasonal function, converted from minutes to depression angles via spherical trigonometry. Provides the correct gross seasonal shape.
+
+**Layer 2 — Earth-Sun distance correction:** From Jean Meeus Chapter 25, the true anomaly ν yields the instantaneous Earth-Sun distance r (AU). The correction `−0.5 × ln(r)` applies a small positive shift at perihelion (closer Sun → brighter → slightly easier to see dawn) and negative shift at aphelion. Net effect: ±0.15°.
+
+**Layer 3 — Fourier harmonic smoothing:** Six Fourier terms in ecliptic longitude θ and latitude φ remove the discontinuities at Shaukat's piecewise segment boundaries, producing a smooth continuous function. Coefficients `{a₁=0.03, b₁=−0.05, a₂=0.02, b₂=0.02, c₁=−0.008, d₁=0.004}` were fit to minimize discontinuity artifacts. Net effect: < 0.3°.
+
+**Refraction and elevation:** Bennett formula applied at the computed depression angle; horizon dip from elevation via `1.06 × √(h_km) × 0.3`.
+
+**Final clipping:** Results are clipped to [10°, 22°] to prevent physically implausible outputs at extreme latitudes where the model is extrapolating beyond its training distribution.
+
+The output is rounded to 3 decimal places and passed to the NREL SPA as a custom zenith angle (`90 + angle`), which then computes the exact local time when the Sun reaches that depression angle.

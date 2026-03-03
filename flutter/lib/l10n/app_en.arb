@@ -1,0 +1,299 @@
+{
+  "@@locale": "en",
+
+  "appTitle": "PrayCalc",
+
+  "prayerFajr": "Fajr",
+  "prayerSunrise": "Sunrise",
+  "prayerDhuhr": "Dhuhr",
+  "prayerAsr": "Asr",
+  "prayerMaghrib": "Maghrib",
+  "prayerIsha": "Isha",
+  "prayerQiyam": "Qiyam",
+  "prayerSuhoor": "Suhoor",
+  "prayerIftar": "Iftar",
+
+  "hijriMuharram": "Muharram",
+  "hijriSafar": "Safar",
+  "hijriRabiAlAwwal": "Rabi' al-Awwal",
+  "hijriRabiAlThani": "Rabi' al-Thani",
+  "hijriJumadaAlAwwal": "Jumada al-Awwal",
+  "hijriJumadaAlThani": "Jumada al-Thani",
+  "hijriRajab": "Rajab",
+  "hijriShaban": "Sha'ban",
+  "hijriRamadan": "Ramadan",
+  "hijriShawwal": "Shawwal",
+  "hijriDhulQidah": "Dhu al-Qi'dah",
+  "hijriDhulHijjah": "Dhu al-Hijjah",
+
+  "monthJan": "Jan",
+  "monthFeb": "Feb",
+  "monthMar": "Mar",
+  "monthApr": "Apr",
+  "monthMay": "May",
+  "monthJun": "Jun",
+  "monthJul": "Jul",
+  "monthAug": "Aug",
+  "monthSep": "Sep",
+  "monthOct": "Oct",
+  "monthNov": "Nov",
+  "monthDec": "Dec",
+
+  "monthJanuary": "January",
+  "monthFebruary": "February",
+  "monthMarch": "March",
+  "monthApril": "April",
+  "monthMayFull": "May",
+  "monthJune": "June",
+  "monthJuly": "July",
+  "monthAugust": "August",
+  "monthSeptember": "September",
+  "monthOctober": "October",
+  "monthNovember": "November",
+  "monthDecember": "December",
+
+  "dayMonShort": "Mon",
+  "dayTueShort": "Tue",
+  "dayWedShort": "Wed",
+  "dayThuShort": "Thu",
+  "dayFriShort": "Fri",
+  "daySatShort": "Sat",
+  "daySunShort": "Sun",
+
+  "daySuChart": "Su",
+  "dayMoChart": "Mo",
+  "dayTuChart": "Tu",
+  "dayWeChart": "We",
+  "dayThChart": "Th",
+  "dayFrChart": "Fr",
+  "daySaChart": "Sa",
+
+  "chooseCityLabel": "Choose a city",
+  "setCityFab": "Set city",
+  "prayerTimesError": "Could not calculate prayer times.\n{error}",
+  "@prayerTimesError": {
+    "placeholders": {
+      "error": { "type": "Object" }
+    }
+  },
+  "prayerCountdownLabel": "{prayer} in",
+  "@prayerCountdownLabel": {
+    "placeholders": {
+      "prayer": { "type": "String" }
+    }
+  },
+  "ramadanMubarak": "Ramadan Mubarak 🌙",
+  "ramadanDayProgress": "Day {day} / 30",
+  "@ramadanDayProgress": {
+    "placeholders": {
+      "day": { "type": "int" }
+    }
+  },
+  "lastTenNights": "Last 10 Nights ✨",
+  "laylatulQadr": "Laylatul Qadr ✨",
+
+  "settingsTitle": "Settings",
+  "settingsSectionPrayerCalc": "Prayer Calculation",
+  "settingsHanafiAsr": "Hanafi Asr",
+  "settingsHanafiAsrSubtitle": "Shadow factor 2x (later Asr time)",
+  "settingsSectionDisplay": "Display",
+  "settings24hClock": "24-hour clock",
+  "settingsFollowSystemTheme": "Follow system theme",
+  "settingsDarkMode": "Dark mode",
+  "settingsSectionNotifications": "Notifications",
+  "settingsPrayerNotifications": "Prayer notifications",
+  "settingsPrayerNotificationsSubtitle": "Adhan, reminders, and per-prayer settings",
+  "settingsPrayerAgendas": "Prayer agendas",
+  "settingsPrayerAgendasSubtitle": "Custom reminders offset from prayer times",
+
+  "notifSettingsTitle": "Notifications & Adhan",
+  "notifAdhanLabel": "Adhan",
+  "notifReminderMinBefore": "Reminder: {minutes} min before",
+  "@notifReminderMinBefore": {
+    "placeholders": {
+      "minutes": { "type": "int" }
+    }
+  },
+  "notifVolumePct": "Volume: {pct}%",
+  "@notifVolumePct": {
+    "placeholders": {
+      "pct": { "type": "int" }
+    }
+  },
+  "notifTestAdhan": "Test adhan",
+  "notifModeOff": "Off",
+  "notifModeReminderOnly": "Reminder only",
+  "notifModeArrival": "At prayer time",
+  "notifModeBoth": "Reminder + arrival",
+
+  "citySearchHint": "Search city…",
+  "citySearchDetectTooltip": "Detect my location",
+  "citySearchNoCityGps": "Could not detect city from GPS.",
+  "citySearchPermissionDenied": "Location permission denied. Search manually.",
+  "citySearchNoResults": "No cities found.",
+  "citySearchStartTyping": "Start typing to search…",
+
+  "agendasTitle": "Prayer Agendas",
+  "agendasEmpty": "No agendas yet.\nTap + to add a reminder linked to your prayers.",
+  "agendasUndo": "Undo",
+  "agendasRemoved": "{label} removed",
+  "@agendasRemoved": {
+    "placeholders": {
+      "label": { "type": "String" }
+    }
+  },
+
+  "agendaNewTitle": "New Agenda",
+  "agendaEditTitle": "Edit Agenda",
+  "agendaSave": "Save",
+  "agendaLabelEmpty": "Label cannot be empty",
+  "agendaLabelField": "Label",
+  "agendaLabelHint": "e.g. Wake for Fajr",
+  "agendaPrayerSection": "Prayer",
+  "agendaTimeOffsetSection": "Time offset",
+  "agendaOffsetAtPrayerTime": "At prayer time",
+  "agendaOffsetMinBefore": "{minutes} min before",
+  "@agendaOffsetMinBefore": {
+    "placeholders": {
+      "minutes": { "type": "int" }
+    }
+  },
+  "agendaOffsetMinAfter": "{minutes} min after",
+  "@agendaOffsetMinAfter": {
+    "placeholders": {
+      "minutes": { "type": "int" }
+    }
+  },
+  "agendaRepeatSection": "Repeat",
+  "agendaNotifTypeSection": "Notification type",
+  "agendaNotifSilent": "Silent",
+  "agendaNotifSound": "Sound",
+  "agendaNotifVibrate": "Vibrate",
+  "agendaDayM": "M",
+  "agendaDayT": "T",
+  "agendaDayW": "W",
+  "agendaDayF": "F",
+  "agendaDayS": "S",
+
+  "moonTitle": "Moon & Hijri Calendar",
+  "moonIlluminated": "{pct}% illuminated",
+  "@moonIlluminated": {
+    "placeholders": {
+      "pct": { "type": "int" }
+    }
+  },
+  "moonFullTonight": "Full moon tonight!",
+  "moonNextTomorrow": "Next full moon tomorrow",
+  "moonNextDays": "Next full moon in {days} days",
+  "@moonNextDays": {
+    "placeholders": {
+      "days": { "type": "int" }
+    }
+  },
+  "moonAge": "Moon age: {age} days",
+  "@moonAge": {
+    "placeholders": {
+      "age": { "type": "String" }
+    }
+  },
+  "hijriTodayLabel": "Today in the Hijri Calendar",
+  "ramadanBeginsLabel": "Ramadan {year} AH begins",
+  "@ramadanBeginsLabel": {
+    "placeholders": {
+      "year": { "type": "int" }
+    }
+  },
+  "ramadanDaysAway": "{days} days away",
+  "@ramadanDaysAway": {
+    "placeholders": {
+      "days": { "type": "int" }
+    }
+  },
+
+  "calDateCol": "Date",
+  "calHijriCol": "Hijri",
+  "calFajrCol": "Fajr",
+  "calSunriseCol": "Sunrise",
+  "calDhuhrCol": "Dhuhr",
+  "calAsrCol": "Asr",
+  "calMaghribCol": "Maghrib",
+  "calIshaCol": "Isha",
+  "calNoCityText": "Set your city first\nto view the prayer calendar.",
+  "calShareTooltip": "Share calendar",
+  "calPrevMonthTooltip": "Previous month",
+  "calNextMonthTooltip": "Next month",
+  "calExportHeader": "PrayCalc — {month}",
+  "@calExportHeader": {
+    "placeholders": {
+      "month": { "type": "String" }
+    }
+  },
+  "calExportSubject": "Prayer Times — {month}",
+  "@calExportSubject": {
+    "placeholders": {
+      "month": { "type": "String" }
+    }
+  },
+
+  "qiblaTitle": "Qibla",
+  "qiblaSwitchToCompass": "Switch to compass",
+  "qiblaSwitchToAR": "Switch to AR camera",
+  "qiblaNoCityText": "Set your city first\nto calculate the Qibla direction.",
+  "qiblaCompassUnavailable": "Compass sensor unavailable on this device.",
+  "qiblaCalibrate": "Calibrate: move your phone in a figure-8 motion.",
+  "qiblaDegreesFromNorth": "{degrees}° from North",
+  "@qiblaDegreesFromNorth": {
+    "placeholders": {
+      "degrees": { "type": "int" }
+    }
+  },
+  "qiblaFrom": "From {city}",
+  "@qiblaFrom": {
+    "placeholders": {
+      "city": { "type": "String" }
+    }
+  },
+  "qiblaDistKm": "{dist} km from the Kaaba",
+  "@qiblaDistKm": {
+    "placeholders": {
+      "dist": { "type": "int" }
+    }
+  },
+  "qiblaDistThousandKm": "{dist}K km from the Kaaba",
+  "@qiblaDistThousandKm": {
+    "placeholders": {
+      "dist": { "type": "String" }
+    }
+  },
+  "qiblaFacingQibla": "Facing Qibla ✓",
+
+  "tasbeehTitle": "Tasbeeh",
+  "tasbeehResetTooltip": "Reset",
+  "tasbeehTapToSwitch": "Tap label to switch",
+  "tasbeehTapToCount": "Tap anywhere to count",
+  "tasbeehResetDialogTitle": "Reset counter?",
+  "tasbeehResetDialogContent": "This will reset the current count to zero.",
+  "tasbeehCancel": "Cancel",
+  "tasbeehReset": "Reset",
+  "tasbeehTodayDhikr": "Today: {count} dhikr",
+  "@tasbeehTodayDhikr": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "tasbeehLast7Days": "Last 7 days",
+  "tasbeehNoHistory": "No history yet — start counting!",
+  "tasbeehComplete": "Tasbih complete! {count} dhikr",
+  "@tasbeehComplete": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "tasbeehPresetComplete": "✓ {label} × {target}",
+  "@tasbeehPresetComplete": {
+    "placeholders": {
+      "label": { "type": "String" },
+      "target": { "type": "int" }
+    }
+  }
+}

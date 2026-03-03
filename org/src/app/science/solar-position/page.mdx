@@ -1,0 +1,124 @@
+export const metadata = {
+  title: 'Solar Position & NREL SPA',
+  description:
+    "How the NREL Solar Position Algorithm computes the Sun's topocentric altitude and azimuth with sub-arcsecond accuracy.",
+}
+
+export const sections = [
+  { title: 'Why solar position matters', id: 'why-solar-position-matters' },
+  { title: 'The NREL SPA algorithm', id: 'the-nrel-spa-algorithm' },
+  { title: 'Inputs and outputs', id: 'inputs-and-outputs' },
+  { title: 'Accuracy', id: 'accuracy' },
+  { title: 'Using nrel-spa', id: 'using-nrel-spa' },
+]
+
+# Solar Position & NREL SPA
+
+Every prayer time is defined by a specific position of the Sun relative to the observer. Getting that position wrong by even a fraction of a degree shifts prayer times by minutes. {{ className: 'lead' }}
+
+## Why solar position matters {{ id: 'why-solar-position-matters' }}
+
+Islamic prayer times are tied directly to solar events:
+
+- **Fajr** — Sun is at a specific depression angle below the horizon before sunrise
+- **Sunrise (Shuruq)** — upper limb of the Sun crosses the geometric horizon
+- **Dhuhr** — Sun transits the meridian (true solar noon)
+- **Asr** — shadow length equals one or two times the object height
+- **Maghrib** — upper limb of the Sun sets below the horizon
+- **Isha** — Sun reaches a specific depression angle after sunset
+
+Each of these requires knowing the Sun's **altitude** (angle above or below the horizon) and, for Qibla direction, its **azimuth** (compass bearing). The precision of these calculations directly determines the accuracy of prayer times.
+
+## The NREL SPA algorithm {{ id: 'the-nrel-spa-algorithm' }}
+
+The National Renewable Energy Laboratory's **Solar Position Algorithm** (Reda & Andreas, 2008, NREL/TP-560-34302) is the gold standard for solar position computation. It derives the Sun's position using:
+
+1. **Julian Ephemeris Day** — a continuous timescale from January 1, 4713 BC
+2. **Heliocentric longitude and latitude** — Earth's position relative to the Sun in the ecliptic plane, computed as a Fourier series with 2,500+ terms
+3. **Geocentric coordinates** — converting from heliocentric to Earth-centered frame
+4. **Nutation and aberration** — corrections for Earth's wobble and the finite speed of light
+5. **Apparent right ascension and declination** — equatorial coordinates corrected for true obliquity and aberration
+6. **Local hour angle** — the Sun's position relative to the observer's meridian
+7. **Topocentric correction** — parallax shift because the observer is on Earth's surface, not its center (~8.79 arcseconds at zenith)
+8. **Atmospheric refraction** — bending of light through the atmosphere (Bennett's formula or pressure/temperature model)
+
+The result is the Sun's **topocentric altitude** and **topocentric azimuth** — the angle above the horizon and compass direction as seen from the observer's exact location.
+
+## Inputs and outputs {{ id: 'inputs-and-outputs' }}
+
+The algorithm takes six inputs:
+
+| Input | Unit | Typical value |
+|-------|------|---------------|
+| Date and time (UTC) | ISO 8601 | `2025-06-21T12:00:00Z` |
+| Latitude | degrees | `41.4993` |
+| Longitude | degrees | `-81.6944` |
+| Elevation | metres | `200` |
+| Pressure | millibars | `1013.25` |
+| Temperature | °C | `15` |
+| ΔT (delta T) | seconds | `69.18` |
+
+**ΔT** is the difference between Terrestrial Time (TT) and Universal Time (UT1). It accounts for irregular variations in Earth's rotation rate. For current dates, ΔT ≈ 69 seconds. For historical or future dates, use published ΔT tables from IERS.
+
+The algorithm produces:
+
+| Output | Description |
+|--------|-------------|
+| Topocentric altitude | Degrees above (+) or below (−) the horizon |
+| Topocentric azimuth | Degrees clockwise from north (0–360°) |
+| Right ascension | Equatorial coordinate (hours) |
+| Declination | Equatorial coordinate (degrees) |
+| Hour angle | Angular distance from meridian (degrees) |
+
+## Accuracy {{ id: 'accuracy' }}
+
+NREL SPA achieves **±0.0003°** (about 1 arcsecond) over the years −2000 to +6000. For prayer time purposes, this corresponds to timing errors of less than one second — far below the precision needed for any practical application.
+
+Older algorithms such as Jean Meeus's simplified series (from _Astronomical Algorithms_, 1991) achieve ±0.01°, which translates to roughly 30-second timing errors. For most latitudes and seasons this is acceptable, but at high latitudes near solstices the errors compound.
+
+## Using nrel-spa {{ id: 'using-nrel-spa' }}
+
+```typescript {{ title: 'Compute solar altitude and azimuth' }}
+import { computeSolarPosition } from 'nrel-spa'
+
+const pos = computeSolarPosition({
+  date: new Date('2025-06-21T12:00:00Z'),
+  latitude: 41.4993,
+  longitude: -81.6944,
+  elevation: 200,
+  pressure: 1013.25,
+  temperature: 20,
+  deltaT: 69.18,
+})
+
+// Sun's position as seen from Cleveland, OH at solar noon on the summer solstice
+console.log(pos.topocentricAltitude)  // ~71.9° (high summer sun)
+console.log(pos.topocentricAzimuth)   // ~180.0° (due south at noon)
+console.log(pos.declination)          // ~23.44° (maximum, summer solstice)
+```
+
+```typescript {{ title: 'Find sunrise time by binary search' }}
+import { computeSolarPosition } from 'nrel-spa'
+
+function findSunrise(date: Date, lat: number, lng: number): Date {
+  // Binary search between midnight and noon for altitude = -0.8333°
+  // (-0.8333° accounts for the Sun's semi-diameter and standard refraction)
+  let lo = new Date(date)
+  lo.setUTCHours(0, 0, 0, 0)
+  let hi = new Date(date)
+  hi.setUTCHours(12, 0, 0, 0)
+
+  for (let i = 0; i < 50; i++) {
+    const mid = new Date((lo.getTime() + hi.getTime()) / 2)
+    const pos = computeSolarPosition({ date: mid, latitude: lat, longitude: lng })
+    if (pos.topocentricAltitude < -0.8333) {
+      lo = mid
+    } else {
+      hi = mid
+    }
+  }
+  return new Date((lo.getTime() + hi.getTime()) / 2)
+}
+```
+
+The `pray-calc` package uses this binary search approach for all six prayer times, with the target altitude varying by prayer and calculation method.

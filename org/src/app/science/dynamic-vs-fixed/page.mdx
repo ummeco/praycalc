@@ -1,0 +1,119 @@
+export const metadata = {
+  title: 'Dynamic vs. Fixed Angles',
+  description:
+    'How the DPC (Dynamic PrayCalc) algorithm computes physics-grounded Fajr and Isha depression angles that adapt to latitude, season, and Earth-Sun distance.',
+}
+
+export const sections = [
+  { title: 'The fixed angle problem', id: 'the-fixed-angle-problem' },
+  { title: 'The DPC approach', id: 'the-dpc-approach' },
+  { title: 'Input features', id: 'input-features' },
+  { title: 'Training data', id: 'training-data' },
+  { title: 'Comparison', id: 'comparison' },
+  { title: 'Where DPC stands today', id: 'dpc-status' },
+]
+
+# Dynamic vs. Fixed Angles
+
+Fixed depression angles were practical in the pre-computer era. Physics-grounded adaptive angles are possible now — and they handle edge cases that fixed methods cannot. {{ className: 'lead' }}
+
+## The fixed angle problem {{ id: 'the-fixed-angle-problem' }}
+
+A depression angle of 15° at the equator in March corresponds to a different atmospheric and twilight condition than 15° at 55°N in December. Fixed angles ignore:
+
+- **Latitude** — how deep the Sun's path is below the horizon at twilight varies with latitude
+- **Season** — the Sun's declination affects the angle of its path below the horizon
+- **Earth-Sun distance** — at perihelion vs. aphelion, the Sun's apparent brightness differs by ~7%
+- **Elevation** — the atmospheric column above the observer varies with altitude
+
+The consequence is that fixed angles are calibrated for a specific latitude and season. Apply them elsewhere and you get systematic error. This is most visible at high latitudes in summer, where fixed-angle methods produce times that differ from sky observation by 20–40 minutes.
+
+## The DPC approach {{ id: 'the-dpc-approach' }}
+
+DPC (Dynamic PrayCalc) computes depression angles as a function of physical inputs rather than using a fixed lookup table. The angle is treated as a continuous function:
+
+```
+angle = f(latitude, day_of_year, earth_sun_distance, elevation, ...)
+```
+
+This function was learned from empirical sky observations using machine learning. When `pray-calc` runs in dynamic mode, it calls this function to compute the optimal angle for the observer's specific location, date, and elevation, then uses that angle with the standard NREL SPA solar position calculation.
+
+## Input features {{ id: 'input-features' }}
+
+The angle prediction model uses five primary inputs:
+
+| Feature | Physical meaning |
+|---------|-----------------|
+| Latitude | How high/low the Sun's path is at twilight |
+| Day of year (sin/cos encoded) | Seasonal effect — Sun's declination |
+| Earth-Sun distance | Apparent solar brightness; affects scattering |
+| Elevation | Atmospheric column thickness |
+| Horizon obstruction (optional) | Local terrain effects |
+
+The day of year is encoded as `sin(2π × N/365)` and `cos(2π × N/365)` to preserve its cyclical nature.
+
+## Training data {{ id: 'training-data' }}
+
+The model was trained on empirical Fajr observations from the **OpenFajr dataset** — a community-sourced collection of 4,100+ sky observation records from Birmingham, UK. Each record contains:
+
+- Date and time of observed true dawn (al-Fajr al-Sadiq)
+- Observer location
+- Cloud cover and atmospheric notes
+
+Birmingham (52.5°N) is an ideal calibration location: high enough latitude to exhibit strong seasonal variation, with an active observing community documenting Fajr across all seasons since 2012.
+
+The back-calculation process:
+1. Take observed Fajr time
+2. Use NREL SPA to compute solar altitude at that moment
+3. The depression angle that matches the observation is the empirical angle for that date/location
+
+This produces (date, latitude, Earth-Sun distance, depression angle) tuples as training data. The ML model then learns the mapping. See [Machine Learning](/ml) for the full methodology.
+
+## Comparison {{ id: 'comparison' }}
+
+```typescript {{ title: 'Fixed vs. dynamic Fajr in Birmingham in summer' }}
+import { getPrayerTimes } from 'pray-calc'
+
+const base = {
+  date: new Date('2025-06-21'),
+  latitude: 52.48,
+  longitude: -1.90,
+  timezone: 'Europe/London',
+}
+
+const fixed = getPrayerTimes({ ...base, method: 'MWL' })
+const dynamic = getPrayerTimes({ ...base, method: 'DPC' })
+
+console.log('Fixed (MWL 18°) Fajr:', fixed.fajr)    // ~02:05 — unreachable
+console.log('Dynamic (DPC) Fajr:', dynamic.fajr)     // ~03:12 — matches observation
+```
+
+At Birmingham on the summer solstice, the Sun's minimum nocturnal altitude is about −14°. The MWL method requires −18° for Fajr — an angle that's never reached. The DPC algorithm computes an angle that matches what observers actually see in the sky, typically around 11–12° for that location and season.
+
+In winter at the same location:
+
+```typescript {{ title: 'Fixed vs. dynamic Fajr in Birmingham in winter' }}
+const winter = { ...base, date: new Date('2025-12-21') }
+
+const fixedW = getPrayerTimes({ ...winter, method: 'MWL' })
+const dynamicW = getPrayerTimes({ ...winter, method: 'DPC' })
+
+console.log('Fixed (MWL) Fajr:', fixedW.fajr)    // ~06:28
+console.log('Dynamic (DPC) Fajr:', dynamicW.fajr) // ~06:31 — close, within 3 min
+```
+
+At mid-latitudes in winter, fixed and dynamic methods converge. The DPC angle for Birmingham in December is close to 17°, which is close to MWL's 18°. The divergence grows with latitude and season.
+
+## Where DPC stands today {{ id: 'dpc-status' }}
+
+DPC v2 is the most accurate method available. Before DPC, MSC (Moon Sighting Calculation) represented the state of the art for physics-based Fajr angles. DPC builds on and supersedes MSC — it uses the same physical inputs but replaces the theoretical formula with an empirically trained model.
+
+That said, DPC v2 is honest about its limits. The training data comes primarily from Birmingham, UK — a high-latitude Northern European city. At that location and at similar latitudes, DPC v2 times closely match observed sky conditions. At equatorial and Southern Hemisphere locations, the model is extrapolating beyond its training distribution. Times may still be off by a few minutes compared to what a trained observer would see on the ground.
+
+This is the target for the next two versions:
+
+**DPC v2.2** adds observation data from Southern Hemisphere and equatorial locations to the training set. Goal: reduce non-European error from roughly 5 minutes to roughly 2 minutes.
+
+**DPC v3** trains on a large multi-source dataset — Birmingham OpenFajr, Karachi Shaukat/MCW observations, and additional community records from equatorial Africa, Southeast Asia, and North America. The goal for v3 is sub-2-minute accuracy at any location on Earth: times that match what a careful sky observer actually sees.
+
+Until then, DPC is the best available choice. For locations outside Northern Europe, using `fajrOffset` in the `pray-calc` options can close the remaining gap while v2.2 and v3 are in development. See [Machine Learning](/ml) for the full training methodology.

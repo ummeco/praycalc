@@ -1,0 +1,123 @@
+export const metadata = {
+  title: 'Internationalization',
+  description:
+    'PrayCalc supports 8 languages with full RTL layout for Arabic and Urdu. Built on next-intl with locale detection and zero URL changes.',
+}
+
+export const sections = [
+  { title: 'Supported languages', id: 'supported-languages' },
+  { title: 'RTL layout', id: 'rtl-layout' },
+  { title: 'Locale detection', id: 'locale-detection' },
+  { title: 'Translation files', id: 'translation-files' },
+  { title: 'Adding a language', id: 'adding-a-language' },
+]
+
+# Internationalization
+
+PrayCalc supports 8 languages. Switch languages via Settings — the URL stays the same, so prayer time links remain shareable across locales. {{ className: 'lead' }}
+
+## Supported languages {{ id: 'supported-languages' }}
+
+| Code | Language | Script | Direction |
+|------|----------|--------|-----------|
+| `en` | English | Latin | LTR |
+| `ar` | العربية (Arabic) | Arabic | RTL |
+| `tr` | Türkçe (Turkish) | Latin | LTR |
+| `ur` | اردو (Urdu) | Nastaliq | RTL |
+| `id` | Bahasa Indonesia | Latin | LTR |
+| `fr` | Français (French) | Latin | LTR |
+| `bn` | বাংলা (Bengali) | Bengali | LTR |
+| `so` | Soomaali (Somali) | Latin | LTR |
+
+The default locale is English (`en`). All prayer names are fully translated including Arabic script equivalents.
+
+## RTL layout {{ id: 'rtl-layout' }}
+
+For Arabic and Urdu, PrayCalc switches to right-to-left layout automatically. The `<html>` element receives `dir="rtl"` when the active locale is `ar` or `ur`.
+
+```tsx
+<html
+  lang={locale}
+  dir={locale === 'ar' || locale === 'ur' ? 'rtl' : 'ltr'}
+>
+```
+
+Tailwind CSS provides first-class RTL support via logical properties (`ms-*`, `me-*`, `ps-*`, `pe-*`). Components that use these utilities flip correctly without extra CSS.
+
+The Arabic prayer names are sourced directly from Islamic tradition:
+
+| Prayer | Arabic | Transliteration |
+|--------|--------|-----------------|
+| Fajr | الفجر | al-Fajr |
+| Sunrise | الشروق | ash-Shurūq |
+| Dhuhr | الظهر | adh-Dhuhr |
+| Asr | العصر | al-ʿAsr |
+| Maghrib | المغرب | al-Maghrib |
+| Isha | العشاء | al-ʿIshāʾ |
+| Qiyam | قيام الليل | Qiyām al-Layl |
+
+## Locale detection {{ id: 'locale-detection' }}
+
+PrayCalc uses `next-intl` with `localePrefix: "never"` — locale is **never** added to URLs. Prayer time URLs remain clean:
+
+```
+https://praycalc.com/us/alabama/birmingham
+                    ↑ not /en/us/alabama/birmingham
+```
+
+Locale detection order:
+
+1. `NEXT_LOCALE` cookie (set when user selects a language in Settings)
+2. `Accept-Language` HTTP header (browser preference)
+3. Default: `en`
+
+When a user changes their language in Settings, the preference is saved as a cookie and persists across visits.
+
+## Translation files {{ id: 'translation-files' }}
+
+Translation strings live in `messages/{locale}.json` at the root of `praycalc/web`. Each file follows the same structure:
+
+```json
+{
+  "prayers": {
+    "Fajr": "Fajr",
+    "Sunrise": "Sunrise",
+    "Dhuhr": "Dhuhr",
+    "Asr": "Asr",
+    "Maghrib": "Maghrib",
+    "Isha": "Isha",
+    "Qiyam": "Qiyam"
+  },
+  "ui": {
+    "prayerTimesIn": "Prayer Times in {city}",
+    "settings": "Settings"
+  }
+}
+```
+
+String interpolation uses `{variable}` syntax. In components, strings are accessed via:
+
+```tsx
+// Client component
+import { useTranslations } from 'next-intl';
+const t = useTranslations('prayers');
+// t('Fajr') → "الفجر" in Arabic
+```
+
+```tsx
+// Server component or layout
+import { getTranslations } from 'next-intl/server';
+const t = await getTranslations('ui');
+// t('prayerTimesIn', { city: 'Mecca' }) → "مواقيت الصلاة في مكة المكرمة"
+```
+
+## Adding a language {{ id: 'adding-a-language' }}
+
+1. Create `messages/{locale}.json` — copy `messages/en.json` and translate all values
+2. Add the locale code to `i18n/routing.ts`:
+   ```ts
+   locales: ['en', 'ar', 'tr', 'ur', 'id', 'fr', 'bn', 'so', 'new-locale'],
+   ```
+3. Add the language name to each existing `messages/*.json` under the `"language"` key
+4. If RTL: add the locale code to the `dir` check in `app/layout.tsx`
+5. Submit a pull request — community translations welcome

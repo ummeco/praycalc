@@ -1,0 +1,89 @@
+export const metadata = {
+  title: 'Atmospheric Refraction',
+  description:
+    'How the atmosphere bends sunlight near the horizon, raising the apparent Sun position and affecting prayer time calculations.',
+}
+
+export const sections = [
+  { title: 'What is refraction', id: 'what-is-refraction' },
+  { title: 'Standard refraction correction', id: 'standard-refraction-correction' },
+  { title: 'Bennett formula', id: 'bennett-formula' },
+  { title: 'Pressure and temperature effects', id: 'pressure-and-temperature-effects' },
+  { title: 'Implications for prayer times', id: 'implications-for-prayer-times' },
+]
+
+# Atmospheric Refraction
+
+The Sun you see at the horizon is not where it actually is. Earth's atmosphere bends light, lifting the apparent Sun position by about 0.57° at the horizon. This is large enough to matter for prayer times. {{ className: 'lead' }}
+
+## What is refraction {{ id: 'what-is-refraction' }}
+
+Light travels in a straight line through a uniform medium. But the atmosphere is not uniform — it gets progressively thinner (less dense) with altitude. As sunlight enters the atmosphere from space, it passes through layers of increasing density, bending it toward the denser layer below.
+
+The result: light from the Sun arrives at your eye on a curved path. The apparent direction of the Sun is higher than its geometric direction.
+
+At the zenith (Sun directly overhead), refraction is negligible — the light arrives nearly perpendicular to the atmospheric layers. Near the horizon, the light travels through the longest atmospheric path, and refraction is largest: approximately **0.57°** for standard sea-level conditions.
+
+This is why the Sun appears to still be above the horizon at geometric sunset — its light is bent around the curve of the Earth, and you're seeing it through a thick atmospheric lens.
+
+## Standard refraction correction {{ id: 'standard-refraction-correction' }}
+
+For sunrise and sunset calculations, the standard correction combines:
+
+1. **Atmospheric refraction at the horizon**: ~0.567°
+2. **Sun's semi-diameter**: ~0.267° (the Sun's disk is ~0.533° wide; sunrise is when the upper limb, not center, crosses the horizon)
+
+Combined correction: **~0.8333°** (50 arcminutes)
+
+This means geometric sunrise is defined as the moment when the Sun's center is at −0.8333° altitude — accounting for the disk and refraction together.
+
+For Fajr and Isha, the target altitude is −(depression angle), e.g., −15° for ISNA Fajr. Refraction at these angles is small (about 0.02°) and is already included in the NREL SPA computation.
+
+## Bennett formula {{ id: 'bennett-formula' }}
+
+The most widely used refraction approximation for altitudes above −5° is **Bennett's formula** (1982):
+
+```
+R = 1.02 / tan(h + 10.3 / (h + 5.11))
+```
+
+Where:
+- `R` is the refraction in arcminutes
+- `h` is the apparent altitude in degrees
+
+At h = 0° (horizon): R ≈ 34.1 arcminutes (0.57°)
+At h = 5°: R ≈ 9.9 arcminutes
+At h = 10°: R ≈ 5.6 arcminutes
+At h = 45°: R ≈ 1.0 arcminute
+At h = 90°: R = 0 (no refraction at zenith)
+
+Bennett's formula is accurate to about 0.07 arcminutes for standard atmospheric conditions. It is used in many prayer time libraries and almanac software.
+
+## Pressure and temperature effects {{ id: 'pressure-and-temperature-effects' }}
+
+Refraction depends on air density, which varies with pressure and temperature. The NREL SPA applies a correction factor:
+
+```
+R_corrected = R × (P / 1010) × (283 / (273 + T))
+```
+
+Where:
+- `P` is surface pressure in millibars (standard: 1013.25 mb)
+- `T` is surface temperature in °C (standard: 10°C)
+
+**Altitude effects**: At 3,000 metres elevation (e.g., cities in the Ethiopian highlands or mountain cities in Pakistan), pressure is about 710 mb — 70% of sea level. Refraction is reduced proportionally, shifting sunrise/sunset by about 20–25 seconds.
+
+**Temperature effects**: A cold winter day at −20°C vs. a hot summer day at 40°C changes refraction by about 6%, shifting times by 10–15 seconds.
+
+For most prayer time applications, the standard correction is sufficient. The `nrel-spa` package exposes `pressure` and `temperature` parameters for those who need exact corrections for high-altitude or extreme-climate locations.
+
+## Implications for prayer times {{ id: 'implications-for-prayer-times' }}
+
+Refraction primarily affects:
+
+- **Sunrise/Shuruq** — the 0.8333° correction is essential; without it, computed sunrise would be ~2 minutes late
+- **Maghrib** — same correction applies at sunset
+- **Fajr/Isha** — small refraction at −15° to −20° altitude (< 0.02°), negligible in practice
+- **Extreme altitude locations** — Mecca (~270m), Medina (~620m), Kabul (~1,800m), Addis Ababa (~2,300m) all have noticeably reduced refraction
+
+The `pray-calc` package uses the full NREL SPA refraction model including pressure and temperature corrections when those inputs are provided.

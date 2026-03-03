@@ -1,0 +1,109 @@
+export const metadata = {
+  title: 'hijri-core',
+  description:
+    'Zero-dependency Hijri calendar engine. Umm al-Qura and FCNA/ISNA astronomical systems. Unlimited date range.',
+}
+
+export const sections = [
+  { title: 'Overview', id: 'overview' },
+  { title: 'Installation', id: 'installation' },
+  { title: 'API', id: 'api' },
+  { title: 'Calendar systems', id: 'calendar-systems' },
+  { title: 'Custom calendars', id: 'custom-calendars' },
+]
+
+# hijri-core
+
+Zero-dependency Hijri calendar conversion. Supports Umm al-Qura (Saudi official) and FCNA/ISNA (astronomical) systems with unlimited date range. {{ className: 'lead' }}
+
+## Overview {{ id: 'overview' }}
+
+`hijri-core` converts dates between the Gregorian and Islamic Hijri calendars. It is the core engine used by `luxon-hijri` and directly by `pray-calc` for Hijri date display.
+
+- Zero runtime dependencies
+- Umm al-Qura table (1318–1500 AH, Saudi Arabia)
+- FCNA/ISNA astronomical calculation (unlimited range)
+- Accurate to within ±1 day of the official Saudi calendar
+- TypeScript-first, ESM + CJS
+
+**GitHub:** [github.com/acamarata/hijri-core](https://github.com/acamarata/hijri-core)
+
+## Installation {{ id: 'installation' }}
+
+```bash
+pnpm add hijri-core
+```
+
+## API {{ id: 'api' }}
+
+### toHijri
+
+`toHijri(date: Date, system?: HijriSystem): HijriDate` — converts a Gregorian date to Hijri.
+
+```typescript {{ title: 'Gregorian to Hijri' }}
+import { toHijri } from 'hijri-core'
+
+const hijri = toHijri(new Date('2025-03-29'))
+console.log(hijri)
+// { year: 1446, month: 9, day: 29, monthName: 'Ramadan', system: 'ummAlQura' }
+
+const astro = toHijri(new Date('2025-03-29'), 'fcna')
+console.log(astro)
+// { year: 1446, month: 9, day: 29, monthName: 'Ramadan', system: 'fcna' }
+```
+
+### toGregorian
+
+`toGregorian(hijri: HijriDate, system?: HijriSystem): Date` — converts a Hijri date to Gregorian.
+
+```typescript {{ title: 'Hijri to Gregorian' }}
+import { toGregorian } from 'hijri-core'
+
+const date = toGregorian({ year: 1446, month: 10, day: 1 })
+console.log(date.toISOString().slice(0, 10))  // "2025-03-30"
+```
+
+### getHijriMonthLength
+
+```typescript
+getHijriMonthLength(year: number, month: number, system?: HijriSystem): number
+```
+
+Returns the number of days in a Hijri month (29 or 30).
+
+## Calendar systems {{ id: 'calendar-systems' }}
+
+`hijri-core` supports two Hijri calendar systems:
+
+**Umm al-Qura** (`'ummAlQura'`, default):
+- Saudi Arabia's official Hijri calendar
+- Based on a pre-computed table (1318–1500 AH = 1900–2077 CE)
+- Months begin on the day after astronomical conjunction
+- Used throughout the Arab world for official dates
+- Deviates from astronomical observation by 0–2 days due to the table calculation
+
+**FCNA / ISNA** (`'fcna'`):
+- Used by Fiqh Council of North America and ISNA
+- Based on astronomical new moon calculation
+- Not limited to a specific date range
+- Often differs from Umm al-Qura by 1–2 days
+- See [Hijri Calendar Systems](/hijri) for a full comparison
+
+## Custom calendars {{ id: 'custom-calendars' }}
+
+```typescript {{ title: 'Register a custom calendar engine' }}
+import { registerCalendar } from 'hijri-core'
+
+registerCalendar('myCalendar', {
+  toHijri(date: Date): HijriDate {
+    // your conversion logic
+  },
+  toGregorian(hijri: HijriDate): Date {
+    // your conversion logic
+  },
+})
+
+const result = toHijri(new Date(), 'myCalendar')
+```
+
+This allows integrating observation-based calendars, regional variants, or future astronomical models.
