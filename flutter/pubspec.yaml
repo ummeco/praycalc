@@ -37,6 +37,11 @@ dependencies:
   geolocator: ^13.0.4
   geocoding: ^3.0.0
 
+  # Auth + Sync
+  graphql: ^5.2.0
+  flutter_secure_storage: ^9.2.0
+  connectivity_plus: ^6.1.0
+
   # Network
   http: ^1.2.2
   hijri: ^3.0.0
@@ -57,6 +62,9 @@ dependencies:
   fl_chart: ^1.1.1
   in_app_review: ^2.0.10
   sentry_flutter: ^9.0.0
+
+  # TV display — keep screen on
+  wakelock_plus: ^1.2.8
 
   # OTA auto-update
   shorebird_code_push: ^1.1.0

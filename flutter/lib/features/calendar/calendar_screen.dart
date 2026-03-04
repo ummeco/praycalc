@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hijri/hijri_calendar.dart';
 import 'package:pray_calc_dart/pray_calc_dart.dart';
 import 'package:share_plus/share_plus.dart';
@@ -10,8 +11,10 @@ import 'package:timezone/data/latest_10y.dart' as tz_data;
 
 import '../../core/providers/prayer_provider.dart';
 import '../../core/providers/settings_provider.dart';
+import '../../core/router/app_router.dart';
 import '../../core/theme/app_theme.dart';
 import '../../shared/models/settings_model.dart';
+import 'ical_service.dart';
 
 /// Monthly prayer time calendar — PC-3.11.
 /// Gregorian + Hijri header, month navigation, today highlight, text export.
@@ -95,6 +98,31 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
           ],
         ),
         actions: [
+          if (city != null)
+            IconButton(
+              icon: const Icon(Icons.calendar_view_month),
+              tooltip: 'Yearly calendar',
+              onPressed: () => context.push(Routes.yearlyCalendar),
+            ),
+          if (city != null)
+            IconButton(
+              icon: const Icon(Icons.event_note),
+              tooltip: 'Export .ics',
+              onPressed: () {
+                final ical = ICalService.generateIcal(
+                  city: city,
+                  hanafi: settings.hanafi,
+                  year: _month.year,
+                  month: _month.month,
+                );
+                SharePlus.instance.share(
+                  ShareParams(
+                    text: ical,
+                    subject: 'Prayer Times - ${_monthLabel(_month)} - ${city.name}.ics',
+                  ),
+                );
+              },
+            ),
           if (city != null)
             IconButton(
               icon: const Icon(Icons.share),

@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/providers/auth_provider.dart';
 import '../../core/providers/settings_provider.dart';
+import '../../core/providers/sync_provider.dart';
 import '../../core/router/app_router.dart';
+import '../../core/services/sync_service.dart';
 
 /// Supported locales: (display name, language code or null for system default).
 const _supportedLocales = [
@@ -27,6 +30,8 @@ class SettingsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final settings = ref.watch(settingsProvider);
     final notifier = ref.read(settingsProvider.notifier);
+    final auth = ref.watch(authProvider);
+    final sync = ref.watch(syncProvider);
 
     final currentLocaleLabel = _supportedLocales
         .firstWhere(
@@ -39,6 +44,45 @@ class SettingsScreen extends ConsumerWidget {
       appBar: AppBar(title: const Text('Settings')),
       body: ListView(
         children: [
+          // ── Account & Sync ──────────────────────────────────────────────
+          const _SectionHeader('Account'),
+          if (auth.isAuthenticated) ...[
+            ListTile(
+              leading: CircleAvatar(
+                backgroundColor: Theme.of(context).colorScheme.primary,
+                child: Text(
+                  auth.user?.initials ?? '?',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              title: Text(auth.user?.displayName ?? auth.user?.email ?? ''),
+              subtitle: Row(
+                children: [
+                  Icon(
+                    _syncIcon(sync.status),
+                    size: 14,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+                  const SizedBox(width: 4),
+                  Text(_syncStatusLabel(sync.status)),
+                ],
+              ),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => context.push(Routes.account),
+            ),
+          ] else ...[
+            ListTile(
+              leading: const Icon(Icons.sync),
+              title: const Text('Sign in to sync'),
+              subtitle: const Text('Keep your data across devices'),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => context.push(Routes.login),
+            ),
+          ],
+
           // ── Prayer calculation ───────────────────────────────────────────
           const _SectionHeader('Prayer Calculation'),
           SwitchListTile(
@@ -104,6 +148,14 @@ class SettingsScreen extends ConsumerWidget {
             value: settings.prayerTrackingEnabled,
             onChanged: notifier.setPrayerTrackingEnabled,
           ),
+          if (settings.prayerTrackingEnabled)
+            ListTile(
+              leading: const Icon(Icons.bar_chart),
+              title: const Text('Prayer statistics'),
+              subtitle: const Text('Streaks, weekly and monthly charts'),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => context.push(Routes.stats),
+            ),
 
           // ── Notifications ────────────────────────────────────────────────
           const _SectionHeader('Notifications'),
@@ -162,6 +214,30 @@ class SettingsScreen extends ConsumerWidget {
               onTap: () => _setHomeLocation(context, notifier),
             ),
 
+          // ── TV Display ──────────────────────────────────────────────────
+          const _SectionHeader('TV Display'),
+          ListTile(
+            leading: const Icon(Icons.tv),
+            title: const Text('TV home display'),
+            subtitle: const Text('Full-screen prayer clock for TV'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => context.push(Routes.tvHome),
+          ),
+          ListTile(
+            leading: const Icon(Icons.mosque),
+            title: const Text('Masjid display'),
+            subtitle: const Text('Adhan/iqamah table for masjid screens'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => context.push(Routes.tvMasjid),
+          ),
+          ListTile(
+            leading: const Icon(Icons.settings_outlined),
+            title: const Text('TV settings'),
+            subtitle: const Text('Masjid mode, iqamah offsets, ambient'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => context.push(Routes.tvSettings),
+          ),
+
           // ── About ─────────────────────────────────────────────────────────
           const _SectionHeader('About'),
           ListTile(
@@ -173,6 +249,32 @@ class SettingsScreen extends ConsumerWidget {
         ],
       ),
     );
+  }
+
+  IconData _syncIcon(SyncStatus status) {
+    switch (status) {
+      case SyncStatus.synced:
+        return Icons.cloud_done;
+      case SyncStatus.syncing:
+        return Icons.cloud_sync;
+      case SyncStatus.offline:
+        return Icons.cloud_off;
+      case SyncStatus.error:
+        return Icons.cloud_off;
+    }
+  }
+
+  String _syncStatusLabel(SyncStatus status) {
+    switch (status) {
+      case SyncStatus.synced:
+        return 'Synced';
+      case SyncStatus.syncing:
+        return 'Syncing...';
+      case SyncStatus.offline:
+        return 'Offline';
+      case SyncStatus.error:
+        return 'Sync error';
+    }
   }
 
   Future<void> _setHomeLocation(

@@ -18,6 +18,7 @@ import '../../shared/models/settings_model.dart';
 import '../../shared/widgets/breathing_ring.dart';
 import '../../shared/widgets/sky_gradient_background.dart';
 import '../../shared/widgets/travel_banner.dart';
+import 'pinned_cities_bar.dart';
 import 'widgets/share_prayer_card.dart';
 
 // ─── Prayer metadata ──────────────────────────────────────────────────────────
@@ -145,6 +146,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       ),
       body: Column(
         children: [
+          const PinnedCitiesBar(),
           _DayTabBar(
             selectedPage: _dayPage,
             now: _now,

@@ -3,8 +3,11 @@ import 'package:go_router/go_router.dart';
 
 import '../../features/agendas/agenda_edit_screen.dart';
 import '../../features/agendas/agenda_list_screen.dart';
+import '../../features/auth/account_screen.dart';
+import '../../features/auth/login_screen.dart';
 import '../../shared/models/agenda_model.dart';
 import '../../features/calendar/calendar_screen.dart';
+import '../../features/calendar/yearly_calendar_screen.dart';
 import '../../features/city_search/city_search_screen.dart';
 import '../../features/home/home_screen.dart';
 import '../../features/moon/moon_screen.dart';
@@ -13,7 +16,12 @@ import '../../features/qibla/qibla_screen.dart';
 import '../../features/settings/about_screen.dart';
 import '../../features/settings/notification_settings_screen.dart';
 import '../../features/settings/settings_screen.dart';
+import '../../features/stats/prayer_stats_screen.dart';
 import '../../features/tasbeeh/tasbeeh_screen.dart';
+import '../../features/tv/tv_ambient_screen.dart';
+import '../../features/tv/tv_home_screen.dart';
+import '../../features/tv/tv_masjid_screen.dart';
+import '../../features/tv/tv_settings_screen.dart';
 
 /// Named route paths.
 class Routes {
@@ -29,6 +37,14 @@ class Routes {
   static const tasbeeh              = '/tasbeeh';
   static const agendas              = '/agendas';
   static const agendaEdit           = '/agendas/edit';
+  static const stats                = '/stats';
+  static const yearlyCalendar       = '/yearly-calendar';
+  static const login                = '/login';
+  static const account              = '/account';
+  static const tvHome               = '/tv';
+  static const tvMasjid             = '/tv/masjid';
+  static const tvSettings           = '/tv/settings';
+  static const tvAmbient            = '/tv/ambient';
 }
 
 /// Set to true after first launch check resolves — prevents flicker redirect.
@@ -113,6 +129,40 @@ final appRouter = GoRouter(
     GoRoute(
       path: Routes.about,
       builder: (context, state) => const AboutScreen(),
+    ),
+    GoRoute(
+      path: Routes.stats,
+      builder: (context, state) => const PrayerStatsScreen(),
+    ),
+    // ── Auth routes ──────────────────────────────────────────────────────
+    GoRoute(
+      path: Routes.login,
+      builder: (context, state) => const LoginScreen(),
+    ),
+    GoRoute(
+      path: Routes.account,
+      builder: (context, state) => const AccountScreen(),
+    ),
+    GoRoute(
+      path: Routes.yearlyCalendar,
+      builder: (context, state) => const YearlyCalendarScreen(),
+    ),
+    // ── TV routes ──────────────────────────────────────────────────────────
+    GoRoute(
+      path: Routes.tvHome,
+      builder: (context, state) => const TvHomeScreen(),
+    ),
+    GoRoute(
+      path: Routes.tvMasjid,
+      builder: (context, state) => const TvMasjidScreen(),
+    ),
+    GoRoute(
+      path: Routes.tvSettings,
+      builder: (context, state) => const TvSettingsScreen(),
+    ),
+    GoRoute(
+      path: Routes.tvAmbient,
+      builder: (context, state) => const TvAmbientScreen(),
     ),
   ],
 );

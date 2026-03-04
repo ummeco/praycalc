@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- DreamService metadata: PrayCalc screensaver for Android TV / Fire TV.
+     Allows users to select PrayCalc in Settings → Screen saver. -->
+<dream xmlns:android="http://schemas.android.com/apk/res/android"
+    android:settingsActivity="com.praycalc.praycalc_app.MainActivity" />
