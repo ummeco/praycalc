@@ -1,0 +1,79 @@
+{
+  "name": "pray-calc",
+  "version": "2.0.0",
+  "description": "Islamic prayer times with a physics-grounded dynamic twilight angle algorithm. Covers Fajr, Sunrise, Dhuhr, Asr, Maghrib, Isha, Qiyam. Includes 14 traditional fixed-angle methods for comparison.",
+  "author": "Aric Camarata",
+  "license": "MIT",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.cjs"
+      }
+    }
+  },
+  "sideEffects": false,
+  "files": [
+    "dist/",
+    "src/",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
+    "pretest": "tsup",
+    "test": "node test.mjs && node test-cjs.cjs",
+    "prepublishOnly": "tsup"
+  },
+  "keywords": [
+    "prayer-times",
+    "islamic-prayer-times",
+    "adhan-times",
+    "fajr",
+    "dhuhr",
+    "asr",
+    "maghrib",
+    "isha",
+    "qiyam",
+    "sunrise",
+    "sunset",
+    "solar-position",
+    "twilight",
+    "dynamic-angles",
+    "nrel-spa",
+    "javascript",
+    "typescript"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/acamarata/pray-calc.git"
+  },
+  "homepage": "https://github.com/acamarata/pray-calc#readme",
+  "bugs": {
+    "url": "https://github.com/acamarata/pray-calc/issues"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "dependencies": {
+    "nrel-spa": "^2.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^25.3.0",
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3"
+  }
+}

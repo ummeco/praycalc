@@ -27,8 +27,8 @@ importers:
         specifier: ^3.0.3
         version: 3.0.3
       pray-calc:
-        specifier: file:../web/node_modules/pray-calc
-        version: file:../web/node_modules/pray-calc
+        specifier: file:./vendor/pray-calc
+        version: file:vendor/pray-calc
       stripe:
         specifier: ^17.0.0
         version: 17.7.0
@@ -1259,8 +1259,8 @@ packages:
     resolution: {integrity: sha512-OW/rX8O/jXnm82Ey1k44pObPtdblfiuWnrd8X7GJ7emImCOstunGbXUpp7HdBrFQX6rJzn3sPT397Wp5aCwCHg==}
     engines: {node: ^10 || ^12 || >=14}
 
-  pray-calc@file:../web/node_modules/pray-calc:
-    resolution: {directory: ../web/node_modules/pray-calc, type: directory}
+  pray-calc@file:vendor/pray-calc:
+    resolution: {directory: vendor/pray-calc, type: directory}
     engines: {node: '>=20'}
 
   prelude-ls@1.2.1:
@@ -2586,7 +2586,7 @@ snapshots:
       picocolors: 1.1.1
       source-map-js: 1.2.1
 
-  pray-calc@file:../web/node_modules/pray-calc:
+  pray-calc@file:vendor/pray-calc:
     dependencies:
       nrel-spa: 2.0.1
 
