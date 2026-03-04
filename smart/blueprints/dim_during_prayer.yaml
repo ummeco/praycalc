@@ -1,0 +1,151 @@
+blueprint:
+  name: "PrayCalc: Dim Lights During Prayer Time"
+  description: >
+    Dims lights when a prayer time arrives and restores them after a set duration.
+    Helps create a calm atmosphere for prayer. Select which prayers to apply this to
+    and how long the dimming lasts.
+  domain: automation
+  author: PrayCalc
+  source_url: https://github.com/ummeco/praycalc/blob/main/smart/blueprints/dim_during_prayer.yaml
+  input:
+    light_target:
+      name: Lights
+      description: The lights to dim during prayer time.
+      selector:
+        target:
+          entity:
+            domain: light
+    dim_brightness:
+      name: Dim brightness
+      description: Brightness level during prayer (percentage).
+      default: 20
+      selector:
+        number:
+          min: 1
+          max: 50
+          unit_of_measurement: "%"
+          mode: slider
+    restore_brightness:
+      name: Restore brightness
+      description: Brightness to restore after prayer (percentage).
+      default: 80
+      selector:
+        number:
+          min: 50
+          max: 100
+          unit_of_measurement: "%"
+          mode: slider
+    prayer_duration:
+      name: Prayer duration
+      description: How many minutes to keep lights dimmed.
+      default: 15
+      selector:
+        number:
+          min: 5
+          max: 45
+          unit_of_measurement: minutes
+          mode: slider
+    transition_time:
+      name: Transition time
+      description: Seconds for the dimming and brightening transition.
+      default: 5
+      selector:
+        number:
+          min: 1
+          max: 30
+          unit_of_measurement: seconds
+          mode: slider
+    include_fajr:
+      name: Include Fajr
+      default: true
+      selector:
+        boolean:
+    include_dhuhr:
+      name: Include Dhuhr
+      default: true
+      selector:
+        boolean:
+    include_asr:
+      name: Include Asr
+      default: true
+      selector:
+        boolean:
+    include_maghrib:
+      name: Include Maghrib
+      default: true
+      selector:
+        boolean:
+    include_isha:
+      name: Include Isha
+      default: true
+      selector:
+        boolean:
+
+variables:
+  include_fajr: !input include_fajr
+  include_dhuhr: !input include_dhuhr
+  include_asr: !input include_asr
+  include_maghrib: !input include_maghrib
+  include_isha: !input include_isha
+
+trigger:
+  - platform: time
+    at: sensor.praycalc_fajr
+    id: fajr
+  - platform: time
+    at: sensor.praycalc_dhuhr
+    id: dhuhr
+  - platform: time
+    at: sensor.praycalc_asr
+    id: asr
+  - platform: time
+    at: sensor.praycalc_maghrib
+    id: maghrib
+  - platform: time
+    at: sensor.praycalc_isha
+    id: isha
+
+condition:
+  - condition: or
+    conditions:
+      - condition: and
+        conditions:
+          - condition: trigger
+            id: fajr
+          - "{{ include_fajr }}"
+      - condition: and
+        conditions:
+          - condition: trigger
+            id: dhuhr
+          - "{{ include_dhuhr }}"
+      - condition: and
+        conditions:
+          - condition: trigger
+            id: asr
+          - "{{ include_asr }}"
+      - condition: and
+        conditions:
+          - condition: trigger
+            id: maghrib
+          - "{{ include_maghrib }}"
+      - condition: and
+        conditions:
+          - condition: trigger
+            id: isha
+          - "{{ include_isha }}"
+
+action:
+  - service: light.turn_on
+    target: !input light_target
+    data:
+      brightness_pct: !input dim_brightness
+      transition: !input transition_time
+  - delay:
+      minutes: !input prayer_duration
+  - service: light.turn_on
+    target: !input light_target
+    data:
+      brightness_pct: !input restore_brightness
+      transition: !input transition_time
+
+mode: restart

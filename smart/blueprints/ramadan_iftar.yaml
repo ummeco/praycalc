@@ -1,0 +1,170 @@
+blueprint:
+  name: "PrayCalc: Ramadan Iftar Countdown"
+  description: >
+    Sends countdown notifications as Maghrib (Iftar time) approaches during Ramadan.
+    Notifies at configurable intervals before Iftar, and a final "Iftar time!"
+    notification at Maghrib. Activates only during Ramadan (Hijri month 9).
+  domain: automation
+  author: PrayCalc
+  source_url: https://github.com/ummeco/praycalc/blob/main/smart/blueprints/ramadan_iftar.yaml
+  input:
+    notify_service:
+      name: Notification service
+      description: The notification service for countdown alerts.
+      selector:
+        text:
+    first_reminder:
+      name: First reminder (minutes before Maghrib)
+      description: When to send the first countdown notification.
+      default: 30
+      selector:
+        number:
+          min: 10
+          max: 60
+          unit_of_measurement: minutes
+          mode: slider
+    second_reminder:
+      name: Second reminder (minutes before Maghrib)
+      description: When to send the second countdown notification.
+      default: 10
+      selector:
+        number:
+          min: 5
+          max: 30
+          unit_of_measurement: minutes
+          mode: slider
+    flash_lights_at_iftar:
+      name: Flash lights at Iftar
+      description: Flash lights green when Iftar time arrives.
+      default: true
+      selector:
+        boolean:
+    light_target:
+      name: Lights for Iftar flash
+      description: Lights to flash at Iftar time (only used if flashing is enabled).
+      default: {}
+      selector:
+        target:
+          entity:
+            domain: light
+    play_audio:
+      name: Play audio at Iftar
+      description: Play adhan or a sound at Iftar time.
+      default: false
+      selector:
+        boolean:
+    media_player:
+      name: Media player
+      description: Speaker for Iftar audio (only used if audio is enabled).
+      default: ""
+      selector:
+        entity:
+          domain: media_player
+
+trigger:
+  - platform: state
+    entity_id: sensor.praycalc_next_prayer
+    attribute: countdown_minutes
+  - platform: time
+    at: sensor.praycalc_maghrib
+    id: maghrib_time
+
+condition:
+  # Only during Ramadan (Hijri month 9)
+  - condition: template
+    value_template: >-
+      {{ state_attr('sensor.praycalc_hijri_date', 'hijri_month_number') | int == 9 }}
+
+action:
+  - variables:
+      countdown_min: "{{ state_attr('sensor.praycalc_next_prayer', 'countdown_minutes') | int(0) }}"
+      maghrib_time: "{{ state_attr('sensor.praycalc_maghrib', 'time_24h') | default('') }}"
+      first_val: !input first_reminder
+      second_val: !input second_reminder
+      do_flash: !input flash_lights_at_iftar
+      do_audio: !input play_audio
+      player: !input media_player
+  - choose:
+      # Maghrib has arrived = Iftar time
+      - conditions:
+          - condition: trigger
+            id: maghrib_time
+        sequence:
+          - service: !input notify_service
+            data:
+              title: "Iftar Time!"
+              message: >-
+                Bismillah! It is time to break your fast. Maghrib is now.
+                May Allah accept your fast today.
+              data:
+                importance: high
+          - choose:
+              - conditions:
+                  - "{{ do_flash }}"
+                sequence:
+                  - repeat:
+                      count: 5
+                      sequence:
+                        - service: light.turn_on
+                          target: !input light_target
+                          data:
+                            rgb_color: [121, 194, 76]
+                            brightness_pct: 100
+                            transition: 0
+                        - delay:
+                            seconds: 1
+                        - service: light.turn_off
+                          target: !input light_target
+                          data:
+                            transition: 0
+                        - delay:
+                            seconds: 1
+                  - service: light.turn_on
+                    target: !input light_target
+                    data:
+                      brightness_pct: 80
+                      color_temp_kelvin: 3000
+                      transition: 3
+          - choose:
+              - conditions:
+                  - "{{ do_audio and player != '' }}"
+                sequence:
+                  - service: tts.speak
+                    target:
+                      entity_id: tts.google_translate_say
+                    data:
+                      media_player_entity_id: "{{ player }}"
+                      message: "Allahu Akbar. It is time for Iftar. Break your fast."
+      # First reminder
+      - conditions:
+          - condition: state
+            entity_id: sensor.praycalc_next_prayer
+            state: "Maghrib"
+          - condition: template
+            value_template: >-
+              {{ countdown_min <= first_val and countdown_min > (first_val - 2) }}
+        sequence:
+          - service: !input notify_service
+            data:
+              title: "Iftar in {{ countdown_min }} minutes"
+              message: >-
+                Maghrib is at {{ maghrib_time }}. Start preparing for Iftar.
+      # Second reminder
+      - conditions:
+          - condition: state
+            entity_id: sensor.praycalc_next_prayer
+            state: "Maghrib"
+          - condition: template
+            value_template: >-
+              {{ countdown_min <= second_val and countdown_min > (second_val - 2) }}
+        sequence:
+          - service: !input notify_service
+            data:
+              title: "Iftar in {{ countdown_min }} minutes"
+              message: >-
+                Almost time! Maghrib at {{ maghrib_time }}.
+                Get your dates and water ready.
+              data:
+                importance: high
+
+mode: single

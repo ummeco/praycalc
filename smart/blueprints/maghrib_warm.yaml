@@ -1,0 +1,70 @@
+blueprint:
+  name: "PrayCalc: Warm Lights at Maghrib"
+  description: >
+    Sets lights to a warm, cozy color temperature when Maghrib arrives.
+    Perfect for transitioning into the evening. The warm tone stays until
+    you manually change it or another automation takes over.
+  domain: automation
+  author: PrayCalc
+  source_url: https://github.com/ummeco/praycalc/blob/main/smart/blueprints/maghrib_warm.yaml
+  input:
+    light_target:
+      name: Lights
+      description: The lights to set to warm tones at Maghrib.
+      selector:
+        target:
+          entity:
+            domain: light
+    brightness:
+      name: Brightness
+      description: Brightness level for the warm lights (percentage).
+      default: 70
+      selector:
+        number:
+          min: 30
+          max: 100
+          unit_of_measurement: "%"
+          mode: slider
+    color_temp:
+      name: Color temperature
+      description: Warm color temperature in Kelvin. Lower values are warmer/more orange.
+      default: 2500
+      selector:
+        number:
+          min: 1800
+          max: 4000
+          unit_of_measurement: K
+          mode: slider
+    transition_time:
+      name: Transition time
+      description: Seconds for the light transition.
+      default: 10
+      selector:
+        number:
+          min: 1
+          max: 60
+          unit_of_measurement: seconds
+          mode: slider
+    turn_on_if_off:
+      name: Turn on lights if off
+      description: Whether to turn on lights that are currently off.
+      default: true
+      selector:
+        boolean:
+
+variables:
+  turn_on: !input turn_on_if_off
+
+trigger:
+  - platform: time
+    at: sensor.praycalc_maghrib
+
+action:
+  - service: light.turn_on
+    target: !input light_target
+    data:
+      brightness_pct: !input brightness
+      color_temp_kelvin: !input color_temp
+      transition: !input transition_time
+
+mode: single

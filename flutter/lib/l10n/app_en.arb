@@ -295,5 +295,132 @@
       "label": { "type": "String" },
       "target": { "type": "int" }
     }
-  }
+  },
+
+  "smartHomeTitle": "Smart Home",
+  "smartHomeSubtitle": "Connect your devices to prayer times",
+  "smartHomeGoogleHome": "Google Home",
+  "smartHomeGoogleHomeDesc": "Ask Google for prayer times and Qibla direction",
+  "smartHomeAlexa": "Amazon Alexa",
+  "smartHomeAlexaDesc": "Ask Alexa for prayer times, next prayer, and more",
+  "smartHomeSiri": "Siri Shortcuts",
+  "smartHomeSiriDesc": "Create custom shortcuts for prayer times",
+  "smartHomeHomeAssistant": "Home Assistant",
+  "smartHomeHomeAssistantDesc": "Automate lights, displays, and reminders at prayer times",
+  "smartHomeLinkAccount": "Link Account",
+  "smartHomeLinked": "Linked",
+  "smartHomeUnlink": "Unlink",
+  "smartHomeSetupInstructions": "Setup Instructions",
+  "smartHomeRequiresUmmatPlus": "Requires Ummat+",
+  "smartHomeTroubleshooting": "Troubleshooting",
+  "smartHomeTestConnection": "Test Connection",
+  "smartHomeConnectionSuccess": "Connected successfully",
+  "smartHomeConnectionFailed": "Connection failed. Check your account link.",
+
+  "subscriptionTitle": "Ummat+",
+  "subscriptionSubtitle": "Premium prayer time features",
+  "subscriptionUpgrade": "Upgrade to Ummat+",
+  "subscriptionRestore": "Restore Purchase",
+  "subscriptionManage": "Manage Subscription",
+  "subscriptionCancel": "Cancel Subscription",
+  "subscriptionActive": "Active",
+  "subscriptionExpired": "Expired",
+  "subscriptionFree": "Free",
+  "subscriptionFreeDesc": "Basic prayer times, Qibla, calendar",
+  "subscriptionPlusDesc": "Smart home, TV display, widgets, and more",
+  "subscriptionFreeQueriesRemaining": "{count} free queries remaining",
+  "@subscriptionFreeQueriesRemaining": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "subscriptionPriceYearly": "{price}/year",
+  "@subscriptionPriceYearly": {
+    "placeholders": {
+      "price": { "type": "String" }
+    }
+  },
+  "subscriptionPriceMonthly": "{price}/month",
+  "@subscriptionPriceMonthly": {
+    "placeholders": {
+      "price": { "type": "String" }
+    }
+  },
+  "subscriptionFeatureSmartHome": "Smart home integration",
+  "subscriptionFeatureTV": "TV display mode",
+  "subscriptionFeatureWidgets": "Home screen widgets",
+  "subscriptionFeatureWatch": "Watch complications",
+  "subscriptionFeatureSync": "Cross-device sync",
+  "subscriptionFeatureAdFree": "Ad-free experience",
+
+  "tvTitle": "TV Display",
+  "tvMasjidMode": "Masjid Mode",
+  "tvAmbientMode": "Ambient Mode",
+  "tvSettingsIqamah": "Iqamah Offsets",
+  "tvSettingsAnnouncements": "Announcements",
+  "tvConnectQR": "Scan to connect",
+
+  "watchTitle": "Watch",
+  "watchNextPrayer": "Next Prayer",
+  "watchAllPrayers": "All Prayers",
+  "watchComplication": "Complication",
+
+  "nextPrayer": "Next prayer",
+  "allPrayers": "All prayers",
+  "today": "Today",
+  "tomorrow": "Tomorrow",
+  "thisWeek": "This week",
+  "thisMonth": "This month",
+
+  "commonCancel": "Cancel",
+  "commonSave": "Save",
+  "commonDelete": "Delete",
+  "commonEdit": "Edit",
+  "commonRetry": "Retry",
+  "commonClose": "Close",
+  "commonDone": "Done",
+  "commonBack": "Back",
+  "commonNext": "Next",
+  "commonSkip": "Skip",
+  "commonContinue": "Continue",
+  "commonOk": "OK",
+  "commonYes": "Yes",
+  "commonNo": "No",
+  "commonShare": "Share",
+  "commonCopy": "Copy",
+  "commonCopied": "Copied to clipboard",
+  "commonLoading": "Loading...",
+  "commonError": "Something went wrong",
+  "commonErrorRetry": "Something went wrong. Tap to retry.",
+  "commonNoInternet": "No internet connection",
+  "commonOfflineMode": "Offline mode",
+  "commonSignIn": "Sign in",
+  "commonSignOut": "Sign out",
+  "commonSignUp": "Sign up",
+  "commonProfile": "Profile",
+  "commonAccount": "Account",
+  "commonAbout": "About",
+  "commonVersion": "Version {version}",
+  "@commonVersion": {
+    "placeholders": {
+      "version": { "type": "String" }
+    }
+  },
+  "commonPrivacyPolicy": "Privacy Policy",
+  "commonTermsOfService": "Terms of Service",
+  "commonRateApp": "Rate this app",
+  "commonFeedback": "Send feedback",
+  "commonHelp": "Help",
+  "commonLanguage": "Language",
+
+  "travelNotificationTitle": "You are now traveling",
+  "travelNotificationBody": "Prayer times may be shortened. Tap to learn about travel rulings.",
+  "travelRulingsTitle": "Travel & Prayer",
+  "travelRulingsIntro": "Islamic rulings on prayer while traveling, with scholarly references from the Quran and authentic Hadith collections.",
+  "travelWhenTitle": "When Does Travel Apply?",
+  "travelQasrTitle": "Shortening Prayers (Qasr)",
+  "travelJamTitle": "Combining Prayers (Jam')",
+  "travelDurationTitle": "Duration of Travel",
+  "travelReferencesTitle": "Scholarly References",
+  "travelLearnMore": "Learn more"
 }

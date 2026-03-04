@@ -1,0 +1,100 @@
+export const metadata = {
+  title: 'Watch Apps',
+  description:
+    'PrayCalc on Apple Watch and Wear OS. Prayer times on your wrist with complications, countdown rings, and Qibla direction.',
+}
+
+export const sections = [
+  { title: 'Overview', id: 'overview' },
+  { title: 'Apple Watch', id: 'apple-watch' },
+  { title: 'Wear OS', id: 'wear-os' },
+  { title: 'Complications', id: 'complications' },
+  { title: 'Phone companion', id: 'phone-companion' },
+]
+
+# Watch Apps
+
+PrayCalc runs natively on Apple Watch (WatchOS) and Wear OS smartwatches. See prayer times, countdown to the next prayer, and Qibla direction from your wrist. {{ className: 'lead' }}
+
+## Overview {{ id: 'overview' }}
+
+Both watch apps show the same core features:
+
+- **Prayer list**: all 5 daily prayer times with the next prayer highlighted
+- **Countdown**: circular progress ring with digital countdown to the next prayer
+- **Qibla**: compass bearing toward the Kaaba
+- **Complications**: prayer times on your watch face
+
+Watch apps sync data from your phone via WatchConnectivity (iOS) or Wearable DataLayer (Android). If your phone is out of range, the watch falls back to the PrayCalc REST API.
+
+## Apple Watch {{ id: 'apple-watch' }}
+
+### Requirements
+
+- Apple Watch Series 4 or later
+- WatchOS 10+
+- PrayCalc iOS app installed on paired iPhone
+
+### Features
+
+The WatchOS app is built with SwiftUI and includes:
+
+- **Prayer list**: scroll through all prayers with Digital Crown. Next prayer has a green highlight. Past prayers are dimmed.
+- **Countdown view**: full-screen circular ring showing time remaining. Haptic tap when prayer time arrives.
+- **Qibla compass**: arrow pointing toward Makkah. Gentle haptic when aligned within 5 degrees.
+- **Settings**: calculation method and madhab, synced from phone.
+
+### Complications
+
+PrayCalc provides WidgetKit complications for all watch face families:
+
+| Family | Content |
+| --- | --- |
+| Circular | Next prayer abbreviation (e.g., "ASR") |
+| Corner | Next prayer time |
+| Modular small | Next prayer time |
+| Modular large | All 5 prayer times |
+| Graphic circular | Countdown ring with time |
+| Graphic rectangular | Prayer name + time + countdown |
+
+Complications update at each prayer time transition using a precomputed 24-hour timeline.
+
+## Wear OS {{ id: 'wear-os' }}
+
+### Requirements
+
+- Wear OS 3.0+ smartwatch
+- PrayCalc Android app installed on paired phone
+
+### Features
+
+The Wear OS app is built with Jetpack Compose and includes:
+
+- **Prayer list**: ScalingLazyColumn with prayer chips. Rotary scroll support. Next prayer highlighted in green.
+- **Countdown**: CircularProgressIndicator with digital countdown. Updates every minute.
+- **Settings**: method and madhab pickers, stored in DataStore.
+
+### Tile and Complications
+
+- **Tile**: shows next prayer name, time, and countdown. Tap to open app.
+- **ShortText complication**: next prayer time
+- **LongText complication**: prayer name + time
+- **RangedValue complication**: countdown progress bar
+
+## Complications {{ id: 'complications' }}
+
+Both platforms precompute timeline entries for the full day. Each prayer time creates a new timeline entry so the complication always shows the correct "next prayer." The timeline refreshes at midnight.
+
+Complication data comes from the phone via the companion bridge. If the phone is unavailable, the watch fetches directly from the PrayCalc REST API.
+
+## Phone Companion {{ id: 'phone-companion' }}
+
+The PrayCalc phone app automatically syncs prayer data to your watch:
+
+- **Prayer times**: synced whenever they're calculated (daily or on location change)
+- **Settings**: calculation method and madhab changes sync immediately
+- **Subscription status**: Ummat+ status syncs so the watch knows which features are available
+
+The sync happens over Bluetooth via WatchConnectivity (iOS) or Wearable DataLayer (Android). No internet connection needed between phone and watch.
+
+If the phone is unreachable (e.g., during a run without your phone), the watch falls back to fetching prayer times directly from `api.praycalc.com` over WiFi or cellular.

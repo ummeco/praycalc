@@ -1,0 +1,188 @@
+{
+  "WFWorkflowMinimumClientVersionString": "900",
+  "WFWorkflowMinimumClientVersion": 900,
+  "WFWorkflowIcon": {
+    "WFWorkflowIconStartColor": 4292093695,
+    "WFWorkflowIconGlyphNumber": 61557
+  },
+  "WFWorkflowClientVersion": "2302.0.4",
+  "WFWorkflowOutputContentItemClass": "WFStringContentItem",
+  "WFWorkflowHasOutputFallback": false,
+  "WFWorkflowHasShortcutInputVariables": false,
+  "WFWorkflowImportQuestions": [],
+  "WFQuickActionSurfaces": [],
+  "WFWorkflowTypes": ["NCWidget", "WatchKit"],
+  "WFWorkflowName": "Qibla Direction",
+  "WFWorkflowActions": [
+    {
+      "WFWorkflowActionIdentifier": "is.workflow.actions.comment",
+      "WFWorkflowActionParameters": {
+        "WFCommentActionText": "PrayCalc: Get the Qibla direction (bearing from North) using your current GPS location."
+      }
+    },
+    {
+      "WFWorkflowActionIdentifier": "is.workflow.actions.getlocation",
+      "WFWorkflowActionParameters": {
+        "WFLocation": {
+          "isCurrentLocation": true
+        },
+        "UUID": "location-step"
+      }
+    },
+    {
+      "WFWorkflowActionIdentifier": "is.workflow.actions.detect.text",
+      "WFWorkflowActionParameters": {
+        "WFInput": {
+          "Value": {
+            "Type": "ActionOutput",
+            "OutputName": "Current Location",
+            "OutputUUID": "location-step",
+            "Aggrandizements": [
+              {
+                "Type": "WFPropertyVariableAggrandizement",
+                "PropertyName": "Latitude"
+              }
+            ]
+          },
+          "WFSerializationType": "WFTextTokenAttachment"
+        },
+        "UUID": "latitude-step"
+      }
+    },
+    {
+      "WFWorkflowActionIdentifier": "is.workflow.actions.detect.text",
+      "WFWorkflowActionParameters": {
+        "WFInput": {
+          "Value": {
+            "Type": "ActionOutput",
+            "OutputName": "Current Location",
+            "OutputUUID": "location-step",
+            "Aggrandizements": [
+              {
+                "Type": "WFPropertyVariableAggrandizement",
+                "PropertyName": "Longitude"
+              }
+            ]
+          },
+          "WFSerializationType": "WFTextTokenAttachment"
+        },
+        "UUID": "longitude-step"
+      }
+    },
+    {
+      "WFWorkflowActionIdentifier": "is.workflow.actions.downloadurl",
+      "WFWorkflowActionParameters": {
+        "WFURL": {
+          "Value": {
+            "attachmentsByRange": {
+              "{53, 1}": {
+                "Type": "ActionOutput",
+                "OutputName": "Text",
+                "OutputUUID": "latitude-step"
+              },
+              "{59, 1}": {
+                "Type": "ActionOutput",
+                "OutputName": "Text",
+                "OutputUUID": "longitude-step"
+              }
+            },
+            "string": "https://api.praycalc.com/api/v1/qibla?latitude=\uFFFC&longitude=\uFFFC"
+          },
+          "WFSerializationType": "WFTextTokenString"
+        },
+        "WFHTTPMethod": "GET",
+        "WFHTTPHeaders": {
+          "Value": {
+            "WFDictionaryFieldValueItems": [
+              {
+                "WFItemType": 0,
+                "WFKey": {
+                  "Value": { "string": "Accept" },
+                  "WFSerializationType": "WFTextTokenString"
+                },
+                "WFValue": {
+                  "Value": { "string": "application/json" },
+                  "WFSerializationType": "WFTextTokenString"
+                }
+              }
+            ]
+          },
+          "WFSerializationType": "WFDictionaryFieldValue"
+        },
+        "UUID": "api-response"
+      }
+    },
+    {
+      "WFWorkflowActionIdentifier": "is.workflow.actions.getvalueforkey",
+      "WFWorkflowActionParameters": {
+        "WFInput": {
+          "Value": {
+            "Type": "ActionOutput",
+            "OutputName": "Contents of URL",
+            "OutputUUID": "api-response"
+          },
+          "WFSerializationType": "WFTextTokenAttachment"
+        },
+        "WFDictionaryKey": "bearing",
+        "UUID": "qibla-bearing"
+      }
+    },
+    {
+      "WFWorkflowActionIdentifier": "is.workflow.actions.getvalueforkey",
+      "WFWorkflowActionParameters": {
+        "WFInput": {
+          "Value": {
+            "Type": "ActionOutput",
+            "OutputName": "Contents of URL",
+            "OutputUUID": "api-response"
+          },
+          "WFSerializationType": "WFTextTokenAttachment"
+        },
+        "WFDictionaryKey": "distance",
+        "UUID": "qibla-distance"
+      }
+    },
+    {
+      "WFWorkflowActionIdentifier": "is.workflow.actions.gettext",
+      "WFWorkflowActionParameters": {
+        "WFTextActionText": {
+          "Value": {
+            "attachmentsByRange": {
+              "{9, 1}": {
+                "Type": "ActionOutput",
+                "OutputName": "Dictionary Value",
+                "OutputUUID": "qibla-bearing"
+              },
+              "{38, 1}": {
+                "Type": "ActionOutput",
+                "OutputName": "Dictionary Value",
+                "OutputUUID": "qibla-distance"
+              }
+            },
+            "string": "Qibla is \uFFFC degrees from North.\nDistance to Kaaba: \uFFFC km."
+          },
+          "WFSerializationType": "WFTextTokenString"
+        },
+        "UUID": "result-text"
+      }
+    },
+    {
+      "WFWorkflowActionIdentifier": "is.workflow.actions.showresult",
+      "WFWorkflowActionParameters": {
+        "Text": {
+          "Value": {
+            "attachmentsByRange": {
+              "{0, 1}": {
+                "Type": "ActionOutput",
+                "OutputName": "Text",
+                "OutputUUID": "result-text"
+              }
+            },
+            "string": "\uFFFC"
+          },
+          "WFSerializationType": "WFTextTokenString"
+        }
+      }
+    }
+  ]
+}

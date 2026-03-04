@@ -18,6 +18,7 @@ import '../../features/settings/notification_settings_screen.dart';
 import '../../features/settings/settings_screen.dart';
 import '../../features/stats/prayer_stats_screen.dart';
 import '../../features/tasbeeh/tasbeeh_screen.dart';
+import '../../features/travel/travel_rulings_screen.dart';
 import '../../features/tv/tv_ambient_screen.dart';
 import '../../features/tv/tv_home_screen.dart';
 import '../../features/tv/tv_masjid_screen.dart';
@@ -41,6 +42,7 @@ class Routes {
   static const yearlyCalendar       = '/yearly-calendar';
   static const login                = '/login';
   static const account              = '/account';
+  static const travelRulings        = '/travel-rulings';
   static const tvHome               = '/tv';
   static const tvMasjid             = '/tv/masjid';
   static const tvSettings           = '/tv/settings';
@@ -146,6 +148,11 @@ final appRouter = GoRouter(
     GoRoute(
       path: Routes.yearlyCalendar,
       builder: (context, state) => const YearlyCalendarScreen(),
+    ),
+    // ── Travel ────────────────────────────────────────────────────────────
+    GoRoute(
+      path: Routes.travelRulings,
+      builder: (context, state) => const TravelRulingsScreen(),
     ),
     // ── TV routes ──────────────────────────────────────────────────────────
     GoRoute(

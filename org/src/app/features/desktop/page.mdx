@@ -1,0 +1,76 @@
+export const metadata = {
+  title: 'Desktop App',
+  description:
+    'PrayCalc for macOS. Prayer times in your menu bar with notifications, Qibla direction, and Hijri date.',
+}
+
+export const sections = [
+  { title: 'Overview', id: 'overview' },
+  { title: 'Installation', id: 'installation' },
+  { title: 'Features', id: 'features' },
+  { title: 'Settings', id: 'settings' },
+  { title: 'Notifications', id: 'notifications' },
+]
+
+# Desktop App
+
+PrayCalc for macOS lives in your menu bar. See the next prayer time at a glance, get notifications before each prayer, and check Qibla direction without opening a browser. {{ className: 'lead' }}
+
+## Overview {{ id: 'overview' }}
+
+The macOS app is a lightweight menu bar utility built with SwiftUI. It shows the next prayer name and time directly in the menu bar, with a popover for the full prayer schedule.
+
+No dock icon. No window to manage. Just prayer times always visible in your menu bar.
+
+## Installation {{ id: 'installation' }}
+
+### Direct download
+
+Download the DMG from [praycalc.com/download](https://praycalc.com/download). Open the DMG, drag PrayCalc to Applications, and launch.
+
+### Homebrew
+
+```bash
+brew install --cask praycalc
+```
+
+### Requirements
+
+- macOS 14 Sonoma or later
+- Apple Silicon or Intel Mac
+
+## Features {{ id: 'features' }}
+
+### Menu bar
+
+The menu bar shows the next prayer name and time: **Asr 3:33 PM**. Click to open the popover.
+
+### Popover
+
+The popover shows:
+
+- Today's date (Gregorian and Hijri)
+- All 5 prayer times in a clean list
+- Next prayer highlighted with a countdown
+- Qibla bearing from your location
+- Settings gear icon
+
+### Qibla
+
+The popover includes a Qibla bearing indicator showing the direction to Makkah from your current location, in degrees from North.
+
+## Settings {{ id: 'settings' }}
+
+Open settings from the gear icon in the popover:
+
+- **Calculation method**: ISNA, MWL, Egypt, Umm al-Qura, Tehran, Karachi
+- **Madhab**: Shafii or Hanafi
+- **Location**: auto-detect using macOS Location Services, or enter coordinates manually
+- **Launch at login**: toggle to start PrayCalc when you log in (uses SMAppService)
+- **Notifications**: choose which prayers trigger a notification
+
+## Notifications {{ id: 'notifications' }}
+
+PrayCalc sends macOS notifications before each prayer. Configure which prayers you want to be notified about in settings.
+
+Notifications use the standard macOS notification center. They appear as banners and are logged in Notification Center for later review.

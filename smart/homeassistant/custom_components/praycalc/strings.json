@@ -1,0 +1,74 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Set up PrayCalc",
+        "description": "Enter your location and prayer calculation preferences. Latitude and longitude are pre-filled from your Home Assistant configuration.",
+        "data": {
+          "city": "City name",
+          "latitude": "Latitude",
+          "longitude": "Longitude",
+          "calculation_method": "Calculation method",
+          "madhab": "Madhab (school of jurisprudence)",
+          "api_url": "API URL (advanced)"
+        },
+        "data_description": {
+          "city": "Your city name for display purposes",
+          "latitude": "Latitude of your location (-90 to 90)",
+          "longitude": "Longitude of your location (-180 to 180)",
+          "calculation_method": "The organization whose angle parameters are used to calculate Fajr and Isha",
+          "madhab": "Affects Asr calculation: Shafi'i uses single shadow length, Hanafi uses double",
+          "api_url": "Only change this if you are running a self-hosted PrayCalc Smart server"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Could not connect to the PrayCalc API. Check your network and API URL.",
+      "invalid_latitude": "Latitude must be between -90 and 90.",
+      "invalid_longitude": "Longitude must be between -180 and 180.",
+      "unknown": "An unexpected error occurred."
+    },
+    "abort": {
+      "already_configured": "This location is already configured."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "next_prayer": {
+        "name": "Next prayer",
+        "state": {
+          "fajr": "Fajr",
+          "sunrise": "Sunrise",
+          "dhuhr": "Dhuhr",
+          "asr": "Asr",
+          "maghrib": "Maghrib",
+          "isha": "Isha"
+        }
+      },
+      "fajr": {
+        "name": "Fajr"
+      },
+      "sunrise": {
+        "name": "Sunrise"
+      },
+      "dhuhr": {
+        "name": "Dhuhr"
+      },
+      "asr": {
+        "name": "Asr"
+      },
+      "maghrib": {
+        "name": "Maghrib"
+      },
+      "isha": {
+        "name": "Isha"
+      },
+      "qibla": {
+        "name": "Qibla direction"
+      },
+      "hijri_date": {
+        "name": "Hijri date"
+      }
+    }
+  }
+}

@@ -1,0 +1,853 @@
+openapi: 3.0.3
+info:
+  title: PrayCalc Smart API
+  version: 1.0.0
+  description: |
+    REST API for PrayCalc prayer time calculations, webhook notifications,
+    smart home integrations (Google Home, Alexa, Home Assistant), and billing.
+
+    **Base URL:** `https://api.praycalc.com`
+
+    **Authentication:** Prayer times are public. Webhook management, billing,
+    and smart home account linking require a Bearer JWT from Hasura Auth
+    (obtained via https://auth.ummat.dev).
+
+    **Rate Limits:** 100 requests/min for authenticated users, 30 requests/min
+    for anonymous users.
+  contact:
+    name: PrayCalc
+    url: https://praycalc.com
+    email: support@praycalc.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: https://api.praycalc.com
+    description: Production
+  - url: http://localhost:4010
+    description: Local development
+
+paths:
+  /api/v1/times:
+    get:
+      operationId: getPrayerTimes
+      summary: Calculate prayer times
+      description: |
+        Returns prayer times for a given location, date, calculation method,
+        and madhab. Publicly accessible. Responses are cached for 1 hour
+        via Cache-Control header.
+      tags:
+        - Prayer Times
+      parameters:
+        - name: lat
+          in: query
+          required: true
+          description: Latitude (-90 to 90)
+          schema:
+            type: number
+            format: double
+            minimum: -90
+            maximum: 90
+          example: 40.7128
+        - name: lng
+          in: query
+          required: true
+          description: Longitude (-180 to 180)
+          schema:
+            type: number
+            format: double
+            minimum: -180
+            maximum: 180
+          example: -74.006
+        - name: date
+          in: query
+          required: false
+          description: Date in YYYY-MM-DD format. Defaults to today.
+          schema:
+            type: string
+            format: date
+          example: "2026-03-04"
+        - name: method
+          in: query
+          required: false
+          description: |
+            Calculation method. Each method uses different Fajr and Isha angles:
+            - `isna`: ISNA (15/15)
+            - `mwl`: Muslim World League (18/17)
+            - `egypt`: Egyptian General Authority (19.5/17.5)
+            - `umm_al_qura`: Umm al-Qura, Makkah (18.5/90min)
+            - `tehran`: University of Tehran (17.7/14)
+            - `karachi`: University of Islamic Sciences, Karachi (18/18)
+          schema:
+            type: string
+            enum:
+              - isna
+              - mwl
+              - egypt
+              - umm_al_qura
+              - tehran
+              - karachi
+            default: isna
+        - name: madhab
+          in: query
+          required: false
+          description: |
+            Asr calculation madhab:
+            - `shafii`: shadow = length (standard, earlier Asr)
+            - `hanafi`: shadow = 2x length (later Asr)
+          schema:
+            type: string
+            enum:
+              - shafii
+              - hanafi
+            default: shafii
+      responses:
+        "200":
+          description: Prayer times calculated successfully
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                example: "public, max-age=3600"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PrayerTimesResponse"
+              example:
+                fajr: "05:23"
+                sunrise: "06:41"
+                dhuhr: "12:15"
+                asr: "15:32"
+                maghrib: "18:04"
+                isha: "19:22"
+                date: "2026-03-04"
+                method: "isna"
+                madhab: "shafii"
+                location:
+                  lat: 40.7128
+                  lng: -74.006
+        "400":
+          description: Invalid parameters (coordinates, date format, method, or madhab)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              examples:
+                invalidCoordinates:
+                  summary: Invalid coordinates
+                  value:
+                    error: "Invalid coordinates"
+                    message: "lat must be -90..90, lng must be -180..180"
+                invalidDate:
+                  summary: Invalid date format
+                  value:
+                    error: "Invalid date format"
+                    message: "date must be YYYY-MM-DD"
+                invalidMethod:
+                  summary: Invalid calculation method
+                  value:
+                    error: "Invalid calculation method"
+                    message: "method must be one of: isna, mwl, egypt, umm_al_qura, tehran, karachi"
+        "429":
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /api/v1/webhooks:
+    post:
+      operationId: createWebhook
+      summary: Register a webhook
+      description: |
+        Register a callback URL to receive POST notifications at prayer times.
+        Maximum 5 webhooks per user. The cron job fires webhooks at each
+        prayer time for the registered location.
+      tags:
+        - Webhooks
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WebhookRegistration"
+      responses:
+        "201":
+          description: Webhook registered
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WebhookResponse"
+        "400":
+          description: Invalid webhook data (missing callbackUrl, invalid URL, or bad coordinates)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Authentication required
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "409":
+          description: Maximum webhooks reached (limit 5 per user)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                error: "Maximum webhooks reached"
+                message: "You can register up to 5 webhooks."
+
+    get:
+      operationId: listWebhooks
+      summary: List registered webhooks
+      description: Returns all webhooks for the authenticated user. Users cannot see other users' webhooks.
+      tags:
+        - Webhooks
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: List of webhooks
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  webhooks:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/WebhookResponse"
+        "401":
+          description: Authentication required
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /api/v1/webhooks/{id}:
+    delete:
+      operationId: deleteWebhook
+      summary: Delete a webhook
+      description: Remove a webhook registration by ID. Only the owner can delete their webhook.
+      tags:
+        - Webhooks
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Webhook ID
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Webhook deleted
+        "401":
+          description: Authentication required
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Webhook not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                error: "Webhook not found"
+
+  /health:
+    get:
+      operationId: healthCheck
+      summary: Health check
+      description: Returns service health status. Always returns 200 when the server is running.
+      tags:
+        - System
+      responses:
+        "200":
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+
+  /billing/checkout:
+    post:
+      operationId: createCheckout
+      summary: Create Stripe checkout session
+      description: |
+        Creates a Stripe Checkout session for an Ummat+ subscription.
+        Returns a URL to redirect the user to Stripe's hosted checkout page.
+      tags:
+        - Billing
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: Customer email for Stripe
+                  example: user@example.com
+      responses:
+        "200":
+          description: Checkout session created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  url:
+                    type: string
+                    format: uri
+                    description: Stripe-hosted checkout URL
+        "401":
+          description: Authentication required
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Stripe API error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /billing/status:
+    get:
+      operationId: getSubscriptionStatus
+      summary: Check subscription status
+      description: Returns the current subscription plan and status for the authenticated user.
+      tags:
+        - Billing
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Subscription status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  plan:
+                    type: string
+                    enum:
+                      - free
+                      - plus
+                    example: free
+                  status:
+                    type: string
+                    enum:
+                      - none
+                      - active
+                      - canceled
+                      - past_due
+                    example: none
+        "401":
+          description: Authentication required
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /billing/portal:
+    post:
+      operationId: createPortal
+      summary: Create Stripe customer portal session
+      description: |
+        Creates a Stripe Customer Portal session where users can manage
+        their subscription (cancel, update payment method, view invoices).
+      tags:
+        - Billing
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Portal session created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  url:
+                    type: string
+                    format: uri
+        "401":
+          description: Authentication required
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: No subscription found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /billing/verify-receipt:
+    post:
+      operationId: verifyReceipt
+      summary: Verify mobile IAP receipt
+      description: |
+        Verifies an iOS or Android in-app purchase receipt and activates
+        the subscription. Used by the Flutter mobile app.
+      tags:
+        - Billing
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - platform
+                - receipt
+                - productId
+              properties:
+                platform:
+                  type: string
+                  enum:
+                    - ios
+                    - android
+                receipt:
+                  type: string
+                  description: Platform-specific receipt data
+                productId:
+                  type: string
+                  description: Product identifier (e.g., ummat_plus_yearly)
+                  example: ummat_plus_yearly
+      responses:
+        "200":
+          description: Receipt verified, subscription activated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: active
+                  plan:
+                    type: string
+                    example: plus
+        "400":
+          description: Missing fields or unknown product
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Authentication required
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /oauth/authorize:
+    get:
+      operationId: oauthAuthorizeForm
+      summary: OAuth authorization page
+      description: |
+        Renders the OAuth 2.0 consent/login page for account linking.
+        Used by Google Home and Alexa during the account linking flow.
+      tags:
+        - OAuth
+      parameters:
+        - name: client_id
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: redirect_uri
+          in: query
+          required: true
+          schema:
+            type: string
+            format: uri
+        - name: state
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: response_type
+          in: query
+          required: true
+          schema:
+            type: string
+            enum:
+              - code
+        - name: code_challenge
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: code_challenge_method
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - S256
+              - plain
+      responses:
+        "200":
+          description: HTML consent page with login form
+          content:
+            text/html:
+              schema:
+                type: string
+        "400":
+          description: Unsupported response_type
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+    post:
+      operationId: oauthAuthorizeSubmit
+      summary: Submit OAuth login
+      description: |
+        Processes the login form submission, authenticates via Hasura Auth,
+        and redirects back to the platform with an authorization code.
+        The code expires after 10 minutes and is single-use.
+      tags:
+        - OAuth
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+                - client_id
+                - redirect_uri
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  format: password
+                client_id:
+                  type: string
+                redirect_uri:
+                  type: string
+                  format: uri
+                state:
+                  type: string
+                code_challenge:
+                  type: string
+      responses:
+        "302":
+          description: Redirect to platform with authorization code
+          headers:
+            Location:
+              schema:
+                type: string
+                format: uri
+              description: "redirect_uri?code=<code>&state=<state>"
+        "401":
+          description: Invalid credentials
+          content:
+            text/html:
+              schema:
+                type: string
+        "500":
+          description: Authentication service unavailable
+
+  /oauth/token:
+    post:
+      operationId: oauthToken
+      summary: Exchange code or refresh token
+      description: |
+        OAuth 2.0 token endpoint. Supports two grant types:
+        - `authorization_code`: Exchange a code for access + refresh tokens.
+          The code is single-use and deleted after exchange.
+        - `refresh_token`: Exchange a refresh token for a new access token.
+          Refresh tokens are valid for 30 days.
+        Access tokens expire after 1 hour (3600 seconds).
+      tags:
+        - OAuth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - grant_type
+              properties:
+                grant_type:
+                  type: string
+                  enum:
+                    - authorization_code
+                    - refresh_token
+                code:
+                  type: string
+                  description: Authorization code (required for authorization_code grant)
+                refresh_token:
+                  type: string
+                  description: Refresh token (required for refresh_token grant)
+                client_id:
+                  type: string
+      responses:
+        "200":
+          description: Token issued
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TokenResponse"
+        "400":
+          description: Invalid or expired grant
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              examples:
+                invalidGrant:
+                  summary: Invalid authorization code or refresh token
+                  value:
+                    error: "invalid_grant"
+                unsupportedGrant:
+                  summary: Unsupported grant type
+                  value:
+                    error: "unsupported_grant_type"
+
+  /oauth/revoke:
+    post:
+      operationId: oauthRevoke
+      summary: Revoke a token
+      description: |
+        Revokes an access or refresh token. Returns 200 even if the token
+        does not exist or was already revoked (RFC 7009 compliance).
+      tags:
+        - OAuth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+                  description: The access or refresh token to revoke
+      responses:
+        "200":
+          description: Token revoked (or was already invalid)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  revoked:
+                    type: boolean
+                    example: true
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: |
+        Hasura Auth JWT containing `x-hasura-user-id` and `x-hasura-default-role`
+        claims. Obtain from `POST https://auth.ummat.dev/signin/email-password`.
+
+  schemas:
+    PrayerTimesResponse:
+      type: object
+      description: Prayer times for a single date and location
+      properties:
+        fajr:
+          type: string
+          description: Fajr prayer time (HH:MM)
+          example: "05:23"
+        sunrise:
+          type: string
+          description: Sunrise time
+          example: "06:41"
+        dhuhr:
+          type: string
+          description: Dhuhr prayer time
+          example: "12:15"
+        asr:
+          type: string
+          description: Asr prayer time
+          example: "15:32"
+        maghrib:
+          type: string
+          description: Maghrib prayer time
+          example: "18:04"
+        isha:
+          type: string
+          description: Isha prayer time
+          example: "19:22"
+        date:
+          type: string
+          format: date
+          example: "2026-03-04"
+        method:
+          type: string
+          description: Calculation method used
+          example: isna
+        madhab:
+          type: string
+          description: Asr madhab used
+          example: shafii
+        location:
+          type: object
+          properties:
+            lat:
+              type: number
+              format: double
+              example: 40.7128
+            lng:
+              type: number
+              format: double
+              example: -74.006
+
+    WebhookRegistration:
+      type: object
+      description: Webhook registration request
+      required:
+        - callbackUrl
+        - lat
+        - lng
+      properties:
+        callbackUrl:
+          type: string
+          format: uri
+          description: HTTPS URL to receive POST notifications at prayer times
+          example: https://example.com/webhook
+        lat:
+          type: number
+          format: double
+          minimum: -90
+          maximum: 90
+          description: Latitude for prayer time calculation
+          example: 40.7128
+        lng:
+          type: number
+          format: double
+          minimum: -180
+          maximum: 180
+          description: Longitude for prayer time calculation
+          example: -74.006
+        events:
+          type: array
+          items:
+            type: string
+            enum:
+              - adhan
+              - sunrise
+              - qiyam
+          description: Event types to subscribe to. Defaults to ["adhan"].
+          default:
+            - adhan
+          example:
+            - adhan
+
+    WebhookResponse:
+      type: object
+      description: Registered webhook
+      properties:
+        id:
+          type: string
+          description: Unique webhook ID
+        userId:
+          type: string
+          description: Owner user ID
+        callbackUrl:
+          type: string
+          format: uri
+          example: https://example.com/webhook
+        lat:
+          type: number
+          format: double
+          example: 40.7128
+        lng:
+          type: number
+          format: double
+          example: -74.006
+        events:
+          type: array
+          items:
+            type: string
+          example:
+            - adhan
+        active:
+          type: boolean
+          example: true
+        createdAt:
+          type: string
+          format: date-time
+
+    TokenResponse:
+      type: object
+      description: OAuth token response
+      properties:
+        access_token:
+          type: string
+          description: Bearer access token (1 hour TTL)
+        refresh_token:
+          type: string
+          description: Refresh token (30 day TTL). Only returned for authorization_code grant.
+        token_type:
+          type: string
+          example: Bearer
+        expires_in:
+          type: integer
+          description: Token lifetime in seconds
+          example: 3600
+
+    Error:
+      type: object
+      description: Error response
+      properties:
+        error:
+          type: string
+          description: Error code or short message
+          example: "Invalid coordinates"
+        message:
+          type: string
+          description: Detailed error description
+          example: "lat must be -90..90, lng must be -180..180"
+
+tags:
+  - name: Prayer Times
+    description: Prayer time calculation endpoints (public)
+  - name: Webhooks
+    description: Webhook registration and management (authenticated)
+  - name: Billing
+    description: Stripe subscription and IAP receipt verification (authenticated)
+  - name: OAuth
+    description: OAuth 2.0 account linking for Google Home and Alexa
+  - name: System
+    description: Health and status endpoints (public)

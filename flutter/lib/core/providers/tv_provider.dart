@@ -67,6 +67,9 @@ class TvSettingsNotifier extends Notifier<TvSettings> {
   Future<void> setScreensaverCategory(String v) =>
       update(state.copyWith(screensaverCategory: v));
 
+  Future<void> setMediaPauseEnabled(bool v) =>
+      update(state.copyWith(mediaPauseEnabled: v));
+
   Future<void> setAnnouncements(List<Announcement> list) =>
       update(state.copyWith(announcements: list));
 

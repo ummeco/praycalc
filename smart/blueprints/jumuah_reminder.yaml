@@ -1,0 +1,106 @@
+blueprint:
+  name: "PrayCalc: Jumu'ah (Friday Prayer) Reminder"
+  description: >
+    Sends a notification before Dhuhr on Fridays to remind you about Jumu'ah prayer.
+    Optionally flashes lights or plays an audio reminder. Configurable advance notice.
+  domain: automation
+  author: PrayCalc
+  source_url: https://github.com/ummeco/praycalc/blob/main/smart/blueprints/jumuah_reminder.yaml
+  input:
+    notify_service:
+      name: Notification service
+      description: The notification service for the reminder (e.g., notify.mobile_app_phone).
+      selector:
+        text:
+    minutes_before:
+      name: Minutes before Dhuhr
+      description: How many minutes before Dhuhr to send the Jumu'ah reminder.
+      default: 60
+      selector:
+        number:
+          min: 15
+          max: 120
+          unit_of_measurement: minutes
+          mode: slider
+    notification_title:
+      name: Notification title
+      description: Title for the notification.
+      default: "Jumu'ah Reminder"
+      selector:
+        text:
+    notification_message:
+      name: Notification message
+      description: Message body for the notification.
+      default: >-
+        Jumu'ah prayer is coming up. Dhuhr is at
+        {{ state_attr('sensor.praycalc_dhuhr', 'time_24h') | default('soon') }}.
+        Time to prepare and head to the masjid.
+      selector:
+        text:
+          multiline: true
+    flash_lights:
+      name: Flash lights
+      description: Optionally flash a light to get attention.
+      default: false
+      selector:
+        boolean:
+    light_target:
+      name: Light to flash
+      description: The light to flash (only used if "Flash lights" is enabled).
+      default: {}
+      selector:
+        target:
+          entity:
+            domain: light
+
+variables:
+  minutes_before_val: !input minutes_before
+  do_flash: !input flash_lights
+
+trigger:
+  - platform: state
+    entity_id: sensor.praycalc_next_prayer
+    attribute: countdown_minutes
+
+condition:
+  - condition: time
+    weekday:
+      - fri
+  - condition: state
+    entity_id: sensor.praycalc_next_prayer
+    state: "Dhuhr"
+  - condition: numeric_state
+    entity_id: sensor.praycalc_next_prayer
+    attribute: countdown_minutes
+    below: !input minutes_before
+    above: "{{ (minutes_before_val | int) - 2 }}"
+
+action:
+  - service: !input notify_service
+    data:
+      title: !input notification_title
+      message: !input notification_message
+  - choose:
+      - conditions:
+          - "{{ do_flash }}"
+        sequence:
+          - repeat:
+              count: 3
+              sequence:
+                - service: light.turn_on
+                  target: !input light_target
+                  data:
+                    rgb_color: [121, 194, 76]
+                    brightness_pct: 100
+                    transition: 0
+                - delay:
+                    seconds: 1
+                - service: light.turn_on
+                  target: !input light_target
+                  data:
+                    brightness_pct: 50
+                    transition: 0
+                - delay:
+                    seconds: 1
+
+mode: single

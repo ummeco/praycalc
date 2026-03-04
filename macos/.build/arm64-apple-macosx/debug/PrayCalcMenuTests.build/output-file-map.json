@@ -1,0 +1,12 @@
+{
+  "": {
+    "swift-dependencies": "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenuTests.build/master.swiftdeps"
+  },
+  "/Users/admin/Sites/ummeco/praycalc/macos/Tests/PrayerServiceTests.swift": {
+    "dependencies": "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenuTests.build/PrayerServiceTests.d",
+    "object": "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenuTests.build/PrayerServiceTests.swift.o",
+    "swiftmodule": "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenuTests.build/PrayerServiceTests~partial.swiftmodule",
+    "swift-dependencies": "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenuTests.build/PrayerServiceTests.swiftdeps",
+    "diagnostics": "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenuTests.build/PrayerServiceTests.dia"
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "": {
+    "swift-dependencies": "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenu.build/master.swiftdeps"
+  },
+  "/Users/admin/Sites/ummeco/praycalc/macos/PrayCalcMenu/Models/PrayerModels.swift": {
+    "dependencies": "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenu.build/PrayerModels.d",
+    "object": "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenu.build/PrayerModels.swift.o",
+    "swiftmodule": "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenu.build/PrayerModels~partial.swiftmodule",
+    "swift-dependencies": "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenu.build/PrayerModels.swiftdeps",
+    "diagnostics": "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenu.build/PrayerModels.dia"
+  },
+  "/Users/admin/Sites/ummeco/praycalc/macos/PrayCalcMenu/PrayCalcMenuApp.swift": {
+    "dependencies": "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenu.build/PrayCalcMenuApp.d",
+    "object": "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenu.build/PrayCalcMenuApp.swift.o",
+    "swiftmodule": "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenu.build/PrayCalcMenuApp~partial.swiftmodule",
+    "swift-dependencies": "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenu.build/PrayCalcMenuApp.swiftdeps",
+    "diagnostics": "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenu.build/PrayCalcMenuApp.dia"
+  },
+  "/Users/admin/Sites/ummeco/praycalc/macos/PrayCalcMenu/Services/PrayerService.swift": {
+    "dependencies": "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenu.build/PrayerService.d",
+    "object": "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenu.build/PrayerService.swift.o",
+    "swiftmodule": "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenu.build/PrayerService~partial.swiftmodule",
+    "swift-dependencies": "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenu.build/PrayerService.swiftdeps",
+    "diagnostics": "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenu.build/PrayerService.dia"
+  },
+  "/Users/admin/Sites/ummeco/praycalc/macos/PrayCalcMenu/Views/MenuPopover.swift": {
+    "dependencies": "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenu.build/MenuPopover.d",
+    "object": "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenu.build/MenuPopover.swift.o",
+    "swiftmodule": "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenu.build/MenuPopover~partial.swiftmodule",
+    "swift-dependencies": "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenu.build/MenuPopover.swiftdeps",
+    "diagnostics": "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenu.build/MenuPopover.dia"
+  },
+  "/Users/admin/Sites/ummeco/praycalc/macos/PrayCalcMenu/Views/SettingsView.swift": {
+    "dependencies": "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenu.build/SettingsView.d",
+    "object": "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenu.build/SettingsView.swift.o",
+    "swiftmodule": "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenu.build/SettingsView~partial.swiftmodule",
+    "swift-dependencies": "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenu.build/SettingsView.swiftdeps",
+    "diagnostics": "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenu.build/SettingsView.dia"
+  }
+}

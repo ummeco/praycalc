@@ -1,0 +1,169 @@
+blueprint:
+  name: "PrayCalc: Play Adhan on Speaker"
+  description: >
+    Plays adhan audio or a TTS announcement on a media player at prayer time.
+    Choose between a media URL (for a full adhan recording) or a text-to-speech
+    announcement. Select which prayers to trigger on.
+  domain: automation
+  author: PrayCalc
+  source_url: https://github.com/ummeco/praycalc/blob/main/smart/blueprints/adhan_speaker.yaml
+  input:
+    media_player:
+      name: Media player
+      description: The speaker or media player to use for the adhan.
+      selector:
+        entity:
+          domain: media_player
+    announcement_mode:
+      name: Announcement mode
+      description: >
+        "tts" speaks a prayer time announcement. "media" plays an audio file URL.
+      default: tts
+      selector:
+        select:
+          options:
+            - label: Text-to-Speech announcement
+              value: tts
+            - label: Media file (adhan recording)
+              value: media
+    media_url:
+      name: Adhan media URL
+      description: >
+        URL to an adhan audio file (MP3, OGG, etc.). Only used when mode is "media".
+        Leave blank for TTS mode.
+      default: ""
+      selector:
+        text:
+    tts_service:
+      name: TTS service
+      description: The text-to-speech service to use (e.g., tts.google_translate_say).
+      default: tts.speak
+      selector:
+        text:
+    volume:
+      name: Volume
+      description: Volume level for the announcement (0.0 to 1.0).
+      default: 0.6
+      selector:
+        number:
+          min: 0.1
+          max: 1.0
+          step: 0.1
+          mode: slider
+    include_fajr:
+      name: Include Fajr
+      default: true
+      selector:
+        boolean:
+    include_dhuhr:
+      name: Include Dhuhr
+      default: true
+      selector:
+        boolean:
+    include_asr:
+      name: Include Asr
+      default: true
+      selector:
+        boolean:
+    include_maghrib:
+      name: Include Maghrib
+      default: true
+      selector:
+        boolean:
+    include_isha:
+      name: Include Isha
+      default: true
+      selector:
+        boolean:
+
+variables:
+  include_fajr: !input include_fajr
+  include_dhuhr: !input include_dhuhr
+  include_asr: !input include_asr
+  include_maghrib: !input include_maghrib
+  include_isha: !input include_isha
+
+trigger:
+  - platform: time
+    at: sensor.praycalc_fajr
+    id: fajr
+  - platform: time
+    at: sensor.praycalc_dhuhr
+    id: dhuhr
+  - platform: time
+    at: sensor.praycalc_asr
+    id: asr
+  - platform: time
+    at: sensor.praycalc_maghrib
+    id: maghrib
+  - platform: time
+    at: sensor.praycalc_isha
+    id: isha
+
+condition:
+  - condition: or
+    conditions:
+      - condition: and
+        conditions:
+          - condition: trigger
+            id: fajr
+          - "{{ include_fajr }}"
+      - condition: and
+        conditions:
+          - condition: trigger
+            id: dhuhr
+          - "{{ include_dhuhr }}"
+      - condition: and
+        conditions:
+          - condition: trigger
+            id: asr
+          - "{{ include_asr }}"
+      - condition: and
+        conditions:
+          - condition: trigger
+            id: maghrib
+          - "{{ include_maghrib }}"
+      - condition: and
+        conditions:
+          - condition: trigger
+            id: isha
+          - "{{ include_isha }}"
+
+action:
+  - variables:
+      mode: !input announcement_mode
+      player: !input media_player
+      url: !input media_url
+      prayer_name: >-
+        {% if trigger.id == 'fajr' %}Fajr
+        {% elif trigger.id == 'dhuhr' %}Dhuhr
+        {% elif trigger.id == 'asr' %}Asr
+        {% elif trigger.id == 'maghrib' %}Maghrib
+        {% elif trigger.id == 'isha' %}Isha
+        {% endif %}
+  - service: media_player.volume_set
+    target:
+      entity_id: "{{ player }}"
+    data:
+      volume_level: !input volume
+  - choose:
+      - conditions:
+          - "{{ mode == 'media' and url != '' }}"
+        sequence:
+          - service: media_player.play_media
+            target:
+              entity_id: "{{ player }}"
+            data:
+              media_content_id: "{{ url }}"
+              media_content_type: music
+      - conditions:
+          - "{{ mode == 'tts' or url == '' }}"
+        sequence:
+          - service: tts.speak
+            target:
+              entity_id: !input tts_service
+            data:
+              media_player_entity_id: "{{ player }}"
+              message: "It is time for {{ prayer_name }} prayer. Allahu Akbar."
+
+mode: single

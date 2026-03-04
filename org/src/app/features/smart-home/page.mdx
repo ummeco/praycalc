@@ -1,0 +1,258 @@
+export const metadata = {
+  title: 'Smart Home Integration',
+  description:
+    'Connect PrayCalc to Google Home, Amazon Alexa, Apple Siri, and Home Assistant for voice-controlled prayer times, automated lighting, and adhan on smart speakers.',
+}
+
+export const sections = [
+  { title: 'Overview', id: 'overview' },
+  { title: 'Google Home', id: 'google-home' },
+  { title: 'Amazon Alexa', id: 'amazon-alexa' },
+  { title: 'Apple Siri', id: 'apple-siri' },
+  { title: 'Home Assistant', id: 'home-assistant' },
+  { title: 'Automation blueprints', id: 'blueprints' },
+  { title: 'REST API', id: 'rest-api' },
+  { title: 'Webhooks', id: 'webhooks' },
+  { title: 'Subscription', id: 'subscription' },
+]
+
+# Smart Home Integration
+
+PrayCalc connects to major smart home platforms so you can ask for prayer times by voice, automate lights around salah, and play adhan on smart speakers. {{ className: 'lead' }}
+
+## Overview {{ id: 'overview' }}
+
+PrayCalc Smart supports four platforms:
+
+| Platform | Voice | Automation | Display |
+| --- | --- | --- | --- |
+| Google Home | "Hey Google, next prayer time" | Routines | Nest Hub cards |
+| Amazon Alexa | "Alexa, ask PrayCalc for Fajr" | Routines | Echo Show cards |
+| Apple Siri | "Hey Siri, next prayer" | Shortcuts app | N/A |
+| Home Assistant | N/A | Full YAML automation | Dashboard cards |
+
+Free tier users get 5 voice queries per day. Ummat+ subscribers ($9.99/year) get unlimited queries across all platforms.
+
+## Google Home {{ id: 'google-home' }}
+
+### Setup
+
+1. Open the Google Home app on your phone
+2. Tap **Settings** then **Works with Google**
+3. Search for **PrayCalc**
+4. Sign in with your PrayCalc account to link it
+
+### Voice commands
+
+- "Hey Google, ask PrayCalc for the next prayer time"
+- "Hey Google, ask PrayCalc when is Fajr"
+- "Hey Google, ask PrayCalc for all prayer times today"
+- "Hey Google, ask PrayCalc for the Qibla direction"
+
+On Nest Hub and other smart displays, PrayCalc shows a visual card with all five prayer times alongside the voice response.
+
+### Routines
+
+You can add PrayCalc queries to Google Home Routines. For example, add "Ask PrayCalc for the next prayer" to your morning routine so it announces Fajr time when you say "Good morning."
+
+## Amazon Alexa {{ id: 'amazon-alexa' }}
+
+### Setup
+
+1. Open the Alexa app on your phone
+2. Go to **Skills & Games**
+3. Search for **PrayCalc**
+4. Tap **Enable** and sign in with your PrayCalc account
+
+### Voice commands
+
+- "Alexa, ask PrayCalc for the next prayer"
+- "Alexa, ask PrayCalc when is Maghrib"
+- "Alexa, ask PrayCalc for today's prayers"
+- "Alexa, ask PrayCalc for the Qibla direction"
+
+On Echo Show devices, a Standard card displays all five prayer times.
+
+### Routines
+
+Add PrayCalc to Alexa Routines for automated announcements. Example: trigger "Ask PrayCalc for the next prayer" at sunset daily.
+
+## Apple Siri {{ id: 'apple-siri' }}
+
+### Siri Shortcuts
+
+PrayCalc provides pre-built Shortcuts that call the PrayCalc REST API and speak the result:
+
+1. **Next Prayer** - fetches the next prayer time using your current location
+2. **All Prayers** - lists all five prayer times for today
+3. **Qibla Direction** - tells you the Qibla bearing in degrees
+
+### Setup
+
+1. Download the shortcut files from [praycalc.com/shortcuts](https://praycalc.com/shortcuts)
+2. Open each in the Shortcuts app
+3. Say "Hey Siri, next prayer" to trigger
+
+### HomePod
+
+Siri Shortcuts work on HomePod. After adding the shortcuts to your iPhone, say "Hey Siri, next prayer" to any HomePod on the same Apple ID.
+
+## Home Assistant {{ id: 'home-assistant' }}
+
+PrayCalc provides a HACS-compatible custom integration for Home Assistant.
+
+### Installation via HACS
+
+1. Open HACS in your Home Assistant instance
+2. Go to **Integrations** and click **+ Explore & Download Repositories**
+3. Search for **PrayCalc**
+4. Click **Download**
+5. Restart Home Assistant
+6. Go to **Settings > Devices & Services > Add Integration > PrayCalc**
+7. Enter your latitude, longitude, calculation method, and madhab
+
+### Sensors
+
+The integration creates these sensors:
+
+| Sensor | Description | Example |
+| --- | --- | --- |
+| `sensor.praycalc_fajr` | Fajr time | 05:42 |
+| `sensor.praycalc_sunrise` | Sunrise time | 07:01 |
+| `sensor.praycalc_dhuhr` | Dhuhr time | 12:15 |
+| `sensor.praycalc_asr` | Asr time | 15:33 |
+| `sensor.praycalc_maghrib` | Maghrib time | 18:02 |
+| `sensor.praycalc_isha` | Isha time | 19:21 |
+| `sensor.praycalc_next_prayer` | Next upcoming prayer | Asr at 15:33 |
+| `sensor.praycalc_qibla` | Qibla bearing (degrees) | 58.42 |
+| `sensor.praycalc_hijri_date` | Hijri date string | 15 Ramadan 1447 AH |
+
+### Configuration
+
+| Option | Description | Default |
+| --- | --- | --- |
+| Latitude | Your latitude | HA config |
+| Longitude | Your longitude | HA config |
+| Calculation method | ISNA, MWL, Egypt, Umm al-Qura, Tehran, Karachi | ISNA |
+| Madhab | Shafii or Hanafi (affects Asr time) | Shafii |
+| Update interval | How often to refresh (minutes) | 30 |
+
+## Automation Blueprints {{ id: 'blueprints' }}
+
+PrayCalc ships 10 ready-to-use Home Assistant automation blueprints:
+
+1. **Dim lights at prayer time** - dims selected lights when any prayer starts
+2. **Turn on lights at Fajr** - gradually brightens lights at Fajr with configurable transition
+3. **Play adhan on speaker** - plays adhan audio on a media player at prayer time
+4. **Silence media at prayer** - pauses all media players during prayer, resumes after
+5. **Prayer time TTS** - text-to-speech announcement N minutes before prayer
+6. **Qibla light indicator** - flashes a light to indicate Qibla direction
+7. **Ramadan Iftar countdown** - notification N minutes before Maghrib during Ramadan
+8. **Fajr alarm integration** - triggers wake-up scene at Fajr
+9. **Isha bedtime routine** - starts bedtime scene after Isha
+10. **Jumu'ah reminder** - Friday Dhuhr notification
+
+Import blueprints from the `smart/blueprints/` directory or through HACS.
+
+## REST API {{ id: 'rest-api' }}
+
+The PrayCalc Smart service exposes a REST API for custom integrations.
+
+### Prayer times
+
+```
+GET https://api.praycalc.com/api/v1/times?lat=40.7128&lng=-74.006&date=2026-03-04&method=isna&madhab=shafii
+```
+
+**Parameters:**
+
+| Param | Required | Description |
+| --- | --- | --- |
+| `lat` | Yes | Latitude (-90 to 90) |
+| `lng` | Yes | Longitude (-180 to 180) |
+| `date` | No | Date in YYYY-MM-DD format (default: today) |
+| `method` | No | Calculation method: isna, mwl, egypt, umm_al_qura, tehran, karachi (default: isna) |
+| `madhab` | No | Juristic school: shafii or hanafi (default: shafii) |
+
+**Response:**
+
+```json
+{
+  "prayers": {
+    "fajr": "05:42",
+    "sunrise": "07:01",
+    "dhuhr": "12:15",
+    "asr": "15:33",
+    "maghrib": "18:02",
+    "isha": "19:21"
+  },
+  "nextPrayer": {
+    "name": "Asr",
+    "time": "15:33",
+    "minutesUntil": 47
+  },
+  "hijriDate": "15 Ramadan 1447 AH",
+  "qibla": { "bearing": 58.42 },
+  "meta": {
+    "lat": 40.7128,
+    "lng": -74.006,
+    "date": "2026-03-04",
+    "method": "isna",
+    "madhab": "shafii",
+    "timezone": "UTC"
+  }
+}
+```
+
+Responses are cached for 1 hour. The `Cache-Control` header is set to `public, max-age=3600`.
+
+## Webhooks {{ id: 'webhooks' }}
+
+Register a webhook URL to receive HTTP POST notifications at prayer times.
+
+### Register
+
+```
+POST https://api.praycalc.com/api/v1/webhooks
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{
+  "callbackUrl": "https://your-server.com/prayer-hook",
+  "lat": 40.7128,
+  "lng": -74.006,
+  "events": ["fajr", "dhuhr", "asr", "maghrib", "isha"]
+}
+```
+
+### Webhook payload
+
+When a prayer time arrives, PrayCalc sends:
+
+```json
+{
+  "event": "prayer_time",
+  "prayer": "maghrib",
+  "time": "18:02",
+  "date": "2026-03-04",
+  "lat": 40.7128,
+  "lng": -74.006,
+  "timestamp": "2026-03-04T18:02:00Z"
+}
+```
+
+Maximum 5 webhook registrations per user. Requires authentication.
+
+## Subscription {{ id: 'subscription' }}
+
+Smart home features are part of Ummat+.
+
+| Feature | Free | Ummat+ |
+| --- | --- | --- |
+| Voice queries | 5/day | Unlimited |
+| Smart home automations | N/A | Unlimited |
+| Webhook registrations | N/A | 5 |
+| TV display | Full | Full |
+| Web + mobile app | Full | Full |
+
+Ummat+ is $9.99/year. Subscribe at [praycalc.com/upgrade](https://praycalc.com/upgrade) or through the mobile app.

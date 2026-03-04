@@ -1,0 +1,153 @@
+blueprint:
+  name: "PrayCalc: Ramadan Suhoor Wake-Up Alarm"
+  description: >
+    Wakes you up before Fajr during Ramadan for Suhoor (pre-dawn meal).
+    Turns on lights gradually, plays audio, and sends a notification with
+    how much time remains until Fajr. Activates only during Ramadan
+    (Hijri month 9).
+  domain: automation
+  author: PrayCalc
+  source_url: https://github.com/ummeco/praycalc/blob/main/smart/blueprints/ramadan_suhoor.yaml
+  input:
+    light_target:
+      name: Bedroom lights
+      description: The lights to turn on for Suhoor wake-up.
+      selector:
+        target:
+          entity:
+            domain: light
+    minutes_before_fajr:
+      name: Minutes before Fajr
+      description: How many minutes before Fajr to trigger the Suhoor alarm.
+      default: 45
+      selector:
+        number:
+          min: 20
+          max: 90
+          unit_of_measurement: minutes
+          mode: slider
+    initial_brightness:
+      name: Initial brightness
+      description: Starting brightness (gentle wake-up).
+      default: 10
+      selector:
+        number:
+          min: 1
+          max: 30
+          unit_of_measurement: "%"
+          mode: slider
+    full_brightness:
+      name: Full brightness
+      description: Full brightness after the gentle ramp.
+      default: 70
+      selector:
+        number:
+          min: 40
+          max: 100
+          unit_of_measurement: "%"
+          mode: slider
+    notify_service:
+      name: Notification service
+      description: Service for the Suhoor notification (e.g., notify.mobile_app_phone).
+      selector:
+        text:
+    media_player:
+      name: Media player (optional)
+      description: >
+        Speaker for audio alarm. Leave empty for lights and notification only.
+      default: ""
+      selector:
+        entity:
+          domain: media_player
+    alarm_sound_url:
+      name: Alarm sound URL
+      description: URL to an audio file for the alarm. Leave blank for default TTS.
+      default: ""
+      selector:
+        text:
+
+variables:
+  mins_val: !input minutes_before_fajr
+
+trigger:
+  - platform: state
+    entity_id: sensor.praycalc_next_prayer
+    attribute: countdown_minutes
+
+condition:
+  - condition: state
+    entity_id: sensor.praycalc_next_prayer
+    state: "Fajr"
+  - condition: numeric_state
+    entity_id: sensor.praycalc_next_prayer
+    attribute: countdown_minutes
+    below: !input minutes_before_fajr
+    above: "{{ (mins_val | int) - 2 }}"
+  # Only during Ramadan (Hijri month 9)
+  - condition: template
+    value_template: >-
+      {{ state_attr('sensor.praycalc_hijri_date', 'hijri_month_number') | int == 9 }}
+
+action:
+  - variables:
+      fajr_time: "{{ state_attr('sensor.praycalc_fajr', 'time_24h') }}"
+      countdown: "{{ state_attr('sensor.praycalc_next_prayer', 'countdown') }}"
+      player: !input media_player
+      sound_url: !input alarm_sound_url
+  # Step 1: Gentle light
+  - service: light.turn_on
+    target: !input light_target
+    data:
+      brightness_pct: !input initial_brightness
+      color_temp_kelvin: 2700
+      transition: 5
+  # Step 2: Notification
+  - service: !input notify_service
+    data:
+      title: "Suhoor Time"
+      message: >-
+        Wake up for Suhoor. Fajr is at {{ fajr_time }} ({{ countdown }} remaining).
+        Eat and drink before the fast begins.
+      data:
+        importance: high
+        channel: suhoor_alarm
+  # Step 3: Audio alarm (if configured)
+  - choose:
+      - conditions:
+          - "{{ player != '' }}"
+        sequence:
+          - service: media_player.volume_set
+            target:
+              entity_id: "{{ player }}"
+            data:
+              volume_level: 0.5
+          - choose:
+              - conditions:
+                  - "{{ sound_url != '' }}"
+                sequence:
+                  - service: media_player.play_media
+                    target:
+                      entity_id: "{{ player }}"
+                    data:
+                      media_content_id: "{{ sound_url }}"
+                      media_content_type: music
+            default:
+              - service: tts.speak
+                target:
+                  entity_id: tts.google_translate_say
+                data:
+                  media_player_entity_id: "{{ player }}"
+                  message: >-
+                    Time for Suhoor. Fajr is in {{ countdown }}.
+                    Please wake up and eat before the fast begins.
+  # Step 4: Brighten after 5 minutes
+  - delay:
+      minutes: 5
+  - service: light.turn_on
+    target: !input light_target
+    data:
+      brightness_pct: !input full_brightness
+      color_temp_kelvin: 4000
+      transition: 30
+
+mode: single

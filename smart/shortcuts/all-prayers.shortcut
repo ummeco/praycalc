@@ -1,0 +1,268 @@
+{
+  "WFWorkflowMinimumClientVersionString": "900",
+  "WFWorkflowMinimumClientVersion": 900,
+  "WFWorkflowIcon": {
+    "WFWorkflowIconStartColor": 4292093695,
+    "WFWorkflowIconGlyphNumber": 61557
+  },
+  "WFWorkflowClientVersion": "2302.0.4",
+  "WFWorkflowOutputContentItemClass": "WFStringContentItem",
+  "WFWorkflowHasOutputFallback": false,
+  "WFWorkflowHasShortcutInputVariables": false,
+  "WFWorkflowImportQuestions": [],
+  "WFQuickActionSurfaces": [],
+  "WFWorkflowTypes": ["NCWidget", "WatchKit"],
+  "WFWorkflowName": "All Prayer Times",
+  "WFWorkflowActions": [
+    {
+      "WFWorkflowActionIdentifier": "is.workflow.actions.comment",
+      "WFWorkflowActionParameters": {
+        "WFCommentActionText": "PrayCalc: Fetch all prayer times for today using your current GPS location."
+      }
+    },
+    {
+      "WFWorkflowActionIdentifier": "is.workflow.actions.getlocation",
+      "WFWorkflowActionParameters": {
+        "WFLocation": {
+          "isCurrentLocation": true
+        },
+        "UUID": "location-step"
+      }
+    },
+    {
+      "WFWorkflowActionIdentifier": "is.workflow.actions.detect.text",
+      "WFWorkflowActionParameters": {
+        "WFInput": {
+          "Value": {
+            "Type": "ActionOutput",
+            "OutputName": "Current Location",
+            "OutputUUID": "location-step",
+            "Aggrandizements": [
+              {
+                "Type": "WFPropertyVariableAggrandizement",
+                "PropertyName": "Latitude"
+              }
+            ]
+          },
+          "WFSerializationType": "WFTextTokenAttachment"
+        },
+        "UUID": "latitude-step"
+      }
+    },
+    {
+      "WFWorkflowActionIdentifier": "is.workflow.actions.detect.text",
+      "WFWorkflowActionParameters": {
+        "WFInput": {
+          "Value": {
+            "Type": "ActionOutput",
+            "OutputName": "Current Location",
+            "OutputUUID": "location-step",
+            "Aggrandizements": [
+              {
+                "Type": "WFPropertyVariableAggrandizement",
+                "PropertyName": "Longitude"
+              }
+            ]
+          },
+          "WFSerializationType": "WFTextTokenAttachment"
+        },
+        "UUID": "longitude-step"
+      }
+    },
+    {
+      "WFWorkflowActionIdentifier": "is.workflow.actions.downloadurl",
+      "WFWorkflowActionParameters": {
+        "WFURL": {
+          "Value": {
+            "attachmentsByRange": {
+              "{52, 1}": {
+                "Type": "ActionOutput",
+                "OutputName": "Text",
+                "OutputUUID": "latitude-step"
+              },
+              "{58, 1}": {
+                "Type": "ActionOutput",
+                "OutputName": "Text",
+                "OutputUUID": "longitude-step"
+              }
+            },
+            "string": "https://api.praycalc.com/api/v1/times?latitude=\uFFFC&longitude=\uFFFC"
+          },
+          "WFSerializationType": "WFTextTokenString"
+        },
+        "WFHTTPMethod": "GET",
+        "WFHTTPHeaders": {
+          "Value": {
+            "WFDictionaryFieldValueItems": [
+              {
+                "WFItemType": 0,
+                "WFKey": {
+                  "Value": { "string": "Accept" },
+                  "WFSerializationType": "WFTextTokenString"
+                },
+                "WFValue": {
+                  "Value": { "string": "application/json" },
+                  "WFSerializationType": "WFTextTokenString"
+                }
+              }
+            ]
+          },
+          "WFSerializationType": "WFDictionaryFieldValue"
+        },
+        "UUID": "api-response"
+      }
+    },
+    {
+      "WFWorkflowActionIdentifier": "is.workflow.actions.getvalueforkey",
+      "WFWorkflowActionParameters": {
+        "WFInput": {
+          "Value": {
+            "Type": "ActionOutput",
+            "OutputName": "Contents of URL",
+            "OutputUUID": "api-response"
+          },
+          "WFSerializationType": "WFTextTokenAttachment"
+        },
+        "WFDictionaryKey": "fajr",
+        "UUID": "val-fajr"
+      }
+    },
+    {
+      "WFWorkflowActionIdentifier": "is.workflow.actions.getvalueforkey",
+      "WFWorkflowActionParameters": {
+        "WFInput": {
+          "Value": {
+            "Type": "ActionOutput",
+            "OutputName": "Contents of URL",
+            "OutputUUID": "api-response"
+          },
+          "WFSerializationType": "WFTextTokenAttachment"
+        },
+        "WFDictionaryKey": "sunrise",
+        "UUID": "val-sunrise"
+      }
+    },
+    {
+      "WFWorkflowActionIdentifier": "is.workflow.actions.getvalueforkey",
+      "WFWorkflowActionParameters": {
+        "WFInput": {
+          "Value": {
+            "Type": "ActionOutput",
+            "OutputName": "Contents of URL",
+            "OutputUUID": "api-response"
+          },
+          "WFSerializationType": "WFTextTokenAttachment"
+        },
+        "WFDictionaryKey": "dhuhr",
+        "UUID": "val-dhuhr"
+      }
+    },
+    {
+      "WFWorkflowActionIdentifier": "is.workflow.actions.getvalueforkey",
+      "WFWorkflowActionParameters": {
+        "WFInput": {
+          "Value": {
+            "Type": "ActionOutput",
+            "OutputName": "Contents of URL",
+            "OutputUUID": "api-response"
+          },
+          "WFSerializationType": "WFTextTokenAttachment"
+        },
+        "WFDictionaryKey": "asr",
+        "UUID": "val-asr"
+      }
+    },
+    {
+      "WFWorkflowActionIdentifier": "is.workflow.actions.getvalueforkey",
+      "WFWorkflowActionParameters": {
+        "WFInput": {
+          "Value": {
+            "Type": "ActionOutput",
+            "OutputName": "Contents of URL",
+            "OutputUUID": "api-response"
+          },
+          "WFSerializationType": "WFTextTokenAttachment"
+        },
+        "WFDictionaryKey": "maghrib",
+        "UUID": "val-maghrib"
+      }
+    },
+    {
+      "WFWorkflowActionIdentifier": "is.workflow.actions.getvalueforkey",
+      "WFWorkflowActionParameters": {
+        "WFInput": {
+          "Value": {
+            "Type": "ActionOutput",
+            "OutputName": "Contents of URL",
+            "OutputUUID": "api-response"
+          },
+          "WFSerializationType": "WFTextTokenAttachment"
+        },
+        "WFDictionaryKey": "isha",
+        "UUID": "val-isha"
+      }
+    },
+    {
+      "WFWorkflowActionIdentifier": "is.workflow.actions.gettext",
+      "WFWorkflowActionParameters": {
+        "WFTextActionText": {
+          "Value": {
+            "attachmentsByRange": {
+              "{9, 1}": {
+                "Type": "ActionOutput",
+                "OutputName": "Dictionary Value",
+                "OutputUUID": "val-fajr"
+              },
+              "{22, 1}": {
+                "Type": "ActionOutput",
+                "OutputName": "Dictionary Value",
+                "OutputUUID": "val-sunrise"
+              },
+              "{32, 1}": {
+                "Type": "ActionOutput",
+                "OutputName": "Dictionary Value",
+                "OutputUUID": "val-dhuhr"
+              },
+              "{40, 1}": {
+                "Type": "ActionOutput",
+                "OutputName": "Dictionary Value",
+                "OutputUUID": "val-asr"
+              },
+              "{53, 1}": {
+                "Type": "ActionOutput",
+                "OutputName": "Dictionary Value",
+                "OutputUUID": "val-maghrib"
+              },
+              "{62, 1}": {
+                "Type": "ActionOutput",
+                "OutputName": "Dictionary Value",
+                "OutputUUID": "val-isha"
+              }
+            },
+            "string": "Fajr:    \uFFFC\nSunrise: \uFFFC\nDhuhr:   \uFFFC\nAsr:     \uFFFC\nMaghrib: \uFFFC\nIsha:    \uFFFC"
+          },
+          "WFSerializationType": "WFTextTokenString"
+        },
+        "UUID": "result-text"
+      }
+    },
+    {
+      "WFWorkflowActionIdentifier": "is.workflow.actions.showresult",
+      "WFWorkflowActionParameters": {
+        "Text": {
+          "Value": {
+            "attachmentsByRange": {
+              "{0, 1}": {
+                "Type": "ActionOutput",
+                "OutputName": "Text",
+                "OutputUUID": "result-text"
+              }
+            },
+            "string": "\uFFFC"
+          },
+          "WFSerializationType": "WFTextTokenString"
+        }
+      }
+    }
+  ]
+}

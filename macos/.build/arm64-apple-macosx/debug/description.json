@@ -1,0 +1,758 @@
+{
+  "builtTestProducts" : [
+    {
+      "binaryPath" : "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenuPackageTests.xctest/Contents/MacOS/PrayCalcMenuPackageTests",
+      "packagePath" : "/Users/admin/Sites/ummeco/praycalc/macos",
+      "productName" : "PrayCalcMenuPackageTests"
+    }
+  ],
+  "copyCommands" : {
+
+  },
+  "explicitTargetDependencyImportCheckingMode" : {
+    "none" : {
+
+    }
+  },
+  "generatedSourceTargetSet" : [
+
+  ],
+  "pluginDescriptions" : [
+
+  ],
+  "swiftCommands" : {
+    "C.PrayCalcMenu-arm64-apple-macosx26.0-debug.module" : {
+      "executable" : "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc",
+      "fileList" : "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenu.build/sources",
+      "importPath" : "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/Modules",
+      "inputs" : [
+        {
+          "kind" : "file",
+          "name" : "/Users/admin/Sites/ummeco/praycalc/macos/PrayCalcMenu/Models/PrayerModels.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/admin/Sites/ummeco/praycalc/macos/PrayCalcMenu/PrayCalcMenuApp.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/admin/Sites/ummeco/praycalc/macos/PrayCalcMenu/Services/PrayerService.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/admin/Sites/ummeco/praycalc/macos/PrayCalcMenu/Views/MenuPopover.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/admin/Sites/ummeco/praycalc/macos/PrayCalcMenu/Views/SettingsView.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/swift-version--58304C5D6DBC2206.txt"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenu.build/sources"
+        }
+      ],
+      "isLibrary" : false,
+      "moduleName" : "PrayCalcMenu",
+      "moduleOutputPath" : "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/Modules/PrayCalcMenu.swiftmodule",
+      "objects" : [
+        "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenu.build/PrayerModels.swift.o",
+        "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenu.build/PrayCalcMenuApp.swift.o",
+        "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenu.build/PrayerService.swift.o",
+        "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenu.build/MenuPopover.swift.o",
+        "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenu.build/SettingsView.swift.o"
+      ],
+      "otherArguments" : [
+        "-target",
+        "arm64-apple-macosx13.0",
+        "-incremental",
+        "-enable-batch-mode",
+        "-serialize-diagnostics",
+        "-index-store-path",
+        "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/index/store",
+        "-Onone",
+        "-enable-testing",
+        "-j10",
+        "-DSWIFT_PACKAGE",
+        "-DDEBUG",
+        "-DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE",
+        "-module-cache-path",
+        "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/ModuleCache",
+        "-parseable-output",
+        "-Xfrontend",
+        "-entry-point-function-name",
+        "-Xfrontend",
+        "PrayCalcMenu_main",
+        "-swift-version",
+        "5",
+        "-plugin-path",
+        "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing",
+        "-sdk",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk",
+        "-F",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+        "-F",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks",
+        "-I",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+        "-L",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+        "-g",
+        "-Xcc",
+        "-isysroot",
+        "-Xcc",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk",
+        "-Xcc",
+        "-F",
+        "-Xcc",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+        "-Xcc",
+        "-F",
+        "-Xcc",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks",
+        "-Xcc",
+        "-fPIC",
+        "-Xcc",
+        "-g",
+        "-package-name",
+        "macos"
+      ],
+      "outputFileMapPath" : "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenu.build/output-file-map.json",
+      "outputs" : [
+        {
+          "kind" : "file",
+          "name" : "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenu.build/PrayerModels.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenu.build/PrayCalcMenuApp.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenu.build/PrayerService.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenu.build/MenuPopover.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenu.build/SettingsView.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/Modules/PrayCalcMenu.swiftmodule"
+        }
+      ],
+      "prepareForIndexing" : false,
+      "sources" : [
+        "/Users/admin/Sites/ummeco/praycalc/macos/PrayCalcMenu/Models/PrayerModels.swift",
+        "/Users/admin/Sites/ummeco/praycalc/macos/PrayCalcMenu/PrayCalcMenuApp.swift",
+        "/Users/admin/Sites/ummeco/praycalc/macos/PrayCalcMenu/Services/PrayerService.swift",
+        "/Users/admin/Sites/ummeco/praycalc/macos/PrayCalcMenu/Views/MenuPopover.swift",
+        "/Users/admin/Sites/ummeco/praycalc/macos/PrayCalcMenu/Views/SettingsView.swift"
+      ],
+      "tempsPath" : "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenu.build",
+      "wholeModuleOptimization" : false
+    },
+    "C.PrayCalcMenuPackageTests-arm64-apple-macosx26.0-debug.module" : {
+      "executable" : "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc",
+      "fileList" : "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenuPackageTests.build/sources",
+      "importPath" : "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/Modules",
+      "inputs" : [
+        {
+          "kind" : "file",
+          "name" : "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenuPackageTests.derived/runner.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/swift-version--58304C5D6DBC2206.txt"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/Modules/PrayCalcMenuTests.swiftmodule"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenuPackageTests.build/sources"
+        }
+      ],
+      "isLibrary" : true,
+      "moduleName" : "PrayCalcMenuPackageTests",
+      "moduleOutputPath" : "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/Modules/PrayCalcMenuPackageTests.swiftmodule",
+      "objects" : [
+        "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenuPackageTests.build/runner.swift.o"
+      ],
+      "otherArguments" : [
+        "-target",
+        "arm64-apple-macosx13.0",
+        "-incremental",
+        "-enable-batch-mode",
+        "-serialize-diagnostics",
+        "-index-store-path",
+        "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/index/store",
+        "-Onone",
+        "-enable-testing",
+        "-Xfrontend",
+        "-enable-cross-import-overlays",
+        "-j10",
+        "-DSWIFT_PACKAGE",
+        "-DDEBUG",
+        "-DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE",
+        "-module-cache-path",
+        "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/ModuleCache",
+        "-parseable-output",
+        "-parse-as-library",
+        "-emit-objc-header",
+        "-emit-objc-header-path",
+        "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenuPackageTests.build/include/PrayCalcMenuPackageTests-Swift.h",
+        "-plugin-path",
+        "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing",
+        "-sdk",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk",
+        "-F",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+        "-F",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks",
+        "-I",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+        "-L",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+        "-g",
+        "-Xcc",
+        "-isysroot",
+        "-Xcc",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk",
+        "-Xcc",
+        "-F",
+        "-Xcc",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+        "-Xcc",
+        "-F",
+        "-Xcc",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks",
+        "-Xcc",
+        "-fPIC",
+        "-Xcc",
+        "-g",
+        "-package-name",
+        "macos"
+      ],
+      "outputFileMapPath" : "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenuPackageTests.build/output-file-map.json",
+      "outputs" : [
+        {
+          "kind" : "file",
+          "name" : "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenuPackageTests.build/runner.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/Modules/PrayCalcMenuPackageTests.swiftmodule"
+        }
+      ],
+      "prepareForIndexing" : false,
+      "sources" : [
+        "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenuPackageTests.derived/runner.swift"
+      ],
+      "tempsPath" : "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenuPackageTests.build",
+      "wholeModuleOptimization" : false
+    },
+    "C.PrayCalcMenuTests-arm64-apple-macosx26.0-debug.module" : {
+      "executable" : "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc",
+      "fileList" : "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenuTests.build/sources",
+      "importPath" : "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/Modules",
+      "inputs" : [
+        {
+          "kind" : "file",
+          "name" : "/Users/admin/Sites/ummeco/praycalc/macos/Tests/PrayerServiceTests.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/swift-version--58304C5D6DBC2206.txt"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenu"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenuTests.build/sources"
+        }
+      ],
+      "isLibrary" : true,
+      "moduleName" : "PrayCalcMenuTests",
+      "moduleOutputPath" : "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/Modules/PrayCalcMenuTests.swiftmodule",
+      "objects" : [
+        "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenuTests.build/PrayerServiceTests.swift.o"
+      ],
+      "otherArguments" : [
+        "-target",
+        "arm64-apple-macosx14.0",
+        "-incremental",
+        "-enable-batch-mode",
+        "-serialize-diagnostics",
+        "-index-store-path",
+        "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/index/store",
+        "-Onone",
+        "-enable-testing",
+        "-Xfrontend",
+        "-enable-cross-import-overlays",
+        "-j10",
+        "-DSWIFT_PACKAGE",
+        "-DDEBUG",
+        "-DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE",
+        "-module-cache-path",
+        "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/ModuleCache",
+        "-parseable-output",
+        "-parse-as-library",
+        "-swift-version",
+        "5",
+        "-plugin-path",
+        "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing",
+        "-sdk",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk",
+        "-F",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+        "-F",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks",
+        "-I",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+        "-L",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+        "-g",
+        "-Xcc",
+        "-isysroot",
+        "-Xcc",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk",
+        "-Xcc",
+        "-F",
+        "-Xcc",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+        "-Xcc",
+        "-F",
+        "-Xcc",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks",
+        "-Xcc",
+        "-fPIC",
+        "-Xcc",
+        "-g",
+        "-package-name",
+        "macos"
+      ],
+      "outputFileMapPath" : "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenuTests.build/output-file-map.json",
+      "outputs" : [
+        {
+          "kind" : "file",
+          "name" : "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenuTests.build/PrayerServiceTests.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/Modules/PrayCalcMenuTests.swiftmodule"
+        }
+      ],
+      "prepareForIndexing" : false,
+      "sources" : [
+        "/Users/admin/Sites/ummeco/praycalc/macos/Tests/PrayerServiceTests.swift"
+      ],
+      "tempsPath" : "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenuTests.build",
+      "wholeModuleOptimization" : false
+    }
+  },
+  "swiftFrontendCommands" : {
+
+  },
+  "swiftTargetScanArgs" : {
+    "PrayCalcMenu" : [
+      "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc",
+      "-module-name",
+      "PrayCalcMenu",
+      "-package-name",
+      "macos",
+      "-c",
+      "/Users/admin/Sites/ummeco/praycalc/macos/PrayCalcMenu/Models/PrayerModels.swift",
+      "/Users/admin/Sites/ummeco/praycalc/macos/PrayCalcMenu/PrayCalcMenuApp.swift",
+      "/Users/admin/Sites/ummeco/praycalc/macos/PrayCalcMenu/Services/PrayerService.swift",
+      "/Users/admin/Sites/ummeco/praycalc/macos/PrayCalcMenu/Views/MenuPopover.swift",
+      "/Users/admin/Sites/ummeco/praycalc/macos/PrayCalcMenu/Views/SettingsView.swift",
+      "-I",
+      "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/Modules",
+      "-target",
+      "arm64-apple-macosx13.0",
+      "-incremental",
+      "-enable-batch-mode",
+      "-serialize-diagnostics",
+      "-index-store-path",
+      "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/index/store",
+      "-Onone",
+      "-enable-testing",
+      "-j10",
+      "-DSWIFT_PACKAGE",
+      "-DDEBUG",
+      "-DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE",
+      "-module-cache-path",
+      "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/ModuleCache",
+      "-parseable-output",
+      "-Xfrontend",
+      "-entry-point-function-name",
+      "-Xfrontend",
+      "PrayCalcMenu_main",
+      "-swift-version",
+      "5",
+      "-plugin-path",
+      "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing",
+      "-sdk",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk",
+      "-F",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+      "-F",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks",
+      "-I",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+      "-L",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+      "-g",
+      "-Xcc",
+      "-isysroot",
+      "-Xcc",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk",
+      "-Xcc",
+      "-F",
+      "-Xcc",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+      "-Xcc",
+      "-F",
+      "-Xcc",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks",
+      "-Xcc",
+      "-fPIC",
+      "-Xcc",
+      "-g",
+      "-package-name",
+      "macos",
+      "-driver-use-frontend-path",
+      "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc"
+    ],
+    "PrayCalcMenuPackageTests" : [
+      "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc",
+      "-module-name",
+      "PrayCalcMenuPackageTests",
+      "-package-name",
+      "macos",
+      "-c",
+      "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenuPackageTests.derived/runner.swift",
+      "-I",
+      "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/Modules",
+      "-target",
+      "arm64-apple-macosx13.0",
+      "-incremental",
+      "-enable-batch-mode",
+      "-serialize-diagnostics",
+      "-index-store-path",
+      "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/index/store",
+      "-Onone",
+      "-enable-testing",
+      "-Xfrontend",
+      "-enable-cross-import-overlays",
+      "-j10",
+      "-DSWIFT_PACKAGE",
+      "-DDEBUG",
+      "-DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE",
+      "-module-cache-path",
+      "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/ModuleCache",
+      "-parseable-output",
+      "-parse-as-library",
+      "-emit-objc-header",
+      "-emit-objc-header-path",
+      "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenuPackageTests.build/include/PrayCalcMenuPackageTests-Swift.h",
+      "-plugin-path",
+      "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing",
+      "-sdk",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk",
+      "-F",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+      "-F",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks",
+      "-I",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+      "-L",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+      "-g",
+      "-Xcc",
+      "-isysroot",
+      "-Xcc",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk",
+      "-Xcc",
+      "-F",
+      "-Xcc",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+      "-Xcc",
+      "-F",
+      "-Xcc",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks",
+      "-Xcc",
+      "-fPIC",
+      "-Xcc",
+      "-g",
+      "-package-name",
+      "macos",
+      "-driver-use-frontend-path",
+      "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc"
+    ],
+    "PrayCalcMenuTests" : [
+      "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc",
+      "-module-name",
+      "PrayCalcMenuTests",
+      "-package-name",
+      "macos",
+      "-c",
+      "/Users/admin/Sites/ummeco/praycalc/macos/Tests/PrayerServiceTests.swift",
+      "-I",
+      "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/Modules",
+      "-target",
+      "arm64-apple-macosx14.0",
+      "-incremental",
+      "-enable-batch-mode",
+      "-serialize-diagnostics",
+      "-index-store-path",
+      "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/index/store",
+      "-Onone",
+      "-enable-testing",
+      "-Xfrontend",
+      "-enable-cross-import-overlays",
+      "-j10",
+      "-DSWIFT_PACKAGE",
+      "-DDEBUG",
+      "-DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE",
+      "-module-cache-path",
+      "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/ModuleCache",
+      "-parseable-output",
+      "-parse-as-library",
+      "-swift-version",
+      "5",
+      "-plugin-path",
+      "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing",
+      "-sdk",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk",
+      "-F",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+      "-F",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks",
+      "-I",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+      "-L",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+      "-g",
+      "-Xcc",
+      "-isysroot",
+      "-Xcc",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk",
+      "-Xcc",
+      "-F",
+      "-Xcc",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+      "-Xcc",
+      "-F",
+      "-Xcc",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks",
+      "-Xcc",
+      "-fPIC",
+      "-Xcc",
+      "-g",
+      "-package-name",
+      "macos",
+      "-driver-use-frontend-path",
+      "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc"
+    ]
+  },
+  "targetDependencyMap" : {
+    "PrayCalcMenu" : [
+
+    ],
+    "PrayCalcMenuPackageTests" : [
+      "PrayCalcMenuTests",
+      "PrayCalcMenu"
+    ],
+    "PrayCalcMenuTests" : [
+      "PrayCalcMenu"
+    ]
+  },
+  "testDiscoveryCommands" : {
+
+  },
+  "testEntryPointCommands" : {
+    "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenuPackageTests.derived/runner.swift" : {
+      "inputs" : [
+
+      ],
+      "outputs" : [
+        {
+          "kind" : "file",
+          "name" : "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenuPackageTests.derived/runner.swift"
+        }
+      ]
+    }
+  },
+  "traitConfiguration" : {
+    "default" : {
+
+    }
+  },
+  "writeCommands" : {
+    "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenu-entitlement.plist" : {
+      "alwaysOutOfDate" : false,
+      "inputs" : [
+        {
+          "kind" : "virtual",
+          "name" : "<entitlement-plist>"
+        },
+        {
+          "kind" : "virtual",
+          "name" : "<com.apple.security.get-task-allow>"
+        }
+      ],
+      "outputFilePath" : "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenu-entitlement.plist"
+    },
+    "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenu.build/sources" : {
+      "alwaysOutOfDate" : false,
+      "inputs" : [
+        {
+          "kind" : "virtual",
+          "name" : "<sources-file-list>"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/admin/Sites/ummeco/praycalc/macos/PrayCalcMenu/Models/PrayerModels.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/admin/Sites/ummeco/praycalc/macos/PrayCalcMenu/PrayCalcMenuApp.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/admin/Sites/ummeco/praycalc/macos/PrayCalcMenu/Services/PrayerService.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/admin/Sites/ummeco/praycalc/macos/PrayCalcMenu/Views/MenuPopover.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/admin/Sites/ummeco/praycalc/macos/PrayCalcMenu/Views/SettingsView.swift"
+        }
+      ],
+      "outputFilePath" : "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenu.build/sources"
+    },
+    "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenu.product/Objects.LinkFileList" : {
+      "alwaysOutOfDate" : false,
+      "inputs" : [
+        {
+          "kind" : "virtual",
+          "name" : "<link-file-list>"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenu.build/MenuPopover.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenu.build/PrayCalcMenuApp.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenu.build/PrayerModels.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenu.build/PrayerService.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenu.build/SettingsView.swift.o"
+        }
+      ],
+      "outputFilePath" : "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenu.product/Objects.LinkFileList"
+    },
+    "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenuPackageTests.build/sources" : {
+      "alwaysOutOfDate" : false,
+      "inputs" : [
+        {
+          "kind" : "virtual",
+          "name" : "<sources-file-list>"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenuPackageTests.derived/runner.swift"
+        }
+      ],
+      "outputFilePath" : "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenuPackageTests.build/sources"
+    },
+    "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenuPackageTests.product/Objects.LinkFileList" : {
+      "alwaysOutOfDate" : false,
+      "inputs" : [
+        {
+          "kind" : "virtual",
+          "name" : "<link-file-list>"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenu.build/MenuPopover.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenu.build/PrayCalcMenuApp.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenu.build/PrayerModels.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenu.build/PrayerService.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenu.build/SettingsView.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenuPackageTests.build/runner.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenuTests.build/PrayerServiceTests.swift.o"
+        }
+      ],
+      "outputFilePath" : "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenuPackageTests.product/Objects.LinkFileList"
+    },
+    "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenuTests.build/sources" : {
+      "alwaysOutOfDate" : false,
+      "inputs" : [
+        {
+          "kind" : "virtual",
+          "name" : "<sources-file-list>"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/admin/Sites/ummeco/praycalc/macos/Tests/PrayerServiceTests.swift"
+        }
+      ],
+      "outputFilePath" : "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/PrayCalcMenuTests.build/sources"
+    },
+    "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/swift-version--58304C5D6DBC2206.txt" : {
+      "alwaysOutOfDate" : true,
+      "inputs" : [
+        {
+          "kind" : "virtual",
+          "name" : "<swift-get-version>"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc"
+        }
+      ],
+      "outputFilePath" : "/Users/admin/Sites/ummeco/praycalc/macos/.build/arm64-apple-macosx/debug/swift-version--58304C5D6DBC2206.txt"
+    }
+  }
+}

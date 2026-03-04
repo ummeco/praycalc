@@ -1,0 +1,14 @@
+{
+  "domain": "praycalc",
+  "name": "PrayCalc",
+  "codeowners": ["@ummeco"],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://praycalc.org/smart/homeassistant",
+  "homekit": {},
+  "integration_type": "service",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/ummeco/praycalc/issues",
+  "requirements": [],
+  "version": "0.7.0"
+}

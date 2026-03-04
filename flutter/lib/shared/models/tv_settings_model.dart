@@ -25,6 +25,9 @@ class TvSettings {
 
   final List<Announcement> announcements;
 
+  /// Whether to pause other media (YouTube, Netflix, etc.) during adhan on TV.
+  final bool mediaPauseEnabled;
+
   const TvSettings({
     this.isMasjidMode = false,
     this.masjidName = '',
@@ -43,6 +46,7 @@ class TvSettings {
     this.screensaverMode = 'photo',
     this.screensaverCategory = '',
     this.announcements = const [],
+    this.mediaPauseEnabled = false,
   });
 
   TvSettings copyWith({
@@ -56,6 +60,7 @@ class TvSettings {
     String? screensaverMode,
     String? screensaverCategory,
     List<Announcement>? announcements,
+    bool? mediaPauseEnabled,
   }) {
     return TvSettings(
       isMasjidMode: isMasjidMode ?? this.isMasjidMode,
@@ -69,6 +74,7 @@ class TvSettings {
       screensaverMode: screensaverMode ?? this.screensaverMode,
       screensaverCategory: screensaverCategory ?? this.screensaverCategory,
       announcements: announcements ?? this.announcements,
+      mediaPauseEnabled: mediaPauseEnabled ?? this.mediaPauseEnabled,
     );
   }
 
@@ -83,6 +89,7 @@ class TvSettings {
         'screensaverMode': screensaverMode,
         'screensaverCategory': screensaverCategory,
         'announcements': announcements.map((a) => a.toJson()).toList(),
+        'mediaPauseEnabled': mediaPauseEnabled,
       };
 
   factory TvSettings.fromJson(Map<String, dynamic> json) {
@@ -111,6 +118,7 @@ class TvSettings {
                   Announcement.fromJson(e as Map<String, dynamic>))
               .toList() ??
           const [],
+      mediaPauseEnabled: json['mediaPauseEnabled'] as bool? ?? false,
     );
   }
 

@@ -6,6 +6,7 @@ class NotificationChannels {
   static const String reminders = 'praycalc_reminders';   // Default, no sound
   static const String persistent = 'praycalc_persistent'; // Low, no sound, sticky
   static const String ramadan = 'praycalc_ramadan';       // Ramadan countdown shade (PC-ST-1.7)
+  static const String travel = 'praycalc_travel';         // Travel detection alerts (PC-TR-1)
 }
 
 class NotificationIds {
@@ -39,4 +40,7 @@ class NotificationIds {
   // Jumu'ah / Ramadan extras: 610+
   static const int jumuahKahf = 610;         // PC-ST-1.8 Jumu'ah Al-Kahf reminder
   static const int ramadanCountdown = 620;   // PC-ST-1.7 Ramadan persistent countdown
+
+  // Travel: 700+
+  static const int travelDetected = 700;     // PC-TR-1 Travel threshold crossed
 }

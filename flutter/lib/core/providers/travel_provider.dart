@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../services/notification_service.dart';
 import 'prayer_provider.dart';
 import 'settings_provider.dart';
 
@@ -36,6 +37,15 @@ class TravelState {
 
 class TravelNotifier extends Notifier<TravelState> {
   static const _kQasrKey = 'pc_qasr_enabled';
+  static const _kLastTravelNotifiedKey = 'pc_last_travel_notified';
+
+  /// 6-hour debounce: suppress repeated travel notifications when the user
+  /// crosses back and forth near the threshold within this window.
+  static const _kTravelNotifyDebounce = Duration(hours: 6);
+
+  /// Timestamp of the last travel notification sent. Loaded from prefs on
+  /// first build, updated when a notification fires.
+  DateTime? _lastTravelNotifiedAt;
 
   @override
   TravelState build() {
@@ -60,7 +70,36 @@ class TravelNotifier extends Notifier<TravelState> {
     // Load persisted Qasr preference (fire-and-forget, state updated below).
     _loadQasr(traveling);
 
+    // Fire travel notification if threshold just crossed (with 6hr debounce).
+    if (traveling) {
+      _maybeSendTravelNotification();
+    }
+
     return TravelState(isTraveling: traveling, distanceKm: dist, isQasr: false);
+  }
+
+  /// Send a push notification when travel is first detected, subject to
+  /// a 6-hour debounce so rapid threshold crossings don't spam the user.
+  Future<void> _maybeSendTravelNotification() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    // Hydrate the in-memory timestamp from prefs on first call.
+    if (_lastTravelNotifiedAt == null) {
+      final ms = prefs.getInt(_kLastTravelNotifiedKey);
+      if (ms != null) {
+        _lastTravelNotifiedAt = DateTime.fromMillisecondsSinceEpoch(ms);
+      }
+    }
+
+    final now = DateTime.now();
+    if (_lastTravelNotifiedAt != null &&
+        now.difference(_lastTravelNotifiedAt!) < _kTravelNotifyDebounce) {
+      return; // Still within debounce window.
+    }
+
+    _lastTravelNotifiedAt = now;
+    await prefs.setInt(_kLastTravelNotifiedKey, now.millisecondsSinceEpoch);
+    await NotificationService.instance.showTravelNotification();
   }
 
   Future<void> _loadQasr(bool traveling) async {

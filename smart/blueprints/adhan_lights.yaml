@@ -1,0 +1,151 @@
+blueprint:
+  name: "PrayCalc: Flash Lights Green at Prayer Time"
+  description: >
+    Flashes your lights green briefly at any prayer time to signal the adhan.
+    Lights return to their previous state after the flash sequence.
+    Select which prayers to trigger on.
+  domain: automation
+  author: PrayCalc
+  source_url: https://github.com/ummeco/praycalc/blob/main/smart/blueprints/adhan_lights.yaml
+  input:
+    light_target:
+      name: Lights
+      description: The lights to flash green at prayer time.
+      selector:
+        target:
+          entity:
+            domain: light
+    flash_color:
+      name: Flash color
+      description: RGB color for the flash (default is green).
+      default: [121, 194, 76]
+      selector:
+        color_rgb:
+    flash_count:
+      name: Number of flashes
+      description: How many times the lights flash.
+      default: 3
+      selector:
+        number:
+          min: 1
+          max: 10
+          mode: slider
+    flash_duration:
+      name: Flash duration
+      description: Duration of each flash in seconds.
+      default: 2
+      selector:
+        number:
+          min: 1
+          max: 10
+          unit_of_measurement: seconds
+          mode: slider
+    include_fajr:
+      name: Include Fajr
+      default: true
+      selector:
+        boolean:
+    include_dhuhr:
+      name: Include Dhuhr
+      default: true
+      selector:
+        boolean:
+    include_asr:
+      name: Include Asr
+      default: true
+      selector:
+        boolean:
+    include_maghrib:
+      name: Include Maghrib
+      default: true
+      selector:
+        boolean:
+    include_isha:
+      name: Include Isha
+      default: true
+      selector:
+        boolean:
+
+variables:
+  include_fajr: !input include_fajr
+  include_dhuhr: !input include_dhuhr
+  include_asr: !input include_asr
+  include_maghrib: !input include_maghrib
+  include_isha: !input include_isha
+
+trigger:
+  - platform: time
+    at: sensor.praycalc_fajr
+    id: fajr
+  - platform: time
+    at: sensor.praycalc_dhuhr
+    id: dhuhr
+  - platform: time
+    at: sensor.praycalc_asr
+    id: asr
+  - platform: time
+    at: sensor.praycalc_maghrib
+    id: maghrib
+  - platform: time
+    at: sensor.praycalc_isha
+    id: isha
+
+condition:
+  - condition: or
+    conditions:
+      - condition: and
+        conditions:
+          - condition: trigger
+            id: fajr
+          - "{{ include_fajr }}"
+      - condition: and
+        conditions:
+          - condition: trigger
+            id: dhuhr
+          - "{{ include_dhuhr }}"
+      - condition: and
+        conditions:
+          - condition: trigger
+            id: asr
+          - "{{ include_asr }}"
+      - condition: and
+        conditions:
+          - condition: trigger
+            id: maghrib
+          - "{{ include_maghrib }}"
+      - condition: and
+        conditions:
+          - condition: trigger
+            id: isha
+          - "{{ include_isha }}"
+
+action:
+  - variables:
+      flash_count_val: !input flash_count
+      flash_duration_val: !input flash_duration
+  - repeat:
+      count: "{{ flash_count_val }}"
+      sequence:
+        - service: light.turn_on
+          target: !input light_target
+          data:
+            rgb_color: !input flash_color
+            brightness_pct: 100
+            transition: 0
+        - delay:
+            seconds: "{{ flash_duration_val }}"
+        - service: light.turn_off
+          target: !input light_target
+          data:
+            transition: 0
+        - delay:
+            seconds: 1
+  - delay:
+      seconds: 2
+  - service: light.turn_on
+    target: !input light_target
+    data:
+      brightness_pct: 80
+      transition: 2
+
+mode: single

@@ -1,0 +1,123 @@
+blueprint:
+  name: "PrayCalc: Silence Media at Prayer Time"
+  description: >
+    Pauses all selected media players when a prayer time begins.
+    Optionally resumes playback after a configurable number of minutes,
+    giving you time to pray without distractions.
+  domain: automation
+  author: PrayCalc
+  source_url: https://github.com/ummeco/praycalc/blob/main/smart/blueprints/silence_media_at_prayer.yaml
+  input:
+    media_players:
+      name: Media players
+      description: The media players to pause at prayer time.
+      selector:
+        target:
+          entity:
+            domain: media_player
+    resume_after:
+      name: Resume after
+      description: >
+        Minutes to wait before resuming playback. Set to 0 to stay paused
+        until you manually resume.
+      default: 20
+      selector:
+        number:
+          min: 0
+          max: 120
+          unit_of_measurement: minutes
+          mode: slider
+    include_fajr:
+      name: Include Fajr
+      default: true
+      selector:
+        boolean:
+    include_dhuhr:
+      name: Include Dhuhr
+      default: true
+      selector:
+        boolean:
+    include_asr:
+      name: Include Asr
+      default: true
+      selector:
+        boolean:
+    include_maghrib:
+      name: Include Maghrib
+      default: true
+      selector:
+        boolean:
+    include_isha:
+      name: Include Isha
+      default: true
+      selector:
+        boolean:
+
+variables:
+  include_fajr: !input include_fajr
+  include_dhuhr: !input include_dhuhr
+  include_asr: !input include_asr
+  include_maghrib: !input include_maghrib
+  include_isha: !input include_isha
+
+trigger:
+  - platform: time
+    at: sensor.praycalc_fajr
+    id: fajr
+  - platform: time
+    at: sensor.praycalc_dhuhr
+    id: dhuhr
+  - platform: time
+    at: sensor.praycalc_asr
+    id: asr
+  - platform: time
+    at: sensor.praycalc_maghrib
+    id: maghrib
+  - platform: time
+    at: sensor.praycalc_isha
+    id: isha
+
+condition:
+  - condition: or
+    conditions:
+      - condition: and
+        conditions:
+          - condition: trigger
+            id: fajr
+          - "{{ include_fajr }}"
+      - condition: and
+        conditions:
+          - condition: trigger
+            id: dhuhr
+          - "{{ include_dhuhr }}"
+      - condition: and
+        conditions:
+          - condition: trigger
+            id: asr
+          - "{{ include_asr }}"
+      - condition: and
+        conditions:
+          - condition: trigger
+            id: maghrib
+          - "{{ include_maghrib }}"
+      - condition: and
+        conditions:
+          - condition: trigger
+            id: isha
+          - "{{ include_isha }}"
+
+action:
+  - service: media_player.media_pause
+    target: !input media_players
+  - variables:
+      resume_minutes: !input resume_after
+  - choose:
+      - conditions:
+          - "{{ resume_minutes > 0 }}"
+        sequence:
+          - delay:
+              minutes: "{{ resume_minutes }}"
+          - service: media_player.media_play
+            target: !input media_players
+
+mode: restart

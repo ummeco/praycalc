@@ -1,0 +1,102 @@
+blueprint:
+  name: "PrayCalc: Qibla Direction Light Indicator"
+  description: >
+    Uses a light to indicate the Qibla direction by flashing a specific number
+    of times based on the bearing quadrant. The light flashes green to signal
+    the quadrant: 1 flash for North (0-90 degrees), 2 for East (90-180),
+    3 for South (180-270), 4 for West (270-360). Trigger automatically at Fajr
+    or manually via an event.
+  domain: automation
+  author: PrayCalc
+  source_url: https://github.com/ummeco/praycalc/blob/main/smart/blueprints/qibla_light_indicator.yaml
+  input:
+    light_entity:
+      name: Indicator light
+      description: The light to use as the Qibla direction indicator.
+      selector:
+        entity:
+          domain: light
+    flash_color:
+      name: Flash color
+      description: RGB color for the directional flashes.
+      default: [121, 194, 76]
+      selector:
+        color_rgb:
+    flash_duration:
+      name: Flash duration
+      description: Duration of each flash in seconds.
+      default: 1
+      selector:
+        number:
+          min: 1
+          max: 5
+          unit_of_measurement: seconds
+          mode: slider
+    trigger_at_prayer:
+      name: Flash at first prayer of the day
+      description: >
+        When enabled, the indicator flashes at Fajr time as a daily Qibla
+        reminder. Disable to only trigger manually.
+      default: true
+      selector:
+        boolean:
+
+variables:
+  trigger_at_prayer: !input trigger_at_prayer
+
+trigger:
+  - platform: time
+    at: sensor.praycalc_fajr
+    id: auto
+  - platform: event
+    event_type: praycalc_show_qibla
+    id: manual
+
+condition:
+  - condition: or
+    conditions:
+      - condition: and
+        conditions:
+          - condition: trigger
+            id: auto
+          - "{{ trigger_at_prayer }}"
+      - condition: trigger
+        id: manual
+
+action:
+  - variables:
+      qibla_bearing: "{{ states('sensor.praycalc_qibla') | float(0) }}"
+      quadrant: >-
+        {% if qibla_bearing < 90 %}1
+        {% elif qibla_bearing < 180 %}2
+        {% elif qibla_bearing < 270 %}3
+        {% else %}4{% endif %}
+  - repeat:
+      count: "{{ quadrant | int }}"
+      sequence:
+        - service: light.turn_on
+          target:
+            entity_id: !input light_entity
+          data:
+            rgb_color: !input flash_color
+            brightness_pct: 100
+            transition: 0
+        - delay:
+            seconds: !input flash_duration
+        - service: light.turn_off
+          target:
+            entity_id: !input light_entity
+          data:
+            transition: 0
+        - delay:
+            seconds: 1
+  - delay:
+      seconds: 3
+  - service: light.turn_on
+    target:
+      entity_id: !input light_entity
+    data:
+      brightness_pct: 50
+      transition: 2
+
+mode: single

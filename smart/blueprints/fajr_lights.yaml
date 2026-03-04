@@ -1,0 +1,116 @@
+blueprint:
+  name: "PrayCalc: Gradual Fajr Wake-Up Lights"
+  description: >
+    Gradually increases light brightness starting 15 minutes before Fajr.
+    Simulates a sunrise effect to help you wake up naturally for Fajr prayer.
+    The light transitions from warm dim to bright white over the configured duration.
+  domain: automation
+  author: PrayCalc
+  source_url: https://github.com/ummeco/praycalc/blob/main/smart/blueprints/fajr_lights.yaml
+  input:
+    light_target:
+      name: Lights
+      description: The lights to gradually turn on before Fajr.
+      selector:
+        target:
+          entity:
+            domain: light
+    minutes_before:
+      name: Minutes before Fajr
+      description: How many minutes before Fajr to start the light transition.
+      default: 15
+      selector:
+        number:
+          min: 5
+          max: 60
+          unit_of_measurement: minutes
+          mode: slider
+    start_brightness:
+      name: Starting brightness
+      description: Initial brightness when the transition begins (percentage).
+      default: 5
+      selector:
+        number:
+          min: 1
+          max: 30
+          unit_of_measurement: "%"
+          mode: slider
+    end_brightness:
+      name: Final brightness
+      description: Final brightness at Fajr time (percentage).
+      default: 80
+      selector:
+        number:
+          min: 50
+          max: 100
+          unit_of_measurement: "%"
+          mode: slider
+    start_color_temp:
+      name: Starting color temperature
+      description: Warm color temperature at the start (Kelvin). Lower is warmer.
+      default: 2200
+      selector:
+        number:
+          min: 1800
+          max: 3000
+          unit_of_measurement: K
+          mode: slider
+    end_color_temp:
+      name: Final color temperature
+      description: Color temperature at Fajr time (Kelvin). Higher is cooler/brighter.
+      default: 4500
+      selector:
+        number:
+          min: 3000
+          max: 6500
+          unit_of_measurement: K
+          mode: slider
+
+trigger:
+  - platform: state
+    entity_id: sensor.praycalc_next_prayer
+    attribute: countdown_minutes
+condition:
+  - condition: state
+    entity_id: sensor.praycalc_next_prayer
+    state: "Fajr"
+  - condition: numeric_state
+    entity_id: sensor.praycalc_next_prayer
+    attribute: countdown_minutes
+    below: !input minutes_before
+    above: 0
+
+action:
+  - service: light.turn_on
+    target: !input light_target
+    data:
+      brightness_pct: !input start_brightness
+      color_temp_kelvin: !input start_color_temp
+      transition: 2
+  - delay:
+      minutes: "{{ (input_minutes_before | int) // 3 }}"
+    variables:
+      input_minutes_before: !input minutes_before
+  - service: light.turn_on
+    target: !input light_target
+    data:
+      brightness_pct: "{{ ((input_start + input_end) / 2) | int }}"
+      color_temp_kelvin: "{{ ((input_start_ct + input_end_ct) / 2) | int }}"
+      transition: 60
+    variables:
+      input_start: !input start_brightness
+      input_end: !input end_brightness
+      input_start_ct: !input start_color_temp
+      input_end_ct: !input end_color_temp
+  - delay:
+      minutes: "{{ (input_minutes_before | int) // 3 }}"
+    variables:
+      input_minutes_before: !input minutes_before
+  - service: light.turn_on
+    target: !input light_target
+    data:
+      brightness_pct: !input end_brightness
+      color_temp_kelvin: !input end_color_temp
+      transition: 60
+
+mode: single

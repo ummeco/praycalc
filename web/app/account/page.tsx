@@ -81,7 +81,8 @@ export default function AccountPage() {
     e.preventDefault();
     if (!email.trim()) return;
     setLoading(true);
-    // TODO: POST https://auth.ummat.dev/v1/auth/signin/email-otp { email: email.trim() }
+    // Email OTP requires Hasura Auth backend (auth.ummat.dev) to be deployed.
+    // When live: POST /signin/email-otp { email: email.trim() }
     await new Promise((r) => setTimeout(r, 600));
     setLoading(false);
     setSent(true);

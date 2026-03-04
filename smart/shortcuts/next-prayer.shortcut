@@ -1,0 +1,226 @@
+{
+  "WFWorkflowMinimumClientVersionString": "900",
+  "WFWorkflowMinimumClientVersion": 900,
+  "WFWorkflowIcon": {
+    "WFWorkflowIconStartColor": 4292093695,
+    "WFWorkflowIconGlyphNumber": 61557
+  },
+  "WFWorkflowClientVersion": "2302.0.4",
+  "WFWorkflowOutputContentItemClass": "WFStringContentItem",
+  "WFWorkflowHasOutputFallback": false,
+  "WFWorkflowHasShortcutInputVariables": false,
+  "WFWorkflowImportQuestions": [],
+  "WFQuickActionSurfaces": [],
+  "WFWorkflowTypes": ["NCWidget", "WatchKit", "Sleep"],
+  "WFWorkflowName": "Next Prayer",
+  "WFWorkflowActions": [
+    {
+      "WFWorkflowActionIdentifier": "is.workflow.actions.comment",
+      "WFWorkflowActionParameters": {
+        "WFCommentActionText": "PrayCalc: Get the next prayer time using your current GPS location."
+      }
+    },
+    {
+      "WFWorkflowActionIdentifier": "is.workflow.actions.getlocation",
+      "WFWorkflowActionParameters": {
+        "WFLocation": {
+          "isCurrentLocation": true
+        },
+        "UUID": "location-step"
+      }
+    },
+    {
+      "WFWorkflowActionIdentifier": "is.workflow.actions.getvariable",
+      "WFWorkflowActionParameters": {
+        "WFVariable": {
+          "Value": {
+            "Type": "ActionOutput",
+            "OutputName": "Current Location",
+            "OutputUUID": "location-step"
+          },
+          "WFSerializationType": "WFTextTokenAttachment"
+        },
+        "UUID": "get-location-var"
+      }
+    },
+    {
+      "WFWorkflowActionIdentifier": "is.workflow.actions.detect.text",
+      "WFWorkflowActionParameters": {
+        "WFInput": {
+          "Value": {
+            "Type": "ActionOutput",
+            "OutputName": "Current Location",
+            "OutputUUID": "location-step",
+            "Aggrandizements": [
+              {
+                "Type": "WFPropertyVariableAggrandizement",
+                "PropertyName": "Latitude"
+              }
+            ]
+          },
+          "WFSerializationType": "WFTextTokenAttachment"
+        },
+        "UUID": "latitude-step"
+      }
+    },
+    {
+      "WFWorkflowActionIdentifier": "is.workflow.actions.detect.text",
+      "WFWorkflowActionParameters": {
+        "WFInput": {
+          "Value": {
+            "Type": "ActionOutput",
+            "OutputName": "Current Location",
+            "OutputUUID": "location-step",
+            "Aggrandizements": [
+              {
+                "Type": "WFPropertyVariableAggrandizement",
+                "PropertyName": "Longitude"
+              }
+            ]
+          },
+          "WFSerializationType": "WFTextTokenAttachment"
+        },
+        "UUID": "longitude-step"
+      }
+    },
+    {
+      "WFWorkflowActionIdentifier": "is.workflow.actions.urlencode",
+      "WFWorkflowActionParameters": {
+        "WFInput": {
+          "Value": {
+            "attachmentsByRange": {
+              "{0, 1}": {
+                "Type": "ActionOutput",
+                "OutputName": "Text",
+                "OutputUUID": "latitude-step"
+              },
+              "{2, 1}": {
+                "Type": "ActionOutput",
+                "OutputName": "Text",
+                "OutputUUID": "longitude-step"
+              }
+            },
+            "string": "\uFFFC,\uFFFC"
+          },
+          "WFSerializationType": "WFTextTokenString"
+        },
+        "UUID": "coords-encoded"
+      }
+    },
+    {
+      "WFWorkflowActionIdentifier": "is.workflow.actions.downloadurl",
+      "WFWorkflowActionParameters": {
+        "WFURL": {
+          "Value": {
+            "attachmentsByRange": {
+              "{52, 1}": {
+                "Type": "ActionOutput",
+                "OutputName": "Text",
+                "OutputUUID": "latitude-step"
+              },
+              "{58, 1}": {
+                "Type": "ActionOutput",
+                "OutputName": "Text",
+                "OutputUUID": "longitude-step"
+              }
+            },
+            "string": "https://api.praycalc.com/api/v1/times?latitude=\uFFFC&longitude=\uFFFC"
+          },
+          "WFSerializationType": "WFTextTokenString"
+        },
+        "WFHTTPMethod": "GET",
+        "WFHTTPHeaders": {
+          "Value": {
+            "WFDictionaryFieldValueItems": [
+              {
+                "WFItemType": 0,
+                "WFKey": {
+                  "Value": { "string": "Accept" },
+                  "WFSerializationType": "WFTextTokenString"
+                },
+                "WFValue": {
+                  "Value": { "string": "application/json" },
+                  "WFSerializationType": "WFTextTokenString"
+                }
+              }
+            ]
+          },
+          "WFSerializationType": "WFDictionaryFieldValue"
+        },
+        "UUID": "api-response"
+      }
+    },
+    {
+      "WFWorkflowActionIdentifier": "is.workflow.actions.getvalueforkey",
+      "WFWorkflowActionParameters": {
+        "WFInput": {
+          "Value": {
+            "Type": "ActionOutput",
+            "OutputName": "Contents of URL",
+            "OutputUUID": "api-response"
+          },
+          "WFSerializationType": "WFTextTokenAttachment"
+        },
+        "WFDictionaryKey": "nextPrayer",
+        "UUID": "next-prayer-name"
+      }
+    },
+    {
+      "WFWorkflowActionIdentifier": "is.workflow.actions.getvalueforkey",
+      "WFWorkflowActionParameters": {
+        "WFInput": {
+          "Value": {
+            "Type": "ActionOutput",
+            "OutputName": "Contents of URL",
+            "OutputUUID": "api-response"
+          },
+          "WFSerializationType": "WFTextTokenAttachment"
+        },
+        "WFDictionaryKey": "nextPrayerTime",
+        "UUID": "next-prayer-time"
+      }
+    },
+    {
+      "WFWorkflowActionIdentifier": "is.workflow.actions.gettext",
+      "WFWorkflowActionParameters": {
+        "WFTextActionText": {
+          "Value": {
+            "attachmentsByRange": {
+              "{18, 1}": {
+                "Type": "ActionOutput",
+                "OutputName": "Dictionary Value",
+                "OutputUUID": "next-prayer-name"
+              },
+              "{23, 1}": {
+                "Type": "ActionOutput",
+                "OutputName": "Dictionary Value",
+                "OutputUUID": "next-prayer-time"
+              }
+            },
+            "string": "The next prayer is \uFFFC at \uFFFC."
+          },
+          "WFSerializationType": "WFTextTokenString"
+        },
+        "UUID": "result-text"
+      }
+    },
+    {
+      "WFWorkflowActionIdentifier": "is.workflow.actions.showresult",
+      "WFWorkflowActionParameters": {
+        "Text": {
+          "Value": {
+            "attachmentsByRange": {
+              "{0, 1}": {
+                "Type": "ActionOutput",
+                "OutputName": "Text",
+                "OutputUUID": "result-text"
+              }
+            },
+            "string": "\uFFFC"
+          },
+          "WFSerializationType": "WFTextTokenString"
+        }
+      }
+    }
+  ]
+}

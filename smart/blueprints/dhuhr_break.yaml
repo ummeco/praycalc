@@ -1,0 +1,117 @@
+blueprint:
+  name: "PrayCalc: Dhuhr Lunch Break Reminder"
+  description: >
+    Sends a notification and optionally adjusts your thermostat or lights at Dhuhr
+    to remind you to take a break, pray, and eat. Works well for home office setups.
+  domain: automation
+  author: PrayCalc
+  source_url: https://github.com/ummeco/praycalc/blob/main/smart/blueprints/dhuhr_break.yaml
+  input:
+    notify_service:
+      name: Notification service
+      description: The notification service for the Dhuhr reminder.
+      selector:
+        text:
+    notification_message:
+      name: Notification message
+      description: Custom message for the Dhuhr break reminder.
+      default: "Dhuhr time. Take a break, pray, and grab lunch."
+      selector:
+        text:
+          multiline: true
+    adjust_lights:
+      name: Adjust office lights
+      description: Change office lights to signal break time.
+      default: false
+      selector:
+        boolean:
+    light_target:
+      name: Office lights
+      description: Lights to adjust at Dhuhr (only if "Adjust office lights" is enabled).
+      default: {}
+      selector:
+        target:
+          entity:
+            domain: light
+    break_brightness:
+      name: Break brightness
+      description: Brightness to set during break (percentage).
+      default: 40
+      selector:
+        number:
+          min: 10
+          max: 80
+          unit_of_measurement: "%"
+          mode: slider
+    break_duration:
+      name: Break duration
+      description: Minutes before restoring lights to normal.
+      default: 30
+      selector:
+        number:
+          min: 10
+          max: 60
+          unit_of_measurement: minutes
+          mode: slider
+    restore_brightness:
+      name: Restore brightness
+      description: Brightness to restore after break (percentage).
+      default: 80
+      selector:
+        number:
+          min: 50
+          max: 100
+          unit_of_measurement: "%"
+          mode: slider
+    weekdays_only:
+      name: Weekdays only
+      description: Only trigger Monday through Friday.
+      default: true
+      selector:
+        boolean:
+
+variables:
+  do_lights: !input adjust_lights
+  weekdays: !input weekdays_only
+
+trigger:
+  - platform: time
+    at: sensor.praycalc_dhuhr
+
+condition:
+  - condition: or
+    conditions:
+      - "{{ not weekdays }}"
+      - condition: time
+        weekday:
+          - mon
+          - tue
+          - wed
+          - thu
+          - fri
+
+action:
+  - service: !input notify_service
+    data:
+      title: "Dhuhr Break"
+      message: !input notification_message
+  - choose:
+      - conditions:
+          - "{{ do_lights }}"
+        sequence:
+          - service: light.turn_on
+            target: !input light_target
+            data:
+              brightness_pct: !input break_brightness
+              color_temp_kelvin: 3500
+              transition: 5
+          - delay:
+              minutes: !input break_duration
+          - service: light.turn_on
+            target: !input light_target
+            data:
+              brightness_pct: !input restore_brightness
+              color_temp_kelvin: 5000
+              transition: 5
+
+mode: single

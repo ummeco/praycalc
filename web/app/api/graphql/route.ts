@@ -5,8 +5,8 @@
  * into the main api.ummat.dev schema. Every Hasura request includes
  * x-remote-schema-secret for authentication.
  *
- * Phase 1 (stub): returns an empty schema stub.
- * Implement prayer-time calculation queries in PC v0.2+.
+ * Current: minimal schema with a single Boolean field for Hasura introspection.
+ * Extend with prayer-time calculation queries when the backend is deployed.
  *
  * See: backend/docs/architecture.md — Hasura Remote Schemas
  */
@@ -29,7 +29,7 @@ const INTROSPECTION_RESPONSE = {
           fields: [
             {
               name: '_praycalc',
-              description: 'Placeholder — expanded in PC v0.2',
+              description: 'Schema anchor field. Expand with prayer queries when backend is deployed.',
               args: [],
               type: { kind: 'SCALAR', name: 'Boolean', ofType: null },
               isDeprecated: false,

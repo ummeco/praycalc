@@ -131,6 +131,12 @@ class NotificationService {
       playSound: false,
       showBadge: false,
     );
+    const travel = AndroidNotificationChannel(
+      NotificationChannels.travel,
+      'Travel Alerts',
+      description: 'Notification when travel distance threshold is crossed',
+      importance: Importance.high,
+    );
     final androidPlugin = _plugin
         .resolvePlatformSpecificImplementation<
             AndroidFlutterLocalNotificationsPlugin>();
@@ -138,6 +144,7 @@ class NotificationService {
     await androidPlugin?.createNotificationChannel(reminders);
     await androidPlugin?.createNotificationChannel(persistent);
     await androidPlugin?.createNotificationChannel(ramadan);
+    await androidPlugin?.createNotificationChannel(travel);
   }
 
   // ── Permission ──────────────────────────────────────────────────────────────
@@ -157,6 +164,12 @@ class NotificationService {
   // ── Notification response (snooze action) ───────────────────────────────────
 
   void _onNotificationResponse(NotificationResponse response) {
+    if (response.actionId == 'travel_learn_more' ||
+        response.payload == 'praycalc://travel-rulings') {
+      // Deep link handled by the router — no action needed here.
+      // The app foreground handler in main.dart navigates via GoRouter.
+      return;
+    }
     if (response.actionId == 'snooze') {
       _scheduleNotification(
         id: NotificationIds.snooze,
@@ -329,6 +342,37 @@ class NotificationService {
       scheduledDate: reminderDt,
       channelId: NotificationChannels.reminders,
       payload: 'https://islam.wiki/quran/18',
+    );
+  }
+
+  // ── Travel notification ─────────────────────────────────────────────────────
+
+  /// Show an immediate notification when the travel distance threshold is
+  /// crossed. The notification includes a "Learn more" action that deep links
+  /// to the travel rulings screen.
+  Future<void> showTravelNotification() async {
+    await _plugin.show(
+      id: NotificationIds.travelDetected,
+      title: 'You are now traveling',
+      body: 'Prayer times may be shortened. Tap to learn about travel rulings.',
+      notificationDetails: NotificationDetails(
+        android: AndroidNotificationDetails(
+          NotificationChannels.travel,
+          'Travel Alerts',
+          importance: Importance.high,
+          priority: Priority.high,
+          actions: const [
+            AndroidNotificationAction(
+              'travel_learn_more',
+              'Learn more',
+            ),
+          ],
+        ),
+        iOS: const DarwinNotificationDetails(
+          interruptionLevel: InterruptionLevel.timeSensitive,
+        ),
+      ),
+      payload: 'praycalc://travel-rulings',
     );
   }
 

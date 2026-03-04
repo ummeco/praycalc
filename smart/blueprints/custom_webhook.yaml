@@ -1,0 +1,147 @@
+blueprint:
+  name: "PrayCalc: Custom Webhook at Prayer Time"
+  description: >
+    Fires a Home Assistant event and sends a notification at any prayer time,
+    enabling integration with external services. The event "praycalc_prayer_time"
+    carries prayer name, time, Hijri date, and location data that Node-RED,
+    AppDaemon, or other HA automations can listen for.
+
+    For HTTP webhooks: pair this blueprint with a rest_command in configuration.yaml
+    that posts to your external service URL.
+  domain: automation
+  author: PrayCalc
+  source_url: https://github.com/ummeco/praycalc/blob/main/smart/blueprints/custom_webhook.yaml
+  input:
+    send_notification:
+      name: Send notification
+      description: Send a mobile notification when the event fires.
+      default: false
+      selector:
+        boolean:
+    notify_service:
+      name: Notification service
+      description: Notification service to use (only if "Send notification" is enabled).
+      default: notify.mobile_app
+      selector:
+        text:
+    include_fajr:
+      name: Include Fajr
+      default: true
+      selector:
+        boolean:
+    include_sunrise:
+      name: Include Sunrise
+      default: false
+      selector:
+        boolean:
+    include_dhuhr:
+      name: Include Dhuhr
+      default: true
+      selector:
+        boolean:
+    include_asr:
+      name: Include Asr
+      default: true
+      selector:
+        boolean:
+    include_maghrib:
+      name: Include Maghrib
+      default: true
+      selector:
+        boolean:
+    include_isha:
+      name: Include Isha
+      default: true
+      selector:
+        boolean:
+
+variables:
+  include_fajr: !input include_fajr
+  include_sunrise: !input include_sunrise
+  include_dhuhr: !input include_dhuhr
+  include_asr: !input include_asr
+  include_maghrib: !input include_maghrib
+  include_isha: !input include_isha
+  do_notify: !input send_notification
+  notify_svc: !input notify_service
+
+trigger:
+  - platform: time
+    at: sensor.praycalc_fajr
+    id: fajr
+  - platform: time
+    at: sensor.praycalc_sunrise
+    id: sunrise
+  - platform: time
+    at: sensor.praycalc_dhuhr
+    id: dhuhr
+  - platform: time
+    at: sensor.praycalc_asr
+    id: asr
+  - platform: time
+    at: sensor.praycalc_maghrib
+    id: maghrib
+  - platform: time
+    at: sensor.praycalc_isha
+    id: isha
+
+condition:
+  - condition: or
+    conditions:
+      - condition: and
+        conditions:
+          - condition: trigger
+            id: fajr
+          - "{{ include_fajr }}"
+      - condition: and
+        conditions:
+          - condition: trigger
+            id: sunrise
+          - "{{ include_sunrise }}"
+      - condition: and
+        conditions:
+          - condition: trigger
+            id: dhuhr
+          - "{{ include_dhuhr }}"
+      - condition: and
+        conditions:
+          - condition: trigger
+            id: asr
+          - "{{ include_asr }}"
+      - condition: and
+        conditions:
+          - condition: trigger
+            id: maghrib
+          - "{{ include_maghrib }}"
+      - condition: and
+        conditions:
+          - condition: trigger
+            id: isha
+          - "{{ include_isha }}"
+
+action:
+  - variables:
+      prayer_name: "{{ trigger.id }}"
+      prayer_time: "{{ state_attr('sensor.praycalc_' ~ trigger.id, 'time_24h') | default('') }}"
+      hijri: "{{ states('sensor.praycalc_hijri_date') }}"
+      qibla: "{{ states('sensor.praycalc_qibla') }}"
+      city: "{{ state_attr('sensor.praycalc_next_prayer', 'city') | default('') }}"
+  - event: praycalc_prayer_time
+    event_data:
+      prayer: "{{ prayer_name }}"
+      time: "{{ prayer_time }}"
+      hijri_date: "{{ hijri }}"
+      qibla_bearing: "{{ qibla }}"
+      city: "{{ city }}"
+      timestamp: "{{ now().isoformat() }}"
+  - choose:
+      - conditions:
+          - "{{ do_notify }}"
+        sequence:
+          - service: "{{ notify_svc }}"
+            data:
+              title: "Prayer Time: {{ prayer_name | title }}"
+              message: "{{ prayer_name | title }} at {{ prayer_time }}. {{ hijri }}"
+
+mode: parallel
+max: 6
