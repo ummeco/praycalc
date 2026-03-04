@@ -40,6 +40,21 @@ Thumbs.db
 flutter/.packages
 flutter/.metadata
 
+# Swift/Xcode build artifacts
+**/.build/
+*.xcodeproj/
+*.xcworkspace/
+DerivedData/
+*.pcm
+*.o
+*.d
+
+# Wear OS / Android build
+wearos/.gradle/
+wearos/app/build/
+wearos/build/
+wearos/local.properties
+
 # Other AI editors
 .codex/
 .cursor/
