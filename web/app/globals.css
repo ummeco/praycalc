@@ -144,26 +144,53 @@ body {
 
 /* ── Last-visited resume button (PC-P2-1.2) ──────────────────────────────── */
 
-.last-visited-btn {
+.last-visited-wrap {
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
-  margin-bottom: 0.6rem;
-  padding: 0.3rem 0.85rem;
   border-radius: 9999px;
   font-size: 0.75rem;
   font-weight: 500;
   border: 1px solid rgba(121, 194, 76, 0.25);
   color: rgba(201, 242, 122, 0.75);
   background: rgba(121, 194, 76, 0.08);
-  cursor: pointer;
+  overflow: hidden;
   transition: background 0.15s, border-color 0.15s, color 0.15s;
 }
 
-.last-visited-btn:hover {
+.last-visited-wrap:hover {
   background: rgba(121, 194, 76, 0.18);
   border-color: rgba(201, 242, 122, 0.45);
   color: #C9F27A;
+}
+
+.last-visited-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.3rem 0.4rem 0.3rem 0.85rem;
+  background: transparent;
+  border: none;
+  color: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  cursor: pointer;
+}
+
+.last-visited-delete-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.3rem 0.6rem 0.3rem 0.2rem;
+  background: transparent;
+  border: none;
+  color: inherit;
+  opacity: 0.45;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.last-visited-delete-btn:hover {
+  opacity: 1;
 }
 
 /* ── Geolocation prompt card (PC-P2-1.5) ─────────────────────────────────── */
@@ -525,13 +552,13 @@ html[data-theme="light"] .gps-pill--prompt {
   background: rgba(13, 47, 23, 0.04);
 }
 
-html[data-theme="light"] .last-visited-btn {
+html[data-theme="light"] .last-visited-wrap {
   border-color: rgba(30, 94, 47, 0.25);
   color: rgba(30, 94, 47, 0.75);
   background: rgba(121, 194, 76, 0.1);
 }
 
-html[data-theme="light"] .last-visited-btn:hover {
+html[data-theme="light"] .last-visited-wrap:hover {
   background: rgba(121, 194, 76, 0.22);
   color: #1E5E2F;
 }
@@ -3503,6 +3530,7 @@ html[data-theme="light"] .month-cal-prayer-time {
 .ftile:focus-visible,
 .popular-city-chip:focus-visible,
 .last-visited-btn:focus-visible,
+.last-visited-delete-btn:focus-visible,
 .geo-prompt-btn:focus-visible {
   outline: 2px solid #79C24C;
   outline-offset: 3px;

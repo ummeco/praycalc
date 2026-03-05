@@ -43,30 +43,51 @@ export default function LastVisited() {
     }
   }, []);
 
+  function clearLastCity() {
+    try {
+      localStorage.removeItem(LAST_CITY_KEY);
+    } catch {
+      // ignore
+    }
+    setLastCity(null);
+  }
+
   if (!lastCity) return null;
 
   return (
-    <button
-      type="button"
-      onClick={() => router.push(`/${lastCity.slug}`)}
-      className="last-visited-btn"
-      title={`Return to prayer times for ${lastCity.name}`}
-    >
-      <svg
-        className="w-3.5 h-3.5 shrink-0"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-        aria-hidden="true"
+    <div className="last-visited-wrap">
+      <button
+        type="button"
+        onClick={() => router.push(`/${lastCity.slug}`)}
+        className="last-visited-btn"
+        title={`Return to prayer times for ${lastCity.name}`}
       >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-        />
-      </svg>
-      {lastCity.name}
-    </button>
+        <svg
+          className="w-3.5 h-3.5 shrink-0"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+          />
+        </svg>
+        {lastCity.name}
+      </button>
+      <button
+        type="button"
+        onClick={clearLastCity}
+        className="last-visited-delete-btn"
+        aria-label={`Remove ${lastCity.name} from history`}
+      >
+        <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
   );
 }
