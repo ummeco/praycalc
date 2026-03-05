@@ -3068,6 +3068,11 @@ html[data-theme="light"] .month-cal-prayer-time {
   border-radius: 4px;
 }
 
+/* Search input — suppress inner outline; the wrapper border already provides context */
+.search-input-wrap input:focus-visible {
+  outline: none;
+}
+
 /* Override for elements that already have rounded styles */
 .ftile:focus-visible,
 .popular-city-chip:focus-visible,
