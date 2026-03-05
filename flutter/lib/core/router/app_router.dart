@@ -99,6 +99,11 @@ final appRouter = GoRouter(
           },
         ),
         GoRoute(
+          path: Routes.agendas,
+          pageBuilder: (context, state) =>
+              const NoTransitionPage(child: AgendaListScreen()),
+        ),
+        GoRoute(
           path: Routes.settings,
           pageBuilder: (context, state) =>
               const NoTransitionPage(child: SettingsScreen()),
@@ -119,18 +124,9 @@ final appRouter = GoRouter(
       builder: (context, state) => const TasbeehScreen(),
     ),
     GoRoute(
-      path: Routes.agendas,
-      builder: (context, state) => const AgendaListScreen(),
-      routes: [
-        GoRoute(
-          path: 'edit',
-          builder: (context, state) {
-            // Pass an existing Agenda via GoRouter extra for edit mode.
-            // Null extra = create mode.
-            return AgendaEditScreen(agenda: state.extra as Agenda?);
-          },
-        ),
-      ],
+      path: Routes.agendaEdit,
+      builder: (context, state) =>
+          AgendaEditScreen(agenda: state.extra as Agenda?),
     ),
     GoRoute(
       path: Routes.notificationSettings,
@@ -208,7 +204,7 @@ class _AppShell extends StatelessWidget {
         destinations: const [
           NavigationDestination(
             icon: Icon(Icons.home_outlined),
-            selectedIcon: Icon(Icons.home),
+            selectedIcon: Icon(Icons.home_rounded),
             label: 'Prayers',
           ),
           NavigationDestination(
@@ -222,8 +218,13 @@ class _AppShell extends StatelessWidget {
             label: 'Calendar',
           ),
           NavigationDestination(
+            icon: Icon(Icons.checklist_outlined),
+            selectedIcon: Icon(Icons.checklist),
+            label: 'Agenda',
+          ),
+          NavigationDestination(
             icon: Icon(Icons.settings_outlined),
-            selectedIcon: Icon(Icons.settings),
+            selectedIcon: Icon(Icons.settings_rounded),
             label: 'Settings',
           ),
         ],
@@ -234,7 +235,8 @@ class _AppShell extends StatelessWidget {
   int _indexForPath(String path) {
     if (path.startsWith(Routes.qibla)) return 1;
     if (path.startsWith(Routes.calendar)) return 2;
-    if (path.startsWith(Routes.settings)) return 3;
+    if (path.startsWith(Routes.agendas)) return 3;
+    if (path.startsWith(Routes.settings)) return 4;
     return 0;
   }
 
@@ -243,7 +245,8 @@ class _AppShell extends StatelessWidget {
       case 0: context.go(Routes.home);
       case 1: context.go(Routes.qibla);
       case 2: context.go(Routes.calendar);
-      case 3: context.go(Routes.settings);
+      case 3: context.go(Routes.agendas);
+      case 4: context.go(Routes.settings);
     }
   }
 }
