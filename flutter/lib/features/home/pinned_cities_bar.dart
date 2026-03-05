@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/providers/pinned_cities_provider.dart';
 import '../../core/providers/prayer_provider.dart';
-import '../../core/theme/app_theme.dart';
 import '../../shared/models/settings_model.dart';
 
 /// Horizontal scrollable bar of pinned city chips.
@@ -108,11 +107,13 @@ class PinnedCitiesBar extends ConsumerWidget {
             style: TextStyle(
               fontSize: 12,
               fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-              color: isSelected ? Colors.white : null,
+              color: isSelected
+                  ? Theme.of(context).colorScheme.onPrimary
+                  : null,
             ),
           ),
-          selectedColor: PrayCalcColors.dark,
-          checkmarkColor: Colors.white,
+          selectedColor: Theme.of(context).colorScheme.primary,
+          checkmarkColor: Theme.of(context).colorScheme.onPrimary,
           visualDensity: VisualDensity.compact,
           onSelected: (_) {
             ref.read(cityProvider.notifier).state = city;

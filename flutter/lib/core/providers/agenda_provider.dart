@@ -67,6 +67,11 @@ class AgendaNotifier extends Notifier<List<Agenda>> {
     await _save();
   }
 
+  Future<void> restore(Agenda agenda) async {
+    state = [...state, agenda];
+    await _save();
+  }
+
   Future<void> toggleEnabled(String id) async {
     state = [
       for (final a in state)

@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/providers/settings_provider.dart';
 import '../../core/providers/tv_provider.dart';
+import '../../core/router/app_router.dart';
 import '../../core/theme/app_theme.dart';
 
 /// TV settings screen, fully D-pad navigable.
@@ -116,7 +117,7 @@ class _TvSettingsScreenState extends ConsumerState<TvSettingsScreen> {
             if (tvSettings.isMasjidMode) ...[
               _SectionHeader(title: 'Iqamah Offsets (minutes after adhan)'),
               const SizedBox(height: 8),
-              ..._buildIqamahSliders(tvSettings, tvNotifier),
+              ..._buildIqamahSliders(tvNotifier),
               const SizedBox(height: 24),
             ],
 
@@ -216,7 +217,7 @@ class _TvSettingsScreenState extends ConsumerState<TvSettingsScreen> {
                 color: Colors.white54,
                 size: 32,
               ),
-              onTap: () => context.push('/city-search'),
+              onTap: () => context.push(Routes.citySearch),
             ),
             const SizedBox(height: 24),
 
@@ -242,9 +243,9 @@ class _TvSettingsScreenState extends ConsumerState<TvSettingsScreen> {
   }
 
   List<Widget> _buildIqamahSliders(
-    dynamic tvSettings,
     TvSettingsNotifier tvNotifier,
   ) {
+    final tvSettings = ref.read(tvSettingsProvider);
     const prayers = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
     return prayers.map((prayer) {
       final offset = tvSettings.iqamahOffsets[prayer] ?? 15;
@@ -369,52 +370,49 @@ class _TvSettingsScreenState extends ConsumerState<TvSettingsScreen> {
     );
   }
 
+  static const _supportedLocales = [
+    ('System default', null),
+    ('English', 'en'),
+    ('العربية', 'ar'),
+    ('اردو', 'ur'),
+    ('বাংলা', 'bn'),
+    ('Français', 'fr'),
+    ('Bahasa Indonesia', 'id'),
+    ('Türkçe', 'tr'),
+    ('Soomaali', 'so'),
+  ];
+
   String _languageLabel(String? locale) {
-    switch (locale) {
-      case 'ar':
-        return 'Arabic';
-      case 'en':
-        return 'English';
-      default:
-        return 'System default';
-    }
+    return _supportedLocales
+        .firstWhere((e) => e.$2 == locale,
+            orElse: () => _supportedLocales.first)
+        .$1;
   }
 
   void _showLanguageDialog(BuildContext context) {
+    final current = ref.read(settingsProvider).locale;
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: PrayCalcColors.surface,
         title: const Text('Language',
             style: TextStyle(color: Colors.white, fontSize: 28)),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            _LanguageOption(
-              label: 'System default',
-              isSelected: ref.read(settingsProvider).locale == null,
-              onTap: () {
-                ref.read(settingsProvider.notifier).setLocale(null);
-                Navigator.of(ctx).pop();
-              },
-            ),
-            _LanguageOption(
-              label: 'English',
-              isSelected: ref.read(settingsProvider).locale == 'en',
-              onTap: () {
-                ref.read(settingsProvider.notifier).setLocale('en');
-                Navigator.of(ctx).pop();
-              },
-            ),
-            _LanguageOption(
-              label: 'Arabic',
-              isSelected: ref.read(settingsProvider).locale == 'ar',
-              onTap: () {
-                ref.read(settingsProvider.notifier).setLocale('ar');
-                Navigator.of(ctx).pop();
-              },
-            ),
-          ],
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              for (final (label, code) in _supportedLocales)
+                _LanguageOption(
+                  label: label,
+                  isSelected: code == current ||
+                      (code == null && current == null),
+                  onTap: () {
+                    ref.read(settingsProvider.notifier).setLocale(code);
+                    Navigator.of(ctx).pop();
+                  },
+                ),
+            ],
+          ),
         ),
       ),
     );

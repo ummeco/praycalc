@@ -33,8 +33,8 @@ class QiblaScreen extends ConsumerWidget {
 
   /// Great-circle bearing from [city] to the Kaaba in Mecca.
   static double _qiblaBearing(City from) {
-    const double meccaLat = 21.3891 * math.pi / 180;
-    const double meccaLng = 39.8579 * math.pi / 180;
+    const double meccaLat = 21.4225 * math.pi / 180;
+    const double meccaLng = 39.8262 * math.pi / 180;
     final lat = from.lat * math.pi / 180;
     final lng = from.lng * math.pi / 180;
     final dLng = meccaLng - lng;
@@ -58,6 +58,18 @@ class _CompassBody extends StatelessWidget {
         if (snapshot.hasError) {
           return const Center(child: Text('Compass sensor unavailable on this device.'));
         }
+        if (!snapshot.hasData) {
+          return const Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CircularProgressIndicator(),
+                SizedBox(height: 16),
+                Text('Waiting for compass...'),
+              ],
+            ),
+          );
+        }
 
         final double heading = snapshot.data?.heading ?? 0.0;
         final double qiblaAngle = (qiblaBearing - heading) * math.pi / 180;
@@ -67,20 +79,20 @@ class _CompassBody extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             if (!isAccurate)
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
                 child: Card(
-                  color: Color(0xFFFFF3CD),
+                  color: Theme.of(context).colorScheme.tertiaryContainer,
                   child: Padding(
-                    padding: EdgeInsets.all(12),
+                    padding: const EdgeInsets.all(12),
                     child: Row(
                       children: [
-                        Icon(Icons.warning_amber, color: Color(0xFF856404)),
-                        SizedBox(width: 8),
+                        Icon(Icons.warning_amber, color: Theme.of(context).colorScheme.onTertiaryContainer),
+                        const SizedBox(width: 8),
                         Expanded(
                           child: Text(
                             'Calibrate: move your phone in a figure-8 motion.',
-                            style: TextStyle(color: Color(0xFF856404)),
+                            style: TextStyle(color: Theme.of(context).colorScheme.onTertiaryContainer),
                           ),
                         ),
                       ],
@@ -113,8 +125,8 @@ class _CompassBody extends StatelessWidget {
 
   String _distanceToMecca(City from) {
     const double r = 6371;
-    const double mLat = 21.3891 * math.pi / 180;
-    const double mLng = 39.8579 * math.pi / 180;
+    const double mLat = 21.4225 * math.pi / 180;
+    const double mLng = 39.8262 * math.pi / 180;
     final lat = from.lat * math.pi / 180;
     final lng = from.lng * math.pi / 180;
     final dLat = mLat - lat;
@@ -122,9 +134,13 @@ class _CompassBody extends StatelessWidget {
     final a = math.pow(math.sin(dLat / 2), 2) +
         math.cos(lat) * math.cos(mLat) * math.pow(math.sin(dLng / 2), 2);
     final dist = r * 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a));
-    return dist < 1000
-        ? '${dist.round()} km from the Kaaba'
-        : '${(dist / 1000).toStringAsFixed(1)}K km from the Kaaba';
+    final km = dist.round();
+    // Format with comma thousands separator
+    final formatted = km.toString().replaceAllMapped(
+      RegExp(r'(\d)(?=(\d{3})+$)'),
+      (m) => '${m[1]},',
+    );
+    return '$formatted km from the Kaaba';
   }
 }
 
@@ -168,16 +184,24 @@ class _QiblaCompass extends StatelessWidget {
           if (isAligned)
             Positioned(
               bottom: 8,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                decoration: BoxDecoration(
-                  color: PrayCalcColors.dark,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: const Text(
-                  'Facing Qibla ✓',
-                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-                ),
+              child: Builder(
+                builder: (context) {
+                  final primary = Theme.of(context).colorScheme.primary;
+                  return Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: primary,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Text(
+                      'Facing Qibla ✓',
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.onPrimary,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  );
+                },
               ),
             ),
         ],

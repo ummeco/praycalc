@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/providers/auth_provider.dart';
 import '../../core/services/auth_service.dart';
-import '../../core/theme/app_theme.dart';
 
 /// Login / Sign-up screen with email + password.
 ///
@@ -114,7 +113,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 Icon(
                   Icons.mosque_outlined,
                   size: 64,
-                  color: PrayCalcColors.dark,
+                  color: theme.colorScheme.primary,
                 ),
                 const SizedBox(height: 16),
                 Text(
@@ -252,8 +251,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   onPressed: auth.isLoading ? null : _submit,
                   style: FilledButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),
-                    backgroundColor: PrayCalcColors.dark,
-                    foregroundColor: Colors.white,
                   ),
                   child: auth.isLoading
                       ? const SizedBox(

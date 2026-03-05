@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../core/providers/geo_provider.dart';
+import '../../core/providers/prayer_provider.dart';
 import '../../core/router/app_router.dart';
 import '../../core/theme/app_theme.dart';
 
@@ -11,6 +14,7 @@ const _kOnboardingDone = 'onboarding_done';
 Future<void> markOnboardingDone() async {
   final prefs = await SharedPreferences.getInstance();
   await prefs.setBool(_kOnboardingDone, true);
+  setOnboardingDone(true);
 }
 
 /// Returns true if the user has already completed onboarding.
@@ -29,23 +33,28 @@ class _Page {
 const _pages = [
   _Page(
     Icons.wb_sunny_outlined,
-    'Prayer times,\nwherever you are',
-    'GPS-accurate salah times for every city on earth.\nFajr to Isha, sunrise to Qiyam — always precise.',
+    'Prayer times, wherever you are',
+    'GPS-accurate salah times for every city on earth. '
+        'Fajr to Isha, sunrise to Qiyam. '
+        'Powered by our own calculation engine, built for precision.',
   ),
   _Page(
     Icons.location_on_outlined,
-    'Your location,\nyour times',
-    'Search any city or let GPS detect your location.\nPrayCalc finds times for 5 million cities worldwide.',
+    'Your location, your times',
+    'Search any city or let GPS detect your location. '
+        'PrayCalc finds times for 5 million cities worldwide.',
   ),
   _Page(
     Icons.notifications_outlined,
-    'Never miss\na prayer',
-    'Adhan at prayer time, reminders before it.\nCustom agendas for Suhoor, classes, and more.',
+    'Never miss a prayer',
+    'Adhan at prayer time, reminders before it. '
+        'Custom agendas for Suhoor, classes, and more.',
   ),
   _Page(
     Icons.explore_outlined,
-    'Everything\nyou need',
-    'Qibla compass, prayer calendar, Hijri moon phase,\nTasbeeh counter — all in one place.',
+    'Everything you need',
+    'Qibla compass, prayer calendar, Hijri moon phase, '
+        'Tasbeeh counter. All in one place.',
   ),
 ];
 
@@ -59,6 +68,7 @@ class OnboardingScreen extends StatefulWidget {
 class _OnboardingScreenState extends State<OnboardingScreen> {
   final _controller = PageController();
   int _page = 0;
+  bool _finishing = false;
 
   @override
   void dispose() {
@@ -78,7 +88,29 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   void _finish() async {
+    if (_finishing) return;
+    setState(() => _finishing = true);
     await markOnboardingDone();
+    if (!mounted) return;
+    // Auto-detect GPS location before navigating to home
+    final container = ProviderScope.containerOf(context);
+    final gps = container.read(gpsProvider.notifier);
+    await gps.requestLocation();
+    final gpsState = container.read(gpsProvider);
+    if (gpsState.hasPosition) {
+      final city = await reverseGeocodeToCity(gpsState.lat!, gpsState.lng!);
+      if (city != null) {
+        container.read(cityProvider.notifier).state = city;
+        // Persist city directly (persistCity requires WidgetRef)
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('lastCity_name', city.name);
+        await prefs.setString('lastCity_country', city.country);
+        if (city.state != null) await prefs.setString('lastCity_state', city.state!);
+        await prefs.setDouble('lastCity_lat', city.lat);
+        await prefs.setDouble('lastCity_lng', city.lng);
+        await prefs.setString('lastCity_tz', city.timezone);
+      }
+    }
     if (mounted) context.go(Routes.home);
   }
 
@@ -95,7 +127,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             Align(
               alignment: Alignment.topRight,
               child: TextButton(
-                onPressed: _finish,
+                onPressed: _finishing ? null : _finish,
                 child: const Text('Skip'),
               ),
             ),
@@ -139,16 +171,26 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   SizedBox(
                     width: double.infinity,
                     child: FilledButton(
-                      onPressed: _next,
+                      onPressed: _finishing ? null : _next,
                       style: FilledButton.styleFrom(
-                        backgroundColor: PrayCalcColors.dark,
+                        backgroundColor: cs.primary,
+                        foregroundColor: cs.onPrimary,
                         padding:
                             const EdgeInsets.symmetric(vertical: 16),
                       ),
-                      child: Text(
-                        isLast ? 'Get Started' : 'Next',
-                        style: const TextStyle(fontSize: 16),
-                      ),
+                      child: _finishing
+                          ? const SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: Colors.white,
+                              ),
+                            )
+                          : Text(
+                              isLast ? 'Get Started' : 'Next',
+                              style: const TextStyle(fontSize: 16),
+                            ),
                     ),
                   ),
                 ],
@@ -168,6 +210,7 @@ class _OnboardingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final cs = theme.colorScheme;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 32),
@@ -178,13 +221,13 @@ class _OnboardingPage extends StatelessWidget {
             width: 120,
             height: 120,
             decoration: BoxDecoration(
-              color: PrayCalcColors.dark.withAlpha(15),
+              color: cs.primary.withAlpha(25),
               shape: BoxShape.circle,
             ),
             child: Icon(
               page.icon,
               size: 56,
-              color: PrayCalcColors.dark,
+              color: cs.primary,
             ),
           ),
           const SizedBox(height: 40),
@@ -192,7 +235,7 @@ class _OnboardingPage extends StatelessWidget {
             page.title,
             style: theme.textTheme.headlineMedium?.copyWith(
               fontWeight: FontWeight.bold,
-              color: PrayCalcColors.dark,
+              color: cs.onSurface,
               height: 1.2,
             ),
             textAlign: TextAlign.center,

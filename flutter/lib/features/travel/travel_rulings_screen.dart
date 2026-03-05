@@ -354,11 +354,12 @@ class _QuranCitationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     return Card(
-      color: PrayCalcColors.dark.withAlpha(40),
+      color: cs.primaryContainer.withAlpha(60),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
-        side: BorderSide(color: PrayCalcColors.mid.withAlpha(100), width: 1.5),
+        side: BorderSide(color: cs.primary.withAlpha(100), width: 1.5),
       ),
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -367,13 +368,13 @@ class _QuranCitationCard extends StatelessWidget {
           children: [
             Row(
               children: [
-                Icon(Icons.menu_book_rounded, size: 18, color: PrayCalcColors.light),
+                Icon(Icons.menu_book_rounded, size: 18, color: cs.primary),
                 const SizedBox(width: 8),
                 Text(
                   surah,
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
-                    color: PrayCalcColors.light,
+                    color: cs.primary,
                     fontSize: 14,
                   ),
                 ),
@@ -384,7 +385,7 @@ class _QuranCitationCard extends StatelessWidget {
               text,
               style: TextStyle(
                 fontStyle: FontStyle.italic,
-                color: PrayCalcColors.light.withAlpha(220),
+                color: cs.onSurface.withAlpha(200),
                 height: 1.6,
               ),
             ),

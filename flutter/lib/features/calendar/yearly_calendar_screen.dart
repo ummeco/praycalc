@@ -176,7 +176,7 @@ class _MonthMiniCalendar extends StatelessWidget {
                 _monthNames[month],
                 style: theme.textTheme.labelMedium?.copyWith(
                   fontWeight: FontWeight.bold,
-                  color: isCurrentMonth ? PrayCalcColors.dark : null,
+                  color: isCurrentMonth ? theme.colorScheme.primary : null,
                 ),
               ),
               const SizedBox(height: 4),
@@ -249,7 +249,7 @@ class _DayGrid extends StatelessWidget {
             color: _intensityColor(intensity, isToday),
             borderRadius: BorderRadius.circular(2),
             border: isToday
-                ? Border.all(color: PrayCalcColors.dark, width: 1.5)
+                ? Border.all(color: Theme.of(context).colorScheme.primary, width: 1.5)
                 : null,
           ),
           child: isHoliday

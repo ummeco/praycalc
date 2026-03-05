@@ -7,6 +7,8 @@ import 'package:intl/intl.dart' as intl;
 
 import 'app_localizations_ar.dart';
 import 'app_localizations_en.dart';
+import 'app_localizations_tr.dart';
+import 'app_localizations_ur.dart';
 
 // ignore_for_file: type=lint
 
@@ -96,6 +98,8 @@ abstract class AppLocalizations {
   static const List<Locale> supportedLocales = <Locale>[
     Locale('ar'),
     Locale('en'),
+    Locale('tr'),
+    Locale('ur'),
   ];
 
   /// No description provided for @appTitle.
@@ -1105,6 +1109,606 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'✓ {label} × {target}'**
   String tasbeehPresetComplete(String label, int target);
+
+  /// No description provided for @smartHomeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Smart Home'**
+  String get smartHomeTitle;
+
+  /// No description provided for @smartHomeSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect your devices to prayer times'**
+  String get smartHomeSubtitle;
+
+  /// No description provided for @smartHomeGoogleHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Google Home'**
+  String get smartHomeGoogleHome;
+
+  /// No description provided for @smartHomeGoogleHomeDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask Google for prayer times and Qibla direction'**
+  String get smartHomeGoogleHomeDesc;
+
+  /// No description provided for @smartHomeAlexa.
+  ///
+  /// In en, this message translates to:
+  /// **'Amazon Alexa'**
+  String get smartHomeAlexa;
+
+  /// No description provided for @smartHomeAlexaDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask Alexa for prayer times, next prayer, and more'**
+  String get smartHomeAlexaDesc;
+
+  /// No description provided for @smartHomeSiri.
+  ///
+  /// In en, this message translates to:
+  /// **'Siri Shortcuts'**
+  String get smartHomeSiri;
+
+  /// No description provided for @smartHomeSiriDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Create custom shortcuts for prayer times'**
+  String get smartHomeSiriDesc;
+
+  /// No description provided for @smartHomeHomeAssistant.
+  ///
+  /// In en, this message translates to:
+  /// **'Home Assistant'**
+  String get smartHomeHomeAssistant;
+
+  /// No description provided for @smartHomeHomeAssistantDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Automate lights, displays, and reminders at prayer times'**
+  String get smartHomeHomeAssistantDesc;
+
+  /// No description provided for @smartHomeLinkAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Link Account'**
+  String get smartHomeLinkAccount;
+
+  /// No description provided for @smartHomeLinked.
+  ///
+  /// In en, this message translates to:
+  /// **'Linked'**
+  String get smartHomeLinked;
+
+  /// No description provided for @smartHomeUnlink.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlink'**
+  String get smartHomeUnlink;
+
+  /// No description provided for @smartHomeSetupInstructions.
+  ///
+  /// In en, this message translates to:
+  /// **'Setup Instructions'**
+  String get smartHomeSetupInstructions;
+
+  /// No description provided for @smartHomeRequiresUmmatPlus.
+  ///
+  /// In en, this message translates to:
+  /// **'Requires Ummat+'**
+  String get smartHomeRequiresUmmatPlus;
+
+  /// No description provided for @smartHomeTroubleshooting.
+  ///
+  /// In en, this message translates to:
+  /// **'Troubleshooting'**
+  String get smartHomeTroubleshooting;
+
+  /// No description provided for @smartHomeTestConnection.
+  ///
+  /// In en, this message translates to:
+  /// **'Test Connection'**
+  String get smartHomeTestConnection;
+
+  /// No description provided for @smartHomeConnectionSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Connected successfully'**
+  String get smartHomeConnectionSuccess;
+
+  /// No description provided for @smartHomeConnectionFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Connection failed. Check your account link.'**
+  String get smartHomeConnectionFailed;
+
+  /// No description provided for @subscriptionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Ummat+'**
+  String get subscriptionTitle;
+
+  /// No description provided for @subscriptionSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Premium prayer time features'**
+  String get subscriptionSubtitle;
+
+  /// No description provided for @subscriptionUpgrade.
+  ///
+  /// In en, this message translates to:
+  /// **'Upgrade to Ummat+'**
+  String get subscriptionUpgrade;
+
+  /// No description provided for @subscriptionRestore.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore Purchase'**
+  String get subscriptionRestore;
+
+  /// No description provided for @subscriptionManage.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage Subscription'**
+  String get subscriptionManage;
+
+  /// No description provided for @subscriptionCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel Subscription'**
+  String get subscriptionCancel;
+
+  /// No description provided for @subscriptionActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get subscriptionActive;
+
+  /// No description provided for @subscriptionExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'Expired'**
+  String get subscriptionExpired;
+
+  /// No description provided for @subscriptionFree.
+  ///
+  /// In en, this message translates to:
+  /// **'Free'**
+  String get subscriptionFree;
+
+  /// No description provided for @subscriptionFreeDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Basic prayer times, Qibla, calendar'**
+  String get subscriptionFreeDesc;
+
+  /// No description provided for @subscriptionPlusDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Smart home, TV display, widgets, and more'**
+  String get subscriptionPlusDesc;
+
+  /// No description provided for @subscriptionFreeQueriesRemaining.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} free queries remaining'**
+  String subscriptionFreeQueriesRemaining(int count);
+
+  /// No description provided for @subscriptionPriceYearly.
+  ///
+  /// In en, this message translates to:
+  /// **'{price}/year'**
+  String subscriptionPriceYearly(String price);
+
+  /// No description provided for @subscriptionPriceMonthly.
+  ///
+  /// In en, this message translates to:
+  /// **'{price}/month'**
+  String subscriptionPriceMonthly(String price);
+
+  /// No description provided for @subscriptionFeatureSmartHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Smart home integration'**
+  String get subscriptionFeatureSmartHome;
+
+  /// No description provided for @subscriptionFeatureTV.
+  ///
+  /// In en, this message translates to:
+  /// **'TV display mode'**
+  String get subscriptionFeatureTV;
+
+  /// No description provided for @subscriptionFeatureWidgets.
+  ///
+  /// In en, this message translates to:
+  /// **'Home screen widgets'**
+  String get subscriptionFeatureWidgets;
+
+  /// No description provided for @subscriptionFeatureWatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Watch complications'**
+  String get subscriptionFeatureWatch;
+
+  /// No description provided for @subscriptionFeatureSync.
+  ///
+  /// In en, this message translates to:
+  /// **'Cross-device sync'**
+  String get subscriptionFeatureSync;
+
+  /// No description provided for @subscriptionFeatureAdFree.
+  ///
+  /// In en, this message translates to:
+  /// **'Ad-free experience'**
+  String get subscriptionFeatureAdFree;
+
+  /// No description provided for @tvTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'TV Display'**
+  String get tvTitle;
+
+  /// No description provided for @tvMasjidMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Masjid Mode'**
+  String get tvMasjidMode;
+
+  /// No description provided for @tvAmbientMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Ambient Mode'**
+  String get tvAmbientMode;
+
+  /// No description provided for @tvSettingsIqamah.
+  ///
+  /// In en, this message translates to:
+  /// **'Iqamah Offsets'**
+  String get tvSettingsIqamah;
+
+  /// No description provided for @tvSettingsAnnouncements.
+  ///
+  /// In en, this message translates to:
+  /// **'Announcements'**
+  String get tvSettingsAnnouncements;
+
+  /// No description provided for @tvConnectQR.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan to connect'**
+  String get tvConnectQR;
+
+  /// No description provided for @watchTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Watch'**
+  String get watchTitle;
+
+  /// No description provided for @watchNextPrayer.
+  ///
+  /// In en, this message translates to:
+  /// **'Next Prayer'**
+  String get watchNextPrayer;
+
+  /// No description provided for @watchAllPrayers.
+  ///
+  /// In en, this message translates to:
+  /// **'All Prayers'**
+  String get watchAllPrayers;
+
+  /// No description provided for @watchComplication.
+  ///
+  /// In en, this message translates to:
+  /// **'Complication'**
+  String get watchComplication;
+
+  /// No description provided for @nextPrayer.
+  ///
+  /// In en, this message translates to:
+  /// **'Next prayer'**
+  String get nextPrayer;
+
+  /// No description provided for @allPrayers.
+  ///
+  /// In en, this message translates to:
+  /// **'All prayers'**
+  String get allPrayers;
+
+  /// No description provided for @today.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get today;
+
+  /// No description provided for @tomorrow.
+  ///
+  /// In en, this message translates to:
+  /// **'Tomorrow'**
+  String get tomorrow;
+
+  /// No description provided for @thisWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'This week'**
+  String get thisWeek;
+
+  /// No description provided for @thisMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'This month'**
+  String get thisMonth;
+
+  /// No description provided for @commonCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get commonCancel;
+
+  /// No description provided for @commonSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get commonSave;
+
+  /// No description provided for @commonDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get commonDelete;
+
+  /// No description provided for @commonEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get commonEdit;
+
+  /// No description provided for @commonRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get commonRetry;
+
+  /// No description provided for @commonClose.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get commonClose;
+
+  /// No description provided for @commonDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get commonDone;
+
+  /// No description provided for @commonBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get commonBack;
+
+  /// No description provided for @commonNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get commonNext;
+
+  /// No description provided for @commonSkip.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip'**
+  String get commonSkip;
+
+  /// No description provided for @commonContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get commonContinue;
+
+  /// No description provided for @commonOk.
+  ///
+  /// In en, this message translates to:
+  /// **'OK'**
+  String get commonOk;
+
+  /// No description provided for @commonYes.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes'**
+  String get commonYes;
+
+  /// No description provided for @commonNo.
+  ///
+  /// In en, this message translates to:
+  /// **'No'**
+  String get commonNo;
+
+  /// No description provided for @commonShare.
+  ///
+  /// In en, this message translates to:
+  /// **'Share'**
+  String get commonShare;
+
+  /// No description provided for @commonCopy.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy'**
+  String get commonCopy;
+
+  /// No description provided for @commonCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Copied to clipboard'**
+  String get commonCopied;
+
+  /// No description provided for @commonLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading...'**
+  String get commonLoading;
+
+  /// No description provided for @commonError.
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong'**
+  String get commonError;
+
+  /// No description provided for @commonErrorRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong. Tap to retry.'**
+  String get commonErrorRetry;
+
+  /// No description provided for @commonNoInternet.
+  ///
+  /// In en, this message translates to:
+  /// **'No internet connection'**
+  String get commonNoInternet;
+
+  /// No description provided for @commonOfflineMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline mode'**
+  String get commonOfflineMode;
+
+  /// No description provided for @commonSignIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in'**
+  String get commonSignIn;
+
+  /// No description provided for @commonSignOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign out'**
+  String get commonSignOut;
+
+  /// No description provided for @commonSignUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign up'**
+  String get commonSignUp;
+
+  /// No description provided for @commonProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile'**
+  String get commonProfile;
+
+  /// No description provided for @commonAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Account'**
+  String get commonAccount;
+
+  /// No description provided for @commonAbout.
+  ///
+  /// In en, this message translates to:
+  /// **'About'**
+  String get commonAbout;
+
+  /// No description provided for @commonVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'Version {version}'**
+  String commonVersion(String version);
+
+  /// No description provided for @commonPrivacyPolicy.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy Policy'**
+  String get commonPrivacyPolicy;
+
+  /// No description provided for @commonTermsOfService.
+  ///
+  /// In en, this message translates to:
+  /// **'Terms of Service'**
+  String get commonTermsOfService;
+
+  /// No description provided for @commonRateApp.
+  ///
+  /// In en, this message translates to:
+  /// **'Rate this app'**
+  String get commonRateApp;
+
+  /// No description provided for @commonFeedback.
+  ///
+  /// In en, this message translates to:
+  /// **'Send feedback'**
+  String get commonFeedback;
+
+  /// No description provided for @commonHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Help'**
+  String get commonHelp;
+
+  /// No description provided for @commonLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get commonLanguage;
+
+  /// No description provided for @travelNotificationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'You are now traveling'**
+  String get travelNotificationTitle;
+
+  /// No description provided for @travelNotificationBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Prayer times may be shortened. Tap to learn about travel rulings.'**
+  String get travelNotificationBody;
+
+  /// No description provided for @travelRulingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Travel & Prayer'**
+  String get travelRulingsTitle;
+
+  /// No description provided for @travelRulingsIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Islamic rulings on prayer while traveling, with scholarly references from the Quran and authentic Hadith collections.'**
+  String get travelRulingsIntro;
+
+  /// No description provided for @travelWhenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'When Does Travel Apply?'**
+  String get travelWhenTitle;
+
+  /// No description provided for @travelQasrTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Shortening Prayers (Qasr)'**
+  String get travelQasrTitle;
+
+  /// No description provided for @travelJamTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Combining Prayers (Jam\')'**
+  String get travelJamTitle;
+
+  /// No description provided for @travelDurationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Duration of Travel'**
+  String get travelDurationTitle;
+
+  /// No description provided for @travelReferencesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Scholarly References'**
+  String get travelReferencesTitle;
+
+  /// No description provided for @travelLearnMore.
+  ///
+  /// In en, this message translates to:
+  /// **'Learn more'**
+  String get travelLearnMore;
 }
 
 class _AppLocalizationsDelegate
@@ -1118,7 +1722,7 @@ class _AppLocalizationsDelegate
 
   @override
   bool isSupported(Locale locale) =>
-      <String>['ar', 'en'].contains(locale.languageCode);
+      <String>['ar', 'en', 'tr', 'ur'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
@@ -1131,6 +1735,10 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
       return AppLocalizationsAr();
     case 'en':
       return AppLocalizationsEn();
+    case 'tr':
+      return AppLocalizationsTr();
+    case 'ur':
+      return AppLocalizationsUr();
   }
 
   throw FlutterError(

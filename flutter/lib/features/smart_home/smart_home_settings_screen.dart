@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/providers/subscription_provider.dart';
+import '../../core/router/app_router.dart';
 import '../../core/theme/app_theme.dart';
 
 /// Smart home integration settings screen (PC-F1-9).
@@ -66,12 +67,10 @@ class _UpgradePrompt extends StatelessWidget {
             ),
             const SizedBox(height: 24),
             FilledButton.icon(
-              onPressed: () => context.push('/subscription'),
+              onPressed: () => context.push(Routes.subscription),
               icon: const Icon(Icons.workspace_premium),
               label: const Text('Upgrade to Ummat+'),
               style: FilledButton.styleFrom(
-                backgroundColor: PrayCalcColors.dark,
-                foregroundColor: Colors.white,
                 minimumSize: const Size(200, 48),
               ),
             ),

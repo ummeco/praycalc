@@ -35,6 +35,7 @@ class _TvAmbientScreenState extends ConsumerState<TvAmbientScreen>
   late Timer _ticker;
   late AnimationController _patternController;
   late AnimationController _crossfadeController;
+  final _focusNode = FocusNode();
   DateTime _now = DateTime.now();
   Timer? _photoTimer;
 
@@ -101,6 +102,7 @@ class _TvAmbientScreenState extends ConsumerState<TvAmbientScreen>
   void dispose() {
     _ticker.cancel();
     _photoTimer?.cancel();
+    _focusNode.dispose();
     _patternController.dispose();
     _crossfadeController.dispose();
     WakelockPlus.disable();
@@ -127,7 +129,7 @@ class _TvAmbientScreenState extends ConsumerState<TvAmbientScreen>
     return Scaffold(
       backgroundColor: Colors.black,
       body: KeyboardListener(
-        focusNode: FocusNode(),
+        focusNode: _focusNode,
         autofocus: true,
         onKeyEvent: (event) {
           if (event is KeyDownEvent) {
@@ -251,12 +253,15 @@ class _PhotoBackground extends StatelessWidget {
       child: AnimatedBuilder(
         animation: crossfadeAnimation,
         builder: (context, child) {
-          return Image.file(
-            currentFile,
-            fit: BoxFit.cover,
-            width: double.infinity,
-            height: double.infinity,
-            errorBuilder: (_, _, _) => const ColoredBox(color: Colors.black),
+          return Opacity(
+            opacity: crossfadeAnimation.value.clamp(0.0, 1.0),
+            child: Image.file(
+              currentFile,
+              fit: BoxFit.cover,
+              width: double.infinity,
+              height: double.infinity,
+              errorBuilder: (_, _, _) => const ColoredBox(color: Colors.black),
+            ),
           );
         },
       ),
@@ -300,7 +305,7 @@ class _RamadanBadge extends StatelessWidget {
                 ),
               ),
               Text(
-                'Day $day of 30',
+                'Day $day',
                 style: TextStyle(
                   color: const Color(0xFFD4A017).withAlpha(180),
                   fontSize: 12,

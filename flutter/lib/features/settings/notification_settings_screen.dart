@@ -35,17 +35,20 @@ class _PrayerNotifTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isEnabled = config.mode != PrayerNotificationMode.off;
     return ExpansionTile(
       title: Text(config.prayerName,
           style: const TextStyle(fontWeight: FontWeight.bold)),
       subtitle: Text(_modeLabel(config.mode)),
       trailing: Switch(
-        value: config.mode != PrayerNotificationMode.off,
-        onChanged: (v) => onChanged(config.copyWith(
-          mode: v
-              ? PrayerNotificationMode.arrival
-              : PrayerNotificationMode.off,
-        )),
+        value: isEnabled,
+        onChanged: (v) {
+          if (v) {
+            onChanged(config.copyWith(mode: PrayerNotificationMode.arrival));
+          } else {
+            onChanged(config.copyWith(mode: PrayerNotificationMode.off));
+          }
+        },
       ),
       children: [
         if (config.mode != PrayerNotificationMode.off) ...[

@@ -564,4 +564,319 @@ class AppLocalizationsEn extends AppLocalizations {
   String tasbeehPresetComplete(String label, int target) {
     return '✓ $label × $target';
   }
+
+  @override
+  String get smartHomeTitle => 'Smart Home';
+
+  @override
+  String get smartHomeSubtitle => 'Connect your devices to prayer times';
+
+  @override
+  String get smartHomeGoogleHome => 'Google Home';
+
+  @override
+  String get smartHomeGoogleHomeDesc =>
+      'Ask Google for prayer times and Qibla direction';
+
+  @override
+  String get smartHomeAlexa => 'Amazon Alexa';
+
+  @override
+  String get smartHomeAlexaDesc =>
+      'Ask Alexa for prayer times, next prayer, and more';
+
+  @override
+  String get smartHomeSiri => 'Siri Shortcuts';
+
+  @override
+  String get smartHomeSiriDesc => 'Create custom shortcuts for prayer times';
+
+  @override
+  String get smartHomeHomeAssistant => 'Home Assistant';
+
+  @override
+  String get smartHomeHomeAssistantDesc =>
+      'Automate lights, displays, and reminders at prayer times';
+
+  @override
+  String get smartHomeLinkAccount => 'Link Account';
+
+  @override
+  String get smartHomeLinked => 'Linked';
+
+  @override
+  String get smartHomeUnlink => 'Unlink';
+
+  @override
+  String get smartHomeSetupInstructions => 'Setup Instructions';
+
+  @override
+  String get smartHomeRequiresUmmatPlus => 'Requires Ummat+';
+
+  @override
+  String get smartHomeTroubleshooting => 'Troubleshooting';
+
+  @override
+  String get smartHomeTestConnection => 'Test Connection';
+
+  @override
+  String get smartHomeConnectionSuccess => 'Connected successfully';
+
+  @override
+  String get smartHomeConnectionFailed =>
+      'Connection failed. Check your account link.';
+
+  @override
+  String get subscriptionTitle => 'Ummat+';
+
+  @override
+  String get subscriptionSubtitle => 'Premium prayer time features';
+
+  @override
+  String get subscriptionUpgrade => 'Upgrade to Ummat+';
+
+  @override
+  String get subscriptionRestore => 'Restore Purchase';
+
+  @override
+  String get subscriptionManage => 'Manage Subscription';
+
+  @override
+  String get subscriptionCancel => 'Cancel Subscription';
+
+  @override
+  String get subscriptionActive => 'Active';
+
+  @override
+  String get subscriptionExpired => 'Expired';
+
+  @override
+  String get subscriptionFree => 'Free';
+
+  @override
+  String get subscriptionFreeDesc => 'Basic prayer times, Qibla, calendar';
+
+  @override
+  String get subscriptionPlusDesc =>
+      'Smart home, TV display, widgets, and more';
+
+  @override
+  String subscriptionFreeQueriesRemaining(int count) {
+    return '$count free queries remaining';
+  }
+
+  @override
+  String subscriptionPriceYearly(String price) {
+    return '$price/year';
+  }
+
+  @override
+  String subscriptionPriceMonthly(String price) {
+    return '$price/month';
+  }
+
+  @override
+  String get subscriptionFeatureSmartHome => 'Smart home integration';
+
+  @override
+  String get subscriptionFeatureTV => 'TV display mode';
+
+  @override
+  String get subscriptionFeatureWidgets => 'Home screen widgets';
+
+  @override
+  String get subscriptionFeatureWatch => 'Watch complications';
+
+  @override
+  String get subscriptionFeatureSync => 'Cross-device sync';
+
+  @override
+  String get subscriptionFeatureAdFree => 'Ad-free experience';
+
+  @override
+  String get tvTitle => 'TV Display';
+
+  @override
+  String get tvMasjidMode => 'Masjid Mode';
+
+  @override
+  String get tvAmbientMode => 'Ambient Mode';
+
+  @override
+  String get tvSettingsIqamah => 'Iqamah Offsets';
+
+  @override
+  String get tvSettingsAnnouncements => 'Announcements';
+
+  @override
+  String get tvConnectQR => 'Scan to connect';
+
+  @override
+  String get watchTitle => 'Watch';
+
+  @override
+  String get watchNextPrayer => 'Next Prayer';
+
+  @override
+  String get watchAllPrayers => 'All Prayers';
+
+  @override
+  String get watchComplication => 'Complication';
+
+  @override
+  String get nextPrayer => 'Next prayer';
+
+  @override
+  String get allPrayers => 'All prayers';
+
+  @override
+  String get today => 'Today';
+
+  @override
+  String get tomorrow => 'Tomorrow';
+
+  @override
+  String get thisWeek => 'This week';
+
+  @override
+  String get thisMonth => 'This month';
+
+  @override
+  String get commonCancel => 'Cancel';
+
+  @override
+  String get commonSave => 'Save';
+
+  @override
+  String get commonDelete => 'Delete';
+
+  @override
+  String get commonEdit => 'Edit';
+
+  @override
+  String get commonRetry => 'Retry';
+
+  @override
+  String get commonClose => 'Close';
+
+  @override
+  String get commonDone => 'Done';
+
+  @override
+  String get commonBack => 'Back';
+
+  @override
+  String get commonNext => 'Next';
+
+  @override
+  String get commonSkip => 'Skip';
+
+  @override
+  String get commonContinue => 'Continue';
+
+  @override
+  String get commonOk => 'OK';
+
+  @override
+  String get commonYes => 'Yes';
+
+  @override
+  String get commonNo => 'No';
+
+  @override
+  String get commonShare => 'Share';
+
+  @override
+  String get commonCopy => 'Copy';
+
+  @override
+  String get commonCopied => 'Copied to clipboard';
+
+  @override
+  String get commonLoading => 'Loading...';
+
+  @override
+  String get commonError => 'Something went wrong';
+
+  @override
+  String get commonErrorRetry => 'Something went wrong. Tap to retry.';
+
+  @override
+  String get commonNoInternet => 'No internet connection';
+
+  @override
+  String get commonOfflineMode => 'Offline mode';
+
+  @override
+  String get commonSignIn => 'Sign in';
+
+  @override
+  String get commonSignOut => 'Sign out';
+
+  @override
+  String get commonSignUp => 'Sign up';
+
+  @override
+  String get commonProfile => 'Profile';
+
+  @override
+  String get commonAccount => 'Account';
+
+  @override
+  String get commonAbout => 'About';
+
+  @override
+  String commonVersion(String version) {
+    return 'Version $version';
+  }
+
+  @override
+  String get commonPrivacyPolicy => 'Privacy Policy';
+
+  @override
+  String get commonTermsOfService => 'Terms of Service';
+
+  @override
+  String get commonRateApp => 'Rate this app';
+
+  @override
+  String get commonFeedback => 'Send feedback';
+
+  @override
+  String get commonHelp => 'Help';
+
+  @override
+  String get commonLanguage => 'Language';
+
+  @override
+  String get travelNotificationTitle => 'You are now traveling';
+
+  @override
+  String get travelNotificationBody =>
+      'Prayer times may be shortened. Tap to learn about travel rulings.';
+
+  @override
+  String get travelRulingsTitle => 'Travel & Prayer';
+
+  @override
+  String get travelRulingsIntro =>
+      'Islamic rulings on prayer while traveling, with scholarly references from the Quran and authentic Hadith collections.';
+
+  @override
+  String get travelWhenTitle => 'When Does Travel Apply?';
+
+  @override
+  String get travelQasrTitle => 'Shortening Prayers (Qasr)';
+
+  @override
+  String get travelJamTitle => 'Combining Prayers (Jam\')';
+
+  @override
+  String get travelDurationTitle => 'Duration of Travel';
+
+  @override
+  String get travelReferencesTitle => 'Scholarly References';
+
+  @override
+  String get travelLearnMore => 'Learn more';
 }

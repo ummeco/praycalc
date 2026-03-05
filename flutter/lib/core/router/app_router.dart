@@ -18,6 +18,8 @@ import '../../features/settings/notification_settings_screen.dart';
 import '../../features/settings/settings_screen.dart';
 import '../../features/stats/prayer_stats_screen.dart';
 import '../../features/tasbeeh/tasbeeh_screen.dart';
+import '../../features/smart_home/smart_home_settings_screen.dart';
+import '../../features/subscription/subscription_screen.dart';
 import '../../features/travel/travel_rulings_screen.dart';
 import '../../features/tv/tv_ambient_screen.dart';
 import '../../features/tv/tv_home_screen.dart';
@@ -43,6 +45,8 @@ class Routes {
   static const login                = '/login';
   static const account              = '/account';
   static const travelRulings        = '/travel-rulings';
+  static const subscription          = '/subscription';
+  static const smartHome             = '/smart-home';
   static const tvHome               = '/tv';
   static const tvMasjid             = '/tv/masjid';
   static const tvSettings           = '/tv/settings';
@@ -87,8 +91,12 @@ final appRouter = GoRouter(
         ),
         GoRoute(
           path: Routes.calendar,
-          pageBuilder: (context, state) =>
-              const NoTransitionPage(child: CalendarScreen()),
+          pageBuilder: (context, state) {
+            final initialMonth = state.extra as DateTime?;
+            return NoTransitionPage(
+              child: CalendarScreen(initialMonth: initialMonth),
+            );
+          },
         ),
         GoRoute(
           path: Routes.settings,
@@ -153,6 +161,15 @@ final appRouter = GoRouter(
     GoRoute(
       path: Routes.travelRulings,
       builder: (context, state) => const TravelRulingsScreen(),
+    ),
+    // ── Subscription & Smart Home ─────────────────────────────────────────
+    GoRoute(
+      path: Routes.subscription,
+      builder: (context, state) => const SubscriptionScreen(),
+    ),
+    GoRoute(
+      path: Routes.smartHome,
+      builder: (context, state) => const SmartHomeSettingsScreen(),
     ),
     // ── TV routes ──────────────────────────────────────────────────────────
     GoRoute(

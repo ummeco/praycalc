@@ -9,6 +9,7 @@ import 'package:pray_calc_dart/pray_calc_dart.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
 import '../../core/providers/prayer_provider.dart';
+import '../../core/router/app_router.dart';
 import '../../core/providers/ramadan_provider.dart';
 import '../../core/providers/settings_provider.dart';
 import '../../core/providers/weather_provider.dart';
@@ -53,6 +54,7 @@ class TvHomeScreen extends ConsumerStatefulWidget {
 
 class _TvHomeScreenState extends ConsumerState<TvHomeScreen> {
   late Timer _ticker;
+  final _focusNode = FocusNode();
   DateTime _now = DateTime.now();
 
   @override
@@ -67,6 +69,7 @@ class _TvHomeScreenState extends ConsumerState<TvHomeScreen> {
   @override
   void dispose() {
     _ticker.cancel();
+    _focusNode.dispose();
     WakelockPlus.disable();
     super.dispose();
   }
@@ -119,13 +122,13 @@ class _TvHomeScreenState extends ConsumerState<TvHomeScreen> {
       body: FocusTraversalGroup(
         policy: OrderedTraversalPolicy(),
         child: KeyboardListener(
-          focusNode: FocusNode(),
+          focusNode: _focusNode,
           autofocus: true,
           onKeyEvent: (event) {
             if (event is KeyDownEvent) {
               if (event.logicalKey == LogicalKeyboardKey.select ||
                   event.logicalKey == LogicalKeyboardKey.enter) {
-                context.push('/settings');
+                context.push(Routes.tvSettings);
               }
             }
           },

@@ -19,7 +19,8 @@ import 'ical_service.dart';
 /// Monthly prayer time calendar — PC-3.11.
 /// Gregorian + Hijri header, month navigation, today highlight, text export.
 class CalendarScreen extends ConsumerStatefulWidget {
-  const CalendarScreen({super.key});
+  const CalendarScreen({super.key, this.initialMonth});
+  final DateTime? initialMonth;
 
   @override
   ConsumerState<CalendarScreen> createState() => _CalendarScreenState();
@@ -32,8 +33,8 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
   @override
   void initState() {
     super.initState();
-    final now = DateTime.now();
-    _month = DateTime(now.year, now.month);
+    final init = widget.initialMonth ?? DateTime.now();
+    _month = DateTime(init.year, init.month);
     if (!_tzReady) {
       tz_data.initializeTimeZones();
       _tzReady = true;
@@ -171,7 +172,7 @@ class _CalendarTable extends StatelessWidget {
       child: SingleChildScrollView(
         child: DataTable(
           headingRowColor: WidgetStateProperty.all(
-            PrayCalcColors.dark.withValues(alpha: 0.08),
+            Theme.of(context).colorScheme.primary.withValues(alpha: 0.08),
           ),
           dataRowMinHeight: 36,
           dataRowMaxHeight: 40,
@@ -193,7 +194,7 @@ class _CalendarTable extends StatelessWidget {
             final isLq = lqColor != null;
             final ts = TextStyle(
               fontWeight: isToday ? FontWeight.bold : FontWeight.normal,
-              color: isToday ? PrayCalcColors.dark : null,
+              color: isToday ? Theme.of(context).colorScheme.primary : null,
               fontSize: 13,
             );
             return DataRow(

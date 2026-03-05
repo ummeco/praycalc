@@ -6,9 +6,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hijri/hijri_calendar.dart';
 import 'package:pray_calc_dart/pray_calc_dart.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
 import '../../core/providers/prayer_provider.dart';
+import '../../core/router/app_router.dart';
 import '../../core/providers/ramadan_provider.dart';
 import '../../core/providers/settings_provider.dart';
 import '../../core/providers/tv_provider.dart';
@@ -49,6 +51,7 @@ class TvMasjidScreen extends ConsumerStatefulWidget {
 
 class _TvMasjidScreenState extends ConsumerState<TvMasjidScreen> {
   late Timer _ticker;
+  final _focusNode = FocusNode();
   DateTime _now = DateTime.now();
 
   @override
@@ -68,6 +71,7 @@ class _TvMasjidScreenState extends ConsumerState<TvMasjidScreen> {
   @override
   void dispose() {
     _ticker.cancel();
+    _focusNode.dispose();
     SystemChrome.setPreferredOrientations(DeviceOrientation.values);
     WakelockPlus.disable();
     super.dispose();
@@ -113,12 +117,12 @@ class _TvMasjidScreenState extends ConsumerState<TvMasjidScreen> {
       body: FocusTraversalGroup(
         policy: OrderedTraversalPolicy(),
         child: KeyboardListener(
-          focusNode: FocusNode(),
+          focusNode: _focusNode,
           autofocus: true,
           onKeyEvent: (event) {
             if (event is KeyDownEvent &&
                 event.logicalKey == LogicalKeyboardKey.contextMenu) {
-              context.push('/settings');
+              context.push(Routes.tvSettings);
             }
           },
           child: timesAsync.when(
@@ -530,8 +534,6 @@ class _MasjidPrayerTable extends StatelessWidget {
   }
 }
 
-/// Placeholder for QR code. A real QR generator package (e.g. qr_flutter)
-/// would replace this. Shows URL text and a bordered square for now.
 class _QrPlaceholder extends StatelessWidget {
   const _QrPlaceholder({required this.url});
   final String url;
@@ -545,21 +547,18 @@ class _QrPlaceholder extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.circular(8),
       ),
-      child: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Icon(Icons.qr_code, size: 64, color: PrayCalcColors.deep),
-            const SizedBox(height: 4),
-            Text(
-              'Scan',
-              style: TextStyle(
-                color: PrayCalcColors.deep,
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ],
+      padding: const EdgeInsets.all(8),
+      child: QrImageView(
+        data: url,
+        size: 104,
+        backgroundColor: Colors.white,
+        eyeStyle: const QrEyeStyle(
+          eyeShape: QrEyeShape.square,
+          color: PrayCalcColors.deep,
+        ),
+        dataModuleStyle: const QrDataModuleStyle(
+          dataModuleShape: QrDataModuleShape.square,
+          color: PrayCalcColors.deep,
         ),
       ),
     );

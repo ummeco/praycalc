@@ -85,7 +85,6 @@ class _TasbeehScreenState extends ConsumerState<TasbeehScreen> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text('Tasbih complete! $totalDhikr dhikr'),
-              backgroundColor: PrayCalcColors.dark,
               duration: const Duration(seconds: 3),
             ),
           );
@@ -200,7 +199,7 @@ class _TasbeehBody extends ConsumerWidget {
                       style: theme.textTheme.displayLarge?.copyWith(
                         fontSize: 56,
                         fontWeight: FontWeight.bold,
-                        color: PrayCalcColors.dark,
+                        color: theme.colorScheme.primary,
                       ),
                     ),
                     Text(
@@ -307,7 +306,7 @@ class _HistorySection extends StatelessWidget {
                 'Today: ${state.dailyTotal} dhikr',
                 style: theme.textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.w600,
-                  color: PrayCalcColors.dark,
+                  color: theme.colorScheme.primary,
                 ),
               ),
               const Spacer(),

@@ -560,4 +560,318 @@ class AppLocalizationsAr extends AppLocalizations {
   String tasbeehPresetComplete(String label, int target) {
     return '✓ $label × $target';
   }
+
+  @override
+  String get smartHomeTitle => 'المنزل الذكي';
+
+  @override
+  String get smartHomeSubtitle => 'اربط أجهزتك بأوقات الصلاة';
+
+  @override
+  String get smartHomeGoogleHome => 'جوجل هوم';
+
+  @override
+  String get smartHomeGoogleHomeDesc =>
+      'اسأل جوجل عن أوقات الصلاة واتجاه القبلة';
+
+  @override
+  String get smartHomeAlexa => 'أمازون أليكسا';
+
+  @override
+  String get smartHomeAlexaDesc =>
+      'اسأل أليكسا عن أوقات الصلاة والصلاة التالية والمزيد';
+
+  @override
+  String get smartHomeSiri => 'اختصارات سيري';
+
+  @override
+  String get smartHomeSiriDesc => 'أنشئ اختصارات مخصصة لأوقات الصلاة';
+
+  @override
+  String get smartHomeHomeAssistant => 'هوم أسيستانت';
+
+  @override
+  String get smartHomeHomeAssistantDesc =>
+      'أتمتة الأضواء والشاشات والتذكيرات عند أوقات الصلاة';
+
+  @override
+  String get smartHomeLinkAccount => 'ربط الحساب';
+
+  @override
+  String get smartHomeLinked => 'مربوط';
+
+  @override
+  String get smartHomeUnlink => 'إلغاء الربط';
+
+  @override
+  String get smartHomeSetupInstructions => 'تعليمات الإعداد';
+
+  @override
+  String get smartHomeRequiresUmmatPlus => 'يتطلب أمة+';
+
+  @override
+  String get smartHomeTroubleshooting => 'استكشاف الأخطاء';
+
+  @override
+  String get smartHomeTestConnection => 'اختبار الاتصال';
+
+  @override
+  String get smartHomeConnectionSuccess => 'تم الاتصال بنجاح';
+
+  @override
+  String get smartHomeConnectionFailed => 'فشل الاتصال. تحقق من ربط حسابك.';
+
+  @override
+  String get subscriptionTitle => 'أمة+';
+
+  @override
+  String get subscriptionSubtitle => 'ميزات أوقات الصلاة المتقدمة';
+
+  @override
+  String get subscriptionUpgrade => 'ترقية إلى أمة+';
+
+  @override
+  String get subscriptionRestore => 'استعادة الشراء';
+
+  @override
+  String get subscriptionManage => 'إدارة الاشتراك';
+
+  @override
+  String get subscriptionCancel => 'إلغاء الاشتراك';
+
+  @override
+  String get subscriptionActive => 'نشط';
+
+  @override
+  String get subscriptionExpired => 'منتهي';
+
+  @override
+  String get subscriptionFree => 'مجاني';
+
+  @override
+  String get subscriptionFreeDesc => 'أوقات الصلاة الأساسية، القبلة، التقويم';
+
+  @override
+  String get subscriptionPlusDesc =>
+      'المنزل الذكي، شاشة التلفاز، الأدوات، والمزيد';
+
+  @override
+  String subscriptionFreeQueriesRemaining(int count) {
+    return '$count استعلامات مجانية متبقية';
+  }
+
+  @override
+  String subscriptionPriceYearly(String price) {
+    return '$price/سنة';
+  }
+
+  @override
+  String subscriptionPriceMonthly(String price) {
+    return '$price/شهر';
+  }
+
+  @override
+  String get subscriptionFeatureSmartHome => 'تكامل المنزل الذكي';
+
+  @override
+  String get subscriptionFeatureTV => 'وضع عرض التلفاز';
+
+  @override
+  String get subscriptionFeatureWidgets => 'أدوات الشاشة الرئيسية';
+
+  @override
+  String get subscriptionFeatureWatch => 'واجهة الساعة';
+
+  @override
+  String get subscriptionFeatureSync => 'المزامنة عبر الأجهزة';
+
+  @override
+  String get subscriptionFeatureAdFree => 'تجربة بدون إعلانات';
+
+  @override
+  String get tvTitle => 'شاشة التلفاز';
+
+  @override
+  String get tvMasjidMode => 'وضع المسجد';
+
+  @override
+  String get tvAmbientMode => 'الوضع المحيطي';
+
+  @override
+  String get tvSettingsIqamah => 'فروق الإقامة';
+
+  @override
+  String get tvSettingsAnnouncements => 'الإعلانات';
+
+  @override
+  String get tvConnectQR => 'امسح للاتصال';
+
+  @override
+  String get watchTitle => 'الساعة';
+
+  @override
+  String get watchNextPrayer => 'الصلاة التالية';
+
+  @override
+  String get watchAllPrayers => 'جميع الصلوات';
+
+  @override
+  String get watchComplication => 'واجهة الساعة';
+
+  @override
+  String get nextPrayer => 'الصلاة التالية';
+
+  @override
+  String get allPrayers => 'جميع الصلوات';
+
+  @override
+  String get today => 'اليوم';
+
+  @override
+  String get tomorrow => 'غداً';
+
+  @override
+  String get thisWeek => 'هذا الأسبوع';
+
+  @override
+  String get thisMonth => 'هذا الشهر';
+
+  @override
+  String get commonCancel => 'إلغاء';
+
+  @override
+  String get commonSave => 'حفظ';
+
+  @override
+  String get commonDelete => 'حذف';
+
+  @override
+  String get commonEdit => 'تعديل';
+
+  @override
+  String get commonRetry => 'إعادة المحاولة';
+
+  @override
+  String get commonClose => 'إغلاق';
+
+  @override
+  String get commonDone => 'تم';
+
+  @override
+  String get commonBack => 'رجوع';
+
+  @override
+  String get commonNext => 'التالي';
+
+  @override
+  String get commonSkip => 'تخطي';
+
+  @override
+  String get commonContinue => 'متابعة';
+
+  @override
+  String get commonOk => 'موافق';
+
+  @override
+  String get commonYes => 'نعم';
+
+  @override
+  String get commonNo => 'لا';
+
+  @override
+  String get commonShare => 'مشاركة';
+
+  @override
+  String get commonCopy => 'نسخ';
+
+  @override
+  String get commonCopied => 'تم النسخ';
+
+  @override
+  String get commonLoading => 'جاري التحميل...';
+
+  @override
+  String get commonError => 'حدث خطأ ما';
+
+  @override
+  String get commonErrorRetry => 'حدث خطأ ما. اضغط لإعادة المحاولة.';
+
+  @override
+  String get commonNoInternet => 'لا يوجد اتصال بالإنترنت';
+
+  @override
+  String get commonOfflineMode => 'وضع عدم الاتصال';
+
+  @override
+  String get commonSignIn => 'تسجيل الدخول';
+
+  @override
+  String get commonSignOut => 'تسجيل الخروج';
+
+  @override
+  String get commonSignUp => 'إنشاء حساب';
+
+  @override
+  String get commonProfile => 'الملف الشخصي';
+
+  @override
+  String get commonAccount => 'الحساب';
+
+  @override
+  String get commonAbout => 'حول';
+
+  @override
+  String commonVersion(String version) {
+    return 'الإصدار $version';
+  }
+
+  @override
+  String get commonPrivacyPolicy => 'سياسة الخصوصية';
+
+  @override
+  String get commonTermsOfService => 'شروط الخدمة';
+
+  @override
+  String get commonRateApp => 'قيّم التطبيق';
+
+  @override
+  String get commonFeedback => 'إرسال ملاحظات';
+
+  @override
+  String get commonHelp => 'مساعدة';
+
+  @override
+  String get commonLanguage => 'اللغة';
+
+  @override
+  String get travelNotificationTitle => 'أنت الآن مسافر';
+
+  @override
+  String get travelNotificationBody =>
+      'قد تُقصر أوقات الصلاة. اضغط لمعرفة أحكام صلاة المسافر.';
+
+  @override
+  String get travelRulingsTitle => 'السفر والصلاة';
+
+  @override
+  String get travelRulingsIntro =>
+      'أحكام الصلاة في السفر مع مراجع علمية من القرآن الكريم والأحاديث الصحيحة.';
+
+  @override
+  String get travelWhenTitle => 'متى يُعتبر الشخص مسافراً؟';
+
+  @override
+  String get travelQasrTitle => 'قصر الصلاة';
+
+  @override
+  String get travelJamTitle => 'الجمع بين الصلوات';
+
+  @override
+  String get travelDurationTitle => 'مدة السفر';
+
+  @override
+  String get travelReferencesTitle => 'المراجع العلمية';
+
+  @override
+  String get travelLearnMore => 'اعرف المزيد';
 }

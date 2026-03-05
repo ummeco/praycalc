@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../core/providers/travel_provider.dart';
+import '../../core/router/app_router.dart';
 import '../../core/theme/app_theme.dart';
 
 /// Shown at the top of the home screen when the user is > 77 km from home.
@@ -22,28 +24,31 @@ class TravelBanner extends ConsumerWidget {
         ? '${(travel.distanceKm / 1000).toStringAsFixed(1)}k km'
         : '${travel.distanceKm.round()} km';
 
-    return Material(
-      color: PrayCalcColors.dark.withValues(alpha: 0.92),
-      child: SafeArea(
-        bottom: false,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: Row(
-            children: [
-              const Icon(Icons.flight_takeoff, color: Colors.white, size: 18),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Text(
-                  'Traveling · $distLabel from home',
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 13,
-                    fontWeight: FontWeight.w500,
+    return GestureDetector(
+      onTap: () => context.push(Routes.travelRulings),
+      child: Material(
+        color: PrayCalcColors.dark.withValues(alpha: 0.92),
+        child: SafeArea(
+          bottom: false,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: Row(
+              children: [
+                const Icon(Icons.flight_takeoff, color: Colors.white, size: 18),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    'Traveling · $distLabel from home',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                 ),
-              ),
-              _QasrChip(isQasr: travel.isQasr, cs: cs),
-            ],
+                _QasrChip(isQasr: travel.isQasr, cs: cs),
+              ],
+            ),
           ),
         ),
       ),

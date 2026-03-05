@@ -112,11 +112,13 @@ class _AgendaTile extends StatelessWidget {
     return Dismissible(
       key: ValueKey(agenda.id),
       direction: DismissDirection.endToStart,
-      background: Container(
-        alignment: Alignment.centerRight,
-        padding: const EdgeInsets.only(right: 20),
-        color: Colors.red,
-        child: const Icon(Icons.delete, color: Colors.white),
+      background: Builder(
+        builder: (context) => Container(
+          alignment: Alignment.centerRight,
+          padding: const EdgeInsets.only(right: 20),
+          color: Theme.of(context).colorScheme.error,
+          child: Icon(Icons.delete, color: Theme.of(context).colorScheme.onError),
+        ),
       ),
       onDismissed: (_) {
         notifier.remove(agenda.id);
@@ -125,13 +127,7 @@ class _AgendaTile extends StatelessWidget {
             content: Text('${agenda.label} removed'),
             action: SnackBarAction(
               label: 'Undo',
-              onPressed: () => notifier.add(
-                label: agenda.label,
-                prayer: agenda.prayer,
-                offsetMinutes: agenda.offsetMinutes,
-                days: agenda.days,
-                notificationType: agenda.notificationType,
-              ),
+              onPressed: () => notifier.restore(agenda),
             ),
           ),
         );

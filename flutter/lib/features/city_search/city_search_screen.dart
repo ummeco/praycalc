@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -20,21 +22,30 @@ class _CitySearchScreenState extends ConsumerState<CitySearchScreen> {
   final _controller = TextEditingController();
   List<City> _results = [];
   bool _searching = false;
+  Timer? _debounce;
 
   @override
   void dispose() {
+    _debounce?.cancel();
     _controller.dispose();
     super.dispose();
   }
 
-  Future<void> _onQueryChanged(String q) async {
+  void _onQueryChanged(String q) {
+    _debounce?.cancel();
     if (q.trim().isEmpty) {
       setState(() { _results = []; _searching = false; });
       return;
     }
     setState(() => _searching = true);
-    final results = await CityDbService.instance.search(q);
-    if (mounted) setState(() { _results = results; _searching = false; });
+    _debounce = Timer(const Duration(milliseconds: 300), () async {
+      try {
+        final results = await CityDbService.instance.search(q);
+        if (mounted) setState(() { _results = results; _searching = false; });
+      } catch (_) {
+        if (mounted) setState(() { _results = []; _searching = false; });
+      }
+    });
   }
 
   void _selectCity(City city) {
@@ -63,6 +74,10 @@ class _CitySearchScreenState extends ConsumerState<CitySearchScreen> {
     } else if (state.status == GpsStatus.denied) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Location permission denied. Search manually.')),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('GPS unavailable. Search manually.')),
       );
     }
   }

@@ -128,46 +128,48 @@ LinearGradient applyWeatherTint(LinearGradient g, int? weatherCode) {
   );
 }
 
-// ── Sky segments (all green-tinted per brand palette) ─────────────────────────
+// ── Sky segments — all dark, green-tinted, white-text-safe ───────────────────
+// Palette basis: web #0A2010 (deep), #0D2F17 (dark), #1E5E2F (mid-dark)
+// All stops are dark enough for white text (contrast ≥ 4.5:1).
 
-/// Isha → Fajr: deep indigo-green night.
+/// Isha → Fajr: deepest night — near-black forest green.
 const _kPreFajrGradient = LinearGradient(
   begin: Alignment.topCenter,
   end: Alignment.bottomCenter,
-  colors: [Color(0xFF0D2F17), Color(0xFF1A1040)],
+  colors: [Color(0xFF040B06), Color(0xFF0A1A0F)],
 );
 
-/// Fajr → Sunrise: rose-green dawn.
+/// Fajr → Sunrise: predawn indigo-green.
 const _kFajrGradient = LinearGradient(
   begin: Alignment.topCenter,
   end: Alignment.bottomCenter,
-  colors: [Color(0xFF1A1040), Color(0xFF2A3A1A)],
+  colors: [Color(0xFF060E12), Color(0xFF0C1F18)],
 );
 
-/// Sunrise → Dhuhr: morning green.
+/// Sunrise → Dhuhr: deep morning forest.
 const _kMorningGradient = LinearGradient(
   begin: Alignment.topCenter,
   end: Alignment.bottomCenter,
-  colors: [Color(0xFF1A3A2A), Color(0xFF1E5E2F)],
+  colors: [Color(0xFF0A1A0F), Color(0xFF122A18)],
 );
 
-/// Dhuhr → Asr: bright noon green.
+/// Dhuhr → Asr: midday deep green.
 const _kNoonGradient = LinearGradient(
   begin: Alignment.topCenter,
   end: Alignment.bottomCenter,
-  colors: [Color(0xFF1E5E2F), Color(0xFF2A4A1A)],
+  colors: [Color(0xFF0D2114), Color(0xFF0A1A0F)],
 );
 
-/// Asr → Maghrib: golden-green afternoon.
+/// Asr → Maghrib: amber-green afternoon.
 const _kAfternoonGradient = LinearGradient(
   begin: Alignment.topCenter,
   end: Alignment.bottomCenter,
-  colors: [Color(0xFF2A4A1A), Color(0xFF1A2A0A)],
+  colors: [Color(0xFF111A0A), Color(0xFF0D1A0E)],
 );
 
-/// Maghrib → Isha: dusk deep green.
+/// Maghrib → Isha: dusk — warm deep green fading to night.
 const _kDuskGradient = LinearGradient(
   begin: Alignment.topCenter,
   end: Alignment.bottomCenter,
-  colors: [Color(0xFF1A2A0A), Color(0xFF0D2F17)],
+  colors: [Color(0xFF1A1208), Color(0xFF0A1508)],
 );

@@ -92,8 +92,6 @@ class SubscriptionScreen extends ConsumerWidget {
                     },
               style: FilledButton.styleFrom(
                 minimumSize: const Size.fromHeight(52),
-                backgroundColor: PrayCalcColors.dark,
-                foregroundColor: Colors.white,
                 textStyle: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,

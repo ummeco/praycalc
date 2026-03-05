@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/providers/auth_provider.dart';
+import '../../core/providers/geo_provider.dart';
+import '../../core/providers/prayer_provider.dart';
 import '../../core/providers/settings_provider.dart';
 import '../../core/providers/sync_provider.dart';
 import '../../core/router/app_router.dart';
@@ -194,7 +196,7 @@ class SettingsScreen extends ConsumerWidget {
               leading: const Icon(Icons.home_outlined),
               title: const Text('Home location'),
               subtitle: Text(
-                settings.homeLat != null
+                settings.homeLat != null && settings.homeLng != null
                     ? '${settings.homeLat!.toStringAsFixed(4)}, '
                         '${settings.homeLng!.toStringAsFixed(4)}'
                     : 'Not set — tap to use current location',
@@ -211,8 +213,25 @@ class SettingsScreen extends ConsumerWidget {
                   const Icon(Icons.chevron_right),
                 ],
               ),
-              onTap: () => _setHomeLocation(context, notifier),
+              onTap: () => _setHomeLocation(context, ref, notifier),
             ),
+          ListTile(
+            leading: const Icon(Icons.menu_book_outlined),
+            title: const Text('Travel prayer rulings'),
+            subtitle: const Text('Qasr, combining, and traveler guidelines'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => context.push(Routes.travelRulings),
+          ),
+
+          // ── Smart Home ──────────────────────────────────────────────────
+          const _SectionHeader('Smart Home'),
+          ListTile(
+            leading: const Icon(Icons.home_max_outlined),
+            title: const Text('Smart home integrations'),
+            subtitle: const Text('HomeKit, Google Home, Alexa, Home Assistant'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => context.push(Routes.smartHome),
+          ),
 
           // ── TV Display ──────────────────────────────────────────────────
           const _SectionHeader('TV Display'),
@@ -279,40 +298,68 @@ class SettingsScreen extends ConsumerWidget {
 
   Future<void> _setHomeLocation(
     BuildContext context,
+    WidgetRef ref,
     SettingsNotifier notifier,
   ) async {
-    // Prompt user to confirm using current GPS position as home.
-    final confirmed = await showDialog<bool>(
+    final city = ref.read(cityProvider);
+
+    final confirmed = await showDialog<String>(
       context: context,
       builder: (ctx) => AlertDialog(
         title: const Text('Set home location'),
-        content: const Text(
-          'Use your current location as home? Travel mode will use this '
-          'to detect when you are away.',
+        content: Text(
+          city != null
+              ? 'Use "${city.displayName}" as your home location? '
+                'Travel mode will detect when you are away from here.'
+              : 'Use your current GPS position as home? Travel mode will '
+                'detect when you are away.',
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.of(ctx).pop(false),
+            onPressed: () => Navigator.of(ctx).pop(null),
             child: const Text('Cancel'),
           ),
-          FilledButton(
-            onPressed: () => Navigator.of(ctx).pop(true),
-            child: const Text('Use current location'),
-          ),
+          if (city != null)
+            FilledButton(
+              onPressed: () => Navigator.of(ctx).pop('city'),
+              child: Text('Use ${city.name}'),
+            )
+          else
+            FilledButton(
+              onPressed: () => Navigator.of(ctx).pop('gps'),
+              child: const Text('Use current location'),
+            ),
         ],
       ),
     );
-    if (confirmed != true || !context.mounted) return;
-    // Reads lat/lng from the existing location provider via the city.
-    // A full GPS call is out of scope here — show a snackbar instructing
-    // the user to visit the main screen first to set their city.
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text(
-          'Set your city on the main screen, then return here to lock it as home.',
-        ),
-      ),
-    );
+    if (confirmed == null || !context.mounted) return;
+
+    if (confirmed == 'city' && city != null) {
+      await notifier.setHomeCoords(city.lat, city.lng);
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Home set to ${city.displayName}')),
+        );
+      }
+    } else {
+      final gps = ref.read(gpsProvider.notifier);
+      await gps.requestLocation();
+      final gpsState = ref.read(gpsProvider);
+      if (gpsState.hasPosition) {
+        await notifier.setHomeCoords(gpsState.lat!, gpsState.lng!);
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Home location set from GPS')),
+          );
+        }
+      } else if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(gpsState.errorMessage ?? 'Could not get GPS location'),
+          ),
+        );
+      }
+    }
   }
 
   Future<void> _showLanguagePicker(

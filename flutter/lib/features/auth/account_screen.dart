@@ -1,12 +1,17 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../core/providers/auth_provider.dart';
 import '../../core/providers/sync_provider.dart';
 import '../../core/services/auth_service.dart';
 import '../../core/services/sync_service.dart';
-import '../../core/theme/app_theme.dart';
 import 'sync_conflict_dialog.dart';
 
 /// Account management screen.
@@ -38,18 +43,18 @@ class AccountScreen extends ConsumerWidget {
           // ── Profile header ─────────────────────────────────────────
           Container(
             padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 24),
-            color: PrayCalcColors.dark,
+            color: theme.colorScheme.primaryContainer,
             child: Column(
               children: [
                 CircleAvatar(
                   radius: 40,
-                  backgroundColor: PrayCalcColors.mid,
+                  backgroundColor: theme.colorScheme.primary,
                   child: Text(
                     user.initials,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                      color: theme.colorScheme.onPrimary,
                     ),
                   ),
                 ),
@@ -57,7 +62,7 @@ class AccountScreen extends ConsumerWidget {
                 Text(
                   user.displayName ?? user.email,
                   style: theme.textTheme.titleLarge?.copyWith(
-                    color: Colors.white,
+                    color: theme.colorScheme.onPrimaryContainer,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -65,7 +70,7 @@ class AccountScreen extends ConsumerWidget {
                 Text(
                   user.email,
                   style: theme.textTheme.bodyMedium?.copyWith(
-                    color: Colors.white70,
+                    color: theme.colorScheme.onPrimaryContainer.withAlpha(180),
                   ),
                 ),
               ],
@@ -111,13 +116,7 @@ class AccountScreen extends ConsumerWidget {
             title: const Text('Export data'),
             subtitle: const Text('Download your settings and prayer logs'),
             trailing: const Icon(Icons.chevron_right),
-            onTap: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Data export coming in a future update'),
-                ),
-              );
-            },
+            onTap: () => _exportData(context),
           ),
 
           // ── Account actions ────────────────────────────────────────
@@ -139,6 +138,38 @@ class AccountScreen extends ConsumerWidget {
         ],
       ),
     );
+  }
+
+  Future<void> _exportData(BuildContext context) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final keys = prefs.getKeys();
+      final data = <String, dynamic>{};
+      for (final key in keys) {
+        data[key] = prefs.get(key);
+      }
+
+      final export = {
+        'app': 'PrayCalc',
+        'exportedAt': DateTime.now().toIso8601String(),
+        'settings': data,
+      };
+
+      final json = const JsonEncoder.withIndent('  ').convert(export);
+      final dir = await getTemporaryDirectory();
+      final file = File('${dir.path}/praycalc_export.json');
+      await file.writeAsString(json);
+
+      await SharePlus.instance.share(
+        ShareParams(files: [XFile(file.path)]),
+      );
+    } catch (_) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Could not export data')),
+        );
+      }
+    }
   }
 
   Future<void> _showConflictHistory(BuildContext context) async {

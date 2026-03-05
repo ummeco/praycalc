@@ -41,9 +41,11 @@ class MoonScreen extends ConsumerWidget {
     try {
       hijri = HijriCalendar.now();
     } catch (_) {
+      // Approximate: Hijri year ≈ Gregorian year - 579
+      final approxYear = now.year - 579;
       hijri = HijriCalendar()
-        ..hYear = 1446
-        ..hMonth = 9
+        ..hYear = approxYear
+        ..hMonth = 1
         ..hDay = 1;
     }
 
@@ -102,7 +104,7 @@ class _MoonPhaseHeader extends StatelessWidget {
           style: theme.textTheme.displayMedium?.copyWith(
             fontSize: 24,
             fontWeight: FontWeight.bold,
-            color: PrayCalcColors.dark,
+            color: theme.colorScheme.primary,
           ),
           textAlign: TextAlign.center,
         ),
@@ -150,7 +152,9 @@ class _HijriSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final monthName = _hijriMonths[hijri.hMonth - 1];
+    final monthName = (hijri.hMonth >= 1 && hijri.hMonth <= 12)
+        ? _hijriMonths[hijri.hMonth - 1]
+        : 'Unknown';
     final hijriStr = '${hijri.hDay} $monthName ${hijri.hYear} AH';
 
     return Column(
@@ -168,7 +172,7 @@ class _HijriSection extends StatelessWidget {
           style: theme.textTheme.displayMedium?.copyWith(
             fontSize: 22,
             fontWeight: FontWeight.bold,
-            color: PrayCalcColors.dark,
+            color: theme.colorScheme.primary,
           ),
           textAlign: TextAlign.center,
         ),
@@ -229,11 +233,11 @@ class _DayCell extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
       decoration: BoxDecoration(
         color: isToday
-            ? PrayCalcColors.dark.withAlpha(30)
+            ? theme.colorScheme.primary.withAlpha(30)
             : theme.cardTheme.color,
         borderRadius: BorderRadius.circular(12),
         border: isToday
-            ? Border.all(color: PrayCalcColors.dark, width: 1.5)
+            ? Border.all(color: theme.colorScheme.primary, width: 1.5)
             : null,
       ),
       child: Column(
@@ -251,7 +255,7 @@ class _DayCell extends StatelessWidget {
                   isToday ? FontWeight.bold : FontWeight.normal,
               fontSize: 12,
               color: isToday
-                  ? PrayCalcColors.dark
+                  ? theme.colorScheme.primary
                   : theme.colorScheme.onSurface.withAlpha(200),
             ),
           ),
@@ -308,8 +312,9 @@ class _NextRamadanCard extends StatelessWidget {
 
     // If the computed start date has already passed this year, advance.
     if (startDate.isBefore(now)) {
+      targetHijriYear += 1;
       try {
-        startDate = _ramadanStart(targetHijriYear + 1);
+        startDate = _ramadanStart(targetHijriYear);
       } catch (_) {
         startDate = startDate.add(const Duration(days: 354));
       }

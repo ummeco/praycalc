@@ -65,3 +65,4 @@ wearos/local.properties
 .gemini/
 .codeium/
 .vscode/*
+.vercel

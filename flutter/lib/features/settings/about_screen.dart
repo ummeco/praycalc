@@ -1,14 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/theme/app_theme.dart';
 
-// App version — keep in sync with pubspec.yaml
-const _kVersion = '0.3.0';
-const _kBuild = '1';
-
 class AboutScreen extends StatelessWidget {
   const AboutScreen({super.key});
+
+  Future<void> _tryLaunch(BuildContext context, String url) async {
+    try {
+      await launchUrl(Uri.parse(url));
+    } catch (_) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Could not open the link.')),
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,12 +58,12 @@ class AboutScreen extends StatelessWidget {
                   'PrayCalc',
                   style: theme.textTheme.headlineSmall?.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: PrayCalcColors.dark,
+                    color: theme.colorScheme.primary,
                   ),
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'Version $_kVersion (build $_kBuild)',
+                  'Version 0.4.1',
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: cs.onSurface.withAlpha(140),
                   ),
@@ -72,24 +80,22 @@ class AboutScreen extends StatelessWidget {
             leading: const Icon(Icons.language),
             title: const Text('Website'),
             subtitle: const Text('praycalc.com'),
-            onTap: () => _copyToClipboard(context, 'https://praycalc.com'),
-            trailing: const Icon(Icons.copy, size: 16),
+            onTap: () => _tryLaunch(context, 'https://praycalc.com'),
+            trailing: const Icon(Icons.open_in_new, size: 16),
           ),
           ListTile(
             leading: const Icon(Icons.privacy_tip_outlined),
             title: const Text('Privacy Policy'),
             subtitle: const Text('praycalc.com/privacy'),
-            onTap: () =>
-                _copyToClipboard(context, 'https://praycalc.com/privacy'),
-            trailing: const Icon(Icons.copy, size: 16),
+            onTap: () => _tryLaunch(context, 'https://praycalc.com/privacy'),
+            trailing: const Icon(Icons.open_in_new, size: 16),
           ),
           ListTile(
             leading: const Icon(Icons.mail_outline),
             title: const Text('Contact'),
             subtitle: const Text('support@praycalc.com'),
-            onTap: () =>
-                _copyToClipboard(context, 'support@praycalc.com'),
-            trailing: const Icon(Icons.copy, size: 16),
+            onTap: () => _tryLaunch(context, 'mailto:support@praycalc.com'),
+            trailing: const Icon(Icons.open_in_new, size: 16),
           ),
 
           const Divider(),
@@ -101,7 +107,7 @@ class AboutScreen extends StatelessWidget {
             onTap: () => showLicensePage(
               context: context,
               applicationName: 'PrayCalc',
-              applicationVersion: 'v$_kVersion',
+              applicationVersion: 'v0.4.1',
             ),
           ),
 
@@ -126,13 +132,4 @@ class AboutScreen extends StatelessWidget {
     );
   }
 
-  void _copyToClipboard(BuildContext context, String text) {
-    Clipboard.setData(ClipboardData(text: text));
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Copied: $text'),
-        duration: const Duration(seconds: 2),
-      ),
-    );
-  }
 }

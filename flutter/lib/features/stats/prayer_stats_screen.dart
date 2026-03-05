@@ -59,8 +59,8 @@ final prayerStatsProvider = Provider<PrayerStats>((ref) {
 
   final weekTotal = fard.fold(0, (sum, p) => sum + (weeklyByPrayer[p] ?? 0));
   final monthTotal = fard.fold(0, (sum, p) => sum + (monthlyByPrayer[p] ?? 0));
-  final weeklyPct = weekTotal / 35.0;
-  final monthlyPct = monthTotal / 150.0;
+  final weeklyPct = (weekTotal / 35.0).clamp(0.0, 1.0);
+  final monthlyPct = (monthTotal / 150.0).clamp(0.0, 1.0);
 
   // Most missed prayer (lowest count in last 7 days)
   String? mostMissed;
@@ -315,13 +315,17 @@ class _WeeklyBarChart extends StatelessWidget {
           bottomTitles: AxisTitles(
             sideTitles: SideTitles(
               showTitles: true,
-              getTitlesWidget: (value, meta) => Padding(
-                padding: const EdgeInsets.only(top: 8),
-                child: Text(
-                  prayers[value.toInt()],
-                  style: TextStyle(fontSize: 11, color: cs.onSurface),
-                ),
-              ),
+              getTitlesWidget: (value, meta) {
+                final i = value.toInt();
+                if (i < 0 || i >= prayers.length) return const SizedBox.shrink();
+                return Padding(
+                  padding: const EdgeInsets.only(top: 8),
+                  child: Text(
+                    prayers[i],
+                    style: TextStyle(fontSize: 11, color: cs.onSurface),
+                  ),
+                );
+              },
             ),
           ),
           leftTitles: AxisTitles(
@@ -400,13 +404,17 @@ class _MonthlyBarChart extends StatelessWidget {
           bottomTitles: AxisTitles(
             sideTitles: SideTitles(
               showTitles: true,
-              getTitlesWidget: (value, meta) => Padding(
-                padding: const EdgeInsets.only(top: 8),
-                child: Text(
-                  prayers[value.toInt()],
-                  style: TextStyle(fontSize: 11, color: cs.onSurface),
-                ),
-              ),
+              getTitlesWidget: (value, meta) {
+                final i = value.toInt();
+                if (i < 0 || i >= prayers.length) return const SizedBox.shrink();
+                return Padding(
+                  padding: const EdgeInsets.only(top: 8),
+                  child: Text(
+                    prayers[i],
+                    style: TextStyle(fontSize: 11, color: cs.onSurface),
+                  ),
+                );
+              },
             ),
           ),
           leftTitles: AxisTitles(
