@@ -26,7 +26,7 @@ test.describe("Homepage", () => {
 
     // Search input is present
     const searchInput = page.locator(
-      'input[placeholder="City, zip code, or country…"]',
+      'input[placeholder="Search cities, airports, zip codes..."]',
     );
     await expect(searchInput).toBeVisible();
   });
@@ -34,7 +34,7 @@ test.describe("Homepage", () => {
   test("renders search input with correct placeholder", async ({ page }) => {
     await page.goto("/");
     const searchInput = page.locator(
-      'input[placeholder="City, zip code, or country…"]',
+      'input[placeholder="Search cities, airports, zip codes..."]',
     );
     await expect(searchInput).toBeVisible();
     await expect(searchInput).toBeEnabled();
@@ -83,7 +83,7 @@ test.describe("Homepage", () => {
     await page.goto("/");
 
     const searchInput = page.locator(
-      'input[placeholder="City, zip code, or country…"]',
+      'input[placeholder="Search cities, airports, zip codes..."]',
     );
     await searchInput.fill("London");
 
@@ -106,7 +106,7 @@ test.describe("Homepage", () => {
     await page.goto("/");
 
     const searchInput = page.locator(
-      'input[placeholder="City, zip code, or country…"]',
+      'input[placeholder="Search cities, airports, zip codes..."]',
     );
     await searchInput.fill("Mecca");
 
@@ -124,7 +124,7 @@ test.describe("Homepage", () => {
     await page.goto("/");
 
     const searchInput = page.locator(
-      'input[placeholder="City, zip code, or country…"]',
+      'input[placeholder="Search cities, airports, zip codes..."]',
     );
     await searchInput.fill("New York");
 
@@ -144,7 +144,7 @@ test.describe("Homepage", () => {
     await page.goto("/");
 
     const searchInput = page.locator(
-      'input[placeholder="City, zip code, or country…"]',
+      'input[placeholder="Search cities, airports, zip codes..."]',
     );
     await searchInput.fill("London");
 

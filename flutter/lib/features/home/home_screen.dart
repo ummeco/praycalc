@@ -18,8 +18,6 @@ import '../../shared/models/settings_model.dart';
 import '../../shared/widgets/breathing_ring.dart';
 import '../../shared/widgets/sky_gradient_background.dart';
 import '../../shared/widgets/travel_banner.dart';
-import 'pinned_cities_bar.dart';
-import 'widgets/share_prayer_card.dart';
 
 // ─── Prayer metadata ──────────────────────────────────────────────────────────
 
@@ -104,10 +102,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Widget build(BuildContext context) {
     final city = ref.watch(cityProvider);
     final settings = ref.watch(settingsProvider);
-    final todayTimesAsync = ref.watch(prayerTimesForDayProvider(0));
 
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.home_outlined, size: 22),
+          tooltip: 'Home',
+          onPressed: () => context.push(Routes.citySearch),
+        ),
         title: Semantics(
           button: true,
           label: city != null
@@ -119,34 +121,38 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(Icons.location_on, size: 18),
+                Icon(
+                  Icons.location_on_rounded,
+                  size: 15,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
                 const SizedBox(width: 4),
-                Text(city?.displayName ?? 'Choose a city'),
-                const Icon(Icons.arrow_drop_down),
+                Flexible(
+                  child: Text(
+                    city?.displayName ?? 'Choose a city',
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: -0.3,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 2),
+                Icon(
+                  Icons.keyboard_arrow_down_rounded,
+                  size: 20,
+                  color: Theme.of(context).colorScheme.onSurface.withAlpha(160),
+                ),
               ],
             ),
           ),
         ),
-        centerTitle: true,
-        actions: [
-          if (city != null)
-            IconButton(
-              icon: const Icon(Icons.share),
-              tooltip: 'Share prayer times',
-              onPressed: () => todayTimesAsync.whenData(
-                (times) => sharePrayerCard(
-                  context: context,
-                  city: city,
-                  times: times,
-                  settings: settings,
-                ),
-              ),
-            ),
-        ],
+        centerTitle: false,
+        actions: const [],
       ),
       body: Column(
         children: [
-          const PinnedCitiesBar(),
           _DayTabBar(
             selectedPage: _dayPage,
             now: _now,
@@ -178,7 +184,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           : FloatingActionButton(
               onPressed: () => context.push(Routes.tasbeeh),
               tooltip: 'Tasbeeh counter',
-              child: const Icon(Icons.more_vert),
+              child: const Icon(Icons.radio_button_checked),
             ),
     );
   }
@@ -496,37 +502,69 @@ class _HomeBody extends ConsumerWidget {
               ),
             ],
           ),
-        const SizedBox(height: 8),
-        ..._prayers.asMap().entries.map((e) {
-          final idx = e.key;
-          final meta = e.value;
-          final h = meta.getValue(times);
-          // Fard prayers: Fajr(0) Dhuhr(2) Asr(3) Maghrib(4) Isha(5)
-          // Sunrise(1) and Qiyam(6) are not fard — no completion tracking.
-          final isFard = idx != 1 && idx != 6;
-          final prayerKey = meta.label; // raw label, not Ramadan-relabelled
-          final isCompleted = isFard && completions.isNotEmpty
-              ? completionNotifier?.isCompleted(todayStr, prayerKey) ?? false
-              : false;
-          return _PrayerTile(
-            label: _prayerLabel(meta.label, ramadan.isRamadan, isQasr: travel.isQasr),
-            icon: meta.icon,
-            hours: h,
-            use24h: settings.use24h,
-            isActive: idx == activeIdx,
-            isNext: idx == nextIdx,
-            isCompleted: isCompleted,
-            onCompletionToggle: isFard && isToday
-                ? () {
-                    if (isCompleted) {
-                      completionNotifier?.unmark(todayStr, prayerKey);
-                    } else {
-                      completionNotifier?.markCompleted(todayStr, prayerKey);
-                    }
+        const SizedBox(height: 12),
+        // ── Prayer list — grouped card, PTQ-style ────────────────────────────
+        ClipRRect(
+          borderRadius: BorderRadius.circular(14),
+          child: Container(
+            decoration: BoxDecoration(
+              color: Theme.of(context).cardTheme.color,
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: Column(
+            children: () {
+              final entries = _prayers.asMap().entries.toList();
+              final tiles = <Widget>[];
+              for (int i = 0; i < entries.length; i++) {
+                final idx = entries[i].key;
+                final meta = entries[i].value;
+                final h = meta.getValue(times);
+                // Fard: Fajr(0) Dhuhr(2) Asr(3) Maghrib(4) Isha(5)
+                // Sunrise(1) and Qiyam(6) are not fard — no tracking.
+                final isFard = idx != 1 && idx != 6;
+                final prayerKey = meta.label;
+                final isCompleted = isFard && completions.isNotEmpty
+                    ? completionNotifier?.isCompleted(todayStr, prayerKey) ?? false
+                    : false;
+                final isActiveTile = idx == activeIdx;
+                tiles.add(
+                  _PrayerTile(
+                    label: _prayerLabel(meta.label, ramadan.isRamadan, isQasr: travel.isQasr),
+                    hours: h,
+                    use24h: settings.use24h,
+                    isActive: isActiveTile,
+                    isNext: idx == nextIdx,
+                    isCompleted: isCompleted,
+                    onCompletionToggle: isFard && isToday
+                        ? () {
+                            if (isCompleted) {
+                              completionNotifier?.unmark(todayStr, prayerKey);
+                            } else {
+                              completionNotifier?.markCompleted(todayStr, prayerKey);
+                            }
+                          }
+                        : null,
+                  ),
+                );
+                // Add divider between tiles (not after last, not before/after active)
+                if (i < entries.length - 1) {
+                  final nextIsActive = entries[i + 1].key == activeIdx;
+                  if (!isActiveTile && !nextIsActive) {
+                    tiles.add(Divider(
+                      height: 1,
+                      thickness: 1,
+                      indent: 16,
+                      endIndent: 16,
+                      color: Theme.of(context).dividerColor,
+                    ));
                   }
-                : null,
-          );
-        }),
+                }
+              }
+              return tiles;
+            }(),
+            ),   // Column
+          ),     // Container
+        ),       // ClipRRect
         const SizedBox(height: 80),
       ],
     ),   // ListView
@@ -545,7 +583,7 @@ class _HomeBody extends ConsumerWidget {
   }
 
   int _activePrayerIndex(double nowH) {
-    int last = 0;
+    int last = -1;
     for (int i = 0; i < _prayers.length; i++) {
       final h = _prayers[i].getValue(times);
       if (!h.isFinite) continue;
@@ -610,21 +648,38 @@ class _DateHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final cs = theme.colorScheme;
     const dayNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
     const monthNames = [
       'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
       'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
     ];
-    final gregorianStr =
-        '${dayNames[gregorian.weekday - 1]}, ${gregorian.day} ${monthNames[gregorian.month - 1]} ${gregorian.year}';
+    final day = dayNames[gregorian.weekday - 1];
+    final month = monthNames[gregorian.month - 1];
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Text(gregorianStr, style: theme.textTheme.titleMedium),
-        if (hijri.isNotEmpty)
-          Text(hijri, style: theme.textTheme.bodyMedium),
-      ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(
+            '$day, ${gregorian.day} $month ${gregorian.year}',
+            style: theme.textTheme.titleLarge?.copyWith(
+              fontWeight: FontWeight.w700,
+              letterSpacing: -0.2,
+            ),
+          ),
+          if (hijri.isNotEmpty) ...[
+            const SizedBox(height: 2),
+            Text(
+              hijri,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: cs.onSurface.withAlpha(140),
+              ),
+            ),
+          ],
+        ],
+      ),
     );
   }
 }
@@ -642,29 +697,33 @@ class _CountdownCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
-    final cardColor = accentColor ?? cs.primary;
-    return Card(
-      color: cardColor,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
-        child: Column(
-          children: [
-            Text(
-              '$nextLabel in',
-              style: const TextStyle(color: Colors.white, fontSize: 14),
+    final accent = accentColor ?? cs.primary;
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Column(
+        children: [
+          Text(
+            nextLabel.isNotEmpty ? '$nextLabel in' : '',
+            style: TextStyle(
+              color: accent,
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+              letterSpacing: 0.5,
             ),
-            const SizedBox(height: 4),
-            Text(
-              countdown,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 36,
-                fontWeight: FontWeight.bold,
-                fontFeatures: [FontFeature.tabularFigures()],
-              ),
+          ),
+          const SizedBox(height: 2),
+          Text(
+            countdown,
+            style: TextStyle(
+              color: cs.onSurface,
+              fontSize: 52,
+              fontWeight: FontWeight.w300,
+              letterSpacing: -1,
+              fontFeatures: const [FontFeature.tabularFigures()],
+              height: 1.0,
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -733,14 +792,14 @@ class _RamadanBanner extends StatelessWidget {
                 ),
                 const Spacer(),
                 Text(
-                  'Day ${ramadan.hDay} / 30',
+                  'Day ${ramadan.hDay}',
                   style: const TextStyle(color: Colors.white, fontSize: 13),
                 ),
               ],
             ),
             const SizedBox(height: 8),
             LinearProgressIndicator(
-              value: ramadan.hDay / 30.0,
+              value: (ramadan.hDay / 30.0).clamp(0.0, 1.0),
               backgroundColor: Colors.white30,
               valueColor:
                   const AlwaysStoppedAnimation<Color>(Colors.white),
@@ -768,7 +827,6 @@ class _RamadanBanner extends StatelessWidget {
 class _PrayerTile extends StatelessWidget {
   const _PrayerTile({
     required this.label,
-    required this.icon,
     required this.hours,
     required this.use24h,
     required this.isActive,
@@ -778,7 +836,6 @@ class _PrayerTile extends StatelessWidget {
   });
 
   final String label;
-  final IconData icon;
   final double hours;
   final bool use24h;
   final bool isActive;
@@ -788,65 +845,94 @@ class _PrayerTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final cs = theme.colorScheme;
-    final timeStr = hours.isFinite ? _formatH(hours) : 'N/A';
+    final cs = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final timeStr = hours.isFinite ? _formatH(hours) : '—';
 
-    final Color? bg = isActive
-        ? PrayCalcColors.dark.withAlpha(25)
-        : isNext
-            ? cs.primary.withAlpha(18)
-            : null;
-    final Color? fg = isActive ? cs.primary : null;
+    // Active: solid green bg with high-contrast text
+    // Next: subtle tint
+    // Inactive: transparent
+    final Color bg;
+    final Color nameColor;
+    final Color timeColor;
+    final Color? checkColor;
+
+    if (isActive) {
+      bg = isDark ? PrayCalcColors.dark : PrayCalcColors.dark;
+      nameColor = Colors.white;
+      timeColor = Colors.white;
+      checkColor = PrayCalcColors.light;
+    } else if (isNext) {
+      bg = isDark
+          ? PrayCalcColors.surface.withAlpha(200)
+          : cs.primary.withAlpha(12);
+      nameColor = cs.onSurface;
+      timeColor = cs.primary;
+      checkColor = null;
+    } else {
+      bg = Colors.transparent;
+      nameColor = cs.onSurface.withAlpha(isDark ? 200 : 210);
+      timeColor = cs.onSurface.withAlpha(isDark ? 180 : 200);
+      checkColor = null;
+    }
 
     return AnimatedContainer(
-      duration: const Duration(milliseconds: 300),
-      margin: const EdgeInsets.symmetric(vertical: 3),
+      duration: const Duration(milliseconds: 250),
       decoration: BoxDecoration(
-        color: bg ?? theme.cardTheme.color,
-        borderRadius: BorderRadius.circular(16),
+        color: bg,
+        borderRadius: BorderRadius.circular(12),
       ),
-      child: ListTile(
-        leading: Icon(
-          icon,
-          color: isActive ? cs.primary : cs.primary.withAlpha(180),
-        ),
-        title: Text(
-          label,
-          style: theme.textTheme.titleMedium?.copyWith(
-            color: fg,
-            fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
-          ),
-        ),
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        child: Row(
           children: [
-            Text(
-              timeStr,
-              style: theme.textTheme.titleMedium?.copyWith(
-                color: fg,
-                fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
-                fontFeatures: const [FontFeature.tabularFigures()],
+            // Prayer name
+            Expanded(
+              child: Text(
+                label,
+                style: TextStyle(
+                  color: nameColor,
+                  fontSize: 17,
+                  fontWeight: isActive ? FontWeight.w600 : FontWeight.w400,
+                  letterSpacing: -0.2,
+                ),
               ),
             ),
+            // Time
+            Text(
+              timeStr,
+              style: TextStyle(
+                color: timeColor,
+                fontSize: 17,
+                fontWeight: isActive ? FontWeight.w600 : FontWeight.w500,
+                fontFeatures: const [FontFeature.tabularFigures()],
+                letterSpacing: -0.3,
+              ),
+            ),
+            // Completion toggle
             if (onCompletionToggle != null) ...[
-              const SizedBox(width: 8),
-              GestureDetector(
-                onTap: onCompletionToggle,
-                child: Icon(
+              const SizedBox(width: 4),
+              IconButton(
+                onPressed: onCompletionToggle,
+                icon: Icon(
                   isCompleted
-                      ? Icons.check_circle
-                      : Icons.check_circle_outline,
+                      ? Icons.check_circle_rounded
+                      : Icons.radio_button_unchecked,
                   color: isCompleted
-                      ? const Color(0xFFC9F27A)
-                      : cs.onSurface.withAlpha(80),
-                  size: 22,
+                      ? (isActive
+                          ? PrayCalcColors.light
+                          : (checkColor ?? cs.primary))
+                      : (isActive
+                          ? Colors.white.withAlpha(100)
+                          : cs.onSurface.withAlpha(60)),
+                  size: 20,
                 ),
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
               ),
             ],
           ],
         ),
-        dense: !isActive && !isNext,
       ),
     );
   }

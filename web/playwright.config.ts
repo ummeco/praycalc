@@ -34,14 +34,13 @@ export default defineConfig({
     },
   ],
 
-  // Automatically start the dev server when running locally.
-  // In CI, ensure the server is already running before invoking playwright.
-  webServer: process.env.CI
-    ? undefined
-    : {
-        command: "pnpm dev",
-        url: "http://localhost:3000",
-        reuseExistingServer: true,
-        timeout: 120_000,
-      },
+  // Start the server automatically.
+  // In CI: use `pnpm start` (production build, already compiled by the build step).
+  // Locally: use `pnpm dev` and reuse an already-running server.
+  webServer: {
+    command: process.env.CI ? "pnpm start" : "pnpm dev",
+    url: "http://localhost:3000",
+    reuseExistingServer: !process.env.CI,
+    timeout: 120_000,
+  },
 });
