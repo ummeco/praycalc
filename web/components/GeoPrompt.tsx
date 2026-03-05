@@ -19,14 +19,28 @@ export default function GeoPrompt({ onIpCity }: Props) {
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
-    // Don't show if already dismissed
     try {
       if (localStorage.getItem(DISMISSED_KEY) === "1") return;
     } catch {
-      // localStorage unavailable — just show it
+      // localStorage unavailable — proceed to show
     }
 
-    timerRef.current = setTimeout(() => setVisible(true), DELAY_MS);
+    function scheduleShow() {
+      timerRef.current = setTimeout(() => setVisible(true), DELAY_MS);
+    }
+
+    // Don't show if geolocation is already granted — HomeRedirect handles the redirect
+    if (navigator.permissions) {
+      navigator.permissions
+        .query({ name: "geolocation" })
+        .then((result) => {
+          if (result.state !== "granted") scheduleShow();
+        })
+        .catch(scheduleShow);
+    } else {
+      scheduleShow();
+    }
+
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current);
     };
@@ -43,8 +57,6 @@ export default function GeoPrompt({ onIpCity }: Props) {
 
   async function fallbackToIp() {
     try {
-      // Call /api/geo with no params — server reads CF-IPCountry or similar.
-      // The endpoint returns a GeoResult with displayName.
       const res = await fetch("/api/geo?ip=1");
       if (!res.ok) throw new Error("ip-geo failed");
       const data = (await res.json()) as { displayName?: string; city?: string };
@@ -52,7 +64,6 @@ export default function GeoPrompt({ onIpCity }: Props) {
       if (cityName) {
         onIpCity(cityName);
         setIpTooltip(true);
-        // Hide the tooltip after 4s
         setTimeout(() => setIpTooltip(false), 4000);
       }
     } catch {
@@ -76,7 +87,6 @@ export default function GeoPrompt({ onIpCity }: Props) {
           if (!res.ok) throw new Error("geo failed");
           const data = (await res.json()) as { slug?: string };
           if (data?.slug) {
-            // GPS success — navigate directly (full accuracy)
             window.location.href = `/${data.slug}`;
             return;
           }
@@ -87,7 +97,6 @@ export default function GeoPrompt({ onIpCity }: Props) {
         await fallbackToIp();
       },
       async () => {
-        // GPS denied or error — fall back to IP
         setGpsLoading(false);
         await fallbackToIp();
       },
@@ -96,7 +105,6 @@ export default function GeoPrompt({ onIpCity }: Props) {
   }
 
   if (!visible) {
-    // Render tooltip even when prompt is hidden (after IP pre-fill)
     if (!ipTooltip) return null;
     return (
       <div
@@ -110,78 +118,66 @@ export default function GeoPrompt({ onIpCity }: Props) {
   }
 
   return (
-    <>
-      <div
-        role="dialog"
-        aria-label={t("geoPromptAriaLabel")}
-        className="geo-prompt-card motion-safe:animate-slide-up"
+    <div
+      role="dialog"
+      aria-label={t("geoPromptAriaLabel")}
+      className="geo-prompt-card motion-safe:animate-slide-up"
+    >
+      <button
+        type="button"
+        onClick={dismiss}
+        className="geo-prompt-close"
+        aria-label={t("dismiss")}
       >
-        <button
-          type="button"
-          onClick={dismiss}
-          className="geo-prompt-close"
-          aria-label={t("dismiss")}
+        <svg
+          className="w-4 h-4"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          aria-hidden="true"
         >
-          <svg
-            className="w-4 h-4"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            aria-hidden="true"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M6 18L18 6M6 6l12 12"
-            />
-          </svg>
-        </button>
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M6 18L18 6M6 6l12 12"
+          />
+        </svg>
+      </button>
 
-        <p className="geo-prompt-text">{t("geoPromptTitle")}</p>
+      <p className="geo-prompt-text">{t("geoPromptTitle")}</p>
 
-        <button
-          type="button"
-          onClick={handleUseLocation}
-          disabled={gpsLoading}
-          className="geo-prompt-btn"
-        >
-          {gpsLoading ? (
-            <>
-              <div className="w-3.5 h-3.5 rounded-full border-2 border-[#1E5E2F] border-t-transparent animate-spin shrink-0" />
-              {t("locating")}
-            </>
-          ) : (
-            <>
-              <svg
-                className="w-4 h-4 shrink-0"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                aria-hidden="true"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 0V4m0 16v-4M4 12H2m20 0h-2"
-                />
-              </svg>
-              {t("geoUseLocation")}
-            </>
-          )}
-        </button>
-      </div>
-
-      {ipTooltip && (
-        <div
-          role="status"
-          aria-live="polite"
-          className="geo-prompt-tooltip motion-safe:animate-fade-in"
-        >
-          {t("geoIpDetected")}
-        </div>
-      )}
-    </>
+      <button
+        type="button"
+        onClick={handleUseLocation}
+        disabled={gpsLoading}
+        className="geo-prompt-btn"
+      >
+        {gpsLoading ? (
+          <>
+            <div className="w-3.5 h-3.5 rounded-full border-2 border-[#1E5E2F] border-t-transparent animate-spin shrink-0" />
+            {t("locating")}
+          </>
+        ) : (
+          <>
+            <svg
+              className="w-4 h-4 shrink-0"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 0V4m0 16v-4M4 12H2m20 0h-2"
+              />
+            </svg>
+            {t("geoUseLocation")}
+          </>
+        )}
+      </button>
+    </div>
   );
 }

@@ -25,8 +25,7 @@ export function recordLastCity(slug: string, name: string): void {
 }
 
 /**
- * Shows a "Resume: [City]" suggestion button on the homepage when the user
- * previously visited a city that is not their current home city.
+ * Shows the last-visited city as a quick-return button below the search box.
  */
 export default function LastVisited() {
   const router = useRouter();
@@ -51,7 +50,7 @@ export default function LastVisited() {
       type="button"
       onClick={() => router.push(`/${lastCity.slug}`)}
       className="last-visited-btn"
-      title={`Resume prayer times for ${lastCity.name}`}
+      title={`Return to prayer times for ${lastCity.name}`}
     >
       <svg
         className="w-3.5 h-3.5 shrink-0"
@@ -67,7 +66,7 @@ export default function LastVisited() {
           d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
         />
       </svg>
-      Resume: {lastCity.name}
+      {lastCity.name}
     </button>
   );
 }

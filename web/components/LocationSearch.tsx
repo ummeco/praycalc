@@ -6,7 +6,7 @@ import { useTranslations } from "next-intl";
 import { searchLocation, reverseGeocode, type GeoResult } from "@/lib/geo";
 
 interface Props {
-  /** Compact mode: smaller input, no GPS button. Used in city page header. */
+  /** Compact mode: smaller input, no pre-query dropdown. Used in city page header. */
   compact?: boolean;
   /** Auto-focus the input on mount. Use on home page. */
   autoFocus?: boolean;
@@ -17,7 +17,48 @@ interface Props {
   prefillValue?: string;
 }
 
-export default function LocationSearch({ compact = false, autoFocus = false, prefillValue = "" }: Props) {
+const RECENT_CITIES_KEY = "pc_recent_cities";
+
+interface RecentCity {
+  slug: string;
+  name: string;
+}
+
+const POPULAR_CITIES: RecentCity[] = [
+  { name: "Mecca", slug: "sa/makkah/mecca" },
+  { name: "Medina", slug: "sa/madinah/medina" },
+  { name: "Istanbul", slug: "tr/istanbul/istanbul" },
+  { name: "Cairo", slug: "eg/cairo/cairo" },
+  { name: "New York", slug: "us/ny/new-york" },
+  { name: "London", slug: "gb/england/london" },
+];
+
+function getRecentCities(): RecentCity[] {
+  try {
+    const raw = localStorage.getItem(RECENT_CITIES_KEY);
+    return raw ? (JSON.parse(raw) as RecentCity[]) : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveRecentCity(slug: string, name: string): void {
+  try {
+    const existing = getRecentCities().filter((c) => c.slug !== slug);
+    localStorage.setItem(
+      RECENT_CITIES_KEY,
+      JSON.stringify([{ slug, name }, ...existing].slice(0, 5)),
+    );
+  } catch {
+    // localStorage unavailable
+  }
+}
+
+export default function LocationSearch({
+  compact = false,
+  autoFocus = false,
+  prefillValue = "",
+}: Props) {
   const router = useRouter();
   const t = useTranslations("ui");
   const [query, setQuery] = useState("");
@@ -25,10 +66,15 @@ export default function LocationSearch({ compact = false, autoFocus = false, pre
   const [loading, setLoading] = useState(false);
   const [gpsLoading, setGpsLoading] = useState(false);
   const [open, setOpen] = useState(false);
+  const [focused, setFocused] = useState(false);
+  const [recentCities, setRecentCities] = useState<RecentCity[]>([]);
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  // Pre-query dropdown: shown when focused, empty query, not compact
+  const showPreQuery = !compact && focused && query.trim().length === 0;
 
   // Sync external prefill (e.g. IP geolocation result) into the input
   useEffect(() => {
@@ -45,6 +91,7 @@ export default function LocationSearch({ compact = false, autoFocus = false, pre
     function handleClick(e: MouseEvent) {
       if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) {
         setOpen(false);
+        setFocused(false);
       }
     }
     document.addEventListener("mousedown", handleClick);
@@ -73,10 +120,26 @@ export default function LocationSearch({ compact = false, autoFocus = false, pre
     }, 250);
   }, [query]);
 
+  function handleFocus() {
+    setFocused(true);
+    if (!compact) {
+      setRecentCities(getRecentCities());
+    }
+    if (results.length > 0) setOpen(true);
+  }
+
   function navigate(geo: GeoResult) {
     setOpen(false);
+    setFocused(false);
     setQuery(geo.displayName);
+    saveRecentCity(geo.slug, geo.displayName);
     router.push(`/${geo.slug}`);
+  }
+
+  function navigateToSlug(slug: string, name: string) {
+    setFocused(false);
+    saveRecentCity(slug, name);
+    router.push(`/${slug}`);
   }
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
@@ -94,6 +157,7 @@ export default function LocationSearch({ compact = false, autoFocus = false, pre
       if (target) navigate(target);
     } else if (e.key === "Escape") {
       setOpen(false);
+      setFocused(false);
       setSelectedIndex(-1);
     }
   }
@@ -101,6 +165,7 @@ export default function LocationSearch({ compact = false, autoFocus = false, pre
   async function useGPS() {
     if (!navigator.geolocation) return;
     setGpsLoading(true);
+    setFocused(false);
     navigator.geolocation.getCurrentPosition(
       async (pos) => {
         try {
@@ -119,8 +184,7 @@ export default function LocationSearch({ compact = false, autoFocus = false, pre
 
   return (
     <div ref={wrapperRef} className={compact ? "w-full" : "w-full max-w-[480px]"}>
-      {/* Search input + dropdown — relative wrapper scoped to just the input
-          so top-full positions the dropdown flush below it, not below the GPS btn */}
+      {/* Search input — relative wrapper so dropdowns position flush below */}
       <div className="relative">
         <div className={`search-input-wrap${compact ? " search-input-wrap--compact" : ""}`}>
           <svg
@@ -148,7 +212,7 @@ export default function LocationSearch({ compact = false, autoFocus = false, pre
             placeholder={compact ? t("searchCompact") : t("searchPlaceholder")}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            onFocus={() => results.length > 0 && setOpen(true)}
+            onFocus={handleFocus}
             onKeyDown={handleKeyDown}
             autoFocus={autoFocus}
             className={`flex-1 bg-transparent text-white placeholder:text-white/40 outline-none ${compact ? "text-sm" : "text-base"}`}
@@ -158,7 +222,7 @@ export default function LocationSearch({ compact = false, autoFocus = false, pre
           )}
         </div>
 
-        {/* Dropdown — flush against input (no margin-top) */}
+        {/* Search results dropdown */}
         {open && results.length > 0 && (
           <div className="search-dropdown absolute top-full w-full rounded-b-xl overflow-hidden z-50">
             {results.map((r, i) => (
@@ -178,36 +242,77 @@ export default function LocationSearch({ compact = false, autoFocus = false, pre
             ))}
           </div>
         )}
-      </div>
 
-      {/* GPS button — full-width mode only */}
-      {!compact && (
-        <button
-          type="button"
-          onClick={useGPS}
-          disabled={gpsLoading}
-          className="gps-location-btn mt-3 w-full flex items-center justify-center gap-2 py-2 text-sm text-white/50 hover:text-[#C9F27A] transition-colors disabled:opacity-50"
-        >
-          {gpsLoading ? (
-            <>
-              <div className="gps-spinner w-3.5 h-3.5 rounded-full border-2 animate-spin" />
-              {t("locating")}
-            </>
-          ) : (
-            <>
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 0V4m0 16v-4M4 12H2m20 0h-2"
-                />
-              </svg>
-              {t("detectLocation")}
-            </>
-          )}
-        </button>
-      )}
+        {/* Pre-query dropdown — GPS + recent searches + popular fallback */}
+        {showPreQuery && !open && (
+          <div className="search-dropdown absolute top-full w-full rounded-b-xl overflow-hidden z-50">
+            {/* Use My Location */}
+            <button
+              type="button"
+              onClick={useGPS}
+              disabled={gpsLoading}
+              className="search-dropdown-item search-dropdown-gps w-full flex items-center gap-3 px-4 py-3.5 text-sm border-b hover:bg-[rgba(121,194,76,0.12)] transition-colors disabled:opacity-50"
+            >
+              {gpsLoading ? (
+                <>
+                  <div className="w-4 h-4 rounded-full border-2 border-[#79C24C] border-t-transparent animate-spin shrink-0" />
+                  <span className="text-[#C9F27A] font-medium">{t("locating")}</span>
+                </>
+              ) : (
+                <>
+                  <svg
+                    className="w-4 h-4 shrink-0 text-[#79C24C]"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 0V4m0 16v-4M4 12H2m20 0h-2" />
+                  </svg>
+                  <span className="text-[#C9F27A] font-medium">{t("detectLocation")}</span>
+                </>
+              )}
+            </button>
+
+            {/* Recent searches */}
+            {recentCities.length > 0 && (
+              <>
+                <div className="search-dropdown-section-header">Recent</div>
+                {recentCities.map((city) => (
+                  <button
+                    key={city.slug}
+                    type="button"
+                    onClick={() => navigateToSlug(city.slug, city.name)}
+                    className="search-dropdown-item w-full flex items-center gap-3 px-4 py-3 text-sm border-b last:border-b-0 hover:bg-[rgba(121,194,76,0.12)] transition-colors"
+                  >
+                    <svg className="w-3.5 h-3.5 shrink-0 text-white/30" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span className="text-white/75">{city.name}</span>
+                  </button>
+                ))}
+              </>
+            )}
+
+            {/* Popular cities — only when no recent history */}
+            {recentCities.length === 0 && (
+              <>
+                <div className="search-dropdown-section-header">Popular</div>
+                {POPULAR_CITIES.map((city) => (
+                  <button
+                    key={city.slug}
+                    type="button"
+                    onClick={() => navigateToSlug(city.slug, city.name)}
+                    className="search-dropdown-item w-full flex items-center px-4 py-3 text-sm border-b last:border-b-0 hover:bg-[rgba(121,194,76,0.12)] transition-colors"
+                  >
+                    <span className="text-white/65">{city.name}</span>
+                  </button>
+                ))}
+              </>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
