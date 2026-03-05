@@ -1148,13 +1148,13 @@ html[data-theme="light"] .location-modal-dismiss-btn:hover {
 
 /* Hijri / Gregorian dates (right side of city header) */
 .city-hijri-date {
-  font-size: 0.875rem;
+  font-size: 1rem;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.8);
 }
 
 .city-gregorian-date {
-  font-size: 0.75rem;
+  font-size: 0.875rem;
   color: rgba(255, 255, 255, 0.35);
   margin-top: 0.125rem;
 }
