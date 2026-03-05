@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { searchLocation, reverseGeocode, type GeoResult } from "@/lib/geo";
+import LocationPermissionModal from "@/components/LocationPermissionModal";
 
 interface Props {
   /** Compact mode: smaller input, no pre-query dropdown. Used in city page header. */
@@ -47,10 +48,28 @@ function saveRecentCity(slug: string, name: string): void {
     const existing = getRecentCities().filter((c) => c.slug !== slug);
     localStorage.setItem(
       RECENT_CITIES_KEY,
-      JSON.stringify([{ slug, name }, ...existing].slice(0, 5)),
+      JSON.stringify([{ slug, name }, ...existing].slice(0, 10)),
     );
   } catch {
     // localStorage unavailable
+  }
+}
+
+function removeRecentCity(slug: string): RecentCity[] {
+  try {
+    const updated = getRecentCities().filter((c) => c.slug !== slug);
+    localStorage.setItem(RECENT_CITIES_KEY, JSON.stringify(updated));
+    return updated;
+  } catch {
+    return [];
+  }
+}
+
+function clearAllRecentCities(): void {
+  try {
+    localStorage.removeItem(RECENT_CITIES_KEY);
+  } catch {
+    // ignore
   }
 }
 
@@ -65,16 +84,30 @@ export default function LocationSearch({
   const [results, setResults] = useState<GeoResult[]>([]);
   const [loading, setLoading] = useState(false);
   const [gpsLoading, setGpsLoading] = useState(false);
+  const [locationModal, setLocationModal] = useState<"prompt" | "denied" | null>(null);
   const [open, setOpen] = useState(false);
   const [focused, setFocused] = useState(false);
   const [recentCities, setRecentCities] = useState<RecentCity[]>([]);
   const [selectedIndex, setSelectedIndex] = useState(-1);
+  const [permState, setPermState] = useState<PermissionState | "unknown">("unknown");
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  // Track geolocation permission state so the dropdown item only shows when granted
+  useEffect(() => {
+    if (!navigator.permissions) { setPermState("prompt"); return; }
+    navigator.permissions.query({ name: "geolocation" }).then((result) => {
+      setPermState(result.state);
+      result.onchange = () => setPermState(result.state);
+    }).catch(() => setPermState("prompt"));
+  }, []);
+
   // Pre-query dropdown: shown when focused, empty query, not compact
   const showPreQuery = !compact && focused && query.trim().length === 0;
+
+  // Popular cities fill remaining slots so recent + popular ≤ 10
+  const popularToShow = POPULAR_CITIES.slice(0, Math.max(0, 10 - recentCities.length));
 
   // Sync external prefill (e.g. IP geolocation result) into the input
   useEffect(() => {
@@ -164,8 +197,38 @@ export default function LocationSearch({
 
   async function useGPS() {
     if (!navigator.geolocation) return;
-    setGpsLoading(true);
     setFocused(false);
+
+    // Check permission state before triggering the browser prompt
+    if (navigator.permissions) {
+      try {
+        const result = await navigator.permissions.query({ name: "geolocation" });
+        if (result.state === "denied") {
+          setLocationModal("denied");
+          return;
+        }
+        if (result.state === "prompt") {
+          setLocationModal("prompt");
+          return;
+        }
+        // result.state === "granted" — skip modal, go directly
+      } catch {
+        // Permissions API unavailable — show modal to be safe
+        setLocationModal("prompt");
+        return;
+      }
+    } else {
+      // No Permissions API — show modal first
+      setLocationModal("prompt");
+      return;
+    }
+
+    doGPSLookup();
+  }
+
+  function doGPSLookup() {
+    setGpsLoading(true);
+    setLocationModal(null);
     navigator.geolocation.getCurrentPosition(
       async (pos) => {
         try {
@@ -183,29 +246,38 @@ export default function LocationSearch({
   }
 
   return (
+    <>
     <div ref={wrapperRef} className={compact ? "w-full" : "w-full max-w-[480px]"}>
       {/* Search input — relative wrapper so dropdowns position flush below */}
       <div className="relative">
         <div className={`search-input-wrap${compact ? " search-input-wrap--compact" : ""}`}>
-          <svg
-            className={`search-icon shrink-0 ${compact ? "w-4 h-4" : "w-5 h-5"}`}
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
+          <button
+            type="button"
+            onClick={useGPS}
+            className={`search-icon-btn shrink-0 ${compact ? "w-4 h-4" : "w-5 h-5"}`}
+            aria-label="Use my location"
+            title="Use my location"
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-            />
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-            />
-          </svg>
+            <svg
+              className="w-full h-full"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+              />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+              />
+            </svg>
+          </button>
           <input
             ref={inputRef}
             type="text"
@@ -243,15 +315,16 @@ export default function LocationSearch({
           </div>
         )}
 
-        {/* Pre-query dropdown — GPS + recent searches + popular fallback */}
+        {/* Pre-query dropdown — GPS + history + popular */}
         {showPreQuery && !open && (
           <div className="search-dropdown absolute top-full w-full rounded-b-xl overflow-hidden z-50">
-            {/* Use My Location */}
+            {/* Use My Location — only shown when location is granted */}
+            {permState === "granted" && (
             <button
               type="button"
               onClick={useGPS}
               disabled={gpsLoading}
-              className="search-dropdown-item search-dropdown-gps w-full flex items-center gap-3 px-4 py-3.5 text-sm border-b hover:bg-[rgba(121,194,76,0.12)] transition-colors disabled:opacity-50"
+              className="search-dropdown-item search-dropdown-gps w-full flex items-center gap-3 px-4 py-3.5 text-sm border-b hover:bg-[rgba(121,194,76,0.18)] transition-colors disabled:opacity-50"
             >
               {gpsLoading ? (
                 <>
@@ -273,32 +346,56 @@ export default function LocationSearch({
                 </>
               )}
             </button>
+            )}
 
-            {/* Recent searches */}
+            {/* Search History — slightly tinted rows, with delete × per item */}
             {recentCities.length > 0 && (
               <>
-                <div className="search-dropdown-section-header">Recent</div>
-                {recentCities.map((city) => (
+                <div className="search-dropdown-section-row border-b">
+                  <span className="search-dropdown-section-label">Search History</span>
                   <button
-                    key={city.slug}
                     type="button"
-                    onClick={() => navigateToSlug(city.slug, city.name)}
-                    className="search-dropdown-item w-full flex items-center gap-3 px-4 py-3 text-sm border-b last:border-b-0 hover:bg-[rgba(121,194,76,0.12)] transition-colors"
+                    onClick={() => {
+                      clearAllRecentCities();
+                      setRecentCities([]);
+                    }}
+                    className="search-dropdown-clear-btn"
                   >
-                    <svg className="w-3.5 h-3.5 shrink-0 text-white/30" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <span className="text-white/75">{city.name}</span>
+                    Clear all
                   </button>
+                </div>
+                {recentCities.map((city) => (
+                  <div key={city.slug} className="search-dropdown-history-row border-b">
+                    <button
+                      type="button"
+                      onClick={() => navigateToSlug(city.slug, city.name)}
+                      className="search-dropdown-item flex-1 flex items-center gap-3 px-4 py-3 text-sm hover:bg-[rgba(121,194,76,0.08)] transition-colors"
+                    >
+                      <svg className="w-3.5 h-3.5 shrink-0 text-white/30" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <span className="text-white/75">{city.name}</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setRecentCities(removeRecentCity(city.slug))}
+                      className="search-dropdown-delete-btn"
+                      aria-label={`Remove ${city.name} from history`}
+                    >
+                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
                 ))}
               </>
             )}
 
-            {/* Popular cities — only when no recent history */}
-            {recentCities.length === 0 && (
+            {/* Popular — fills remaining slots so history + popular ≤ 10 */}
+            {popularToShow.length > 0 && (
               <>
                 <div className="search-dropdown-section-header">Popular</div>
-                {POPULAR_CITIES.map((city) => (
+                {popularToShow.map((city) => (
                   <button
                     key={city.slug}
                     type="button"
@@ -314,5 +411,14 @@ export default function LocationSearch({
         )}
       </div>
     </div>
+
+    {locationModal && (
+      <LocationPermissionModal
+        state={locationModal}
+        onAllow={doGPSLookup}
+        onDismiss={() => setLocationModal(null)}
+      />
+    )}
+    </>
   );
 }

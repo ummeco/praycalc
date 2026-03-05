@@ -49,7 +49,7 @@ export default function DPCInfoCard() {
       </p>
 
       <a
-        href="https://github.com/ummeco/praycalc/wiki"
+        href="https://praycalc.org"
         target="_blank"
         rel="noopener noreferrer"
         className="dpc-info-link"

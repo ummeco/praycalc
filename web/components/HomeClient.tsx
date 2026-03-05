@@ -3,6 +3,7 @@
 import { useState } from "react";
 import LocationSearch from "@/components/LocationSearch";
 import LastVisited from "@/components/LastVisited";
+import LocationGpsPill from "@/components/LocationGpsPill";
 import GeoPrompt from "@/components/GeoPrompt";
 import DPCInfoCard from "@/components/DPCInfoCard";
 
@@ -20,7 +21,8 @@ export default function HomeClient() {
         <p className="text-white/25 text-xs text-center mt-2">
           Prayer times for any city, worldwide
         </p>
-        <div className="flex justify-center mt-3">
+        <div className="flex justify-center items-center gap-2 flex-wrap mt-3">
+          <LocationGpsPill />
           <LastVisited />
         </div>
       </div>
