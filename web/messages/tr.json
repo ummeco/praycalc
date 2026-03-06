@@ -119,7 +119,8 @@
     "widgetEmbedDesc": "Namaz vakitlerini web sitenize ekleyin",
     "multipleLocations": "Çoklu Konumlar",
     "multipleLocationsDesc": "Şehirleri kaydedin ve arasında geçiş yapın",
-    "ownerBadge": "Sahip"
+    "ownerBadge": "Sahip",
+    "homepageSubtitle": "Dünyanın her şehri için namaz vakitleri"
   },
   "madhab": {
     "standard": "Standart (Şafii, Maliki, Hanbeli)",

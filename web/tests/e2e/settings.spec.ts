@@ -63,7 +63,7 @@ test.describe("Settings panel", () => {
 
     await expect(panel).toContainText("Light Mode");
     await expect(panel).toContainText("Hanafi Asr");
-    await expect(panel).toContainText("24H Time");
+    await expect(panel).toContainText("24-hour");
     await expect(panel).toContainText("Countdown");
     await expect(panel).toContainText("Show Qiyam");
     await expect(panel).toContainText("Notification");
@@ -96,7 +96,7 @@ test.describe("Dark/Light mode toggle", () => {
     // The html or body element carries the light-mode class
     // Default is dark — check the toggle's aria-label describes current state
     const ariaLabel = await toggle.getAttribute("aria-label");
-    expect(ariaLabel).toMatch(/Switch to light mode|Switch to dark mode/i);
+    expect(ariaLabel).toMatch(/Light Mode|Dark Mode/i);
 
     // Click to toggle
     await toggle.click();
@@ -129,7 +129,7 @@ test.describe("Dark/Light mode toggle", () => {
     const reloadedToggle = reloadedRow.locator("button");
 
     // Should now be in light mode (aria-label says "Switch to dark mode")
-    await expect(reloadedToggle).toHaveAttribute("aria-label", "Switch to dark mode");
+    await expect(reloadedToggle).toHaveAttribute("aria-label", "Dark Mode");
   });
 });
 
@@ -166,9 +166,9 @@ test.describe("12h/24h time format toggle", () => {
     const panel = page.locator(".settings-panel");
     await expect(panel).toBeVisible();
 
-    const row24h = panel.locator(".settings-row").filter({ hasText: "24H Time" });
+    const row24h = panel.locator(".settings-row").filter({ hasText: "24-hour" });
     const toggle24h = row24h.locator("button");
-    await expect(toggle24h).toHaveAttribute("aria-label", "Switch to 24-hour");
+    await expect(toggle24h).toHaveAttribute("aria-label", "24-hour");
 
     await toggle24h.click();
 
@@ -185,7 +185,7 @@ test.describe("12h/24h time format toggle", () => {
     await page.locator(".settings-gear-btn").click();
     const panel = page.locator(".settings-panel");
 
-    const row24h = panel.locator(".settings-row").filter({ hasText: "24H Time" });
+    const row24h = panel.locator(".settings-row").filter({ hasText: "24-hour" });
     await row24h.locator("button").click();
 
     // Close settings
@@ -206,7 +206,7 @@ test.describe("12h/24h time format toggle", () => {
     await page.locator(".settings-gear-btn").click();
     const panel = page.locator(".settings-panel");
 
-    const row24h = panel.locator(".settings-row").filter({ hasText: "24H Time" });
+    const row24h = panel.locator(".settings-row").filter({ hasText: "24-hour" });
     const toggle = row24h.locator("button");
     await toggle.click(); // enable 24h
 

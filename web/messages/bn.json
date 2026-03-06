@@ -119,7 +119,8 @@
     "widgetEmbedDesc": "ওয়েবসাইটে নামাজের সময় যোগ করুন",
     "multipleLocations": "একাধিক অবস্থান",
     "multipleLocationsDesc": "শহর সংরক্ষণ করুন ও স্যুইচ করুন",
-    "ownerBadge": "মালিক"
+    "ownerBadge": "মালিক",
+    "homepageSubtitle": "বিশ্বের যেকোনো শহরের নামাজের সময়"
   },
   "madhab": {
     "standard": "আদর্শ (শাফেঈ, মালেকী, হাম্বলী)",

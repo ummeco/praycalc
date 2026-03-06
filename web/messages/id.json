@@ -119,7 +119,8 @@
     "widgetEmbedDesc": "Sematkan waktu shalat di website Anda",
     "multipleLocations": "Beberapa Lokasi",
     "multipleLocationsDesc": "Simpan dan beralih antar kota",
-    "ownerBadge": "Pemilik"
+    "ownerBadge": "Pemilik",
+    "homepageSubtitle": "Waktu shalat untuk kota mana pun di seluruh dunia"
   },
   "madhab": {
     "standard": "Standar (Syafii, Maliki, Hanbali)",

@@ -119,7 +119,8 @@
     "widgetEmbedDesc": "ویب سائٹ پر نماز کے اوقات لگائیں",
     "multipleLocations": "متعدد مقامات",
     "multipleLocationsDesc": "شہر محفوظ کریں اور تبدیل کریں",
-    "ownerBadge": "مالک"
+    "ownerBadge": "مالک",
+    "homepageSubtitle": "دنیا کے کسی بھی شہر کے لیے نماز کے اوقات"
   },
   "madhab": {
     "standard": "عام (شافعی، مالکی، حنبلی)",

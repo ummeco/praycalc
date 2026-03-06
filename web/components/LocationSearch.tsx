@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { searchLocation, reverseGeocode, type GeoResult } from "@/lib/geo";
+import { getSettings, saveSetting } from "@/lib/settings";
 import LocationPermissionModal from "@/components/LocationPermissionModal";
 
 interface Props {
@@ -236,7 +237,15 @@ export default function LocationSearch({
             pos.coords.latitude,
             pos.coords.longitude,
           );
-          if (geo) router.push(`/${geo.slug}`);
+          if (geo) {
+            // First-time GPS use: auto-set as home city if none is configured
+            const s = getSettings();
+            if (s.homeMode === "none" && !s.homeCity) {
+              saveSetting("homeCity", { slug: geo.slug, name: geo.displayName });
+              saveSetting("homeMode", "city");
+            }
+            router.push(`/${geo.slug}`);
+          }
         } finally {
           setGpsLoading(false);
         }
@@ -296,7 +305,7 @@ export default function LocationSearch({
 
         {/* Search results dropdown */}
         {open && results.length > 0 && (
-          <div className="search-dropdown absolute top-full w-full rounded-b-xl overflow-hidden z-50">
+          <div className="search-dropdown absolute top-[calc(100%-12px)] w-full rounded-b-xl overflow-hidden z-50">
             {results.map((r, i) => (
               <button
                 key={i}
@@ -315,9 +324,9 @@ export default function LocationSearch({
           </div>
         )}
 
-        {/* Pre-query dropdown — GPS + history + popular */}
+        {/* Pre-query dropdown — GPS + history */}
         {showPreQuery && !open && (
-          <div className="search-dropdown absolute top-full w-full rounded-b-xl overflow-hidden z-50">
+          <div className="search-dropdown absolute top-[calc(100%-12px)] w-full rounded-b-xl overflow-hidden z-50">
             {/* Use My Location — only shown when location is granted */}
             {permState === "granted" && (
             <button

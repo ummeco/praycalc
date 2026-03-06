@@ -62,7 +62,7 @@ export default function LocationGpsPill() {
         type="button"
         onClick={handleClick}
         disabled={loading}
-        className={`gps-pill ${isGranted ? "gps-pill--granted" : isDenied ? "gps-pill--denied" : "gps-pill--prompt"}`}
+        className={`gps-location-btn gps-pill ${isGranted ? "gps-pill--granted" : isDenied ? "gps-pill--denied" : "gps-pill--prompt"}`}
       >
         {loading ? (
           <div className="w-3 h-3 rounded-full border-2 border-current border-t-transparent animate-spin shrink-0" />
@@ -75,7 +75,7 @@ export default function LocationGpsPill() {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 0V4m0 16v-4M4 12H2m20 0h-2" />
           </svg>
         )}
-        <span>{isDenied ? "Enable location" : "Use Location"}</span>
+        <span>{isDenied ? "Enable location" : "Use my location"}</span>
       </button>
 
       {modal && (

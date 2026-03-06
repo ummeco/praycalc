@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
@@ -8,9 +8,14 @@ import { useSession } from "@/hooks/useSession";
 import { useSettings } from "@/hooks/useSettings";
 import AccountDashboard from "@/components/AccountDashboard";
 
-type Mode = "password" | "emaillink";
+type Mode =
+  | "magic-link"
+  | "password"
+  | "register"
+  | "forgot-password"
+  | "link-sent"
+  | "reset-sent";
 
-// Social provider definition — available=false = greyed until Hasura Auth backend is live
 const SOCIAL_PROVIDERS = [
   {
     id: "google",
@@ -61,39 +66,87 @@ export default function AccountPage() {
   const t = useTranslations("ui");
   const { session, hydrated, isLoggedIn, login, logout } = useSession();
   const settings = useSettings();
-  const [mode, setMode] = useState<Mode>("password");
+  const [mode, setMode] = useState<Mode>("magic-link");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [sent, setSent] = useState(false);
+  const [displayName, setDisplayName] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [backHref, setBackHref] = useState("/");
 
-  function switchToEmailLink() { setMode("emaillink"); setSent(false); }
-  function switchToPassword() { setMode("password"); setSent(false); setEmail(""); }
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem("pc_recent_cities");
+      const cities: Array<{ slug: string }> = raw ? JSON.parse(raw) : [];
+      if (cities[0]?.slug) setBackHref(`/${cities[0].slug}`);
+    } catch {
+      // localStorage unavailable
+    }
+  }, []);
 
-  async function handlePasswordSignIn(e: React.FormEvent) {
-    e.preventDefault();
-    if (!email.trim() || !password) return;
-    // Mock login — any credentials work until Hasura Auth is live
-    login(email.trim());
+  function switchMode(next: Mode) {
+    setMode(next);
+    setError("");
+    setConfirmPassword("");
   }
 
-  async function handleEmailLink(e: React.FormEvent) {
+  async function handleMagicLink(e: React.FormEvent) {
     e.preventDefault();
     if (!email.trim()) return;
     setLoading(true);
-    // Email OTP requires Hasura Auth backend (auth.ummat.dev) to be deployed.
-    // When live: POST /signin/email-otp { email: email.trim() }
+    setError("");
+    // Works for both existing accounts and new sign-ups — creates account if needed
     await new Promise((r) => setTimeout(r, 600));
     setLoading(false);
-    setSent(true);
+    setMode("link-sent");
   }
 
-  // Don't flash the sign-in form before localStorage loads
+  async function handlePassword(e: React.FormEvent) {
+    e.preventDefault();
+    if (!email.trim() || !password) return;
+    setLoading(true);
+    setError("");
+    await new Promise((r) => setTimeout(r, 400));
+    setLoading(false);
+    // Mock: treat any login as failed to demonstrate the error flow
+    // When Hasura Auth is live, replace with real credential check
+    const mockFailed = false;
+    if (mockFailed) {
+      setError("No account found with those credentials.");
+      return;
+    }
+    login(email.trim());
+  }
+
+  async function handleRegister(e: React.FormEvent) {
+    e.preventDefault();
+    if (!email.trim() || !password) return;
+    if (password !== confirmPassword) {
+      setError("Passwords do not match.");
+      return;
+    }
+    setLoading(true);
+    setError("");
+    await new Promise((r) => setTimeout(r, 600));
+    setLoading(false);
+    login(displayName.trim() || email.trim());
+  }
+
+  async function handleForgotPassword(e: React.FormEvent) {
+    e.preventDefault();
+    if (!email.trim()) return;
+    setLoading(true);
+    setError("");
+    await new Promise((r) => setTimeout(r, 600));
+    setLoading(false);
+    setMode("reset-sent");
+  }
+
   if (!hydrated) {
     return <main className="account-page" aria-busy="true" />;
   }
 
-  // Signed-in: show dashboard
   if (isLoggedIn && session) {
     return (
       <main className="account-page">
@@ -102,22 +155,65 @@ export default function AccountPage() {
     );
   }
 
+  const showTabs = mode !== "link-sent" && mode !== "reset-sent";
+
   return (
     <main id="main-content" className="account-page">
       <div className="account-card">
 
-        {/* Logo */}
-        <Link href="/" aria-label="PrayCalc home" className="account-logo">
-          <Image src="/logo.svg" alt="PrayCalc" width={130} height={38} priority unoptimized />
-        </Link>
+        {/* Logo with ← back arrow */}
+        <div className="account-logo-wrap">
+          <Link href={backHref} className="account-logo-back" aria-label="Go back">←</Link>
+          <Link href={backHref} aria-label="PrayCalc home">
+            <Image src="/logo.svg" alt="PrayCalc" width={130} height={38} priority unoptimized />
+          </Link>
+        </div>
 
-        {/* Heading */}
-        <h1 className="account-heading">{t("signIn")}</h1>
-        <p className="account-sub">{t("accountBenefits")}</p>
+        {/* Subtitle */}
+        <p className="account-sub">
+          Your account will sync all settings, preferences, and history across all of your devices.
+        </p>
 
-        {/* ── Password form (default) ───────────────────────────────── */}
-        {mode === "password" && (
-          <form className="account-email-group" onSubmit={handlePasswordSignIn}>
+        {/* Login Link / Password tabs */}
+        {showTabs && (
+          <div className="account-mode-tabs">
+            <button
+              type="button"
+              onClick={() => switchMode("magic-link")}
+              className={`account-mode-tab${mode === "magic-link" ? " account-mode-tab--active" : ""}`}
+            >
+              Login Link
+            </button>
+            <button
+              type="button"
+              onClick={() => switchMode("password")}
+              className={`account-mode-tab${mode === "password" || mode === "forgot-password" || mode === "register" ? " account-mode-tab--active" : ""}`}
+            >
+              Password
+            </button>
+          </div>
+        )}
+
+        {/* Error */}
+        {error && (
+          <div className="account-error">
+            {error}{" "}
+            <button
+              type="button"
+              className="account-mode-toggle"
+              onClick={() => switchMode("magic-link")}
+            >
+              Use a login link instead.
+            </button>
+          </div>
+        )}
+
+        {/* ── Magic link form (default — login + auto-register) ────────── */}
+        {mode === "magic-link" && (
+          <form className="account-email-group" onSubmit={handleMagicLink}>
+            <p className="account-hint">
+              New here? We&rsquo;ll create your account automatically.
+            </p>
             <input
               type="email"
               className="account-input"
@@ -126,6 +222,30 @@ export default function AccountPage() {
               onChange={(e) => setEmail(e.target.value)}
               required
               autoComplete="email"
+              autoFocus
+            />
+            <button
+              type="submit"
+              className="account-submit-btn"
+              disabled={loading || !email.trim()}
+            >
+              {loading ? "Sending…" : "Send Login Link"}
+            </button>
+          </form>
+        )}
+
+        {/* ── Password form (existing accounts only) ──────────────────── */}
+        {mode === "password" && (
+          <form className="account-email-group" onSubmit={handlePassword}>
+            <input
+              type="email"
+              className="account-input"
+              placeholder={t("emailAddress")}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              autoComplete="email"
+              autoFocus
             />
             <input
               type="password"
@@ -139,19 +259,41 @@ export default function AccountPage() {
             <button
               type="submit"
               className="account-submit-btn"
-              disabled={!email.trim() || !password}
+              disabled={loading || !email.trim() || !password}
             >
-              {t("signIn")}
+              {loading ? "Logging in…" : "Login"}
             </button>
-            <button type="button" className="account-mode-toggle" onClick={switchToEmailLink}>
-              {t("useEmailLink")}
-            </button>
+            <div className="account-toggle-row">
+              <button
+                type="button"
+                className="account-mode-toggle"
+                onClick={() => switchMode("register")}
+              >
+                Create Account
+              </button>
+              <button
+                type="button"
+                className="account-mode-toggle"
+                onClick={() => switchMode("forgot-password")}
+              >
+                Forgot password?
+              </button>
+            </div>
           </form>
         )}
 
-        {/* ── Email link form ───────────────────────────────────────── */}
-        {mode === "emaillink" && !sent && (
-          <form className="account-email-group" onSubmit={handleEmailLink}>
+        {/* ── Register form ───────────────────────────────────────────── */}
+        {mode === "register" && (
+          <form className="account-email-group" onSubmit={handleRegister}>
+            <input
+              type="text"
+              className="account-input"
+              placeholder="Name (optional)"
+              value={displayName}
+              onChange={(e) => setDisplayName(e.target.value)}
+              autoComplete="name"
+              autoFocus
+            />
             <input
               type="email"
               className="account-input"
@@ -161,52 +303,147 @@ export default function AccountPage() {
               required
               autoComplete="email"
             />
+            <input
+              type="password"
+              className="account-input"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              autoComplete="new-password"
+            />
+            <input
+              type="password"
+              className="account-input"
+              placeholder="Confirm password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+              autoComplete="new-password"
+            />
+            <button
+              type="submit"
+              className="account-submit-btn"
+              disabled={loading || !email.trim() || !password || !confirmPassword}
+            >
+              {loading ? "Creating account…" : "Create Account"}
+            </button>
+            <button
+              type="button"
+              className="account-mode-toggle"
+              onClick={() => switchMode("password")}
+            >
+              Already have an account? Login
+            </button>
+          </form>
+        )}
+
+        {/* ── Forgot password form ────────────────────────────────────── */}
+        {mode === "forgot-password" && (
+          <form className="account-email-group" onSubmit={handleForgotPassword}>
+            <p className="account-hint">
+              Enter your email and we&rsquo;ll send you a reset link.
+            </p>
+            <input
+              type="email"
+              className="account-input"
+              placeholder={t("emailAddress")}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              autoComplete="email"
+              autoFocus
+            />
             <button
               type="submit"
               className="account-submit-btn"
               disabled={loading || !email.trim()}
             >
-              {loading ? "…" : t("getLoginLink")}
+              {loading ? "Sending…" : "Send Reset Link"}
             </button>
-            <button type="button" className="account-mode-toggle" onClick={switchToPassword}>
-              {t("usePassword")}
+            <button
+              type="button"
+              className="account-mode-toggle"
+              onClick={() => switchMode("password")}
+            >
+              Back to login
             </button>
           </form>
         )}
 
-        {/* ── Link sent confirmation ────────────────────────────────── */}
-        {mode === "emaillink" && sent && (
-          <div className="account-email-group">
-            <p className="account-sent">{t("loginLinkSent")}</p>
-            <button type="button" className="account-mode-toggle" onClick={switchToPassword}>
-              {t("usePassword")}
+        {/* ── Link sent confirmation ──────────────────────────────────── */}
+        {mode === "link-sent" && (
+          <div className="account-confirmation">
+            <div className="account-confirmation-icon">
+              <svg width="22" height="22" fill="none" stroke="#79C24C" viewBox="0 0 24 24" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+            </div>
+            <p className="account-confirmation-title">Check your inbox</p>
+            <p className="account-confirmation-text">
+              We sent a login link to <strong>{email}</strong>. It expires in 15 minutes.
+            </p>
+            <button
+              type="button"
+              className="account-mode-toggle"
+              onClick={() => switchMode("magic-link")}
+            >
+              Use a different email
             </button>
           </div>
         )}
 
-        {/* ── Social login row ──────────────────────────────────────── */}
-        <div className="account-divider">{t("orContinueWith")}</div>
-
-        <div className="account-social-row">
-          {SOCIAL_PROVIDERS.map(({ id, label, available, icon }) => (
+        {/* ── Reset sent confirmation ─────────────────────────────────── */}
+        {mode === "reset-sent" && (
+          <div className="account-confirmation">
+            <div className="account-confirmation-icon">
+              <svg width="22" height="22" fill="none" stroke="#79C24C" viewBox="0 0 24 24" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+              </svg>
+            </div>
+            <p className="account-confirmation-title">Reset link sent</p>
+            <p className="account-confirmation-text">
+              Check <strong>{email}</strong> for a password reset link.
+            </p>
             <button
-              key={id}
               type="button"
-              className={`account-social-btn${available ? "" : " account-social-btn--disabled"}`}
-              disabled={!available}
-              title={available ? t(label) : `${t(label)} — ${t("comingSoon")}`}
-              aria-label={available ? t(label) : `${t(label)} — ${t("comingSoon")}`}
+              className="account-mode-toggle"
+              onClick={() => switchMode("password")}
             >
-              {icon}
-              <span>{t(label)}</span>
+              Back to login
             </button>
-          ))}
-        </div>
+          </div>
+        )}
 
-        {/* Back link */}
-        <Link href="/" className="account-back">
-          &larr; {t("backHome")}
-        </Link>
+        {/* ── Social login row ────────────────────────────────────────── */}
+        {showTabs && (
+          <>
+            <div className="account-divider">or</div>
+            <div className="account-social-row">
+              {SOCIAL_PROVIDERS.map(({ id, label, available, icon }) => (
+                <button
+                  key={id}
+                  type="button"
+                  className={`account-social-btn${available ? "" : " account-social-btn--disabled"}`}
+                  disabled={!available}
+                  title={available ? t(label) : `${t(label)} — ${t("comingSoon")}`}
+                  aria-label={available ? t(label) : `${t(label)} — ${t("comingSoon")}`}
+                >
+                  {icon}
+                </button>
+              ))}
+            </div>
+          </>
+        )}
+
+        {/* Footer tagline */}
+        <p className="account-footer-note">
+          PrayCalc is a part of the Ummat ecosystem, your account works across{" "}
+          <a href="https://ummat.dev" target="_blank" rel="noopener noreferrer" className="account-footer-link">
+            all of our apps
+          </a>
+          .
+        </p>
 
       </div>
     </main>

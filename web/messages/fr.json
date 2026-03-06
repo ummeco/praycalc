@@ -119,7 +119,8 @@
     "widgetEmbedDesc": "Intégrez les horaires de prière sur votre site",
     "multipleLocations": "Plusieurs emplacements",
     "multipleLocationsDesc": "Enregistrez et passez d'une ville à l'autre",
-    "ownerBadge": "Propriétaire"
+    "ownerBadge": "Propriétaire",
+    "homepageSubtitle": "Horaires de prière pour n'importe quelle ville dans le monde"
   },
   "madhab": {
     "standard": "Standard (Chafii, Maliki, Hanbali)",

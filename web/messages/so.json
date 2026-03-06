@@ -119,7 +119,8 @@
     "widgetEmbedDesc": "Ku dar wakhtiyada salaadda websaydhkaaga",
     "multipleLocations": "Goobaha Badan",
     "multipleLocationsDesc": "Keydi magaalooyin oo u beddel",
-    "ownerBadge": "Milkiilaha"
+    "ownerBadge": "Milkiilaha",
+    "homepageSubtitle": "Wakhtiga salaadda ee magaalo kasta oo adduunka ah"
   },
   "madhab": {
     "standard": "Caadi (Shaafici, Maaliki, Xanbali)",

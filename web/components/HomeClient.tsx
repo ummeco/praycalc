@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import LocationSearch from "@/components/LocationSearch";
 import LastVisited from "@/components/LastVisited";
 import LocationGpsPill from "@/components/LocationGpsPill";
@@ -13,13 +14,14 @@ import DPCInfoCard from "@/components/DPCInfoCard";
  */
 export default function HomeClient() {
   const [ipCity, setIpCity] = useState<string>("");
+  const t = useTranslations("ui");
 
   return (
     <>
       <div className="w-full max-w-[480px] mt-[-25px] px-4">
         <LocationSearch autoFocus prefillValue={ipCity} />
         <p className="text-white/25 text-xs text-center mt-2">
-          Prayer times for any city, worldwide
+          {t("homepageSubtitle")}
         </p>
         <div className="flex justify-center items-center gap-2 flex-wrap mt-3">
           <LocationGpsPill />

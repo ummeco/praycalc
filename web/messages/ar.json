@@ -119,7 +119,8 @@
     "widgetEmbedDesc": "أضف أوقات الصلاة إلى موقعك",
     "multipleLocations": "مواقع متعددة",
     "multipleLocationsDesc": "احفظ المدن وانتقل بينها",
-    "ownerBadge": "المالك"
+    "ownerBadge": "المالك",
+    "homepageSubtitle": "مواقيت الصلاة لأي مدينة في العالم"
   },
   "madhab": {
     "standard": "المذهب العام (شافعي، مالكي، حنبلي)",

@@ -65,7 +65,7 @@ test.describe("Account page — not signed in", () => {
 
   test("shows the Sign In heading", async ({ page }) => {
     await expect(page.locator(".account-heading")).toBeVisible();
-    await expect(page.locator(".account-heading")).toContainText("Sign In");
+    await expect(page.locator(".account-heading")).toContainText("Sign in");
   });
 
   test("shows email and password inputs", async ({ page }) => {
@@ -159,7 +159,7 @@ test.describe("Account page — password sign-in", () => {
     await page.locator(".dashboard-signout-btn").click();
 
     await expect(page.locator(".account-heading")).toBeVisible({ timeout: 5_000 });
-    await expect(page.locator(".account-heading")).toContainText("Sign In");
+    await expect(page.locator(".account-heading")).toContainText("Sign in");
   });
 });
 
@@ -211,7 +211,7 @@ test.describe("Account page — returning user (session seeded)", () => {
     // Reload to confirm session is gone
     await page.reload();
     await expect(page.locator(".account-heading")).toBeVisible({ timeout: 5_000 });
-    await expect(page.locator(".account-heading")).toContainText("Sign In");
+    await expect(page.locator(".account-heading")).toContainText("Sign in");
   });
 });
 
@@ -329,7 +329,7 @@ test.describe("Settings gear — signed-in state on city page", () => {
     // These toggle rows should NOT appear when logged in
     await expect(panel.locator(".settings-row").filter({ hasText: "Light Mode" })).not.toBeVisible();
     await expect(panel.locator(".settings-row").filter({ hasText: "Hanafi Asr" })).not.toBeVisible();
-    await expect(panel.locator(".settings-row").filter({ hasText: "24H Time" })).not.toBeVisible();
+    await expect(panel.locator(".settings-row").filter({ hasText: "24-hour" })).not.toBeVisible();
     await expect(panel.locator(".settings-row").filter({ hasText: "Countdown" })).not.toBeVisible();
     await expect(panel.locator(".settings-row").filter({ hasText: "Show Qiyam" })).not.toBeVisible();
   });
