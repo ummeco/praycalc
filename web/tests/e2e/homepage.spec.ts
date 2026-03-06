@@ -23,18 +23,17 @@ test.describe("Homepage", () => {
     await expect(page.locator("img[alt='PrayCalc']").or(page.locator("svg")).first()).toBeVisible();
 
     // Search input is present
-    const searchInput = page.locator(
-      'input[placeholder="Search cities, airports, zip codes..."]',
-    );
+    const searchInput = page.locator('[data-testid="city-search-input"]');
     await expect(searchInput).toBeVisible();
   });
 
-  test("renders search input with correct placeholder", async ({ page }) => {
-    const searchInput = page.locator(
-      'input[placeholder="Search cities, airports, zip codes..."]',
-    );
+  test("renders search input with placeholder", async ({ page }) => {
+    const searchInput = page.locator('[data-testid="city-search-input"]');
     await expect(searchInput).toBeVisible();
     await expect(searchInput).toBeEnabled();
+    // Placeholder cycles through city names, then shows full text on focus
+    await searchInput.focus();
+    await expect(searchInput).toHaveAttribute("placeholder", "Search cities, airports, zip codes...");
   });
 
   test("renders GPS use-my-location pill", async ({ page }) => {
@@ -43,9 +42,7 @@ test.describe("Homepage", () => {
   });
 
   test("city search shows dropdown results when typing", async ({ page }) => {
-    const searchInput = page.locator(
-      'input[placeholder="Search cities, airports, zip codes..."]',
-    );
+    const searchInput = page.locator('[data-testid="city-search-input"]');
     await searchInput.fill("London");
 
     // Wait for debounce (250ms) + results to appear
@@ -64,9 +61,7 @@ test.describe("Homepage", () => {
   });
 
   test("city search result shows slug hint", async ({ page }) => {
-    const searchInput = page.locator(
-      'input[placeholder="Search cities, airports, zip codes..."]',
-    );
+    const searchInput = page.locator('[data-testid="city-search-input"]');
     await searchInput.fill("Mecca");
 
     await expect(page.locator(".search-dropdown")).toBeVisible({
@@ -80,9 +75,7 @@ test.describe("Homepage", () => {
   });
 
   test("selecting a search result navigates to city page", async ({ page }) => {
-    const searchInput = page.locator(
-      'input[placeholder="Search cities, airports, zip codes..."]',
-    );
+    const searchInput = page.locator('[data-testid="city-search-input"]');
     await searchInput.fill("New York");
 
     await expect(page.locator(".search-dropdown")).toBeVisible({
@@ -98,9 +91,7 @@ test.describe("Homepage", () => {
   });
 
   test("search dropdown closes when pressing Escape", async ({ page }) => {
-    const searchInput = page.locator(
-      'input[placeholder="Search cities, airports, zip codes..."]',
-    );
+    const searchInput = page.locator('[data-testid="city-search-input"]');
     await searchInput.fill("London");
 
     await expect(page.locator(".search-dropdown")).toBeVisible({

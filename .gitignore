@@ -66,3 +66,4 @@ wearos/local.properties
 .codeium/
 .vscode/*
 .vercel
+.env*.local

@@ -45,7 +45,7 @@ export async function generateMetadata({
       siteName: "PrayCalc",
     },
     twitter: {
-      card: "summary",
+      card: "summary_large_image",
       title: `${title} | PrayCalc`,
       description,
     },

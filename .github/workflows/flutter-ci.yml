@@ -28,10 +28,10 @@ jobs:
         run: dart pub get
       - name: Analyze (app)
         working-directory: flutter
-        run: flutter analyze --no-fatal-infos
+        run: flutter analyze
       - name: Analyze (pray_calc_dart)
         working-directory: flutter/packages/pray_calc_dart
-        run: dart analyze --no-fatal-infos
+        run: dart analyze
       - name: Unit tests — pray_calc_dart
         working-directory: flutter/packages/pray_calc_dart
         run: dart test

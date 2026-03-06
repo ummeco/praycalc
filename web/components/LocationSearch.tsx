@@ -333,6 +333,7 @@ export default function LocationSearch({
           <input
             ref={inputRef}
             type="text"
+            data-testid="city-search-input"
             placeholder={compact ? t("searchCompact") : (focused ? t("searchPlaceholder") : CYCLE_CITIES[cycleIdx])}
             value={query}
             onChange={(e) => setQuery(e.target.value)}

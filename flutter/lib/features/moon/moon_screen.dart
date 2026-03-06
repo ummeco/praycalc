@@ -50,7 +50,30 @@ class MoonScreen extends ConsumerWidget {
     }
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Moon & Hijri Calendar')),
+      appBar: AppBar(
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text('Moon & Hijri Calendar'),
+            const SizedBox(width: 8),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+              decoration: BoxDecoration(
+                color: PrayCalcColors.mid.withAlpha(40),
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: Text(
+                'Beta',
+                style: TextStyle(
+                  fontSize: 10,
+                  fontWeight: FontWeight.w600,
+                  color: PrayCalcColors.mid,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
       body: ListView(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         children: [
