@@ -7,6 +7,7 @@ class NotificationChannels {
   static const String persistent = 'praycalc_persistent'; // Low, no sound, sticky
   static const String ramadan = 'praycalc_ramadan';       // Ramadan countdown shade (PC-ST-1.7)
   static const String travel = 'praycalc_travel';         // Travel detection alerts (PC-TR-1)
+  static const String prayersCheck = 'praycalc_prayer_check'; // "Did you pray?" check-ins
 }
 
 class NotificationIds {
@@ -43,4 +44,10 @@ class NotificationIds {
 
   // Travel: 700+
   static const int travelDetected = 700;     // PC-TR-1 Travel threshold crossed
+
+  // Prayer check-in ("Did you pray?"): 800–824
+  //   today    800–804  (800 + prayerIdx, fard only)
+  //   tomorrow 820–824  (820 + prayerIdx)
+  static int prayerCheck(int idx, {int dayOffset = 0}) =>
+      800 + (dayOffset * 20) + idx;
 }

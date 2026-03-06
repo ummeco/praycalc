@@ -123,6 +123,10 @@ class PrayerStatsScreen extends ConsumerWidget {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
+          // ── Today's prayers ──────────────────────────────────────────────
+          const _TodayPrayersCard(),
+          const SizedBox(height: 16),
+
           // ── Streak + summary cards ───────────────────────────────────────
           Row(
             children: [
@@ -239,6 +243,110 @@ class PrayerStatsScreen extends ConsumerWidget {
 }
 
 // ─── Sub-widgets ────────────────────────────────────────────────────────────
+
+/// Tap-to-toggle log buttons for today's five fard prayers.
+class _TodayPrayersCard extends ConsumerWidget {
+  const _TodayPrayersCard();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final completions = ref.watch(prayerCompletionProvider);
+    final notifier = ref.read(prayerCompletionProvider.notifier);
+    final now = DateTime.now();
+    final dateStr =
+        '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
+    const fard = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
+    final theme = Theme.of(context);
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(Icons.checklist_rounded,
+                    size: 17, color: PrayCalcColors.mid),
+                const SizedBox(width: 7),
+                Text(
+                  "Today's Prayers",
+                  style: theme.textTheme.titleSmall
+                      ?.copyWith(fontWeight: FontWeight.w600),
+                ),
+                const Spacer(),
+                Text(
+                  '${fard.where((p) => completions.containsKey('${dateStr}_$p')).length} / 5',
+                  style: theme.textTheme.bodySmall?.copyWith(
+                      color: PrayCalcColors.mid, fontWeight: FontWeight.w600),
+                ),
+              ],
+            ),
+            const SizedBox(height: 14),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: fard.map((prayer) {
+                final key = '${dateStr}_$prayer';
+                final done = completions.containsKey(key);
+                return GestureDetector(
+                  onTap: () {
+                    if (done) {
+                      notifier.unmark(dateStr, prayer);
+                    } else {
+                      notifier.markCompleted(dateStr, prayer);
+                    }
+                  },
+                  child: Column(
+                    children: [
+                      AnimatedContainer(
+                        duration: const Duration(milliseconds: 200),
+                        width: 46,
+                        height: 46,
+                        decoration: BoxDecoration(
+                          color: done
+                              ? PrayCalcColors.mid.withAlpha(38)
+                              : theme.colorScheme.surface,
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: done
+                                ? PrayCalcColors.mid
+                                : theme.dividerColor.withAlpha(120),
+                            width: done ? 2.0 : 1.0,
+                          ),
+                        ),
+                        child: Icon(
+                          done
+                              ? Icons.check_rounded
+                              : Icons.circle_outlined,
+                          size: 22,
+                          color: done
+                              ? PrayCalcColors.mid
+                              : theme.colorScheme.onSurface.withAlpha(70),
+                        ),
+                      ),
+                      const SizedBox(height: 5),
+                      Text(
+                        prayer,
+                        style: TextStyle(
+                          fontSize: 10,
+                          fontWeight:
+                              done ? FontWeight.w600 : FontWeight.normal,
+                          color: done
+                              ? PrayCalcColors.mid
+                              : theme.colorScheme.onSurface.withAlpha(140),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }).toList(),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
 
 class _StatCard extends StatelessWidget {
   const _StatCard({

@@ -10,7 +10,9 @@ import '../../features/calendar/calendar_screen.dart';
 import '../../features/calendar/yearly_calendar_screen.dart';
 import '../../features/city_search/city_search_screen.dart';
 import '../../features/home/home_screen.dart';
+import '../../features/home/set_home_screen.dart';
 import '../../features/moon/moon_screen.dart';
+import '../../shared/widgets/moon_phase_icon.dart';
 import '../../features/onboarding/onboarding_screen.dart';
 import '../../features/qibla/qibla_screen.dart';
 import '../../features/settings/about_screen.dart';
@@ -45,6 +47,7 @@ class Routes {
   static const login                = '/login';
   static const account              = '/account';
   static const travelRulings        = '/travel-rulings';
+  static const setHome              = '/set-home';
   static const subscription          = '/subscription';
   static const smartHome             = '/smart-home';
   static const tvHome               = '/tv';
@@ -90,18 +93,19 @@ final appRouter = GoRouter(
               const NoTransitionPage(child: QiblaScreen()),
         ),
         GoRoute(
-          path: Routes.calendar,
-          pageBuilder: (context, state) {
-            final initialMonth = state.extra as DateTime?;
-            return NoTransitionPage(
-              child: CalendarScreen(initialMonth: initialMonth),
-            );
-          },
+          path: Routes.tasbeeh,
+          pageBuilder: (context, state) =>
+              const NoTransitionPage(child: TasbeehScreen()),
         ),
         GoRoute(
           path: Routes.agendas,
           pageBuilder: (context, state) =>
               const NoTransitionPage(child: AgendaListScreen()),
+        ),
+        GoRoute(
+          path: Routes.moon,
+          pageBuilder: (context, state) =>
+              const NoTransitionPage(child: MoonScreen()),
         ),
         GoRoute(
           path: Routes.settings,
@@ -116,12 +120,11 @@ final appRouter = GoRouter(
       builder: (context, state) => const CitySearchScreen(),
     ),
     GoRoute(
-      path: Routes.moon,
-      builder: (context, state) => const MoonScreen(),
-    ),
-    GoRoute(
-      path: Routes.tasbeeh,
-      builder: (context, state) => const TasbeehScreen(),
+      path: Routes.calendar,
+      builder: (context, state) {
+        final initialMonth = state.extra as DateTime?;
+        return CalendarScreen(initialMonth: initialMonth);
+      },
     ),
     GoRoute(
       path: Routes.agendaEdit,
@@ -157,6 +160,10 @@ final appRouter = GoRouter(
     GoRoute(
       path: Routes.travelRulings,
       builder: (context, state) => const TravelRulingsScreen(),
+    ),
+    GoRoute(
+      path: Routes.setHome,
+      builder: (context, state) => const SetHomeScreen(),
     ),
     // ── Subscription & Smart Home ─────────────────────────────────────────
     GoRoute(
@@ -213,9 +220,9 @@ class _AppShell extends StatelessWidget {
             label: 'Qibla',
           ),
           NavigationDestination(
-            icon: Icon(Icons.calendar_month_outlined),
-            selectedIcon: Icon(Icons.calendar_month),
-            label: 'Calendar',
+            icon: MoonPhaseNavIcon(),
+            selectedIcon: MoonPhaseNavIcon(),
+            label: 'Hilal',
           ),
           NavigationDestination(
             icon: Icon(Icons.checklist_outlined),
@@ -234,7 +241,7 @@ class _AppShell extends StatelessWidget {
 
   int _indexForPath(String path) {
     if (path.startsWith(Routes.qibla)) return 1;
-    if (path.startsWith(Routes.calendar)) return 2;
+    if (path.startsWith(Routes.moon)) return 2;
     if (path.startsWith(Routes.agendas)) return 3;
     if (path.startsWith(Routes.settings)) return 4;
     return 0;
@@ -244,7 +251,7 @@ class _AppShell extends StatelessWidget {
     switch (index) {
       case 0: context.go(Routes.home);
       case 1: context.go(Routes.qibla);
-      case 2: context.go(Routes.calendar);
+      case 2: context.go(Routes.moon);
       case 3: context.go(Routes.agendas);
       case 4: context.go(Routes.settings);
     }

@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useSession } from "@/hooks/useSession";
 import { useSettings } from "@/hooks/useSettings";
+import { googleOAuthUrl } from "@/lib/auth-client";
 import AccountDashboard from "@/components/AccountDashboard";
 
 type Mode =
@@ -64,7 +65,17 @@ const SOCIAL_PROVIDERS = [
 
 export default function AccountPage() {
   const t = useTranslations("ui");
-  const { session, hydrated, isLoggedIn, login, logout } = useSession();
+  const {
+    session,
+    hydrated,
+    isLoggedIn,
+    login,
+    loginWithPassword,
+    register,
+    sendMagicLink,
+    sendPasswordReset,
+    logout,
+  } = useSession();
   const settings = useSettings();
   const [mode, setMode] = useState<Mode>("magic-link");
   const [email, setEmail] = useState("");
@@ -96,10 +107,14 @@ export default function AccountPage() {
     if (!email.trim()) return;
     setLoading(true);
     setError("");
-    // Works for both existing accounts and new sign-ups — creates account if needed
-    await new Promise((r) => setTimeout(r, 600));
-    setLoading(false);
-    setMode("link-sent");
+    try {
+      await sendMagicLink(email.trim());
+      setMode("link-sent");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to send login link.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   async function handlePassword(e: React.FormEvent) {
@@ -107,16 +122,18 @@ export default function AccountPage() {
     if (!email.trim() || !password) return;
     setLoading(true);
     setError("");
-    await new Promise((r) => setTimeout(r, 400));
-    setLoading(false);
-    // Mock: treat any login as failed to demonstrate the error flow
-    // When Hasura Auth is live, replace with real credential check
-    const mockFailed = false;
-    if (mockFailed) {
-      setError("No account found with those credentials.");
-      return;
+    try {
+      await loginWithPassword(email.trim(), password);
+    } catch (err) {
+      // Fallback to stub login if Hasura Auth is unreachable (dev/test).
+      if (err instanceof TypeError && err.message.includes("fetch")) {
+        login(email.trim());
+      } else {
+        setError(err instanceof Error ? err.message : "Login failed.");
+      }
+    } finally {
+      setLoading(false);
     }
-    login(email.trim());
   }
 
   async function handleRegister(e: React.FormEvent) {
@@ -128,9 +145,17 @@ export default function AccountPage() {
     }
     setLoading(true);
     setError("");
-    await new Promise((r) => setTimeout(r, 600));
-    setLoading(false);
-    login(displayName.trim() || email.trim());
+    try {
+      await register(email.trim(), password, displayName.trim() || undefined);
+    } catch (err) {
+      if (err instanceof TypeError && err.message.includes("fetch")) {
+        login(displayName.trim() || email.trim());
+      } else {
+        setError(err instanceof Error ? err.message : "Registration failed.");
+      }
+    } finally {
+      setLoading(false);
+    }
   }
 
   async function handleForgotPassword(e: React.FormEvent) {
@@ -138,9 +163,14 @@ export default function AccountPage() {
     if (!email.trim()) return;
     setLoading(true);
     setError("");
-    await new Promise((r) => setTimeout(r, 600));
-    setLoading(false);
-    setMode("reset-sent");
+    try {
+      await sendPasswordReset(email.trim());
+      setMode("reset-sent");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to send reset link.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   if (!hydrated) {
@@ -161,9 +191,9 @@ export default function AccountPage() {
     <main id="main-content" className="account-page">
       <div className="account-card">
 
-        {/* Logo with ← back arrow */}
+        {/* Logo with back arrow */}
         <div className="account-logo-wrap">
-          <Link href={backHref} className="account-logo-back" aria-label="Go back">←</Link>
+          <Link href={backHref} className="account-logo-back" aria-label="Go back">&larr;</Link>
           <Link href={backHref} aria-label="PrayCalc home">
             <Image src="/logo.svg" alt="PrayCalc" width={130} height={38} priority unoptimized />
           </Link>
@@ -208,7 +238,7 @@ export default function AccountPage() {
           </div>
         )}
 
-        {/* ── Magic link form (default — login + auto-register) ────────── */}
+        {/* Magic link form */}
         {mode === "magic-link" && (
           <form className="account-email-group" onSubmit={handleMagicLink}>
             <p className="account-hint">
@@ -229,12 +259,12 @@ export default function AccountPage() {
               className="account-submit-btn"
               disabled={loading || !email.trim()}
             >
-              {loading ? "Sending…" : "Send Login Link"}
+              {loading ? "Sending\u2026" : "Send Login Link"}
             </button>
           </form>
         )}
 
-        {/* ── Password form (existing accounts only) ──────────────────── */}
+        {/* Password form */}
         {mode === "password" && (
           <form className="account-email-group" onSubmit={handlePassword}>
             <input
@@ -261,7 +291,7 @@ export default function AccountPage() {
               className="account-submit-btn"
               disabled={loading || !email.trim() || !password}
             >
-              {loading ? "Logging in…" : "Login"}
+              {loading ? "Logging in\u2026" : "Login"}
             </button>
             <div className="account-toggle-row">
               <button
@@ -282,7 +312,7 @@ export default function AccountPage() {
           </form>
         )}
 
-        {/* ── Register form ───────────────────────────────────────────── */}
+        {/* Register form */}
         {mode === "register" && (
           <form className="account-email-group" onSubmit={handleRegister}>
             <input
@@ -326,7 +356,7 @@ export default function AccountPage() {
               className="account-submit-btn"
               disabled={loading || !email.trim() || !password || !confirmPassword}
             >
-              {loading ? "Creating account…" : "Create Account"}
+              {loading ? "Creating account\u2026" : "Create Account"}
             </button>
             <button
               type="button"
@@ -338,7 +368,7 @@ export default function AccountPage() {
           </form>
         )}
 
-        {/* ── Forgot password form ────────────────────────────────────── */}
+        {/* Forgot password form */}
         {mode === "forgot-password" && (
           <form className="account-email-group" onSubmit={handleForgotPassword}>
             <p className="account-hint">
@@ -359,7 +389,7 @@ export default function AccountPage() {
               className="account-submit-btn"
               disabled={loading || !email.trim()}
             >
-              {loading ? "Sending…" : "Send Reset Link"}
+              {loading ? "Sending\u2026" : "Send Reset Link"}
             </button>
             <button
               type="button"
@@ -371,7 +401,7 @@ export default function AccountPage() {
           </form>
         )}
 
-        {/* ── Link sent confirmation ──────────────────────────────────── */}
+        {/* Link sent confirmation */}
         {mode === "link-sent" && (
           <div className="account-confirmation">
             <div className="account-confirmation-icon">
@@ -393,7 +423,7 @@ export default function AccountPage() {
           </div>
         )}
 
-        {/* ── Reset sent confirmation ─────────────────────────────────── */}
+        {/* Reset sent confirmation */}
         {mode === "reset-sent" && (
           <div className="account-confirmation">
             <div className="account-confirmation-icon">
@@ -415,7 +445,7 @@ export default function AccountPage() {
           </div>
         )}
 
-        {/* ── Social login row ────────────────────────────────────────── */}
+        {/* Social login row */}
         {showTabs && (
           <>
             <div className="account-divider">or</div>
@@ -426,11 +456,10 @@ export default function AccountPage() {
                   type="button"
                   className={`account-social-btn${available ? "" : " account-social-btn--disabled"}`}
                   disabled={!available}
-                  title={available ? t(label) : `${t(label)} — ${t("comingSoon")}`}
-                  aria-label={available ? t(label) : `${t(label)} — ${t("comingSoon")}`}
+                  title={available ? t(label) : `${t(label)} \u2014 ${t("comingSoon")}`}
+                  aria-label={available ? t(label) : `${t(label)} \u2014 ${t("comingSoon")}`}
                   onClick={available && id === "google" ? () => {
-                    const authUrl = process.env.NEXT_PUBLIC_AUTH_URL || "https://auth.ummat.dev";
-                    window.location.href = `${authUrl}/signin/provider/google`;
+                    window.location.href = googleOAuthUrl();
                   } : undefined}
                 >
                   {icon}

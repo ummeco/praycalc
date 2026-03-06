@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../core/router/app_router.dart';
 import '../../core/theme/app_theme.dart';
 
 /// Scholarly travel prayer rulings screen with citations from Quran and Hadith.
@@ -7,15 +9,20 @@ import '../../core/theme/app_theme.dart';
 /// Covers Qasr (shortening), Jam' (combining), distance thresholds by madhab,
 /// and duration of concession. All citations are sourced from authentic
 /// collections with hadith numbers.
-class TravelRulingsScreen extends StatelessWidget {
+class TravelRulingsScreen extends StatefulWidget {
   const TravelRulingsScreen({super.key});
+
+  @override
+  State<TravelRulingsScreen> createState() => _TravelRulingsScreenState();
+}
+
+class _TravelRulingsScreenState extends State<TravelRulingsScreen> {
+  bool _scholarsExpanded = false;
 
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final cardColor = isDark
-        ? PrayCalcColors.surface
-        : Colors.white;
+    final cardColor = isDark ? PrayCalcColors.surface : Colors.white;
     final textColor = isDark ? Colors.white : const Color(0xFF1A2E1A);
     final subtextColor = textColor.withAlpha(160);
 
@@ -29,6 +36,60 @@ class TravelRulingsScreen extends StatelessWidget {
             'Islamic rulings on prayer while traveling, with scholarly '
             'references from the Quran and authentic Hadith collections.',
             style: TextStyle(fontSize: 15, color: subtextColor, height: 1.5),
+          ),
+          const SizedBox(height: 24),
+
+          // ── App Default: Hanafi ───────────────────────────────────────
+          _SectionHeader(title: 'Why PrayCalc Uses the Hanafi Default'),
+          const SizedBox(height: 8),
+          _ContentCard(
+            cardColor: cardColor,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'PrayCalc uses the Hanafi distance threshold of 77 km '
+                  '(approximately 48 miles) by default. There are two reasons '
+                  'for this choice:',
+                  style: TextStyle(color: textColor, height: 1.6),
+                ),
+                const SizedBox(height: 12),
+                _BulletPoint(
+                  text: 'The Hanafi threshold is the most conservative among '
+                      'the four schools. Using it avoids the possibility of '
+                      'shortening prayers before the distance threshold is '
+                      'reached according to any school — a safer approach for '
+                      'a general-purpose app.',
+                  textColor: textColor,
+                ),
+                _BulletPoint(
+                  text: 'Distance on a map can only be measured as a straight '
+                      'line (as the crow flies). Actual road distance is always '
+                      'longer, so the Hanafi threshold provides a natural '
+                      'buffer when travel routes are unknown.',
+                  textColor: textColor,
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  'If your madhab uses a different threshold, or if your '
+                  'scholar has guided you otherwise, you can change the '
+                  'calculation method in settings.',
+                  style: TextStyle(color: subtextColor, height: 1.5),
+                ),
+                const SizedBox(height: 12),
+                OutlinedButton.icon(
+                  onPressed: () => context.push(Routes.settings),
+                  icon: const Icon(Icons.settings_outlined, size: 16),
+                  label: const Text('Open Settings'),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: PrayCalcColors.mid,
+                    side: BorderSide(color: PrayCalcColors.mid.withAlpha(120)),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  ),
+                ),
+              ],
+            ),
           ),
           const SizedBox(height: 24),
 
@@ -61,7 +122,6 @@ class TravelRulingsScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 12),
                 Text(
-                  'PrayCalc uses the Hanafi threshold of 77 km by default. '
                   'All four schools agree that air travel, road travel, and '
                   'sea travel qualify equally.',
                   style: TextStyle(color: subtextColor, height: 1.5),
@@ -271,6 +331,161 @@ class TravelRulingsScreen extends StatelessWidget {
               ],
             ),
           ),
+          const SizedBox(height: 24),
+
+          // ── Expandable: Scholarly Discussion ──────────────────────────
+          GestureDetector(
+            onTap: () => setState(() => _scholarsExpanded = !_scholarsExpanded),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              decoration: BoxDecoration(
+                color: PrayCalcColors.dark.withAlpha(160),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: PrayCalcColors.mid.withAlpha(60),
+                  width: 1,
+                ),
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.library_books_outlined,
+                    size: 18,
+                    color: PrayCalcColors.mid,
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      'Deeper Scholarly Discussion',
+                      style: TextStyle(
+                        color: PrayCalcColors.light,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 15,
+                      ),
+                    ),
+                  ),
+                  Icon(
+                    _scholarsExpanded
+                        ? Icons.keyboard_arrow_up_rounded
+                        : Icons.keyboard_arrow_down_rounded,
+                    color: PrayCalcColors.mid,
+                    size: 22,
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          if (_scholarsExpanded) ...[
+            const SizedBox(height: 12),
+
+            _ContentCard(
+              cardColor: cardColor,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'The Hanafi Position on Combining',
+                    style: TextStyle(
+                      color: PrayCalcColors.mid,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 15,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'The Hanafi school holds that combining prayers during '
+                    'travel is not permitted except at Arafat (combining '
+                    'Dhuhr and Asr at midday) and Muzdalifah (combining '
+                    'Maghrib and Isha at night) during Hajj. This is based '
+                    'on the principle that each prayer has a fixed time '
+                    '(waqt), and praying outside that window requires a '
+                    'strong necessity.\n\n'
+                    'Ibn Mas\'ud (may Allah be pleased with him) is reported '
+                    'to have said: "I never saw the Prophet \uFDFA pray a '
+                    'prayer out of its time except two: he combined Maghrib '
+                    'and Isha at Muzdalifah and he hastened Fajr on that day." '
+                    '(Bukhari 1682)',
+                    style: TextStyle(color: textColor, height: 1.6),
+                  ),
+                  const SizedBox(height: 16),
+
+                  Text(
+                    "The Shafi'i, Maliki, and Hanbali Position",
+                    style: TextStyle(
+                      color: PrayCalcColors.mid,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 15,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    "These three schools permit combining prayers whenever "
+                    "a person is in a state of qualifying travel. Their "
+                    "primary evidence is the hadith of Ibn 'Abbas (Muslim 705) "
+                    "and the general practice of the Prophet \uFDFA on "
+                    "journeys. Ibn al-Qayyim in Zad al-Ma'ad documents "
+                    "that the Prophet \uFDFA regularly combined prayers when "
+                    "traveling to ease hardship on the community.",
+                    style: TextStyle(color: textColor, height: 1.6),
+                  ),
+                  const SizedBox(height: 16),
+
+                  Text(
+                    'Intention and Continuity',
+                    style: TextStyle(
+                      color: PrayCalcColors.mid,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 15,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'All schools agree that once a traveler firmly intends '
+                    'to remain in a place for the minimum settlement period '
+                    '(15 days for Hanafi, 4 days for others), the concessions '
+                    'end immediately — even if they have not yet prayed the '
+                    'first prayer since settling. The intention, not the '
+                    'physical act of unpacking, is what terminates the '
+                    'traveler status.',
+                    style: TextStyle(color: textColor, height: 1.6),
+                  ),
+                  const SizedBox(height: 16),
+
+                  Text(
+                    'Imam al-Nawawi on the Wisdom of Qasr',
+                    style: TextStyle(
+                      color: PrayCalcColors.mid,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 15,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    "Imam al-Nawawi writes in al-Majmu' that Qasr is a mercy "
+                    "Allah granted to travelers to remove hardship (mashaqqah). "
+                    "He emphasizes that the traveler should not view it as a "
+                    "deficiency in worship, but as a gift — and that refusing "
+                    "the concession out of unnecessary strictness goes against "
+                    "the Sunnah. The Prophet \uFDFA said: 'Allah loves that "
+                    "His concessions be taken, just as He dislikes that sins "
+                    "be committed.' (Ahmad, Sahih)",
+                    style: TextStyle(color: textColor, height: 1.6),
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 12),
+            _HadithCitationCard(
+              source: 'Sahih Bukhari',
+              number: '1682',
+              text: "Ibn Mas'ud: 'I never saw the Prophet \uFDFA pray a "
+                  "prayer out of its time except two: he combined Maghrib "
+                  "and Isha at Muzdalifah and he hastened Fajr on that day.'",
+            ),
+          ],
+
           const SizedBox(height: 32),
         ],
       ),

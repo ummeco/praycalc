@@ -270,6 +270,74 @@ class AuthService {
     }
   }
 
+  /// Sign in using an Apple ID token (mobile native flow).
+  /// [idToken] is the identity token from Sign in with Apple.
+  /// [rawNonce] is the original nonce (server verifies SHA-256).
+  Future<AuthUser> signInWithAppleIdToken({
+    required String idToken,
+    required String rawNonce,
+    String? displayName,
+  }) async {
+    final body = <String, dynamic>{
+      'id_token': idToken,
+      'nonce': rawNonce,
+      'provider': 'apple',
+    };
+    if (displayName != null && displayName.isNotEmpty) {
+      body['options'] = {'displayName': displayName};
+    }
+
+    final response = await http.post(
+      Uri.parse('$_kAuthUrl/signin/provider/apple'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(body),
+    );
+
+    if (response.statusCode != 200) {
+      final b = _parseBody(response);
+      throw AuthException(
+        b['message'] as String? ?? 'Apple sign in failed (${response.statusCode})',
+      );
+    }
+
+    final session = AuthSession.fromJson(
+      jsonDecode(response.body) as Map<String, dynamic>,
+    );
+    await _persistSession(session);
+    return session.user;
+  }
+
+  /// Sign in using a Google ID token (mobile native flow).
+  Future<AuthUser> signInWithGoogleIdToken({
+    required String idToken,
+    String? accessToken,
+  }) async {
+    final body = <String, dynamic>{
+      'id_token': idToken,
+      'provider': 'google',
+      if (accessToken != null) 'access_token': accessToken,
+    };
+
+    final response = await http.post(
+      Uri.parse('$_kAuthUrl/signin/provider/google'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(body),
+    );
+
+    if (response.statusCode != 200) {
+      final b = _parseBody(response);
+      throw AuthException(
+        b['message'] as String? ?? 'Google sign in failed (${response.statusCode})',
+      );
+    }
+
+    final session = AuthSession.fromJson(
+      jsonDecode(response.body) as Map<String, dynamic>,
+    );
+    await _persistSession(session);
+    return session.user;
+  }
+
   /// Delete the current user's account.
   Future<void> deleteAccount() async {
     if (_accessToken == null) {

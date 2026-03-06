@@ -81,13 +81,16 @@ class CityDbService {
     final db = await _database;
     final rows = await db.rawQuery(
       '''
-      SELECT name, country, state, lat, lng, timezone
+      SELECT name, country, state,
+             lat, lng, timezone,
+             MAX(population) AS population
       FROM cities
       WHERE name LIKE ?
+      GROUP BY name, country, state
       ORDER BY population DESC
       LIMIT ?
       ''',
-      ['${query.trim()}%', limit],
+      ['%${query.trim()}%', limit],
     );
     return rows.map(_rowToCity).toList();
   }

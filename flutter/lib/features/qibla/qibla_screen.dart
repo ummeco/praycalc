@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
@@ -45,10 +46,35 @@ class QiblaScreen extends ConsumerWidget {
   }
 }
 
-class _CompassBody extends StatelessWidget {
+// ── Compass body (with simulator fallback) ────────────────────────────────────
+
+class _CompassBody extends StatefulWidget {
   const _CompassBody({required this.city, required this.qiblaBearing});
   final City city;
   final double qiblaBearing;
+
+  @override
+  State<_CompassBody> createState() => _CompassBodyState();
+}
+
+class _CompassBodyState extends State<_CompassBody> {
+  Timer? _fallbackTimer;
+  bool _showFallback = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // If no compass data arrives within 3 seconds, show simulator fallback.
+    _fallbackTimer = Timer(const Duration(seconds: 3), () {
+      if (mounted) setState(() => _showFallback = true);
+    });
+  }
+
+  @override
+  void dispose() {
+    _fallbackTimer?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,8 +82,27 @@ class _CompassBody extends StatelessWidget {
       stream: FlutterCompass.events,
       builder: (context, snapshot) {
         if (snapshot.hasError) {
-          return const Center(child: Text('Compass sensor unavailable on this device.'));
+          return const Center(
+              child: Text('Compass sensor unavailable on this device.'));
         }
+
+        // Cancel fallback timer if real data arrived.
+        if (snapshot.hasData && snapshot.data?.heading != null) {
+          _fallbackTimer?.cancel();
+          if (_showFallback) {
+            WidgetsBinding.instance.addPostFrameCallback(
+                (_) => setState(() => _showFallback = false));
+          }
+        }
+
+        // Simulator / no sensor fallback.
+        if (!snapshot.hasData && _showFallback) {
+          return _SimulatorFallback(
+            qiblaBearing: widget.qiblaBearing,
+            city: widget.city,
+          );
+        }
+
         if (!snapshot.hasData) {
           return const Center(
             child: Column(
@@ -72,54 +117,86 @@ class _CompassBody extends StatelessWidget {
         }
 
         final double heading = snapshot.data?.heading ?? 0.0;
-        final double qiblaAngle = (qiblaBearing - heading) * math.pi / 180;
+        final double qiblaAngle =
+            (widget.qiblaBearing - heading) * math.pi / 180;
         final bool isAccurate = (snapshot.data?.accuracy ?? 999) < 15;
 
-        return Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (!isAccurate)
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
-                child: Card(
-                  color: Theme.of(context).colorScheme.tertiaryContainer,
-                  child: Padding(
-                    padding: const EdgeInsets.all(12),
-                    child: Row(
-                      children: [
-                        Icon(Icons.warning_amber, color: Theme.of(context).colorScheme.onTertiaryContainer),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Text(
-                            'Calibrate: move your phone in a figure-8 motion.',
-                            style: TextStyle(color: Theme.of(context).colorScheme.onTertiaryContainer),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            const SizedBox(height: 16),
-            _QiblaCompass(qiblaAngle: qiblaAngle),
-            const SizedBox(height: 24),
-            Text(
-              '${qiblaBearing.round()}° from North',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 4),
-            Text(
-              _distanceToMecca(city),
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-            const SizedBox(height: 4),
-            Text(
-              'From ${city.displayName}',
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-          ],
+        return _CompassView(
+          city: widget.city,
+          qiblaBearing: widget.qiblaBearing,
+          qiblaAngle: qiblaAngle,
+          isAccurate: isAccurate,
         );
       },
+    );
+  }
+}
+
+// ── Live compass view ─────────────────────────────────────────────────────────
+
+class _CompassView extends StatelessWidget {
+  const _CompassView({
+    required this.city,
+    required this.qiblaBearing,
+    required this.qiblaAngle,
+    required this.isAccurate,
+  });
+  final City city;
+  final double qiblaBearing;
+  final double qiblaAngle;
+  final bool isAccurate;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        if (!isAccurate)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+            child: Card(
+              color: Theme.of(context).colorScheme.tertiaryContainer,
+              child: Padding(
+                padding: const EdgeInsets.all(12),
+                child: Row(
+                  children: [
+                    Icon(Icons.warning_amber,
+                        color: Theme.of(context)
+                            .colorScheme
+                            .onTertiaryContainer),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        'Calibrate: move your phone in a figure-8 motion.',
+                        style: TextStyle(
+                            color: Theme.of(context)
+                                .colorScheme
+                                .onTertiaryContainer),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        const SizedBox(height: 16),
+        _QiblaCompass(qiblaAngle: qiblaAngle),
+        const SizedBox(height: 24),
+        Text(
+          '${qiblaBearing.round()}° from North',
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
+        const SizedBox(height: 4),
+        Text(
+          _distanceToMecca(city),
+          style: Theme.of(context).textTheme.bodyMedium,
+        ),
+        const SizedBox(height: 4),
+        Text(
+          'From ${city.displayName}',
+          style: Theme.of(context).textTheme.bodyMedium,
+        ),
+      ],
     );
   }
 
@@ -135,14 +212,75 @@ class _CompassBody extends StatelessWidget {
         math.cos(lat) * math.cos(mLat) * math.pow(math.sin(dLng / 2), 2);
     final dist = r * 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a));
     final km = dist.round();
-    // Format with comma thousands separator
     final formatted = km.toString().replaceAllMapped(
-      RegExp(r'(\d)(?=(\d{3})+$)'),
-      (m) => '${m[1]},',
-    );
+          RegExp(r'(\d)(?=(\d{3})+$)'),
+          (m) => '${m[1]},',
+        );
     return '$formatted km from the Kaaba';
   }
 }
+
+// ── Simulator / no-sensor fallback ────────────────────────────────────────────
+
+class _SimulatorFallback extends StatelessWidget {
+  const _SimulatorFallback(
+      {required this.qiblaBearing, required this.city});
+  final double qiblaBearing;
+  final City city;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    // Static angle: point the needle toward Qibla (bearing from North).
+    final staticAngle = qiblaBearing * math.pi / 180;
+
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        // Simulator notice banner
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+          child: Card(
+            color: theme.colorScheme.tertiaryContainer,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              child: Row(
+                children: [
+                  Icon(Icons.phonelink_off,
+                      color: theme.colorScheme.onTertiaryContainer, size: 18),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      'No compass sensor detected — showing Qibla direction statically. On a physical device the needle will track in real time.',
+                      style: TextStyle(
+                          color: theme.colorScheme.onTertiaryContainer,
+                          fontSize: 12),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 16),
+        // Static compass pointing to Qibla
+        _QiblaCompass(qiblaAngle: staticAngle),
+        const SizedBox(height: 24),
+        Text(
+          '${qiblaBearing.round()}° from North',
+          style: theme.textTheme.titleMedium,
+        ),
+        const SizedBox(height: 4),
+        Text(
+          'From ${city.displayName}',
+          style: theme.textTheme.bodyMedium,
+        ),
+      ],
+    );
+  }
+}
+
+// ── Qibla compass widget ──────────────────────────────────────────────────────
 
 class _QiblaCompass extends StatelessWidget {
   const _QiblaCompass({required this.qiblaAngle});
@@ -188,7 +326,8 @@ class _QiblaCompass extends StatelessWidget {
                 builder: (context) {
                   final primary = Theme.of(context).colorScheme.primary;
                   return Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 12, vertical: 4),
                     decoration: BoxDecoration(
                       color: primary,
                       borderRadius: BorderRadius.circular(12),

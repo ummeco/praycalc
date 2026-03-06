@@ -26,12 +26,18 @@ Object.defineProperty(globalThis, "localStorage", {
   writable: true,
 });
 
+// Mock fetch globally (auth-client calls fetch for signOut)
+globalThis.fetch = vi.fn(() =>
+  Promise.resolve({ ok: true, json: () => Promise.resolve({}) } as Response),
+);
+
 beforeEach(() => {
   _store = {};
   localStorageMock.getItem.mockClear();
   localStorageMock.setItem.mockClear();
   localStorageMock.removeItem.mockClear();
   localStorageMock.clear.mockClear();
+  (globalThis.fetch as ReturnType<typeof vi.fn>).mockClear();
 });
 
 const SESSION_KEY = "praycalc-session";
@@ -148,35 +154,35 @@ describe("useSession", () => {
   });
 
   describe("logout()", () => {
-    it("sets isLoggedIn = false after logout", () => {
+    it("sets isLoggedIn = false after logout", async () => {
       const { result } = renderHook(() => useSession());
       act(() => result.current.login("user@test.com"));
       expect(result.current.isLoggedIn).toBe(true);
 
-      act(() => result.current.logout());
+      await act(() => result.current.logout());
       expect(result.current.isLoggedIn).toBe(false);
     });
 
-    it("clears session to null after logout", () => {
+    it("clears session to null after logout", async () => {
       const { result } = renderHook(() => useSession());
       act(() => result.current.login("user@test.com"));
-      act(() => result.current.logout());
+      await act(() => result.current.logout());
       expect(result.current.session).toBeNull();
     });
 
-    it("removes session from localStorage on logout", () => {
+    it("removes session from localStorage on logout", async () => {
       const { result } = renderHook(() => useSession());
       act(() => result.current.login("user@test.com"));
-      act(() => result.current.logout());
+      await act(() => result.current.logout());
       expect(_store[SESSION_KEY]).toBeUndefined();
     });
 
-    it("resets isOwner and isUmmatPlus after logout", () => {
+    it("resets isOwner and isUmmatPlus after logout", async () => {
       const { result } = renderHook(() => useSession());
       act(() => result.current.login(OWNER_EMAIL));
       expect(result.current.isOwner).toBe(true);
 
-      act(() => result.current.logout());
+      await act(() => result.current.logout());
       expect(result.current.isOwner).toBe(false);
       expect(result.current.isUmmatPlus).toBe(false);
     });

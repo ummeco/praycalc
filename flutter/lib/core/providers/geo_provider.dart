@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart' as gc;
@@ -153,4 +155,53 @@ Future<void> persistCity(City city, WidgetRef ref) async {
   await prefs.setDouble(_kCityLat, city.lat);
   await prefs.setDouble(_kCityLng, city.lng);
   await prefs.setString(_kCityTz, city.timezone);
+  await _addToRecentCities(prefs, city);
+}
+
+// ─── Recent cities list (up to 6) ────────────────────────────────────────────
+
+const _kRecentCities = 'recentCities';
+
+Map<String, dynamic> _cityToJson(City c) => {
+      'name': c.name,
+      'country': c.country,
+      if (c.state != null) 'state': c.state,
+      'lat': c.lat,
+      'lng': c.lng,
+      'tz': c.timezone,
+    };
+
+City _cityFromJson(Map<String, dynamic> j) => City(
+      name: j['name'] as String,
+      country: j['country'] as String,
+      state: j['state'] as String?,
+      lat: (j['lat'] as num).toDouble(),
+      lng: (j['lng'] as num).toDouble(),
+      timezone: j['tz'] as String,
+    );
+
+Future<void> _addToRecentCities(SharedPreferences prefs, City city) async {
+  final raw = prefs.getString(_kRecentCities);
+  final List<dynamic> list = raw != null ? jsonDecode(raw) as List<dynamic> : [];
+  // Remove duplicate (same lat/lng)
+  list.removeWhere((e) {
+    final m = e as Map<String, dynamic>;
+    return (m['lat'] as num).toDouble() == city.lat &&
+        (m['lng'] as num).toDouble() == city.lng;
+  });
+  list.insert(0, _cityToJson(city));
+  if (list.length > 6) list.removeRange(6, list.length);
+  await prefs.setString(_kRecentCities, jsonEncode(list));
+}
+
+Future<List<City>> loadRecentCities() async {
+  final prefs = await SharedPreferences.getInstance();
+  final raw = prefs.getString(_kRecentCities);
+  if (raw == null) return [];
+  try {
+    final list = jsonDecode(raw) as List<dynamic>;
+    return list.map((e) => _cityFromJson(e as Map<String, dynamic>)).toList();
+  } catch (_) {
+    return [];
+  }
 }

@@ -1,4 +1,6 @@
-/** Hardcoded owner — always gets full access + all Ummat Pro entities, for free. */
+import type { AuthResult, AuthTokens } from "./auth-client";
+
+/** Hardcoded owner: always gets full access + all Ummat Pro entities, for free. */
 export const OWNER_EMAIL = "alisalaah@gmail.com";
 
 export interface PrayCalcSession {
@@ -10,10 +12,23 @@ export interface PrayCalcSession {
   isOwner: boolean;
   /** True for owner + any future paid Ummat+ subscriber. */
   isUmmatPlus: boolean;
+  /** Hasura Auth user ID (absent for legacy/test sessions). */
+  userId?: string;
+  /** JWT tokens (absent for legacy/test sessions). */
+  tokens?: AuthTokens;
 }
 
 const SESSION_KEY = "praycalc-session";
 
+function computeInitials(name: string): string {
+  const parts = name.split(" ").filter(Boolean);
+  if (parts.length >= 2) {
+    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+  }
+  return name.slice(0, 2).toUpperCase();
+}
+
+/** Build a session from an email (legacy stub path, used by E2E tests and stub forms). */
 export function buildSession(
   email: string,
   displayName?: string,
@@ -22,18 +37,31 @@ export function buildSession(
   const name =
     displayName?.trim() ||
     trimmed.split("@")[0].replace(/[._-]+/g, " ");
-  const parts = name.split(" ").filter(Boolean);
-  const initials =
-    parts.length >= 2
-      ? (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
-      : name.slice(0, 2).toUpperCase();
   const isOwner = trimmed === OWNER_EMAIL.toLowerCase();
   return {
     email: trimmed,
     displayName: name,
-    initials,
+    initials: computeInitials(name),
     isOwner,
-    isUmmatPlus: isOwner, // expand when Ummat+ billing ships
+    isUmmatPlus: isOwner,
+  };
+}
+
+/** Build a session from a Hasura Auth result (real auth path). */
+export function buildSessionFromAuth(result: AuthResult): PrayCalcSession {
+  const { user, tokens } = result;
+  const email = user.email.toLowerCase();
+  const name = user.displayName || email.split("@")[0].replace(/[._-]+/g, " ");
+  const isOwner = email === OWNER_EMAIL.toLowerCase();
+  return {
+    email,
+    displayName: name,
+    initials: computeInitials(name),
+    photoUrl: user.avatarUrl,
+    isOwner,
+    isUmmatPlus: isOwner,
+    userId: user.id,
+    tokens,
   };
 }
 

@@ -25,6 +25,23 @@ enum MoonPhase {
     }
   }
 
+  /// Return the CDN URL for the moon phase image on [date] (defaults to now).
+  ///
+  /// Uses the moon-cycle npm package image set:
+  /// https://cdn.jsdelivr.net/gh/acamarata/moon-cycle@main/mm-256-75/{nnn}.webp
+  /// 708 images per synodic cycle, anchored at 2023-11-13T09:27:00Z.
+  static String cycleMonthUrl([DateTime? date]) {
+    final d = date ?? DateTime.now();
+    const anchorMs = 1699867620000.0; // 2023-11-13T09:27:00Z
+    const synodicMs = 29.53058821398858 * 24 * 60 * 60 * 1000;
+    final elapsed = d.millisecondsSinceEpoch - anchorMs;
+    final raw = elapsed / synodicMs;
+    final fraction = raw - raw.floorToDouble(); // always [0, 1)
+    final index = (fraction * 708).floor() + 1;
+    final filename = '${index.toString().padLeft(3, '0')}.webp';
+    return 'https://cdn.jsdelivr.net/gh/acamarata/moon-cycle@main/mm-256-75/$filename';
+  }
+
   /// Return a single moon emoji for a given [MoonPhase].
   static String phaseEmoji(MoonPhase p) {
     switch (p) {

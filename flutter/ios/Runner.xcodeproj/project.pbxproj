@@ -7,12 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0B5D0E76D01238C4E79A1801 /* PrayCalcWidget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = F5E1B54753F18FA9AF35EEB6 /* PrayCalcWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */; };
 		331C808B294A63AB00263BE5 /* RunnerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331C807B294A618700263BE5 /* RunnerTests.swift */; };
 		3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */; };
 		404932903CE5A8F15B90D6C4 /* PrayCalcWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 013CE45E229560532F8C6D73 /* PrayCalcWidget.swift */; };
-		416A7B0ED3A4E3C8AFCF5BFC /* PrayCalcLiveActivity.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 67EF6D2E35A79D15AFE1DCBF /* PrayCalcLiveActivity.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74858FAE1ED2DC5600515810 /* AppDelegate.swift */; };
 		7884E8682EC3CC0700C636F2 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7884E8672EC3CC0400C636F2 /* SceneDelegate.swift */; };
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
@@ -48,25 +46,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		51A9BC00BDD1E0B37B88B67D /* Embed Foundation Extensions */ = {
-			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "Embed Foundation Extensions";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# Skip embedding extensions for simulator — avoids DVT validation errors.\nif [ \"$PLATFORM_NAME\" = \"iphonesimulator\" ]; then\n  echo \"[PrayCalc] Skipping extension embedding for simulator build.\"\n  exit 0\nfi\n\n# Device build: manually embed and sign each extension.\nPLUGINS=\"${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/PlugIns\"\nmkdir -p \"$PLUGINS\"\nfor appex in PrayCalcWidget.appex PrayCalcLiveActivity.appex; do\n  src=\"${BUILT_PRODUCTS_DIR}/${appex}\"\n  if [ -d \"$src\" ]; then\n    cp -r \"$src\" \"$PLUGINS/\"\n    codesign --force --sign \"$EXPANDED_CODE_SIGN_IDENTITY\" \"$PLUGINS/${appex}\" 2>/dev/null || true\n  fi\ndone\n";
-		};
 		9705A1C41CF9048500538489 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -305,6 +284,7 @@
 				51A9BC00BDD1E0B37B88B67D /* Embed Foundation Extensions */,
 				3B06AD1E1E4923F5004D2608 /* Thin Binary */,
 				73F5F75A328E8F9DB2A7C9EC /* [CP] Embed Pods Frameworks */,
+				146255F98249FD0644AD3063 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -411,6 +391,23 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		146255F98249FD0644AD3063 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		3B06AD1E1E4923F5004D2608 /* Thin Binary */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
@@ -426,6 +423,25 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "/bin/sh \"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" embed_and_thin";
+		};
+		51A9BC00BDD1E0B37B88B67D /* Embed Foundation Extensions */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Embed Foundation Extensions";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Skip embedding extensions for simulator — avoids DVT validation errors.\nif [ \"$PLATFORM_NAME\" = \"iphonesimulator\" ]; then\n  echo \"[PrayCalc] Skipping extension embedding for simulator build.\"\n  exit 0\nfi\n\n# Device build: manually embed and sign each extension.\nPLUGINS=\"${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/PlugIns\"\nmkdir -p \"$PLUGINS\"\nfor appex in PrayCalcWidget.appex PrayCalcLiveActivity.appex; do\n  src=\"${BUILT_PRODUCTS_DIR}/${appex}\"\n  if [ -d \"$src\" ]; then\n    cp -r \"$src\" \"$PLUGINS/\"\n    codesign --force --sign \"$EXPANDED_CODE_SIGN_IDENTITY\" \"$PLUGINS/${appex}\" 2>/dev/null || true\n  fi\ndone\n";
 		};
 		6F499868EFD7B823A510F74E /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;

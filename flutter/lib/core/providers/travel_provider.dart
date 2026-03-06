@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:math' as math;
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -123,8 +124,20 @@ final travelProvider = NotifierProvider<TravelNotifier, TravelState>(
   TravelNotifier.new,
 );
 
+/// US timezone prefixes — used to auto-detect imperial units on first launch.
+bool _isUsTimezone(String tz) {
+  const usPrefixes = [
+    'America/New_York', 'America/Chicago', 'America/Denver',
+    'America/Los_Angeles', 'America/Phoenix', 'America/Anchorage',
+    'America/Adak', 'America/Detroit', 'America/Indiana/',
+    'America/Kentucky/', 'America/North_Dakota/', 'Pacific/Honolulu',
+  ];
+  return usPrefixes.any((p) => tz.startsWith(p));
+}
+
 /// Auto-sets home coordinates to the first city the user selects,
-/// so travel distance can be computed without manual configuration.
+/// and applies locale-appropriate defaults (imperial units, time format)
+/// when no explicit preference has been stored yet.
 ///
 /// Mount once near the app root:
 ///   ref.listen(travelHomeAutosetProvider, (_, _) {});
@@ -135,10 +148,20 @@ final travelHomeAutosetProvider = Provider<void>((ref) {
   if (city == null) return;
   if (settings.homeLat != null) return; // already set
 
-  // First city selected and no home coords yet — save as home.
+  // First city selected — save as home and apply locale defaults.
   Future.microtask(() async {
     try {
-      await ref.read(settingsProvider.notifier).setHomeCoords(city.lat, city.lng);
+      final notifier = ref.read(settingsProvider.notifier);
+      await notifier.setHomeCoords(city.lat, city.lng);
+
+      // Imperial units: US timezones or device locale ends with _US.
+      final deviceLocale = Platform.localeName; // e.g. "en_US"
+      final isUS = _isUsTimezone(city.timezone) ||
+          deviceLocale.endsWith('_US');
+      if (isUS) {
+        await notifier.setUseImperial(true);
+        // 12h is already the default (use24h = false), so no change needed.
+      }
     } catch (_) {}
   });
 });

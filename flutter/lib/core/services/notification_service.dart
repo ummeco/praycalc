@@ -137,6 +137,12 @@ class NotificationService {
       description: 'Notification when travel distance threshold is crossed',
       importance: Importance.high,
     );
+    const prayersCheck = AndroidNotificationChannel(
+      NotificationChannels.prayersCheck,
+      'Prayer Check-in',
+      description: '"Did you pray?" reminders with quick-reply actions',
+      importance: Importance.defaultImportance,
+    );
     final androidPlugin = _plugin
         .resolvePlatformSpecificImplementation<
             AndroidFlutterLocalNotificationsPlugin>();
@@ -145,6 +151,7 @@ class NotificationService {
     await androidPlugin?.createNotificationChannel(persistent);
     await androidPlugin?.createNotificationChannel(ramadan);
     await androidPlugin?.createNotificationChannel(travel);
+    await androidPlugin?.createNotificationChannel(prayersCheck);
   }
 
   // ── Permission ──────────────────────────────────────────────────────────────
@@ -185,11 +192,88 @@ class NotificationService {
       AdhanService.instance.fadeOut();
       return;
     }
+    // Prayer check-in actions: payload = "PrayerName|YYYY-MM-DD"
+    if (response.actionId == 'prayer_check_yes') {
+      _markPrayerFromNotification(response.payload);
+      return;
+    }
+    if (response.actionId == 'prayer_check_not_yet') {
+      _reschedulePrayerCheck(response.payload);
+      return;
+    }
+
     // Jumu'ah Al-Kahf tap: payload is the Islam.wiki Surah Al-Kahf URL.
     final payload = response.payload;
     if (payload != null && payload.startsWith('https://')) {
       launchUrl(Uri.parse(payload), mode: LaunchMode.externalApplication);
     }
+  }
+
+  // ── Prayer check-in notifications ──────────────────────────────────────────
+
+  /// Schedule a "Did you pray X?" notification 30 minutes after [prayerTime].
+  /// [prayerIdx] must be the 0-based index among the 5 fard prayers.
+  Future<void> schedulePrayerCheckNotification({
+    required String prayerName,
+    required int prayerIdx,
+    required DateTime prayerTime,
+    required String dateStr,
+    int dayOffset = 0,
+  }) async {
+    final checkTime = prayerTime.add(const Duration(minutes: 30));
+    if (checkTime.isBefore(DateTime.now())) return;
+
+    await _scheduleNotification(
+      id: NotificationIds.prayerCheck(prayerIdx, dayOffset: dayOffset),
+      title: 'Did you pray $prayerName?',
+      body: 'Tap to log your $prayerName prayer',
+      scheduledDate: checkTime,
+      channelId: NotificationChannels.prayersCheck,
+      actions: const [
+        AndroidNotificationAction('prayer_check_yes', 'Yes, Alhamdulillah'),
+        AndroidNotificationAction('prayer_check_not_yet', 'Not Yet (30 min)'),
+      ],
+      payload: '$prayerName|$dateStr',
+    );
+  }
+
+  Future<void> _markPrayerFromNotification(String? payload) async {
+    if (payload == null) return;
+    final parts = payload.split('|');
+    if (parts.length != 2) return;
+    final prayerName = parts[0];
+    final dateStr = parts[1];
+    final key = '${dateStr}_$prayerName';
+    final prefs = await SharedPreferences.getInstance();
+    final raw = prefs.getString('pc_prayer_completions') ?? '{}';
+    try {
+      final map = Map<String, String>.from(
+          (jsonDecode(raw) as Map).cast<String, String>());
+      map[key] = DateTime.now().toIso8601String();
+      await prefs.setString('pc_prayer_completions', jsonEncode(map));
+    } catch (_) {}
+  }
+
+  Future<void> _reschedulePrayerCheck(String? payload) async {
+    if (payload == null) return;
+    final parts = payload.split('|');
+    if (parts.length != 2) return;
+    final prayerName = parts[0];
+    const fardNames = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
+    final idx = fardNames.indexOf(prayerName);
+
+    await _scheduleNotification(
+      id: NotificationIds.prayerCheck(idx < 0 ? 0 : idx),
+      title: 'Did you pray $prayerName?',
+      body: "Don't forget your $prayerName prayer",
+      scheduledDate: DateTime.now().add(const Duration(minutes: 30)),
+      channelId: NotificationChannels.prayersCheck,
+      actions: const [
+        AndroidNotificationAction('prayer_check_yes', 'Yes, Alhamdulillah'),
+        AndroidNotificationAction('prayer_check_not_yet', 'Not Yet (30 min)'),
+      ],
+      payload: payload,
+    );
   }
 
   // ── Prayer notifications ────────────────────────────────────────────────────

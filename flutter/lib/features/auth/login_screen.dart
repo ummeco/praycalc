@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 import '../../core/providers/auth_provider.dart';
 import '../../core/services/auth_service.dart';
@@ -24,6 +25,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   bool _isSignUp = false;
   bool _obscurePassword = true;
+  bool _socialLoading = false;
 
   @override
   void dispose() {
@@ -59,6 +61,22 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     if (success && mounted) {
       context.pop();
     }
+  }
+
+  Future<void> _signInWithApple() async {
+    setState(() => _socialLoading = true);
+    final ok = await ref.read(authProvider.notifier).signInWithApple();
+    if (!mounted) return;
+    setState(() => _socialLoading = false);
+    if (ok) context.pop();
+  }
+
+  Future<void> _signInWithGoogle() async {
+    setState(() => _socialLoading = true);
+    final ok = await ref.read(authProvider.notifier).signInWithGoogle();
+    if (!mounted) return;
+    setState(() => _socialLoading = false);
+    if (ok) context.pop();
   }
 
   Future<void> _forgotPassword() async {
@@ -133,7 +151,63 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   ),
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 32),
+                const SizedBox(height: 28),
+
+                // ── Social sign-in ───────────────────────────────────
+                if (theme.platform == TargetPlatform.iOS) ...[
+                  SizedBox(
+                    width: double.infinity,
+                    height: 50,
+                    child: _socialLoading
+                        ? _SocialLoadingButton(dark: true)
+                        : SignInWithAppleButton(
+                            onPressed: _signInWithApple,
+                            style: SignInWithAppleButtonStyle.black,
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(12)),
+                          ),
+                  ),
+                  const SizedBox(height: 10),
+                ],
+                SizedBox(
+                  width: double.infinity,
+                  height: 50,
+                  child: _socialLoading
+                      ? _SocialLoadingButton(dark: false)
+                      : OutlinedButton.icon(
+                          onPressed: _signInWithGoogle,
+                          style: OutlinedButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12)),
+                            side: BorderSide(
+                                color: theme.colorScheme.outline.withAlpha(120)),
+                          ),
+                          icon: _GoogleLogoIcon(),
+                          label: const Text('Continue with Google',
+                              style: TextStyle(fontSize: 15)),
+                        ),
+                ),
+
+                // ── Divider ──────────────────────────────────────────
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 20),
+                  child: Row(
+                    children: [
+                      Expanded(child: Divider(color: theme.colorScheme.outline.withAlpha(60))),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        child: Text(
+                          'or',
+                          style: TextStyle(
+                            color: theme.colorScheme.onSurfaceVariant,
+                            fontSize: 13,
+                          ),
+                        ),
+                      ),
+                      Expanded(child: Divider(color: theme.colorScheme.outline.withAlpha(60))),
+                    ],
+                  ),
+                ),
 
                 // ── Error message ────────────────────────────────────
                 if (auth.error != null) ...[
@@ -291,6 +365,70 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 ),
               ],
             ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _SocialLoadingButton extends StatelessWidget {
+  const _SocialLoadingButton({required this.dark});
+  final bool dark;
+
+  @override
+  Widget build(BuildContext context) {
+    final bg = dark ? Colors.black : Theme.of(context).colorScheme.surfaceContainerHighest;
+    final fg = dark ? Colors.white : Theme.of(context).colorScheme.onSurface;
+    return Container(
+      decoration: BoxDecoration(
+        color: bg,
+        borderRadius: BorderRadius.circular(12),
+        border: dark ? null : Border.all(
+          color: Theme.of(context).colorScheme.outline.withAlpha(120),
+        ),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SizedBox(
+            width: 18,
+            height: 18,
+            child: CircularProgressIndicator(strokeWidth: 2, color: fg.withAlpha(180)),
+          ),
+          const SizedBox(width: 10),
+          Text('Signing in…', style: TextStyle(color: fg, fontSize: 15)),
+        ],
+      ),
+    );
+  }
+}
+
+class _GoogleLogoIcon extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 20,
+      height: 20,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withAlpha(25),
+            blurRadius: 2,
+            offset: const Offset(0, 1),
+          ),
+        ],
+      ),
+      child: const Center(
+        child: Text(
+          'G',
+          style: TextStyle(
+            color: Color(0xFF4285F4),
+            fontSize: 13,
+            fontWeight: FontWeight.bold,
+            height: 1.1,
           ),
         ),
       ),

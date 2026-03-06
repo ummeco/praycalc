@@ -77,6 +77,8 @@ class _SkyGradientBackgroundState extends State<SkyGradientBackground> {
           duration: const Duration(seconds: 10),
           decoration: BoxDecoration(gradient: gradient),
         ),
+        // One shade darker overlay
+        Container(color: const Color(0xFF000000).withAlpha(28)),
         widget.child,
       ],
     );
@@ -136,40 +138,40 @@ LinearGradient applyWeatherTint(LinearGradient g, int? weatherCode) {
 const _kPreFajrGradient = LinearGradient(
   begin: Alignment.topCenter,
   end: Alignment.bottomCenter,
-  colors: [Color(0xFF040B06), Color(0xFF0A1A0F)],
+  colors: [Color(0xFF020703), Color(0xFF060E08)],
 );
 
-/// Fajr → Sunrise: predawn indigo-green.
+/// Fajr → Sunrise: predawn — deep teal-green, hint of dawn.
 const _kFajrGradient = LinearGradient(
   begin: Alignment.topCenter,
   end: Alignment.bottomCenter,
-  colors: [Color(0xFF060E12), Color(0xFF0C1F18)],
+  colors: [Color(0xFF04090E), Color(0xFF081610)],
 );
 
-/// Sunrise → Dhuhr: deep morning forest.
+/// Sunrise → Dhuhr: deep morning forest, slightly brighter.
 const _kMorningGradient = LinearGradient(
   begin: Alignment.topCenter,
   end: Alignment.bottomCenter,
-  colors: [Color(0xFF0A1A0F), Color(0xFF122A18)],
+  colors: [Color(0xFF081408), Color(0xFF0E2212)],
 );
 
-/// Dhuhr → Asr: midday deep green.
+/// Dhuhr → Asr: midday — richest green (peak brightness of day).
 const _kNoonGradient = LinearGradient(
   begin: Alignment.topCenter,
   end: Alignment.bottomCenter,
-  colors: [Color(0xFF0D2114), Color(0xFF0A1A0F)],
+  colors: [Color(0xFF0B1C0F), Color(0xFF081408)],
 );
 
-/// Asr → Maghrib: amber-green afternoon.
+/// Asr → Maghrib: afternoon — amber-tinted deep green.
 const _kAfternoonGradient = LinearGradient(
   begin: Alignment.topCenter,
   end: Alignment.bottomCenter,
-  colors: [Color(0xFF111A0A), Color(0xFF0D1A0E)],
+  colors: [Color(0xFF0E1506), Color(0xFF0A1309)],
 );
 
-/// Maghrib → Isha: dusk — warm deep green fading to night.
+/// Maghrib → Isha: dusk — warm amber-green fading to night.
 const _kDuskGradient = LinearGradient(
   begin: Alignment.topCenter,
   end: Alignment.bottomCenter,
-  colors: [Color(0xFF1A1208), Color(0xFF0A1508)],
+  colors: [Color(0xFF150E04), Color(0xFF080F04)],
 );

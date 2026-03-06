@@ -2,91 +2,173 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/providers/settings_provider.dart';
 import '../../core/providers/travel_provider.dart';
 import '../../core/router/app_router.dart';
 import '../../core/theme/app_theme.dart';
 
-/// Shown at the top of the home screen when the user is > 77 km from home.
-/// Displays travel distance and a Qasr toggle.
+/// Card-style travel alert shown in the home page list view when the user
+/// is > 77 km from home. Placed below the action tiles for more space.
 ///
-/// "Qasr" shortens Dhuhr / Asr / Isha to 2 rakaat — the label `(Qasr)` is
-/// applied to those prayers in the prayer list; prayer times are unchanged.
-class TravelBanner extends ConsumerWidget {
+/// Shows exact distance, Qasr toggle, Change Home, and Info buttons.
+/// Dismissible for the current session.
+class TravelBanner extends ConsumerStatefulWidget {
   const TravelBanner({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<TravelBanner> createState() => _TravelBannerState();
+}
+
+class _TravelBannerState extends ConsumerState<TravelBanner> {
+  bool _dismissed = false;
+
+  String _formatDist(double km, bool imperial) {
+    final value = imperial ? km * 0.621371 : km;
+    final unit = imperial ? 'mi' : 'km';
+    final rounded = value.round();
+    final s = rounded.toString();
+    final buf = StringBuffer();
+    for (int i = 0; i < s.length; i++) {
+      if (i > 0 && (s.length - i) % 3 == 0) buf.write(',');
+      buf.write(s[i]);
+    }
+    return '${buf.toString()} $unit';
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final travel = ref.watch(travelProvider);
-    if (!travel.isTraveling) return const SizedBox.shrink();
+    final settings = ref.watch(settingsProvider);
+    if (!travel.isTraveling || _dismissed) return const SizedBox.shrink();
 
-    final cs = Theme.of(context).colorScheme;
-    final distLabel = travel.distanceKm >= 1000
-        ? '${(travel.distanceKm / 1000).toStringAsFixed(1)}k km'
-        : '${travel.distanceKm.round()} km';
+    final distLabel = _formatDist(travel.distanceKm, settings.useImperial);
 
-    return GestureDetector(
-      onTap: () => context.push(Routes.travelRulings),
-      child: Material(
-        color: PrayCalcColors.dark.withValues(alpha: 0.92),
-        child: SafeArea(
-          bottom: false,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Row(
-              children: [
-                const Icon(Icons.flight_takeoff, color: Colors.white, size: 18),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    'Traveling · $distLabel from home',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 13,
-                      fontWeight: FontWeight.w500,
-                    ),
+    return Container(
+      margin: EdgeInsets.zero,
+      padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
+      decoration: BoxDecoration(
+        color: const Color(0xFF062030).withAlpha(220),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: const Color(0xFF2196F3).withAlpha(60), width: 1),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // ── Title row ──────────────────────────────────────────────────
+          Row(
+            children: [
+              const Icon(Icons.flight_takeoff, color: Color(0xFF64B5F6), size: 16),
+              const SizedBox(width: 8),
+              Expanded(
+                child: RichText(
+                  text: TextSpan(
+                    style: const TextStyle(fontSize: 14),
+                    children: [
+                      const TextSpan(
+                        text: 'Traveling',
+                        style: TextStyle(
+                          color: Color(0xFF64B5F6),
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      TextSpan(
+                        text: '  $distLabel from home',
+                        style: TextStyle(
+                          color: Colors.white.withAlpha(180),
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                _QasrChip(isQasr: travel.isQasr, cs: cs),
-              ],
-            ),
+              ),
+              GestureDetector(
+                onTap: () => setState(() => _dismissed = true),
+                behavior: HitTestBehavior.opaque,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 8, 4, 8),
+                  child: Icon(Icons.close, size: 16, color: Colors.white.withAlpha(100)),
+                ),
+              ),
+            ],
           ),
-        ),
+          const SizedBox(height: 10),
+          // ── Action buttons ─────────────────────────────────────────────
+          Row(
+            children: [
+              _TravelActionChip(
+                label: 'Qasr Info',
+                active: false,
+                icon: Icons.info_outline,
+                onTap: () => context.push(Routes.travelRulings),
+              ),
+              const SizedBox(width: 8),
+              _TravelActionChip(
+                label: 'Change Home',
+                active: false,
+                icon: Icons.home_outlined,
+                onTap: () => context.push(Routes.setHome),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
 }
 
-class _QasrChip extends ConsumerWidget {
-  const _QasrChip({required this.isQasr, required this.cs});
-  final bool isQasr;
-  final ColorScheme cs;
+class _TravelActionChip extends StatelessWidget {
+  const _TravelActionChip({
+    required this.label,
+    required this.active,
+    required this.icon,
+    required this.onTap,
+  });
+  final String label;
+  final bool active;
+  final IconData icon;
+  final VoidCallback onTap;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => ref.read(travelProvider.notifier).toggleQasr(),
+      onTap: onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
         decoration: BoxDecoration(
-          color: isQasr
-              ? PrayCalcColors.light
-              : Colors.white.withValues(alpha: 0.15),
-          borderRadius: BorderRadius.circular(12),
+          color: active
+              ? PrayCalcColors.dark.withAlpha(220)
+              : Colors.white.withAlpha(18),
+          borderRadius: BorderRadius.circular(10),
           border: Border.all(
-            color: isQasr ? PrayCalcColors.light : Colors.white38,
+            color: active
+                ? PrayCalcColors.mid.withAlpha(160)
+                : Colors.white.withAlpha(40),
             width: 1,
           ),
         ),
-        child: Text(
-          isQasr ? 'Qasr ✓' : 'Qasr',
-          style: TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.w600,
-            color: isQasr ? PrayCalcColors.dark : Colors.white,
-          ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              icon,
+              size: 12,
+              color: active ? PrayCalcColors.light : Colors.white.withAlpha(170),
+            ),
+            const SizedBox(width: 4),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.w500,
+                color: active ? PrayCalcColors.light : Colors.white.withAlpha(170),
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
 }
+

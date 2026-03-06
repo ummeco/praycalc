@@ -3,8 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/providers/auth_provider.dart';
-import '../../core/providers/geo_provider.dart';
-import '../../core/providers/prayer_provider.dart';
 import '../../core/providers/settings_provider.dart';
 import '../../core/providers/sync_provider.dart';
 import '../../core/router/app_router.dart';
@@ -296,70 +294,8 @@ class SettingsScreen extends ConsumerWidget {
     }
   }
 
-  Future<void> _setHomeLocation(
-    BuildContext context,
-    WidgetRef ref,
-    SettingsNotifier notifier,
-  ) async {
-    final city = ref.read(cityProvider);
-
-    final confirmed = await showDialog<String>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Set home location'),
-        content: Text(
-          city != null
-              ? 'Use "${city.displayName}" as your home location? '
-                'Travel mode will detect when you are away from here.'
-              : 'Use your current GPS position as home? Travel mode will '
-                'detect when you are away.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(null),
-            child: const Text('Cancel'),
-          ),
-          if (city != null)
-            FilledButton(
-              onPressed: () => Navigator.of(ctx).pop('city'),
-              child: Text('Use ${city.name}'),
-            )
-          else
-            FilledButton(
-              onPressed: () => Navigator.of(ctx).pop('gps'),
-              child: const Text('Use current location'),
-            ),
-        ],
-      ),
-    );
-    if (confirmed == null || !context.mounted) return;
-
-    if (confirmed == 'city' && city != null) {
-      await notifier.setHomeCoords(city.lat, city.lng);
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Home set to ${city.displayName}')),
-        );
-      }
-    } else {
-      final gps = ref.read(gpsProvider.notifier);
-      await gps.requestLocation();
-      final gpsState = ref.read(gpsProvider);
-      if (gpsState.hasPosition) {
-        await notifier.setHomeCoords(gpsState.lat!, gpsState.lng!);
-        if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Home location set from GPS')),
-          );
-        }
-      } else if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(gpsState.errorMessage ?? 'Could not get GPS location'),
-          ),
-        );
-      }
-    }
+  void _setHomeLocation(BuildContext context, WidgetRef ref, SettingsNotifier notifier) {
+    context.push(Routes.setHome);
   }
 
   Future<void> _showLanguagePicker(

@@ -6,8 +6,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hijri/hijri_calendar.dart';
 import 'package:pray_calc_dart/pray_calc_dart.dart';
+import 'package:timezone/data/latest_10y.dart' as tz_data;
+import 'package:timezone/timezone.dart' as tz;
 
-import '../../core/providers/prayer_completion_provider.dart';
+import '../../core/providers/geo_provider.dart';
 import '../../core/providers/prayer_provider.dart';
 import '../../core/providers/ramadan_provider.dart';
 import '../../core/providers/settings_provider.dart';
@@ -16,6 +18,7 @@ import '../../core/router/app_router.dart';
 import '../../core/services/rating_service.dart';
 import '../../core/theme/app_theme.dart';
 import '../../shared/models/settings_model.dart';
+import '../../shared/widgets/adhan_modal.dart';
 import '../../shared/widgets/sky_gradient_background.dart';
 import '../../shared/widgets/travel_banner.dart';
 
@@ -45,6 +48,60 @@ double _maghrib(PrayerTimes t) => t.maghrib;
 double _isha(PrayerTimes t)    => t.isha;
 double _qiyam(PrayerTimes t)   => t.qiyam;
 
+// ─── Timezone helper ──────────────────────────────────────────────────────────
+
+bool _tzReady = false;
+
+/// Returns the current moment expressed in [city]'s local timezone.
+/// Handles both IANA names ("America/Los_Angeles") and legacy UTC±H strings.
+/// Falls back to device local time if the timezone is unknown.
+DateTime _cityLocalNow(City? city) {
+  final deviceNow = DateTime.now();
+  if (city == null) return deviceNow;
+
+  final tz_ = city.timezone;
+
+  // Legacy UTC±H strings from GPS reverse-geocode fallback (e.g. "UTC-8", "UTC+5:30")
+  if (tz_.startsWith('UTC')) {
+    final rest = tz_.substring(3);
+    if (rest.isEmpty) return deviceNow.toUtc();
+    final sign = rest.startsWith('-') ? -1 : 1;
+    final parts = rest.substring(1).split(':');
+    final h = int.tryParse(parts[0]) ?? 0;
+    final m = parts.length > 1 ? (int.tryParse(parts[1]) ?? 0) : 0;
+    return deviceNow.toUtc().add(Duration(minutes: sign * (h * 60 + m)));
+  }
+
+  // IANA timezone lookup (accounts for DST)
+  if (!_tzReady) {
+    tz_data.initializeTimeZones();
+    _tzReady = true;
+  }
+  try {
+    final location = tz.getLocation(tz_);
+    final tzNow = tz.TZDateTime.fromMillisecondsSinceEpoch(
+        location, deviceNow.millisecondsSinceEpoch);
+    return DateTime(tzNow.year, tzNow.month, tzNow.day,
+        tzNow.hour, tzNow.minute, tzNow.second);
+  } catch (_) {
+    return deviceNow;
+  }
+}
+
+// ─── Clock formatter ──────────────────────────────────────────────────────────
+
+String _formatClock(DateTime dt, bool use24h) {
+  final h = dt.hour;
+  final m = dt.minute;
+  final s = dt.second;
+  if (use24h) {
+    return '${h.toString().padLeft(2, '0')}:${m.toString().padLeft(2, '0')}:${s.toString().padLeft(2, '0')}';
+  }
+  final period = h >= 12 ? 'PM' : 'AM';
+  final h12 = h % 12 == 0 ? 12 : h % 12;
+  return '${h12.toString().padLeft(2, '0')}:${m.toString().padLeft(2, '0')}:${s.toString().padLeft(2, '0')} $period';
+}
+
 // ─── Home city helpers ────────────────────────────────────────────────────────
 
 bool _cityIsHome(City? city, AppSettings settings) {
@@ -67,7 +124,8 @@ class HomeScreen extends ConsumerStatefulWidget {
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
   late Timer _ticker;
-  DateTime _now = DateTime.now();
+  // Incremented every second to drive rebuilds; actual time is computed in build().
+  int _tick = 0;
   late final PageController _pageController;
   int _dayPage = 1; // 0 = yesterday · 1 = today · 2 = tomorrow
 
@@ -76,7 +134,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     super.initState();
     _pageController = PageController(initialPage: 1);
     _ticker = Timer.periodic(const Duration(seconds: 1), (_) {
-      setState(() => _now = DateTime.now());
+      setState(() => _tick++);
     });
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(settingsProvider.notifier).load();
@@ -95,137 +153,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     for (int d = -1; d <= 1; d++) {
       ref.invalidate(prayerTimesForDayProvider(d));
     }
-    setState(() => _now = DateTime.now());
-  }
-
-  void _goToPage(int page) {
-    _pageController.animateToPage(
-      page,
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.easeInOut,
-    );
-  }
-
-  // ── Home city actions ──────────────────────────────────────────────────────
-
-  void _onHomeTap(City? city, AppSettings settings) {
-    if (city == null) {
-      context.push(Routes.citySearch);
-      return;
-    }
-    final notifier = ref.read(settingsProvider.notifier);
-    if (settings.homeLat == null) {
-      _showSetHomeDialog(city, notifier);
-    } else if (_cityIsHome(city, settings)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          backgroundColor: PrayCalcColors.surface,
-          content: Text(
-            '${city.displayName} is your home location',
-            style: const TextStyle(color: Colors.white),
-          ),
-          action: SnackBarAction(
-            label: 'Change',
-            textColor: PrayCalcColors.light,
-            onPressed: () => _showSetHomeDialog(city, notifier),
-          ),
-        ),
-      );
-    } else {
-      _showHomeOptionsSheet(city, settings, notifier);
-    }
-  }
-
-  void _showSetHomeDialog(City city, SettingsNotifier notifier) {
-    showDialog<void>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        backgroundColor: PrayCalcColors.surface,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Text(
-          'Set home location',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
-        ),
-        content: Text(
-          'Use ${city.displayName} as your home location?\n\n'
-          'This enables travel mode auto-detection and geo-fencing reminders.',
-          style: TextStyle(color: Colors.white.withAlpha(180), height: 1.5),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: Text('Cancel', style: TextStyle(color: Colors.white.withAlpha(120))),
-          ),
-          TextButton(
-            onPressed: () {
-              notifier.setHomeCoords(city.lat, city.lng);
-              Navigator.pop(ctx);
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  backgroundColor: PrayCalcColors.dark,
-                  content: Text(
-                    '${city.displayName} set as home',
-                    style: const TextStyle(color: Colors.white),
-                  ),
-                ),
-              );
-            },
-            child: Text('Set as Home', style: TextStyle(color: PrayCalcColors.light)),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _showHomeOptionsSheet(City city, AppSettings settings, SettingsNotifier notifier) {
-    showModalBottomSheet<void>(
-      context: context,
-      backgroundColor: PrayCalcColors.surface,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (ctx) => SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const SizedBox(height: 8),
-            Container(
-              width: 36,
-              height: 4,
-              decoration: BoxDecoration(
-                color: Colors.white24,
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-            const SizedBox(height: 20),
-            ListTile(
-              leading: Icon(Icons.home_outlined, color: Colors.white.withAlpha(160)),
-              title: Text(
-                'Set ${city.displayName} as home',
-                style: const TextStyle(color: Colors.white),
-              ),
-              subtitle: Text(
-                'Updates your saved home location',
-                style: TextStyle(color: Colors.white.withAlpha(100)),
-              ),
-              onTap: () {
-                notifier.setHomeCoords(city.lat, city.lng);
-                Navigator.pop(ctx);
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.search_rounded, color: Colors.white.withAlpha(160)),
-              title: const Text('Search another city', style: TextStyle(color: Colors.white)),
-              onTap: () {
-                Navigator.pop(ctx);
-                context.push(Routes.citySearch);
-              },
-            ),
-            const SizedBox(height: 8),
-          ],
-        ),
-      ),
-    );
+    setState(() => _tick++);
   }
 
   @override
@@ -233,6 +161,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final city = ref.watch(cityProvider);
     final settings = ref.watch(settingsProvider);
     final todayTimes = ref.watch(prayerTimesForDayProvider(0)).valueOrNull;
+    // Convert device time to the selected city's local timezone.
+    // Prayer times are expressed in city-local hours, so this must match.
+    final cityNow = _cityLocalNow(city);
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.light,
@@ -247,17 +178,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               _HomeHeader(
                 city: city,
                 isAtHome: _cityIsHome(city, settings),
-                hasHomeSet: settings.homeLat != null,
-                now: _now,
+                now: cityNow,
                 dayPage: _dayPage,
-                onHomeTap: () => _onHomeTap(city, settings),
                 onCityTap: () => context.push(Routes.citySearch),
-                onMoonTap: () => context.push(Routes.moon),
-                onPrevDay: _dayPage > 0 ? () => _goToPage(_dayPage - 1) : null,
-                onNextDay: _dayPage < 2 ? () => _goToPage(_dayPage + 1) : null,
-                onDateTap: () => context.push(Routes.calendar),
+                onMoonTap: () => context.go(Routes.moon),
               ),
-              const TravelBanner(),
               Expanded(
                 child: RefreshIndicator(
                   onRefresh: _refresh,
@@ -267,7 +192,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     onPageChanged: (i) => setState(() => _dayPage = i),
                     itemBuilder: (_, i) => _HomeDayPage(
                       dayOffset: i - 1,
-                      now: _now,
+                      now: cityNow,
                       settings: settings,
                     ),
                   ),
@@ -283,32 +208,22 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
 // ─── Header ───────────────────────────────────────────────────────────────────
 
-class _HomeHeader extends StatelessWidget {
+class _HomeHeader extends ConsumerWidget {
   const _HomeHeader({
     required this.city,
     required this.isAtHome,
-    required this.hasHomeSet,
     required this.now,
     required this.dayPage,
-    required this.onHomeTap,
     required this.onCityTap,
     required this.onMoonTap,
-    required this.onPrevDay,
-    required this.onNextDay,
-    required this.onDateTap,
   });
 
   final City? city;
   final bool isAtHome;
-  final bool hasHomeSet;
   final DateTime now;
   final int dayPage;
-  final VoidCallback onHomeTap;
   final VoidCallback onCityTap;
   final VoidCallback onMoonTap;
-  final VoidCallback? onPrevDay;
-  final VoidCallback? onNextDay;
-  final VoidCallback onDateTap;
 
   DateTime get _viewDate {
     final today = DateTime(now.year, now.month, now.day);
@@ -316,140 +231,132 @@ class _HomeHeader extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final gpsState = ref.watch(gpsProvider);
+    final settings = ref.watch(settingsProvider);
+    final gpsActive = gpsState.hasPosition;
+
     final vd = _viewDate;
     final isToday = dayPage == 1;
-    final gregorianStr = _gregorianStr(vd);
-    final hijriStr = _hijriStr(vd);
-    final timeStr = isToday
-        ? '${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}:${now.second.toString().padLeft(2, '0')}'
-        : '';
+
+    const dayNames = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+    final dayName = dayNames[now.weekday - 1];
+    final timeStr = _formatClock(now, settings.use24h);
 
     return SafeArea(
       bottom: false,
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(18, 10, 18, 14),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        padding: const EdgeInsets.fromLTRB(18, 10, 18, 12),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // Row 1: Home icon (left) + Moon button (right)
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                GestureDetector(
-                  onTap: onHomeTap,
-                  child: AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 300),
-                    child: Icon(
-                      isAtHome ? Icons.home_rounded : Icons.home_outlined,
-                      key: ValueKey(isAtHome),
-                      size: 26,
-                      color: isAtHome
-                          ? PrayCalcColors.light
-                          : Colors.white.withAlpha(160),
-                    ),
-                  ),
-                ),
-                GestureDetector(
-                  onTap: onMoonTap,
-                  child: Container(
-                    width: 34,
-                    height: 34,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.white.withAlpha(12),
-                      border: Border.all(color: Colors.white.withAlpha(35), width: 1),
-                    ),
-                    child: Icon(
-                      Icons.nightlight_round,
-                      size: 16,
-                      color: Colors.white.withAlpha(160),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-
-            const SizedBox(height: 8),
-
-            // Row 2: City name + dropdown arrow
-            GestureDetector(
-              onTap: onCityTap,
-              behavior: HitTestBehavior.opaque,
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Flexible(
-                    child: Text(
-                      city?.displayName ?? 'Choose a city',
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.w700,
-                        color: city != null ? Colors.white : Colors.white60,
-                        letterSpacing: -0.5,
-                        height: 1.1,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 3),
-                  Icon(
-                    Icons.keyboard_arrow_down_rounded,
-                    size: 24,
-                    color: Colors.white.withAlpha(200),
-                  ),
-                ],
-              ),
-            ),
-
-            const SizedBox(height: 8),
-
-            // Row 3: ← date/time · Hijri →
-            Row(
-              children: [
-                _DayArrow(icon: Icons.chevron_left_rounded, onTap: onPrevDay),
-                const SizedBox(width: 2),
-                Expanded(
-                  child: GestureDetector(
-                    onTap: onDateTap,
-                    behavior: HitTestBehavior.opaque,
-                    child: Wrap(
-                      crossAxisAlignment: WrapCrossAlignment.center,
+            // Left column: entire city block is one tap → city search
+            Expanded(
+              child: GestureDetector(
+                onTap: onCityTap,
+                behavior: HitTestBehavior.opaque,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text(
-                          isToday ? 'Today · $gregorianStr' : gregorianStr,
-                          style: TextStyle(
-                            color: Colors.white.withAlpha(190),
-                            fontSize: 13,
-                            fontWeight: FontWeight.w500,
+                        Flexible(
+                          child: Text(
+                            city?.displayName ?? 'Choose a city',
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.w700,
+                              color: city != null ? Colors.white : Colors.white60,
+                              letterSpacing: -0.5,
+                              height: 1.1,
+                            ),
                           ),
                         ),
-                        if (timeStr.isNotEmpty)
+                        const SizedBox(width: 2),
+                        Icon(
+                          Icons.keyboard_arrow_down_rounded,
+                          size: 20,
+                          color: Colors.white.withAlpha(180),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 5),
+                    // DayName • HH:MM:SS AM/PM • home_icon • gps_icon
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (isToday) ...[
                           Text(
-                            '  ·  $timeStr',
+                            dayName,
                             style: TextStyle(
-                              color: Colors.white.withAlpha(120),
-                              fontSize: 13,
+                              color: Colors.white.withAlpha(130),
+                              fontSize: 12,
+                            ),
+                          ),
+                          _HeaderDot(),
+                          Text(
+                            timeStr,
+                            style: TextStyle(
+                              color: Colors.white.withAlpha(130),
+                              fontSize: 12,
                               fontFeatures: const [FontFeature.tabularFigures()],
                             ),
                           ),
+                          _HeaderDot(),
+                        ],
+                        AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 300),
+                          child: Icon(
+                            isAtHome ? Icons.home_rounded : Icons.home_outlined,
+                            key: ValueKey(isAtHome),
+                            size: 14,
+                            color: isAtHome
+                                ? PrayCalcColors.light
+                                : Colors.white.withAlpha(90),
+                          ),
+                        ),
+                        _HeaderDot(),
+                        Icon(
+                          Icons.my_location_rounded,
+                          size: 13,
+                          color: gpsActive
+                              ? PrayCalcColors.light
+                              : Colors.white.withAlpha(90),
+                        ),
                       ],
                     ),
+                  ],
+                ),
+              ),
+            ),
+
+            const SizedBox(width: 10),
+
+            // Right column: date block (tappable → moon) + moon circle
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                GestureDetector(
+                  onTap: onMoonTap,
+                  behavior: HitTestBehavior.opaque,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: settings.hijriFirst
+                        ? [
+                            _HijriDateText(date: vd, isPrimary: true),
+                            const SizedBox(height: 2),
+                            _GregorianDateText(date: vd, isPrimary: false),
+                          ]
+                        : [
+                            _GregorianDateText(date: vd, isPrimary: true),
+                            const SizedBox(height: 2),
+                            _HijriDateText(date: vd, isPrimary: false),
+                          ],
                   ),
                 ),
-                if (hijriStr.isNotEmpty) ...[
-                  const SizedBox(width: 6),
-                  Text(
-                    hijriStr,
-                    style: TextStyle(
-                      color: PrayCalcColors.light.withAlpha(160),
-                      fontSize: 11,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                ],
-                const SizedBox(width: 2),
-                _DayArrow(icon: Icons.chevron_right_rounded, onTap: onNextDay),
               ],
             ),
           ],
@@ -457,14 +364,51 @@ class _HomeHeader extends StatelessWidget {
       ),
     );
   }
+}
 
-  static String _gregorianStr(DateTime dt) {
-    const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-    const months = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
-    ];
-    return '${days[dt.weekday - 1]}, ${dt.day} ${months[dt.month - 1]}';
+// Small helper widgets for the header
+
+class _HeaderDot extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) => Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 4),
+        child: Text('·',
+            style: TextStyle(color: Colors.white.withAlpha(50), fontSize: 12)),
+      );
+}
+
+class _HijriDateText extends StatelessWidget {
+  const _HijriDateText({required this.date, required this.isPrimary});
+  final DateTime date;
+  final bool isPrimary;
+
+  @override
+  Widget build(BuildContext context) {
+    final str = _hijriStr(date);
+    if (str.isEmpty) return const SizedBox.shrink();
+    final alpha = isPrimary ? 210 : 100;
+    final suffixAlpha = isPrimary ? 110 : 55;
+    return RichText(
+      text: TextSpan(
+        children: [
+          TextSpan(
+            text: str,
+            style: TextStyle(
+              color: Colors.white.withAlpha(alpha),
+              fontSize: 10,
+              fontWeight: isPrimary ? FontWeight.w600 : FontWeight.w400,
+            ),
+          ),
+          TextSpan(
+            text: ' AH',
+            style: TextStyle(
+              color: Colors.white.withAlpha(suffixAlpha),
+              fontSize: 9,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   static String _hijriStr(DateTime dt) {
@@ -475,29 +419,46 @@ class _HomeHeader extends StatelessWidget {
         'Jumada al-Awwal', 'Jumada al-Thani', 'Rajab', "Sha'ban",
         'Ramadan', 'Shawwal', "Dhu al-Qi'dah", 'Dhu al-Hijjah',
       ];
-      return '${hj.hDay} ${months[hj.hMonth - 1]} ${hj.hYear} AH';
+      return '${months[hj.hMonth - 1]} ${hj.hDay}, ${hj.hYear}';
     } catch (_) {
       return '';
     }
   }
 }
 
-class _DayArrow extends StatelessWidget {
-  const _DayArrow({required this.icon, this.onTap});
-  final IconData icon;
-  final VoidCallback? onTap;
+class _GregorianDateText extends StatelessWidget {
+  const _GregorianDateText({required this.date, required this.isPrimary});
+  final DateTime date;
+  final bool isPrimary;
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 6),
-        child: Icon(
-          icon,
-          size: 20,
-          color: onTap != null ? Colors.white54 : Colors.white12,
-        ),
+    const months = [
+      'January', 'February', 'March', 'April', 'May', 'June',
+      'July', 'August', 'September', 'October', 'November', 'December',
+    ];
+    final str = '${months[date.month - 1]} ${date.day}, ${date.year}';
+    final alpha = isPrimary ? 210 : 100;
+    final suffixAlpha = isPrimary ? 110 : 55;
+    return RichText(
+      text: TextSpan(
+        children: [
+          TextSpan(
+            text: str,
+            style: TextStyle(
+              color: Colors.white.withAlpha(alpha),
+              fontSize: 10,
+              fontWeight: isPrimary ? FontWeight.w600 : FontWeight.w400,
+            ),
+          ),
+          TextSpan(
+            text: ' CE',
+            style: TextStyle(
+              color: Colors.white.withAlpha(suffixAlpha),
+              fontSize: 9,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -622,7 +583,7 @@ class _ErrorBody extends StatelessWidget {
 
 // ─── Body ─────────────────────────────────────────────────────────────────────
 
-class _HomeBody extends ConsumerWidget {
+class _HomeBody extends ConsumerStatefulWidget {
   const _HomeBody({
     required this.times,
     required this.now,
@@ -637,51 +598,82 @@ class _HomeBody extends ConsumerWidget {
   final AppSettings settings;
   final bool isToday;
 
-  double get _nowH => now.hour + now.minute / 60.0 + now.second / 3600.0;
+  @override
+  ConsumerState<_HomeBody> createState() => _HomeBodyState();
+}
 
-  String _prayerLabel(String name, bool isRamadan, {bool isQasr = false}) {
-    if (isRamadan && name == 'Fajr') return 'Suhoor';
-    if (isRamadan && name == 'Maghrib') return 'Iftar';
+class _HomeBodyState extends ConsumerState<_HomeBody> {
+  int _lastActiveIdx = -2; // -2 = uninitialized
+  final Set<String> _modalShownKeys = {}; // 'YYYY-M-D:prayer' — shown once per day
+
+  double get _nowH =>
+      widget.now.hour + widget.now.minute / 60.0 + widget.now.second / 3600.0;
+
+  String _prayerLabel(String name, {bool isQasr = false}) {
     if (isQasr && (name == 'Dhuhr' || name == 'Asr' || name == 'Isha')) {
       return '$name (Qasr)';
     }
     return name;
   }
 
+  String? _prayerSublabel(String name) {
+    if (name == 'Fajr') return 'Suhoor';
+    if (name == 'Maghrib') return 'Iftar';
+    return null;
+  }
+
+  void _maybeShowAdhanModal(int activeIdx) {
+    if (activeIdx < 0 || activeIdx == _lastActiveIdx) return;
+    _lastActiveIdx = activeIdx;
+
+    final isFard = activeIdx != 1 && activeIdx != 6; // Sunrise=1, Qiyam=6
+    if (!isFard) return;
+
+    final meta = _prayers[activeIdx];
+    final now = widget.now;
+    final dateKey = '${now.year}-${now.month}-${now.day}:${meta.label}';
+    if (_modalShownKeys.contains(dateKey)) return;
+
+    final soundMode = widget.settings.prayerSounds[meta.label] ?? PrayerSoundMode.off;
+    if (soundMode == PrayerSoundMode.off) return;
+
+    _modalShownKeys.add(dateKey);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted && ModalRoute.of(context)?.isCurrent == true) {
+        AdhanModal.show(context, meta.label);
+      }
+    });
+  }
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final ramadan = ref.watch(ramadanProvider);
     final travel = ref.watch(travelProvider);
     final nowH = _nowH;
-    final activeIdx = isToday ? _activePrayerIndex(nowH) : -1;
-    final nextIdx = isToday ? _nextPrayerIndex(nowH) : -1;
-    final countdownStr = (isToday && nextIdx >= 0) ? _countdownString(nowH, nextIdx) : '';
+    final activeIdx = widget.isToday ? _activePrayerIndex(nowH) : -1;
+    final nextIdx = widget.isToday ? _nextPrayerIndex(nowH) : -1;
+    final countdownStr = (widget.isToday && nextIdx >= 0) ? _countdownString(nowH, nextIdx) : '';
 
-    final completions = settings.prayerTrackingEnabled
-        ? ref.watch(prayerCompletionProvider)
-        : const <String, String>{};
-    final completionNotifier = settings.prayerTrackingEnabled
-        ? ref.read(prayerCompletionProvider.notifier)
-        : null;
-    final todayStr = '${now.year}-${now.month.toString().padLeft(2, '0')}'
-        '-${now.day.toString().padLeft(2, '0')}';
+    if (widget.isToday) _maybeShowAdhanModal(activeIdx);
 
-    final nanCount = _prayers.where((m) => !m.getValue(times).isFinite).length;
+    final nanCount = _prayers.where((m) => !m.getValue(widget.times).isFinite).length;
 
     return ListView(
-      padding: const EdgeInsets.fromLTRB(16, 4, 16, 32),
+      padding: const EdgeInsets.fromLTRB(16, 6, 16, 32),
       children: [
-        if (nanCount >= 3) _PolarBanner(nanCount: nanCount),
-        if (isToday && ramadan.isRamadan) _RamadanBanner(ramadan: ramadan),
+        if (nanCount >= 3) ...[_PolarBanner(nanCount: nanCount), const SizedBox(height: 10)],
+        const TravelBanner(),
+        if (widget.isToday && ramadan.isRamadan) ...[const SizedBox(height: 10), _RamadanBanner(ramadan: ramadan)],
+        const SizedBox(height: 10),
 
-        // ── Prayer list — glass card ──────────────────────────────────────
+        // ── Prayer list — unified card ────────────────────────────────────
         ClipRRect(
           borderRadius: BorderRadius.circular(16),
           child: Container(
             decoration: BoxDecoration(
-              color: Colors.black.withAlpha(90),
+              color: const Color(0xFF0D2010).withAlpha(235),
               borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: Colors.white.withAlpha(18), width: 1),
+              border: Border.all(color: PrayCalcColors.mid.withAlpha(70), width: 1),
             ),
             child: Column(
               children: () {
@@ -690,36 +682,40 @@ class _HomeBody extends ConsumerWidget {
                 for (int i = 0; i < entries.length; i++) {
                   final idx = entries[i].key;
                   final meta = entries[i].value;
-                  final h = meta.getValue(times);
+                  final h = meta.getValue(widget.times);
                   final isFard = idx != 1 && idx != 6; // Sunrise=1, Qiyam=6
                   final prayerKey = meta.label;
-                  final isCompleted = isFard && completions.isNotEmpty
-                      ? completionNotifier?.isCompleted(todayStr, prayerKey) ?? false
-                      : false;
                   final isActiveTile = idx == activeIdx;
                   final isNextTile = idx == nextIdx;
 
+                  final soundMode = widget.settings.prayerSounds[prayerKey] ?? PrayerSoundMode.off;
+
                   tiles.add(
                     _PrayerTile(
-                      label: _prayerLabel(meta.label, ramadan.isRamadan,
-                          isQasr: travel.isQasr),
+                      label: _prayerLabel(meta.label, isQasr: travel.isQasr),
+                      sublabel: (widget.isToday && ramadan.isRamadan) ? _prayerSublabel(meta.label) : null,
                       hours: h,
-                      use24h: settings.use24h,
+                      use24h: widget.settings.use24h,
                       isActive: isActiveTile,
                       isNext: isNextTile,
-                      isSunrise: meta.label == 'Sunrise',
+                      isFard: isFard,
+                      soundMode: soundMode,
+                      onSoundTap: isFard
+                          ? () {
+                              const cycle = [
+                                PrayerSoundMode.off,
+                                PrayerSoundMode.vibrate,
+                                PrayerSoundMode.beep,
+                                PrayerSoundMode.adhan,
+                                PrayerSoundMode.silent,
+                              ];
+                              final cur = cycle.indexOf(soundMode);
+                              final next = cycle[(cur < 0 ? 0 : cur + 1) % cycle.length];
+                              ref.read(settingsProvider.notifier).setPrayerSound(prayerKey, next);
+                            }
+                          : null,
                       countdown: isNextTile && countdownStr.isNotEmpty
                           ? countdownStr
-                          : null,
-                      isCompleted: isCompleted,
-                      onCompletionToggle: isFard && isToday
-                          ? () {
-                              if (isCompleted) {
-                                completionNotifier?.unmark(todayStr, prayerKey);
-                              } else {
-                                completionNotifier?.markCompleted(todayStr, prayerKey);
-                              }
-                            }
                           : null,
                     ),
                   );
@@ -743,27 +739,27 @@ class _HomeBody extends ConsumerWidget {
           ),
         ),
 
-        const SizedBox(height: 16),
+        const SizedBox(height: 10),
 
         // ── Bottom action cards ───────────────────────────────────────────
         Row(
           children: [
             _ActionCard(
               icon: Icons.calendar_view_month_outlined,
-              label: 'Monthly\nTable',
+              label: 'Monthly\nTimes',
               onTap: () => context.push(Routes.calendar),
             ),
             const SizedBox(width: 10),
             _ActionCard(
-              icon: Icons.calendar_today_outlined,
-              label: 'Yearly\nCalendar',
-              onTap: () => context.push(Routes.yearlyCalendar),
+              icon: Icons.blur_circular_outlined,
+              label: 'Dua &\nDhikr',
+              onTap: () => context.push(Routes.tasbeeh),
             ),
             const SizedBox(width: 10),
             _ActionCard(
-              icon: Icons.explore_outlined,
-              label: 'Qibla\nDirection',
-              onTap: () => context.go(Routes.qibla),
+              icon: Icons.bar_chart_outlined,
+              label: 'Prayer\nStats',
+              onTap: () => context.push(Routes.stats),
             ),
           ],
         ),
@@ -772,8 +768,8 @@ class _HomeBody extends ConsumerWidget {
   }
 
   double _adjustedH(int idx) {
-    final h = _prayers[idx].getValue(times);
-    if (idx == _prayers.length - 1 && h < _prayers[idx - 1].getValue(times)) {
+    final h = _prayers[idx].getValue(widget.times);
+    if (idx == _prayers.length - 1 && h < _prayers[idx - 1].getValue(widget.times)) {
       return h + 24;
     }
     return h;
@@ -782,16 +778,24 @@ class _HomeBody extends ConsumerWidget {
   int _activePrayerIndex(double nowH) {
     int last = -1;
     for (int i = 0; i < _prayers.length; i++) {
-      final h = _prayers[i].getValue(times);
+      final h = _prayers[i].getValue(widget.times);
       if (!h.isFinite) continue;
       if (_adjustedH(i) <= nowH) last = i;
+    }
+    if (last == -1) {
+      // Pre-dawn: between midnight and Fajr.
+      // If we're past Qiyam (unadjusted), highlight Qiyam.
+      final qH = widget.times.qiyam;
+      if (qH.isFinite && qH <= nowH) return _prayers.length - 1;
+      // Otherwise highlight Isha (last prayer of previous night).
+      return _prayers.indexWhere((p) => p.label == 'Isha');
     }
     return last;
   }
 
   int _nextPrayerIndex(double nowH) {
     for (int i = 0; i < _prayers.length; i++) {
-      final h = _prayers[i].getValue(times);
+      final h = _prayers[i].getValue(widget.times);
       if (!h.isFinite) continue;
       if (_adjustedH(i) > nowH) return i;
     }
@@ -799,7 +803,7 @@ class _HomeBody extends ConsumerWidget {
   }
 
   String _countdownString(double nowH, int nextIdx) {
-    final h = _prayers[nextIdx].getValue(times);
+    final h = _prayers[nextIdx].getValue(widget.times);
     if (!h.isFinite) return '';
     double diff = _adjustedH(nextIdx) - nowH;
     if (diff < 0) diff += 24;
@@ -807,7 +811,9 @@ class _HomeBody extends ConsumerWidget {
     final hh = totalSec ~/ 3600;
     final mm = (totalSec % 3600) ~/ 60;
     final ss = totalSec % 60;
-    return '${hh.toString().padLeft(2, '0')}:${mm.toString().padLeft(2, '0')}:${ss.toString().padLeft(2, '0')}';
+    if (totalSec < 60) return '${ss}s';
+    if (hh == 0) return '$mm:${ss.toString().padLeft(2, '0')}';
+    return '$hh:${mm.toString().padLeft(2, '0')}:${ss.toString().padLeft(2, '0')}';
   }
 }
 
@@ -820,21 +826,23 @@ class _PrayerTile extends StatelessWidget {
     required this.use24h,
     required this.isActive,
     required this.isNext,
-    this.isSunrise = false,
+    required this.isFard,
+    required this.soundMode,
+    this.sublabel,
+    this.onSoundTap,
     this.countdown,
-    this.isCompleted = false,
-    this.onCompletionToggle,
   });
 
   final String label;
+  final String? sublabel;
   final double hours;
   final bool use24h;
   final bool isActive;
   final bool isNext;
-  final bool isSunrise;
+  final bool isFard;
+  final PrayerSoundMode soundMode;
+  final VoidCallback? onSoundTap;
   final String? countdown;
-  final bool isCompleted;
-  final VoidCallback? onCompletionToggle;
 
   @override
   Widget build(BuildContext context) {
@@ -845,41 +853,58 @@ class _PrayerTile extends StatelessWidget {
     final Color timeColor;
 
     if (isActive) {
-      bg = PrayCalcColors.dark.withAlpha(210);
+      bg = const Color(0xFF1A3A1E);
       nameColor = Colors.white;
-      timeColor = Colors.white;
-    } else if (isSunrise) {
-      bg = Colors.transparent;
-      nameColor = PrayCalcColors.light;
       timeColor = PrayCalcColors.light;
+    } else if (!isFard) {
+      // Sunrise and Qiyam — dimmer
+      bg = Colors.transparent;
+      nameColor = Colors.white.withAlpha(85);
+      timeColor = Colors.white.withAlpha(70);
     } else {
       bg = Colors.transparent;
-      nameColor = Colors.white.withAlpha(isNext ? 230 : 175);
-      timeColor = Colors.white.withAlpha(isNext ? 220 : 155);
+      nameColor = Colors.white.withAlpha(isNext ? 220 : 185);
+      timeColor = Colors.white.withAlpha(isNext ? 200 : 160);
     }
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 250),
-      decoration: BoxDecoration(
-        color: bg,
-        borderRadius: BorderRadius.circular(12),
-      ),
+      decoration: BoxDecoration(color: bg),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
         child: Row(
           children: [
+            // Prayer name + sublabel
             Expanded(
-              child: Text(
-                label,
-                style: TextStyle(
-                  color: nameColor,
-                  fontSize: 17,
-                  fontWeight: isActive ? FontWeight.w600 : FontWeight.w400,
-                  letterSpacing: -0.2,
-                ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.baseline,
+                textBaseline: TextBaseline.alphabetic,
+                children: [
+                  Text(
+                    label,
+                    style: TextStyle(
+                      color: nameColor,
+                      fontSize: 17,
+                      fontWeight: isActive ? FontWeight.w600 : FontWeight.w400,
+                      letterSpacing: -0.2,
+                    ),
+                  ),
+                  if (sublabel != null) ...[
+                    const SizedBox(width: 5),
+                    Text(
+                      '($sublabel)',
+                      style: TextStyle(
+                        color: Colors.white.withAlpha(70),
+                        fontSize: 11,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  ],
+                ],
               ),
             ),
-            // Countdown pill — only shown on next prayer row
+
+            // Countdown pill
             if (countdown != null) ...[
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
@@ -899,8 +924,9 @@ class _PrayerTile extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(width: 10),
+              const SizedBox(width: 8),
             ],
+
             Text(
               timeStr,
               style: TextStyle(
@@ -911,23 +937,23 @@ class _PrayerTile extends StatelessWidget {
                 letterSpacing: -0.3,
               ),
             ),
-            if (onCompletionToggle != null) ...[
-              const SizedBox(width: 4),
-              IconButton(
-                onPressed: onCompletionToggle,
-                icon: Icon(
-                  isCompleted
-                      ? Icons.check_circle_rounded
-                      : Icons.radio_button_unchecked,
-                  color: isCompleted
-                      ? (isActive ? PrayCalcColors.light : PrayCalcColors.mid)
-                      : Colors.white.withAlpha(55),
-                  size: 20,
+
+            const SizedBox(width: 6),
+
+            // Sound mode dot (fard only) or blank spacer for alignment
+            if (isFard)
+              GestureDetector(
+                onTap: onSoundTap,
+                behavior: HitTestBehavior.opaque,
+                child: SizedBox(
+                  width: 28,
+                  height: 28,
+                  child: Center(child: _SoundDot(mode: soundMode, isActive: isActive)),
                 ),
-                padding: EdgeInsets.zero,
-                constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
-              ),
-            ],
+              )
+            else
+              const SizedBox(width: 28, height: 28),
+
           ],
         ),
       ),
@@ -944,6 +970,38 @@ class _PrayerTile extends StatelessWidget {
     final period = hh >= 12 ? 'PM' : 'AM';
     final h12 = hh % 12 == 0 ? 12 : hh % 12;
     return '$h12:${mm.toString().padLeft(2, '0')} $period';
+  }
+}
+
+class _SoundDot extends StatelessWidget {
+  const _SoundDot({required this.mode, required this.isActive});
+  final PrayerSoundMode mode;
+  final bool isActive;
+
+  @override
+  Widget build(BuildContext context) {
+    final IconData icon;
+    final Color color;
+
+    switch (mode) {
+      case PrayerSoundMode.off:
+        icon = Icons.notifications_off_outlined;
+        color = Colors.white.withAlpha(35);
+      case PrayerSoundMode.silent:
+        icon = Icons.notifications_paused_outlined;
+        color = Colors.white.withAlpha(100);
+      case PrayerSoundMode.vibrate:
+        icon = Icons.vibration_rounded;
+        color = Colors.white.withAlpha(160);
+      case PrayerSoundMode.beep:
+        icon = Icons.notifications_rounded;
+        color = Colors.white.withAlpha(210);
+      case PrayerSoundMode.adhan:
+        icon = Icons.volume_up_rounded;
+        color = Colors.white;
+    }
+
+    return Icon(icon, size: 15, color: color);
   }
 }
 
@@ -968,9 +1026,9 @@ class _ActionCard extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 16),
           decoration: BoxDecoration(
-            color: Colors.black.withAlpha(90),
+            color: const Color(0xFF0D2010).withAlpha(200),
             borderRadius: BorderRadius.circular(14),
-            border: Border.all(color: Colors.white.withAlpha(18), width: 1),
+            border: Border.all(color: PrayCalcColors.mid.withAlpha(65), width: 1),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
