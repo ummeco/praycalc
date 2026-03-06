@@ -142,7 +142,8 @@ function CodePanel({
   label?: string
   code?: string
 }) {
-  let child = Children.only(children)
+  let childArray = Children.toArray(children)
+  let child = childArray.find((c) => isValidElement(c)) ?? childArray[0]
 
   if (isValidElement(child)) {
     const props = child.props as { tag?: string; label?: string; code?: string }
