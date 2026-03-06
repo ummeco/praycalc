@@ -20,7 +20,7 @@ const SOCIAL_PROVIDERS = [
   {
     id: "google",
     label: "continueWithGoogle" as const,
-    available: false,
+    available: true,
     icon: (
       <svg width="16" height="16" viewBox="0 0 18 18" fill="none" aria-hidden="true">
         <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 01-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="currentColor"/>
@@ -428,6 +428,10 @@ export default function AccountPage() {
                   disabled={!available}
                   title={available ? t(label) : `${t(label)} — ${t("comingSoon")}`}
                   aria-label={available ? t(label) : `${t(label)} — ${t("comingSoon")}`}
+                  onClick={available && id === "google" ? () => {
+                    const authUrl = process.env.NEXT_PUBLIC_AUTH_URL || "https://auth.ummat.dev";
+                    window.location.href = `${authUrl}/signin/provider/google`;
+                  } : undefined}
                 >
                   {icon}
                 </button>
