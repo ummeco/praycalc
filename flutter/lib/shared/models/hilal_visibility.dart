@@ -139,23 +139,23 @@ const _kFB = <List<int>>[
   // ── Sun (Meeus Ch. 25) ──────────────────────────────────────────────────────
   final L0 = 280.46646 + 36000.76983 * T + 0.0003032 * T * T;
   final Msun = 357.52911 + 35999.05029 * T - 0.0001537 * T * T;
-  final Msun_r = (Msun % 360) * _kDeg;
+  final msunR = (Msun % 360) * _kDeg;
   final eSun = 0.016708634 - 0.000042037 * T;
-  final C = (1.914602 - 0.004817 * T - 0.000014 * T * T) * math.sin(Msun_r) +
-      (0.019993 - 0.000101 * T) * math.sin(2 * Msun_r) +
-      0.000289 * math.sin(3 * Msun_r);
-  final nu_r = Msun_r + C * _kDeg;
-  final R_km =
-      1.000001018 * (1 - eSun * eSun) / (1 + eSun * math.cos(nu_r)) * _kAuKm;
+  final C = (1.914602 - 0.004817 * T - 0.000014 * T * T) * math.sin(msunR) +
+      (0.019993 - 0.000101 * T) * math.sin(2 * msunR) +
+      0.000289 * math.sin(3 * msunR);
+  final nuR = msunR + C * _kDeg;
+  final rKm =
+      1.000001018 * (1 - eSun * eSun) / (1 + eSun * math.cos(nuR)) * _kAuKm;
   final omega = (125.04 - 1934.136 * T) * _kDeg;
-  final sunLon_r =
+  final sunlonR =
       (L0 + C - 0.00569 - 0.00478 * math.sin(omega)) * _kDeg;
   final eps = (23.439291111 - 0.013004167 * T) * _kDeg;
 
   final sunGCRS = [
-    R_km * math.cos(sunLon_r),
-    R_km * math.sin(sunLon_r) * math.cos(eps),
-    R_km * math.sin(sunLon_r) * math.sin(eps),
+    rKm * math.cos(sunlonR),
+    rKm * math.sin(sunlonR) * math.cos(eps),
+    rKm * math.sin(sunlonR) * math.sin(eps),
   ];
 
   // ── Moon (Meeus Ch. 47) ─────────────────────────────────────────────────────
@@ -188,15 +188,15 @@ const _kFB = <List<int>>[
   final A2 = (53.09 + 479264.290 * T) * _kDeg;
   final A3 = (313.45 + 481266.484 * T) * _kDeg;
 
-  final D_r = (D % 360) * _kDeg;
-  final M_r = (M % 360) * _kDeg;
-  final Mp_r = (Mp % 360) * _kDeg;
-  final F_r = (F % 360) * _kDeg;
+  final dR = (D % 360) * _kDeg;
+  final mR = (M % 360) * _kDeg;
+  final mpR = (Mp % 360) * _kDeg;
+  final fR = (F % 360) * _kDeg;
   final E = 1 - 0.002516 * T - 0.0000074 * T * T;
 
   double Sl = 0, Sr = 0;
   for (final row in _kLD) {
-    final arg = row[0] * D_r + row[1] * M_r + row[2] * Mp_r + row[3] * F_r;
+    final arg = row[0] * dR + row[1] * mR + row[2] * mpR + row[3] * fR;
     final absM = row[1].abs();
     final eCorr = absM == 2
         ? E * E
@@ -212,7 +212,7 @@ const _kFB = <List<int>>[
 
   double Sb = 0;
   for (final row in _kFB) {
-    final arg = row[0] * D_r + row[1] * M_r + row[2] * Mp_r + row[3] * F_r;
+    final arg = row[0] * dR + row[1] * mR + row[2] * mpR + row[3] * fR;
     final absM = row[1].abs();
     final eCorr = absM == 2
         ? E * E
@@ -223,23 +223,23 @@ const _kFB = <List<int>>[
   }
   Sb += -2235 * math.sin(Lp * _kDeg) +
       382 * math.sin(A3) +
-      175 * math.sin(A1 - F_r) +
-      175 * math.sin(A1 + F_r) +
+      175 * math.sin(A1 - fR) +
+      175 * math.sin(A1 + fR) +
       127 * math.sin((Lp - Mp) * _kDeg) -
       115 * math.sin((Lp + Mp) * _kDeg);
 
-  final moonLon_r = (Lp + Sl * 1e-6) * _kDeg;
-  final moonLat_r = (Sb * 1e-6) * _kDeg;
+  final moonlonR = (Lp + Sl * 1e-6) * _kDeg;
+  final moonlatR = (Sb * 1e-6) * _kDeg;
   final moonDistKm = 385000.56 + Sr * 0.001;
 
   final moonGCRS = [
-    moonDistKm * math.cos(moonLat_r) * math.cos(moonLon_r),
+    moonDistKm * math.cos(moonlatR) * math.cos(moonlonR),
     moonDistKm *
-        (math.cos(eps) * math.cos(moonLat_r) * math.sin(moonLon_r) -
-            math.sin(eps) * math.sin(moonLat_r)),
+        (math.cos(eps) * math.cos(moonlatR) * math.sin(moonlonR) -
+            math.sin(eps) * math.sin(moonlatR)),
     moonDistKm *
-        (math.sin(eps) * math.cos(moonLat_r) * math.sin(moonLon_r) +
-            math.cos(eps) * math.sin(moonLat_r)),
+        (math.sin(eps) * math.cos(moonlatR) * math.sin(moonlonR) +
+            math.cos(eps) * math.sin(moonlatR)),
   ];
 
   return (moon: moonGCRS, sun: sunGCRS, moonDistKm: moonDistKm);

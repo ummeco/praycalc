@@ -59,12 +59,14 @@ class MoonScreen extends ConsumerWidget {
           _HijriCard(hijri: hijri, now: now),
           const SizedBox(height: 12),
           _LunarCycleCard(result: moonResult),
-          const SizedBox(height: 12),
+          Divider(height: 28, color: PrayCalcColors.mid.withAlpha(30)),
           _HilalForecastCard(hijri: hijri, city: city),
           const SizedBox(height: 12),
           _HilalWorldMapCard(hijri: hijri, city: city),
-          const SizedBox(height: 12),
+          Divider(height: 28, color: PrayCalcColors.mid.withAlpha(30)),
           _WeekRow(now: now),
+          Divider(height: 28, color: PrayCalcColors.mid.withAlpha(30)),
+          _IslamicEventsSection(hijri: hijri),
           const SizedBox(height: 12),
           _NextRamadanCard(hijri: hijri),
           const SizedBox(height: 40),
@@ -115,23 +117,28 @@ class _MoonImageHeader extends StatelessWidget {
       children: [
         const SizedBox(height: 8),
         Container(
-          width: 200,
-          height: 200,
+          width: 240,
+          height: 240,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             boxShadow: [
               BoxShadow(
-                color: Colors.white.withAlpha(18),
-                blurRadius: 40,
-                spreadRadius: 8,
+                color: PrayCalcColors.light.withAlpha(25),
+                blurRadius: 60,
+                spreadRadius: 12,
+              ),
+              BoxShadow(
+                color: Colors.white.withAlpha(12),
+                blurRadius: 30,
+                spreadRadius: 4,
               ),
             ],
           ),
           child: ClipOval(
             child: Image.network(
               imageUrl,
-              width: 200,
-              height: 200,
+              width: 240,
+              height: 240,
               fit: BoxFit.cover,
               loadingBuilder: (_, child, progress) => progress == null
                   ? child
@@ -1276,6 +1283,198 @@ class _DayCell extends StatelessWidget {
                   ? theme.colorScheme.primary
                   : theme.colorScheme.onSurface.withAlpha(200),
             ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ── Islamic calendar events ──────────────────────────────────────────────────
+
+class _IslamicEvent {
+  const _IslamicEvent({
+    required this.hijriMonth,
+    required this.hijriDay,
+    required this.name,
+    required this.nameAr,
+  });
+  final int hijriMonth;
+  final int hijriDay;
+  final String name;
+  final String nameAr;
+}
+
+const _islamicEvents = [
+  _IslamicEvent(hijriMonth: 1, hijriDay: 1, name: 'Islamic New Year', nameAr: '\u0631\u0623\u0633 \u0627\u0644\u0633\u0646\u0629 \u0627\u0644\u0647\u062C\u0631\u064A\u0629'),
+  _IslamicEvent(hijriMonth: 1, hijriDay: 10, name: 'Day of Ashura', nameAr: '\u064A\u0648\u0645 \u0639\u0627\u0634\u0648\u0631\u0627\u0621'),
+  _IslamicEvent(hijriMonth: 3, hijriDay: 12, name: 'Mawlid an-Nabi', nameAr: '\u0627\u0644\u0645\u0648\u0644\u062F \u0627\u0644\u0646\u0628\u0648\u064A'),
+  _IslamicEvent(hijriMonth: 7, hijriDay: 27, name: "Isra' and Mi'raj", nameAr: '\u0627\u0644\u0625\u0633\u0631\u0627\u0621 \u0648\u0627\u0644\u0645\u0639\u0631\u0627\u062C'),
+  _IslamicEvent(hijriMonth: 8, hijriDay: 15, name: "Sha'ban Night", nameAr: '\u0644\u064A\u0644\u0629 \u0627\u0644\u0646\u0635\u0641 \u0645\u0646 \u0634\u0639\u0628\u0627\u0646'),
+  _IslamicEvent(hijriMonth: 9, hijriDay: 1, name: 'Ramadan Begins', nameAr: '\u0628\u062F\u0627\u064A\u0629 \u0631\u0645\u0636\u0627\u0646'),
+  _IslamicEvent(hijriMonth: 9, hijriDay: 27, name: 'Laylatul Qadr', nameAr: '\u0644\u064A\u0644\u0629 \u0627\u0644\u0642\u062F\u0631'),
+  _IslamicEvent(hijriMonth: 10, hijriDay: 1, name: 'Eid al-Fitr', nameAr: '\u0639\u064A\u062F \u0627\u0644\u0641\u0637\u0631'),
+  _IslamicEvent(hijriMonth: 12, hijriDay: 8, name: 'Day of Tarwiyah', nameAr: '\u064A\u0648\u0645 \u0627\u0644\u062A\u0631\u0648\u064A\u0629'),
+  _IslamicEvent(hijriMonth: 12, hijriDay: 9, name: 'Day of Arafah', nameAr: '\u064A\u0648\u0645 \u0639\u0631\u0641\u0629'),
+  _IslamicEvent(hijriMonth: 12, hijriDay: 10, name: 'Eid al-Adha', nameAr: '\u0639\u064A\u062F \u0627\u0644\u0623\u0636\u062D\u0649'),
+];
+
+class _UpcomingEvent {
+  const _UpcomingEvent({
+    required this.event,
+    required this.gregorianDate,
+    required this.daysUntil,
+  });
+  final _IslamicEvent event;
+  final DateTime gregorianDate;
+  final int daysUntil;
+}
+
+class _IslamicEventsSection extends StatelessWidget {
+  const _IslamicEventsSection({required this.hijri});
+  final HijriCalendar hijri;
+
+  List<_UpcomingEvent> _computeUpcoming() {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final results = <_UpcomingEvent>[];
+
+    for (final event in _islamicEvents) {
+      // Try current Hijri year first, then next year
+      for (final yearOffset in [0, 1]) {
+        final targetYear = hijri.hYear + yearOffset;
+        try {
+          final h = HijriCalendar()
+            ..hYear = targetYear
+            ..hMonth = event.hijriMonth
+            ..hDay = event.hijriDay;
+          final greg = h.hijriToGregorian(h.hYear, h.hMonth, h.hDay);
+          final gregDay = DateTime(greg.year, greg.month, greg.day);
+          final diff = gregDay.difference(today).inDays;
+          if (diff >= 0) {
+            results.add(_UpcomingEvent(
+              event: event,
+              gregorianDate: gregDay,
+              daysUntil: diff,
+            ));
+            break;
+          }
+        } catch (_) {
+          // Skip if date conversion fails
+        }
+      }
+    }
+
+    results.sort((a, b) => a.daysUntil.compareTo(b.daysUntil));
+    return results;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final upcoming = _computeUpcoming();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 2, bottom: 10),
+          child: Row(
+            children: [
+              Icon(Icons.nightlight_round,
+                  size: 18, color: PrayCalcColors.mid),
+              const SizedBox(width: 8),
+              Text('Upcoming Islamic Events',
+                  style: theme.textTheme.titleSmall
+                      ?.copyWith(fontWeight: FontWeight.w600)),
+            ],
+          ),
+        ),
+        for (final item in upcoming)
+          _IslamicEventTile(item: item),
+      ],
+    );
+  }
+}
+
+class _IslamicEventTile extends StatelessWidget {
+  const _IslamicEventTile({required this.item});
+  final _UpcomingEvent item;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isToday = item.daysUntil == 0;
+    final gregStr =
+        '${_gregorianMonths[item.gregorianDate.month - 1]} ${item.gregorianDate.day}, ${item.gregorianDate.year}';
+    final daysStr = isToday
+        ? 'Today'
+        : item.daysUntil == 1
+            ? 'Tomorrow'
+            : '${item.daysUntil} days';
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      decoration: BoxDecoration(
+        color: isToday
+            ? const Color(0xFFFFD700).withAlpha(20)
+            : theme.cardTheme.color,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: isToday
+              ? const Color(0xFFFFD700).withAlpha(100)
+              : theme.dividerColor.withAlpha(50),
+        ),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  item.event.name,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: isToday
+                        ? const Color(0xFFFFD700)
+                        : theme.colorScheme.onSurface,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  item.event.nameAr,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    fontSize: 12,
+                    color: theme.colorScheme.onSurface.withAlpha(140),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                gregStr,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  fontSize: 11,
+                  color: theme.colorScheme.onSurface.withAlpha(160),
+                ),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                daysStr,
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w700,
+                  color: isToday
+                      ? const Color(0xFFFFD700)
+                      : PrayCalcColors.mid,
+                ),
+              ),
+            ],
           ),
         ],
       ),

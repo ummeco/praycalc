@@ -441,3 +441,63 @@ class _HistoryChart extends StatelessWidget {
     );
   }
 }
+
+// ── Public body widget for embedding in tabs ─────────────────────────────────
+
+/// Tasbeeh counter body without Scaffold — for embedding in DuaDhikrScreen tabs.
+class TasbeehBody extends ConsumerStatefulWidget {
+  const TasbeehBody({super.key});
+
+  @override
+  ConsumerState<TasbeehBody> createState() => _TasbeehBodyExternalState();
+}
+
+class _TasbeehBodyExternalState extends ConsumerState<TasbeehBody> {
+  final Set<int> _completedInCycle = {};
+  int _lastPresetIndex = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    final state = ref.watch(tasbeehProvider);
+    _checkCompletion(context, state);
+    return Column(
+      children: [
+        Expanded(child: _TasbeehBody(state: state)),
+        _HistorySection(state: state),
+      ],
+    );
+  }
+
+  void _checkCompletion(BuildContext context, TasbeehState state) {
+    if (state.presetIndex != _lastPresetIndex) {
+      final completedIndex = _lastPresetIndex;
+      _completedInCycle.add(completedIndex);
+      final preset = state.presets[completedIndex];
+      HapticFeedback.lightImpact();
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!context.mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('\u2713 ${preset.label} \u00d7 ${preset.target}'),
+            duration: const Duration(seconds: 2),
+          ),
+        );
+      });
+      if (_completedInCycle.length >= state.presets.length) {
+        _completedInCycle.clear();
+        HapticFeedback.heavyImpact();
+        final totalDhikr = state.presets.fold<int>(0, (sum, p) => sum + p.target);
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (!context.mounted) return;
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Tasbih complete! $totalDhikr dhikr'),
+              duration: const Duration(seconds: 3),
+            ),
+          );
+        });
+      }
+    }
+    _lastPresetIndex = state.presetIndex;
+  }
+}

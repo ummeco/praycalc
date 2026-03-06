@@ -753,7 +753,7 @@ class _HomeBodyState extends ConsumerState<_HomeBody> {
             _ActionCard(
               icon: Icons.blur_circular_outlined,
               label: 'Dua &\nDhikr',
-              onTap: () => context.push(Routes.tasbeeh),
+              onTap: () => context.push(Routes.duaDhikr),
             ),
             const SizedBox(width: 10),
             _ActionCard(

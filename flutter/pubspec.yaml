@@ -75,6 +75,8 @@ dependencies:
   sign_in_with_apple: ^7.0.0
   google_sign_in: ^6.2.2
   crypto: ^3.0.3
+  flutter_map: ^8.2.2
+  latlong2: ^0.9.1
 
 dev_dependencies:
   flutter_test:

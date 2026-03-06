@@ -19,7 +19,7 @@ import '../../features/settings/about_screen.dart';
 import '../../features/settings/notification_settings_screen.dart';
 import '../../features/settings/settings_screen.dart';
 import '../../features/stats/prayer_stats_screen.dart';
-import '../../features/tasbeeh/tasbeeh_screen.dart';
+import '../../features/dua_dhikr/dua_dhikr_screen.dart';
 import '../../features/smart_home/smart_home_settings_screen.dart';
 import '../../features/subscription/subscription_screen.dart';
 import '../../features/travel/travel_rulings_screen.dart';
@@ -39,7 +39,7 @@ class Routes {
   static const notificationSettings = '/settings/notifications';
   static const about                = '/about';
   static const moon                 = '/moon';
-  static const tasbeeh              = '/tasbeeh';
+  static const duaDhikr             = '/dua-dhikr';
   static const agendas              = '/agendas';
   static const agendaEdit           = '/agendas/edit';
   static const stats                = '/stats';
@@ -93,9 +93,9 @@ final appRouter = GoRouter(
               const NoTransitionPage(child: QiblaScreen()),
         ),
         GoRoute(
-          path: Routes.tasbeeh,
+          path: Routes.duaDhikr,
           pageBuilder: (context, state) =>
-              const NoTransitionPage(child: TasbeehScreen()),
+              const NoTransitionPage(child: DuaDhikrScreen()),
         ),
         GoRoute(
           path: Routes.agendas,
