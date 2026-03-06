@@ -65,16 +65,32 @@ export function useClock({
   useEffect(() => {
     prevNextPrayerRef.current = null;
 
+    // Cache formatters — avoids 86,400 Intl constructions per day
+    const timeFmt = new Intl.DateTimeFormat("en-US", {
+      timeZone: timezone,
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false,
+    });
+    const isoDateFmt = new Intl.DateTimeFormat("en-CA", {
+      timeZone: timezone,
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    });
+    const fullDateFmt = new Intl.DateTimeFormat("en-US", {
+      timeZone: timezone,
+      weekday: "long",
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+    });
+
     function tick() {
       const now = new Date();
 
-      const tParts = new Intl.DateTimeFormat("en-US", {
-        timeZone: timezone,
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-        hour12: false,
-      }).formatToParts(now);
+      const tParts = timeFmt.formatToParts(now);
       const getT = (t: string) =>
         tParts.find((p) => p.type === t)?.value ?? "00";
 
@@ -111,23 +127,12 @@ export function useClock({
       setIsAfterMaghrib(prayers.Maghrib ? hhmm >= prayers.Maghrib : false);
 
       // Date / moon / hijri — only when local date changes
-      const isoDate = new Intl.DateTimeFormat("en-CA", {
-        timeZone: timezone,
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-      }).format(now);
+      const isoDate = isoDateFmt.format(now);
 
       if (isoDate !== prevDateStrRef.current) {
         prevDateStrRef.current = isoDate;
 
-        const dParts = new Intl.DateTimeFormat("en-US", {
-          timeZone: timezone,
-          weekday: "long",
-          month: "long",
-          day: "numeric",
-          year: "numeric",
-        }).formatToParts(now);
+        const dParts = fullDateFmt.formatToParts(now);
         const getD = (t: string) =>
           dParts.find((p) => p.type === t)?.value ?? "";
 

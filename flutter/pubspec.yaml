@@ -2,7 +2,7 @@ name: praycalc_app
 description: PrayCalc — GPS-accurate Islamic prayer times for iOS and Android.
 publish_to: 'none'
 
-version: 0.4.1+1
+version: 0.9.2+9
 
 environment:
   sdk: ^3.7.0

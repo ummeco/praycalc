@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { searchLocation, reverseGeocode, type GeoResult } from "@/lib/geo";
@@ -25,6 +25,17 @@ interface RecentCity {
   slug: string;
   name: string;
 }
+
+const CYCLE_CITIES = [
+  "Mecca, Saudi Arabia",
+  "New York, NY",
+  "Istanbul, Turkey",
+  "London, UK",
+  "Jakarta, Indonesia",
+  "Karachi, Pakistan",
+  "Cairo, Egypt",
+  "Kuala Lumpur, Malaysia",
+];
 
 const POPULAR_CITIES: RecentCity[] = [
   { name: "Mecca", slug: "sa/makkah/mecca" },
@@ -91,9 +102,12 @@ export default function LocationSearch({
   const [recentCities, setRecentCities] = useState<RecentCity[]>([]);
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [permState, setPermState] = useState<PermissionState | "unknown">("unknown");
+  const [cycleIdx, setCycleIdx] = useState(0);
+  const [cycleFading, setCycleFading] = useState(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const cycleRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   // Track geolocation permission state so the dropdown item only shows when granted
   useEffect(() => {
@@ -103,6 +117,35 @@ export default function LocationSearch({
       result.onchange = () => setPermState(result.state);
     }).catch(() => setPermState("prompt"));
   }, []);
+
+  // Cycling placeholder — rotate city names every 3s with fade
+  const startCycling = useCallback(() => {
+    if (cycleRef.current) return;
+    cycleRef.current = setInterval(() => {
+      setCycleFading(true);
+      setTimeout(() => {
+        setCycleIdx((i) => (i + 1) % CYCLE_CITIES.length);
+        setCycleFading(false);
+      }, 150);
+    }, 3000);
+  }, []);
+
+  const stopCycling = useCallback(() => {
+    if (cycleRef.current) {
+      clearInterval(cycleRef.current);
+      cycleRef.current = null;
+    }
+    setCycleFading(false);
+  }, []);
+
+  useEffect(() => {
+    if (compact || focused) {
+      stopCycling();
+    } else {
+      startCycling();
+    }
+    return stopCycling;
+  }, [compact, focused, startCycling, stopCycling]);
 
   // Pre-query dropdown: shown when focused, empty query, not compact
   const showPreQuery = !compact && focused && query.trim().length === 0;
@@ -259,7 +302,7 @@ export default function LocationSearch({
     <div ref={wrapperRef} className={compact ? "w-full" : "w-full max-w-[480px]"}>
       {/* Search input — relative wrapper so dropdowns position flush below */}
       <div className="relative">
-        <div className={`search-input-wrap${compact ? " search-input-wrap--compact" : ""}`}>
+        <div className={`search-input-wrap${compact ? " search-input-wrap--compact" : ""}${!compact && cycleFading ? " search-cycling-fade" : ""}`}>
           <button
             type="button"
             onClick={useGPS}
@@ -290,7 +333,7 @@ export default function LocationSearch({
           <input
             ref={inputRef}
             type="text"
-            placeholder={compact ? t("searchCompact") : t("searchPlaceholder")}
+            placeholder={compact ? t("searchCompact") : (focused ? t("searchPlaceholder") : CYCLE_CITIES[cycleIdx])}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onFocus={handleFocus}

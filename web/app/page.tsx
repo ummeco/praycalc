@@ -6,7 +6,15 @@ import HomeClient from "@/components/HomeClient";
 
 export default function HomePage() {
   return (
-    <main id="main-content" className="home-main">
+    <main id="main-content" className="home-main relative">
+      <a
+        href="https://praycalc.org"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="about-pill"
+      >
+        About PrayCalc
+      </a>
       <HomeRedirect />
       {/*
         The logo container (.logo-sunrise) has overflow:hidden — its bottom

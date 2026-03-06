@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -10,6 +10,8 @@ import CityInfoHeader from "./CityInfoHeader";
 import PrayerGrid from "./PrayerGrid";
 import FeatureTiles from "./FeatureTiles";
 import PrayerArrivalOverlay from "./PrayerArrivalOverlay";
+import AdhanToast from "./AdhanToast";
+import OnboardingTooltip from "./OnboardingTooltip";
 import SettingsGear from "./SettingsGear";
 import { DISPLAY_PRAYERS, type PrayerResult } from "@/lib/prayer-utils";
 import { qiblaAngle, compassDir } from "@/lib/qibla";
@@ -80,6 +82,7 @@ export default function CityPageClient({
   const [qiblaOpen, setQiblaOpen] = useState(false);
   const [monthlyOpen, setMonthlyOpen] = useState(false);
   const [yearlyOpen, setYearlyOpen] = useState(false);
+  const [toastPrayer, setToastPrayer] = useState<keyof PrayerResult | null>(null);
 
   // ── Adhan / arrival overlay ──────────────────────────────────────────────
   const adhan = useAdhan({ soundMode, adhanVoice, mutedPrayers });
@@ -91,12 +94,21 @@ export default function CityPageClient({
     ? ["Qiyam", ...DISPLAY_PRAYERS]
     : DISPLAY_PRAYERS;
 
+  // ── Prayer arrival: trigger overlay + toast ─────────────────────────────
+  const triggerRef = useRef(adhan.triggerArrival);
+  triggerRef.current = adhan.triggerArrival;
+
+  const handlePrayerArrival = useCallback((arrived: keyof PrayerResult) => {
+    triggerRef.current(arrived);
+    setToastPrayer(arrived);
+  }, []);
+
   // ── Clock / prayer detection ──────────────────────────────────────────────
   const clock = useClock({
     prayers,
     timezone,
     displayList,
-    onPrayerArrival: adhan.triggerArrival,
+    onPrayerArrival: handlePrayerArrival,
   });
 
   const {
@@ -176,6 +188,15 @@ export default function CityPageClient({
         />
       )}
 
+      {/* Adhan toast — top-right slide-in */}
+      {toastPrayer && (
+        <AdhanToast
+          prayer={toastPrayer}
+          time={prayers[toastPrayer] ?? ""}
+          onClose={() => setToastPrayer(null)}
+        />
+      )}
+
       {/* Top bar: logo + search + gear */}
       <div className="city-page-header">
         <div className="shrink-0">
@@ -198,35 +219,44 @@ export default function CityPageClient({
             <LocationSearch compact />
           </div>
 
-          <SettingsGear
-            lightMode={settings.lightMode}
-            hanafi={hanafi}
-            use24h={use24h}
-            countdown={countdown}
-            showQiyam={showQiyam}
-            onToggleLightMode={toggleLightMode}
-            onToggleHanafi={toggleHanafi}
-            onToggleUse24h={toggleUse24h}
-            onToggleCountdown={toggleCountdown}
-            onToggleShowQiyam={toggleShowQiyam}
-            soundMode={soundMode}
-            adhanVoice={adhanVoice}
-            onSetSoundMode={setSoundModeAndSave}
-            onSetAdhanVoice={setAdhanVoiceAndSave}
-            homeMode={homeMode}
-            homeCity={homeCity}
-            locationName={locationName}
-            onSetHomeMode={setHomeModeAndSave}
-            onClearHome={clearHome}
-            onSetHomeCityThisCity={handleSetHomeCityThisCity}
-            onSwitchHomeModeToCity={handleSwitchHomeModeToCity}
-            isLoggedIn={isLoggedIn}
-            userName={session?.displayName}
-            userInitials={session?.initials}
-            userPhotoUrl={session?.photoUrl}
-            onLogin={() => router.push("/account")}
-            onLogout={logout}
-          />
+          <OnboardingTooltip
+            storageKey="praycalc-tooltip-adhan-seen"
+            requireKey="praycalc-tooltip-home-seen"
+            delay={10000}
+            timeout={8000}
+            text="Get adhan reminders at prayer time — tap here to enable."
+            arrow="up"
+          >
+            <SettingsGear
+              lightMode={settings.lightMode}
+              hanafi={hanafi}
+              use24h={use24h}
+              countdown={countdown}
+              showQiyam={showQiyam}
+              onToggleLightMode={toggleLightMode}
+              onToggleHanafi={toggleHanafi}
+              onToggleUse24h={toggleUse24h}
+              onToggleCountdown={toggleCountdown}
+              onToggleShowQiyam={toggleShowQiyam}
+              soundMode={soundMode}
+              adhanVoice={adhanVoice}
+              onSetSoundMode={setSoundModeAndSave}
+              onSetAdhanVoice={setAdhanVoiceAndSave}
+              homeMode={homeMode}
+              homeCity={homeCity}
+              locationName={locationName}
+              onSetHomeMode={setHomeModeAndSave}
+              onClearHome={clearHome}
+              onSetHomeCityThisCity={handleSetHomeCityThisCity}
+              onSwitchHomeModeToCity={handleSwitchHomeModeToCity}
+              isLoggedIn={isLoggedIn}
+              userName={session?.displayName}
+              userInitials={session?.initials}
+              userPhotoUrl={session?.photoUrl}
+              onLogin={() => router.push("/account")}
+              onLogout={logout}
+            />
+          </OnboardingTooltip>
         </div>
       </div>
 
