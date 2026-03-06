@@ -3,7 +3,7 @@ import { test, expect } from "@playwright/test";
 /**
  * Homepage E2E tests.
  *
- * The homepage shows a logo, city search input, GPS button, popular city chips,
+ * The homepage shows a logo, city search input, GPS pill, location pills,
  * and a moon phase card. GeoPrompt appears after 1.5s unless dismissed before.
  *
  * We pre-set localStorage to dismiss the geo prompt in tests that don't need it,
@@ -12,15 +12,13 @@ import { test, expect } from "@playwright/test";
 
 test.describe("Homepage", () => {
   test.beforeEach(async ({ page }) => {
-    // Pre-dismiss the geo prompt so it doesn't interfere with unrelated tests
-    await page.addInitScript(() => {
-      localStorage.setItem("pc_geo_prompt_dismissed", "1");
-    });
+    // Navigate to establish origin, dismiss geo prompt, then reload
+    await page.goto("/");
+    await page.evaluate(() => localStorage.setItem("pc_geo_prompt_dismissed", "1"));
+    await page.reload();
   });
 
   test("loads and renders core elements", async ({ page }) => {
-    await page.goto("/");
-
     // Logo is visible
     await expect(page.locator("img[alt='PrayCalc']").or(page.locator("svg")).first()).toBeVisible();
 
@@ -32,7 +30,6 @@ test.describe("Homepage", () => {
   });
 
   test("renders search input with correct placeholder", async ({ page }) => {
-    await page.goto("/");
     const searchInput = page.locator(
       'input[placeholder="Search cities, airports, zip codes..."]',
     );
@@ -40,48 +37,12 @@ test.describe("Homepage", () => {
     await expect(searchInput).toBeEnabled();
   });
 
-  test("renders GPS use-my-location button", async ({ page }) => {
-    await page.goto("/");
-    const gpsBtn = page.locator(".gps-location-btn");
-    await expect(gpsBtn).toBeVisible();
-    await expect(gpsBtn).toContainText("Use my location");
-  });
-
-  test("renders popular city chips", async ({ page }) => {
-    await page.goto("/");
-
-    // Wait for client-side hydration — PopularCities is client-rendered
-    const chips = page.locator(".popular-city-chip");
-    await expect(chips).toHaveCount(6);
-
-    // Verify specific cities are present
-    await expect(chips.filter({ hasText: "Mecca" })).toBeVisible();
-    await expect(chips.filter({ hasText: "Medina" })).toBeVisible();
-    await expect(chips.filter({ hasText: "London" })).toBeVisible();
-    await expect(chips.filter({ hasText: "New York" })).toBeVisible();
-    await expect(chips.filter({ hasText: "Istanbul" })).toBeVisible();
-    await expect(chips.filter({ hasText: "Cairo" })).toBeVisible();
-  });
-
-  test("clicking a popular city chip navigates to that city page", async ({
-    page,
-  }) => {
-    await page.goto("/");
-
-    const londonChip = page
-      .locator(".popular-city-chip")
-      .filter({ hasText: "London" });
-    await expect(londonChip).toBeVisible();
-    await londonChip.click();
-
-    // Should navigate to London's city page
-    await page.waitForURL(/\/gb\/england\/london/, { timeout: 15_000 });
-    await expect(page).toHaveURL(/\/gb\/england\/london/);
+  test("renders GPS use-my-location pill", async ({ page }) => {
+    const gpsPill = page.locator(".gps-location-btn").or(page.locator(".location-gps-pill"));
+    await expect(gpsPill.first()).toBeVisible();
   });
 
   test("city search shows dropdown results when typing", async ({ page }) => {
-    await page.goto("/");
-
     const searchInput = page.locator(
       'input[placeholder="Search cities, airports, zip codes..."]',
     );
@@ -103,8 +64,6 @@ test.describe("Homepage", () => {
   });
 
   test("city search result shows slug hint", async ({ page }) => {
-    await page.goto("/");
-
     const searchInput = page.locator(
       'input[placeholder="Search cities, airports, zip codes..."]',
     );
@@ -121,8 +80,6 @@ test.describe("Homepage", () => {
   });
 
   test("selecting a search result navigates to city page", async ({ page }) => {
-    await page.goto("/");
-
     const searchInput = page.locator(
       'input[placeholder="Search cities, airports, zip codes..."]',
     );
@@ -141,8 +98,6 @@ test.describe("Homepage", () => {
   });
 
   test("search dropdown closes when pressing Escape", async ({ page }) => {
-    await page.goto("/");
-
     const searchInput = page.locator(
       'input[placeholder="Search cities, airports, zip codes..."]',
     );
@@ -157,22 +112,23 @@ test.describe("Homepage", () => {
   });
 
   test("moon phase card is rendered", async ({ page }) => {
-    await page.goto("/");
-
     // Moon phase section is present
     const moonCard = page.locator(".home-moon-card");
     await expect(moonCard).toBeVisible();
   });
 
   test("page title includes PrayCalc", async ({ page }) => {
-    await page.goto("/");
     await expect(page).toHaveTitle(/PrayCalc/i);
   });
 });
 
 test.describe("Homepage — geolocation prompt", () => {
+  // Clear geolocation permission so the prompt actually shows
+  // (the global config grants geolocation, which suppresses the prompt)
+  test.use({ permissions: [] });
+
   test("geo prompt appears after delay when not dismissed", async ({ page }) => {
-    // Do NOT pre-dismiss — let the prompt show
+    // Navigate fresh — do NOT dismiss the prompt
     await page.goto("/");
 
     // GeoPrompt fires after DELAY_MS=1500ms
@@ -191,7 +147,7 @@ test.describe("Homepage — geolocation prompt", () => {
     await expect(geoPrompt).toBeVisible({ timeout: 5_000 });
 
     // Click the dismiss button
-    const dismissBtn = geoPrompt.locator('[aria-label="Dismiss"]');
+    const dismissBtn = geoPrompt.locator(".geo-prompt-close");
     await dismissBtn.click();
 
     // Prompt should disappear
@@ -207,7 +163,7 @@ test.describe("Homepage — geolocation prompt", () => {
     await expect(geoPrompt).toBeVisible({ timeout: 5_000 });
 
     // Dismiss it
-    await geoPrompt.locator('[aria-label="Dismiss"]').click();
+    await geoPrompt.locator(".geo-prompt-close").click();
     await expect(geoPrompt).not.toBeVisible();
 
     // Check the dismissal flag was persisted

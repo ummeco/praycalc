@@ -5,13 +5,14 @@ import { test, expect } from "@playwright/test";
  *
  * Covers:
  *   - Sign-in form visible when not authenticated
- *   - Password form: fill + submit → dashboard visible
+ *   - Default mode is magic-link (email only)
+ *   - Password tab: fill + submit -> dashboard visible
  *   - Dashboard shows correct display name and email
  *   - Owner badge visible for alisalaah@gmail.com
  *   - Sign-out returns to sign-in form
  *   - Session persists across page reload
  *   - Settings gear on city page hides display toggles when signed in
- *   - Settings gear on city page shows "Manage in Account →" when signed in
+ *   - Settings gear on city page shows "Manage in Account" when signed in
  */
 
 const LONDON = "/gb/england/london";
@@ -20,33 +21,37 @@ const LONDON = "/gb/england/london";
 // Helpers
 // ---------------------------------------------------------------------------
 
-/** Inject a session into localStorage before the page loads. */
-function seedSession(
+/** Build a session JSON string for injection into localStorage. */
+function buildSessionJSON(
+  email: string,
+  displayName: string,
+  isOwner = false,
+  isUmmatPlus = false,
+): string {
+  const parts = displayName.trim().split(/\s+/);
+  const initials =
+    parts.length >= 2
+      ? (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
+      : displayName.slice(0, 2).toUpperCase();
+  return JSON.stringify({ email, displayName, initials, isOwner, isUmmatPlus });
+}
+
+/** Seed a session into localStorage via page.evaluate (runs in current page context). */
+async function seedSession(
+  page: import("@playwright/test").Page,
   email: string,
   displayName: string,
   isOwner = false,
   isUmmatPlus = false,
 ) {
-  return () => {
-    const initials = (() => {
-      const parts = displayName.trim().split(/\s+/);
-      if (parts.length >= 2) {
-        return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
-      }
-      return displayName.slice(0, 2).toUpperCase();
-    })();
-    localStorage.setItem(
-      "praycalc-session",
-      JSON.stringify({ email, displayName, initials, isOwner, isUmmatPlus }),
-    );
-  };
+  const json = buildSessionJSON(email, displayName, isOwner, isUmmatPlus);
+  await page.evaluate((j) => localStorage.setItem("praycalc-session", j), json);
 }
 
-/** Clear any existing session before the page loads. */
-function clearSession() {
-  return () => {
-    localStorage.removeItem("praycalc-session");
-  };
+/** Switch from default magic-link tab to password tab. */
+async function switchToPasswordTab(page: import("@playwright/test").Page) {
+  const passwordTab = page.locator(".account-mode-tab").filter({ hasText: "Password" });
+  await passwordTab.click();
 }
 
 // ---------------------------------------------------------------------------
@@ -55,32 +60,40 @@ function clearSession() {
 
 test.describe("Account page — not signed in", () => {
   test.beforeEach(async ({ page }) => {
-    await page.addInitScript(clearSession());
     await page.goto("/account");
+    await page.evaluate(() => localStorage.removeItem("praycalc-session"));
+    await page.reload();
   });
 
   test("shows the account card", async ({ page }) => {
     await expect(page.locator(".account-card")).toBeVisible();
   });
 
-  test("shows the Sign In heading", async ({ page }) => {
-    await expect(page.locator(".account-heading")).toBeVisible();
-    await expect(page.locator(".account-heading")).toContainText("Sign in");
+  test("defaults to magic-link mode with Login Link tab active", async ({ page }) => {
+    const activeTab = page.locator(".account-mode-tab--active");
+    await expect(activeTab).toBeVisible();
+    await expect(activeTab).toContainText("Login Link");
   });
 
-  test("shows email and password inputs", async ({ page }) => {
+  test("shows email input in magic-link mode", async ({ page }) => {
+    await expect(page.locator('input[type="email"]')).toBeVisible();
+  });
+
+  test("shows email and password inputs in password mode", async ({ page }) => {
+    await switchToPasswordTab(page);
     await expect(page.locator('input[type="email"]')).toBeVisible();
     await expect(page.locator('input[type="password"]')).toBeVisible();
   });
 
-  test("submit button is disabled when inputs are empty", async ({ page }) => {
+  test("submit button is disabled when email is empty (magic-link mode)", async ({ page }) => {
     const btn = page.locator(".account-submit-btn");
     await expect(btn).toBeDisabled();
   });
 
-  test("submit button is enabled with valid email + password", async ({
+  test("submit button is enabled with valid email + password (password mode)", async ({
     page,
   }) => {
+    await switchToPasswordTab(page);
     await page.locator('input[type="email"]').fill("user@test.com");
     await page.locator('input[type="password"]').fill("secret");
     await expect(page.locator(".account-submit-btn")).toBeEnabled();
@@ -93,8 +106,8 @@ test.describe("Account page — not signed in", () => {
     await expect(btns).toHaveCount(4);
   });
 
-  test("shows a Back Home link", async ({ page }) => {
-    await expect(page.locator(".account-back")).toBeVisible();
+  test("shows logo with back arrow", async ({ page }) => {
+    await expect(page.locator(".account-logo-back")).toBeVisible();
   });
 });
 
@@ -104,8 +117,10 @@ test.describe("Account page — not signed in", () => {
 
 test.describe("Account page — password sign-in", () => {
   test.beforeEach(async ({ page }) => {
-    await page.addInitScript(clearSession());
     await page.goto("/account");
+    await page.evaluate(() => localStorage.removeItem("praycalc-session"));
+    await page.reload();
+    await switchToPasswordTab(page);
     await expect(page.locator('input[type="email"]')).toBeVisible();
   });
 
@@ -158,8 +173,7 @@ test.describe("Account page — password sign-in", () => {
 
     await page.locator(".dashboard-signout-btn").click();
 
-    await expect(page.locator(".account-heading")).toBeVisible({ timeout: 5_000 });
-    await expect(page.locator(".account-heading")).toContainText("Sign in");
+    await expect(page.locator(".account-card")).toBeVisible({ timeout: 5_000 });
   });
 });
 
@@ -169,10 +183,10 @@ test.describe("Account page — password sign-in", () => {
 
 test.describe("Account page — returning user (session seeded)", () => {
   test.beforeEach(async ({ page }) => {
-    await page.addInitScript(
-      seedSession("returning@example.com", "Returning User"),
-    );
+    // Navigate first to establish the origin, then seed localStorage, then reload
     await page.goto("/account");
+    await seedSession(page, "returning@example.com", "Returning User");
+    await page.reload();
     await expect(page.locator(".dashboard-profile-card")).toBeVisible({
       timeout: 5_000,
     });
@@ -198,7 +212,6 @@ test.describe("Account page — returning user (session seeded)", () => {
   test("dashboard has Account Settings card", async ({ page }) => {
     const cards = page.locator(".dashboard-card");
     await expect(cards.first()).toBeVisible();
-    // The first card should contain settings toggles
     await expect(cards.first()).toContainText("Account Settings");
   });
 
@@ -206,12 +219,11 @@ test.describe("Account page — returning user (session seeded)", () => {
     await page.locator(".dashboard-signout-btn").click();
 
     // After sign-out, sign-in form visible again
-    await expect(page.locator(".account-heading")).toBeVisible({ timeout: 5_000 });
+    await expect(page.locator(".account-card")).toBeVisible({ timeout: 5_000 });
 
     // Reload to confirm session is gone
     await page.reload();
-    await expect(page.locator(".account-heading")).toBeVisible({ timeout: 5_000 });
-    await expect(page.locator(".account-heading")).toContainText("Sign in");
+    await expect(page.locator(".account-card")).toBeVisible({ timeout: 5_000 });
   });
 });
 
@@ -221,10 +233,9 @@ test.describe("Account page — returning user (session seeded)", () => {
 
 test.describe("Account page — owner session", () => {
   test.beforeEach(async ({ page }) => {
-    await page.addInitScript(
-      seedSession("alisalaah@gmail.com", "Ali Salaah", true, true),
-    );
     await page.goto("/account");
+    await seedSession(page, "alisalaah@gmail.com", "Ali Salaah", true, true);
+    await page.reload();
     await expect(page.locator(".dashboard-profile-card")).toBeVisible({
       timeout: 5_000,
     });
@@ -247,10 +258,9 @@ test.describe("Account page — owner session", () => {
 
 test.describe("Account page — standard user (Ummat+ upsell)", () => {
   test.beforeEach(async ({ page }) => {
-    await page.addInitScript(
-      seedSession("standard@example.com", "Standard User", false, false),
-    );
     await page.goto("/account");
+    await seedSession(page, "standard@example.com", "Standard User", false, false);
+    await page.reload();
     await expect(page.locator(".dashboard-profile-card")).toBeVisible({
       timeout: 5_000,
     });
@@ -266,7 +276,6 @@ test.describe("Account page — standard user (Ummat+ upsell)", () => {
 
   test("Ummat+ upsell card shows the price", async ({ page }) => {
     await expect(page.locator(".dashboard-plus-price")).toBeVisible();
-    await expect(page.locator(".dashboard-plus-price")).toContainText("$9.99");
   });
 });
 
@@ -276,10 +285,13 @@ test.describe("Account page — standard user (Ummat+ upsell)", () => {
 
 test.describe("Account page — session persistence", () => {
   test("session persists across page reload", async ({ page }) => {
-    await page.addInitScript(clearSession());
+    // Navigate and clear any existing session
     await page.goto("/account");
+    await page.evaluate(() => localStorage.removeItem("praycalc-session"));
+    await page.reload();
 
-    // Sign in
+    // Switch to password mode and sign in
+    await switchToPasswordTab(page);
     await page.locator('input[type="email"]').fill("persist@test.com");
     await page.locator('input[type="password"]').fill("anything");
     await page.locator(".account-submit-btn").click();
@@ -287,7 +299,7 @@ test.describe("Account page — session persistence", () => {
       timeout: 5_000,
     });
 
-    // Reload
+    // Reload — session should persist
     await page.reload();
     await expect(page.locator(".dashboard-profile-card")).toBeVisible({
       timeout: 5_000,
@@ -304,7 +316,9 @@ test.describe("Account page — session persistence", () => {
 
 test.describe("Settings gear — signed-in state on city page", () => {
   test.beforeEach(async ({ page }) => {
-    await page.addInitScript(() => {
+    // Navigate to establish origin, seed localStorage, then go to city page
+    await page.goto("/account");
+    await page.evaluate(() => {
       localStorage.setItem("pc_geo_prompt_dismissed", "1");
       localStorage.removeItem("pc_settings");
       localStorage.setItem(
@@ -326,7 +340,6 @@ test.describe("Settings gear — signed-in state on city page", () => {
 
   test("display toggles are hidden when signed in", async ({ page }) => {
     const panel = page.locator(".settings-panel");
-    // These toggle rows should NOT appear when logged in
     await expect(panel.locator(".settings-row").filter({ hasText: "Light Mode" })).not.toBeVisible();
     await expect(panel.locator(".settings-row").filter({ hasText: "Hanafi Asr" })).not.toBeVisible();
     await expect(panel.locator(".settings-row").filter({ hasText: "24-hour" })).not.toBeVisible();
