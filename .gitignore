@@ -51,8 +51,6 @@ flutter/.metadata
 
 # Swift/Xcode build artifacts
 **/.build/
-*.xcodeproj/
-*.xcworkspace/
 DerivedData/
 *.pcm
 *.o
