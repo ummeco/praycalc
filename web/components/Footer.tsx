@@ -2,9 +2,8 @@ import Link from "next/link";
 
 const PRAYCALC_LINKS = [
   { label: "Home", href: "/" },
-  { label: "About", href: "/about" },
-  { label: "Blog", href: "/blog" },
-  { label: "Contact", href: "/contact" },
+  { label: "For Institutions", href: "/institutions" },
+  { label: "For Masjids", href: "/masjids" },
 ];
 
 const EXPLORE_LINKS = [
@@ -54,8 +53,10 @@ export default function Footer() {
           </a>
         </p>
         <div className="flex items-center gap-3">
+          <Link href="/help" className="site-footer-legal-link">Help</Link>
+          <span className="text-white/15 text-xs">&middot;</span>
           <Link href="/privacy" className="site-footer-legal-link">Privacy</Link>
-          <span className="text-white/15 text-xs">&amp;</span>
+          <span className="text-white/15 text-xs">&middot;</span>
           <Link href="/terms" className="site-footer-legal-link">Terms</Link>
         </div>
       </div>
