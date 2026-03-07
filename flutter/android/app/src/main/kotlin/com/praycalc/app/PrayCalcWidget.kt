@@ -1,4 +1,4 @@
-package com.praycalc.praycalc_app
+package com.praycalc.app
 
 import android.content.Context
 import androidx.compose.runtime.Composable

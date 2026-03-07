@@ -1,4 +1,4 @@
-package com.praycalc.praycalc_app
+package com.praycalc.app
 
 import android.graphics.Canvas
 import android.graphics.Color

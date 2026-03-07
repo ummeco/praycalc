@@ -84,7 +84,7 @@
 	</array>
 	<key>BGTaskSchedulerPermittedIdentifiers</key>
 	<array>
-		<string>com.praycalc.praycalcApp.reschedule</string>
+		<string>com.praycalc.app.reschedule</string>
 	</array>
 	<key>CFBundleURLTypes</key>
 	<array>

@@ -1,4 +1,4 @@
-package com.praycalc.praycalc_app
+package com.praycalc.app
 
 import android.app.NotificationManager
 import android.content.Context
@@ -11,7 +11,7 @@ class MainActivity : FlutterActivity() {
         super.configureFlutterEngine(flutterEngine)
 
         // DnD / Focus mode detection channel
-        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "com.praycalc.praycalc_app/dnd")
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "com.praycalc.app/dnd")
             .setMethodCallHandler { call, result ->
                 when (call.method) {
                     "isDndActive" -> {

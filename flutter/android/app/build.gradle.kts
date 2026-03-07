@@ -17,7 +17,7 @@ if (localPropsFile.exists()) {
 }
 
 android {
-    namespace = "com.praycalc.praycalc_app"
+    namespace = "com.praycalc.app"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -40,7 +40,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.praycalc.praycalc_app"
+        applicationId = "com.praycalc.app"
         minSdk = 24
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode

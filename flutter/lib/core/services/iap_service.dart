@@ -22,7 +22,7 @@ class IAPService {
   IAPService._();
   static final instance = IAPService._();
 
-  static const _channel = MethodChannel('com.praycalc.praycalc_app/iap');
+  static const _channel = MethodChannel('com.praycalc.app/iap');
 
   static const productIdYearly = 'ummat_plus_yearly';
   bool _initialized = false;

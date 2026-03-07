@@ -17,7 +17,7 @@ class WatchBridgeService {
   WatchBridgeService._();
   static final instance = WatchBridgeService._();
 
-  static const _channel = MethodChannel('com.praycalc.praycalc_app/watch');
+  static const _channel = MethodChannel('com.praycalc.app/watch');
 
   bool _isReachable = false;
   bool get isWatchReachable => _isReachable;

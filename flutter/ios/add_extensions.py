@@ -14,7 +14,7 @@ import os, shutil, re
 
 IOS_DIR   = os.path.dirname(os.path.abspath(__file__))
 PBXPROJ   = os.path.join(IOS_DIR, "Runner.xcodeproj", "project.pbxproj")
-BUNDLE_ID = "com.praycalc.praycalcApp"
+BUNDLE_ID = "com.praycalc.app"
 APP_GROUP = "group.com.praycalc.app"
 
 # ── Deterministic UUID helpers ────────────────────────────────────────────────

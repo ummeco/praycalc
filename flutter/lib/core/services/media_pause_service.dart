@@ -21,7 +21,7 @@ class MediaPauseService {
   static final instance = MediaPauseService._();
 
   static const _channel = MethodChannel(
-    'com.praycalc.praycalc_app/audio_focus',
+    'com.praycalc.app/audio_focus',
   );
 
   bool _hasFocus = false;

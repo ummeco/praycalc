@@ -20,7 +20,7 @@
 -keep class es.antonborri.home_widget.** { *; }
 
 # PrayCalc app classes
--keep class com.praycalc.praycalc_app.** { *; }
+-keep class com.praycalc.app.** { *; }
 
 # Keep Kotlin metadata
 -keepattributes *Annotation*

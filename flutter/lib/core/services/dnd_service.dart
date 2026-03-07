@@ -11,7 +11,7 @@ class DndService {
   DndService._();
   static final instance = DndService._();
 
-  static const _channel = MethodChannel('com.praycalc.praycalc_app/dnd');
+  static const _channel = MethodChannel('com.praycalc.app/dnd');
 
   /// Returns `true` if DnD / total-silence / priority-only mode is active.
   Future<bool> isDndActive() async {

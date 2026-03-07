@@ -1,4 +1,4 @@
-package com.praycalc.praycalc_app
+package com.praycalc.app
 
 import android.content.BroadcastReceiver
 import android.content.Context

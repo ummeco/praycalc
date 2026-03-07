@@ -1,4 +1,4 @@
-package com.praycalc.praycalc_app
+package com.praycalc.app
 
 import android.app.*
 import android.content.Context
@@ -19,7 +19,7 @@ class ForegroundNotificationService : Service() {
         private const val CHANNEL_RAMADAN = "praycalc_ramadan"
         private const val NOTIFICATION_ID = 1
         private const val NOTIFICATION_ID_RAMADAN = 620
-        private const val ACTION_UPDATE = "com.praycalc.praycalc_app.UPDATE_SHADE"
+        private const val ACTION_UPDATE = "com.praycalc.app.UPDATE_SHADE"
 
         fun start(context: Context) {
             val intent = Intent(context, ForegroundNotificationService::class.java)
