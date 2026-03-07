@@ -73,6 +73,7 @@ body {
   border-radius: 1rem;
   border: 1px solid rgba(121, 194, 76, 0.35);
   background: rgba(30, 94, 47, 0.55);
+  cursor: text;
   -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
 }
@@ -476,6 +477,7 @@ html[data-theme="light"] .about-pill:hover {
 
 .search-dropdown-gps {
   background: rgba(121, 194, 76, 0.06);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 /* ── Search pre-query dropdown — history section ─────────────────────────── */
@@ -485,6 +487,10 @@ html[data-theme="light"] .about-pill:hover {
   display: flex;
   align-items: center;
   background: rgba(255, 255, 255, 0.025);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+.search-dropdown-history-row:last-of-type {
+  border-bottom: none;
 }
 
 /* Section row: label left + "Clear all" right */
@@ -494,6 +500,7 @@ html[data-theme="light"] .about-pill:hover {
   justify-content: space-between;
   padding: 0.4rem 0.75rem 0.4rem 1rem;
   background: rgba(255, 255, 255, 0.025);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .search-dropdown-section-label {

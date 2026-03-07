@@ -302,7 +302,10 @@ export default function LocationSearch({
     <div ref={wrapperRef} className={compact ? "w-full" : "w-full max-w-[480px]"}>
       {/* Search input — relative wrapper so dropdowns position flush below */}
       <div className="relative">
-        <div className={`search-input-wrap${compact ? " search-input-wrap--compact" : ""}${!compact && cycleFading ? " search-cycling-fade" : ""}`}>
+        <div
+          className={`search-input-wrap${compact ? " search-input-wrap--compact" : ""}${!compact && cycleFading ? " search-cycling-fade" : ""}`}
+          onClick={(e) => { if ((e.target as HTMLElement).tagName !== 'BUTTON' && !(e.target as HTMLElement).closest('button')) inputRef.current?.focus(); }}
+        >
           <button
             type="button"
             onClick={useGPS}
@@ -371,13 +374,12 @@ export default function LocationSearch({
         {/* Pre-query dropdown — GPS + history */}
         {showPreQuery && !open && (
           <div className="search-dropdown absolute top-[calc(100%-12px)] w-full rounded-b-xl overflow-hidden z-50">
-            {/* Use My Location — only shown when location is granted */}
-            {permState === "granted" && (
+            {/* Use My Location — always shown, triggers permission flow if needed */}
             <button
               type="button"
               onClick={useGPS}
               disabled={gpsLoading}
-              className="search-dropdown-item search-dropdown-gps w-full flex items-center gap-3 px-4 py-3.5 text-sm border-b hover:bg-[rgba(121,194,76,0.18)] transition-colors disabled:opacity-50"
+              className="search-dropdown-item search-dropdown-gps w-full flex items-center gap-3 px-4 py-3.5 text-sm cursor-pointer hover:bg-[rgba(121,194,76,0.18)] transition-colors disabled:opacity-50"
             >
               {gpsLoading ? (
                 <>
@@ -399,12 +401,11 @@ export default function LocationSearch({
                 </>
               )}
             </button>
-            )}
 
             {/* Search History — slightly tinted rows, with delete × per item */}
             {recentCities.length > 0 && (
               <>
-                <div className="search-dropdown-section-row border-b">
+                <div className="search-dropdown-section-row">
                   <span className="search-dropdown-section-label">Search History</span>
                   <button
                     type="button"
@@ -418,7 +419,7 @@ export default function LocationSearch({
                   </button>
                 </div>
                 {recentCities.map((city) => (
-                  <div key={city.slug} className="search-dropdown-history-row border-b">
+                  <div key={city.slug} className="search-dropdown-history-row">
                     <button
                       type="button"
                       onClick={() => navigateToSlug(city.slug, city.name)}
