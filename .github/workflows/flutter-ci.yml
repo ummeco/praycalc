@@ -61,14 +61,14 @@ jobs:
       - name: Get dependencies
         working-directory: flutter
         run: flutter pub get
-      - name: Build APK (release)
+      - name: Build App Bundle (release)
         working-directory: flutter
-        run: flutter build apk --release
-      - name: Upload APK
+        run: flutter build appbundle --release
+      - name: Upload AAB
         uses: actions/upload-artifact@v4
         with:
           name: praycalc-release-${{ github.sha }}
-          path: flutter/build/app/outputs/flutter-apk/app-release.apk
+          path: flutter/build/app/outputs/bundle/release/app-release.aab
           retention-days: 14
 
   build-ios:
