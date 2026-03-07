@@ -56,6 +56,8 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
+      - name: Inject google-services.json
+        run: echo "${{ secrets.GOOGLE_SERVICES_JSON }}" | base64 --decode > flutter/android/app/google-services.json
       - name: Get dependencies
         working-directory: flutter
         run: flutter pub get
@@ -82,6 +84,8 @@ jobs:
         with:
           channel: stable
           cache: true
+      - name: Inject GoogleService-Info.plist
+        run: echo "${{ secrets.GOOGLE_SERVICE_INFO_PLIST }}" | base64 --decode > flutter/ios/Runner/GoogleService-Info.plist
       - name: Get dependencies
         working-directory: flutter
         run: flutter pub get
@@ -117,6 +121,8 @@ jobs:
         run: |
           curl --proto '=https' --tlsv1.2 https://raw.githubusercontent.com/shorebirdtech/install/main/install.sh -sSf | bash
           echo "$HOME/.shorebird/bin" >> $GITHUB_PATH
+      - name: Inject google-services.json
+        run: echo "${{ secrets.GOOGLE_SERVICES_JSON }}" | base64 --decode > flutter/android/app/google-services.json
       - name: Get dependencies
         working-directory: flutter
         run: flutter pub get
@@ -143,6 +149,8 @@ jobs:
         run: |
           curl --proto '=https' --tlsv1.2 https://raw.githubusercontent.com/shorebirdtech/install/main/install.sh -sSf | bash
           echo "$HOME/.shorebird/bin" >> $GITHUB_PATH
+      - name: Inject GoogleService-Info.plist
+        run: echo "${{ secrets.GOOGLE_SERVICE_INFO_PLIST }}" | base64 --decode > flutter/ios/Runner/GoogleService-Info.plist
       - name: Get dependencies
         working-directory: flutter
         run: flutter pub get
