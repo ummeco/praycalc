@@ -1,3 +1,4 @@
+// ignore_for_file: non_constant_identifier_names
 import 'dart:math' as math;
 
 /// Odeh 2006 crescent visibility zone.

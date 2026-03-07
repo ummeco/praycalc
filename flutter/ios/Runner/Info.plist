@@ -86,6 +86,17 @@
 	<array>
 		<string>com.praycalc.praycalcApp.reschedule</string>
 	</array>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.695502620525-n2bmj3o3cpu4mp6p3kde6nc8in7o2sjt</string>
+			</array>
+		</dict>
+	</array>
 	<key>UIStatusBarHidden</key>
 	<false/>
 </dict>
