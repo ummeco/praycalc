@@ -12,6 +12,7 @@ import androidx.glance.appwidget.provideContent
 import androidx.glance.layout.*
 import androidx.glance.text.*
 import androidx.glance.background
+import androidx.glance.color.ColorProvider
 
 class PrayCalcMediumWidgetReceiver : GlanceAppWidgetReceiver() {
     override val glanceAppWidget: GlanceAppWidget = PrayCalcMediumWidget()
@@ -37,7 +38,7 @@ fun PrayCalcMediumContent(prayers: List<Pair<String?, String?>>, activePrayer: S
     Column(
         modifier = GlanceModifier.fillMaxSize().background(Color(0xFF1E5E2F)).padding(8.dp),
     ) {
-        Text("🕌 PrayCalc", style = TextStyle(color = ColorProvider(Color.White), fontWeight = FontWeight.Bold, fontSize = 13.sp))
+        Text("🕌 PrayCalc", style = TextStyle(color = ColorProvider(Color.White, Color.White), fontWeight = FontWeight.Bold, fontSize = 13.sp))
         Spacer(GlanceModifier.height(4.dp))
         prayers.forEach { (name, time) ->
             val isActive = name == activePrayer
@@ -48,7 +49,7 @@ fun PrayCalcMediumContent(prayers: List<Pair<String?, String?>>, activePrayer: S
                 Text(
                     name ?: "",
                     style = TextStyle(
-                        color = ColorProvider(if (isActive) Color(0xFFC9F27A) else Color.White),
+                        color = ColorProvider(if (isActive) Color(0xFFC9F27A) else Color.White, if (isActive) Color(0xFFC9F27A) else Color.White),
                         fontWeight = if (isActive) FontWeight.Bold else FontWeight.Medium,
                         fontSize = 11.sp,
                     ),
@@ -56,7 +57,7 @@ fun PrayCalcMediumContent(prayers: List<Pair<String?, String?>>, activePrayer: S
                 )
                 Text(
                     time ?: "--:--",
-                    style = TextStyle(color = ColorProvider(Color.White), fontSize = 11.sp),
+                    style = TextStyle(color = ColorProvider(Color.White, Color.White), fontSize = 11.sp),
                 )
             }
         }

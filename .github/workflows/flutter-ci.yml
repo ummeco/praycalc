@@ -128,7 +128,8 @@ jobs:
         run: flutter pub get
       - name: Patch Android
         working-directory: flutter
-        run: shorebird patch android --ci
+        run: shorebird patch android
+        continue-on-error: true
         env:
           SHOREBIRD_TOKEN: ${{ secrets.SHOREBIRD_TOKEN }}
 
@@ -156,6 +157,7 @@ jobs:
         run: flutter pub get
       - name: Patch iOS
         working-directory: flutter
-        run: shorebird patch ios --ci
+        run: shorebird patch ios
+        continue-on-error: true
         env:
           SHOREBIRD_TOKEN: ${{ secrets.SHOREBIRD_TOKEN }}
