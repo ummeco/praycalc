@@ -116,6 +116,7 @@ flutter:
     - assets/data/
     - assets/brand/
     - assets/audio/
+    - shorebird.yaml
 
   fonts:
     - family: Amiri
