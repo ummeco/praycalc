@@ -44,6 +44,11 @@ flutter/.metadata
 **/GoogleService-Info.plist
 **/google-services.json
 
+# Android signing
+**/key.properties
+**/upload-keystore.jks
+**/*.keystore
+
 # Swift/Xcode build artifacts
 **/.build/
 *.xcodeproj/
