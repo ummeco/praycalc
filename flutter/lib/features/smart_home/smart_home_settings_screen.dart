@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:praycalc_app/l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -150,10 +151,11 @@ class SmartHomeSettingsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l = AppLocalizations.of(context)!;
     final sub = ref.watch(subscriptionProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Smart Home')),
+      appBar: AppBar(title: Text(l.smartHomeTitle)),
       body: sub.isPlus
           ? const _SmartHomeBody()
           : const _UpgradePrompt(),
@@ -168,6 +170,7 @@ class _UpgradePrompt extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     return Center(
       child: Padding(
@@ -178,15 +181,13 @@ class _UpgradePrompt extends StatelessWidget {
             Icon(Icons.lock_outline, size: 64,
                 color: theme.colorScheme.onSurfaceVariant),
             const SizedBox(height: 16),
-            Text('Smart Home requires Ummat+',
+            Text(l.smartHomeRequiresPlus,
                 style: theme.textTheme.titleLarge
                     ?.copyWith(fontWeight: FontWeight.bold),
                 textAlign: TextAlign.center),
             const SizedBox(height: 8),
             Text(
-              'Control prayer announcements on Google Home, Alexa, '
-              'Siri, and Home Assistant. Configure which devices play '
-              'adhan, when to pause media, and set quiet hours.',
+              l.smartHomeRequiresPlusDesc,
               style: theme.textTheme.bodyMedium
                   ?.copyWith(color: theme.colorScheme.onSurfaceVariant),
               textAlign: TextAlign.center,
@@ -195,7 +196,7 @@ class _UpgradePrompt extends StatelessWidget {
             FilledButton.icon(
               onPressed: () => context.push(Routes.subscription),
               icon: const Icon(Icons.workspace_premium),
-              label: const Text('Upgrade to Ummat+'),
+              label: Text(l.subscriptionUpgrade),
               style: FilledButton.styleFrom(minimumSize: const Size(200, 48)),
             ),
           ],
@@ -212,6 +213,7 @@ class _SmartHomeBody extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l = AppLocalizations.of(context)!;
     final sh = ref.watch(_smartHomeProvider);
     final notifier = ref.read(_smartHomeProvider.notifier);
 
@@ -219,14 +221,14 @@ class _SmartHomeBody extends ConsumerWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       children: [
         // ── Integrations ──────────────────────────────────────────────────
-        _SectionHeader('Integrations'),
+        _SectionHeader(l.smartHomeIntegrations),
         _IntegrationCard(
           icon: Icons.home,
           iconColor: const Color(0xFF4285F4),
-          name: 'Google Home',
-          description: 'Broadcast adhan on Nest speakers and displays.',
+          name: l.smartHomeGoogleHome,
+          description: l.smartHomeBroadcastGoogle,
           status: _IntegrationStatus.notLinked,
-          actionLabel: 'Link account',
+          actionLabel: l.smartHomeLinkAccount,
           onAction: () => _launchOAuth(
             context,
             'https://api.praycalc.com/integrations/google-home/auth',
@@ -236,10 +238,10 @@ class _SmartHomeBody extends ConsumerWidget {
         _IntegrationCard(
           icon: Icons.speaker,
           iconColor: const Color(0xFF00CAFF),
-          name: 'Amazon Alexa',
-          description: 'Enable the PrayCalc skill on Alexa.',
+          name: l.smartHomeAlexa,
+          description: l.smartHomeEnableAlexa,
           status: _IntegrationStatus.notLinked,
-          actionLabel: 'Link account',
+          actionLabel: l.smartHomeLinkAccount,
           onAction: () => _launchOAuth(
             context,
             'https://api.praycalc.com/integrations/alexa/auth',
@@ -249,39 +251,39 @@ class _SmartHomeBody extends ConsumerWidget {
         _IntegrationCard(
           icon: Icons.phone_iphone,
           iconColor: const Color(0xFF007AFF),
-          name: 'Siri Shortcuts',
-          description: 'Ask Siri for prayer times or set automations.',
+          name: l.smartHomeSiri,
+          description: l.smartHomeSiriAsk,
           status: _IntegrationStatus.notLinked,
-          actionLabel: 'Setup guide',
+          actionLabel: l.smartHomeSetupGuide,
           onAction: () => _showSiriInstructions(context),
         ),
         const SizedBox(height: 10),
         _IntegrationCard(
           icon: Icons.developer_board,
           iconColor: const Color(0xFF41BDF5),
-          name: 'Home Assistant',
-          description: 'Add via HACS for full automation support.',
+          name: l.smartHomeHomeAssistant,
+          description: l.smartHomeHassAdd,
           status: _IntegrationStatus.notLinked,
-          actionLabel: 'Setup guide',
+          actionLabel: l.smartHomeSetupGuide,
           onAction: () => _showHassInstructions(context),
         ),
 
         const SizedBox(height: 24),
 
         // ── Devices ───────────────────────────────────────────────────────
-        _SectionHeader('Linked Speakers & Displays'),
+        _SectionHeader(l.smartHomeLinkedSpeakers),
         _DevicesPlaceholder(),
 
         const SizedBox(height: 24),
 
         // ── Alert display ─────────────────────────────────────────────────
-        _SectionHeader('Alert Display'),
+        _SectionHeader(l.smartHomeAlertDisplay),
         _SegmentRow<int>(
-          label: 'At adhan time show',
-          options: const [
-            _Opt(0, Icons.open_in_full, 'Modal'),
-            _Opt(1, Icons.notification_important_outlined, 'Corner'),
-            _Opt(2, Icons.notifications_off_outlined, 'None'),
+          label: l.smartHomeAtAdhanShow,
+          options: [
+            _Opt(0, Icons.open_in_full, l.smartHomeAlertModal),
+            _Opt(1, Icons.notification_important_outlined, l.smartHomeAlertCorner),
+            _Opt(2, Icons.notifications_off_outlined, l.smartHomeAlertNone),
           ],
           selected: sh.alertType,
           onChanged: notifier.setAlertType,
@@ -289,8 +291,8 @@ class _SmartHomeBody extends ConsumerWidget {
         const SizedBox(height: 8),
         SwitchListTile(
           contentPadding: EdgeInsets.zero,
-          title: const Text('Pause media at adhan'),
-          subtitle: const Text('Resumes after the adhan ends'),
+          title: Text(l.smartHomePauseMediaTitle),
+          subtitle: Text(l.smartHomePauseMediaSubtitle),
           value: sh.pauseMedia,
           onChanged: notifier.setPauseMedia,
         ),
@@ -298,7 +300,7 @@ class _SmartHomeBody extends ConsumerWidget {
         const SizedBox(height: 16),
 
         // ── Per-prayer audio ──────────────────────────────────────────────
-        _SectionHeader('Prayer Audio'),
+        _SectionHeader(l.smartHomePrayerAudioSection),
         ..._prayers.map((prayer) => _PrayerAudioRow(
               prayer: prayer,
               value: sh.audioFor(prayer),
@@ -308,22 +310,22 @@ class _SmartHomeBody extends ConsumerWidget {
         const SizedBox(height: 16),
 
         // ── Quiet hours ───────────────────────────────────────────────────
-        _SectionHeader('Quiet Hours'),
+        _SectionHeader(l.smartHomeQuietHoursSection),
         SwitchListTile(
           contentPadding: EdgeInsets.zero,
-          title: const Text('Enable quiet hours'),
-          subtitle: const Text('All smart home alerts are silenced'),
+          title: Text(l.smartHomeEnableQuietHours),
+          subtitle: Text(l.smartHomeQuietHoursSubtitle),
           value: sh.quietEnabled,
           onChanged: notifier.setQuietEnabled,
         ),
         if (sh.quietEnabled) ...[
           _TimeRow(
-            label: 'From',
+            label: l.smartHomeQuietFrom,
             time: sh.quietStart,
             onChanged: notifier.setQuietStart,
           ),
           _TimeRow(
-            label: 'To',
+            label: l.smartHomeQuietTo,
             time: sh.quietEnd,
             onChanged: notifier.setQuietEnd,
           ),
@@ -338,41 +340,44 @@ class _SmartHomeBody extends ConsumerWidget {
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri, mode: LaunchMode.inAppBrowserView);
     } else if (context.mounted) {
+      final l = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Could not open the link.')),
+        SnackBar(content: Text(l.smartHomeCouldNotOpen)),
       );
     }
   }
 
   void _showSiriInstructions(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     _showInstructionsSheet(
       context,
-      title: 'Siri Shortcuts Setup',
-      steps: const [
-        'Open the Shortcuts app on your iPhone or iPad.',
-        'Tap "+" to create a new shortcut.',
-        'Search for "PrayCalc" in the actions list.',
-        'Add "Next Prayer Time" or "Prayer Times Today".',
-        'Optionally add it to an automation (e.g. daily at Fajr).',
-        'Say "Hey Siri, next prayer time" to test.',
+      title: l.smartHomeSiriSetupTitle,
+      steps: [
+        l.smartHomeSiriStep1,
+        l.smartHomeSiriStep2,
+        l.smartHomeSiriStep3,
+        l.smartHomeSiriStep4,
+        l.smartHomeSiriStep5,
+        l.smartHomeSiriStep6,
       ],
-      footnote: 'Requires iOS 16 or later.',
+      footnote: l.smartHomeSiriFootnote,
     );
   }
 
   void _showHassInstructions(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     _showInstructionsSheet(
       context,
-      title: 'Home Assistant Setup',
-      steps: const [
-        'Install HACS (Home Assistant Community Store).',
-        'In HACS, search for "PrayCalc" and install.',
-        'Go to Settings > Devices & Services > Add Integration.',
-        'Search for "PrayCalc" and select it.',
-        'Enter your PrayCalc API key (generated in your account).',
-        'Configure your location and calculation method.',
+      title: l.smartHomeHassSetupTitle,
+      steps: [
+        l.smartHomeHassStep1,
+        l.smartHomeHassStep2,
+        l.smartHomeHassStep3,
+        l.smartHomeHassStep4,
+        l.smartHomeHassStep5,
+        l.smartHomeHassStep6,
       ],
-      footnote: 'Requires Home Assistant 2024.1+ with HACS.',
+      footnote: l.smartHomeHassFootnote,
       extraWidget: _ApiKeyButton(),
     );
   }
@@ -467,6 +472,7 @@ class _SectionHeader extends StatelessWidget {
 class _DevicesPlaceholder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     return Container(
       padding: const EdgeInsets.all(20),
@@ -486,13 +492,12 @@ class _DevicesPlaceholder extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('No devices linked yet',
+                Text(l.smartHomeNoDevices,
                     style: theme.textTheme.titleSmall
                         ?.copyWith(fontWeight: FontWeight.w600)),
                 const SizedBox(height: 4),
                 Text(
-                  'Link Google Home or Alexa above, then your speakers '
-                  'and displays will appear here.',
+                  l.smartHomeNoDevicesDesc,
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: theme.colorScheme.onSurfaceVariant,
                   ),
@@ -601,13 +606,6 @@ class _SegmentRow<T> extends StatelessWidget {
 
 // ─── Per-prayer audio row ─────────────────────────────────────────────────────
 
-const _audioLabels = ['Adhan', 'Beep', 'Silent'];
-const _audioIcons = [
-  Icons.volume_up_outlined,
-  Icons.notifications_outlined,
-  Icons.volume_off_outlined,
-];
-
 class _PrayerAudioRow extends StatelessWidget {
   const _PrayerAudioRow({
     required this.prayer,
@@ -621,7 +619,14 @@ class _PrayerAudioRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
+    final audioLabels = [l.smartHomeAudioAdhan, l.smartHomeAudioBeep, l.smartHomeAudioSilent];
+    const audioIcons = [
+      Icons.volume_up_outlined,
+      Icons.notifications_outlined,
+      Icons.volume_off_outlined,
+    ];
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5),
       child: Row(
@@ -661,14 +666,14 @@ class _PrayerAudioRow extends StatelessWidget {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(_audioIcons[i],
+                            Icon(audioIcons[i],
                                 size: 14,
                                 color: sel
                                     ? PrayCalcColors.light
                                     : theme.colorScheme.onSurfaceVariant),
                             const SizedBox(width: 4),
                             Text(
-                              _audioLabels[i],
+                              audioLabels[i],
                               style: TextStyle(
                                 fontSize: 11,
                                 fontWeight: sel
@@ -767,6 +772,7 @@ class _IntegrationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final isLinked = status == _IntegrationStatus.linked;
 
@@ -809,7 +815,7 @@ class _IntegrationCard extends StatelessWidget {
                     child: isLinked
                         ? OutlinedButton(
                             onPressed: onAction,
-                            child: const Text('Unlink'),
+                            child: Text(l.smartHomeUnlink),
                           )
                         : FilledButton.tonal(
                             onPressed: onAction,
@@ -832,6 +838,7 @@ class _StatusBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
@@ -842,7 +849,7 @@ class _StatusBadge extends StatelessWidget {
         borderRadius: BorderRadius.circular(6),
       ),
       child: Text(
-        isLinked ? 'Linked' : 'Not linked',
+        isLinked ? l.smartHomeLinkedStatus : l.smartHomeNotLinkedStatus,
         style: TextStyle(
           fontSize: 11,
           fontWeight: FontWeight.w500,
@@ -860,10 +867,11 @@ class _StatusBadge extends StatelessWidget {
 class _ApiKeyButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('API Key',
+        Text(l.smartHomeApiKey,
             style: Theme.of(context)
                 .textTheme
                 .titleSmall
@@ -872,20 +880,16 @@ class _ApiKeyButton extends StatelessWidget {
         FilledButton.tonal(
           onPressed: () {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text(
-                  'API key generation will be available once the '
-                  'PrayCalc smart service is deployed.',
-                ),
+              SnackBar(
+                content: Text(l.smartHomeApiKeyNotReady),
               ),
             );
           },
-          child: const Text('Generate API Key'),
+          child: Text(l.smartHomeGenerateApiKey),
         ),
         const SizedBox(height: 8),
         Text(
-          'You will need an API key to connect Home Assistant '
-          'to your PrayCalc account.',
+          l.smartHomeApiKeyDesc,
           style: TextStyle(
             color: Theme.of(context).colorScheme.onSurfaceVariant,
             fontSize: 13,

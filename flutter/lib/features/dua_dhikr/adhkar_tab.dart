@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:praycalc_app/l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../core/theme/app_theme.dart';
@@ -89,6 +90,7 @@ class _AdhkarTabState extends State<AdhkarTab>
   Widget build(BuildContext context) {
     super.build(context);
     final theme = Theme.of(context);
+    final l = AppLocalizations.of(context)!;
     final completed = _completedCount;
     final total = widget.adhkar.length;
     final progress = total > 0 ? completed / total : 0.0;
@@ -106,7 +108,7 @@ class _AdhkarTabState extends State<AdhkarTab>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      '$completed / $total completed',
+                      l.adhkarCompletedCount(completed, total),
                       style: theme.textTheme.bodyMedium?.copyWith(
                         fontWeight: FontWeight.w600,
                         color: PrayCalcColors.mid,
@@ -134,7 +136,7 @@ class _AdhkarTabState extends State<AdhkarTab>
                 TextButton.icon(
                   onPressed: _resetAll,
                   icon: const Icon(Icons.refresh, size: 16),
-                  label: const Text('Reset'),
+                  label: Text(l.adhkarReset),
                   style: TextButton.styleFrom(
                     foregroundColor: theme.colorScheme.onSurface.withAlpha(140),
                     textStyle: const TextStyle(fontSize: 12),

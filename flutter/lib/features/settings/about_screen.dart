@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:praycalc_app/l10n/app_localizations.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/theme/app_theme.dart';
@@ -11,8 +12,9 @@ class AboutScreen extends StatelessWidget {
       await launchUrl(Uri.parse(url));
     } catch (_) {
       if (context.mounted) {
+        final l = AppLocalizations.of(context)!;
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Could not open the link.')),
+          SnackBar(content: Text(l.aboutCouldNotOpen)),
         );
       }
     }
@@ -22,9 +24,10 @@ class AboutScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final cs = theme.colorScheme;
+    final l = AppLocalizations.of(context)!;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('About PrayCalc')),
+      appBar: AppBar(title: Text(l.aboutTitle)),
       body: ListView(
         padding: const EdgeInsets.symmetric(vertical: 24),
         children: [
@@ -63,7 +66,7 @@ class AboutScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'Version 0.4.1',
+                  l.aboutVersion('0.4.1'),
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: cs.onSurface.withAlpha(140),
                   ),
@@ -78,21 +81,21 @@ class AboutScreen extends StatelessWidget {
           // ── Info tiles ────────────────────────────────────────────────────
           ListTile(
             leading: const Icon(Icons.language),
-            title: const Text('Website'),
+            title: Text(l.aboutWebsite),
             subtitle: const Text('praycalc.com'),
             onTap: () => _tryLaunch(context, 'https://praycalc.com'),
             trailing: const Icon(Icons.open_in_new, size: 16),
           ),
           ListTile(
             leading: const Icon(Icons.privacy_tip_outlined),
-            title: const Text('Privacy Policy'),
+            title: Text(l.commonPrivacyPolicy),
             subtitle: const Text('praycalc.com/privacy'),
             onTap: () => _tryLaunch(context, 'https://praycalc.com/privacy'),
             trailing: const Icon(Icons.open_in_new, size: 16),
           ),
           ListTile(
             leading: const Icon(Icons.mail_outline),
-            title: const Text('Contact'),
+            title: Text(l.aboutContact),
             subtitle: const Text('support@praycalc.com'),
             onTap: () => _tryLaunch(context, 'mailto:support@praycalc.com'),
             trailing: const Icon(Icons.open_in_new, size: 16),
@@ -102,7 +105,7 @@ class AboutScreen extends StatelessWidget {
 
           ListTile(
             leading: const Icon(Icons.gavel_outlined),
-            title: const Text('Open Source Licenses'),
+            title: Text(l.aboutLicenses),
             trailing: const Icon(Icons.chevron_right),
             onTap: () => showLicensePage(
               context: context,
@@ -117,9 +120,7 @@ class AboutScreen extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
             child: Text(
-              '© ${DateTime.now().year} Ummat Dev. All rights reserved.\n\n'
-              'Prayer times calculated using the pray_calc_dart engine. '
-              'Accuracy depends on your GPS location and selected calculation method.',
+              l.aboutCopyright(DateTime.now().year),
               style: theme.textTheme.bodySmall?.copyWith(
                 color: cs.onSurface.withAlpha(120),
                 height: 1.5,

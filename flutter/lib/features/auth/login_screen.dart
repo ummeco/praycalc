@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:praycalc_app/l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
@@ -82,8 +83,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   Future<void> _forgotPassword() async {
     final email = _emailController.text.trim();
     if (email.isEmpty) {
+      final l = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Enter your email address first')),
+        SnackBar(content: Text(l.loginEnterEmailFirst)),
       );
       return;
     }
@@ -91,8 +93,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     try {
       await AuthService.instance.resetPassword(email);
       if (mounted) {
+        final l = AppLocalizations.of(context)!;
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Password reset email sent')),
+          SnackBar(content: Text(l.loginResetSent)),
         );
       }
     } on AuthException catch (e) {
@@ -103,8 +106,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       }
     } catch (_) {
       if (mounted) {
+        final l = AppLocalizations.of(context)!;
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Could not send reset email')),
+          SnackBar(content: Text(l.loginResetFailed)),
         );
       }
     }
@@ -114,10 +118,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   Widget build(BuildContext context) {
     final auth = ref.watch(authProvider);
     final theme = Theme.of(context);
+    final l = AppLocalizations.of(context)!;
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(_isSignUp ? 'Create Account' : 'Sign In'),
+        title: Text(_isSignUp ? l.loginCreateAccount : l.loginSignIn),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -136,8 +141,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 const SizedBox(height: 16),
                 Text(
                   _isSignUp
-                      ? 'Join PrayCalc'
-                      : 'Welcome back',
+                      ? l.loginJoinPrayCalc
+                      : l.loginWelcomeBack,
                   style: theme.textTheme.headlineMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
@@ -145,7 +150,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Sync your prayer data across devices',
+                  l.loginSyncSubtitle,
                   style: theme.textTheme.bodyMedium?.copyWith(
                     color: theme.colorScheme.onSurfaceVariant,
                   ),
@@ -183,8 +188,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                 color: theme.colorScheme.outline.withAlpha(120)),
                           ),
                           icon: _GoogleLogoIcon(),
-                          label: const Text('Continue with Google',
-                              style: TextStyle(fontSize: 15)),
+                          label: Text(l.loginContinueGoogle,
+                              style: const TextStyle(fontSize: 15)),
                         ),
                 ),
 
@@ -197,7 +202,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 12),
                         child: Text(
-                          'or',
+                          l.loginOr,
                           style: TextStyle(
                             color: theme.colorScheme.onSurfaceVariant,
                             fontSize: 13,
@@ -243,8 +248,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 if (_isSignUp) ...[
                   TextFormField(
                     controller: _nameController,
-                    decoration: const InputDecoration(
-                      labelText: 'Display name (optional)',
+                    decoration: InputDecoration(
+                      labelText: l.loginNameLabel,
                       prefixIcon: Icon(Icons.person_outline),
                       border: OutlineInputBorder(),
                     ),
@@ -257,20 +262,20 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 // ── Email ────────────────────────────────────────────
                 TextFormField(
                   controller: _emailController,
-                  decoration: const InputDecoration(
-                    labelText: 'Email',
-                    prefixIcon: Icon(Icons.email_outlined),
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    labelText: l.loginEmailLabel,
+                    prefixIcon: const Icon(Icons.email_outlined),
+                    border: const OutlineInputBorder(),
                   ),
                   keyboardType: TextInputType.emailAddress,
                   autocorrect: false,
                   textInputAction: TextInputAction.next,
                   validator: (value) {
                     if (value == null || value.trim().isEmpty) {
-                      return 'Email is required';
+                      return l.loginEmailRequired;
                     }
                     if (!value.contains('@') || !value.contains('.')) {
-                      return 'Enter a valid email address';
+                      return l.loginEmailInvalid;
                     }
                     return null;
                   },
@@ -281,7 +286,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 TextFormField(
                   controller: _passwordController,
                   decoration: InputDecoration(
-                    labelText: 'Password',
+                    labelText: l.loginPasswordLabel,
                     prefixIcon: const Icon(Icons.lock_outline),
                     border: const OutlineInputBorder(),
                     suffixIcon: IconButton(
@@ -299,10 +304,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   onFieldSubmitted: (_) => _submit(),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Password is required';
+                      return l.loginPasswordRequired;
                     }
                     if (_isSignUp && value.length < 8) {
-                      return 'Password must be at least 8 characters';
+                      return l.loginPasswordMinLength;
                     }
                     return null;
                   },
@@ -315,7 +320,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     alignment: Alignment.centerRight,
                     child: TextButton(
                       onPressed: auth.isLoading ? null : _forgotPassword,
-                      child: const Text('Forgot password?'),
+                      child: Text(l.loginForgotPassword),
                     ),
                   ),
                 const SizedBox(height: 16),
@@ -336,7 +341,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           ),
                         )
                       : Text(
-                          _isSignUp ? 'Create Account' : 'Sign In',
+                          _isSignUp ? l.loginCreateAccount : l.loginSignIn,
                           style: const TextStyle(fontSize: 16),
                         ),
                 ),
@@ -348,8 +353,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   children: [
                     Text(
                       _isSignUp
-                          ? 'Already have an account?'
-                          : 'New to PrayCalc?',
+                          ? l.loginAlreadyHaveAccount
+                          : l.loginNewToPrayCalc,
                       style: theme.textTheme.bodyMedium,
                     ),
                     TextButton(
@@ -359,7 +364,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                               ref.read(authProvider.notifier).clearError();
                               setState(() => _isSignUp = !_isSignUp);
                             },
-                      child: Text(_isSignUp ? 'Sign In' : 'Create Account'),
+                      child: Text(_isSignUp ? l.loginSignIn : l.loginCreateAccount),
                     ),
                   ],
                 ),
@@ -397,7 +402,7 @@ class _SocialLoadingButton extends StatelessWidget {
             child: CircularProgressIndicator(strokeWidth: 2, color: fg.withAlpha(180)),
           ),
           const SizedBox(width: 10),
-          Text('Signing in…', style: TextStyle(color: fg, fontSize: 15)),
+          Text(AppLocalizations.of(context)!.loginSigningIn, style: TextStyle(color: fg, fontSize: 15)),
         ],
       ),
     );

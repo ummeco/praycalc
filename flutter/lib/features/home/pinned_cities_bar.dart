@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:praycalc_app/l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/providers/pinned_cities_provider.dart';
@@ -16,6 +17,7 @@ class PinnedCitiesBar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l = AppLocalizations.of(context)!;
     final pinned = ref.watch(pinnedCitiesProvider);
     final currentCity = ref.watch(cityProvider);
 
@@ -42,6 +44,7 @@ class PinnedCitiesBar extends ConsumerWidget {
             isSelected: currentCity != null &&
                 cityKey(city) == cityKey(currentCity),
             notifier: notifier,
+            l: l,
           ),
 
           // "+" chip to add current city
@@ -50,19 +53,14 @@ class PinnedCitiesBar extends ConsumerWidget {
               padding: const EdgeInsets.only(left: 4),
               child: ActionChip(
                 avatar: const Icon(Icons.add, size: 16),
-                label: const Text('Pin'),
+                label: Text(l.pinCity),
                 labelStyle: const TextStyle(fontSize: 12),
                 visualDensity: VisualDensity.compact,
                 onPressed: () {
                   final added = notifier.pin(currentCity);
                   if (!added && context.mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text(
-                          'Maximum 5 pinned cities. '
-                          'Upgrade to Ummat+ for more.',
-                        ),
-                      ),
+                      SnackBar(content: Text(l.pinMaxReached)),
                     );
                   }
                 },
@@ -79,6 +77,7 @@ class PinnedCitiesBar extends ConsumerWidget {
     required City city,
     required bool isSelected,
     required PinnedCitiesNotifier notifier,
+    required AppLocalizations l,
   }) {
     return Padding(
       padding: const EdgeInsets.only(right: 6),
@@ -92,9 +91,9 @@ class PinnedCitiesBar extends ConsumerWidget {
           ScaffoldMessenger.of(context).clearSnackBars();
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('${city.name} unpinned'),
+              content: Text(l.pinCityUnpinned(city.name)),
               action: SnackBarAction(
-                label: 'Undo',
+                label: l.pinUndo,
                 onPressed: () => notifier.pin(removedCity),
               ),
             ),

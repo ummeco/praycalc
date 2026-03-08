@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:praycalc_app/l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/providers/geo_provider.dart';
@@ -54,8 +55,9 @@ class _SetHomeScreenState extends ConsumerState<SetHomeScreen> {
   Future<void> _confirmAndSet(City city) async {
     ref.read(settingsProvider.notifier).setHomeCoords(city.lat, city.lng);
     if (mounted) {
+      final l = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('${city.displayName} set as home')),
+        SnackBar(content: Text(l.setHomeSetAs(city.displayName))),
       );
       Navigator.of(context).pop();
     }
@@ -80,27 +82,29 @@ class _SetHomeScreenState extends ConsumerState<SetHomeScreen> {
         // No city found — set raw coordinates
         ref.read(settingsProvider.notifier).setHomeCoords(state.lat!, state.lng!);
         if (mounted) {
+          final l = AppLocalizations.of(context)!;
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Current location set as home')),
+            SnackBar(content: Text(l.setHomeCurrentLocationSet)),
           );
           Navigator.of(context).pop();
         }
       }
     } else if (state.status == GpsStatus.denied) {
+      final l = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Location permission denied. Search for a city below.'),
-        ),
+        SnackBar(content: Text(l.setHomePermissionDenied)),
       );
     } else {
+      final l = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('GPS unavailable. Search manually.')),
+        SnackBar(content: Text(l.setHomeGpsUnavailable)),
       );
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final settings = ref.watch(settingsProvider);
     final isSearching = _controller.text.isNotEmpty;
     final theme = Theme.of(context);
@@ -113,7 +117,7 @@ class _SetHomeScreenState extends ConsumerState<SetHomeScreen> {
           controller: _controller,
           autofocus: false,
           decoration: InputDecoration(
-            hintText: 'Search city, town or zip…',
+            hintText: l.setHomeSearchHint,
             border: InputBorder.none,
             hintStyle: TextStyle(color: theme.colorScheme.onSurface.withAlpha(100)),
           ),
@@ -123,7 +127,7 @@ class _SetHomeScreenState extends ConsumerState<SetHomeScreen> {
           if (_controller.text.isNotEmpty)
             IconButton(
               icon: const Icon(Icons.clear),
-              tooltip: 'Clear',
+              tooltip: l.setHomeClear,
               onPressed: () {
                 _controller.clear();
                 _onQueryChanged('');
@@ -163,7 +167,7 @@ class _SetHomeScreenState extends ConsumerState<SetHomeScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Use Current Location',
+                            l.setHomeUseCurrentLocation,
                             style: TextStyle(
                               fontWeight: FontWeight.w600,
                               color: theme.colorScheme.primary,
@@ -171,7 +175,7 @@ class _SetHomeScreenState extends ConsumerState<SetHomeScreen> {
                             ),
                           ),
                           Text(
-                            'Detect your location and set it as home',
+                            l.setHomeDetectAndSet,
                             style: TextStyle(
                               color: theme.colorScheme.onSurface.withAlpha(140),
                               fontSize: 12,
@@ -203,7 +207,7 @@ class _SetHomeScreenState extends ConsumerState<SetHomeScreen> {
                   ),
                   const SizedBox(width: 8),
                   Text(
-                    'Home already set',
+                    l.setHomeAlreadySet,
                     style: TextStyle(
                       color: theme.colorScheme.primary,
                       fontSize: 13,
@@ -232,7 +236,7 @@ class _SetHomeScreenState extends ConsumerState<SetHomeScreen> {
                 ? const Center(child: CircularProgressIndicator())
                 : isSearching
                     ? _results.isEmpty
-                        ? const Center(child: Text('No cities found.'))
+                        ? Center(child: Text(l.setHomeNoCitiesFound))
                         : ListView.builder(
                             itemCount: _results.length,
                             itemBuilder: (_, i) => _HomeSearchTile(
@@ -253,7 +257,7 @@ class _SetHomeScreenState extends ConsumerState<SetHomeScreen> {
                               ),
                               const SizedBox(height: 16),
                               Text(
-                                'Search for your home city',
+                                l.setHomeSearchPrompt,
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
@@ -262,9 +266,7 @@ class _SetHomeScreenState extends ConsumerState<SetHomeScreen> {
                               ),
                               const SizedBox(height: 8),
                               Text(
-                                'Type above to search, or use your current '
-                                'location. Travel mode will detect when you '
-                                'are away from home.',
+                                l.setHomeSearchBody,
                                 style: TextStyle(
                                   color: theme.colorScheme.onSurface.withAlpha(140),
                                   fontSize: 14,

@@ -4993,3 +4993,104 @@ html[data-theme="light"] .onboarding-tooltip-arrow--up {
 /* ── Adhan toast ─────────────────────────────────────────────────────────── */
 
 /* AdhanToast styles moved to Tailwind classes in AdhanToast.tsx */
+
+/* ── Language Switcher ──────────────────────────────────────────────────── */
+
+.lang-switcher {
+  position: relative;
+  display: inline-flex;
+}
+.lang-switcher--footer {
+  margin-top: 4px;
+}
+.lang-switcher-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+.lang-switcher-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.25);
+  color: #fff;
+}
+.lang-switcher-chevron {
+  transition: transform 0.2s;
+}
+.lang-switcher-chevron--open {
+  transform: rotate(180deg);
+}
+.lang-switcher-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  z-index: 100;
+  margin-top: 4px;
+  min-width: 160px;
+  padding: 4px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: #0D2F17;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  list-style: none;
+}
+.lang-switcher-menu--above {
+  top: auto;
+  bottom: 100%;
+  margin-top: 0;
+  margin-bottom: 4px;
+}
+.lang-switcher-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 13px;
+  cursor: pointer;
+  text-align: start;
+  transition: background 0.12s;
+}
+.lang-switcher-option:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+.lang-switcher-option--active {
+  color: #C9F27A;
+  font-weight: 600;
+}
+html[data-theme="light"] .lang-switcher-btn {
+  border-color: rgba(30, 94, 47, 0.2);
+  background: rgba(30, 94, 47, 0.05);
+  color: rgba(30, 94, 47, 0.7);
+}
+html[data-theme="light"] .lang-switcher-btn:hover {
+  background: rgba(30, 94, 47, 0.1);
+  color: #1E5E2F;
+}
+html[data-theme="light"] .lang-switcher-menu {
+  background: #fff;
+  border-color: rgba(30, 94, 47, 0.15);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+html[data-theme="light"] .lang-switcher-option {
+  color: rgba(30, 94, 47, 0.7);
+}
+html[data-theme="light"] .lang-switcher-option:hover {
+  background: rgba(30, 94, 47, 0.06);
+  color: #1E5E2F;
+}
+html[data-theme="light"] .lang-switcher-option--active {
+  color: #1E5E2F;
+}

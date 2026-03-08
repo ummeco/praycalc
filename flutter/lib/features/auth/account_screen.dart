@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:praycalc_app/l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:path_provider/path_provider.dart';
@@ -13,6 +14,7 @@ import '../../core/providers/sync_provider.dart';
 import '../../core/services/auth_service.dart';
 import '../../core/services/sync_service.dart';
 import 'sync_conflict_dialog.dart';
+
 
 /// Account management screen.
 ///
@@ -27,17 +29,18 @@ class AccountScreen extends ConsumerWidget {
     final sync = ref.watch(syncProvider);
     final user = auth.user;
     final theme = Theme.of(context);
+    final l = AppLocalizations.of(context)!;
 
     if (user == null) {
       // Should not happen, but handle gracefully.
       return Scaffold(
-        appBar: AppBar(title: const Text('Account')),
-        body: const Center(child: Text('Not signed in')),
+        appBar: AppBar(title: Text(l.accountTitle)),
+        body: Center(child: Text(l.accountNotSignedIn)),
       );
     }
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Account')),
+      appBar: AppBar(title: Text(l.accountTitle)),
       body: ListView(
         children: [
           // ── Profile header ─────────────────────────────────────────
@@ -78,11 +81,11 @@ class AccountScreen extends ConsumerWidget {
           ),
 
           // ── Sync status ────────────────────────────────────────────
-          const _SectionHeader('Sync'),
+          _SectionHeader(l.accountSyncSection),
           ListTile(
             leading: Icon(_syncIcon(sync.status)),
-            title: const Text('Sync status'),
-            subtitle: Text(_syncLabel(sync)),
+            title: Text(l.accountSyncStatus),
+            subtitle: Text(_syncLabel(sync, l)),
             trailing: sync.status == SyncStatus.syncing
                 ? const SizedBox(
                     height: 20,
@@ -91,7 +94,7 @@ class AccountScreen extends ConsumerWidget {
                   )
                 : IconButton(
                     icon: const Icon(Icons.sync),
-                    tooltip: 'Sync now',
+                    tooltip: l.accountSyncNow,
                     onPressed: () =>
                         ref.read(syncProvider.notifier).syncNow(),
                   ),
@@ -99,40 +102,40 @@ class AccountScreen extends ConsumerWidget {
 
           ListTile(
             leading: const Icon(Icons.history),
-            title: const Text('Sync history'),
+            title: Text(l.accountSyncHistory),
             subtitle: Text(
               SyncService.instance.conflictLog.isEmpty
-                  ? 'No conflicts detected'
-                  : '${SyncService.instance.conflictLog.length} resolved',
+                  ? l.accountNoConflicts
+                  : l.accountConflictsResolved(SyncService.instance.conflictLog.length),
             ),
             trailing: const Icon(Icons.chevron_right),
             onTap: () => _showConflictHistory(context),
           ),
 
           // ── Prayer data ────────────────────────────────────────────
-          const _SectionHeader('Data'),
+          _SectionHeader(l.accountDataSection),
           ListTile(
             leading: const Icon(Icons.download_outlined),
-            title: const Text('Export data'),
-            subtitle: const Text('Download your settings and prayer logs'),
+            title: Text(l.accountExportData),
+            subtitle: Text(l.accountExportSubtitle),
             trailing: const Icon(Icons.chevron_right),
             onTap: () => _exportData(context),
           ),
 
           // ── Account actions ────────────────────────────────────────
-          const _SectionHeader('Account'),
+          _SectionHeader(l.accountTitle),
           ListTile(
             leading: const Icon(Icons.logout),
-            title: const Text('Sign out'),
+            title: Text(l.accountSignOutTitle),
             onTap: () => _signOut(context, ref),
           ),
           ListTile(
             leading: Icon(Icons.delete_forever, color: theme.colorScheme.error),
             title: Text(
-              'Delete account',
+              l.accountDeleteAccount,
               style: TextStyle(color: theme.colorScheme.error),
             ),
-            subtitle: const Text('Permanently delete your account and data'),
+            subtitle: Text(l.accountDeleteSubtitle),
             onTap: () => _deleteAccount(context, ref),
           ),
         ],
@@ -165,8 +168,9 @@ class AccountScreen extends ConsumerWidget {
       );
     } catch (_) {
       if (context.mounted) {
+        final l = AppLocalizations.of(context)!;
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Could not export data')),
+          SnackBar(content: Text(l.accountExportFailed)),
         );
       }
     }
@@ -187,21 +191,20 @@ class AccountScreen extends ConsumerWidget {
   }
 
   Future<void> _signOut(BuildContext context, WidgetRef ref) async {
+    final l = AppLocalizations.of(context)!;
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Sign out'),
-        content: const Text(
-          'Your local data will be kept. Sign in again to resume syncing.',
-        ),
+        title: Text(l.accountSignOutTitle),
+        content: Text(l.accountSignOutBody),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(false),
-            child: const Text('Cancel'),
+            child: Text(l.commonCancel),
           ),
           FilledButton(
             onPressed: () => Navigator.of(ctx).pop(true),
-            child: const Text('Sign out'),
+            child: Text(l.accountSignOutTitle),
           ),
         ],
       ),
@@ -216,26 +219,23 @@ class AccountScreen extends ConsumerWidget {
   }
 
   Future<void> _deleteAccount(BuildContext context, WidgetRef ref) async {
+    final l = AppLocalizations.of(context)!;
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Delete account'),
-        content: const Text(
-          'This will permanently delete your account and all synced data. '
-          'Your local data on this device will not be removed.\n\n'
-          'This action cannot be undone.',
-        ),
+        title: Text(l.accountDeleteAccount),
+        content: Text(l.accountDeleteBody),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(false),
-            child: const Text('Cancel'),
+            child: Text(l.commonCancel),
           ),
           FilledButton(
             style: FilledButton.styleFrom(
               backgroundColor: Theme.of(ctx).colorScheme.error,
             ),
             onPressed: () => Navigator.of(ctx).pop(true),
-            child: const Text('Delete account'),
+            child: Text(l.accountDeleteAccount),
           ),
         ],
       ),
@@ -249,7 +249,7 @@ class AccountScreen extends ConsumerWidget {
       if (context.mounted) {
         context.pop();
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Account deleted')),
+          SnackBar(content: Text(l.accountDeleted)),
         );
       }
     } on AuthException catch (e) {
@@ -261,7 +261,7 @@ class AccountScreen extends ConsumerWidget {
     } catch (_) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Could not delete account')),
+          SnackBar(content: Text(l.accountDeleteFailed)),
         );
       }
     }
@@ -280,28 +280,28 @@ class AccountScreen extends ConsumerWidget {
     }
   }
 
-  String _syncLabel(SyncState sync) {
+  String _syncLabel(SyncState sync, AppLocalizations l) {
     switch (sync.status) {
       case SyncStatus.synced:
         final ago = sync.lastSyncedAt != null
-            ? _timeAgo(sync.lastSyncedAt!)
-            : 'just now';
-        return 'Synced $ago';
+            ? _timeAgo(sync.lastSyncedAt!, l)
+            : l.accountTimeJustNow;
+        return l.accountSyncedAgo(ago);
       case SyncStatus.syncing:
-        return 'Syncing...';
+        return l.syncSyncing;
       case SyncStatus.offline:
-        return 'Offline. Changes saved locally.';
+        return l.syncOffline;
       case SyncStatus.error:
-        return sync.errorMessage ?? 'Sync error. Will retry.';
+        return sync.errorMessage ?? l.syncError;
     }
   }
 
-  String _timeAgo(DateTime dt) {
+  String _timeAgo(DateTime dt, AppLocalizations l) {
     final diff = DateTime.now().difference(dt);
-    if (diff.inSeconds < 60) return 'just now';
-    if (diff.inMinutes < 60) return '${diff.inMinutes}m ago';
-    if (diff.inHours < 24) return '${diff.inHours}h ago';
-    return '${diff.inDays}d ago';
+    if (diff.inSeconds < 60) return l.accountTimeJustNow;
+    if (diff.inMinutes < 60) return l.accountTimeMinAgo(diff.inMinutes);
+    if (diff.inHours < 24) return l.accountTimeHourAgo(diff.inHours);
+    return l.accountTimeDayAgo(diff.inDays);
   }
 }
 

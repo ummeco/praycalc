@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:praycalc_app/l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../tasbeeh/tasbeeh_screen.dart';
@@ -32,16 +33,17 @@ class _DuaDhikrScreenState extends ConsumerState<DuaDhikrScreen>
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Dua & Dhikr'),
+        title: Text(l.duaDhikrTitle),
         bottom: TabBar(
           controller: _tabController,
-          tabs: const [
-            Tab(text: 'Tasbeeh'),
-            Tab(text: 'Morning'),
-            Tab(text: 'Evening'),
-            Tab(text: 'Duas'),
+          tabs: [
+            Tab(text: l.duaDhikrTabTasbeeh),
+            Tab(text: l.duaDhikrTabMorning),
+            Tab(text: l.duaDhikrTabEvening),
+            Tab(text: l.duaDhikrTabDua),
           ],
           isScrollable: false,
           labelPadding: const EdgeInsets.symmetric(horizontal: 8),
@@ -51,8 +53,8 @@ class _DuaDhikrScreenState extends ConsumerState<DuaDhikrScreen>
         controller: _tabController,
         children: [
           const TasbeehTab(),
-          AdhkarTab(adhkar: morningAdhkar, title: 'Morning Adhkar'),
-          AdhkarTab(adhkar: eveningAdhkar, title: 'Evening Adhkar'),
+          AdhkarTab(adhkar: morningAdhkar, title: l.duaDhikrMorningAdhkar),
+          AdhkarTab(adhkar: eveningAdhkar, title: l.duaDhikrEveningAdhkar),
           const DuasTab(),
         ],
       ),

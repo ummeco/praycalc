@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:praycalc_app/l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -16,6 +17,7 @@ class SubscriptionScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l = AppLocalizations.of(context)!;
     final sub = ref.watch(subscriptionProvider);
     final notifier = ref.read(subscriptionProvider.notifier);
     final theme = Theme.of(context);
@@ -23,7 +25,7 @@ class SubscriptionScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Ummat+'),
+        title: Text(l.subscriptionTitle),
         leading: IconButton(
           icon: const Icon(Icons.close),
           onPressed: () => context.pop(),
@@ -40,7 +42,7 @@ class SubscriptionScreen extends ConsumerWidget {
           ),
           const SizedBox(height: 12),
           Text(
-            sub.isPlus ? 'You have Ummat+' : 'Upgrade to Ummat+',
+            sub.isPlus ? l.subscriptionYouHavePlus : l.subscriptionUpgradeTo,
             style: theme.textTheme.headlineSmall?.copyWith(
               fontWeight: FontWeight.bold,
             ),
@@ -49,8 +51,8 @@ class SubscriptionScreen extends ConsumerWidget {
           const SizedBox(height: 8),
           Text(
             sub.isPlus
-                ? 'Thank you for supporting PrayCalc.'
-                : 'Unlock premium features across all your devices.',
+                ? l.subscriptionThankYou
+                : l.subscriptionUnlockPremium,
             style: theme.textTheme.bodyMedium?.copyWith(
               color: theme.colorScheme.onSurfaceVariant,
             ),
@@ -69,7 +71,7 @@ class SubscriptionScreen extends ConsumerWidget {
             OutlinedButton.icon(
               onPressed: () => _openSubscriptionManagement(context),
               icon: const Icon(Icons.settings_outlined),
-              label: const Text('Manage subscription'),
+              label: Text(l.subscriptionManageSub),
               style: OutlinedButton.styleFrom(
                 minimumSize: const Size.fromHeight(48),
               ),
@@ -84,9 +86,7 @@ class SubscriptionScreen extends ConsumerWidget {
                       final success = await notifier.purchase();
                       if (success && context.mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Welcome to Ummat+!'),
-                          ),
+                          SnackBar(content: Text(l.subscriptionWelcome)),
                         );
                       }
                     },
@@ -106,7 +106,7 @@ class SubscriptionScreen extends ConsumerWidget {
                         color: Colors.white,
                       ),
                     )
-                  : const Text('Subscribe — \$9.99/year'),
+                  : Text(l.subscriptionSubscribe),
             ),
             const SizedBox(height: 12),
             Center(
@@ -116,18 +116,19 @@ class SubscriptionScreen extends ConsumerWidget {
                     : () async {
                         final restored = await notifier.restore();
                         if (context.mounted) {
+                          final lr = AppLocalizations.of(context)!;
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(
                                 restored
-                                    ? 'Subscription restored.'
-                                    : 'No previous subscription found.',
+                                    ? lr.subscriptionRestore
+                                    : lr.commonError,
                               ),
                             ),
                           );
                         }
                       },
-                child: const Text('Restore purchase'),
+                child: Text(l.subscriptionRestore),
               ),
             ),
           ],
@@ -186,10 +187,9 @@ Future<void> _openSubscriptionManagement(BuildContext context) async {
   if (await canLaunchUrl(uri)) {
     await launchUrl(uri, mode: LaunchMode.externalApplication);
   } else if (context.mounted) {
+    final l = AppLocalizations.of(context)!;
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Open your device settings to manage your subscription.'),
-      ),
+      SnackBar(content: Text(l.commonOpenSettings)),
     );
   }
 }
@@ -202,6 +202,7 @@ class _FeatureComparisonCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -210,16 +211,16 @@ class _FeatureComparisonCard extends StatelessWidget {
             // Header row
             Row(
               children: [
-                const Expanded(
+                Expanded(
                   flex: 3,
                   child: Text(
-                    'Feature',
-                    style: TextStyle(fontWeight: FontWeight.w600),
+                    l.subscriptionFreeFeatures,
+                    style: const TextStyle(fontWeight: FontWeight.w600),
                   ),
                 ),
                 Expanded(
                   child: Text(
-                    'Free',
+                    l.subscriptionFree,
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
                       color: isDark ? Colors.white70 : Colors.black54,
@@ -240,19 +241,17 @@ class _FeatureComparisonCard extends StatelessWidget {
               ],
             ),
             const Divider(height: 24),
-            // Free features
-            _featureRow('Prayer times', true, true),
-            _featureRow('Qibla compass', true, true),
-            _featureRow('Hijri calendar', true, true),
-            _featureRow('Notifications', true, true),
-            _featureRow('Home screen widgets', true, true),
+            _featureRow(l.subscriptionFeaturePrayerTimes, true, true),
+            _featureRow(l.subscriptionFeatureQibla, true, true),
+            _featureRow(l.subscriptionFeatureMoon, true, true),
+            _featureRow(l.subscriptionFeatureCalendar, true, true),
+            _featureRow(l.subscriptionFeatureWidgets, true, true),
             const Divider(height: 24),
-            // Plus-only features
-            _featureRow('Smart home integrations', false, true),
-            _featureRow('TV app', false, true),
-            _featureRow('Apple Watch', false, true),
-            _featureRow('Desktop app', false, true),
-            _featureRow('Cross-device sync', false, true),
+            _featureRow(l.subscriptionFeatureSmartHome, false, true),
+            _featureRow(l.subscriptionFeatureTV, false, true),
+            _featureRow(l.subscriptionFeatureWatch, false, true),
+            _featureRow(l.subscriptionFeatureSync, false, true),
+            _featureRow(l.subscriptionFeatureAdFree, false, true),
           ],
         ),
       ),

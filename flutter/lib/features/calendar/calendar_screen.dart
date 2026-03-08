@@ -1,6 +1,5 @@
-import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
+import 'package:praycalc_app/l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hijri/hijri_calendar.dart';
@@ -134,14 +133,14 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
 
   // ── Header labels ─────────────────────────────────────────────────────────
 
-  String get _primaryLabel {
+  String _primaryLabel(AppLocalizations l) {
     if (_hijriMode) {
-      return '${_hijriMonths[_hijriMonth]} $_hijriYear AH';
+      return '${_hijriMonthsL10n(l)[_hijriMonth]} $_hijriYear ${l.homeSuffixAH}';
     }
-    return _monthLabel(_month);
+    return _monthLabelL10n(l, _month);
   }
 
-  String get _subtitleLabel {
+  String _subtitleLabel(AppLocalizations l) {
     if (_hijriMode) {
       // Show approximate Gregorian range.
       final h = HijriCalendar()
@@ -149,17 +148,18 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
         ..hMonth = _hijriMonth
         ..hDay = 1;
       final gDate = h.hijriToGregorian(_hijriYear, _hijriMonth, 1);
-      return '${_monthNames[gDate.month]} ${gDate.year}';
+      return '${_monthNamesL10n(l)[gDate.month]} ${gDate.year}';
     }
-    return _hijriMonthLabel(_month);
+    return _hijriMonthLabelL10n(l, _month);
   }
 
   // ── Export / share ────────────────────────────────────────────────────────
 
-  void _export(List<_DayRow> rows, AppSettings settings) {
+  void _export(List<_DayRow> rows, AppSettings settings, AppLocalizations l) {
+    final primary = _primaryLabel(l);
     final buf = StringBuffer();
-    buf.writeln('PrayCalc — $_primaryLabel');
-    buf.writeln('$_subtitleLabel\n');
+    buf.writeln(l.calExportHeader(primary));
+    buf.writeln('${_subtitleLabel(l)}\n');
     buf.writeln(
         'Date         Hijri      Fajr     Dhuhr    Asr      Maghrib  Isha');
     buf.writeln('─' * 66);
@@ -174,11 +174,12 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
       );
     }
     SharePlus.instance.share(ShareParams(
-        text: buf.toString(), subject: 'Prayer Times — $_primaryLabel'));
+        text: buf.toString(), subject: l.calExportSubject(primary)));
   }
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final city = ref.watch(cityProvider);
     final settings = ref.watch(settingsProvider);
     final cs = Theme.of(context).colorScheme;
@@ -195,12 +196,12 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    _primaryLabel,
+                    _primaryLabel(l),
                     style: const TextStyle(
                         fontSize: 18, fontWeight: FontWeight.w600),
                   ),
                   Text(
-                    _subtitleLabel,
+                    _subtitleLabel(l),
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           color: cs.onSurface.withValues(alpha: 0.65),
                           fontSize: 12,
@@ -213,6 +214,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
             _CalendarModeToggle(
               hijriMode: _hijriMode,
               onChanged: (v) => setState(() => _hijriMode = v),
+              l: l,
             ),
           ],
         ),
@@ -224,13 +226,13 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
               children: [
                 IconButton(
                   icon: const Icon(Icons.chevron_left, size: 22),
-                  tooltip: 'Previous month',
+                  tooltip: l.calPrevMonthTooltip,
                   onPressed: _prevMonth,
                   visualDensity: VisualDensity.compact,
                 ),
                 IconButton(
                   icon: const Icon(Icons.chevron_right, size: 22),
-                  tooltip: 'Next month',
+                  tooltip: l.calNextMonthTooltip,
                   onPressed: _nextMonth,
                   visualDensity: VisualDensity.compact,
                 ),
@@ -238,12 +240,14 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                 if (city != null) ...[
                   IconButton(
                     icon: const Icon(Icons.calendar_view_month, size: 20),
+                    // TODO: i18n — calYearlyCalendarTooltip
                     tooltip: 'Yearly calendar',
                     onPressed: () => context.push(Routes.yearlyCalendar),
                     visualDensity: VisualDensity.compact,
                   ),
                   IconButton(
                     icon: const Icon(Icons.event_note, size: 20),
+                    // TODO: i18n — calExportIcsTooltip
                     tooltip: 'Export .ics',
                     onPressed: () {
                       final ical = ICalService.generateIcal(
@@ -256,7 +260,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                         ShareParams(
                           text: ical,
                           subject:
-                              'Prayer Times - $_primaryLabel - ${city.name}.ics',
+                              '${l.calExportSubject(_primaryLabel(l))} - ${city.name}.ics',
                         ),
                       );
                     },
@@ -264,9 +268,9 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                   ),
                   IconButton(
                     icon: const Icon(Icons.share, size: 20),
-                    tooltip: 'Share calendar',
+                    tooltip: l.calShareTooltip,
                     onPressed: () =>
-                        _export(_buildRows(city, settings), settings),
+                        _export(_buildRows(city, settings), settings, l),
                     visualDensity: VisualDensity.compact,
                   ),
                 ],
@@ -276,9 +280,9 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
         ),
       ),
       body: city == null
-          ? const Center(
+          ? Center(
               child: Text(
-                'Set your city first\nto view the prayer calendar.',
+                l.calNoCityText,
                 textAlign: TextAlign.center,
               ),
             )
@@ -287,6 +291,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
               settings: settings,
               month: _month,
               hijriMode: _hijriMode,
+              l: l,
             ),
     );
   }
@@ -298,9 +303,11 @@ class _CalendarModeToggle extends StatelessWidget {
   const _CalendarModeToggle({
     required this.hijriMode,
     required this.onChanged,
+    required this.l,
   });
   final bool hijriMode;
   final ValueChanged<bool> onChanged;
+  final AppLocalizations l;
 
   @override
   Widget build(BuildContext context) {
@@ -309,7 +316,7 @@ class _CalendarModeToggle extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         ChoiceChip(
-          label: const Text('Greg', style: TextStyle(fontSize: 11)),
+          label: Text(l.calGregToggle, style: const TextStyle(fontSize: 11)),
           selected: !hijriMode,
           onSelected: (_) => onChanged(false),
           selectedColor: PrayCalcColors.mid.withValues(alpha: 0.25),
@@ -324,7 +331,7 @@ class _CalendarModeToggle extends StatelessWidget {
         ),
         const SizedBox(width: 4),
         ChoiceChip(
-          label: const Text('Hijri', style: TextStyle(fontSize: 11)),
+          label: Text(l.calHijriToggle, style: const TextStyle(fontSize: 11)),
           selected: hijriMode,
           onSelected: (_) => onChanged(true),
           selectedColor: PrayCalcColors.mid.withValues(alpha: 0.25),
@@ -350,11 +357,13 @@ class _CalendarTable extends StatelessWidget {
     required this.settings,
     required this.month,
     required this.hijriMode,
+    required this.l,
   });
   final List<_DayRow> rows;
   final AppSettings settings;
   final DateTime month;
   final bool hijriMode;
+  final AppLocalizations l;
 
   @override
   Widget build(BuildContext context) {
@@ -369,13 +378,13 @@ class _CalendarTable extends StatelessWidget {
         dataRowMaxHeight: 44,
         columnSpacing: 8,
         horizontalMargin: 8,
-        columns: const [
-          DataColumn(label: _H('Date')),
-          DataColumn(label: _H('Fajr')),
-          DataColumn(label: _H('Dhuhr')),
-          DataColumn(label: _H('Asr')),
-          DataColumn(label: _H('Mag')),
-          DataColumn(label: _H('Isha')),
+        columns: [
+          DataColumn(label: _H(l.calDateCol)),
+          DataColumn(label: _H(l.calFajrCol)),
+          DataColumn(label: _H(l.calDhuhrCol)),
+          DataColumn(label: _H(l.calAsrCol)),
+          DataColumn(label: _H(l.calMaghribCol)),
+          DataColumn(label: _H(l.calIshaCol)),
         ],
         rows: rows.map((r) {
           final isToday = r.date.year == today.year &&
@@ -499,22 +508,36 @@ class _DayRow {
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
-const _monthNames = [
-  '', 'January', 'February', 'March', 'April', 'May', 'June',
-  'July', 'August', 'September', 'October', 'November', 'December',
+/// Localized full Gregorian month names (index 0 = empty placeholder).
+List<String> _monthNamesL10n(AppLocalizations l) => [
+  '',
+  l.monthJanuary, l.monthFebruary, l.monthMarch, l.monthApril,
+  l.monthMayFull, l.monthJune, l.monthJuly, l.monthAugust,
+  l.monthSeptember, l.monthOctober, l.monthNovember, l.monthDecember,
 ];
 
-const _hijriMonths = [
-  '', "Muharram", "Safar", "Rabi' al-Awwal", "Rabi' al-Thani",
-  "Jumada al-Awwal", "Jumada al-Thani", "Rajab", "Sha'ban",
-  "Ramadan", "Shawwal", "Dhu al-Qi'dah", "Dhu al-Hijjah",
+/// Localized Hijri month names (index 0 = empty placeholder).
+List<String> _hijriMonthsL10n(AppLocalizations l) => [
+  '',
+  l.hijriMuharram, l.hijriSafar, l.hijriRabiAlAwwal, l.hijriRabiAlThani,
+  l.hijriJumadaAlAwwal, l.hijriJumadaAlThani, l.hijriRajab, l.hijriShaban,
+  l.hijriRamadan, l.hijriShawwal, l.hijriDhulQidah, l.hijriDhulHijjah,
 ];
 
-String _monthLabel(DateTime d) => '${_monthNames[d.month]} ${d.year}';
+/// Localized short Gregorian month names (index 0 = empty placeholder).
+List<String> _monthNamesShortL10n(AppLocalizations l) => [
+  '',
+  l.monthJan, l.monthFeb, l.monthMar, l.monthApr,
+  l.monthMay, l.monthJun, l.monthJul, l.monthAug,
+  l.monthSep, l.monthOct, l.monthNov, l.monthDec,
+];
 
-String _hijriMonthLabel(DateTime d) {
+String _monthLabelL10n(AppLocalizations l, DateTime d) =>
+    '${_monthNamesL10n(l)[d.month]} ${d.year}';
+
+String _hijriMonthLabelL10n(AppLocalizations l, DateTime d) {
   final h = HijriCalendar.fromDate(DateTime(d.year, d.month, 15));
-  return '${_hijriMonths[h.hMonth]} ${h.hYear} AH';
+  return '${_hijriMonthsL10n(l)[h.hMonth]} ${h.hYear} ${l.homeSuffixAH}';
 }
 
 String _fmtDate(DateTime d) {
@@ -523,13 +546,22 @@ String _fmtDate(DateTime d) {
   return '${d.year}-$m-$day';
 }
 
-String _shortDate(DateTime d) =>
-    '${d.day.toString().padLeft(2)} ${_monthNames[d.month].substring(0, 3)}';
+// Short month abbreviations for compact date cells and text export.
+const _monthAbbr = [
+  '', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+  'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+];
 
-String _shortHijri(HijriCalendar h) {
-  final word = _hijriMonths[h.hMonth].split(' ').first;
-  return '${h.hDay.toString().padLeft(2)} ${word.substring(0, math.min(3, word.length))}';
-}
+const _hijriAbbr = [
+  '', 'Muh', 'Saf', 'Rab', 'Rab', 'Jum', 'Jum',
+  'Raj', 'Sha', 'Ram', 'Sha', 'Dhu', 'Dhu',
+];
+
+String _shortDate(DateTime d) =>
+    '${d.day.toString().padLeft(2)} ${_monthAbbr[d.month]}';
+
+String _shortHijri(HijriCalendar h) =>
+    '${h.hDay.toString().padLeft(2)} ${_hijriAbbr[h.hMonth]}';
 
 /// Format fractional hours to HH:MM (24h) or H:MM AM/PM (12h).
 String _fmtT(double h, bool use24h) {

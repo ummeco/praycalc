@@ -1,18 +1,10 @@
 import Link from "next/link";
-
-const PRAYCALC_LINKS = [
-  { label: "Home", href: "/" },
-  { label: "For Institutions", href: "/institutions" },
-  { label: "For Masjids", href: "/masjids" },
-];
-
-const EXPLORE_LINKS = [
-  { label: "Ummat App", href: "https://ummat.app" },
-  { label: "Islam Wiki", href: "https://islam.wiki" },
-  { label: "ChatIslam", href: "https://chatislam.org" },
-];
+import { useTranslations } from "next-intl";
+import LanguageSwitcher from "./LanguageSwitcher";
 
 export default function Footer() {
+  const t = useTranslations("footer");
+
   return (
     <footer className="site-footer">
       <div className="site-footer-cols">
@@ -20,28 +12,24 @@ export default function Footer() {
         <div className="site-footer-col site-footer-col--brand">
           <p className="site-footer-brand-name">PrayCalc</p>
           <p className="site-footer-brand-desc">
-            Accurate Islamic prayer times for any city worldwide. Multiple
-            calculation methods, Hijri calendar, moon phases, and Qibla
-            direction. Free, private, and ad-free.
+            {t("description")}
           </p>
         </div>
 
         {/* Col 2 — quarter width: site links */}
         <div className="site-footer-col">
           <p className="site-footer-col-title">PrayCalc</p>
-          {PRAYCALC_LINKS.map((l) => (
-            <Link key={l.href} href={l.href}>{l.label}</Link>
-          ))}
+          <Link href="/">{t("home")}</Link>
+          <Link href="/institutions">{t("institutions")}</Link>
+          <Link href="/masjids">{t("masjids")}</Link>
         </div>
 
         {/* Col 3 — quarter width: Ummat ecosystem */}
         <div className="site-footer-col">
-          <p className="site-footer-col-title">Explore More</p>
-          {EXPLORE_LINKS.map((l) => (
-            <a key={l.href} href={l.href} target="_blank" rel="noopener noreferrer">
-              {l.label}
-            </a>
-          ))}
+          <p className="site-footer-col-title">{t("exploreMore")}</p>
+          <a href="https://ummat.app" target="_blank" rel="noopener noreferrer">Ummat App</a>
+          <a href="https://islam.wiki" target="_blank" rel="noopener noreferrer">Islam Wiki</a>
+          <a href="https://chatislam.org" target="_blank" rel="noopener noreferrer">ChatIslam</a>
         </div>
       </div>
 
@@ -53,11 +41,13 @@ export default function Footer() {
           </a>
         </p>
         <div className="flex items-center gap-3">
-          <Link href="/help" className="site-footer-legal-link">Help</Link>
+          <LanguageSwitcher variant="footer" />
           <span className="text-white/15 text-xs">&middot;</span>
-          <Link href="/privacy" className="site-footer-legal-link">Privacy</Link>
+          <Link href="/help" className="site-footer-legal-link">{t("help")}</Link>
           <span className="text-white/15 text-xs">&middot;</span>
-          <Link href="/terms" className="site-footer-legal-link">Terms</Link>
+          <Link href="/privacy" className="site-footer-legal-link">{t("privacy")}</Link>
+          <span className="text-white/15 text-xs">&middot;</span>
+          <Link href="/terms" className="site-footer-legal-link">{t("terms")}</Link>
         </div>
       </div>
     </footer>

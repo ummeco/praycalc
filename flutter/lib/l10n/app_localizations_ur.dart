@@ -168,6 +168,27 @@ class AppLocalizationsUr extends AppLocalizations {
   String get daySunShort => 'اتوار';
 
   @override
+  String get dayMonday => 'پیر';
+
+  @override
+  String get dayTuesday => 'منگل';
+
+  @override
+  String get dayWednesday => 'بدھ';
+
+  @override
+  String get dayThursday => 'جمعرات';
+
+  @override
+  String get dayFriday => 'جمعہ';
+
+  @override
+  String get daySaturday => 'ہفتہ';
+
+  @override
+  String get daySunday => 'اتوار';
+
+  @override
   String get daySuChart => 'ات';
 
   @override
@@ -219,6 +240,39 @@ class AppLocalizationsUr extends AppLocalizations {
   String get laylatulQadr => 'لیلۃ القدر ✨';
 
   @override
+  String get homeSuffixAH => 'ہجری';
+
+  @override
+  String get homeSuffixCE => 'عیسوی';
+
+  @override
+  String get homeNoCitySelected => 'کوئی شہر منتخب نہیں';
+
+  @override
+  String get homeNoCityHint =>
+      'اپنا شہر تلاش کرنے یا GPS فعال کرنے کے لیے اوپر دبائیں۔';
+
+  @override
+  String get homeCouldNotCalc => 'نماز کے اوقات کا حساب نہیں ہو سکا۔';
+
+  @override
+  String get homeQasr => 'قصر';
+
+  @override
+  String get homeActionMonthlyTimes => 'ماہانہ\nاوقات';
+
+  @override
+  String get homeActionDuaDhikr => 'دعا اور\nذکر';
+
+  @override
+  String get homeActionPrayerStats => 'نماز\nکے اعداد و شمار';
+
+  @override
+  String homePolarBanner(int count) {
+    return 'اس عرصے میں آپ کے مقام کے لیے $count نماز کے اوقات کا حساب نہیں لگایا جا سکتا (آدھی رات کا سورج / قطبی رات)۔ ترتیبات میں قریب ترین عرض البلد کا تخمینہ آزمائیں۔';
+  }
+
+  @override
   String get settingsTitle => 'ترتیبات';
 
   @override
@@ -258,6 +312,136 @@ class AppLocalizationsUr extends AppLocalizations {
   @override
   String get settingsPrayerAgendasSubtitle =>
       'نماز کے اوقات سے وابستہ مخصوص یاد دہانیاں';
+
+  @override
+  String get settingsAccount => 'اکاؤنٹ';
+
+  @override
+  String get settingsSignInToSync => 'مزامنت کے لیے سائن ان کریں';
+
+  @override
+  String get settingsSignInToSyncSubtitle =>
+      'اپنا ڈیٹا تمام آلات پر محفوظ رکھیں';
+
+  @override
+  String get settingsHomeScreen => 'ہوم اسکرین';
+
+  @override
+  String get settingsSkyGradient => 'آسمانی تدریج پس منظر';
+
+  @override
+  String get settingsSkyGradientSubtitle =>
+      'دن کے وقت سے مماثل متحرک آسمانی رنگ';
+
+  @override
+  String get settingsWeatherGradient => 'موسمی تدریج';
+
+  @override
+  String get settingsWeatherGradientSubtitle =>
+      'مقامی موسم کی بنیاد پر آسمانی رنگوں کو ایڈجسٹ کریں';
+
+  @override
+  String get settingsCountdownAnimation => 'الٹی گنتی اینیمیشن';
+
+  @override
+  String get settingsCountdownAnimationSubtitle =>
+      'اگلی نماز کی الٹی گنتی پر سانس کی انگوٹھی';
+
+  @override
+  String get settingsPrayerTracking => 'نماز کی پیروی';
+
+  @override
+  String get settingsTrackMyPrayers => 'میری نمازوں کا حساب رکھیں';
+
+  @override
+  String get settingsTrackMyPrayersSubtitle =>
+      'روزانہ ادا کی گئی نمازوں کا ریکارڈ رکھیں';
+
+  @override
+  String get settingsPrayerStats => 'نماز کے اعداد و شمار';
+
+  @override
+  String get settingsPrayerStatsSubtitle => 'سلسلے، ہفتہ وار اور ماہانہ چارٹ';
+
+  @override
+  String get settingsJumuahKahf => 'جمعہ سورۃ الکہف کی یاد دہانی';
+
+  @override
+  String get settingsJumuahKahfSubtitle =>
+      'جمعہ کو سورۃ الکہف پڑھنے کی یاد دہانی';
+
+  @override
+  String get settingsTravel => 'سفر';
+
+  @override
+  String get settingsTravelMode => 'سفر موڈ';
+
+  @override
+  String get settingsTravelModeSubtitle =>
+      'گھر سے دور ہونے کا خود کار پتہ لگائیں اور نمازیں ایڈجسٹ کریں';
+
+  @override
+  String get settingsHomeLocation => 'گھر کا مقام';
+
+  @override
+  String get settingsHomeLocationNotSet =>
+      'مقرر نہیں — موجودہ مقام استعمال کرنے کے لیے دبائیں';
+
+  @override
+  String get settingsClearHomeLocation => 'گھر کا مقام صاف کریں';
+
+  @override
+  String get settingsTravelRulings => 'سفر میں نماز کے احکام';
+
+  @override
+  String get settingsTravelRulingsSubtitle => 'قصر، جمع، اور مسافر کی رہنمائی';
+
+  @override
+  String get settingsSmartHome => 'سمارٹ ہوم';
+
+  @override
+  String get settingsSmartHomeIntegrations => 'سمارٹ ہوم انٹیگریشنز';
+
+  @override
+  String get settingsSmartHomeIntegrationsSubtitle =>
+      'HomeKit، Google Home، Alexa، Home Assistant';
+
+  @override
+  String get settingsTvDisplay => 'ٹی وی ڈسپلے';
+
+  @override
+  String get settingsTvHome => 'ٹی وی ہوم ڈسپلے';
+
+  @override
+  String get settingsTvHomeSubtitle => 'ٹی وی کے لیے فل سکرین نماز گھڑی';
+
+  @override
+  String get settingsMasjidDisplay => 'مسجد ڈسپلے';
+
+  @override
+  String get settingsMasjidDisplaySubtitle =>
+      'مسجد اسکرینوں کے لیے اذان/اقامت ٹیبل';
+
+  @override
+  String get settingsTvSettings => 'ٹی وی ترتیبات';
+
+  @override
+  String get settingsTvSettingsSubtitle => 'مسجد موڈ، اقامت کے فرق، ایمبیئنٹ';
+
+  @override
+  String get settingsAboutPrayCalc => 'PrayCalc کے بارے میں';
+
+  @override
+  String get syncSynced => 'مزامنت مکمل';
+
+  @override
+  String get syncSyncing => 'مزامنت ہو رہی ہے...';
+
+  @override
+  String get syncOffline => 'آف لائن';
+
+  @override
+  String get syncError => 'مزامنت میں خرابی';
 
   @override
   String get notifSettingsTitle => 'اطلاعات اور اذان';
@@ -416,6 +600,60 @@ class AppLocalizationsUr extends AppLocalizations {
   }
 
   @override
+  String get moonPhaseNewMoon => 'نیا چاند';
+
+  @override
+  String get moonPhaseWaxingCrescent => 'بڑھتا ہلال';
+
+  @override
+  String get moonPhaseFirstQuarter => 'پہلی تربیع';
+
+  @override
+  String get moonPhaseWaxingGibbous => 'بڑھتا احدب';
+
+  @override
+  String get moonPhaseFullMoon => 'پورا چاند';
+
+  @override
+  String get moonPhaseWaningGibbous => 'گھٹتا احدب';
+
+  @override
+  String get moonPhaseLastQuarter => 'آخری تربیع';
+
+  @override
+  String get moonPhaseWaningCrescent => 'گھٹتا ہلال';
+
+  @override
+  String get moonHilalVisibility => 'اگلے ہلال کی رؤیت';
+
+  @override
+  String get moonRegionMiddleEast => 'مشرق وسطیٰ';
+
+  @override
+  String get moonRegionWestAfrica => 'مغربی افریقہ';
+
+  @override
+  String get moonRegionSouthAsia => 'جنوبی ایشیا';
+
+  @override
+  String get moonRegionEurope => 'یورپ';
+
+  @override
+  String get moonRegionAmericas => 'امریکاز';
+
+  @override
+  String get moonVisible => 'نظر آئے گا';
+
+  @override
+  String get moonNotVisible => 'نظر نہیں آئے گا';
+
+  @override
+  String get moonPossible => 'ممکن';
+
+  @override
+  String get moonUpcomingDates => 'آنے والی اسلامی تاریخیں';
+
+  @override
   String get hijriTodayLabel => 'آج ہجری تقویم میں';
 
   @override
@@ -427,6 +665,89 @@ class AppLocalizationsUr extends AppLocalizations {
   String ramadanDaysAway(int days) {
     return '$days دن باقی';
   }
+
+  @override
+  String get moonLunarCycle => 'قمری دور';
+
+  @override
+  String moonDayOfCycle(int day) {
+    return 'دن $day / ~29.5';
+  }
+
+  @override
+  String get moonHilalSightingForecast => 'ہلال کی رؤیت کی پیشگوئی';
+
+  @override
+  String get moonHilalVisibilityMap => 'ہلال کی نظر کا نقشہ';
+
+  @override
+  String moonDayN(int day) {
+    return 'دن $day';
+  }
+
+  @override
+  String get moonGlobalSighting => 'عالمی رؤیت';
+
+  @override
+  String get moonZoneNakedEye => 'ننگی آنکھ سے';
+
+  @override
+  String get moonZoneBinoculars => 'دوربین سے';
+
+  @override
+  String get moonZoneVeryDifficult => 'بہت مشکل';
+
+  @override
+  String get moonZoneNotVisible => 'نظر نہیں آئے گا';
+
+  @override
+  String moonMonthPrediction29(String month, int year) {
+    return '$month $year ہجری ممکنہ طور پر 29 دن کا ہوگا۔ 29 تاریخ کو ہلال کی رؤیت متوقع ہے، ان شاء اللہ۔';
+  }
+
+  @override
+  String moonMonthPrediction30(String month, int year) {
+    return '$month $year ہجری ممکنہ طور پر 30 دن کا ہوگا۔ 29 تاریخ کو ہلال نظر آنے کا امکان نہیں۔';
+  }
+
+  @override
+  String get moonUmmAlQura => 'ام القریٰ';
+
+  @override
+  String get moonSaudiArabia => 'سعودی عرب';
+
+  @override
+  String get moonFCNACalc => 'FCNA / حساب';
+
+  @override
+  String get moonNorthAmerica => 'شمالی امریکا';
+
+  @override
+  String moonNDays(int days) {
+    return '$days دن';
+  }
+
+  @override
+  String moonStarts(String month) {
+    return '$month شروع:';
+  }
+
+  @override
+  String moonMoonAgeAtSunset(String hours) {
+    return 'غروب کے وقت چاند کی عمر: $hours گھنٹے';
+  }
+
+  @override
+  String get moon7DayLunarCalendar => '7 دن کا قمری تقویم';
+
+  @override
+  String get moonUpcomingIslamicEvents => 'آنے والے اسلامی واقعات';
+
+  @override
+  String get moonTodayLabel => 'آج';
+
+  @override
+  String get moonTomorrowLabel => 'کل';
 
   @override
   String get calDateCol => 'تاریخ';
@@ -690,24 +1011,6 @@ class AppLocalizationsUr extends AppLocalizations {
   String get subscriptionFeatureAdFree => 'اشتہار مفت تجربہ';
 
   @override
-  String get tvTitle => 'ٹی وی ڈسپلے';
-
-  @override
-  String get tvMasjidMode => 'مسجد موڈ';
-
-  @override
-  String get tvAmbientMode => 'ایمبیئنٹ موڈ';
-
-  @override
-  String get tvSettingsIqamah => 'اقامت کے فرق';
-
-  @override
-  String get tvSettingsAnnouncements => 'اعلانات';
-
-  @override
-  String get tvConnectQR => 'جوڑنے کے لیے اسکین کریں';
-
-  @override
   String get watchTitle => 'واچ';
 
   @override
@@ -736,6 +1039,252 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get thisMonth => 'اس مہینے';
+
+  @override
+  String get loginCreateAccount => 'اکاؤنٹ بنائیں';
+
+  @override
+  String get loginSignIn => 'سائن ان';
+
+  @override
+  String get loginWelcomeBack => 'واپسی پر خوش آمدید';
+
+  @override
+  String get loginJoinPrayCalc => 'PrayCalc میں شامل ہوں';
+
+  @override
+  String get loginSyncSubtitle =>
+      'اپنے نماز کے ڈیٹا کو تمام آلات پر مزامنت کریں';
+
+  @override
+  String get loginContinueGoogle => 'Google کے ساتھ جاری رکھیں';
+
+  @override
+  String get loginOr => 'یا';
+
+  @override
+  String get loginSigningIn => 'سائن ان ہو رہا ہے…';
+
+  @override
+  String get loginNameLabel => 'ظاہری نام (اختیاری)';
+
+  @override
+  String get loginEmailLabel => 'ای میل';
+
+  @override
+  String get loginPasswordLabel => 'پاس ورڈ';
+
+  @override
+  String get loginEmailRequired => 'ای میل ضروری ہے';
+
+  @override
+  String get loginEmailInvalid => 'درست ای میل پتہ درج کریں';
+
+  @override
+  String get loginPasswordRequired => 'پاس ورڈ ضروری ہے';
+
+  @override
+  String get loginPasswordMinLength => 'پاس ورڈ کم از کم 8 حروف ہونا چاہیے';
+
+  @override
+  String get loginForgotPassword => 'پاس ورڈ بھول گئے؟';
+
+  @override
+  String get loginEnterEmailFirst => 'پہلے اپنا ای میل پتہ درج کریں';
+
+  @override
+  String get loginResetSent => 'پاس ورڈ ری سیٹ ای میل بھیج دی گئی';
+
+  @override
+  String get loginResetFailed => 'ری سیٹ ای میل نہیں بھیجی جا سکی';
+
+  @override
+  String get loginNewToPrayCalc => 'PrayCalc میں نئے ہیں؟';
+
+  @override
+  String get loginAlreadyHaveAccount => 'پہلے سے اکاؤنٹ ہے؟';
+
+  @override
+  String get accountTitle => 'اکاؤنٹ';
+
+  @override
+  String get accountNotSignedIn => 'سائن ان نہیں ہے';
+
+  @override
+  String get accountSyncSection => 'مزامنت';
+
+  @override
+  String get accountSyncStatus => 'مزامنت کی حالت';
+
+  @override
+  String get accountSyncNow => 'ابھی مزامنت کریں';
+
+  @override
+  String get accountSyncHistory => 'مزامنت کی تاریخ';
+
+  @override
+  String get accountNoConflicts => 'کوئی تنازعات نہیں';
+
+  @override
+  String accountConflictsResolved(int count) {
+    return '$count حل ہو گئے';
+  }
+
+  @override
+  String accountSyncedAgo(String time) {
+    return '$time مزامنت ہوئی';
+  }
+
+  @override
+  String get accountOfflineStatus =>
+      'آف لائن۔ تبدیلیاں مقامی طور پر محفوظ ہیں۔';
+
+  @override
+  String get accountSyncErrorStatus => 'مزامنت میں خرابی۔ دوبارہ کوشش ہو گی۔';
+
+  @override
+  String get accountDataSection => 'ڈیٹا';
+
+  @override
+  String get accountExportData => 'ڈیٹا برآمد کریں';
+
+  @override
+  String get accountExportSubtitle =>
+      'اپنی ترتیبات اور نماز کے ریکارڈ ڈاؤن لوڈ کریں';
+
+  @override
+  String get accountExportFailed => 'ڈیٹا برآمد نہیں ہو سکا';
+
+  @override
+  String get accountSignOutTitle => 'سائن آؤٹ';
+
+  @override
+  String get accountSignOutBody =>
+      'آپ کا مقامی ڈیٹا محفوظ رہے گا۔ مزامنت دوبارہ شروع کرنے کے لیے سائن ان کریں۔';
+
+  @override
+  String get accountDeleteAccount => 'اکاؤنٹ حذف کریں';
+
+  @override
+  String get accountDeleteSubtitle => 'اپنا اکاؤنٹ اور ڈیٹا مستقل حذف کریں';
+
+  @override
+  String get accountDeleteBody =>
+      'اس سے آپ کا اکاؤنٹ اور تمام مزامنت شدہ ڈیٹا مستقل طور پر حذف ہو جائے گا۔ اس آلے پر آپ کا مقامی ڈیٹا نہیں ہٹایا جائے گا۔\n\nیہ عمل واپس نہیں لیا جا سکتا۔';
+
+  @override
+  String get accountDeleted => 'اکاؤنٹ حذف ہو گیا';
+
+  @override
+  String get accountDeleteFailed => 'اکاؤنٹ حذف نہیں ہو سکا';
+
+  @override
+  String get accountTimeJustNow => 'ابھی';
+
+  @override
+  String accountTimeMinAgo(int min) {
+    return '$min منٹ پہلے';
+  }
+
+  @override
+  String accountTimeHourAgo(int hour) {
+    return '$hour گھنٹے پہلے';
+  }
+
+  @override
+  String accountTimeDayAgo(int day) {
+    return '$day دن پہلے';
+  }
+
+  @override
+  String get statsTitle => 'نماز کے اعداد و شمار';
+
+  @override
+  String get statsShareTooltip => 'اعداد و شمار شیئر کریں';
+
+  @override
+  String get statsTodayPrayers => 'آج کی نمازیں';
+
+  @override
+  String statsTodayCount(int done) {
+    return '$done / 5';
+  }
+
+  @override
+  String get statsStreak => 'سلسلہ';
+
+  @override
+  String get statsDays => 'دن';
+
+  @override
+  String get statsThisWeek => 'اس ہفتے';
+
+  @override
+  String get statsCompletion => 'تکمیل';
+
+  @override
+  String get statsThisMonth => 'اس مہینے';
+
+  @override
+  String get statsMostMissed => 'سب سے زیادہ فوت شدہ';
+
+  @override
+  String get statsThisWeekLabel => 'اس ہفتے';
+
+  @override
+  String get statsWeeklyChart => 'نماز کے لحاظ سے ہفتہ وار تکمیل';
+
+  @override
+  String get statsMonthlyChart => 'نماز کے لحاظ سے ماہانہ تکمیل';
+
+  @override
+  String statsTotalLogged(int count) {
+    return 'کل $count نمازیں ریکارڈ ہوئیں';
+  }
+
+  @override
+  String get statsKeepItUp => 'جاری رکھیں!';
+
+  @override
+  String get statsShareTitle => 'PrayCalc نماز کے اعداد و شمار';
+
+  @override
+  String statsShareStreak(int days) {
+    return 'سلسلہ: $days دن';
+  }
+
+  @override
+  String statsShareWeekly(int pct) {
+    return 'ہفتہ وار: $pct%';
+  }
+
+  @override
+  String statsShareMonthly(int pct) {
+    return 'ماہانہ: $pct%';
+  }
+
+  @override
+  String get statsShareBreakdown => 'ہفتہ وار تفصیل:';
+
+  @override
+  String get aboutTitle => 'PrayCalc کے بارے میں';
+
+  @override
+  String get aboutWebsite => 'ویب سائٹ';
+
+  @override
+  String get aboutContact => 'رابطہ';
+
+  @override
+  String get aboutLicenses => 'اوپن سورس لائسنس';
+
+  @override
+  String get aboutCouldNotOpen => 'لنک نہیں کھل سکا۔';
+
+  @override
+  String aboutCopyright(int year) {
+    return '© $year Ummat Dev۔ جملہ حقوق محفوظ ہیں۔\n\nنماز کے اوقات pray_calc_dart انجن سے حساب کیے جاتے ہیں۔ درستگی آپ کے GPS مقام اور منتخب حساب کے طریقے پر منحصر ہے۔';
+  }
 
   @override
   String get commonCancel => 'منسوخ';
@@ -845,34 +1394,678 @@ class AppLocalizationsUr extends AppLocalizations {
   String get commonLanguage => 'زبان';
 
   @override
-  String get travelNotificationTitle => 'You are now traveling';
+  String get commonOpenSettings => 'ترتیبات کھولیں';
+
+  @override
+  String get travelNotificationTitle => 'آپ اب سفر میں ہیں';
 
   @override
   String get travelNotificationBody =>
-      'Prayer times may be shortened. Tap to learn about travel rulings.';
+      'نماز کے اوقات قصر ہو سکتے ہیں۔ سفر کے احکام جاننے کے لیے دبائیں۔';
 
   @override
-  String get travelRulingsTitle => 'Travel & Prayer';
+  String get travelRulingsTitle => 'سفر اور نماز';
 
   @override
   String get travelRulingsIntro =>
-      'Islamic rulings on prayer while traveling, with scholarly references from the Quran and authentic Hadith collections.';
+      'سفر میں نماز کے اسلامی احکام، قرآن اور صحیح احادیث سے علمی حوالوں کے ساتھ۔';
 
   @override
-  String get travelWhenTitle => 'When Does Travel Apply?';
+  String get travelWhenTitle => 'سفر کب لاگو ہوتا ہے؟';
 
   @override
-  String get travelQasrTitle => 'Shortening Prayers (Qasr)';
+  String get travelQasrTitle => 'نماز قصر کرنا';
 
   @override
-  String get travelJamTitle => 'Combining Prayers (Jam\')';
+  String get travelJamTitle => 'نمازیں جمع کرنا';
 
   @override
-  String get travelDurationTitle => 'Duration of Travel';
+  String get travelDurationTitle => 'سفر کی مدت';
 
   @override
-  String get travelReferencesTitle => 'Scholarly References';
+  String get travelReferencesTitle => 'علمی حوالے';
 
   @override
-  String get travelLearnMore => 'Learn more';
+  String get travelLearnMore => 'مزید جانیں';
+
+  @override
+  String get travelHanafiDefaultTitle =>
+      'PrayCalc حنفی ڈیفالٹ کیوں استعمال کرتا ہے';
+
+  @override
+  String get travelDeeperScholarly => 'مزید علمی بحث';
+
+  @override
+  String get onboardingTitle1 => 'نماز کے اوقات، آپ جہاں بھی ہوں';
+
+  @override
+  String get onboardingBody1 =>
+      'دنیا کے ہر شہر کے لیے GPS درست نماز کے اوقات۔ فجر سے عشاء، طلوع سے قیام تک۔ ہمارے اپنے حساب کے انجن سے، درستگی کے لیے بنایا گیا۔';
+
+  @override
+  String get onboardingTitle2 => 'آپ کا مقام، آپ کے اوقات';
+
+  @override
+  String get onboardingBody2 =>
+      'کوئی بھی شہر تلاش کریں یا GPS کو اپنا مقام معلوم کرنے دیں۔ PrayCalc دنیا بھر میں 50 لاکھ شہروں کے اوقات تلاش کرتا ہے۔';
+
+  @override
+  String get onboardingTitle3 => 'کوئی نماز نہ چھوڑیں';
+
+  @override
+  String get onboardingBody3 =>
+      'نماز کے وقت اذان، پہلے سے یاد دہانی۔ سحری، کلاسوں اور مزید کے لیے مخصوص ایجنڈے۔';
+
+  @override
+  String get onboardingTitle4 => 'آپ کو جو کچھ چاہیے';
+
+  @override
+  String get onboardingBody4 =>
+      'قبلہ قطب نما، نماز تقویم، ہجری چاند کے مراحل، تسبیح شمار۔ سب ایک جگہ۔';
+
+  @override
+  String get onboardingSkip => 'چھوڑیں';
+
+  @override
+  String get onboardingGetStarted => 'شروع کریں';
+
+  @override
+  String get onboardingSignInTitle => 'PrayCalc میں سائن ان کریں';
+
+  @override
+  String get onboardingSignInSubtitle =>
+      'اپنی نماز کی تاریخ محفوظ کریں اور\nاپنے تمام آلات پر مزامنت کریں۔';
+
+  @override
+  String get onboardingContinueGoogle => 'Google کے ساتھ جاری رکھیں';
+
+  @override
+  String get onboardingContinueWithoutAccount => 'بغیر اکاؤنٹ جاری رکھیں';
+
+  @override
+  String get onboardingSigningIn => 'سائن ان ہو رہا ہے…';
+
+  @override
+  String get onboardingSelectLanguage => 'زبان منتخب کریں';
+
+  @override
+  String get duaDhikrTitle => 'دعا اور ذکر';
+
+  @override
+  String get duaDhikrTabDua => 'دعا';
+
+  @override
+  String get duaDhikrTabDhikr => 'ذکر';
+
+  @override
+  String get duaDhikrTabTasbeeh => 'تسبیح';
+
+  @override
+  String get duaDhikrTabMorning => 'صبح';
+
+  @override
+  String get duaDhikrTabEvening => 'شام';
+
+  @override
+  String get duaDhikrMorningAdhkar => 'صبح کے اذکار';
+
+  @override
+  String get duaDhikrEveningAdhkar => 'شام کے اذکار';
+
+  @override
+  String get calGregToggle => 'عیسوی';
+
+  @override
+  String get calHijriToggle => 'ہجری';
+
+  @override
+  String get calYearlyTooltip => 'سالانہ تقویم';
+
+  @override
+  String get calExportIcsTooltip => '.ics برآمد کریں';
+
+  @override
+  String get calMagCol => 'مغر';
+
+  @override
+  String get qiblaShowOnMap => 'نقشے پر دکھائیں';
+
+  @override
+  String get qiblaWaitingCompass => 'قطب نما کا انتظار...';
+
+  @override
+  String get qiblaNoCompassSensor =>
+      'قطب نما سینسر نہیں ہے۔ قبلے کی سمت جامد دکھائی جا رہی ہے۔';
+
+  @override
+  String get qiblaAccuracyExcellent => 'بہترین درستگی';
+
+  @override
+  String get qiblaAccuracyGood => 'اچھی درستگی';
+
+  @override
+  String get qiblaAccuracyFair =>
+      'مناسب درستگی۔ فون کو آٹھ کی شکل میں گھما کر کیلیبریٹ کریں۔';
+
+  @override
+  String get qiblaAccuracyLow =>
+      'کم درستگی۔ فون کو آٹھ کی شکل میں گھما کر کیلیبریٹ کریں۔';
+
+  @override
+  String get qiblaToTheKaaba => 'کعبہ کی طرف';
+
+  @override
+  String get qiblaYourLocation => 'آپ کا مقام';
+
+  @override
+  String get qiblaGpsAccurate => 'GPS درست';
+
+  @override
+  String get qiblaCityCenter => 'شہر کا مرکز';
+
+  @override
+  String get moonIlluminatedLabel => 'روشن';
+
+  @override
+  String get moonAgeLabel => 'عمر';
+
+  @override
+  String get moonFirstQtr => 'پہلی تربیع';
+
+  @override
+  String get moonLastQtr => 'آخری تربیع';
+
+  @override
+  String get moonTonight => 'آج رات';
+
+  @override
+  String get moonTomorrow => 'کل';
+
+  @override
+  String moonDaysAway(int days) {
+    return '$days دن';
+  }
+
+  @override
+  String get moonBeta => 'بیٹا';
+
+  @override
+  String get setHomeTitle => 'گھر کا مقام مقرر کریں';
+
+  @override
+  String get setHomeSearchHint => 'شہر، قصبہ یا زپ کوڈ تلاش کریں…';
+
+  @override
+  String get setHomeClear => 'صاف کریں';
+
+  @override
+  String get setHomeUseCurrentLocation => 'موجودہ مقام استعمال کریں';
+
+  @override
+  String get setHomeDetectAndSet =>
+      'اپنا مقام معلوم کریں اور گھر کے طور پر مقرر کریں';
+
+  @override
+  String get setHomeAlreadySet => 'گھر پہلے سے مقرر ہے';
+
+  @override
+  String setHomeSetAs(String city) {
+    return '$city گھر کے طور پر مقرر ہو گیا';
+  }
+
+  @override
+  String get setHomeCurrentLocationSet =>
+      'موجودہ مقام گھر کے طور پر مقرر ہو گیا';
+
+  @override
+  String get setHomePermissionDenied =>
+      'مقام کی اجازت نہیں دی گئی۔ نیچے شہر تلاش کریں۔';
+
+  @override
+  String get setHomeGpsUnavailable => 'GPS دستیاب نہیں۔ دستی تلاش کریں۔';
+
+  @override
+  String get setHomeNoCitiesFound => 'کوئی شہر نہیں ملا۔';
+
+  @override
+  String get setHomeSearchPrompt => 'اپنا گھر کا شہر تلاش کریں';
+
+  @override
+  String get setHomeSearchBody =>
+      'تلاش کے لیے اوپر ٹائپ کریں، یا اپنا موجودہ مقام استعمال کریں۔ سفر موڈ گھر سے دور ہونے کا پتہ لگائے گا۔';
+
+  @override
+  String get subscriptionYouHavePlus => 'آپ کے پاس امت+ ہے';
+
+  @override
+  String get subscriptionUpgradeTo => 'امت+ میں اپ گریڈ کریں';
+
+  @override
+  String get subscriptionThankYou => 'PrayCalc کی حمایت کا شکریہ۔';
+
+  @override
+  String get subscriptionUnlockPremium =>
+      'اپنے تمام آلات پر پریمیم خصوصیات کھولیں۔';
+
+  @override
+  String get subscriptionManageSub => 'رکنیت کا انتظام';
+
+  @override
+  String get subscriptionWelcome => 'امت+ میں خوش آمدید!';
+
+  @override
+  String get subscriptionSubscribe => 'رکنیت حاصل کریں';
+
+  @override
+  String get subscriptionFreeFeatures => 'مفت خصوصیات';
+
+  @override
+  String get subscriptionPlusFeatures => 'امت+ خصوصیات';
+
+  @override
+  String get subscriptionFeaturePrayerTimes => 'نماز کے اوقات';
+
+  @override
+  String get subscriptionFeatureQibla => 'قبلہ قطب نما';
+
+  @override
+  String get subscriptionFeatureCalendar => 'ماہانہ تقویم';
+
+  @override
+  String get subscriptionFeatureTasbeeh => 'تسبیح شمار';
+
+  @override
+  String get subscriptionFeatureMoon => 'چاند اور ہجری';
+
+  @override
+  String get smartHomeAlertType => 'تنبیہ کی قسم';
+
+  @override
+  String get smartHomeAlertModal => 'فل سکرین ونڈو';
+
+  @override
+  String get smartHomeAlertCorner => 'کونے کی اطلاع';
+
+  @override
+  String get smartHomeAlertNone => 'کچھ نہیں (خاموش)';
+
+  @override
+  String get smartHomePauseMedia => 'اذان کے دوران میڈیا روکیں';
+
+  @override
+  String get smartHomeQuietHours => 'خاموشی کے اوقات';
+
+  @override
+  String get smartHomeQuietFrom => 'سے';
+
+  @override
+  String get smartHomeQuietTo => 'تک';
+
+  @override
+  String get smartHomePrayerAudio => 'ہر نماز کی آواز';
+
+  @override
+  String get smartHomeAudioAdhan => 'اذان';
+
+  @override
+  String get smartHomeAudioBeep => 'بیپ';
+
+  @override
+  String get smartHomeAudioSilent => 'خاموش';
+
+  @override
+  String get aboutPrivacy => 'رازداری کی پالیسی';
+
+  @override
+  String aboutVersion(String version) {
+    return 'ورژن $version';
+  }
+
+  @override
+  String get notifDefaultAdhan => 'پہلے سے طے شدہ اذان';
+
+  @override
+  String get notifFajrAdhan => 'فجر کی اذان';
+
+  @override
+  String get notifFajrAdhanSubtitle => 'فجر کی نماز کے وقت بجتی ہے';
+
+  @override
+  String get notifRegularAdhan => 'عام اذان';
+
+  @override
+  String get notifRegularAdhanSubtitle => 'ظہر، عصر، مغرب، عشاء پر بجتی ہے';
+
+  @override
+  String get notifPerPrayerSettings => 'ہر نماز کی ترتیبات';
+
+  @override
+  String get notifPreview => 'پیش نظارہ';
+
+  @override
+  String get tvSettingsTitle => 'ٹی وی ترتیبات';
+
+  @override
+  String get tvDisplayMode => 'ڈسپلے موڈ';
+
+  @override
+  String get tvMasjidMode => 'مسجد موڈ';
+
+  @override
+  String get tvMasjidModeSubtitle =>
+      'اقامت کے اوقات کے ساتھ بڑا سائن بورڈ ڈسپلے';
+
+  @override
+  String get tvMasjidName => 'مسجد کا نام';
+
+  @override
+  String get tvMasjidNameTapToSet => 'مقرر کرنے کے لیے دبائیں';
+
+  @override
+  String get tvClock => 'گھڑی';
+
+  @override
+  String get tv24hFormat => '24 گھنٹے فارمیٹ';
+
+  @override
+  String get tvIqamahOffsets => 'اقامت کے فرق (اذان کے بعد منٹ)';
+
+  @override
+  String tvIqamahMinAfter(int offset) {
+    return 'اذان کے بعد $offset منٹ';
+  }
+
+  @override
+  String get tvQrCode => 'QR کوڈ';
+
+  @override
+  String get tvShowQrCode => 'QR کوڈ دکھائیں';
+
+  @override
+  String get tvShowQrCodeSubtitle => 'مسجد اسکرین پر QR کوڈ دکھائیں';
+
+  @override
+  String get tvQrCodeUrl => 'QR کوڈ URL';
+
+  @override
+  String get tvAmbientModeSection => 'ایمبیئنٹ موڈ';
+
+  @override
+  String get tvIdleTimeout => 'بیکار وقت';
+
+  @override
+  String tvIdleTimeoutSubtitle(int minutes) {
+    return 'ایمبیئنٹ فعال ہونے سے پہلے $minutes منٹ';
+  }
+
+  @override
+  String get tvPhotoInterval => 'تصویر کا وقفہ';
+
+  @override
+  String tvPhotoIntervalSubtitle(int seconds) {
+    return 'تصاویر کے درمیان $seconds سیکنڈ';
+  }
+
+  @override
+  String get tvBackground => 'پس منظر';
+
+  @override
+  String get tvPhotoCategory => 'تصویر کی قسم';
+
+  @override
+  String get tvLocation => 'مقام';
+
+  @override
+  String get tvChangeCity => 'شہر تبدیل کریں';
+
+  @override
+  String get tvChangeCitySubtitle => 'کوئی مختلف شہر تلاش کریں';
+
+  @override
+  String get tvScreensaverBg => 'اسکرین سیور پس منظر';
+
+  @override
+  String get tvScreensaverPhotos => 'تصاویر';
+
+  @override
+  String get tvScreensaverPattern => 'ہندسی پیٹرن';
+
+  @override
+  String get tvScreensaverBoth => 'تصاویر + پیٹرن';
+
+  @override
+  String get tvCategoryAll => 'تمام اقسام';
+
+  @override
+  String get tvCategoryMasjids => 'مساجد';
+
+  @override
+  String get tvCategoryInteriors => 'اندرونی سجاوٹ';
+
+  @override
+  String get tvCategoryGeometric => 'ہندسی';
+
+  @override
+  String get tvCategoryCalligraphy => 'خطاطی';
+
+  @override
+  String get tvCategoryLandscapes => 'مناظر';
+
+  @override
+  String get tvCategoryRamadan => 'رمضان';
+
+  @override
+  String get tvPhotoCategoryTitle => 'تصویر کی قسم';
+
+  @override
+  String tvEnterHint(String title) {
+    return '$title درج کریں';
+  }
+
+  @override
+  String get tvSystemDefault => 'نظام کا ڈیفالٹ';
+
+  @override
+  String get smartHomeIntegrations => 'انٹیگریشنز';
+
+  @override
+  String get smartHomeLinkedSpeakers => 'جوڑے گئے اسپیکرز اور ڈسپلے';
+
+  @override
+  String get smartHomeAlertDisplay => 'تنبیہ ڈسپلے';
+
+  @override
+  String get smartHomeAtAdhanShow => 'اذان کے وقت دکھائیں';
+
+  @override
+  String get smartHomePauseMediaTitle => 'اذان پر میڈیا روکیں';
+
+  @override
+  String get smartHomePauseMediaSubtitle =>
+      'اذان ختم ہونے کے بعد دوبارہ شروع ہو گا';
+
+  @override
+  String get smartHomePrayerAudioSection => 'نماز کی آواز';
+
+  @override
+  String get smartHomeQuietHoursSection => 'خاموشی کے اوقات';
+
+  @override
+  String get smartHomeEnableQuietHours => 'خاموشی کے اوقات فعال کریں';
+
+  @override
+  String get smartHomeQuietHoursSubtitle =>
+      'تمام سمارٹ ہوم تنبیہات خاموش ہو جائیں گی';
+
+  @override
+  String get smartHomeNoDevices => 'ابھی تک کوئی آلہ نہیں جوڑا گیا';
+
+  @override
+  String get smartHomeNoDevicesDesc =>
+      'اوپر Google Home یا Alexa جوڑیں، پھر آپ کے اسپیکرز اور ڈسپلے یہاں نظر آئیں گے۔';
+
+  @override
+  String get smartHomeRequiresPlus => 'سمارٹ ہوم کے لیے امت+ ضروری ہے';
+
+  @override
+  String get smartHomeRequiresPlusDesc =>
+      'Google Home، Alexa، Siri اور Home Assistant پر نماز کے اعلانات کنٹرول کریں۔ ترتیب دیں کہ کون سے آلات اذان بجائیں، میڈیا کب روکیں، اور خاموشی کے اوقات مقرر کریں۔';
+
+  @override
+  String get smartHomeBroadcastGoogle =>
+      'Nest اسپیکرز اور ڈسپلے پر اذان نشر کریں۔';
+
+  @override
+  String get smartHomeEnableAlexa => 'Alexa پر PrayCalc اسکل فعال کریں۔';
+
+  @override
+  String get smartHomeSiriAsk =>
+      'Siri سے نماز کے اوقات پوچھیں یا آٹومیشن مقرر کریں۔';
+
+  @override
+  String get smartHomeHassAdd => 'مکمل آٹومیشن کے لیے HACS سے شامل کریں۔';
+
+  @override
+  String get smartHomeSetupGuide => 'سیٹ اپ گائیڈ';
+
+  @override
+  String get smartHomeSiriSetupTitle => 'Siri شارٹ کٹس سیٹ اپ';
+
+  @override
+  String get smartHomeSiriStep1 =>
+      'اپنے iPhone یا iPad پر شارٹ کٹس ایپ کھولیں۔';
+
+  @override
+  String get smartHomeSiriStep2 => 'نیا شارٹ کٹ بنانے کے لیے \"+\" دبائیں۔';
+
+  @override
+  String get smartHomeSiriStep3 =>
+      'ایکشنز کی فہرست میں \"PrayCalc\" تلاش کریں۔';
+
+  @override
+  String get smartHomeSiriStep4 =>
+      '\"اگلی نماز کا وقت\" یا \"آج کے نماز کے اوقات\" شامل کریں۔';
+
+  @override
+  String get smartHomeSiriStep5 =>
+      'اختیاری طور پر کسی آٹومیشن میں شامل کریں (مثلاً روزانہ فجر پر)۔';
+
+  @override
+  String get smartHomeSiriStep6 =>
+      'ٹیسٹ کے لیے \"Hey Siri، اگلی نماز کا وقت\" کہیں۔';
+
+  @override
+  String get smartHomeSiriFootnote => 'iOS 16 یا بعد کا ضروری ہے۔';
+
+  @override
+  String get smartHomeHassSetupTitle => 'Home Assistant سیٹ اپ';
+
+  @override
+  String get smartHomeHassStep1 =>
+      'HACS (Home Assistant کمیونٹی اسٹور) انسٹال کریں۔';
+
+  @override
+  String get smartHomeHassStep2 =>
+      'HACS میں \"PrayCalc\" تلاش کریں اور انسٹال کریں۔';
+
+  @override
+  String get smartHomeHassStep3 =>
+      'ترتیبات > آلات اور خدمات > انٹیگریشن شامل کریں پر جائیں۔';
+
+  @override
+  String get smartHomeHassStep4 => '\"PrayCalc\" تلاش کریں اور منتخب کریں۔';
+
+  @override
+  String get smartHomeHassStep5 =>
+      'اپنی PrayCalc API کلید درج کریں (آپ کے اکاؤنٹ میں بنائی جاتی ہے)۔';
+
+  @override
+  String get smartHomeHassStep6 => 'اپنا مقام اور حساب کا طریقہ ترتیب دیں۔';
+
+  @override
+  String get smartHomeHassFootnote =>
+      'HACS کے ساتھ Home Assistant 2024.1+ ضروری ہے۔';
+
+  @override
+  String get smartHomeApiKey => 'API کلید';
+
+  @override
+  String get smartHomeGenerateApiKey => 'API کلید بنائیں';
+
+  @override
+  String get smartHomeApiKeyNotReady =>
+      'PrayCalc سمارٹ سروس کی تعیناتی کے بعد API کلید بنانا دستیاب ہو گا۔';
+
+  @override
+  String get smartHomeApiKeyDesc =>
+      'Home Assistant کو اپنے PrayCalc اکاؤنٹ سے جوڑنے کے لیے API کلید ضروری ہو گی۔';
+
+  @override
+  String get smartHomeLinkedStatus => 'جوڑا ہوا';
+
+  @override
+  String get smartHomeNotLinkedStatus => 'جوڑا نہیں ہوا';
+
+  @override
+  String get smartHomeCouldNotOpen => 'لنک نہیں کھل سکا۔';
+
+  @override
+  String adhkarCompletedCount(int completed, int total) {
+    return '$completed / $total مکمل';
+  }
+
+  @override
+  String get adhkarReset => 'دوبارہ شروع';
+
+  @override
+  String get syncHistoryTitle => 'مزامنت کی تاریخ';
+
+  @override
+  String get syncClearHistory => 'تاریخ صاف کریں';
+
+  @override
+  String get syncNoConflicts =>
+      'مزامنت میں کوئی تنازعات نہیں۔ تمام آلات مزامنت ہیں۔';
+
+  @override
+  String get syncDomainSettings => 'ترتیبات';
+
+  @override
+  String get syncDomainCities => 'محفوظ شہر';
+
+  @override
+  String get syncDomainPrayerLogs => 'نماز کے ریکارڈ';
+
+  @override
+  String get syncTimeJustNow => 'ابھی';
+
+  @override
+  String syncTimeMinAgo(int min) {
+    return '$min منٹ پہلے';
+  }
+
+  @override
+  String syncTimeHourAgo(int hour) {
+    return '$hour گھنٹے پہلے';
+  }
+
+  @override
+  String syncTimeDayAgo(int day) {
+    return '$day دن پہلے';
+  }
+
+  @override
+  String get pinCity => 'پن کریں';
+
+  @override
+  String get pinMaxReached =>
+      'زیادہ سے زیادہ 5 پن شدہ شہر۔ مزید کے لیے امت+ میں اپ گریڈ کریں۔';
+
+  @override
+  String pinCityUnpinned(String city) {
+    return '$city ان پن ہو گیا';
+  }
+
+  @override
+  String get pinUndo => 'واپس';
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:praycalc_app/l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -13,12 +14,15 @@ const _supportedLocales = [
   ('System default', null),
   ('English', 'en'),
   ('العربية', 'ar'),
-  ('اردو', 'ur'),
-  ('বাংলা', 'bn'),
-  ('Français', 'fr'),
-  ('Bahasa Indonesia', 'id'),
   ('Türkçe', 'tr'),
+  ('اردو', 'ur'),
+  ('Bahasa Indonesia', 'id'),
+  ('Français', 'fr'),
+  ('বাংলা', 'bn'),
   ('Soomaali', 'so'),
+  ('Deutsch', 'de'),
+  ('Español', 'es'),
+  ('हिन्दी', 'hi'),
 ];
 
 /// Settings screen: calculation method, madhab, time format, theme, language,
@@ -28,6 +32,7 @@ class SettingsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l = AppLocalizations.of(context)!;
     final settings = ref.watch(settingsProvider);
     final notifier = ref.read(settingsProvider.notifier);
     final auth = ref.watch(authProvider);
@@ -41,11 +46,11 @@ class SettingsScreen extends ConsumerWidget {
         .$1;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Settings')),
+      appBar: AppBar(title: Text(l.settingsTitle)),
       body: ListView(
         children: [
           // ── Account & Sync ──────────────────────────────────────────────
-          const _SectionHeader('Account'),
+          _SectionHeader(l.settingsAccount),
           if (auth.isAuthenticated) ...[
             ListTile(
               leading: CircleAvatar(
@@ -67,7 +72,7 @@ class SettingsScreen extends ConsumerWidget {
                     color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                   const SizedBox(width: 4),
-                  Text(_syncStatusLabel(sync.status)),
+                  Text(_syncStatusLabel(l, sync.status)),
                 ],
               ),
               trailing: const Icon(Icons.chevron_right),
@@ -76,128 +81,127 @@ class SettingsScreen extends ConsumerWidget {
           ] else ...[
             ListTile(
               leading: const Icon(Icons.sync),
-              title: const Text('Sign in to sync'),
-              subtitle: const Text('Keep your data across devices'),
+              title: Text(l.settingsSignInToSync),
+              subtitle: Text(l.settingsSignInToSyncSubtitle),
               trailing: const Icon(Icons.chevron_right),
               onTap: () => context.push(Routes.login),
             ),
           ],
 
           // ── Prayer calculation ───────────────────────────────────────────
-          const _SectionHeader('Prayer Calculation'),
+          _SectionHeader(l.settingsSectionPrayerCalc),
           SwitchListTile(
-            title: const Text('Hanafi Asr'),
-            subtitle: const Text('Shadow factor 2x (later Asr time)'),
+            title: Text(l.settingsHanafiAsr),
+            subtitle: Text(l.settingsHanafiAsrSubtitle),
             value: settings.hanafi,
             onChanged: notifier.setHanafi,
           ),
 
           // ── Home Screen ──────────────────────────────────────────────────
-          const _SectionHeader('Home Screen'),
+          _SectionHeader(l.settingsHomeScreen),
           SwitchListTile(
-            title: const Text('Sky gradient background'),
-            subtitle: const Text('Animated sky colors matching the time of day'),
+            title: Text(l.settingsSkyGradient),
+            subtitle: Text(l.settingsSkyGradientSubtitle),
             value: settings.skyGradientEnabled,
             onChanged: notifier.setSkyGradientEnabled,
           ),
           if (settings.skyGradientEnabled)
             SwitchListTile(
-              title: const Text('Weather-tinted gradient'),
-              subtitle: const Text('Adjust sky colors based on local weather'),
+              title: Text(l.settingsWeatherGradient),
+              subtitle: Text(l.settingsWeatherGradientSubtitle),
               value: settings.skyGradientWeather,
               onChanged: notifier.setSkyGradientWeather,
             ),
           SwitchListTile(
-            title: const Text('Countdown animation'),
-            subtitle: const Text('Breathing ring on the next prayer countdown'),
+            title: Text(l.settingsCountdownAnimation),
+            subtitle: Text(l.settingsCountdownAnimationSubtitle),
             value: settings.countdownAnimationEnabled,
             onChanged: notifier.setCountdownAnimationEnabled,
           ),
 
           // ── Display ──────────────────────────────────────────────────────
-          const _SectionHeader('Display'),
+          _SectionHeader(l.settingsSectionDisplay),
           SwitchListTile(
-            title: const Text('24-hour clock'),
+            title: Text(l.settings24hClock),
             value: settings.use24h,
             onChanged: notifier.setUse24h,
           ),
           SwitchListTile(
-            title: const Text('Follow system theme'),
+            title: Text(l.settingsFollowSystemTheme),
             value: settings.followSystem ?? true,
             onChanged: notifier.setFollowSystem,
           ),
           if (!(settings.followSystem ?? true))
             SwitchListTile(
-              title: const Text('Dark mode'),
+              title: Text(l.settingsDarkMode),
               value: settings.darkMode,
               onChanged: notifier.setDarkMode,
             ),
           ListTile(
             leading: const Icon(Icons.language),
-            title: const Text('Language'),
+            title: Text(l.commonLanguage),
             subtitle: Text(currentLocaleLabel),
             trailing: const Icon(Icons.chevron_right),
             onTap: () => _showLanguagePicker(context, settings.locale, notifier),
           ),
 
           // ── Prayer Tracking ──────────────────────────────────────────────
-          const _SectionHeader('Prayer Tracking'),
+          _SectionHeader(l.settingsPrayerTracking),
           SwitchListTile(
-            title: const Text('Track my prayers'),
-            subtitle: const Text('Log which prayers you complete each day'),
+            title: Text(l.settingsTrackMyPrayers),
+            subtitle: Text(l.settingsTrackMyPrayersSubtitle),
             value: settings.prayerTrackingEnabled,
             onChanged: notifier.setPrayerTrackingEnabled,
           ),
           if (settings.prayerTrackingEnabled)
             ListTile(
               leading: const Icon(Icons.bar_chart),
-              title: const Text('Prayer statistics'),
-              subtitle: const Text('Streaks, weekly and monthly charts'),
+              title: Text(l.settingsPrayerStats),
+              subtitle: Text(l.settingsPrayerStatsSubtitle),
               trailing: const Icon(Icons.chevron_right),
               onTap: () => context.push(Routes.stats),
             ),
 
           // ── Notifications ────────────────────────────────────────────────
-          const _SectionHeader('Notifications'),
+          _SectionHeader(l.settingsSectionNotifications),
           ListTile(
             leading: const Icon(Icons.notifications_outlined),
-            title: const Text('Prayer notifications'),
-            subtitle: const Text('Adhan, reminders, and per-prayer settings'),
+            title: Text(l.settingsPrayerNotifications),
+            subtitle: Text(l.settingsPrayerNotificationsSubtitle),
             trailing: const Icon(Icons.chevron_right),
             onTap: () => context.push(Routes.notificationSettings),
           ),
           ListTile(
             leading: const Icon(Icons.alarm_outlined),
-            title: const Text('Prayer agendas'),
-            subtitle: const Text('Custom reminders offset from prayer times'),
+            title: Text(l.settingsPrayerAgendas),
+            subtitle: Text(l.settingsPrayerAgendasSubtitle),
             trailing: const Icon(Icons.chevron_right),
             onTap: () => context.push(Routes.agendas),
           ),
           SwitchListTile(
-            title: const Text('Jumu\'ah Al-Kahf reminder'),
-            subtitle: const Text('Reminder on Fridays to read Surah Al-Kahf'),
+            title: Text(l.settingsJumuahKahf),
+            subtitle: Text(l.settingsJumuahKahfSubtitle),
             value: settings.jumuahKahfReminder,
             onChanged: notifier.setJumuahKahfReminder,
           ),
 
           // ── Travel ───────────────────────────────────────────────────────
-          const _SectionHeader('Travel'),
+          _SectionHeader(l.settingsTravel),
           SwitchListTile(
-            title: const Text('Travel mode'),
-            subtitle: const Text(
-                'Automatically detect when away from home and adjust prayers'),
+            title: Text(l.settingsTravelMode),
+            subtitle: Text(l.settingsTravelModeSubtitle),
             value: settings.travelModeEnabled,
             onChanged: notifier.setTravelModeEnabled,
           ),
           if (settings.travelModeEnabled)
             ListTile(
               leading: const Icon(Icons.home_outlined),
-              title: const Text('Home location'),
+              title: Text(l.settingsHomeLocation),
               subtitle: Text(
                 settings.homeLat != null && settings.homeLng != null
                     ? '${settings.homeLat!.toStringAsFixed(4)}, '
                         '${settings.homeLng!.toStringAsFixed(4)}'
-                    : 'Not set — tap to use current location',
+                    : l.settingsHomeLocationNotSet,
               ),
               trailing: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -205,7 +209,7 @@ class SettingsScreen extends ConsumerWidget {
                   if (settings.homeLat != null)
                     IconButton(
                       icon: const Icon(Icons.clear),
-                      tooltip: 'Clear home location',
+                      tooltip: l.settingsClearHomeLocation,
                       onPressed: () => notifier.clearHomeCoords(),
                     ),
                   const Icon(Icons.chevron_right),
@@ -215,51 +219,51 @@ class SettingsScreen extends ConsumerWidget {
             ),
           ListTile(
             leading: const Icon(Icons.menu_book_outlined),
-            title: const Text('Travel prayer rulings'),
-            subtitle: const Text('Qasr, combining, and traveler guidelines'),
+            title: Text(l.settingsTravelRulings),
+            subtitle: Text(l.settingsTravelRulingsSubtitle),
             trailing: const Icon(Icons.chevron_right),
             onTap: () => context.push(Routes.travelRulings),
           ),
 
           // ── Smart Home ──────────────────────────────────────────────────
-          const _SectionHeader('Smart Home'),
+          _SectionHeader(l.settingsSmartHome),
           ListTile(
             leading: const Icon(Icons.home_max_outlined),
-            title: const Text('Smart home integrations'),
-            subtitle: const Text('HomeKit, Google Home, Alexa, Home Assistant'),
+            title: Text(l.settingsSmartHomeIntegrations),
+            subtitle: Text(l.settingsSmartHomeIntegrationsSubtitle),
             trailing: const Icon(Icons.chevron_right),
             onTap: () => context.push(Routes.smartHome),
           ),
 
           // ── TV Display ──────────────────────────────────────────────────
-          const _SectionHeader('TV Display'),
+          _SectionHeader(l.settingsTvDisplay),
           ListTile(
             leading: const Icon(Icons.tv),
-            title: const Text('TV home display'),
-            subtitle: const Text('Full-screen prayer clock for TV'),
+            title: Text(l.settingsTvHome),
+            subtitle: Text(l.settingsTvHomeSubtitle),
             trailing: const Icon(Icons.chevron_right),
             onTap: () => context.push(Routes.tvHome),
           ),
           ListTile(
             leading: const Icon(Icons.mosque),
-            title: const Text('Masjid display'),
-            subtitle: const Text('Adhan/iqamah table for masjid screens'),
+            title: Text(l.settingsMasjidDisplay),
+            subtitle: Text(l.settingsMasjidDisplaySubtitle),
             trailing: const Icon(Icons.chevron_right),
             onTap: () => context.push(Routes.tvMasjid),
           ),
           ListTile(
             leading: const Icon(Icons.settings_outlined),
-            title: const Text('TV settings'),
-            subtitle: const Text('Masjid mode, iqamah offsets, ambient'),
+            title: Text(l.settingsTvSettings),
+            subtitle: Text(l.settingsTvSettingsSubtitle),
             trailing: const Icon(Icons.chevron_right),
             onTap: () => context.push(Routes.tvSettings),
           ),
 
           // ── About ─────────────────────────────────────────────────────────
-          const _SectionHeader('About'),
+          _SectionHeader(l.commonAbout),
           ListTile(
             leading: const Icon(Icons.info_outline),
-            title: const Text('About PrayCalc'),
+            title: Text(l.settingsAboutPrayCalc),
             trailing: const Icon(Icons.chevron_right),
             onTap: () => context.push(Routes.about),
           ),
@@ -281,16 +285,16 @@ class SettingsScreen extends ConsumerWidget {
     }
   }
 
-  String _syncStatusLabel(SyncStatus status) {
+  String _syncStatusLabel(AppLocalizations l, SyncStatus status) {
     switch (status) {
       case SyncStatus.synced:
-        return 'Synced';
+        return l.syncSynced;
       case SyncStatus.syncing:
-        return 'Syncing...';
+        return l.syncSyncing;
       case SyncStatus.offline:
-        return 'Offline';
+        return l.syncOffline;
       case SyncStatus.error:
-        return 'Sync error';
+        return l.syncError;
     }
   }
 
@@ -306,7 +310,7 @@ class SettingsScreen extends ConsumerWidget {
     final selected = await showDialog<String?>(
       context: context,
       builder: (ctx) => SimpleDialog(
-        title: const Text('Language'),
+        title: Text(AppLocalizations.of(context)!.commonLanguage),
         children: [
           for (final (label, code) in _supportedLocales)
             SimpleDialogOption(

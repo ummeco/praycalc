@@ -9,6 +9,8 @@ import 'package:pray_calc_dart/pray_calc_dart.dart';
 import 'package:timezone/data/latest_10y.dart' as tz_data;
 import 'package:timezone/timezone.dart' as tz;
 
+import 'package:praycalc_app/l10n/app_localizations.dart';
+
 import '../../core/providers/geo_provider.dart';
 import '../../core/providers/prayer_provider.dart';
 import '../../core/providers/ramadan_provider.dart';
@@ -236,10 +238,11 @@ class _HomeHeader extends ConsumerWidget {
     final settings = ref.watch(settingsProvider);
     final gpsActive = gpsState.hasPosition;
 
+    final l = AppLocalizations.of(context)!;
     final vd = _viewDate;
     final isToday = dayPage == 1;
 
-    const dayNames = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+    final dayNames = [l.dayMonday, l.dayTuesday, l.dayWednesday, l.dayThursday, l.dayFriday, l.daySaturday, l.daySunday];
     final dayName = dayNames[now.weekday - 1];
     final timeStr = _formatClock(now, settings.use24h);
 
@@ -263,7 +266,7 @@ class _HomeHeader extends ConsumerWidget {
                       children: [
                         Flexible(
                           child: Text(
-                            city?.displayName ?? 'Choose a city',
+                            city?.displayName ?? l.chooseCityLabel,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
                               fontSize: 22,
@@ -384,7 +387,8 @@ class _HijriDateText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final str = _hijriStr(date);
+    final l = AppLocalizations.of(context)!;
+    final str = _hijriStr(date, l);
     if (str.isEmpty) return const SizedBox.shrink();
     final alpha = isPrimary ? 210 : 100;
     final suffixAlpha = isPrimary ? 110 : 55;
@@ -400,7 +404,7 @@ class _HijriDateText extends StatelessWidget {
             ),
           ),
           TextSpan(
-            text: ' AH',
+            text: ' ${l.homeSuffixAH}',
             style: TextStyle(
               color: Colors.white.withAlpha(suffixAlpha),
               fontSize: 9,
@@ -411,13 +415,13 @@ class _HijriDateText extends StatelessWidget {
     );
   }
 
-  static String _hijriStr(DateTime dt) {
+  static String _hijriStr(DateTime dt, AppLocalizations l) {
     try {
       final hj = HijriCalendar.fromDate(dt);
-      const months = [
-        'Muharram', 'Safar', "Rabi' al-Awwal", "Rabi' al-Thani",
-        'Jumada al-Awwal', 'Jumada al-Thani', 'Rajab', "Sha'ban",
-        'Ramadan', 'Shawwal', "Dhu al-Qi'dah", 'Dhu al-Hijjah',
+      final months = [
+        l.hijriMuharram, l.hijriSafar, l.hijriRabiAlAwwal, l.hijriRabiAlThani,
+        l.hijriJumadaAlAwwal, l.hijriJumadaAlThani, l.hijriRajab, l.hijriShaban,
+        l.hijriRamadan, l.hijriShawwal, l.hijriDhulQidah, l.hijriDhulHijjah,
       ];
       return '${months[hj.hMonth - 1]} ${hj.hDay}, ${hj.hYear}';
     } catch (_) {
@@ -433,9 +437,10 @@ class _GregorianDateText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const months = [
-      'January', 'February', 'March', 'April', 'May', 'June',
-      'July', 'August', 'September', 'October', 'November', 'December',
+    final l = AppLocalizations.of(context)!;
+    final months = [
+      l.monthJanuary, l.monthFebruary, l.monthMarch, l.monthApril, l.monthMayFull, l.monthJune,
+      l.monthJuly, l.monthAugust, l.monthSeptember, l.monthOctober, l.monthNovember, l.monthDecember,
     ];
     final str = '${months[date.month - 1]} ${date.day}, ${date.year}';
     final alpha = isPrimary ? 210 : 100;
@@ -452,7 +457,7 @@ class _GregorianDateText extends StatelessWidget {
             ),
           ),
           TextSpan(
-            text: ' CE',
+            text: ' ${l.homeSuffixCE}',
             style: TextStyle(
               color: Colors.white.withAlpha(suffixAlpha),
               fontSize: 9,
@@ -510,6 +515,7 @@ class _NoCityBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(32),
@@ -518,13 +524,13 @@ class _NoCityBody extends StatelessWidget {
           children: [
             Icon(Icons.location_city_outlined, size: 64, color: Colors.white.withAlpha(50)),
             const SizedBox(height: 16),
-            const Text(
-              'No city selected',
-              style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w600),
+            Text(
+              l.homeNoCitySelected,
+              style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: 8),
             Text(
-              'Tap the city name above to get started.',
+              l.homeNoCityHint,
               style: TextStyle(color: Colors.white.withAlpha(140), fontSize: 14),
               textAlign: TextAlign.center,
             ),
@@ -544,6 +550,7 @@ class _ErrorBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(24),
@@ -552,9 +559,9 @@ class _ErrorBody extends StatelessWidget {
           children: [
             Icon(Icons.error_outline, size: 48, color: Colors.red.withAlpha(180)),
             const SizedBox(height: 12),
-            const Text(
-              'Could not calculate prayer times.',
-              style: TextStyle(color: Colors.white, fontSize: 16),
+            Text(
+              l.homeCouldNotCalc,
+              style: const TextStyle(color: Colors.white, fontSize: 16),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 8),
@@ -571,7 +578,7 @@ class _ErrorBody extends StatelessWidget {
                   foregroundColor: PrayCalcColors.light,
                   side: BorderSide(color: PrayCalcColors.light.withAlpha(100)),
                 ),
-                child: const Text('Retry'),
+                child: Text(l.commonRetry),
               ),
             ],
           ],
@@ -609,16 +616,30 @@ class _HomeBodyState extends ConsumerState<_HomeBody> {
   double get _nowH =>
       widget.now.hour + widget.now.minute / 60.0 + widget.now.second / 3600.0;
 
-  String _prayerLabel(String name, {bool isQasr = false}) {
-    if (isQasr && (name == 'Dhuhr' || name == 'Asr' || name == 'Isha')) {
-      return '$name (Qasr)';
+  String _localizedPrayerName(String name, AppLocalizations l) {
+    switch (name) {
+      case 'Fajr': return l.prayerFajr;
+      case 'Sunrise': return l.prayerSunrise;
+      case 'Dhuhr': return l.prayerDhuhr;
+      case 'Asr': return l.prayerAsr;
+      case 'Maghrib': return l.prayerMaghrib;
+      case 'Isha': return l.prayerIsha;
+      case 'Qiyam': return l.prayerQiyam;
+      default: return name;
     }
-    return name;
   }
 
-  String? _prayerSublabel(String name) {
-    if (name == 'Fajr') return 'Suhoor';
-    if (name == 'Maghrib') return 'Iftar';
+  String _prayerLabel(String name, AppLocalizations l, {bool isQasr = false}) {
+    final localized = _localizedPrayerName(name, l);
+    if (isQasr && (name == 'Dhuhr' || name == 'Asr' || name == 'Isha')) {
+      return '$localized (${l.homeQasr})';
+    }
+    return localized;
+  }
+
+  String? _prayerSublabel(String name, AppLocalizations l) {
+    if (name == 'Fajr') return l.prayerSuhoor;
+    if (name == 'Maghrib') return l.prayerIftar;
     return null;
   }
 
@@ -647,6 +668,7 @@ class _HomeBodyState extends ConsumerState<_HomeBody> {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final ramadan = ref.watch(ramadanProvider);
     final travel = ref.watch(travelProvider);
     final nowH = _nowH;
@@ -692,8 +714,8 @@ class _HomeBodyState extends ConsumerState<_HomeBody> {
 
                   tiles.add(
                     _PrayerTile(
-                      label: _prayerLabel(meta.label, isQasr: travel.isQasr),
-                      sublabel: (widget.isToday && ramadan.isRamadan) ? _prayerSublabel(meta.label) : null,
+                      label: _prayerLabel(meta.label, l, isQasr: travel.isQasr),
+                      sublabel: (widget.isToday && ramadan.isRamadan) ? _prayerSublabel(meta.label, l) : null,
                       hours: h,
                       use24h: widget.settings.use24h,
                       isActive: isActiveTile,
@@ -746,19 +768,19 @@ class _HomeBodyState extends ConsumerState<_HomeBody> {
           children: [
             _ActionCard(
               icon: Icons.calendar_view_month_outlined,
-              label: 'Monthly\nTimes',
+              label: l.homeActionMonthlyTimes,
               onTap: () => context.push(Routes.calendar),
             ),
             const SizedBox(width: 10),
             _ActionCard(
               icon: Icons.blur_circular_outlined,
-              label: 'Dua &\nDhikr',
+              label: l.homeActionDuaDhikr,
               onTap: () => context.push(Routes.duaDhikr),
             ),
             const SizedBox(width: 10),
             _ActionCard(
               icon: Icons.bar_chart_outlined,
-              label: 'Prayer\nStats',
+              label: l.homeActionPrayerStats,
               onTap: () => context.push(Routes.stats),
             ),
           ],
@@ -1061,6 +1083,7 @@ class _PolarBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
@@ -1075,9 +1098,7 @@ class _PolarBanner extends StatelessWidget {
           const SizedBox(width: 10),
           Expanded(
             child: Text(
-              '$nanCount prayer times cannot be calculated for your location '
-              'during this period (midnight sun / polar night). '
-              'Try nearest-latitude estimation in settings.',
+              l.homePolarBanner(nanCount),
               style: TextStyle(
                 color: Colors.white.withAlpha(160),
                 fontSize: 12,
@@ -1097,6 +1118,7 @@ class _RamadanBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
@@ -1111,7 +1133,7 @@ class _RamadanBanner extends StatelessWidget {
           Row(
             children: [
               Text(
-                'Ramadan Mubarak',
+                l.ramadanMubarak,
                 style: TextStyle(
                   color: const Color(0xFFD4A017).withAlpha(230),
                   fontWeight: FontWeight.w600,
@@ -1119,10 +1141,10 @@ class _RamadanBanner extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 6),
-              Text('🌙', style: const TextStyle(fontSize: 14)),
+              const Text('🌙', style: TextStyle(fontSize: 14)),
               const Spacer(),
               Text(
-                'Day ${ramadan.hDay} / 30',
+                l.ramadanDayProgress(ramadan.hDay),
                 style: TextStyle(
                   color: const Color(0xFFD4A017).withAlpha(160),
                   fontSize: 12,
@@ -1142,7 +1164,7 @@ class _RamadanBanner extends StatelessWidget {
           if (ramadan.isLastTenNights) ...[
             const SizedBox(height: 6),
             Text(
-              ramadan.isLaylatulQadr ? 'Laylatul Qadr ✨' : 'Last 10 Nights ✨',
+              '${ramadan.isLaylatulQadr ? l.laylatulQadr : l.lastTenNights} ✨',
               style: TextStyle(
                 color: const Color(0xFFD4A017).withAlpha(180),
                 fontSize: 11,

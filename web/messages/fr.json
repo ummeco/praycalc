@@ -150,6 +150,19 @@
     "id": "Bahasa Indonesia",
     "fr": "Français",
     "bn": "বাংলা",
-    "so": "Soomaali"
+    "so": "Soomaali",
+    "de": "Deutsch",
+    "es": "Español",
+    "hi": "हिन्दी"
+  },
+  "footer": {
+    "description": "Horaires de prière islamiques précis pour toute ville dans le monde. Plusieurs méthodes de calcul, calendrier Hijri, phases lunaires et direction de la Qibla. Gratuit, privé et sans publicité.",
+    "home": "Accueil",
+    "institutions": "Pour les Institutions",
+    "masjids": "Pour les Mosquées",
+    "exploreMore": "En Savoir Plus",
+    "help": "Aide",
+    "privacy": "Confidentialité",
+    "terms": "Conditions"
   }
 }

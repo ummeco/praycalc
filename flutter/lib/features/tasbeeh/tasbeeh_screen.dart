@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:praycalc_app/l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/providers/tasbeeh_provider.dart';
@@ -26,16 +27,17 @@ class _TasbeehScreenState extends ConsumerState<TasbeehScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final state = ref.watch(tasbeehProvider);
     _checkCompletion(context, state);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Tasbeeh'),
+        title: Text(l.tasbeehTitle),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
-            tooltip: 'Reset',
+            tooltip: l.tasbeehResetTooltip,
             onPressed: () => _confirmReset(context),
           ),
         ],
@@ -66,9 +68,10 @@ class _TasbeehScreenState extends ConsumerState<TasbeehScreen> {
       // Show single-preset completion snack.
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!context.mounted) return;
+        final l = AppLocalizations.of(context)!;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('✓ ${preset.label} × ${preset.target}'),
+            content: Text(l.tasbeehPresetComplete(preset.label, preset.target)),
             duration: const Duration(seconds: 2),
           ),
         );
@@ -82,9 +85,10 @@ class _TasbeehScreenState extends ConsumerState<TasbeehScreen> {
             state.presets.fold<int>(0, (sum, p) => sum + p.target);
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (!context.mounted) return;
+          final l = AppLocalizations.of(context)!;
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Tasbih complete! $totalDhikr dhikr'),
+              content: Text(l.tasbeehComplete(totalDhikr)),
               duration: const Duration(seconds: 3),
             ),
           );
@@ -98,19 +102,20 @@ class _TasbeehScreenState extends ConsumerState<TasbeehScreen> {
   // ── Reset confirmation dialog ──────────────────────────────────────────────
 
   Future<void> _confirmReset(BuildContext context) async {
+    final l = AppLocalizations.of(context)!;
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Reset counter?'),
-        content: const Text('This will reset the current count to zero.'),
+        title: Text(l.tasbeehResetDialogTitle),
+        content: Text(l.tasbeehResetDialogContent),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(false),
-            child: const Text('Cancel'),
+            child: Text(l.tasbeehCancel),
           ),
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(true),
-            child: const Text('Reset'),
+            child: Text(l.tasbeehReset),
           ),
         ],
       ),
@@ -130,6 +135,7 @@ class _TasbeehBody extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final progress =
         state.target > 0 ? (state.count / state.target).clamp(0.0, 1.0) : 0.0;
@@ -167,7 +173,7 @@ class _TasbeehBody extends ConsumerWidget {
             ),
             const SizedBox(height: 4),
             Text(
-              'Tap label to switch',
+              l.tasbeehTapToSwitch,
               style: theme.textTheme.bodyMedium?.copyWith(
                 fontSize: 11,
                 color: theme.colorScheme.onSurface.withAlpha(155),
@@ -214,7 +220,7 @@ class _TasbeehBody extends ConsumerWidget {
             ),
             const SizedBox(height: 16),
             Text(
-              'Tap anywhere to count',
+              l.tasbeehTapToCount,
               style: theme.textTheme.bodyMedium?.copyWith(
                 color: theme.colorScheme.onSurface.withAlpha(155),
                 fontSize: 13,
@@ -282,6 +288,7 @@ class _HistorySection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
 
     return Container(
@@ -303,7 +310,7 @@ class _HistorySection extends StatelessWidget {
           Row(
             children: [
               Text(
-                'Today: ${state.dailyTotal} dhikr',
+                l.tasbeehTodayDhikr(state.dailyTotal),
                 style: theme.textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.w600,
                   color: theme.colorScheme.primary,
@@ -311,7 +318,7 @@ class _HistorySection extends StatelessWidget {
               ),
               const Spacer(),
               Text(
-                'Last 7 days',
+                l.tasbeehLast7Days,
                 style: theme.textTheme.bodyMedium?.copyWith(
                   fontSize: 12,
                   color: theme.colorScheme.onSurface.withAlpha(140),
@@ -322,7 +329,7 @@ class _HistorySection extends StatelessWidget {
           const SizedBox(height: 12),
           if (state.history.isEmpty && state.dailyTotal == 0)
             Text(
-              'No history yet — start counting!',
+              l.tasbeehNoHistory,
               style: theme.textTheme.bodyMedium?.copyWith(
                 color: theme.colorScheme.onSurface.withAlpha(120),
                 fontSize: 13,
@@ -476,9 +483,10 @@ class _TasbeehBodyExternalState extends ConsumerState<TasbeehBody> {
       HapticFeedback.lightImpact();
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!context.mounted) return;
+        final l = AppLocalizations.of(context)!;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('\u2713 ${preset.label} \u00d7 ${preset.target}'),
+            content: Text(l.tasbeehPresetComplete(preset.label, preset.target)),
             duration: const Duration(seconds: 2),
           ),
         );
@@ -489,9 +497,10 @@ class _TasbeehBodyExternalState extends ConsumerState<TasbeehBody> {
         final totalDhikr = state.presets.fold<int>(0, (sum, p) => sum + p.target);
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (!context.mounted) return;
+          final l = AppLocalizations.of(context)!;
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Tasbih complete! $totalDhikr dhikr'),
+              content: Text(l.tasbeehComplete(totalDhikr)),
               duration: const Duration(seconds: 3),
             ),
           );

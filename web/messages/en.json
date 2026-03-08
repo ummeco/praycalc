@@ -150,6 +150,19 @@
     "id": "Bahasa Indonesia",
     "fr": "Français",
     "bn": "বাংলা",
-    "so": "Soomaali"
+    "so": "Soomaali",
+    "de": "Deutsch",
+    "es": "Español",
+    "hi": "हिन्दी"
+  },
+  "footer": {
+    "description": "Accurate Islamic prayer times for any city worldwide. Multiple calculation methods, Hijri calendar, moon phases, and Qibla direction. Free, private, and ad-free.",
+    "home": "Home",
+    "institutions": "For Institutions",
+    "masjids": "For Masjids",
+    "exploreMore": "Explore More",
+    "help": "Help",
+    "privacy": "Privacy",
+    "terms": "Terms"
   }
 }

@@ -60,6 +60,14 @@
   "daySatShort": "Sat",
   "daySunShort": "Sun",
 
+  "dayMonday": "Monday",
+  "dayTuesday": "Tuesday",
+  "dayWednesday": "Wednesday",
+  "dayThursday": "Thursday",
+  "dayFriday": "Friday",
+  "daySaturday": "Saturday",
+  "daySunday": "Sunday",
+
   "daySuChart": "Su",
   "dayMoChart": "Mo",
   "dayTuChart": "Tu",
@@ -82,15 +90,31 @@
       "prayer": { "type": "String" }
     }
   },
-  "ramadanMubarak": "Ramadan Mubarak 🌙",
+  "ramadanMubarak": "Ramadan Mubarak",
   "ramadanDayProgress": "Day {day} / 30",
   "@ramadanDayProgress": {
     "placeholders": {
       "day": { "type": "int" }
     }
   },
-  "lastTenNights": "Last 10 Nights ✨",
-  "laylatulQadr": "Laylatul Qadr ✨",
+  "lastTenNights": "Last 10 Nights",
+  "laylatulQadr": "Laylatul Qadr",
+
+  "homeSuffixAH": "AH",
+  "homeSuffixCE": "CE",
+  "homeNoCitySelected": "No city selected",
+  "homeNoCityHint": "Tap above to search for your city or enable GPS.",
+  "homeCouldNotCalc": "Could not calculate prayer times.",
+  "homeQasr": "Qasr",
+  "homeActionMonthlyTimes": "Monthly\nTimes",
+  "homeActionDuaDhikr": "Dua &\nDhikr",
+  "homeActionPrayerStats": "Prayer\nStats",
+  "homePolarBanner": "{count} prayer times cannot be calculated for your location during this period (midnight sun / polar night). Try nearest-latitude estimation in settings.",
+  "@homePolarBanner": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
 
   "settingsTitle": "Settings",
   "settingsSectionPrayerCalc": "Prayer Calculation",
@@ -105,6 +129,47 @@
   "settingsPrayerNotificationsSubtitle": "Adhan, reminders, and per-prayer settings",
   "settingsPrayerAgendas": "Prayer agendas",
   "settingsPrayerAgendasSubtitle": "Custom reminders offset from prayer times",
+  "settingsAccount": "Account",
+  "settingsSignInToSync": "Sign in to sync",
+  "settingsSignInToSyncSubtitle": "Keep your data across devices",
+  "settingsHomeScreen": "Home Screen",
+  "settingsSkyGradient": "Sky gradient background",
+  "settingsSkyGradientSubtitle": "Animated sky colors matching the time of day",
+  "settingsWeatherGradient": "Weather-tinted gradient",
+  "settingsWeatherGradientSubtitle": "Adjust sky colors based on local weather",
+  "settingsCountdownAnimation": "Countdown animation",
+  "settingsCountdownAnimationSubtitle": "Breathing ring on the next prayer countdown",
+  "settingsPrayerTracking": "Prayer Tracking",
+  "settingsTrackMyPrayers": "Track my prayers",
+  "settingsTrackMyPrayersSubtitle": "Log which prayers you complete each day",
+  "settingsPrayerStats": "Prayer statistics",
+  "settingsPrayerStatsSubtitle": "Streaks, weekly and monthly charts",
+  "settingsJumuahKahf": "Jumu'ah Al-Kahf reminder",
+  "settingsJumuahKahfSubtitle": "Reminder on Fridays to read Surah Al-Kahf",
+  "settingsTravel": "Travel",
+  "settingsTravelMode": "Travel mode",
+  "settingsTravelModeSubtitle": "Automatically detect when away from home and adjust prayers",
+  "settingsHomeLocation": "Home location",
+  "settingsHomeLocationNotSet": "Not set — tap to use current location",
+  "settingsClearHomeLocation": "Clear home location",
+  "settingsTravelRulings": "Travel prayer rulings",
+  "settingsTravelRulingsSubtitle": "Qasr, combining, and traveler guidelines",
+  "settingsSmartHome": "Smart Home",
+  "settingsSmartHomeIntegrations": "Smart home integrations",
+  "settingsSmartHomeIntegrationsSubtitle": "HomeKit, Google Home, Alexa, Home Assistant",
+  "settingsTvDisplay": "TV Display",
+  "settingsTvHome": "TV home display",
+  "settingsTvHomeSubtitle": "Full-screen prayer clock for TV",
+  "settingsMasjidDisplay": "Masjid display",
+  "settingsMasjidDisplaySubtitle": "Adhan/iqamah table for masjid screens",
+  "settingsTvSettings": "TV settings",
+  "settingsTvSettingsSubtitle": "Masjid mode, iqamah offsets, ambient",
+  "settingsAboutPrayCalc": "About PrayCalc",
+
+  "syncSynced": "Synced",
+  "syncSyncing": "Syncing...",
+  "syncOffline": "Offline",
+  "syncError": "Sync error",
 
   "notifSettingsTitle": "Notifications & Adhan",
   "notifAdhanLabel": "Adhan",
@@ -196,6 +261,24 @@
       "age": { "type": "String" }
     }
   },
+  "moonPhaseNewMoon": "New Moon",
+  "moonPhaseWaxingCrescent": "Waxing Crescent",
+  "moonPhaseFirstQuarter": "First Quarter",
+  "moonPhaseWaxingGibbous": "Waxing Gibbous",
+  "moonPhaseFullMoon": "Full Moon",
+  "moonPhaseWaningGibbous": "Waning Gibbous",
+  "moonPhaseLastQuarter": "Last Quarter",
+  "moonPhaseWaningCrescent": "Waning Crescent",
+  "moonHilalVisibility": "Next Hilal Visibility",
+  "moonRegionMiddleEast": "Middle East",
+  "moonRegionWestAfrica": "West Africa",
+  "moonRegionSouthAsia": "South Asia",
+  "moonRegionEurope": "Europe",
+  "moonRegionAmericas": "Americas",
+  "moonVisible": "Visible",
+  "moonNotVisible": "Not Visible",
+  "moonPossible": "Possible",
+  "moonUpcomingDates": "Upcoming Islamic Dates",
   "hijriTodayLabel": "Today in the Hijri Calendar",
   "ramadanBeginsLabel": "Ramadan {year} AH begins",
   "@ramadanBeginsLabel": {
@@ -209,6 +292,66 @@
       "days": { "type": "int" }
     }
   },
+  "moonLunarCycle": "Lunar Cycle",
+  "moonDayOfCycle": "Day {day} of ~29.5",
+  "@moonDayOfCycle": {
+    "placeholders": {
+      "day": { "type": "int" }
+    }
+  },
+  "moonHilalSightingForecast": "Hilal Sighting Forecast",
+  "moonHilalVisibilityMap": "Hilal Visibility Map",
+  "moonDayN": "Day {day}",
+  "@moonDayN": {
+    "placeholders": {
+      "day": { "type": "int" }
+    }
+  },
+  "moonGlobalSighting": "Global Sighting",
+  "moonZoneNakedEye": "Naked Eye",
+  "moonZoneBinoculars": "Binoculars",
+  "moonZoneVeryDifficult": "Very Difficult",
+  "moonZoneNotVisible": "Not Visible",
+  "moonMonthPrediction29": "{month} {year} AH will likely be 29 days. Crescent expected to be sighted on the 29th, in sha Allah.",
+  "@moonMonthPrediction29": {
+    "placeholders": {
+      "month": { "type": "String" },
+      "year": { "type": "int" }
+    }
+  },
+  "moonMonthPrediction30": "{month} {year} AH will likely be 30 days. Crescent unlikely on the 29th — month completes 30 days.",
+  "@moonMonthPrediction30": {
+    "placeholders": {
+      "month": { "type": "String" },
+      "year": { "type": "int" }
+    }
+  },
+  "moonUmmAlQura": "Umm al-Qura",
+  "moonSaudiArabia": "Saudi Arabia",
+  "moonFCNACalc": "FCNA / Calc.",
+  "moonNorthAmerica": "North America",
+  "moonNDays": "{days} days",
+  "@moonNDays": {
+    "placeholders": {
+      "days": { "type": "int" }
+    }
+  },
+  "moonStarts": "{month} starts:",
+  "@moonStarts": {
+    "placeholders": {
+      "month": { "type": "String" }
+    }
+  },
+  "moonMoonAgeAtSunset": "Moon age at sunset: {hours} h",
+  "@moonMoonAgeAtSunset": {
+    "placeholders": {
+      "hours": { "type": "String" }
+    }
+  },
+  "moon7DayLunarCalendar": "7-Day Lunar Calendar",
+  "moonUpcomingIslamicEvents": "Upcoming Islamic Events",
+  "moonTodayLabel": "Today",
+  "moonTomorrowLabel": "Tomorrow",
 
   "calDateCol": "Date",
   "calHijriCol": "Hijri",
@@ -353,13 +496,6 @@
   "subscriptionFeatureSync": "Cross-device sync",
   "subscriptionFeatureAdFree": "Ad-free experience",
 
-  "tvTitle": "TV Display",
-  "tvMasjidMode": "Masjid Mode",
-  "tvAmbientMode": "Ambient Mode",
-  "tvSettingsIqamah": "Iqamah Offsets",
-  "tvSettingsAnnouncements": "Announcements",
-  "tvConnectQR": "Scan to connect",
-
   "watchTitle": "Watch",
   "watchNextPrayer": "Next Prayer",
   "watchAllPrayers": "All Prayers",
@@ -371,6 +507,138 @@
   "tomorrow": "Tomorrow",
   "thisWeek": "This week",
   "thisMonth": "This month",
+
+  "loginCreateAccount": "Create Account",
+  "loginSignIn": "Sign In",
+  "loginWelcomeBack": "Welcome back",
+  "loginJoinPrayCalc": "Join PrayCalc",
+  "loginSyncSubtitle": "Sync your prayer data across devices",
+  "loginContinueGoogle": "Continue with Google",
+  "loginOr": "or",
+  "loginSigningIn": "Signing in…",
+  "loginNameLabel": "Display name (optional)",
+  "loginEmailLabel": "Email",
+  "loginPasswordLabel": "Password",
+  "loginEmailRequired": "Email is required",
+  "loginEmailInvalid": "Enter a valid email address",
+  "loginPasswordRequired": "Password is required",
+  "loginPasswordMinLength": "Password must be at least 8 characters",
+  "loginForgotPassword": "Forgot password?",
+  "loginEnterEmailFirst": "Enter your email address first",
+  "loginResetSent": "Password reset email sent",
+  "loginResetFailed": "Could not send reset email",
+  "loginNewToPrayCalc": "New to PrayCalc?",
+  "loginAlreadyHaveAccount": "Already have an account?",
+
+  "accountTitle": "Account",
+  "accountNotSignedIn": "Not signed in",
+  "accountSyncSection": "Sync",
+  "accountSyncStatus": "Sync status",
+  "accountSyncNow": "Sync now",
+  "accountSyncHistory": "Sync history",
+  "accountNoConflicts": "No conflicts detected",
+  "accountConflictsResolved": "{count} resolved",
+  "@accountConflictsResolved": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "accountSyncedAgo": "Synced {time}",
+  "@accountSyncedAgo": {
+    "placeholders": {
+      "time": { "type": "String" }
+    }
+  },
+  "accountOfflineStatus": "Offline. Changes saved locally.",
+  "accountSyncErrorStatus": "Sync error. Will retry.",
+  "accountDataSection": "Data",
+  "accountExportData": "Export data",
+  "accountExportSubtitle": "Download your settings and prayer logs",
+  "accountExportFailed": "Could not export data",
+  "accountSignOutTitle": "Sign out",
+  "accountSignOutBody": "Your local data will be kept. Sign in again to resume syncing.",
+  "accountDeleteAccount": "Delete account",
+  "accountDeleteSubtitle": "Permanently delete your account and data",
+  "accountDeleteBody": "This will permanently delete your account and all synced data. Your local data on this device will not be removed.\n\nThis action cannot be undone.",
+  "accountDeleted": "Account deleted",
+  "accountDeleteFailed": "Could not delete account",
+  "accountTimeJustNow": "just now",
+  "accountTimeMinAgo": "{min}m ago",
+  "@accountTimeMinAgo": {
+    "placeholders": {
+      "min": { "type": "int" }
+    }
+  },
+  "accountTimeHourAgo": "{hour}h ago",
+  "@accountTimeHourAgo": {
+    "placeholders": {
+      "hour": { "type": "int" }
+    }
+  },
+  "accountTimeDayAgo": "{day}d ago",
+  "@accountTimeDayAgo": {
+    "placeholders": {
+      "day": { "type": "int" }
+    }
+  },
+
+  "statsTitle": "Prayer Statistics",
+  "statsShareTooltip": "Share stats",
+  "statsTodayPrayers": "Today's Prayers",
+  "statsTodayCount": "{done} / 5",
+  "@statsTodayCount": {
+    "placeholders": {
+      "done": { "type": "int" }
+    }
+  },
+  "statsStreak": "Streak",
+  "statsDays": "days",
+  "statsThisWeek": "This Week",
+  "statsCompletion": "completion",
+  "statsThisMonth": "This Month",
+  "statsMostMissed": "Most Missed",
+  "statsThisWeekLabel": "this week",
+  "statsWeeklyChart": "Weekly Completion by Prayer",
+  "statsMonthlyChart": "Monthly Completion by Prayer",
+  "statsTotalLogged": "{count} total prayers logged",
+  "@statsTotalLogged": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "statsKeepItUp": "Keep it up!",
+  "statsShareTitle": "PrayCalc Prayer Statistics",
+  "statsShareStreak": "Streak: {days} days",
+  "@statsShareStreak": {
+    "placeholders": {
+      "days": { "type": "int" }
+    }
+  },
+  "statsShareWeekly": "Weekly: {pct}%",
+  "@statsShareWeekly": {
+    "placeholders": {
+      "pct": { "type": "int" }
+    }
+  },
+  "statsShareMonthly": "Monthly: {pct}%",
+  "@statsShareMonthly": {
+    "placeholders": {
+      "pct": { "type": "int" }
+    }
+  },
+  "statsShareBreakdown": "Weekly breakdown:",
+
+  "aboutTitle": "About PrayCalc",
+  "aboutWebsite": "Website",
+  "aboutContact": "Contact",
+  "aboutLicenses": "Open Source Licenses",
+  "aboutCouldNotOpen": "Could not open the link.",
+  "aboutCopyright": "© {year} Ummat Dev. All rights reserved.\n\nPrayer times calculated using the pray_calc_dart engine. Accuracy depends on your GPS location and selected calculation method.",
+  "@aboutCopyright": {
+    "placeholders": {
+      "year": { "type": "int" }
+    }
+  },
 
   "commonCancel": "Cancel",
   "commonSave": "Save",
@@ -412,6 +680,7 @@
   "commonFeedback": "Send feedback",
   "commonHelp": "Help",
   "commonLanguage": "Language",
+  "commonOpenSettings": "Open Settings",
 
   "travelNotificationTitle": "You are now traveling",
   "travelNotificationBody": "Prayer times may be shortened. Tap to learn about travel rulings.",
@@ -422,5 +691,275 @@
   "travelJamTitle": "Combining Prayers (Jam')",
   "travelDurationTitle": "Duration of Travel",
   "travelReferencesTitle": "Scholarly References",
-  "travelLearnMore": "Learn more"
+  "travelLearnMore": "Learn more",
+  "travelHanafiDefaultTitle": "Why PrayCalc Uses the Hanafi Default",
+  "travelDeeperScholarly": "Deeper Scholarly Discussion",
+
+  "onboardingTitle1": "Prayer times, wherever you are",
+  "onboardingBody1": "GPS-accurate salah times for every city on earth. Fajr to Isha, sunrise to Qiyam. Powered by our own calculation engine, built for precision.",
+  "onboardingTitle2": "Your location, your times",
+  "onboardingBody2": "Search any city or let GPS detect your location. PrayCalc finds times for 5 million cities worldwide.",
+  "onboardingTitle3": "Never miss a prayer",
+  "onboardingBody3": "Adhan at prayer time, reminders before it. Custom agendas for Suhoor, classes, and more.",
+  "onboardingTitle4": "Everything you need",
+  "onboardingBody4": "Qibla compass, prayer calendar, Hijri moon phase, Tasbeeh counter. All in one place.",
+  "onboardingSkip": "Skip",
+  "onboardingGetStarted": "Get Started",
+  "onboardingSignInTitle": "Sign in to PrayCalc",
+  "onboardingSignInSubtitle": "Save your prayer history and sync\nacross all your devices.",
+  "onboardingContinueGoogle": "Continue with Google",
+  "onboardingContinueWithoutAccount": "Continue without account",
+  "onboardingSigningIn": "Signing in…",
+  "onboardingSelectLanguage": "Select Language",
+
+  "duaDhikrTitle": "Dua & Dhikr",
+  "duaDhikrTabDua": "Duas",
+  "duaDhikrTabDhikr": "Dhikr",
+  "duaDhikrTabTasbeeh": "Tasbeeh",
+  "duaDhikrTabMorning": "Morning",
+  "duaDhikrTabEvening": "Evening",
+  "duaDhikrMorningAdhkar": "Morning Adhkar",
+  "duaDhikrEveningAdhkar": "Evening Adhkar",
+
+  "calGregToggle": "Greg",
+  "calHijriToggle": "Hijri",
+  "calYearlyTooltip": "Yearly calendar",
+  "calExportIcsTooltip": "Export .ics",
+  "calMagCol": "Mag",
+
+  "qiblaShowOnMap": "Show on map",
+  "qiblaWaitingCompass": "Waiting for compass...",
+  "qiblaNoCompassSensor": "No compass sensor. Showing Qibla direction statically.",
+  "qiblaAccuracyExcellent": "Excellent accuracy",
+  "qiblaAccuracyGood": "Good accuracy",
+  "qiblaAccuracyFair": "Fair accuracy. Calibrate by moving phone in figure-8.",
+  "qiblaAccuracyLow": "Low accuracy. Calibrate by moving phone in figure-8.",
+  "qiblaToTheKaaba": "to the Kaaba",
+  "qiblaYourLocation": "Your location",
+  "qiblaGpsAccurate": "GPS-accurate",
+  "qiblaCityCenter": "City center",
+
+  "moonIlluminatedLabel": "Illuminated",
+  "moonAgeLabel": "Age",
+  "moonFirstQtr": "First Qtr",
+  "moonLastQtr": "Last Qtr",
+  "moonTonight": "Tonight",
+  "moonTomorrow": "Tomorrow",
+  "moonDaysAway": "{days}d",
+  "@moonDaysAway": {
+    "placeholders": {
+      "days": { "type": "int" }
+    }
+  },
+  "moonBeta": "Beta",
+
+  "setHomeTitle": "Set Home Location",
+  "setHomeSearchHint": "Search city, town or zip…",
+  "setHomeClear": "Clear",
+  "setHomeUseCurrentLocation": "Use Current Location",
+  "setHomeDetectAndSet": "Detect your location and set it as home",
+  "setHomeAlreadySet": "Home already set",
+  "setHomeSetAs": "{city} set as home",
+  "@setHomeSetAs": {
+    "placeholders": {
+      "city": { "type": "String" }
+    }
+  },
+  "setHomeCurrentLocationSet": "Current location set as home",
+  "setHomePermissionDenied": "Location permission denied. Search for a city below.",
+  "setHomeGpsUnavailable": "GPS unavailable. Search manually.",
+  "setHomeNoCitiesFound": "No cities found.",
+  "setHomeSearchPrompt": "Search for your home city",
+  "setHomeSearchBody": "Type above to search, or use your current location. Travel mode will detect when you are away from home.",
+
+  "subscriptionYouHavePlus": "You have Ummat+",
+  "subscriptionUpgradeTo": "Upgrade to Ummat+",
+  "subscriptionThankYou": "Thank you for supporting PrayCalc.",
+  "subscriptionUnlockPremium": "Unlock premium features across all your devices.",
+  "subscriptionManageSub": "Manage subscription",
+  "subscriptionWelcome": "Welcome to Ummat+!",
+  "subscriptionSubscribe": "Subscribe",
+  "subscriptionFreeFeatures": "Free Features",
+  "subscriptionPlusFeatures": "Ummat+ Features",
+  "subscriptionFeaturePrayerTimes": "Prayer times",
+  "subscriptionFeatureQibla": "Qibla compass",
+  "subscriptionFeatureCalendar": "Monthly calendar",
+  "subscriptionFeatureTasbeeh": "Tasbeeh counter",
+  "subscriptionFeatureMoon": "Moon & Hijri",
+
+  "smartHomeAlertType": "Alert Type",
+  "smartHomeAlertModal": "Full-screen modal",
+  "smartHomeAlertCorner": "Corner notification",
+  "smartHomeAlertNone": "None (silent)",
+  "smartHomePauseMedia": "Pause media during adhan",
+  "smartHomeQuietHours": "Quiet hours",
+  "smartHomeQuietFrom": "From",
+  "smartHomeQuietTo": "To",
+  "smartHomePrayerAudio": "Per-prayer audio",
+  "smartHomeAudioAdhan": "Adhan",
+  "smartHomeAudioBeep": "Beep",
+  "smartHomeAudioSilent": "Silent",
+
+  "aboutPrivacy": "Privacy Policy",
+  "aboutVersion": "Version {version}",
+  "@aboutVersion": {
+    "placeholders": {
+      "version": { "type": "String" }
+    }
+  },
+
+  "notifDefaultAdhan": "Default Adhan",
+  "notifFajrAdhan": "Fajr Adhan",
+  "notifFajrAdhanSubtitle": "Played at Fajr prayer time",
+  "notifRegularAdhan": "Regular Adhan",
+  "notifRegularAdhanSubtitle": "Played at Dhuhr, Asr, Maghrib, Isha",
+  "notifPerPrayerSettings": "Per-Prayer Settings",
+  "notifPreview": "Preview",
+
+  "tvSettingsTitle": "TV Settings",
+  "tvDisplayMode": "Display Mode",
+  "tvMasjidMode": "Masjid Mode",
+  "tvMasjidModeSubtitle": "Large signage display with iqamah times",
+  "tvMasjidName": "Masjid Name",
+  "tvMasjidNameTapToSet": "Tap to set",
+  "tvClock": "Clock",
+  "tv24hFormat": "24-hour format",
+  "tvIqamahOffsets": "Iqamah Offsets (minutes after adhan)",
+  "tvIqamahMinAfter": "{offset} min after adhan",
+  "@tvIqamahMinAfter": {
+    "placeholders": {
+      "offset": { "type": "int" }
+    }
+  },
+  "tvQrCode": "QR Code",
+  "tvShowQrCode": "Show QR Code",
+  "tvShowQrCodeSubtitle": "Display a QR code on the masjid screen",
+  "tvQrCodeUrl": "QR Code URL",
+  "tvAmbientModeSection": "Ambient Mode",
+  "tvIdleTimeout": "Idle timeout",
+  "tvIdleTimeoutSubtitle": "{minutes} minutes before ambient activates",
+  "@tvIdleTimeoutSubtitle": {
+    "placeholders": {
+      "minutes": { "type": "int" }
+    }
+  },
+  "tvPhotoInterval": "Photo interval",
+  "tvPhotoIntervalSubtitle": "{seconds} seconds between photos",
+  "@tvPhotoIntervalSubtitle": {
+    "placeholders": {
+      "seconds": { "type": "int" }
+    }
+  },
+  "tvBackground": "Background",
+  "tvPhotoCategory": "Photo category",
+  "tvLocation": "Location",
+  "tvChangeCity": "Change City",
+  "tvChangeCitySubtitle": "Search for a different city",
+  "tvScreensaverBg": "Screensaver Background",
+  "tvScreensaverPhotos": "Photos",
+  "tvScreensaverPattern": "Geometric pattern",
+  "tvScreensaverBoth": "Photos + pattern",
+  "tvCategoryAll": "All categories",
+  "tvCategoryMasjids": "Masjids",
+  "tvCategoryInteriors": "Interiors",
+  "tvCategoryGeometric": "Geometric",
+  "tvCategoryCalligraphy": "Calligraphy",
+  "tvCategoryLandscapes": "Landscapes",
+  "tvCategoryRamadan": "Ramadan",
+  "tvPhotoCategoryTitle": "Photo Category",
+  "tvEnterHint": "Enter {title}",
+  "@tvEnterHint": {
+    "placeholders": {
+      "title": { "type": "String" }
+    }
+  },
+  "tvSystemDefault": "System default",
+
+  "smartHomeIntegrations": "Integrations",
+  "smartHomeLinkedSpeakers": "Linked Speakers & Displays",
+  "smartHomeAlertDisplay": "Alert Display",
+  "smartHomeAtAdhanShow": "At adhan time show",
+  "smartHomePauseMediaTitle": "Pause media at adhan",
+  "smartHomePauseMediaSubtitle": "Resumes after the adhan ends",
+  "smartHomePrayerAudioSection": "Prayer Audio",
+  "smartHomeQuietHoursSection": "Quiet Hours",
+  "smartHomeEnableQuietHours": "Enable quiet hours",
+  "smartHomeQuietHoursSubtitle": "All smart home alerts are silenced",
+  "smartHomeNoDevices": "No devices linked yet",
+  "smartHomeNoDevicesDesc": "Link Google Home or Alexa above, then your speakers and displays will appear here.",
+  "smartHomeRequiresPlus": "Smart Home requires Ummat+",
+  "smartHomeRequiresPlusDesc": "Control prayer announcements on Google Home, Alexa, Siri, and Home Assistant. Configure which devices play adhan, when to pause media, and set quiet hours.",
+  "smartHomeBroadcastGoogle": "Broadcast adhan on Nest speakers and displays.",
+  "smartHomeEnableAlexa": "Enable the PrayCalc skill on Alexa.",
+  "smartHomeSiriAsk": "Ask Siri for prayer times or set automations.",
+  "smartHomeHassAdd": "Add via HACS for full automation support.",
+  "smartHomeSetupGuide": "Setup guide",
+  "smartHomeSiriSetupTitle": "Siri Shortcuts Setup",
+  "smartHomeSiriStep1": "Open the Shortcuts app on your iPhone or iPad.",
+  "smartHomeSiriStep2": "Tap \"+\" to create a new shortcut.",
+  "smartHomeSiriStep3": "Search for \"PrayCalc\" in the actions list.",
+  "smartHomeSiriStep4": "Add \"Next Prayer Time\" or \"Prayer Times Today\".",
+  "smartHomeSiriStep5": "Optionally add it to an automation (e.g. daily at Fajr).",
+  "smartHomeSiriStep6": "Say \"Hey Siri, next prayer time\" to test.",
+  "smartHomeSiriFootnote": "Requires iOS 16 or later.",
+  "smartHomeHassSetupTitle": "Home Assistant Setup",
+  "smartHomeHassStep1": "Install HACS (Home Assistant Community Store).",
+  "smartHomeHassStep2": "In HACS, search for \"PrayCalc\" and install.",
+  "smartHomeHassStep3": "Go to Settings > Devices & Services > Add Integration.",
+  "smartHomeHassStep4": "Search for \"PrayCalc\" and select it.",
+  "smartHomeHassStep5": "Enter your PrayCalc API key (generated in your account).",
+  "smartHomeHassStep6": "Configure your location and calculation method.",
+  "smartHomeHassFootnote": "Requires Home Assistant 2024.1+ with HACS.",
+  "smartHomeApiKey": "API Key",
+  "smartHomeGenerateApiKey": "Generate API Key",
+  "smartHomeApiKeyNotReady": "API key generation will be available once the PrayCalc smart service is deployed.",
+  "smartHomeApiKeyDesc": "You will need an API key to connect Home Assistant to your PrayCalc account.",
+  "smartHomeLinkedStatus": "Linked",
+  "smartHomeNotLinkedStatus": "Not linked",
+  "smartHomeCouldNotOpen": "Could not open the link.",
+
+  "adhkarCompletedCount": "{completed} / {total} completed",
+  "@adhkarCompletedCount": {
+    "placeholders": {
+      "completed": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "adhkarReset": "Reset",
+
+  "syncHistoryTitle": "Sync History",
+  "syncClearHistory": "Clear history",
+  "syncNoConflicts": "No sync conflicts detected. All devices are in sync.",
+  "syncDomainSettings": "Settings",
+  "syncDomainCities": "Saved Cities",
+  "syncDomainPrayerLogs": "Prayer Logs",
+  "syncTimeJustNow": "just now",
+  "syncTimeMinAgo": "{min}m ago",
+  "@syncTimeMinAgo": {
+    "placeholders": {
+      "min": { "type": "int" }
+    }
+  },
+  "syncTimeHourAgo": "{hour}h ago",
+  "@syncTimeHourAgo": {
+    "placeholders": {
+      "hour": { "type": "int" }
+    }
+  },
+  "syncTimeDayAgo": "{day}d ago",
+  "@syncTimeDayAgo": {
+    "placeholders": {
+      "day": { "type": "int" }
+    }
+  },
+
+  "pinCity": "Pin",
+  "pinMaxReached": "Maximum 5 pinned cities. Upgrade to Ummat+ for more.",
+  "pinCityUnpinned": "{city} unpinned",
+  "@pinCityUnpinned": {
+    "placeholders": {
+      "city": { "type": "String" }
+    }
+  },
+  "pinUndo": "Undo"
 }

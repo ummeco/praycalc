@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:praycalc_app/l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hijri/hijri_calendar.dart';
 
@@ -8,24 +9,54 @@ import '../../shared/models/moon_phase.dart';
 import '../../shared/models/settings_model.dart';
 import '../../shared/models/hilal_visibility.dart';
 
-const _hijriMonths = [
-  'Muharram', 'Safar', "Rabi' al-Awwal", "Rabi' al-Thani",
-  'Jumada al-Awwal', 'Jumada al-Thani', 'Rajab', "Sha'ban",
-  'Ramadan', 'Shawwal', "Dhu al-Qi'dah", 'Dhu al-Hijjah',
+List<String> _hijriMonths(AppLocalizations l) => [
+  l.hijriMuharram, l.hijriSafar, l.hijriRabiAlAwwal, l.hijriRabiAlThani,
+  l.hijriJumadaAlAwwal, l.hijriJumadaAlThani, l.hijriRajab, l.hijriShaban,
+  l.hijriRamadan, l.hijriShawwal, l.hijriDhulQidah, l.hijriDhulHijjah,
 ];
 
-const _gregorianMonths = [
-  'January', 'February', 'March', 'April', 'May', 'June',
-  'July', 'August', 'September', 'October', 'November', 'December',
+List<String> _gregorianMonths(AppLocalizations l) => [
+  l.monthJanuary, l.monthFebruary, l.monthMarch, l.monthApril, l.monthMayFull, l.monthJune,
+  l.monthJuly, l.monthAugust, l.monthSeptember, l.monthOctober, l.monthNovember, l.monthDecember,
 ];
 
-// Reference locations for Hilal visibility (lat, lon, label)
-const _kRegions = <(double, double, String)>[
-  (21.42, 39.83, 'Middle East'),
-  (6.45, 3.39, 'West Africa'),
-  (24.86, 67.01, 'South Asia'),
-  (51.50, -0.12, 'Europe'),
-  (29.76, -95.37, 'Americas'),
+String _localizedPhaseName(AppLocalizations l, MoonPhase phase) {
+  switch (phase) {
+    case MoonPhase.newMoon:
+      return l.moonPhaseNewMoon;
+    case MoonPhase.waxingCrescent:
+      return l.moonPhaseWaxingCrescent;
+    case MoonPhase.firstQuarter:
+      return l.moonPhaseFirstQuarter;
+    case MoonPhase.waxingGibbous:
+      return l.moonPhaseWaxingGibbous;
+    case MoonPhase.fullMoon:
+      return l.moonPhaseFullMoon;
+    case MoonPhase.waningGibbous:
+      return l.moonPhaseWaningGibbous;
+    case MoonPhase.lastQuarter:
+      return l.moonPhaseLastQuarter;
+    case MoonPhase.waningCrescent:
+      return l.moonPhaseWaningCrescent;
+  }
+}
+
+// Reference locations for Hilal visibility (lat, lon)
+const _kRegionCoords = <(double, double)>[
+  (21.42, 39.83),
+  (6.45, 3.39),
+  (24.86, 67.01),
+  (51.50, -0.12),
+  (29.76, -95.37),
+];
+
+// Localized labels for regions
+List<(double, double, String)> _kRegions(AppLocalizations l) => [
+  (21.42, 39.83, l.moonRegionMiddleEast),
+  (6.45, 3.39, l.moonRegionWestAfrica),
+  (24.86, 67.01, l.moonRegionSouthAsia),
+  (51.50, -0.12, l.moonRegionEurope),
+  (29.76, -95.37, l.moonRegionAmericas),
 ];
 
 // ── Screen ────────────────────────────────────────────────────────────────────
@@ -35,6 +66,7 @@ class MoonScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l = AppLocalizations.of(context)!;
     final now = DateTime.now();
     final moonResult = MoonPhase.calculate(now);
     final city = ref.watch(cityProvider);
@@ -54,7 +86,7 @@ class MoonScreen extends ConsumerWidget {
         title: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text('Moon & Hijri Calendar'),
+            Text(l.moonTitle),
             const SizedBox(width: 8),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
@@ -108,6 +140,7 @@ class _MoonImageHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final illum = result.illuminationPct.round();
     final imageUrl = MoonPhase.cycleMonthUrl(now);
@@ -117,24 +150,24 @@ class _MoonImageHeader extends StatelessWidget {
     final String nextLabel;
     final double nextFrac;
     if (fraction < 0.25) {
-      nextLabel = 'First Qtr';
+      nextLabel = l.moonPhaseFirstQuarter;
       nextFrac = 0.25;
     } else if (fraction < 0.5) {
-      nextLabel = 'Full Moon';
+      nextLabel = l.moonPhaseFullMoon;
       nextFrac = 0.5;
     } else if (fraction < 0.75) {
-      nextLabel = 'Last Qtr';
+      nextLabel = l.moonPhaseLastQuarter;
       nextFrac = 0.75;
     } else {
-      nextLabel = 'New Moon';
+      nextLabel = l.moonPhaseNewMoon;
       nextFrac = 1.0;
     }
     final daysToNext = ((nextFrac - fraction) * 29.53059).round();
     final nextValue = daysToNext <= 0
-        ? 'Tonight'
+        ? l.moonFullTonight
         : daysToNext == 1
-            ? 'Tomorrow'
-            : '${daysToNext}d';
+            ? l.moonNextTomorrow
+            : l.moonNextDays(daysToNext);
 
     return Column(
       children: [
@@ -182,7 +215,7 @@ class _MoonImageHeader extends StatelessWidget {
         ),
         const SizedBox(height: 16),
         Text(
-          MoonPhase.phaseName(result.phase),
+          _localizedPhaseName(l, result.phase),
           style: theme.textTheme.headlineSmall?.copyWith(
             fontWeight: FontWeight.bold,
             color: theme.colorScheme.primary,
@@ -193,10 +226,10 @@ class _MoonImageHeader extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            _StatChip(label: 'Illuminated', value: '$illum%'),
+            _StatChip(label: l.moonIlluminated(illum), value: '$illum%'),
             const SizedBox(width: 8),
             _StatChip(
-                label: 'Age',
+                label: l.moonAge(result.moonAge.toStringAsFixed(1)),
                 value: '${result.moonAge.toStringAsFixed(1)}d'),
             const SizedBox(width: 8),
             _StatChip(label: nextLabel, value: nextValue),
@@ -254,9 +287,12 @@ class _HijriCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
+    final hijriMonths = _hijriMonths(l);
+    final gregMonths = _gregorianMonths(l);
     final monthName = (hijri.hMonth >= 1 && hijri.hMonth <= 12)
-        ? _hijriMonths[hijri.hMonth - 1]
+        ? hijriMonths[hijri.hMonth - 1]
         : 'Unknown';
 
     return Card(
@@ -268,13 +304,13 @@ class _HijriCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Hijri',
+                  Text(l.calHijriCol,
                       style: theme.textTheme.bodySmall?.copyWith(
                           color:
                               theme.colorScheme.onSurface.withAlpha(130))),
                   const SizedBox(height: 4),
                   Text(
-                    '$monthName ${hijri.hDay}, ${hijri.hYear} AH',
+                    '$monthName ${hijri.hDay}, ${hijri.hYear} ${l.homeSuffixAH}',
                     style: theme.textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.bold,
                         color: theme.colorScheme.primary),
@@ -285,12 +321,12 @@ class _HijriCard extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Text('Gregorian',
+                Text(l.homeSuffixCE,
                     style: theme.textTheme.bodySmall?.copyWith(
                         color: theme.colorScheme.onSurface.withAlpha(130))),
                 const SizedBox(height: 4),
                 Text(
-                  '${_gregorianMonths[now.month - 1]} ${now.day}, ${now.year}',
+                  '${gregMonths[now.month - 1]} ${now.day}, ${now.year}',
                   style: theme.textTheme.titleSmall
                       ?.copyWith(fontWeight: FontWeight.w500),
                 ),
@@ -311,6 +347,7 @@ class _LunarCycleCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final progress = (result.moonAge / 29.53059).clamp(0.0, 1.0);
 
@@ -320,7 +357,7 @@ class _LunarCycleCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Lunar Cycle',
+            Text(l.moonLunarCycle,
                 style: theme.textTheme.titleSmall
                     ?.copyWith(fontWeight: FontWeight.w600)),
             const SizedBox(height: 10),
@@ -346,17 +383,17 @@ class _LunarCycleCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('New Moon',
+                Text(l.moonPhaseNewMoon,
                     style: theme.textTheme.bodySmall?.copyWith(
                         fontSize: 10,
                         color: theme.colorScheme.onSurface.withAlpha(120))),
                 Text(
-                  'Day ${result.moonAge.round()} of ~29.5',
+                  l.moonDayOfCycle(result.moonAge.round()),
                   style: theme.textTheme.bodySmall?.copyWith(
                       fontSize: 11,
                       color: theme.colorScheme.onSurface.withAlpha(180)),
                 ),
-                Text('New Moon',
+                Text(l.moonPhaseNewMoon,
                     style: theme.textTheme.bodySmall?.copyWith(
                         fontSize: 10,
                         color: theme.colorScheme.onSurface.withAlpha(120))),
@@ -384,16 +421,16 @@ Color _zoneColor(HilalZone zone) {
   }
 }
 
-String _zoneLabel(HilalZone zone) {
+String _zoneLabel(AppLocalizations l, HilalZone zone) {
   switch (zone) {
     case HilalZone.naked:
-      return 'Naked Eye';
+      return l.moonZoneNakedEye;
     case HilalZone.binoculars:
-      return 'Binoculars';
+      return l.moonZoneBinoculars;
     case HilalZone.difficult:
-      return 'Very Difficult';
+      return l.moonZoneVeryDifficult;
     case HilalZone.invisible:
-      return 'Not Visible';
+      return l.moonZoneNotVisible;
   }
 }
 
@@ -403,6 +440,7 @@ class _ZoneBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final c = _zoneColor(zone);
     return Row(
       mainAxisSize: MainAxisSize.min,
@@ -414,7 +452,7 @@ class _ZoneBadge extends StatelessWidget {
         ),
         const SizedBox(width: 5),
         Text(
-          _zoneLabel(zone),
+          _zoneLabel(l, zone),
           style: TextStyle(
             fontSize: 11,
             fontWeight: FontWeight.w600,
@@ -455,7 +493,7 @@ class _HilalForecastCardState extends State<_HilalForecastCard> {
   /// Best zone across all regional reference points = "global" possibility.
   HilalZone _globalZone(DateTime date) {
     HilalZone best = HilalZone.invisible;
-    for (final (lat, lon, _) in _kRegions) {
+    for (final (lat, lon) in _kRegionCoords) {
       final v = computeHilalVisibility(date, lat, lon);
       if (v.zone.index < best.index) best = v.zone;
     }
@@ -464,9 +502,11 @@ class _HilalForecastCardState extends State<_HilalForecastCard> {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
+    final hijriMonths = _hijriMonths(l);
     final monthName = (widget.hijri.hMonth >= 1 && widget.hijri.hMonth <= 12)
-        ? _hijriMonths[widget.hijri.hMonth - 1]
+        ? hijriMonths[widget.hijri.hMonth - 1]
         : 'Unknown';
 
     final date28 = _hijriDayToGreg(28);
@@ -488,12 +528,12 @@ class _HilalForecastCardState extends State<_HilalForecastCard> {
             // Header
             Row(
               children: [
-                Text('Hilal Sighting Forecast',
+                Text(l.moonHilalSightingForecast,
                     style: theme.textTheme.titleSmall
                         ?.copyWith(fontWeight: FontWeight.w600)),
                 const Spacer(),
                 Text(
-                  '$monthName ${widget.hijri.hYear} AH',
+                  '$monthName ${widget.hijri.hYear} ${l.homeSuffixAH}',
                   style: theme.textTheme.bodySmall?.copyWith(
                       color: theme.colorScheme.onSurface.withAlpha(140)),
                 ),
@@ -522,7 +562,7 @@ class _HilalForecastCardState extends State<_HilalForecastCard> {
                       ),
                     ),
                     child: Text(
-                      'Day $day',
+                      l.moonDayN(day),
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight:
@@ -557,7 +597,7 @@ class _HilalForecastCardState extends State<_HilalForecastCard> {
                 const SizedBox(width: 7),
                 Expanded(
                   child: Text(
-                    _monthPrediction(monthName, date29),
+                    _monthPrediction(l, monthName, date29),
                     style: theme.textTheme.bodySmall?.copyWith(height: 1.4),
                   ),
                 ),
@@ -574,15 +614,17 @@ class _HilalForecastCardState extends State<_HilalForecastCard> {
     required DateTime date,
     required HilalVisibility? cityZone,
   }) {
+    final l = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final globalZone = _globalZone(date);
+    final regions = _kRegions(l);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // Global
         _ForecastRow(
-          label: 'Global Sighting',
+          label: l.moonGlobalSighting,
           zone: globalZone,
           isGlobal: true,
         ),
@@ -590,7 +632,7 @@ class _HilalForecastCardState extends State<_HilalForecastCard> {
         Divider(height: 10, color: theme.dividerColor.withAlpha(40)),
 
         // Regions
-        for (final (lat, lon, label) in _kRegions)
+        for (final (lat, lon, label) in regions)
           _ForecastRow(
             label: label,
             zone: computeHilalVisibility(date, lat, lon).zone,
@@ -610,13 +652,14 @@ class _HilalForecastCardState extends State<_HilalForecastCard> {
     );
   }
 
-  String _monthPrediction(String monthName, DateTime date29) {
+  String _monthPrediction(AppLocalizations l, String monthName, DateTime date29) {
     final meccaresult =
         computeHilalVisibility(date29, 21.42, 39.83);
     final monthLength =
         meccaresult.zone != HilalZone.invisible ? 29 : 30;
-    return '$monthName ${widget.hijri.hYear} AH will likely be $monthLength days. '
-        '${monthLength == 29 ? 'Crescent expected to be sighted on the 29th, in sha Allah.' : 'Crescent unlikely on the 29th — month completes 30 days.'}';
+    return monthLength == 29
+        ? l.moonMonthPrediction29(monthName, widget.hijri.hYear)
+        : l.moonMonthPrediction30(monthName, widget.hijri.hYear);
   }
 }
 
@@ -734,13 +777,16 @@ class _HilalWorldMapCardState extends State<_HilalWorldMapCard> {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
+    final hijriMonths = _hijriMonths(l);
+    final gregMonths = _gregorianMonths(l);
     final gregDate = _hijriDayToGreg(_selectedDay);
     final sunset = DateTime(gregDate.year, gregDate.month, gregDate.day, 18);
     final moonResult = MoonPhase.calculate(sunset);
     final moonAgeHours = moonResult.moonAge * 24;
     final monthName = (_displayMonth >= 1 && _displayMonth <= 12)
-        ? _hijriMonths[_displayMonth - 1]
+        ? hijriMonths[_displayMonth - 1]
         : 'Unknown';
 
     // UAQ/FCNA predictions always for day 29 of current month
@@ -750,13 +796,13 @@ class _HilalWorldMapCardState extends State<_HilalWorldMapCard> {
     final uaq29 = uaqResult.zone != HilalZone.invisible;
     final fcna29 = fcnaResult.zone != HilalZone.invisible;
     final nextMonthLabel = ((_displayMonth % 12) + 1) >= 1
-        ? _hijriMonths[(_displayMonth % 12)]
+        ? hijriMonths[(_displayMonth % 12)]
         : 'Unknown';
     final day29Str =
-        '${_gregorianMonths[day29Greg.month - 1]} ${day29Greg.day}';
+        '${gregMonths[day29Greg.month - 1]} ${day29Greg.day}';
     final day30Greg = day29Greg.add(const Duration(days: 1));
     final day30Str =
-        '${_gregorianMonths[day30Greg.month - 1]} ${day30Greg.day}';
+        '${gregMonths[day30Greg.month - 1]} ${day30Greg.day}';
 
     return Card(
       child: Padding(
@@ -768,7 +814,7 @@ class _HilalWorldMapCardState extends State<_HilalWorldMapCard> {
             Row(
               children: [
                 Text(
-                  'Hilal Visibility Map',
+                  l.moonHilalVisibilityMap,
                   style: theme.textTheme.titleSmall
                       ?.copyWith(fontWeight: FontWeight.w600),
                 ),
@@ -820,7 +866,7 @@ class _HilalWorldMapCardState extends State<_HilalWorldMapCard> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    '$nextMonthLabel starts:',
+                    l.moonStarts(nextMonthLabel),
                     style: theme.textTheme.bodySmall?.copyWith(
                       fontWeight: FontWeight.w600,
                       color: theme.colorScheme.onSurface.withAlpha(180),
@@ -831,8 +877,8 @@ class _HilalWorldMapCardState extends State<_HilalWorldMapCard> {
                     children: [
                       Expanded(
                         child: _CalcBadge(
-                          method: 'Umm al-Qura',
-                          subtitle: 'Saudi Arabia',
+                          method: l.moonUmmAlQura,
+                          subtitle: l.moonSaudiArabia,
                           date: uaq29 ? day29Str : day30Str,
                           days: uaq29 ? 29 : 30,
                         ),
@@ -840,8 +886,8 @@ class _HilalWorldMapCardState extends State<_HilalWorldMapCard> {
                       const SizedBox(width: 8),
                       Expanded(
                         child: _CalcBadge(
-                          method: 'FCNA / Calc.',
-                          subtitle: 'North America',
+                          method: l.moonFCNACalc,
+                          subtitle: l.moonNorthAmerica,
                           date: fcna29 ? day29Str : day30Str,
                           days: fcna29 ? 29 : 30,
                         ),
@@ -857,7 +903,7 @@ class _HilalWorldMapCardState extends State<_HilalWorldMapCard> {
             Row(
               children: [
                 Text(
-                  'Moon age at sunset: ${moonAgeHours.toStringAsFixed(1)} h',
+                  l.moonMoonAgeAtSunset(moonAgeHours.toStringAsFixed(1)),
                   style: theme.textTheme.bodySmall?.copyWith(
                       color: theme.colorScheme.onSurface.withAlpha(130)),
                 ),
@@ -888,7 +934,7 @@ class _HilalWorldMapCardState extends State<_HilalWorldMapCard> {
                         ),
                       ),
                       child: Text(
-                        'Day $day',
+                        l.moonDayN(day),
                         style: TextStyle(
                           fontSize: 11,
                           fontWeight:
@@ -926,11 +972,11 @@ class _HilalWorldMapCardState extends State<_HilalWorldMapCard> {
             Wrap(
               spacing: 12,
               runSpacing: 4,
-              children: const [
-                _MapLegendDot(color: _kMapVisible, label: 'Naked Eye'),
-                _MapLegendDot(color: _kMapBino, label: 'Binoculars'),
-                _MapLegendDot(color: _kMapDifficult, label: 'Very Difficult'),
-                _MapLegendDot(color: _kMapInvisible, label: 'Not Visible'),
+              children: [
+                _MapLegendDot(color: _kMapVisible, label: l.moonZoneNakedEye),
+                _MapLegendDot(color: _kMapBino, label: l.moonZoneBinoculars),
+                _MapLegendDot(color: _kMapDifficult, label: l.moonZoneVeryDifficult),
+                _MapLegendDot(color: _kMapInvisible, label: l.moonZoneNotVisible),
               ],
             ),
           ],
@@ -954,6 +1000,7 @@ class _CalcBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final color = days == 29 ? PrayCalcColors.mid : Colors.orange.shade400;
     return Container(
@@ -980,7 +1027,7 @@ class _CalcBadge extends StatelessWidget {
               style: theme.textTheme.bodySmall?.copyWith(
                   fontWeight: FontWeight.bold,
                   color: theme.colorScheme.onSurface.withAlpha(220))),
-          Text('$days days',
+          Text(l.moonNDays(days),
               style: TextStyle(fontSize: 10, color: color)),
         ],
       ),
@@ -1217,6 +1264,7 @@ class _WeekRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final days = List.generate(7, (i) => now.add(Duration(days: i - 3)));
 
@@ -1225,7 +1273,7 @@ class _WeekRow extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.only(left: 2, bottom: 10),
-          child: Text('7-Day Lunar Calendar',
+          child: Text(l.moon7DayLunarCalendar,
               style: theme.textTheme.titleSmall
                   ?.copyWith(fontWeight: FontWeight.w600)),
         ),
@@ -1252,10 +1300,11 @@ class _DayCell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final result = MoonPhase.calculate(date);
     final imageUrl = MoonPhase.cycleMonthUrl(date);
-    const dayAbbr = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    final dayAbbr = [l.dayMonShort, l.dayTueShort, l.dayWedShort, l.dayThuShort, l.dayFriShort, l.daySatShort, l.daySunShort];
 
     return Container(
       width: 64,
@@ -1394,6 +1443,7 @@ class _IslamicEventsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final upcoming = _computeUpcoming();
 
@@ -1407,7 +1457,7 @@ class _IslamicEventsSection extends StatelessWidget {
               Icon(Icons.nightlight_round,
                   size: 18, color: PrayCalcColors.mid),
               const SizedBox(width: 8),
-              Text('Upcoming Islamic Events',
+              Text(l.moonUpcomingIslamicEvents,
                   style: theme.textTheme.titleSmall
                       ?.copyWith(fontWeight: FontWeight.w600)),
             ],
@@ -1426,15 +1476,17 @@ class _IslamicEventTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
+    final gregMonths = _gregorianMonths(l);
     final isToday = item.daysUntil == 0;
     final gregStr =
-        '${_gregorianMonths[item.gregorianDate.month - 1]} ${item.gregorianDate.day}, ${item.gregorianDate.year}';
+        '${gregMonths[item.gregorianDate.month - 1]} ${item.gregorianDate.day}, ${item.gregorianDate.year}';
     final daysStr = isToday
-        ? 'Today'
+        ? l.moonTodayLabel
         : item.daysUntil == 1
-            ? 'Tomorrow'
-            : '${item.daysUntil} days';
+            ? l.moonTomorrowLabel
+            : l.moonNDays(item.daysUntil);
 
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
@@ -1521,7 +1573,9 @@ class _NextRamadanCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
+    final gregMonths = _gregorianMonths(l);
     final now = DateTime.now();
 
     int targetYear = hijri.hYear;
@@ -1544,7 +1598,7 @@ class _NextRamadanCard extends StatelessWidget {
     }
 
     final gregStr =
-        '${_gregorianMonths[startDate.month - 1]} ${startDate.day}, ${startDate.year}';
+        '${gregMonths[startDate.month - 1]} ${startDate.day}, ${startDate.year}';
     final daysAway = startDate.difference(now).inDays;
 
     return Card(
@@ -1559,7 +1613,7 @@ class _NextRamadanCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Ramadan $targetYear AH begins',
+                    l.ramadanBeginsLabel(targetYear),
                     style: theme.textTheme.titleMedium
                         ?.copyWith(fontWeight: FontWeight.w600),
                   ),
@@ -1572,7 +1626,7 @@ class _NextRamadanCard extends StatelessWidget {
                   ),
                   if (daysAway > 0)
                     Text(
-                      '$daysAway days away',
+                      l.ramadanDaysAway(daysAway),
                       style: theme.textTheme.bodyMedium?.copyWith(
                           color: theme.colorScheme.onSurface.withAlpha(160),
                           fontSize: 12),

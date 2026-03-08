@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:praycalc_app/l10n/app_localizations.dart';
 
 import '../../core/theme/app_theme.dart';
 
@@ -47,16 +48,17 @@ class SyncConflictDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l = AppLocalizations.of(context)!;
 
     return AlertDialog(
-      title: const Text('Sync History'),
+      title: Text(l.syncHistoryTitle),
       content: SizedBox(
         width: double.maxFinite,
         child: conflicts.isEmpty
-            ? const Padding(
-                padding: EdgeInsets.symmetric(vertical: 16),
+            ? Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16),
                 child: Text(
-                  'No sync conflicts detected. All devices are in sync.',
+                  l.syncNoConflicts,
                   textAlign: TextAlign.center,
                 ),
               )
@@ -74,11 +76,11 @@ class SyncConflictDialog extends StatelessWidget {
         if (conflicts.isNotEmpty)
           TextButton(
             onPressed: () => Navigator.of(context).pop('clear'),
-            child: const Text('Clear history'),
+            child: Text(l.syncClearHistory),
           ),
         FilledButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('OK'),
+          child: Text(l.commonOk),
         ),
       ],
     );
@@ -93,6 +95,7 @@ class _ConflictTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final isRemoteWin = conflict.winner == 'remote';
     return ListTile(
       dense: true,
@@ -102,37 +105,37 @@ class _ConflictTile extends StatelessWidget {
         size: 20,
       ),
       title: Text(
-        _domainLabel(conflict.domain),
+        _domainLabel(conflict.domain, l),
         style: theme.textTheme.bodyMedium?.copyWith(
           fontWeight: FontWeight.w600,
         ),
       ),
       subtitle: Text(
-        '${conflict.summary}\n${_timeAgo(conflict.resolvedAt)}',
+        '${conflict.summary}\n${_timeAgo(conflict.resolvedAt, l)}',
         style: theme.textTheme.bodySmall,
       ),
       isThreeLine: true,
     );
   }
 
-  String _domainLabel(String domain) {
+  String _domainLabel(String domain, AppLocalizations l) {
     switch (domain) {
       case 'settings':
-        return 'Settings';
+        return l.syncDomainSettings;
       case 'cities':
-        return 'Saved Cities';
+        return l.syncDomainCities;
       case 'prayer_logs':
-        return 'Prayer Logs';
+        return l.syncDomainPrayerLogs;
       default:
         return domain;
     }
   }
 
-  String _timeAgo(DateTime dt) {
+  String _timeAgo(DateTime dt, AppLocalizations l) {
     final diff = DateTime.now().difference(dt);
-    if (diff.inSeconds < 60) return 'just now';
-    if (diff.inMinutes < 60) return '${diff.inMinutes}m ago';
-    if (diff.inHours < 24) return '${diff.inHours}h ago';
-    return '${diff.inDays}d ago';
+    if (diff.inSeconds < 60) return l.syncTimeJustNow;
+    if (diff.inMinutes < 60) return l.syncTimeMinAgo(diff.inMinutes);
+    if (diff.inHours < 24) return l.syncTimeHourAgo(diff.inHours);
+    return l.syncTimeDayAgo(diff.inDays);
   }
 }

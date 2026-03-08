@@ -168,6 +168,27 @@ class AppLocalizationsTr extends AppLocalizations {
   String get daySunShort => 'Paz';
 
   @override
+  String get dayMonday => 'Pazartesi';
+
+  @override
+  String get dayTuesday => 'Sali';
+
+  @override
+  String get dayWednesday => 'Carsamba';
+
+  @override
+  String get dayThursday => 'Persembe';
+
+  @override
+  String get dayFriday => 'Cuma';
+
+  @override
+  String get daySaturday => 'Cumartesi';
+
+  @override
+  String get daySunday => 'Pazar';
+
+  @override
   String get daySuChart => 'Pa';
 
   @override
@@ -219,6 +240,39 @@ class AppLocalizationsTr extends AppLocalizations {
   String get laylatulQadr => 'Kadir Gecesi';
 
   @override
+  String get homeSuffixAH => 'H';
+
+  @override
+  String get homeSuffixCE => 'M';
+
+  @override
+  String get homeNoCitySelected => 'Sehir secilmedi';
+
+  @override
+  String get homeNoCityHint =>
+      'Sehrinizi aramak veya GPS\'i etkinlestirmek icin yukari dokunun.';
+
+  @override
+  String get homeCouldNotCalc => 'Namaz vakitleri hesaplanamadi.';
+
+  @override
+  String get homeQasr => 'Qasr';
+
+  @override
+  String get homeActionMonthlyTimes => 'Aylik\nVakitler';
+
+  @override
+  String get homeActionDuaDhikr => 'Dua &\nZikir';
+
+  @override
+  String get homeActionPrayerStats => 'Namaz\nIstatistikleri';
+
+  @override
+  String homePolarBanner(int count) {
+    return 'Bulundugunuz konum icin bu donemde $count namaz vakti hesaplanamaz (gece yarisi gunesi / kutup gecesi). Ayarlardan en yakin enlem tahmini deneyin.';
+  }
+
+  @override
   String get settingsTitle => 'Ayarlar';
 
   @override
@@ -259,6 +313,137 @@ class AppLocalizationsTr extends AppLocalizations {
   @override
   String get settingsPrayerAgendasSubtitle =>
       'Namaz vakitlerine gore ozel hatirlatmalar';
+
+  @override
+  String get settingsAccount => 'Hesap';
+
+  @override
+  String get settingsSignInToSync => 'Senkronizasyon icin giris yapin';
+
+  @override
+  String get settingsSignInToSyncSubtitle =>
+      'Verilerinizi cihazlar arasinda koruyun';
+
+  @override
+  String get settingsHomeScreen => 'Ana Ekran';
+
+  @override
+  String get settingsSkyGradient => 'Gokyuzu gradyan arka plani';
+
+  @override
+  String get settingsSkyGradientSubtitle =>
+      'Gunun saatine gore animasyonlu gokyuzu renkleri';
+
+  @override
+  String get settingsWeatherGradient => 'Hava durumlu gradyan';
+
+  @override
+  String get settingsWeatherGradientSubtitle =>
+      'Yerel havaya gore gokyuzu renklerini ayarla';
+
+  @override
+  String get settingsCountdownAnimation => 'Geri sayim animasyonu';
+
+  @override
+  String get settingsCountdownAnimationSubtitle =>
+      'Sonraki namaz geri sayiminda nefes halkasi';
+
+  @override
+  String get settingsPrayerTracking => 'Namaz Takibi';
+
+  @override
+  String get settingsTrackMyPrayers => 'Namazlarimi takip et';
+
+  @override
+  String get settingsTrackMyPrayersSubtitle =>
+      'Her gun kildiginiz namazlari kaydedin';
+
+  @override
+  String get settingsPrayerStats => 'Namaz istatistikleri';
+
+  @override
+  String get settingsPrayerStatsSubtitle =>
+      'Seriler, haftalik ve aylik grafikler';
+
+  @override
+  String get settingsJumuahKahf => 'Cuma Kehf suresi hatirlatmasi';
+
+  @override
+  String get settingsJumuahKahfSubtitle =>
+      'Cumalari Kehf suresini okuma hatirlatmasi';
+
+  @override
+  String get settingsTravel => 'Seyahat';
+
+  @override
+  String get settingsTravelMode => 'Seyahat modu';
+
+  @override
+  String get settingsTravelModeSubtitle =>
+      'Evden uzakta oldugunuzu otomatik algilar ve namazlari ayarlar';
+
+  @override
+  String get settingsHomeLocation => 'Ev konumu';
+
+  @override
+  String get settingsHomeLocationNotSet =>
+      'Ayarlanmadi — mevcut konumu kullanmak icin dokunun';
+
+  @override
+  String get settingsClearHomeLocation => 'Ev konumunu temizle';
+
+  @override
+  String get settingsTravelRulings => 'Seyahatte namaz hukumleri';
+
+  @override
+  String get settingsTravelRulingsSubtitle => 'Qasr, cem ve yolcu rehberi';
+
+  @override
+  String get settingsSmartHome => 'Akilli Ev';
+
+  @override
+  String get settingsSmartHomeIntegrations => 'Akilli ev entegrasyonlari';
+
+  @override
+  String get settingsSmartHomeIntegrationsSubtitle =>
+      'HomeKit, Google Home, Alexa, Home Assistant';
+
+  @override
+  String get settingsTvDisplay => 'TV Gorunumu';
+
+  @override
+  String get settingsTvHome => 'TV ana gorunumu';
+
+  @override
+  String get settingsTvHomeSubtitle => 'TV icin tam ekran namaz saati';
+
+  @override
+  String get settingsMasjidDisplay => 'Cami gorunumu';
+
+  @override
+  String get settingsMasjidDisplaySubtitle =>
+      'Cami ekranlari icin ezan/ikamet tablosu';
+
+  @override
+  String get settingsTvSettings => 'TV ayarlari';
+
+  @override
+  String get settingsTvSettingsSubtitle => 'Cami modu, ikamet farklari, ortam';
+
+  @override
+  String get settingsAboutPrayCalc => 'PrayCalc Hakkinda';
+
+  @override
+  String get syncSynced => 'Senkronize';
+
+  @override
+  String get syncSyncing => 'Senkronize ediliyor...';
+
+  @override
+  String get syncOffline => 'Cevrimdisi';
+
+  @override
+  String get syncError => 'Senkronizasyon hatasi';
 
   @override
   String get notifSettingsTitle => 'Bildirimler ve Ezan';
@@ -417,6 +602,60 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
+  String get moonPhaseNewMoon => 'Yeni Ay';
+
+  @override
+  String get moonPhaseWaxingCrescent => 'Hilal';
+
+  @override
+  String get moonPhaseFirstQuarter => 'Ilk Dordun';
+
+  @override
+  String get moonPhaseWaxingGibbous => 'Buyuyen Ay';
+
+  @override
+  String get moonPhaseFullMoon => 'Dolunay';
+
+  @override
+  String get moonPhaseWaningGibbous => 'Kuculen Ay';
+
+  @override
+  String get moonPhaseLastQuarter => 'Son Dordun';
+
+  @override
+  String get moonPhaseWaningCrescent => 'Kuculen Hilal';
+
+  @override
+  String get moonHilalVisibility => 'Sonraki Hilal Gorunurlugu';
+
+  @override
+  String get moonRegionMiddleEast => 'Orta Dogu';
+
+  @override
+  String get moonRegionWestAfrica => 'Bati Afrika';
+
+  @override
+  String get moonRegionSouthAsia => 'Guney Asya';
+
+  @override
+  String get moonRegionEurope => 'Avrupa';
+
+  @override
+  String get moonRegionAmericas => 'Amerikalar';
+
+  @override
+  String get moonVisible => 'Gorunur';
+
+  @override
+  String get moonNotVisible => 'Gorunmez';
+
+  @override
+  String get moonPossible => 'Muhtemel';
+
+  @override
+  String get moonUpcomingDates => 'Yaklasan Islami Tarihler';
+
+  @override
   String get hijriTodayLabel => 'Bugunku Hicri Tarih';
 
   @override
@@ -428,6 +667,89 @@ class AppLocalizationsTr extends AppLocalizations {
   String ramadanDaysAway(int days) {
     return '$days gun kaldi';
   }
+
+  @override
+  String get moonLunarCycle => 'Ay Dongusu';
+
+  @override
+  String moonDayOfCycle(int day) {
+    return '$day. gun / ~29.5';
+  }
+
+  @override
+  String get moonHilalSightingForecast => 'Hilal Gorunurluk Tahmini';
+
+  @override
+  String get moonHilalVisibilityMap => 'Hilal Gorunurluk Haritasi';
+
+  @override
+  String moonDayN(int day) {
+    return '$day. Gun';
+  }
+
+  @override
+  String get moonGlobalSighting => 'Kuresel Gorunurluk';
+
+  @override
+  String get moonZoneNakedEye => 'Cipak Gozle';
+
+  @override
+  String get moonZoneBinoculars => 'Durbunle';
+
+  @override
+  String get moonZoneVeryDifficult => 'Cok Zor';
+
+  @override
+  String get moonZoneNotVisible => 'Gorunmez';
+
+  @override
+  String moonMonthPrediction29(String month, int year) {
+    return '$month $year Hicri buyuk olasilikla 29 gun olacak. Hilal 29. gunde gorulebilir, insallah.';
+  }
+
+  @override
+  String moonMonthPrediction30(String month, int year) {
+    return '$month $year Hicri buyuk olasilikla 30 gun olacak. 29. gunde hilal gorulmesi beklenmemektedir.';
+  }
+
+  @override
+  String get moonUmmAlQura => 'Ummu\'l-Kura';
+
+  @override
+  String get moonSaudiArabia => 'Suudi Arabistan';
+
+  @override
+  String get moonFCNACalc => 'FCNA / Hesap';
+
+  @override
+  String get moonNorthAmerica => 'Kuzey Amerika';
+
+  @override
+  String moonNDays(int days) {
+    return '$days gun';
+  }
+
+  @override
+  String moonStarts(String month) {
+    return '$month baslangici:';
+  }
+
+  @override
+  String moonMoonAgeAtSunset(String hours) {
+    return 'Gun batiminda ay yasi: $hours saat';
+  }
+
+  @override
+  String get moon7DayLunarCalendar => '7 Gunluk Ay Takvimi';
+
+  @override
+  String get moonUpcomingIslamicEvents => 'Yaklasan Islami Gunler';
+
+  @override
+  String get moonTodayLabel => 'Bugun';
+
+  @override
+  String get moonTomorrowLabel => 'Yarin';
 
   @override
   String get calDateCol => 'Tarih';
@@ -694,24 +1016,6 @@ class AppLocalizationsTr extends AppLocalizations {
   String get subscriptionFeatureAdFree => 'Reklamsiz deneyim';
 
   @override
-  String get tvTitle => 'TV Gorunumu';
-
-  @override
-  String get tvMasjidMode => 'Cami Modu';
-
-  @override
-  String get tvAmbientMode => 'Ortam Modu';
-
-  @override
-  String get tvSettingsIqamah => 'Ikamet Farklari';
-
-  @override
-  String get tvSettingsAnnouncements => 'Duyurular';
-
-  @override
-  String get tvConnectQR => 'Baglanmak icin tarayin';
-
-  @override
   String get watchTitle => 'Saat';
 
   @override
@@ -740,6 +1044,254 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get thisMonth => 'Bu ay';
+
+  @override
+  String get loginCreateAccount => 'Hesap Olustur';
+
+  @override
+  String get loginSignIn => 'Giris Yap';
+
+  @override
+  String get loginWelcomeBack => 'Tekrar hosgeldiniz';
+
+  @override
+  String get loginJoinPrayCalc => 'PrayCalc\'a katil';
+
+  @override
+  String get loginSyncSubtitle =>
+      'Namaz verilerinizi cihazlar arasinda senkronize edin';
+
+  @override
+  String get loginContinueGoogle => 'Google ile devam et';
+
+  @override
+  String get loginOr => 'veya';
+
+  @override
+  String get loginSigningIn => 'Giris yapiliyor…';
+
+  @override
+  String get loginNameLabel => 'Gorunen ad (istege bagli)';
+
+  @override
+  String get loginEmailLabel => 'E-posta';
+
+  @override
+  String get loginPasswordLabel => 'Sifre';
+
+  @override
+  String get loginEmailRequired => 'E-posta gereklidir';
+
+  @override
+  String get loginEmailInvalid => 'Gecerli bir e-posta adresi girin';
+
+  @override
+  String get loginPasswordRequired => 'Sifre gereklidir';
+
+  @override
+  String get loginPasswordMinLength => 'Sifre en az 8 karakter olmalidir';
+
+  @override
+  String get loginForgotPassword => 'Sifremi unuttum?';
+
+  @override
+  String get loginEnterEmailFirst => 'Once e-posta adresinizi girin';
+
+  @override
+  String get loginResetSent => 'Sifre sifirlama e-postasi gonderildi';
+
+  @override
+  String get loginResetFailed => 'Sifirlama e-postasi gonderilemedi';
+
+  @override
+  String get loginNewToPrayCalc => 'PrayCalc\'ta yeni misiniz?';
+
+  @override
+  String get loginAlreadyHaveAccount => 'Zaten hesabiniz var mi?';
+
+  @override
+  String get accountTitle => 'Hesap';
+
+  @override
+  String get accountNotSignedIn => 'Giris yapilmadi';
+
+  @override
+  String get accountSyncSection => 'Senkronizasyon';
+
+  @override
+  String get accountSyncStatus => 'Senkronizasyon durumu';
+
+  @override
+  String get accountSyncNow => 'Simdi senkronize et';
+
+  @override
+  String get accountSyncHistory => 'Senkronizasyon gecmisi';
+
+  @override
+  String get accountNoConflicts => 'Catisma bulunamadi';
+
+  @override
+  String accountConflictsResolved(int count) {
+    return '$count cozuldu';
+  }
+
+  @override
+  String accountSyncedAgo(String time) {
+    return '$time senkronize edildi';
+  }
+
+  @override
+  String get accountOfflineStatus =>
+      'Cevrimdisi. Degisiklikler yerel olarak kaydedildi.';
+
+  @override
+  String get accountSyncErrorStatus =>
+      'Senkronizasyon hatasi. Yeniden denenecek.';
+
+  @override
+  String get accountDataSection => 'Veri';
+
+  @override
+  String get accountExportData => 'Veriyi disari aktar';
+
+  @override
+  String get accountExportSubtitle =>
+      'Ayarlarinizi ve namaz kayitlarinizi indirin';
+
+  @override
+  String get accountExportFailed => 'Veri disari aktarilamadi';
+
+  @override
+  String get accountSignOutTitle => 'Cikis yap';
+
+  @override
+  String get accountSignOutBody =>
+      'Yerel verileriniz korunacak. Senkronizasyona devam etmek icin tekrar giris yapin.';
+
+  @override
+  String get accountDeleteAccount => 'Hesabi sil';
+
+  @override
+  String get accountDeleteSubtitle =>
+      'Hesabinizi ve verilerinizi kalici olarak silin';
+
+  @override
+  String get accountDeleteBody =>
+      'Bu islem hesabinizi ve tum senkronize verileri kalici olarak silecektir. Bu cihazdaki yerel verileriniz silinmeyecektir.\n\nBu islem geri alinamaz.';
+
+  @override
+  String get accountDeleted => 'Hesap silindi';
+
+  @override
+  String get accountDeleteFailed => 'Hesap silinemedi';
+
+  @override
+  String get accountTimeJustNow => 'simdi';
+
+  @override
+  String accountTimeMinAgo(int min) {
+    return '${min}dk once';
+  }
+
+  @override
+  String accountTimeHourAgo(int hour) {
+    return '${hour}sa once';
+  }
+
+  @override
+  String accountTimeDayAgo(int day) {
+    return '${day}g once';
+  }
+
+  @override
+  String get statsTitle => 'Namaz Istatistikleri';
+
+  @override
+  String get statsShareTooltip => 'Istatistikleri paylas';
+
+  @override
+  String get statsTodayPrayers => 'Bugunun Namazlari';
+
+  @override
+  String statsTodayCount(int done) {
+    return '$done / 5';
+  }
+
+  @override
+  String get statsStreak => 'Seri';
+
+  @override
+  String get statsDays => 'gun';
+
+  @override
+  String get statsThisWeek => 'Bu Hafta';
+
+  @override
+  String get statsCompletion => 'tamamlama';
+
+  @override
+  String get statsThisMonth => 'Bu Ay';
+
+  @override
+  String get statsMostMissed => 'En Cok Kacirilan';
+
+  @override
+  String get statsThisWeekLabel => 'bu hafta';
+
+  @override
+  String get statsWeeklyChart => 'Namaza Gore Haftalik Tamamlama';
+
+  @override
+  String get statsMonthlyChart => 'Namaza Gore Aylik Tamamlama';
+
+  @override
+  String statsTotalLogged(int count) {
+    return '$count toplam namaz kaydedildi';
+  }
+
+  @override
+  String get statsKeepItUp => 'Boyle devam!';
+
+  @override
+  String get statsShareTitle => 'PrayCalc Namaz Istatistikleri';
+
+  @override
+  String statsShareStreak(int days) {
+    return 'Seri: $days gun';
+  }
+
+  @override
+  String statsShareWeekly(int pct) {
+    return 'Haftalik: %$pct';
+  }
+
+  @override
+  String statsShareMonthly(int pct) {
+    return 'Aylik: %$pct';
+  }
+
+  @override
+  String get statsShareBreakdown => 'Haftalik dagilim:';
+
+  @override
+  String get aboutTitle => 'PrayCalc Hakkinda';
+
+  @override
+  String get aboutWebsite => 'Web sitesi';
+
+  @override
+  String get aboutContact => 'Iletisim';
+
+  @override
+  String get aboutLicenses => 'Acik Kaynak Lisanslari';
+
+  @override
+  String get aboutCouldNotOpen => 'Baglanti acilamadi.';
+
+  @override
+  String aboutCopyright(int year) {
+    return '© $year Ummat Dev. Tum haklari saklidir.\n\nNamaz vakitleri pray_calc_dart motoru kullanilarak hesaplanir. Dogruluk GPS konumunuza ve secilen hesaplama yontemine baglidir.';
+  }
 
   @override
   String get commonCancel => 'Iptal';
@@ -850,34 +1402,679 @@ class AppLocalizationsTr extends AppLocalizations {
   String get commonLanguage => 'Dil';
 
   @override
-  String get travelNotificationTitle => 'You are now traveling';
+  String get commonOpenSettings => 'Ayarlari Ac';
+
+  @override
+  String get travelNotificationTitle => 'Şu anda seyahattesiniz';
 
   @override
   String get travelNotificationBody =>
-      'Prayer times may be shortened. Tap to learn about travel rulings.';
+      'Namaz vakitleri kısaltılabilir. Seyahat hükümleri hakkında bilgi almak için dokunun.';
 
   @override
-  String get travelRulingsTitle => 'Travel & Prayer';
+  String get travelRulingsTitle => 'Seyahat ve Namaz';
 
   @override
   String get travelRulingsIntro =>
-      'Islamic rulings on prayer while traveling, with scholarly references from the Quran and authentic Hadith collections.';
+      'Seyahatte namaz hükümleri, Kur\'an ve sahih hadis koleksiyonlarından ilmi referanslarla.';
 
   @override
-  String get travelWhenTitle => 'When Does Travel Apply?';
+  String get travelWhenTitle => 'Seyahat Ne Zaman Geçerlidir?';
 
   @override
-  String get travelQasrTitle => 'Shortening Prayers (Qasr)';
+  String get travelQasrTitle => 'Namazları Kısaltma (Qasr)';
 
   @override
-  String get travelJamTitle => 'Combining Prayers (Jam\')';
+  String get travelJamTitle => 'Namazları Birleştirme (Cem)';
 
   @override
-  String get travelDurationTitle => 'Duration of Travel';
+  String get travelDurationTitle => 'Seyahat Süresi';
 
   @override
-  String get travelReferencesTitle => 'Scholarly References';
+  String get travelReferencesTitle => 'İlmi Referanslar';
 
   @override
-  String get travelLearnMore => 'Learn more';
+  String get travelLearnMore => 'Daha fazla bilgi';
+
+  @override
+  String get travelHanafiDefaultTitle =>
+      'PrayCalc Neden Hanefi Varsayilanini Kullanir';
+
+  @override
+  String get travelDeeperScholarly => 'Daha Derin Ilmi Tartisma';
+
+  @override
+  String get onboardingTitle1 => 'Nerede olursaniz olun namaz vakitleri';
+
+  @override
+  String get onboardingBody1 =>
+      'Dunyadaki her sehir icin GPS hassasiyetinde namaz vakitleri. Fecrden Yatsiya, Gunesten Kiyama. Hassasiyet icin tasarlanmis kendi hesaplama motorumuzla.';
+
+  @override
+  String get onboardingTitle2 => 'Konumunuz, vakitleriniz';
+
+  @override
+  String get onboardingBody2 =>
+      'Herhangi bir sehri arayin veya GPS konumunuzu tespit etsin. PrayCalc dunya capinda 5 milyon sehir icin vakitleri bulur.';
+
+  @override
+  String get onboardingTitle3 => 'Hicbir namazi kacirmayin';
+
+  @override
+  String get onboardingBody3 =>
+      'Namaz vaktinde ezan, oncesinde hatirlatma. Sahur, dersler ve daha fazlasi icin ozel ajandalar.';
+
+  @override
+  String get onboardingTitle4 => 'Ihtiyaciniz olan her sey';
+
+  @override
+  String get onboardingBody4 =>
+      'Kible pusulasi, namaz takvimi, Hicri ay safhasi, Tesbih sayaci. Hepsi tek yerde.';
+
+  @override
+  String get onboardingSkip => 'Atla';
+
+  @override
+  String get onboardingGetStarted => 'Basla';
+
+  @override
+  String get onboardingSignInTitle => 'PrayCalc\'a giris yapin';
+
+  @override
+  String get onboardingSignInSubtitle =>
+      'Namaz gecmisinizi kaydedin ve\ntum cihazlarinizda senkronize edin.';
+
+  @override
+  String get onboardingContinueGoogle => 'Google ile devam et';
+
+  @override
+  String get onboardingContinueWithoutAccount => 'Hesapsiz devam et';
+
+  @override
+  String get onboardingSigningIn => 'Giris yapiliyor…';
+
+  @override
+  String get onboardingSelectLanguage => 'Dil Secin';
+
+  @override
+  String get duaDhikrTitle => 'Dua & Zikir';
+
+  @override
+  String get duaDhikrTabDua => 'Dua';
+
+  @override
+  String get duaDhikrTabDhikr => 'Zikir';
+
+  @override
+  String get duaDhikrTabTasbeeh => 'Tesbih';
+
+  @override
+  String get duaDhikrTabMorning => 'Sabah';
+
+  @override
+  String get duaDhikrTabEvening => 'Aksam';
+
+  @override
+  String get duaDhikrMorningAdhkar => 'Sabah Ezkarları';
+
+  @override
+  String get duaDhikrEveningAdhkar => 'Aksam Ezkarları';
+
+  @override
+  String get calGregToggle => 'Miladi';
+
+  @override
+  String get calHijriToggle => 'Hicri';
+
+  @override
+  String get calYearlyTooltip => 'Yıllık takvim';
+
+  @override
+  String get calExportIcsTooltip => '.ics dışa aktar';
+
+  @override
+  String get calMagCol => 'Akş';
+
+  @override
+  String get qiblaShowOnMap => 'Haritada göster';
+
+  @override
+  String get qiblaWaitingCompass => 'Pusula bekleniyor...';
+
+  @override
+  String get qiblaNoCompassSensor =>
+      'Pusula sensörü yok. Kıble yönü statik gösteriliyor.';
+
+  @override
+  String get qiblaAccuracyExcellent => 'Mükemmel doğruluk';
+
+  @override
+  String get qiblaAccuracyGood => 'İyi doğruluk';
+
+  @override
+  String get qiblaAccuracyFair =>
+      'Orta doğruluk. Telefonu 8 şeklinde hareket ettirerek kalibre edin.';
+
+  @override
+  String get qiblaAccuracyLow =>
+      'Düşük doğruluk. Telefonu 8 şeklinde hareket ettirerek kalibre edin.';
+
+  @override
+  String get qiblaToTheKaaba => 'Kabe\'ye';
+
+  @override
+  String get qiblaYourLocation => 'Konumunuz';
+
+  @override
+  String get qiblaGpsAccurate => 'GPS hassas';
+
+  @override
+  String get qiblaCityCenter => 'Şehir merkezi';
+
+  @override
+  String get moonIlluminatedLabel => 'Aydınlık';
+
+  @override
+  String get moonAgeLabel => 'Yaş';
+
+  @override
+  String get moonFirstQtr => 'İlk Dördün';
+
+  @override
+  String get moonLastQtr => 'Son Dördün';
+
+  @override
+  String get moonTonight => 'Bu gece';
+
+  @override
+  String get moonTomorrow => 'Yarın';
+
+  @override
+  String moonDaysAway(int days) {
+    return '${days}g';
+  }
+
+  @override
+  String get moonBeta => 'Beta';
+
+  @override
+  String get setHomeTitle => 'Ev Konumunu Ayarla';
+
+  @override
+  String get setHomeSearchHint => 'Şehir, kasaba veya posta kodu ara…';
+
+  @override
+  String get setHomeClear => 'Temizle';
+
+  @override
+  String get setHomeUseCurrentLocation => 'Mevcut Konumu Kullan';
+
+  @override
+  String get setHomeDetectAndSet =>
+      'Konumunuzu tespit edip ev olarak ayarlayın';
+
+  @override
+  String get setHomeAlreadySet => 'Ev zaten ayarlanmış';
+
+  @override
+  String setHomeSetAs(String city) {
+    return '$city ev olarak ayarlandı';
+  }
+
+  @override
+  String get setHomeCurrentLocationSet => 'Mevcut konum ev olarak ayarlandı';
+
+  @override
+  String get setHomePermissionDenied =>
+      'Konum izni reddedildi. Aşağıdan şehir arayın.';
+
+  @override
+  String get setHomeGpsUnavailable => 'GPS kullanılamıyor. Manuel arayın.';
+
+  @override
+  String get setHomeNoCitiesFound => 'Şehir bulunamadı.';
+
+  @override
+  String get setHomeSearchPrompt => 'Ev şehrinizi arayın';
+
+  @override
+  String get setHomeSearchBody =>
+      'Aramak için yukarı yazın veya mevcut konumunuzu kullanın. Seyahat modu evden uzakta olduğunuzu algılar.';
+
+  @override
+  String get subscriptionYouHavePlus => 'Ummat+ abonesiniz';
+
+  @override
+  String get subscriptionUpgradeTo => 'Ummat+\'a yükseltin';
+
+  @override
+  String get subscriptionThankYou =>
+      'PrayCalc\'ı desteklediğiniz için teşekkürler.';
+
+  @override
+  String get subscriptionUnlockPremium =>
+      'Tüm cihazlarınızda premium özelliklerin kilidini açın.';
+
+  @override
+  String get subscriptionManageSub => 'Aboneliği yönet';
+
+  @override
+  String get subscriptionWelcome => 'Ummat+\'a hoş geldiniz!';
+
+  @override
+  String get subscriptionSubscribe => 'Abone ol';
+
+  @override
+  String get subscriptionFreeFeatures => 'Ücretsiz Özellikler';
+
+  @override
+  String get subscriptionPlusFeatures => 'Ummat+ Özellikleri';
+
+  @override
+  String get subscriptionFeaturePrayerTimes => 'Namaz vakitleri';
+
+  @override
+  String get subscriptionFeatureQibla => 'Kıble pusulası';
+
+  @override
+  String get subscriptionFeatureCalendar => 'Aylık takvim';
+
+  @override
+  String get subscriptionFeatureTasbeeh => 'Tesbih sayacı';
+
+  @override
+  String get subscriptionFeatureMoon => 'Ay & Hicri';
+
+  @override
+  String get smartHomeAlertType => 'Uyarı Türü';
+
+  @override
+  String get smartHomeAlertModal => 'Tam ekran pencere';
+
+  @override
+  String get smartHomeAlertCorner => 'Köşe bildirimi';
+
+  @override
+  String get smartHomeAlertNone => 'Yok (sessiz)';
+
+  @override
+  String get smartHomePauseMedia => 'Ezan sırasında medyayı duraklat';
+
+  @override
+  String get smartHomeQuietHours => 'Sessiz saatler';
+
+  @override
+  String get smartHomeQuietFrom => 'Başlangıç';
+
+  @override
+  String get smartHomeQuietTo => 'Bitiş';
+
+  @override
+  String get smartHomePrayerAudio => 'Namaz başına ses';
+
+  @override
+  String get smartHomeAudioAdhan => 'Ezan';
+
+  @override
+  String get smartHomeAudioBeep => 'Bip';
+
+  @override
+  String get smartHomeAudioSilent => 'Sessiz';
+
+  @override
+  String get aboutPrivacy => 'Gizlilik Politikası';
+
+  @override
+  String aboutVersion(String version) {
+    return 'Sürüm $version';
+  }
+
+  @override
+  String get notifDefaultAdhan => 'Varsayılan Ezan';
+
+  @override
+  String get notifFajrAdhan => 'Fecir Ezanı';
+
+  @override
+  String get notifFajrAdhanSubtitle => 'Fecir namaz vaktinde çalar';
+
+  @override
+  String get notifRegularAdhan => 'Normal Ezan';
+
+  @override
+  String get notifRegularAdhanSubtitle =>
+      'Öğle, İkindi, Akşam, Yatsı\'da çalar';
+
+  @override
+  String get notifPerPrayerSettings => 'Namaz Başına Ayarlar';
+
+  @override
+  String get notifPreview => 'Önizleme';
+
+  @override
+  String get tvSettingsTitle => 'TV Ayarları';
+
+  @override
+  String get tvDisplayMode => 'Görüntü Modu';
+
+  @override
+  String get tvMasjidMode => 'Cami Modu';
+
+  @override
+  String get tvMasjidModeSubtitle => 'İkamet vakitli büyük tabela gösterimi';
+
+  @override
+  String get tvMasjidName => 'Cami Adı';
+
+  @override
+  String get tvMasjidNameTapToSet => 'Ayarlamak için dokunun';
+
+  @override
+  String get tvClock => 'Saat';
+
+  @override
+  String get tv24hFormat => '24 saat formatı';
+
+  @override
+  String get tvIqamahOffsets => 'İkamet Farkları (ezandan sonra dakika)';
+
+  @override
+  String tvIqamahMinAfter(int offset) {
+    return 'Ezandan $offset dk sonra';
+  }
+
+  @override
+  String get tvQrCode => 'QR Kodu';
+
+  @override
+  String get tvShowQrCode => 'QR Kodu Göster';
+
+  @override
+  String get tvShowQrCodeSubtitle => 'Cami ekranında QR kodu göster';
+
+  @override
+  String get tvQrCodeUrl => 'QR Kodu URL\'si';
+
+  @override
+  String get tvAmbientModeSection => 'Ortam Modu';
+
+  @override
+  String get tvIdleTimeout => 'Boşta kalma süresi';
+
+  @override
+  String tvIdleTimeoutSubtitle(int minutes) {
+    return 'Ortam modu etkinleşmeden önce $minutes dakika';
+  }
+
+  @override
+  String get tvPhotoInterval => 'Fotoğraf aralığı';
+
+  @override
+  String tvPhotoIntervalSubtitle(int seconds) {
+    return 'Fotoğraflar arası $seconds saniye';
+  }
+
+  @override
+  String get tvBackground => 'Arka plan';
+
+  @override
+  String get tvPhotoCategory => 'Fotoğraf kategorisi';
+
+  @override
+  String get tvLocation => 'Konum';
+
+  @override
+  String get tvChangeCity => 'Şehri Değiştir';
+
+  @override
+  String get tvChangeCitySubtitle => 'Farklı bir şehir arayın';
+
+  @override
+  String get tvScreensaverBg => 'Ekran Koruyucu Arka Planı';
+
+  @override
+  String get tvScreensaverPhotos => 'Fotoğraflar';
+
+  @override
+  String get tvScreensaverPattern => 'Geometrik desen';
+
+  @override
+  String get tvScreensaverBoth => 'Fotoğraflar + desen';
+
+  @override
+  String get tvCategoryAll => 'Tüm kategoriler';
+
+  @override
+  String get tvCategoryMasjids => 'Camiler';
+
+  @override
+  String get tvCategoryInteriors => 'İç mekanlar';
+
+  @override
+  String get tvCategoryGeometric => 'Geometrik';
+
+  @override
+  String get tvCategoryCalligraphy => 'Hat sanatı';
+
+  @override
+  String get tvCategoryLandscapes => 'Manzaralar';
+
+  @override
+  String get tvCategoryRamadan => 'Ramazan';
+
+  @override
+  String get tvPhotoCategoryTitle => 'Fotoğraf Kategorisi';
+
+  @override
+  String tvEnterHint(String title) {
+    return '$title girin';
+  }
+
+  @override
+  String get tvSystemDefault => 'Sistem varsayılanı';
+
+  @override
+  String get smartHomeIntegrations => 'Entegrasyonlar';
+
+  @override
+  String get smartHomeLinkedSpeakers => 'Bağlı Hoparlörler ve Ekranlar';
+
+  @override
+  String get smartHomeAlertDisplay => 'Uyarı Gösterimi';
+
+  @override
+  String get smartHomeAtAdhanShow => 'Ezan vaktinde göster';
+
+  @override
+  String get smartHomePauseMediaTitle => 'Ezanda medyayı duraklat';
+
+  @override
+  String get smartHomePauseMediaSubtitle => 'Ezan bittikten sonra devam eder';
+
+  @override
+  String get smartHomePrayerAudioSection => 'Namaz Sesi';
+
+  @override
+  String get smartHomeQuietHoursSection => 'Sessiz Saatler';
+
+  @override
+  String get smartHomeEnableQuietHours => 'Sessiz saatleri etkinleştir';
+
+  @override
+  String get smartHomeQuietHoursSubtitle =>
+      'Tüm akıllı ev uyarıları susturulur';
+
+  @override
+  String get smartHomeNoDevices => 'Henüz bağlı cihaz yok';
+
+  @override
+  String get smartHomeNoDevicesDesc =>
+      'Yukarıdan Google Home veya Alexa bağlayın, ardından hoparlörleriniz ve ekranlarınız burada görünecektir.';
+
+  @override
+  String get smartHomeRequiresPlus => 'Akıllı Ev için Ummat+ gereklidir';
+
+  @override
+  String get smartHomeRequiresPlusDesc =>
+      'Google Home, Alexa, Siri ve Home Assistant üzerinden namaz duyurularını yönetin. Hangi cihazların ezan çalacağını, medya duraklatmayı ve sessiz saatleri ayarlayın.';
+
+  @override
+  String get smartHomeBroadcastGoogle =>
+      'Nest hoparlör ve ekranlarında ezan yayınlayın.';
+
+  @override
+  String get smartHomeEnableAlexa =>
+      'Alexa\'da PrayCalc becerisini etkinleştirin.';
+
+  @override
+  String get smartHomeSiriAsk =>
+      'Siri\'den namaz vakitlerini sorun veya otomasyon kurun.';
+
+  @override
+  String get smartHomeHassAdd =>
+      'Tam otomasyon desteği için HACS üzerinden ekleyin.';
+
+  @override
+  String get smartHomeSetupGuide => 'Kurulum rehberi';
+
+  @override
+  String get smartHomeSiriSetupTitle => 'Siri Kısayolları Kurulumu';
+
+  @override
+  String get smartHomeSiriStep1 =>
+      'iPhone veya iPad\'inizde Kısayollar uygulamasını açın.';
+
+  @override
+  String get smartHomeSiriStep2 =>
+      'Yeni kısayol oluşturmak için \"+\" düğmesine dokunun.';
+
+  @override
+  String get smartHomeSiriStep3 => 'Eylemler listesinde \"PrayCalc\" arayın.';
+
+  @override
+  String get smartHomeSiriStep4 =>
+      '\"Sonraki Namaz Vakti\" veya \"Bugünün Namaz Vakitleri\" ekleyin.';
+
+  @override
+  String get smartHomeSiriStep5 =>
+      'İsteğe bağlı olarak bir otomasyona ekleyin (ör. her gün Fecir\'de).';
+
+  @override
+  String get smartHomeSiriStep6 =>
+      'Test etmek için \"Hey Siri, sonraki namaz vakti\" deyin.';
+
+  @override
+  String get smartHomeSiriFootnote => 'iOS 16 veya üstü gerektirir.';
+
+  @override
+  String get smartHomeHassSetupTitle => 'Home Assistant Kurulumu';
+
+  @override
+  String get smartHomeHassStep1 =>
+      'HACS\'ı (Home Assistant Topluluk Mağazası) kurun.';
+
+  @override
+  String get smartHomeHassStep2 => 'HACS\'ta \"PrayCalc\" arayın ve kurun.';
+
+  @override
+  String get smartHomeHassStep3 =>
+      'Ayarlar > Cihazlar & Hizmetler > Entegrasyon Ekle\'ye gidin.';
+
+  @override
+  String get smartHomeHassStep4 => '\"PrayCalc\" arayın ve seçin.';
+
+  @override
+  String get smartHomeHassStep5 =>
+      'PrayCalc API anahtarınızı girin (hesabınızda oluşturulur).';
+
+  @override
+  String get smartHomeHassStep6 =>
+      'Konumunuzu ve hesaplama yönteminizi yapılandırın.';
+
+  @override
+  String get smartHomeHassFootnote =>
+      'HACS ile Home Assistant 2024.1+ gerektirir.';
+
+  @override
+  String get smartHomeApiKey => 'API Anahtarı';
+
+  @override
+  String get smartHomeGenerateApiKey => 'API Anahtarı Oluştur';
+
+  @override
+  String get smartHomeApiKeyNotReady =>
+      'PrayCalc akıllı hizmeti dağıtıldığında API anahtarı oluşturma kullanılabilir olacak.';
+
+  @override
+  String get smartHomeApiKeyDesc =>
+      'Home Assistant\'ı PrayCalc hesabınıza bağlamak için API anahtarına ihtiyacınız olacak.';
+
+  @override
+  String get smartHomeLinkedStatus => 'Bağlı';
+
+  @override
+  String get smartHomeNotLinkedStatus => 'Bağlı değil';
+
+  @override
+  String get smartHomeCouldNotOpen => 'Bağlantı açılamadı.';
+
+  @override
+  String adhkarCompletedCount(int completed, int total) {
+    return '$completed / $total tamamlandı';
+  }
+
+  @override
+  String get adhkarReset => 'Sıfırla';
+
+  @override
+  String get syncHistoryTitle => 'Senkronizasyon Geçmişi';
+
+  @override
+  String get syncClearHistory => 'Geçmişi temizle';
+
+  @override
+  String get syncNoConflicts =>
+      'Senkronizasyon çatışması yok. Tüm cihazlar eşitlenmiş.';
+
+  @override
+  String get syncDomainSettings => 'Ayarlar';
+
+  @override
+  String get syncDomainCities => 'Kayıtlı Şehirler';
+
+  @override
+  String get syncDomainPrayerLogs => 'Namaz Kayıtları';
+
+  @override
+  String get syncTimeJustNow => 'şimdi';
+
+  @override
+  String syncTimeMinAgo(int min) {
+    return '${min}dk önce';
+  }
+
+  @override
+  String syncTimeHourAgo(int hour) {
+    return '${hour}sa önce';
+  }
+
+  @override
+  String syncTimeDayAgo(int day) {
+    return '${day}g önce';
+  }
+
+  @override
+  String get pinCity => 'Sabitle';
+
+  @override
+  String get pinMaxReached =>
+      'En fazla 5 sabitlenmiş şehir. Daha fazlası için Ummat+\'a yükseltin.';
+
+  @override
+  String pinCityUnpinned(String city) {
+    return '$city sabitlemesi kaldırıldı';
+  }
+
+  @override
+  String get pinUndo => 'Geri al';
 }

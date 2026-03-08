@@ -7,6 +7,7 @@ import LastVisited from "@/components/LastVisited";
 import LocationGpsPill from "@/components/LocationGpsPill";
 import GeoPrompt from "@/components/GeoPrompt";
 import DPCInfoCard from "@/components/DPCInfoCard";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 /**
  * Client shell for the homepage.
@@ -31,6 +32,7 @@ export default function HomeClient() {
 
       {/* Top-right floating cards — geo prompt stacks above DPC info */}
       <div className="home-top-right-cards">
+        <LanguageSwitcher variant="header" />
         <GeoPrompt onIpCity={setIpCity} />
         <DPCInfoCard />
       </div>

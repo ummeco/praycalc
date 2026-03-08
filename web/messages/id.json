@@ -150,6 +150,19 @@
     "id": "Bahasa Indonesia",
     "fr": "Français",
     "bn": "বাংলা",
-    "so": "Soomaali"
+    "so": "Soomaali",
+    "de": "Deutsch",
+    "es": "Español",
+    "hi": "हिन्दी"
+  },
+  "footer": {
+    "description": "Jadwal sholat Islam yang akurat untuk kota mana pun di seluruh dunia. Berbagai metode perhitungan, kalender Hijriah, fase bulan, dan arah Kiblat. Gratis, privat, dan tanpa iklan.",
+    "home": "Beranda",
+    "institutions": "Untuk Lembaga",
+    "masjids": "Untuk Masjid",
+    "exploreMore": "Jelajahi Lebih Lanjut",
+    "help": "Bantuan",
+    "privacy": "Privasi",
+    "terms": "Ketentuan"
   }
 }

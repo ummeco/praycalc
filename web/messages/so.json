@@ -150,6 +150,19 @@
     "id": "Bahasa Indonesia",
     "fr": "Français",
     "bn": "বাংলা",
-    "so": "Soomaali"
+    "so": "Soomaali",
+    "de": "Deutsch",
+    "es": "Español",
+    "hi": "हिन्दी"
+  },
+  "footer": {
+    "description": "Wakhtiyada salaadda Islaamka ee sax ah ee magaalo kasta oo adduunka ah. Habab xisaabin oo badan, taqwiimka Hijri, marxaladaha dayaxa, iyo jihada Qiblada. Bilaash, gaar ah, xayeysiis la'aan.",
+    "home": "Bogga Hore",
+    "institutions": "Hay'adaha",
+    "masjids": "Masaajidda",
+    "exploreMore": "Wax Badan Baro",
+    "help": "Caawin",
+    "privacy": "Asturnaanta",
+    "terms": "Shuruudaha"
   }
 }

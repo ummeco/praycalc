@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:praycalc_app/l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/router/app_router.dart';
@@ -26,8 +27,10 @@ class _TravelRulingsScreenState extends State<TravelRulingsScreen> {
     final textColor = isDark ? Colors.white : const Color(0xFF1A2E1A);
     final subtextColor = textColor.withAlpha(160);
 
+    final l = AppLocalizations.of(context)!;
+
     return Scaffold(
-      appBar: AppBar(title: const Text('Travel & Prayer')),
+      appBar: AppBar(title: Text(l.travelRulingsTitle)),
       body: ListView(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
         children: [
@@ -80,7 +83,7 @@ class _TravelRulingsScreenState extends State<TravelRulingsScreen> {
                 OutlinedButton.icon(
                   onPressed: () => context.push(Routes.settings),
                   icon: const Icon(Icons.settings_outlined, size: 16),
-                  label: const Text('Open Settings'),
+                  label: Text(l.commonOpenSettings),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: PrayCalcColors.mid,
                     side: BorderSide(color: PrayCalcColors.mid.withAlpha(120)),

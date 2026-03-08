@@ -1,5 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:praycalc_app/l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -105,18 +106,19 @@ class PrayerStatsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l = AppLocalizations.of(context)!;
     final stats = ref.watch(prayerStatsProvider);
     final theme = Theme.of(context);
     final cs = theme.colorScheme;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Prayer Statistics'),
+        title: Text(l.statsTitle),
         actions: [
           IconButton(
             icon: const Icon(Icons.share),
-            tooltip: 'Share stats',
-            onPressed: () => _shareStats(stats),
+            tooltip: l.statsShareTooltip,
+            onPressed: () => _shareStats(context, stats),
           ),
         ],
       ),
@@ -132,9 +134,9 @@ class PrayerStatsScreen extends ConsumerWidget {
             children: [
               Expanded(
                 child: _StatCard(
-                  title: 'Streak',
+                  title: l.statsStreak,
                   value: '${stats.currentStreak}',
-                  subtitle: 'days',
+                  subtitle: l.statsDays,
                   icon: Icons.local_fire_department,
                   color: stats.currentStreak > 0
                       ? PrayCalcColors.mid
@@ -144,9 +146,9 @@ class PrayerStatsScreen extends ConsumerWidget {
               const SizedBox(width: 12),
               Expanded(
                 child: _StatCard(
-                  title: 'This Week',
+                  title: l.statsThisWeek,
                   value: '${(stats.weeklyPct * 100).round()}%',
-                  subtitle: 'completion',
+                  subtitle: l.statsCompletion,
                   icon: Icons.trending_up,
                   color: _completionColor(stats.weeklyPct),
                 ),
@@ -158,9 +160,9 @@ class PrayerStatsScreen extends ConsumerWidget {
             children: [
               Expanded(
                 child: _StatCard(
-                  title: 'This Month',
+                  title: l.statsThisMonth,
                   value: '${(stats.monthlyPct * 100).round()}%',
-                  subtitle: 'completion',
+                  subtitle: l.statsCompletion,
                   icon: Icons.calendar_month,
                   color: _completionColor(stats.monthlyPct),
                 ),
@@ -168,9 +170,9 @@ class PrayerStatsScreen extends ConsumerWidget {
               const SizedBox(width: 12),
               Expanded(
                 child: _StatCard(
-                  title: 'Most Missed',
+                  title: l.statsMostMissed,
                   value: stats.mostMissedPrayer ?? '-',
-                  subtitle: 'this week',
+                  subtitle: l.statsThisWeekLabel,
                   icon: Icons.warning_amber_rounded,
                   color: cs.error.withAlpha(180),
                 ),
@@ -181,7 +183,7 @@ class PrayerStatsScreen extends ConsumerWidget {
 
           // ── Weekly bar chart ─────────────────────────────────────────────
           Text(
-            'Weekly Completion by Prayer',
+            l.statsWeeklyChart,
             style: theme.textTheme.titleMedium,
           ),
           const SizedBox(height: 12),
@@ -193,7 +195,7 @@ class PrayerStatsScreen extends ConsumerWidget {
 
           // ── Monthly bar chart ───────────────────────────────────────────
           Text(
-            'Monthly Completion by Prayer',
+            l.statsMonthlyChart,
             style: theme.textTheme.titleMedium,
           ),
           const SizedBox(height: 12),
@@ -207,8 +209,8 @@ class PrayerStatsScreen extends ConsumerWidget {
           Card(
             child: ListTile(
               leading: Icon(Icons.check_circle, color: PrayCalcColors.mid),
-              title: Text('${stats.totalLogged} total prayers logged'),
-              subtitle: const Text('Keep it up!'),
+              title: Text(l.statsTotalLogged(stats.totalLogged)),
+              subtitle: Text(l.statsKeepItUp),
             ),
           ),
           const SizedBox(height: 80),
@@ -223,15 +225,16 @@ class PrayerStatsScreen extends ConsumerWidget {
     return const Color(0xFFE57373);
   }
 
-  void _shareStats(PrayerStats stats) {
+  void _shareStats(BuildContext context, PrayerStats stats) {
+    final l = AppLocalizations.of(context)!;
     final lines = <String>[
-      'PrayCalc Prayer Statistics',
+      l.statsShareTitle,
       '',
-      'Streak: ${stats.currentStreak} days',
-      'Weekly: ${(stats.weeklyPct * 100).round()}%',
-      'Monthly: ${(stats.monthlyPct * 100).round()}%',
+      l.statsShareStreak(stats.currentStreak),
+      l.statsShareWeekly((stats.weeklyPct * 100).round()),
+      l.statsShareMonthly((stats.monthlyPct * 100).round()),
       '',
-      'Weekly breakdown:',
+      l.statsShareBreakdown,
       ...['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'].map(
         (p) => '  $p: ${stats.weeklyByPrayer[p] ?? 0}/7',
       ),
@@ -250,6 +253,7 @@ class _TodayPrayersCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l = AppLocalizations.of(context)!;
     final completions = ref.watch(prayerCompletionProvider);
     final notifier = ref.read(prayerCompletionProvider.notifier);
     final now = DateTime.now();
@@ -270,13 +274,13 @@ class _TodayPrayersCard extends ConsumerWidget {
                     size: 17, color: PrayCalcColors.mid),
                 const SizedBox(width: 7),
                 Text(
-                  "Today's Prayers",
+                  l.statsTodayPrayers,
                   style: theme.textTheme.titleSmall
                       ?.copyWith(fontWeight: FontWeight.w600),
                 ),
                 const Spacer(),
                 Text(
-                  '${fard.where((p) => completions.containsKey('${dateStr}_$p')).length} / 5',
+                  l.statsTodayCount(fard.where((p) => completions.containsKey('${dateStr}_$p')).length),
                   style: theme.textTheme.bodySmall?.copyWith(
                       color: PrayCalcColors.mid, fontWeight: FontWeight.w600),
                 ),

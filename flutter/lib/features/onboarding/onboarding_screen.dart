@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:praycalc_app/l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -7,9 +8,25 @@ import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import '../../core/providers/auth_provider.dart';
 import '../../core/providers/geo_provider.dart';
 import '../../core/providers/prayer_provider.dart';
+import '../../core/providers/settings_provider.dart';
 import '../../core/router/app_router.dart';
 import '../../core/theme/app_theme.dart';
 import '../../shared/models/settings_model.dart';
+
+/// Language options for onboarding picker (no "System default" here — user picks explicitly).
+const _onboardingLocales = [
+  ('English', 'en'),
+  ('العربية', 'ar'),
+  ('Türkçe', 'tr'),
+  ('اردو', 'ur'),
+  ('Bahasa Indonesia', 'id'),
+  ('Français', 'fr'),
+  ('বাংলা', 'bn'),
+  ('Soomaali', 'so'),
+  ('Deutsch', 'de'),
+  ('Español', 'es'),
+  ('हिन्दी', 'hi'),
+];
 
 const _kOnboardingDone = 'onboarding_done';
 
@@ -33,32 +50,11 @@ class _Page {
   const _Page(this.icon, this.title, this.body);
 }
 
-const _pages = [
-  _Page(
-    Icons.wb_sunny_outlined,
-    'Prayer times, wherever you are',
-    'GPS-accurate salah times for every city on earth. '
-        'Fajr to Isha, sunrise to Qiyam. '
-        'Powered by our own calculation engine, built for precision.',
-  ),
-  _Page(
-    Icons.location_on_outlined,
-    'Your location, your times',
-    'Search any city or let GPS detect your location. '
-        'PrayCalc finds times for 5 million cities worldwide.',
-  ),
-  _Page(
-    Icons.notifications_outlined,
-    'Never miss a prayer',
-    'Adhan at prayer time, reminders before it. '
-        'Custom agendas for Suhoor, classes, and more.',
-  ),
-  _Page(
-    Icons.explore_outlined,
-    'Everything you need',
-    'Qibla compass, prayer calendar, Hijri moon phase, '
-        'Tasbeeh counter. All in one place.',
-  ),
+List<_Page> _getPages(AppLocalizations l) => [
+  _Page(Icons.wb_sunny_outlined, l.onboardingTitle1, l.onboardingBody1),
+  _Page(Icons.location_on_outlined, l.onboardingTitle2, l.onboardingBody2),
+  _Page(Icons.notifications_outlined, l.onboardingTitle3, l.onboardingBody3),
+  _Page(Icons.explore_outlined, l.onboardingTitle4, l.onboardingBody4),
 ];
 
 class OnboardingScreen extends ConsumerStatefulWidget {
@@ -68,13 +64,27 @@ class OnboardingScreen extends ConsumerStatefulWidget {
   ConsumerState<OnboardingScreen> createState() => _OnboardingScreenState();
 }
 
+enum _Step { language, info, signIn }
+
 class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   final _controller = PageController();
   int _page = 0;
-  bool _showSignIn = false;
+  _Step _step = _Step.language;
   bool _completing = false;
   String? _socialError;
   City? _gpsCity;
+  String _selectedLocale = 'en';
+
+  @override
+  void initState() {
+    super.initState();
+    // Pre-select the system language if it's one we support.
+    final systemLang = WidgetsBinding.instance.platformDispatcher.locale.languageCode;
+    final supported = _onboardingLocales.map((e) => e.$2).toSet();
+    if (supported.contains(systemLang)) {
+      _selectedLocale = systemLang;
+    }
+  }
 
   @override
   void dispose() {
@@ -82,8 +92,15 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     super.dispose();
   }
 
+  static const _pageCount = 4;
+
+  void _confirmLanguage() {
+    ref.read(settingsProvider.notifier).setLocale(_selectedLocale);
+    setState(() => _step = _Step.info);
+  }
+
   void _next() {
-    if (_page < _pages.length - 1) {
+    if (_page < _pageCount - 1) {
       _controller.nextPage(
         duration: const Duration(milliseconds: 350),
         curve: Curves.easeInOut,
@@ -94,7 +111,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   }
 
   void _goToSignIn() {
-    setState(() => _showSignIn = true);
+    setState(() => _step = _Step.signIn);
     // Request GPS silently while user sees sign-in step
     _requestGpsInBackground();
   }
@@ -158,16 +175,106 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     return Scaffold(
       body: SafeArea(
-        child: _showSignIn ? _buildSignInStep(context) : _buildInfoPages(context),
+        child: switch (_step) {
+          _Step.language => _buildLanguageStep(context, l),
+          _Step.info => _buildInfoPages(context, l),
+          _Step.signIn => _buildSignInStep(context, l),
+        },
       ),
     );
   }
 
-  Widget _buildInfoPages(BuildContext context) {
+  Widget _buildLanguageStep(BuildContext context, AppLocalizations l) {
+    final theme = Theme.of(context);
+    final cs = theme.colorScheme;
+
+    return Column(
+      children: [
+        const SizedBox(height: 24),
+
+        // Globe icon
+        Container(
+          width: 80,
+          height: 80,
+          decoration: BoxDecoration(
+            color: cs.primary.withAlpha(25),
+            shape: BoxShape.circle,
+          ),
+          child: Icon(Icons.language, size: 40, color: cs.primary),
+        ),
+        const SizedBox(height: 20),
+
+        Text(
+          l.onboardingSelectLanguage,
+          style: theme.textTheme.headlineSmall?.copyWith(
+            fontWeight: FontWeight.bold,
+          ),
+          textAlign: TextAlign.center,
+        ),
+        const SizedBox(height: 20),
+
+        // Language list
+        Expanded(
+          child: ListView.builder(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            itemCount: _onboardingLocales.length,
+            itemBuilder: (_, i) {
+              final (label, code) = _onboardingLocales[i];
+              final selected = code == _selectedLocale;
+              return ListTile(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                selected: selected,
+                selectedTileColor: cs.primary.withAlpha(20),
+                leading: Icon(
+                  selected ? Icons.radio_button_checked : Icons.radio_button_unchecked,
+                  color: selected ? cs.primary : cs.outline,
+                  size: 22,
+                ),
+                title: Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: selected ? FontWeight.w600 : FontWeight.normal,
+                  ),
+                ),
+                onTap: () => setState(() => _selectedLocale = code),
+              );
+            },
+          ),
+        ),
+
+        // Continue button
+        Padding(
+          padding: const EdgeInsets.fromLTRB(24, 8, 24, 32),
+          child: SizedBox(
+            width: double.infinity,
+            child: FilledButton(
+              onPressed: _confirmLanguage,
+              style: FilledButton.styleFrom(
+                backgroundColor: cs.primary,
+                foregroundColor: cs.onPrimary,
+                padding: const EdgeInsets.symmetric(vertical: 16),
+              ),
+              child: Text(
+                l.commonNext,
+                style: const TextStyle(fontSize: 16),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildInfoPages(BuildContext context, AppLocalizations l) {
     final cs = Theme.of(context).colorScheme;
-    final isLast = _page == _pages.length - 1;
+    final pages = _getPages(l);
+    final isLast = _page == _pageCount - 1;
 
     return Column(
       children: [
@@ -176,7 +283,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
           alignment: Alignment.topRight,
           child: TextButton(
             onPressed: _goToSignIn,
-            child: const Text('Skip'),
+            child: Text(l.onboardingSkip),
           ),
         ),
 
@@ -185,8 +292,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
           child: PageView.builder(
             controller: _controller,
             onPageChanged: (i) => setState(() => _page = i),
-            itemCount: _pages.length,
-            itemBuilder: (_, i) => _OnboardingPage(page: _pages[i]),
+            itemCount: pages.length,
+            itemBuilder: (_, i) => _OnboardingPage(page: pages[i]),
           ),
         ),
 
@@ -197,7 +304,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(_pages.length, (i) {
+                children: List.generate(pages.length, (i) {
                   return AnimatedContainer(
                     duration: const Duration(milliseconds: 250),
                     margin: const EdgeInsets.symmetric(horizontal: 4),
@@ -221,7 +328,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                     padding: const EdgeInsets.symmetric(vertical: 16),
                   ),
                   child: Text(
-                    isLast ? 'Get Started' : 'Next',
+                    isLast ? l.onboardingGetStarted : l.commonNext,
                     style: const TextStyle(fontSize: 16),
                   ),
                 ),
@@ -233,7 +340,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     );
   }
 
-  Widget _buildSignInStep(BuildContext context) {
+  Widget _buildSignInStep(BuildContext context, AppLocalizations l) {
     final theme = Theme.of(context);
     final cs = theme.colorScheme;
     final isIOS = theme.platform == TargetPlatform.iOS;
@@ -257,7 +364,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
           const SizedBox(height: 22),
 
           Text(
-            'Sign in to PrayCalc',
+            l.onboardingSignInTitle,
             style: theme.textTheme.headlineSmall?.copyWith(
               fontWeight: FontWeight.bold,
             ),
@@ -265,7 +372,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
           ),
           const SizedBox(height: 10),
           Text(
-            'Save your prayer history and sync\nacross all your devices.',
+            l.onboardingSignInSubtitle,
             style: theme.textTheme.bodyMedium?.copyWith(
               color: cs.onSurface.withAlpha(155),
               height: 1.5,
@@ -323,9 +430,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                     ),
                     icon: const _GoogleLogo(),
-                    label: const Text(
-                      'Continue with Google',
-                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
+                    label: Text(
+                      l.onboardingContinueGoogle,
+                      style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
                     ),
                   ),
           ),
@@ -335,7 +442,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
           TextButton(
             onPressed: busy ? null : _complete,
             child: Text(
-              'Continue without account',
+              l.onboardingContinueWithoutAccount,
               style: TextStyle(color: cs.onSurface.withAlpha(130), fontSize: 14),
             ),
           ),
@@ -355,6 +462,7 @@ class _BusyButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final bg = dark ? Colors.black : Theme.of(context).colorScheme.surfaceContainerHighest;
     final fg = dark ? Colors.white : Theme.of(context).colorScheme.onSurface;
     return Container(
@@ -371,7 +479,7 @@ class _BusyButton extends StatelessWidget {
             child: CircularProgressIndicator(strokeWidth: 2, color: fg.withAlpha(180)),
           ),
           const SizedBox(width: 10),
-          Text('Signing in…', style: TextStyle(color: fg, fontSize: 15)),
+          Text(l.onboardingSigningIn, style: TextStyle(color: fg, fontSize: 15)),
         ],
       ),
     );

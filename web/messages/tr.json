@@ -150,6 +150,19 @@
     "id": "Bahasa Indonesia",
     "fr": "Français",
     "bn": "বাংলা",
-    "so": "Soomaali"
+    "so": "Soomaali",
+    "de": "Deutsch",
+    "es": "Español",
+    "hi": "हिन्दी"
+  },
+  "footer": {
+    "description": "Dünyanın her şehri için doğru İslami namaz vakitleri. Birden fazla hesaplama yöntemi, Hicri takvim, ay evreleri ve Kıble yönü. Ücretsiz, gizli ve reklamsız.",
+    "home": "Ana Sayfa",
+    "institutions": "Kurumlar İçin",
+    "masjids": "Camiler İçin",
+    "exploreMore": "Daha Fazlasını Keşfet",
+    "help": "Yardım",
+    "privacy": "Gizlilik",
+    "terms": "Şartlar"
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:praycalc_app/l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -39,6 +40,7 @@ class _TvSettingsScreenState extends ConsumerState<TvSettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final tvSettings = ref.watch(tvSettingsProvider);
     final tvNotifier = ref.read(tvSettingsProvider.notifier);
     final settings = ref.watch(settingsProvider);
@@ -48,9 +50,9 @@ class _TvSettingsScreenState extends ConsumerState<TvSettingsScreen> {
       appBar: AppBar(
         backgroundColor: PrayCalcColors.deep,
         foregroundColor: Colors.white,
-        title: const Text(
-          'TV Settings',
-          style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+        title: Text(
+          l.tvSettingsTitle,
+          style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
         ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, size: 32),
@@ -63,12 +65,12 @@ class _TvSettingsScreenState extends ConsumerState<TvSettingsScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 48, vertical: 24),
           children: [
             // ── Display Mode ──
-            _SectionHeader(title: 'Display Mode'),
+            _SectionHeader(title: l.tvDisplayMode),
             const SizedBox(height: 8),
             _TvSettingsTile(
               icon: Icons.mosque,
-              title: 'Masjid Mode',
-              subtitle: 'Large signage display with iqamah times',
+              title: l.tvMasjidMode,
+              subtitle: l.tvMasjidModeSubtitle,
               trailing: Switch(
                 value: tvSettings.isMasjidMode,
                 activeThumbColor: PrayCalcColors.mid,
@@ -81,13 +83,13 @@ class _TvSettingsScreenState extends ConsumerState<TvSettingsScreen> {
               const SizedBox(height: 8),
               _TvSettingsTile(
                 icon: Icons.edit,
-                title: 'Masjid Name',
+                title: l.tvMasjidName,
                 subtitle: tvSettings.masjidName.isNotEmpty
                     ? tvSettings.masjidName
-                    : 'Tap to set',
+                    : l.tvMasjidNameTapToSet,
                 onTap: () => _showTextDialog(
                   context: context,
-                  title: 'Masjid Name',
+                  title: l.tvMasjidName,
                   controller: _masjidNameController,
                   onSave: (v) => tvNotifier.setMasjidName(v),
                 ),
@@ -96,11 +98,11 @@ class _TvSettingsScreenState extends ConsumerState<TvSettingsScreen> {
             const SizedBox(height: 24),
 
             // ── Clock ──
-            _SectionHeader(title: 'Clock'),
+            _SectionHeader(title: l.tvClock),
             const SizedBox(height: 8),
             _TvSettingsTile(
               icon: Icons.access_time,
-              title: '24-hour format',
+              title: l.tv24hFormat,
               trailing: Switch(
                 value: settings.use24h,
                 activeThumbColor: PrayCalcColors.mid,
@@ -115,20 +117,20 @@ class _TvSettingsScreenState extends ConsumerState<TvSettingsScreen> {
 
             // ── Iqamah Offsets ──
             if (tvSettings.isMasjidMode) ...[
-              _SectionHeader(title: 'Iqamah Offsets (minutes after adhan)'),
+              _SectionHeader(title: l.tvIqamahOffsets),
               const SizedBox(height: 8),
-              ..._buildIqamahSliders(tvNotifier),
+              ..._buildIqamahSliders(l, tvNotifier),
               const SizedBox(height: 24),
             ],
 
             // ── QR Code ──
             if (tvSettings.isMasjidMode) ...[
-              _SectionHeader(title: 'QR Code'),
+              _SectionHeader(title: l.tvQrCode),
               const SizedBox(height: 8),
               _TvSettingsTile(
                 icon: Icons.qr_code,
-                title: 'Show QR Code',
-                subtitle: 'Display a QR code on the masjid screen',
+                title: l.tvShowQrCode,
+                subtitle: l.tvShowQrCodeSubtitle,
                 trailing: Switch(
                   value: tvSettings.showQrCode,
                   activeThumbColor: PrayCalcColors.mid,
@@ -141,11 +143,11 @@ class _TvSettingsScreenState extends ConsumerState<TvSettingsScreen> {
                 const SizedBox(height: 8),
                 _TvSettingsTile(
                   icon: Icons.link,
-                  title: 'QR Code URL',
-                  subtitle: tvSettings.qrCodeUrl ?? 'Tap to set',
+                  title: l.tvQrCodeUrl,
+                  subtitle: tvSettings.qrCodeUrl ?? l.tvMasjidNameTapToSet,
                   onTap: () => _showTextDialog(
                     context: context,
-                    title: 'QR Code URL',
+                    title: l.tvQrCodeUrl,
                     controller: _qrUrlController,
                     onSave: (v) => tvNotifier.setQrCodeUrl(v),
                   ),
@@ -155,13 +157,12 @@ class _TvSettingsScreenState extends ConsumerState<TvSettingsScreen> {
             ],
 
             // ── Ambient Mode ──
-            _SectionHeader(title: 'Ambient Mode'),
+            _SectionHeader(title: l.tvAmbientModeSection),
             const SizedBox(height: 8),
             _TvSettingsTile(
               icon: Icons.timer,
-              title: 'Idle timeout',
-              subtitle:
-                  '${tvSettings.ambientIdleMinutes} minutes before ambient activates',
+              title: l.tvIdleTimeout,
+              subtitle: l.tvIdleTimeoutSubtitle(tvSettings.ambientIdleMinutes),
               trailing: _CompactSlider(
                 value: tvSettings.ambientIdleMinutes.toDouble(),
                 min: 1,
@@ -175,9 +176,8 @@ class _TvSettingsScreenState extends ConsumerState<TvSettingsScreen> {
             const SizedBox(height: 8),
             _TvSettingsTile(
               icon: Icons.rotate_right,
-              title: 'Photo interval',
-              subtitle:
-                  '${tvSettings.ambientIntervalSeconds} seconds between photos',
+              title: l.tvPhotoInterval,
+              subtitle: l.tvPhotoIntervalSubtitle(tvSettings.ambientIntervalSeconds),
               trailing: _CompactSlider(
                 value: tvSettings.ambientIntervalSeconds.toDouble(),
                 min: 30,
@@ -191,27 +191,27 @@ class _TvSettingsScreenState extends ConsumerState<TvSettingsScreen> {
             const SizedBox(height: 8),
             _TvSettingsTile(
               icon: Icons.wallpaper,
-              title: 'Background',
-              subtitle: _screensaverModeLabel(tvSettings.screensaverMode),
-              onTap: () => _showScreensaverModeDialog(context, tvNotifier),
+              title: l.tvBackground,
+              subtitle: _screensaverModeLabel(l, tvSettings.screensaverMode),
+              onTap: () => _showScreensaverModeDialog(context, l, tvNotifier),
             ),
             const SizedBox(height: 8),
             _TvSettingsTile(
               icon: Icons.photo_library,
-              title: 'Photo category',
-              subtitle: _screensaverCategoryLabel(tvSettings.screensaverCategory),
+              title: l.tvPhotoCategory,
+              subtitle: _screensaverCategoryLabel(l, tvSettings.screensaverCategory),
               onTap: () =>
-                  _showScreensaverCategoryDialog(context, tvNotifier),
+                  _showScreensaverCategoryDialog(context, l, tvNotifier),
             ),
             const SizedBox(height: 24),
 
             // ── Location ──
-            _SectionHeader(title: 'Location'),
+            _SectionHeader(title: l.tvLocation),
             const SizedBox(height: 8),
             _TvSettingsTile(
               icon: Icons.location_city,
-              title: 'Change City',
-              subtitle: 'Search for a different city',
+              title: l.tvChangeCity,
+              subtitle: l.tvChangeCitySubtitle,
               trailing: const Icon(
                 Icons.chevron_right,
                 color: Colors.white54,
@@ -222,18 +222,18 @@ class _TvSettingsScreenState extends ConsumerState<TvSettingsScreen> {
             const SizedBox(height: 24),
 
             // ── Language ──
-            _SectionHeader(title: 'Language'),
+            _SectionHeader(title: l.commonLanguage),
             const SizedBox(height: 8),
             _TvSettingsTile(
               icon: Icons.language,
-              title: 'Language',
-              subtitle: _languageLabel(settings.locale),
+              title: l.commonLanguage,
+              subtitle: _languageLabel(l, settings.locale),
               trailing: const Icon(
                 Icons.chevron_right,
                 color: Colors.white54,
                 size: 32,
               ),
-              onTap: () => _showLanguageDialog(context),
+              onTap: () => _showLanguageDialog(context, l),
             ),
             const SizedBox(height: 48),
           ],
@@ -243,6 +243,7 @@ class _TvSettingsScreenState extends ConsumerState<TvSettingsScreen> {
   }
 
   List<Widget> _buildIqamahSliders(
+    AppLocalizations l,
     TvSettingsNotifier tvNotifier,
   ) {
     final tvSettings = ref.read(tvSettingsProvider);
@@ -254,7 +255,7 @@ class _TvSettingsScreenState extends ConsumerState<TvSettingsScreen> {
         child: _TvSettingsTile(
           icon: Icons.schedule,
           title: prayer,
-          subtitle: '$offset min after adhan',
+          subtitle: l.tvIqamahMinAfter(offset),
           trailing: _CompactSlider(
             value: offset.toDouble(),
             min: 0,
@@ -269,52 +270,52 @@ class _TvSettingsScreenState extends ConsumerState<TvSettingsScreen> {
     }).toList();
   }
 
-  String _screensaverModeLabel(String mode) {
+  String _screensaverModeLabel(AppLocalizations l, String mode) {
     switch (mode) {
       case 'photo':
-        return 'Photos';
+        return l.tvScreensaverPhotos;
       case 'pattern':
-        return 'Geometric pattern';
+        return l.tvScreensaverPattern;
       case 'both':
-        return 'Photos + pattern';
+        return l.tvScreensaverBoth;
       default:
-        return 'Photos';
+        return l.tvScreensaverPhotos;
     }
   }
 
-  String _screensaverCategoryLabel(String category) {
+  String _screensaverCategoryLabel(AppLocalizations l, String category) {
     switch (category) {
       case 'masjid-exterior':
-        return 'Masjids';
+        return l.tvCategoryMasjids;
       case 'masjid-interior':
-        return 'Interiors';
+        return l.tvCategoryInteriors;
       case 'geometric':
-        return 'Geometric';
+        return l.tvCategoryGeometric;
       case 'calligraphy':
-        return 'Calligraphy';
+        return l.tvCategoryCalligraphy;
       case 'landscape':
-        return 'Landscapes';
+        return l.tvCategoryLandscapes;
       case 'ramadan':
-        return 'Ramadan';
+        return l.tvCategoryRamadan;
       case '':
       default:
-        return 'All categories';
+        return l.tvCategoryAll;
     }
   }
 
   void _showScreensaverModeDialog(
-      BuildContext context, TvSettingsNotifier tvNotifier) {
+      BuildContext context, AppLocalizations l, TvSettingsNotifier tvNotifier) {
     final options = [
-      ('photo', 'Photos'),
-      ('pattern', 'Geometric pattern'),
-      ('both', 'Photos + pattern'),
+      ('photo', l.tvScreensaverPhotos),
+      ('pattern', l.tvScreensaverPattern),
+      ('both', l.tvScreensaverBoth),
     ];
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: PrayCalcColors.surface,
-        title: const Text('Screensaver Background',
-            style: TextStyle(color: Colors.white, fontSize: 28)),
+        title: Text(l.tvScreensaverBg,
+            style: const TextStyle(color: Colors.white, fontSize: 28)),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: options.map((opt) {
@@ -335,22 +336,22 @@ class _TvSettingsScreenState extends ConsumerState<TvSettingsScreen> {
   }
 
   void _showScreensaverCategoryDialog(
-      BuildContext context, TvSettingsNotifier tvNotifier) {
+      BuildContext context, AppLocalizations l, TvSettingsNotifier tvNotifier) {
     final options = [
-      ('', 'All categories'),
-      ('masjid-exterior', 'Masjids'),
-      ('masjid-interior', 'Interiors'),
-      ('geometric', 'Geometric'),
-      ('calligraphy', 'Calligraphy'),
-      ('landscape', 'Landscapes'),
-      ('ramadan', 'Ramadan'),
+      ('', l.tvCategoryAll),
+      ('masjid-exterior', l.tvCategoryMasjids),
+      ('masjid-interior', l.tvCategoryInteriors),
+      ('geometric', l.tvCategoryGeometric),
+      ('calligraphy', l.tvCategoryCalligraphy),
+      ('landscape', l.tvCategoryLandscapes),
+      ('ramadan', l.tvCategoryRamadan),
     ];
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: PrayCalcColors.surface,
-        title: const Text('Photo Category',
-            style: TextStyle(color: Colors.white, fontSize: 28)),
+        title: Text(l.tvPhotoCategoryTitle,
+            style: const TextStyle(color: Colors.white, fontSize: 28)),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: options.map((opt) {
@@ -382,21 +383,22 @@ class _TvSettingsScreenState extends ConsumerState<TvSettingsScreen> {
     ('Soomaali', 'so'),
   ];
 
-  String _languageLabel(String? locale) {
+  String _languageLabel(AppLocalizations l, String? locale) {
+    if (locale == null) return l.tvSystemDefault;
     return _supportedLocales
         .firstWhere((e) => e.$2 == locale,
             orElse: () => _supportedLocales.first)
         .$1;
   }
 
-  void _showLanguageDialog(BuildContext context) {
+  void _showLanguageDialog(BuildContext context, AppLocalizations l) {
     final current = ref.read(settingsProvider).locale;
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: PrayCalcColors.surface,
-        title: const Text('Language',
-            style: TextStyle(color: Colors.white, fontSize: 28)),
+        title: Text(l.commonLanguage,
+            style: const TextStyle(color: Colors.white, fontSize: 28)),
         content: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -424,6 +426,7 @@ class _TvSettingsScreenState extends ConsumerState<TvSettingsScreen> {
     required TextEditingController controller,
     required ValueChanged<String> onSave,
   }) {
+    final l = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -435,7 +438,7 @@ class _TvSettingsScreenState extends ConsumerState<TvSettingsScreen> {
           autofocus: true,
           style: const TextStyle(color: Colors.white, fontSize: 24),
           decoration: InputDecoration(
-            hintText: 'Enter $title',
+            hintText: l.tvEnterHint(title),
             hintStyle: const TextStyle(color: Colors.white38, fontSize: 24),
             enabledBorder: const UnderlineInputBorder(
               borderSide: BorderSide(color: PrayCalcColors.mid),
@@ -448,16 +451,16 @@ class _TvSettingsScreenState extends ConsumerState<TvSettingsScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(),
-            child: const Text('Cancel',
-                style: TextStyle(color: Colors.white54, fontSize: 22)),
+            child: Text(l.commonCancel,
+                style: const TextStyle(color: Colors.white54, fontSize: 22)),
           ),
           TextButton(
             onPressed: () {
               onSave(controller.text.trim());
               Navigator.of(ctx).pop();
             },
-            child: const Text('Save',
-                style: TextStyle(color: PrayCalcColors.mid, fontSize: 22)),
+            child: Text(l.commonSave,
+                style: const TextStyle(color: PrayCalcColors.mid, fontSize: 22)),
           ),
         ],
       ),

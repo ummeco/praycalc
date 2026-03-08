@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:praycalc_app/l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/providers/notification_configs_provider.dart';
@@ -12,6 +13,7 @@ class NotificationSettingsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l = AppLocalizations.of(context)!;
     final configs = ref.watch(notificationConfigsProvider);
     final settings = ref.watch(settingsProvider);
 
@@ -25,14 +27,14 @@ class NotificationSettingsScreen extends ConsumerWidget {
     );
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Notifications & Adhan')),
+      appBar: AppBar(title: Text(l.notifSettingsTitle)),
       body: ListView(
         children: [
           // ── Global adhan defaults ──────────────────────────────
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
             child: Text(
-              'Default Adhan',
+              l.notifDefaultAdhan,
               style: TextStyle(
                 color: PrayCalcColors.light,
                 fontSize: 12,
@@ -42,9 +44,10 @@ class NotificationSettingsScreen extends ConsumerWidget {
             ),
           ),
           _AdhanPickerTile(
-            label: 'Fajr Adhan',
-            subtitle: 'Played at Fajr prayer time',
+            label: l.notifFajrAdhan,
+            subtitle: l.notifFajrAdhanSubtitle,
             value: fajrType,
+            previewTooltip: l.notifPreview,
             // Fajr-appropriate voices only: show all but filter beep/silent to bottom
             onChanged: (t) {
               ref.read(settingsProvider.notifier).setAdhanFajr(t.name);
@@ -52,9 +55,10 @@ class NotificationSettingsScreen extends ConsumerWidget {
             },
           ),
           _AdhanPickerTile(
-            label: 'Regular Adhan',
-            subtitle: 'Played at Dhuhr, Asr, Maghrib, Isha',
+            label: l.notifRegularAdhan,
+            subtitle: l.notifRegularAdhanSubtitle,
             value: regularType,
+            previewTooltip: l.notifPreview,
             onChanged: (t) {
               ref.read(settingsProvider.notifier).setAdhanRegular(t.name);
               AdhanService.instance.play(t);
@@ -66,7 +70,7 @@ class NotificationSettingsScreen extends ConsumerWidget {
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
             child: Text(
-              'Per-Prayer Settings',
+              l.notifPerPrayerSettings,
               style: TextStyle(
                 color: PrayCalcColors.light,
                 fontSize: 12,
@@ -95,12 +99,14 @@ class _AdhanPickerTile extends StatelessWidget {
     required this.label,
     required this.subtitle,
     required this.value,
+    required this.previewTooltip,
     required this.onChanged,
   });
 
   final String label;
   final String subtitle;
   final AdhanType value;
+  final String previewTooltip;
   final void Function(AdhanType) onChanged;
 
   @override
@@ -129,7 +135,7 @@ class _AdhanPickerTile extends StatelessWidget {
             icon: Icon(Icons.play_circle_outline_rounded,
                 color: PrayCalcColors.mid, size: 28),
             onPressed: () => AdhanService.instance.play(value),
-            tooltip: 'Preview',
+            tooltip: previewTooltip,
           ),
         ],
       ),
@@ -144,11 +150,12 @@ class _PrayerNotifTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final isEnabled = config.mode != PrayerNotificationMode.off;
     return ExpansionTile(
       title: Text(config.prayerName,
           style: const TextStyle(fontWeight: FontWeight.bold)),
-      subtitle: Text(_modeLabel(config.mode)),
+      subtitle: Text(_modeLabel(l, config.mode)),
       trailing: Switch(
         value: isEnabled,
         onChanged: (v) {
@@ -162,7 +169,7 @@ class _PrayerNotifTile extends StatelessWidget {
       children: [
         if (config.mode != PrayerNotificationMode.off) ...[
           ListTile(
-            title: const Text('Adhan'),
+            title: Text(l.notifAdhanLabel),
             trailing: DropdownButton<AdhanType>(
               value: config.adhanType,
               items: AdhanType.values
@@ -177,7 +184,7 @@ class _PrayerNotifTile extends StatelessWidget {
             ),
           ),
           ListTile(
-            title: Text('Reminder: ${config.minutesBefore} min before'),
+            title: Text(l.notifReminderMinBefore(config.minutesBefore)),
             subtitle: Slider(
               value: config.minutesBefore.toDouble(),
               min: 0,
@@ -188,7 +195,7 @@ class _PrayerNotifTile extends StatelessWidget {
             ),
           ),
           ListTile(
-            title: Text('Volume: ${(config.volume * 100).round()}%'),
+            title: Text(l.notifVolumePct((config.volume * 100).round())),
             subtitle: Slider(
               value: config.volume,
               min: 0,
@@ -197,7 +204,7 @@ class _PrayerNotifTile extends StatelessWidget {
             ),
           ),
           ListTile(
-            title: const Text('Test adhan'),
+            title: Text(l.notifTestAdhan),
             trailing: IconButton(
               icon: const Icon(Icons.play_arrow),
               onPressed: () => AdhanService.instance
@@ -209,16 +216,16 @@ class _PrayerNotifTile extends StatelessWidget {
     );
   }
 
-  String _modeLabel(PrayerNotificationMode m) {
+  String _modeLabel(AppLocalizations l, PrayerNotificationMode m) {
     switch (m) {
       case PrayerNotificationMode.off:
-        return 'Off';
+        return l.notifModeOff;
       case PrayerNotificationMode.reminderOnly:
-        return 'Reminder only';
+        return l.notifModeReminderOnly;
       case PrayerNotificationMode.arrival:
-        return 'At prayer time';
+        return l.notifModeArrival;
       case PrayerNotificationMode.both:
-        return 'Reminder + arrival';
+        return l.notifModeBoth;
     }
   }
 }
