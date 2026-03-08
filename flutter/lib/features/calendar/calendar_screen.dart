@@ -240,15 +240,13 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                 if (city != null) ...[
                   IconButton(
                     icon: const Icon(Icons.calendar_view_month, size: 20),
-                    // TODO: i18n — calYearlyCalendarTooltip
-                    tooltip: 'Yearly calendar',
+                    tooltip: l.calYearlyTooltip,
                     onPressed: () => context.push(Routes.yearlyCalendar),
                     visualDensity: VisualDensity.compact,
                   ),
                   IconButton(
                     icon: const Icon(Icons.event_note, size: 20),
-                    // TODO: i18n — calExportIcsTooltip
-                    tooltip: 'Export .ics',
+                    tooltip: l.calExportIcsTooltip,
                     onPressed: () {
                       final ical = ICalService.generateIcal(
                         city: city,
@@ -522,14 +520,6 @@ List<String> _hijriMonthsL10n(AppLocalizations l) => [
   l.hijriMuharram, l.hijriSafar, l.hijriRabiAlAwwal, l.hijriRabiAlThani,
   l.hijriJumadaAlAwwal, l.hijriJumadaAlThani, l.hijriRajab, l.hijriShaban,
   l.hijriRamadan, l.hijriShawwal, l.hijriDhulQidah, l.hijriDhulHijjah,
-];
-
-/// Localized short Gregorian month names (index 0 = empty placeholder).
-List<String> _monthNamesShortL10n(AppLocalizations l) => [
-  '',
-  l.monthJan, l.monthFeb, l.monthMar, l.monthApr,
-  l.monthMay, l.monthJun, l.monthJul, l.monthAug,
-  l.monthSep, l.monthOct, l.monthNov, l.monthDec,
 ];
 
 String _monthLabelL10n(AppLocalizations l, DateTime d) =>
