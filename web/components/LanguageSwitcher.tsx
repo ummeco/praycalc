@@ -15,6 +15,17 @@ const LOCALES = [
   { code: "de", dir: "ltr" },
   { code: "es", dir: "ltr" },
   { code: "hi", dir: "ltr" },
+  { code: "ms", dir: "ltr" },
+  { code: "fa", dir: "rtl" },
+  { code: "ps", dir: "rtl" },
+  { code: "sw", dir: "ltr" },
+  { code: "ha", dir: "ltr" },
+  { code: "uz", dir: "ltr" },
+  { code: "ku", dir: "rtl" },
+  { code: "th", dir: "ltr" },
+  { code: "zh", dir: "ltr" },
+  { code: "ru", dir: "ltr" },
+  { code: "pt", dir: "ltr" },
 ] as const;
 
 export default function LanguageSwitcher({ variant = "header" }: { variant?: "header" | "footer" }) {

@@ -98,6 +98,8 @@
 
   "settingsTitle": "সেটিংস",
   "settingsSectionPrayerCalc": "নামাজ গণনা",
+  "settingsCalcMethod": "গণনা পদ্ধতি",
+  "settingsCalcMethodAuto": "স্বয়ংক্রিয় (গতিশীল)",
   "settingsHanafiAsr": "হানাফি আসর",
   "settingsHanafiAsrSubtitle": "ছায়া গুণক ২x (দেরিতে আসরের সময়)",
   "settingsSectionDisplay": "প্রদর্শন",
@@ -679,5 +681,41 @@
   "pinCity": "পিন",
   "pinMaxReached": "সর্বোচ্চ ৫টি পিন করা শহর। আরও পেতে Ummat+-এ আপগ্রেড করুন।",
   "pinCityUnpinned": "{city} আনপিন করা হয়েছে",
-  "pinUndo": "পূর্বাবস্থা"
+  "pinUndo": "পূর্বাবস্থা",
+
+  "smartHomeDevices": "ডিভাইস",
+  "smartHomeAddDevice": "ডিভাইস যোগ করুন",
+  "smartHomeDeleteDevice": "মুছুন",
+  "smartHomeDeleteDeviceConfirm": "এই ডিভাইসটি সরাবেন?",
+  "smartHomeDeviceOnline": "অনলাইন",
+  "smartHomeDeviceOffline": "অফলাইন",
+  "smartHomeDeviceLastSeen": "সর্বশেষ দেখা: {time}",
+  "@smartHomeDeviceLastSeen": {
+    "placeholders": {
+      "time": { "type": "String" }
+    }
+  },
+  "smartHomeDeviceName": "ডিভাইসের নাম",
+  "smartHomeDeviceType": "ডিভাইসের ধরন",
+  "smartHomeDeviceTypeTv": "টিভি",
+  "smartHomeDeviceTypeSpeaker": "স্পিকার",
+  "smartHomeDeviceTypeWatch": "ঘড়ি",
+  "smartHomeDeviceTypeDesktop": "ডেস্কটপ",
+  "smartHomeDeviceTypeOther": "অন্যান্য",
+  "smartHomeDeviceAdhan": "আযানের বিজ্ঞপ্তি",
+  "smartHomeDeviceAdhanDesc": "এই ডিভাইসে আযানের সতর্কতা পান",
+  "smartHomeDeviceVolume": "ভলিউম",
+  "smartHomeDeviceAudioType": "অডিও ধরন",
+  "smartHomeDeviceEnabledPrayers": "সক্রিয় নামায",
+  "smartHomeDeviceSettings": "ডিভাইস সেটিংস",
+  "smartHomeTesting": "পরীক্ষা হচ্ছে...",
+  "smartHomeTestSuccess": "সংযোগ যাচাই হয়েছে",
+  "smartHomeTestFailed": "সংযোগ পরীক্ষা ব্যর্থ",
+  "smartHomePairTv": "টিভি যুক্ত করুন",
+  "smartHomePairingTv": "টিভি নিবন্ধন হচ্ছে...",
+  "smartHomePairTvSuccess": "টিভি সফলভাবে যুক্ত হয়েছে",
+  "smartHomePairTvFailed": "টিভি যুক্তকরণ ব্যর্থ",
+  "smartHomeLoadingDevices": "ডিভাইস লোড হচ্ছে...",
+  "smartHomeLoadingIntegrations": "ইন্টিগ্রেশন লোড হচ্ছে...",
+  "smartHomeServiceUnavailable": "স্মার্ট হোম সেবা বর্তমানে অনুপলব্ধ। পরে আবার চেষ্টা করুন।"
 }

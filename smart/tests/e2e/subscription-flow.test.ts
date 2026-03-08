@@ -43,11 +43,11 @@ describe('Subscription Lifecycle', () => {
         .query({ lat: 40.7128, lng: -74.006, date: '2026-03-04', method: 'isna' });
 
       expect(res.status).toBe(200);
-      expect(res.body).toHaveProperty('fajr');
-      expect(res.body).toHaveProperty('dhuhr');
-      expect(res.body).toHaveProperty('asr');
-      expect(res.body).toHaveProperty('maghrib');
-      expect(res.body).toHaveProperty('isha');
+      expect(res.body).toHaveProperty('prayers.fajr');
+      expect(res.body).toHaveProperty('prayers.dhuhr');
+      expect(res.body).toHaveProperty('prayers.asr');
+      expect(res.body).toHaveProperty('prayers.maghrib');
+      expect(res.body).toHaveProperty('prayers.isha');
     });
 
     it('authenticated free user can query prayer times', async () => {
@@ -58,7 +58,7 @@ describe('Subscription Lifecycle', () => {
         .query({ lat: 40.7128, lng: -74.006, date: '2026-03-04', method: 'isna' });
 
       expect(res.status).toBe(200);
-      expect(res.body).toHaveProperty('fajr');
+      expect(res.body).toHaveProperty('prayers.fajr');
     });
 
     it('free user cannot access billing portal', async () => {

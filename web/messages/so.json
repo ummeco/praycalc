@@ -153,7 +153,18 @@
     "so": "Soomaali",
     "de": "Deutsch",
     "es": "Español",
-    "hi": "हिन्दी"
+    "hi": "हिन्दी",
+    "ms": "Bahasa Melayu",
+    "fa": "فارسی",
+    "ps": "پښتو",
+    "sw": "Kiswahili",
+    "ha": "Hausa",
+    "uz": "Oʻzbek",
+    "ku": "کوردی",
+    "th": "ไทย",
+    "zh": "中文",
+    "ru": "Русский",
+    "pt": "Português"
   },
   "footer": {
     "description": "Wakhtiyada salaadda Islaamka ee sax ah ee magaalo kasta oo adduunka ah. Habab xisaabin oo badan, taqwiimka Hijri, marxaladaha dayaxa, iyo jihada Qiblada. Bilaash, gaar ah, xayeysiis la'aan.",

@@ -153,7 +153,18 @@
     "so": "Soomaali",
     "de": "Deutsch",
     "es": "Español",
-    "hi": "हिन्दी"
+    "hi": "हिन्दी",
+    "ms": "Bahasa Melayu",
+    "fa": "فارسی",
+    "ps": "پښتو",
+    "sw": "Kiswahili",
+    "ha": "Hausa",
+    "uz": "Oʻzbek",
+    "ku": "کوردی",
+    "th": "ไทย",
+    "zh": "中文",
+    "ru": "Русский",
+    "pt": "Português"
   },
   "footer": {
     "description": "Horarios de oración islámicos precisos para cualquier ciudad del mundo. Múltiples métodos de cálculo, calendario Hijri, fases lunares y dirección de la Qibla. Gratuito, privado y sin anuncios.",

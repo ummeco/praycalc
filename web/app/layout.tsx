@@ -96,7 +96,7 @@ export default async function RootLayout({
   const messages = await getMessages();
 
   return (
-    <html lang={locale} dir={locale === 'ar' || locale === 'ur' ? 'rtl' : 'ltr'}>
+    <html lang={locale} dir={['ar', 'ur', 'fa', 'ps', 'ku'].includes(locale) ? 'rtl' : 'ltr'}>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >

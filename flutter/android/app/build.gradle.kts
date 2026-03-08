@@ -67,6 +67,7 @@ android {
 
 dependencies {
     implementation("androidx.glance:glance-appwidget:1.1.0")
+    implementation("com.android.billingclient:billing:7.0.0")
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
 }
 

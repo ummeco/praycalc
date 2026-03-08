@@ -1,0 +1,1003 @@
+{
+  "@@locale": "zh",
+
+  "appTitle": "PrayCalc",
+
+  "prayerFajr": "晨礼",
+  "prayerSunrise": "日出",
+  "prayerDhuhr": "晌礼",
+  "prayerAsr": "晡礼",
+  "prayerMaghrib": "昏礼",
+  "prayerIsha": "宵礼",
+  "prayerQiyam": "夜间拜",
+  "prayerSuhoor": "封斋饭",
+  "prayerIftar": "开斋饭",
+
+  "hijriMuharram": "穆哈拉姆月",
+  "hijriSafar": "赛法尔月",
+  "hijriRabiAlAwwal": "赖比尔·敖外鲁月",
+  "hijriRabiAlThani": "赖比尔·阿赫尔月",
+  "hijriJumadaAlAwwal": "主马达·敖外鲁月",
+  "hijriJumadaAlThani": "主马达·阿赫尔月",
+  "hijriRajab": "赖哲卜月",
+  "hijriShaban": "舍尔邦月",
+  "hijriRamadan": "莱麦丹月",
+  "hijriShawwal": "闪瓦鲁月",
+  "hijriDhulQidah": "都尔喀尔德月",
+  "hijriDhulHijjah": "都尔黑哲月",
+
+  "monthJan": "1月",
+  "monthFeb": "2月",
+  "monthMar": "3月",
+  "monthApr": "4月",
+  "monthMay": "5月",
+  "monthJun": "6月",
+  "monthJul": "7月",
+  "monthAug": "8月",
+  "monthSep": "9月",
+  "monthOct": "10月",
+  "monthNov": "11月",
+  "monthDec": "12月",
+
+  "monthJanuary": "一月",
+  "monthFebruary": "二月",
+  "monthMarch": "三月",
+  "monthApril": "四月",
+  "monthMayFull": "五月",
+  "monthJune": "六月",
+  "monthJuly": "七月",
+  "monthAugust": "八月",
+  "monthSeptember": "九月",
+  "monthOctober": "十月",
+  "monthNovember": "十一月",
+  "monthDecember": "十二月",
+
+  "dayMonShort": "周一",
+  "dayTueShort": "周二",
+  "dayWedShort": "周三",
+  "dayThuShort": "周四",
+  "dayFriShort": "周五",
+  "daySatShort": "周六",
+  "daySunShort": "周日",
+
+  "dayMonday": "星期一",
+  "dayTuesday": "星期二",
+  "dayWednesday": "星期三",
+  "dayThursday": "星期四",
+  "dayFriday": "星期五",
+  "daySaturday": "星期六",
+  "daySunday": "星期日",
+
+  "daySuChart": "日",
+  "dayMoChart": "一",
+  "dayTuChart": "二",
+  "dayWeChart": "三",
+  "dayThChart": "四",
+  "dayFrChart": "五",
+  "daySaChart": "六",
+
+  "chooseCityLabel": "选择城市",
+  "setCityFab": "设置城市",
+  "prayerTimesError": "无法计算礼拜时间。\n{error}",
+  "@prayerTimesError": {
+    "placeholders": {
+      "error": { "type": "Object" }
+    }
+  },
+  "prayerCountdownLabel": "{prayer} 还有",
+  "@prayerCountdownLabel": {
+    "placeholders": {
+      "prayer": { "type": "String" }
+    }
+  },
+  "ramadanMubarak": "莱麦丹吉庆",
+  "ramadanDayProgress": "第 {day} 天 / 30",
+  "@ramadanDayProgress": {
+    "placeholders": {
+      "day": { "type": "int" }
+    }
+  },
+  "lastTenNights": "最后十夜",
+  "laylatulQadr": "盖德尔夜",
+
+  "homeSuffixAH": "伊历",
+  "homeSuffixCE": "公元",
+  "homeNoCitySelected": "未选择城市",
+  "homeNoCityHint": "点击上方搜索城市或启用GPS。",
+  "homeCouldNotCalc": "无法计算礼拜时间。",
+  "homeQasr": "缩短",
+  "homeActionMonthlyTimes": "月度\n时间表",
+  "homeActionDuaDhikr": "祈祷\n与赞念",
+  "homeActionPrayerStats": "礼拜\n统计",
+  "homePolarBanner": "在此期间，您所在位置有 {count} 个礼拜时间无法计算（极昼/极夜）。请在设置中尝试最近纬度估算。",
+  "@homePolarBanner": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "settingsTitle": "设置",
+  "settingsSectionPrayerCalc": "礼拜计算",
+  "settingsCalcMethod": "计算方法",
+  "settingsCalcMethodAuto": "自动（动态）",
+  "settingsHanafiAsr": "哈乃斐晡礼",
+  "settingsHanafiAsrSubtitle": "影子系数2倍（较晚的晡礼时间）",
+  "settingsSectionDisplay": "显示",
+  "settings24hClock": "24小时制",
+  "settingsFollowSystemTheme": "跟随系统主题",
+  "settingsDarkMode": "深色模式",
+  "settingsSectionNotifications": "通知",
+  "settingsPrayerNotifications": "礼拜通知",
+  "settingsPrayerNotificationsSubtitle": "宣礼、提醒和每次礼拜设置",
+  "settingsPrayerAgendas": "礼拜日程",
+  "settingsPrayerAgendasSubtitle": "基于礼拜时间的自定义提醒",
+  "settingsAccount": "账户",
+  "settingsSignInToSync": "登录以同步",
+  "settingsSignInToSyncSubtitle": "在各设备间保存数据",
+  "settingsHomeScreen": "主屏幕",
+  "settingsSkyGradient": "天空渐变背景",
+  "settingsSkyGradientSubtitle": "根据时间变化的动态天空色彩",
+  "settingsWeatherGradient": "天气色调渐变",
+  "settingsWeatherGradientSubtitle": "根据当地天气调整天空色彩",
+  "settingsCountdownAnimation": "倒计时动画",
+  "settingsCountdownAnimationSubtitle": "下次礼拜的呼吸环动画",
+  "settingsPrayerTracking": "礼拜追踪",
+  "settingsTrackMyPrayers": "追踪我的礼拜",
+  "settingsTrackMyPrayersSubtitle": "记录每天完成的礼拜",
+  "settingsPrayerStats": "礼拜统计",
+  "settingsPrayerStatsSubtitle": "连续记录、每周和每月图表",
+  "settingsJumuahKahf": "主麻日山洞章提醒",
+  "settingsJumuahKahfSubtitle": "每周五提醒阅读山洞章",
+  "settingsTravel": "旅行",
+  "settingsTravelMode": "旅行模式",
+  "settingsTravelModeSubtitle": "自动检测离家状态并调整礼拜",
+  "settingsHomeLocation": "家庭位置",
+  "settingsHomeLocationNotSet": "未设置 — 点击使用当前位置",
+  "settingsClearHomeLocation": "清除家庭位置",
+  "settingsTravelRulings": "旅行礼拜规则",
+  "settingsTravelRulingsSubtitle": "缩短、合并和旅行者指南",
+  "settingsSmartHome": "智能家居",
+  "settingsSmartHomeIntegrations": "智能家居集成",
+  "settingsSmartHomeIntegrationsSubtitle": "HomeKit、Google Home、Alexa、Home Assistant",
+  "settingsTvDisplay": "电视显示",
+  "settingsTvHome": "电视主屏显示",
+  "settingsTvHomeSubtitle": "电视全屏礼拜时钟",
+  "settingsMasjidDisplay": "清真寺显示",
+  "settingsMasjidDisplaySubtitle": "清真寺屏幕宣礼/起拜表",
+  "settingsTvSettings": "电视设置",
+  "settingsTvSettingsSubtitle": "清真寺模式、起拜偏移、环境模式",
+  "settingsAboutPrayCalc": "关于 PrayCalc",
+
+  "syncSynced": "已同步",
+  "syncSyncing": "同步中...",
+  "syncOffline": "离线",
+  "syncError": "同步错误",
+
+  "notifSettingsTitle": "通知与宣礼",
+  "notifAdhanLabel": "宣礼",
+  "notifReminderMinBefore": "提醒：提前 {minutes} 分钟",
+  "@notifReminderMinBefore": {
+    "placeholders": {
+      "minutes": { "type": "int" }
+    }
+  },
+  "notifVolumePct": "音量：{pct}%",
+  "@notifVolumePct": {
+    "placeholders": {
+      "pct": { "type": "int" }
+    }
+  },
+  "notifTestAdhan": "测试宣礼",
+  "notifModeOff": "关闭",
+  "notifModeReminderOnly": "仅提醒",
+  "notifModeArrival": "礼拜时间到时",
+  "notifModeBoth": "提醒 + 到时",
+
+  "citySearchHint": "搜索城市…",
+  "citySearchDetectTooltip": "检测我的位置",
+  "citySearchNoCityGps": "无法从GPS检测城市。",
+  "citySearchPermissionDenied": "位置权限被拒绝。请手动搜索。",
+  "citySearchNoResults": "未找到城市。",
+  "citySearchStartTyping": "开始输入以搜索…",
+
+  "agendasTitle": "礼拜日程",
+  "agendasEmpty": "还没有日程。\n点击 + 添加与礼拜关联的提醒。",
+  "agendasUndo": "撤销",
+  "agendasRemoved": "已移除 {label}",
+  "@agendasRemoved": {
+    "placeholders": {
+      "label": { "type": "String" }
+    }
+  },
+
+  "agendaNewTitle": "新建日程",
+  "agendaEditTitle": "编辑日程",
+  "agendaSave": "保存",
+  "agendaLabelEmpty": "标签不能为空",
+  "agendaLabelField": "标签",
+  "agendaLabelHint": "例如：晨礼起床",
+  "agendaPrayerSection": "礼拜",
+  "agendaTimeOffsetSection": "时间偏移",
+  "agendaOffsetAtPrayerTime": "礼拜时间到时",
+  "agendaOffsetMinBefore": "提前 {minutes} 分钟",
+  "@agendaOffsetMinBefore": {
+    "placeholders": {
+      "minutes": { "type": "int" }
+    }
+  },
+  "agendaOffsetMinAfter": "延后 {minutes} 分钟",
+  "@agendaOffsetMinAfter": {
+    "placeholders": {
+      "minutes": { "type": "int" }
+    }
+  },
+  "agendaRepeatSection": "重复",
+  "agendaNotifTypeSection": "通知类型",
+  "agendaNotifSilent": "静音",
+  "agendaNotifSound": "声音",
+  "agendaNotifVibrate": "震动",
+  "agendaDayM": "一",
+  "agendaDayT": "二",
+  "agendaDayW": "三",
+  "agendaDayF": "五",
+  "agendaDayS": "六",
+
+  "moonTitle": "月亮与伊历",
+  "moonIlluminated": "亮度 {pct}%",
+  "@moonIlluminated": {
+    "placeholders": {
+      "pct": { "type": "int" }
+    }
+  },
+  "moonFullTonight": "今晚满月！",
+  "moonNextTomorrow": "下次满月在明天",
+  "moonNextDays": "下次满月在 {days} 天后",
+  "@moonNextDays": {
+    "placeholders": {
+      "days": { "type": "int" }
+    }
+  },
+  "moonAge": "月龄：{age} 天",
+  "@moonAge": {
+    "placeholders": {
+      "age": { "type": "String" }
+    }
+  },
+  "moonPhaseNewMoon": "新月",
+  "moonPhaseWaxingCrescent": "蛾眉月",
+  "moonPhaseFirstQuarter": "上弦月",
+  "moonPhaseWaxingGibbous": "盈凸月",
+  "moonPhaseFullMoon": "满月",
+  "moonPhaseWaningGibbous": "亏凸月",
+  "moonPhaseLastQuarter": "下弦月",
+  "moonPhaseWaningCrescent": "残月",
+  "moonHilalVisibility": "下次新月可见性",
+  "moonRegionMiddleEast": "中东",
+  "moonRegionWestAfrica": "西非",
+  "moonRegionSouthAsia": "南亚",
+  "moonRegionEurope": "欧洲",
+  "moonRegionAmericas": "美洲",
+  "moonVisible": "可见",
+  "moonNotVisible": "不可见",
+  "moonPossible": "可能可见",
+  "moonUpcomingDates": "即将到来的伊斯兰日期",
+  "hijriTodayLabel": "今天的伊历日期",
+  "ramadanBeginsLabel": "伊历 {year} 年莱麦丹月开始",
+  "@ramadanBeginsLabel": {
+    "placeholders": {
+      "year": { "type": "int" }
+    }
+  },
+  "ramadanDaysAway": "还有 {days} 天",
+  "@ramadanDaysAway": {
+    "placeholders": {
+      "days": { "type": "int" }
+    }
+  },
+  "moonLunarCycle": "月亮周期",
+  "moonDayOfCycle": "第 {day} 天 / ~29.5",
+  "@moonDayOfCycle": {
+    "placeholders": {
+      "day": { "type": "int" }
+    }
+  },
+  "moonHilalSightingForecast": "新月观测预报",
+  "moonHilalVisibilityMap": "新月可见性地图",
+  "moonDayN": "第 {day} 天",
+  "@moonDayN": {
+    "placeholders": {
+      "day": { "type": "int" }
+    }
+  },
+  "moonGlobalSighting": "全球观测",
+  "moonZoneNakedEye": "肉眼可见",
+  "moonZoneBinoculars": "望远镜",
+  "moonZoneVeryDifficult": "非常困难",
+  "moonZoneNotVisible": "不可见",
+  "moonMonthPrediction29": "伊历 {year} 年{month}可能为29天。预计第29天可看到新月，因沙安拉。",
+  "@moonMonthPrediction29": {
+    "placeholders": {
+      "month": { "type": "String" },
+      "year": { "type": "int" }
+    }
+  },
+  "moonMonthPrediction30": "伊历 {year} 年{month}可能为30天。第29天不太可能看到新月，月份将满30天。",
+  "@moonMonthPrediction30": {
+    "placeholders": {
+      "month": { "type": "String" },
+      "year": { "type": "int" }
+    }
+  },
+  "moonUmmAlQura": "乌姆库拉",
+  "moonSaudiArabia": "沙特阿拉伯",
+  "moonFCNACalc": "FCNA / 计算",
+  "moonNorthAmerica": "北美洲",
+  "moonNDays": "{days} 天",
+  "@moonNDays": {
+    "placeholders": {
+      "days": { "type": "int" }
+    }
+  },
+  "moonStarts": "{month} 开始：",
+  "@moonStarts": {
+    "placeholders": {
+      "month": { "type": "String" }
+    }
+  },
+  "moonMoonAgeAtSunset": "日落时月龄：{hours} 小时",
+  "@moonMoonAgeAtSunset": {
+    "placeholders": {
+      "hours": { "type": "String" }
+    }
+  },
+  "moon7DayLunarCalendar": "7天月历",
+  "moonUpcomingIslamicEvents": "即将到来的伊斯兰事件",
+  "moonTodayLabel": "今天",
+  "moonTomorrowLabel": "明天",
+
+  "calDateCol": "日期",
+  "calHijriCol": "伊历",
+  "calFajrCol": "晨礼",
+  "calSunriseCol": "日出",
+  "calDhuhrCol": "晌礼",
+  "calAsrCol": "晡礼",
+  "calMaghribCol": "昏礼",
+  "calIshaCol": "宵礼",
+  "calNoCityText": "请先设置城市\n以查看礼拜日历。",
+  "calShareTooltip": "分享日历",
+  "calPrevMonthTooltip": "上个月",
+  "calNextMonthTooltip": "下个月",
+  "calExportHeader": "PrayCalc — {month}",
+  "@calExportHeader": {
+    "placeholders": {
+      "month": { "type": "String" }
+    }
+  },
+  "calExportSubject": "礼拜时间 — {month}",
+  "@calExportSubject": {
+    "placeholders": {
+      "month": { "type": "String" }
+    }
+  },
+
+  "qiblaTitle": "朝向",
+  "qiblaSwitchToCompass": "切换到指南针",
+  "qiblaSwitchToAR": "切换到AR相机",
+  "qiblaNoCityText": "请先设置城市\n以计算朝向。",
+  "qiblaCompassUnavailable": "此设备没有指南针传感器。",
+  "qiblaCalibrate": "校准：将手机画8字形。",
+  "qiblaDegreesFromNorth": "北偏 {degrees}°",
+  "@qiblaDegreesFromNorth": {
+    "placeholders": {
+      "degrees": { "type": "int" }
+    }
+  },
+  "qiblaFrom": "从 {city}",
+  "@qiblaFrom": {
+    "placeholders": {
+      "city": { "type": "String" }
+    }
+  },
+  "qiblaDistKm": "距天房 {dist} 公里",
+  "@qiblaDistKm": {
+    "placeholders": {
+      "dist": { "type": "int" }
+    }
+  },
+  "qiblaDistThousandKm": "距天房 {dist}K 公里",
+  "@qiblaDistThousandKm": {
+    "placeholders": {
+      "dist": { "type": "String" }
+    }
+  },
+  "qiblaFacingQibla": "已朝向朝拜方向 ✓",
+
+  "tasbeehTitle": "赞念珠",
+  "tasbeehResetTooltip": "重置",
+  "tasbeehTapToSwitch": "点击标签切换",
+  "tasbeehTapToCount": "点击任意处计数",
+  "tasbeehResetDialogTitle": "重置计数器？",
+  "tasbeehResetDialogContent": "这将把当前计数重置为零。",
+  "tasbeehCancel": "取消",
+  "tasbeehReset": "重置",
+  "tasbeehTodayDhikr": "今天：{count} 次赞念",
+  "@tasbeehTodayDhikr": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "tasbeehLast7Days": "过去7天",
+  "tasbeehNoHistory": "还没有记录 — 开始计数吧！",
+  "tasbeehComplete": "赞念完成！{count} 次",
+  "@tasbeehComplete": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "tasbeehPresetComplete": "✓ {label} × {target}",
+  "@tasbeehPresetComplete": {
+    "placeholders": {
+      "label": { "type": "String" },
+      "target": { "type": "int" }
+    }
+  },
+
+  "smartHomeTitle": "智能家居",
+  "smartHomeSubtitle": "将设备与礼拜时间连接",
+  "smartHomeGoogleHome": "Google Home",
+  "smartHomeGoogleHomeDesc": "向Google询问礼拜时间和朝向",
+  "smartHomeAlexa": "Amazon Alexa",
+  "smartHomeAlexaDesc": "向Alexa询问礼拜时间、下次礼拜等",
+  "smartHomeSiri": "Siri 快捷指令",
+  "smartHomeSiriDesc": "为礼拜时间创建自定义快捷指令",
+  "smartHomeHomeAssistant": "Home Assistant",
+  "smartHomeHomeAssistantDesc": "在礼拜时间自动化灯光、显示和提醒",
+  "smartHomeLinkAccount": "关联账户",
+  "smartHomeLinked": "已关联",
+  "smartHomeUnlink": "取消关联",
+  "smartHomeSetupInstructions": "设置说明",
+  "smartHomeRequiresUmmatPlus": "需要 Ummat+",
+  "smartHomeTroubleshooting": "故障排除",
+  "smartHomeTestConnection": "测试连接",
+  "smartHomeConnectionSuccess": "连接成功",
+  "smartHomeConnectionFailed": "连接失败。请检查账户关联。",
+
+  "subscriptionTitle": "Ummat+",
+  "subscriptionSubtitle": "高级礼拜时间功能",
+  "subscriptionUpgrade": "升级到 Ummat+",
+  "subscriptionRestore": "恢复购买",
+  "subscriptionManage": "管理订阅",
+  "subscriptionCancel": "取消订阅",
+  "subscriptionActive": "已激活",
+  "subscriptionExpired": "已过期",
+  "subscriptionFree": "免费",
+  "subscriptionFreeDesc": "基本礼拜时间、朝向、日历",
+  "subscriptionPlusDesc": "智能家居、电视显示、小组件等",
+  "subscriptionFreeQueriesRemaining": "剩余 {count} 次免费查询",
+  "@subscriptionFreeQueriesRemaining": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "subscriptionPriceYearly": "{price}/年",
+  "@subscriptionPriceYearly": {
+    "placeholders": {
+      "price": { "type": "String" }
+    }
+  },
+  "subscriptionPriceMonthly": "{price}/月",
+  "@subscriptionPriceMonthly": {
+    "placeholders": {
+      "price": { "type": "String" }
+    }
+  },
+  "subscriptionFeatureSmartHome": "智能家居集成",
+  "subscriptionFeatureTV": "电视显示模式",
+  "subscriptionFeatureWidgets": "主屏幕小组件",
+  "subscriptionFeatureWatch": "手表表盘",
+  "subscriptionFeatureSync": "跨设备同步",
+  "subscriptionFeatureAdFree": "无广告体验",
+
+  "watchTitle": "手表",
+  "watchNextPrayer": "下次礼拜",
+  "watchAllPrayers": "所有礼拜",
+  "watchComplication": "表盘功能",
+
+  "nextPrayer": "下次礼拜",
+  "allPrayers": "所有礼拜",
+  "today": "今天",
+  "tomorrow": "明天",
+  "thisWeek": "本周",
+  "thisMonth": "本月",
+
+  "loginCreateAccount": "创建账户",
+  "loginSignIn": "登录",
+  "loginWelcomeBack": "欢迎回来",
+  "loginJoinPrayCalc": "加入 PrayCalc",
+  "loginSyncSubtitle": "跨设备同步礼拜数据",
+  "loginContinueGoogle": "使用Google继续",
+  "loginOr": "或",
+  "loginSigningIn": "登录中…",
+  "loginNameLabel": "显示名称（可选）",
+  "loginEmailLabel": "邮箱",
+  "loginPasswordLabel": "密码",
+  "loginEmailRequired": "邮箱为必填",
+  "loginEmailInvalid": "请输入有效的邮箱地址",
+  "loginPasswordRequired": "密码为必填",
+  "loginPasswordMinLength": "密码至少需要8个字符",
+  "loginForgotPassword": "忘记密码？",
+  "loginEnterEmailFirst": "请先输入邮箱地址",
+  "loginResetSent": "密码重置邮件已发送",
+  "loginResetFailed": "无法发送重置邮件",
+  "loginNewToPrayCalc": "新用户？",
+  "loginAlreadyHaveAccount": "已有账户？",
+
+  "accountTitle": "账户",
+  "accountNotSignedIn": "未登录",
+  "accountSyncSection": "同步",
+  "accountSyncStatus": "同步状态",
+  "accountSyncNow": "立即同步",
+  "accountSyncHistory": "同步历史",
+  "accountNoConflicts": "未检测到冲突",
+  "accountConflictsResolved": "已解决 {count} 个",
+  "@accountConflictsResolved": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "accountSyncedAgo": "{time}前同步",
+  "@accountSyncedAgo": {
+    "placeholders": {
+      "time": { "type": "String" }
+    }
+  },
+  "accountOfflineStatus": "离线。更改已保存在本地。",
+  "accountSyncErrorStatus": "同步错误。将重试。",
+  "accountDataSection": "数据",
+  "accountExportData": "导出数据",
+  "accountExportSubtitle": "下载设置和礼拜记录",
+  "accountExportFailed": "无法导出数据",
+  "accountSignOutTitle": "退出登录",
+  "accountSignOutBody": "本地数据将保留。重新登录即可继续同步。",
+  "accountDeleteAccount": "删除账户",
+  "accountDeleteSubtitle": "永久删除账户和数据",
+  "accountDeleteBody": "这将永久删除您的账户和所有同步数据。此设备上的本地数据不会被删除。\n\n此操作无法撤销。",
+  "accountDeleted": "账户已删除",
+  "accountDeleteFailed": "无法删除账户",
+  "accountTimeJustNow": "刚刚",
+  "accountTimeMinAgo": "{min}分钟前",
+  "@accountTimeMinAgo": {
+    "placeholders": {
+      "min": { "type": "int" }
+    }
+  },
+  "accountTimeHourAgo": "{hour}小时前",
+  "@accountTimeHourAgo": {
+    "placeholders": {
+      "hour": { "type": "int" }
+    }
+  },
+  "accountTimeDayAgo": "{day}天前",
+  "@accountTimeDayAgo": {
+    "placeholders": {
+      "day": { "type": "int" }
+    }
+  },
+
+  "statsTitle": "礼拜统计",
+  "statsShareTooltip": "分享统计",
+  "statsTodayPrayers": "今天的礼拜",
+  "statsTodayCount": "{done} / 5",
+  "@statsTodayCount": {
+    "placeholders": {
+      "done": { "type": "int" }
+    }
+  },
+  "statsStreak": "连续天数",
+  "statsDays": "天",
+  "statsThisWeek": "本周",
+  "statsCompletion": "完成率",
+  "statsThisMonth": "本月",
+  "statsMostMissed": "最常错过",
+  "statsThisWeekLabel": "本周",
+  "statsWeeklyChart": "每周各礼拜完成率",
+  "statsMonthlyChart": "每月各礼拜完成率",
+  "statsTotalLogged": "共记录 {count} 次礼拜",
+  "@statsTotalLogged": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "statsKeepItUp": "继续加油！",
+  "statsShareTitle": "PrayCalc 礼拜统计",
+  "statsShareStreak": "连续：{days} 天",
+  "@statsShareStreak": {
+    "placeholders": {
+      "days": { "type": "int" }
+    }
+  },
+  "statsShareWeekly": "每周：{pct}%",
+  "@statsShareWeekly": {
+    "placeholders": {
+      "pct": { "type": "int" }
+    }
+  },
+  "statsShareMonthly": "每月：{pct}%",
+  "@statsShareMonthly": {
+    "placeholders": {
+      "pct": { "type": "int" }
+    }
+  },
+  "statsShareBreakdown": "每周明细：",
+
+  "aboutTitle": "关于 PrayCalc",
+  "aboutWebsite": "网站",
+  "aboutContact": "联系我们",
+  "aboutLicenses": "开源许可证",
+  "aboutCouldNotOpen": "无法打开链接。",
+  "aboutCopyright": "© {year} Ummat Dev. 保留所有权利。\n\n礼拜时间由 pray_calc_dart 引擎计算。准确性取决于您的GPS位置和选择的计算方法。",
+  "@aboutCopyright": {
+    "placeholders": {
+      "year": { "type": "int" }
+    }
+  },
+
+  "commonCancel": "取消",
+  "commonSave": "保存",
+  "commonDelete": "删除",
+  "commonEdit": "编辑",
+  "commonRetry": "重试",
+  "commonClose": "关闭",
+  "commonDone": "完成",
+  "commonBack": "返回",
+  "commonNext": "下一步",
+  "commonSkip": "跳过",
+  "commonContinue": "继续",
+  "commonOk": "确定",
+  "commonYes": "是",
+  "commonNo": "否",
+  "commonShare": "分享",
+  "commonCopy": "复制",
+  "commonCopied": "已复制到剪贴板",
+  "commonLoading": "加载中...",
+  "commonError": "出错了",
+  "commonErrorRetry": "出错了。点击重试。",
+  "commonNoInternet": "无网络连接",
+  "commonOfflineMode": "离线模式",
+  "commonSignIn": "登录",
+  "commonSignOut": "退出",
+  "commonSignUp": "注册",
+  "commonProfile": "个人资料",
+  "commonAccount": "账户",
+  "commonAbout": "关于",
+  "commonVersion": "版本 {version}",
+  "@commonVersion": {
+    "placeholders": {
+      "version": { "type": "String" }
+    }
+  },
+  "commonPrivacyPolicy": "隐私政策",
+  "commonTermsOfService": "服务条款",
+  "commonRateApp": "评价应用",
+  "commonFeedback": "发送反馈",
+  "commonHelp": "帮助",
+  "commonLanguage": "语言",
+  "commonOpenSettings": "打开设置",
+
+  "travelNotificationTitle": "您正在旅行",
+  "travelNotificationBody": "礼拜时间可能被缩短。点击了解旅行规则。",
+  "travelRulingsTitle": "旅行与礼拜",
+  "travelRulingsIntro": "旅行中礼拜的伊斯兰教法，参考古兰经和可靠圣训集。",
+  "travelWhenTitle": "何时适用旅行规则？",
+  "travelQasrTitle": "缩短礼拜（卡斯尔）",
+  "travelJamTitle": "合并礼拜（杰姆阿）",
+  "travelDurationTitle": "旅行时长",
+  "travelReferencesTitle": "学术参考",
+  "travelLearnMore": "了解更多",
+  "travelHanafiDefaultTitle": "为什么 PrayCalc 使用哈乃斐默认值",
+  "travelDeeperScholarly": "更深入的学术讨论",
+
+  "onboardingTitle1": "礼拜时间，无论你在哪里",
+  "onboardingBody1": "GPS精确的礼拜时间，覆盖地球上每座城市。从晨礼到宵礼，从日出到夜间拜。由我们自己的计算引擎驱动，为精确而生。",
+  "onboardingTitle2": "你的位置，你的时间",
+  "onboardingBody2": "搜索任何城市或让GPS检测你的位置。PrayCalc 可查找全球500万城市的时间。",
+  "onboardingTitle3": "再也不错过礼拜",
+  "onboardingBody3": "礼拜时间到时播放宣礼，提前提醒。为封斋饭、课程等自定义日程。",
+  "onboardingTitle4": "你需要的一切",
+  "onboardingBody4": "朝向指南针、礼拜日历、伊历月相、赞念珠计数器。一切尽在一处。",
+  "onboardingSkip": "跳过",
+  "onboardingGetStarted": "开始使用",
+  "onboardingSignInTitle": "登录 PrayCalc",
+  "onboardingSignInSubtitle": "保存礼拜记录并\n跨设备同步。",
+  "onboardingContinueGoogle": "使用Google继续",
+  "onboardingContinueWithoutAccount": "不使用账户继续",
+  "onboardingSigningIn": "登录中…",
+  "onboardingSelectLanguage": "选择语言",
+
+  "duaDhikrTitle": "祈祷与赞念",
+  "duaDhikrTabDua": "祈祷",
+  "duaDhikrTabDhikr": "赞念",
+  "duaDhikrTabTasbeeh": "赞念珠",
+  "duaDhikrTabMorning": "晨间",
+  "duaDhikrTabEvening": "晚间",
+  "duaDhikrMorningAdhkar": "晨间赞词",
+  "duaDhikrEveningAdhkar": "晚间赞词",
+
+  "calGregToggle": "公历",
+  "calHijriToggle": "伊历",
+  "calYearlyTooltip": "年度日历",
+  "calExportIcsTooltip": "导出 .ics",
+  "calMagCol": "昏",
+
+  "qiblaShowOnMap": "在地图上显示",
+  "qiblaWaitingCompass": "等待指南针...",
+  "qiblaNoCompassSensor": "无指南针传感器。静态显示朝向。",
+  "qiblaAccuracyExcellent": "精度极佳",
+  "qiblaAccuracyGood": "精度良好",
+  "qiblaAccuracyFair": "精度一般。画8字形校准手机。",
+  "qiblaAccuracyLow": "精度较低。画8字形校准手机。",
+  "qiblaToTheKaaba": "到天房",
+  "qiblaYourLocation": "你的位置",
+  "qiblaGpsAccurate": "GPS精确",
+  "qiblaCityCenter": "城市中心",
+
+  "moonIlluminatedLabel": "亮度",
+  "moonAgeLabel": "月龄",
+  "moonFirstQtr": "上弦",
+  "moonLastQtr": "下弦",
+  "moonTonight": "今晚",
+  "moonTomorrow": "明天",
+  "moonDaysAway": "{days}天",
+  "@moonDaysAway": {
+    "placeholders": {
+      "days": { "type": "int" }
+    }
+  },
+  "moonBeta": "测试版",
+
+  "setHomeTitle": "设置家庭位置",
+  "setHomeSearchHint": "搜索城市、镇或邮编…",
+  "setHomeClear": "清除",
+  "setHomeUseCurrentLocation": "使用当前位置",
+  "setHomeDetectAndSet": "检测位置并设为家",
+  "setHomeAlreadySet": "家庭位置已设置",
+  "setHomeSetAs": "已将 {city} 设为家",
+  "@setHomeSetAs": {
+    "placeholders": {
+      "city": { "type": "String" }
+    }
+  },
+  "setHomeCurrentLocationSet": "已将当前位置设为家",
+  "setHomePermissionDenied": "位置权限被拒绝。请在下方搜索城市。",
+  "setHomeGpsUnavailable": "GPS不可用。请手动搜索。",
+  "setHomeNoCitiesFound": "未找到城市。",
+  "setHomeSearchPrompt": "搜索你的家乡城市",
+  "setHomeSearchBody": "在上方输入搜索，或使用当前位置。旅行模式会检测你何时离家。",
+
+  "subscriptionYouHavePlus": "你已拥有 Ummat+",
+  "subscriptionUpgradeTo": "升级到 Ummat+",
+  "subscriptionThankYou": "感谢支持 PrayCalc。",
+  "subscriptionUnlockPremium": "在所有设备上解锁高级功能。",
+  "subscriptionManageSub": "管理订阅",
+  "subscriptionWelcome": "欢迎使用 Ummat+！",
+  "subscriptionSubscribe": "订阅",
+  "subscriptionFreeFeatures": "免费功能",
+  "subscriptionPlusFeatures": "Ummat+ 功能",
+  "subscriptionFeaturePrayerTimes": "礼拜时间",
+  "subscriptionFeatureQibla": "朝向指南针",
+  "subscriptionFeatureCalendar": "月度日历",
+  "subscriptionFeatureTasbeeh": "赞念珠计数器",
+  "subscriptionFeatureMoon": "月亮与伊历",
+
+  "smartHomeAlertType": "提醒类型",
+  "smartHomeAlertModal": "全屏弹窗",
+  "smartHomeAlertCorner": "角落通知",
+  "smartHomeAlertNone": "无（静音）",
+  "smartHomePauseMedia": "宣礼时暂停媒体",
+  "smartHomeQuietHours": "安静时段",
+  "smartHomeQuietFrom": "从",
+  "smartHomeQuietTo": "到",
+  "smartHomePrayerAudio": "各礼拜音频",
+  "smartHomeAudioAdhan": "宣礼",
+  "smartHomeAudioBeep": "蜂鸣",
+  "smartHomeAudioSilent": "静音",
+
+  "aboutPrivacy": "隐私政策",
+  "aboutVersion": "版本 {version}",
+  "@aboutVersion": {
+    "placeholders": {
+      "version": { "type": "String" }
+    }
+  },
+
+  "notifDefaultAdhan": "默认宣礼",
+  "notifFajrAdhan": "晨礼宣礼",
+  "notifFajrAdhanSubtitle": "在晨礼时间播放",
+  "notifRegularAdhan": "常规宣礼",
+  "notifRegularAdhanSubtitle": "在晌礼、晡礼、昏礼、宵礼时播放",
+  "notifPerPrayerSettings": "各礼拜设置",
+  "notifPreview": "预览",
+
+  "tvSettingsTitle": "电视设置",
+  "tvDisplayMode": "显示模式",
+  "tvMasjidMode": "清真寺模式",
+  "tvMasjidModeSubtitle": "带起拜时间的大屏显示",
+  "tvMasjidName": "清真寺名称",
+  "tvMasjidNameTapToSet": "点击设置",
+  "tvClock": "时钟",
+  "tv24hFormat": "24小时格式",
+  "tvIqamahOffsets": "起拜偏移（宣礼后分钟数）",
+  "tvIqamahMinAfter": "宣礼后 {offset} 分钟",
+  "@tvIqamahMinAfter": {
+    "placeholders": {
+      "offset": { "type": "int" }
+    }
+  },
+  "tvQrCode": "二维码",
+  "tvShowQrCode": "显示二维码",
+  "tvShowQrCodeSubtitle": "在清真寺屏幕上显示二维码",
+  "tvQrCodeUrl": "二维码链接",
+  "tvAmbientModeSection": "环境模式",
+  "tvIdleTimeout": "空闲超时",
+  "tvIdleTimeoutSubtitle": "{minutes} 分钟后启动环境模式",
+  "@tvIdleTimeoutSubtitle": {
+    "placeholders": {
+      "minutes": { "type": "int" }
+    }
+  },
+  "tvPhotoInterval": "照片间隔",
+  "tvPhotoIntervalSubtitle": "照片间隔 {seconds} 秒",
+  "@tvPhotoIntervalSubtitle": {
+    "placeholders": {
+      "seconds": { "type": "int" }
+    }
+  },
+  "tvBackground": "背景",
+  "tvPhotoCategory": "照片类别",
+  "tvLocation": "位置",
+  "tvChangeCity": "更换城市",
+  "tvChangeCitySubtitle": "搜索其他城市",
+  "tvScreensaverBg": "屏保背景",
+  "tvScreensaverPhotos": "照片",
+  "tvScreensaverPattern": "几何图案",
+  "tvScreensaverBoth": "照片 + 图案",
+  "tvCategoryAll": "所有类别",
+  "tvCategoryMasjids": "清真寺",
+  "tvCategoryInteriors": "内部",
+  "tvCategoryGeometric": "几何",
+  "tvCategoryCalligraphy": "书法",
+  "tvCategoryLandscapes": "风景",
+  "tvCategoryRamadan": "莱麦丹",
+  "tvPhotoCategoryTitle": "照片类别",
+  "tvEnterHint": "输入{title}",
+  "@tvEnterHint": {
+    "placeholders": {
+      "title": { "type": "String" }
+    }
+  },
+  "tvSystemDefault": "系统默认",
+
+  "smartHomeIntegrations": "集成",
+  "smartHomeLinkedSpeakers": "已关联的音箱和显示器",
+  "smartHomeAlertDisplay": "提醒显示",
+  "smartHomeAtAdhanShow": "宣礼时显示",
+  "smartHomePauseMediaTitle": "宣礼时暂停媒体",
+  "smartHomePauseMediaSubtitle": "宣礼结束后恢复",
+  "smartHomePrayerAudioSection": "礼拜音频",
+  "smartHomeQuietHoursSection": "安静时段",
+  "smartHomeEnableQuietHours": "启用安静时段",
+  "smartHomeQuietHoursSubtitle": "所有智能家居提醒将被静音",
+  "smartHomeNoDevices": "还没有关联的设备",
+  "smartHomeNoDevicesDesc": "在上方关联Google Home或Alexa，你的音箱和显示器将显示在这里。",
+  "smartHomeRequiresPlus": "智能家居需要 Ummat+",
+  "smartHomeRequiresPlusDesc": "在Google Home、Alexa、Siri和Home Assistant上控制宣礼。配置哪些设备播放宣礼、何时暂停媒体和安静时段。",
+  "smartHomeBroadcastGoogle": "在Nest音箱和显示器上播放宣礼。",
+  "smartHomeEnableAlexa": "在Alexa上启用PrayCalc技能。",
+  "smartHomeSiriAsk": "向Siri询问礼拜时间或设置自动化。",
+  "smartHomeHassAdd": "通过HACS添加以获得完整的自动化支持。",
+  "smartHomeSetupGuide": "设置指南",
+  "smartHomeSiriSetupTitle": "Siri 快捷指令设置",
+  "smartHomeSiriStep1": "在iPhone或iPad上打开快捷指令应用。",
+  "smartHomeSiriStep2": "点击\"+\"创建新的快捷指令。",
+  "smartHomeSiriStep3": "在操作列表中搜索\"PrayCalc\"。",
+  "smartHomeSiriStep4": "添加\"下次礼拜时间\"或\"今天的礼拜时间\"。",
+  "smartHomeSiriStep5": "可选添加到自动化（例如每天晨礼时）。",
+  "smartHomeSiriStep6": "说\"Hey Siri, next prayer time\"测试。",
+  "smartHomeSiriFootnote": "需要iOS 16或更高版本。",
+  "smartHomeHassSetupTitle": "Home Assistant 设置",
+  "smartHomeHassStep1": "安装HACS（Home Assistant社区商店）。",
+  "smartHomeHassStep2": "在HACS中搜索\"PrayCalc\"并安装。",
+  "smartHomeHassStep3": "前往设置 > 设备和服务 > 添加集成。",
+  "smartHomeHassStep4": "搜索\"PrayCalc\"并选择。",
+  "smartHomeHassStep5": "输入PrayCalc API密钥（在账户中生成）。",
+  "smartHomeHassStep6": "配置位置和计算方法。",
+  "smartHomeHassFootnote": "需要Home Assistant 2024.1+并安装HACS。",
+  "smartHomeApiKey": "API 密钥",
+  "smartHomeGenerateApiKey": "生成API密钥",
+  "smartHomeApiKeyNotReady": "PrayCalc智能服务部署后将可生成API密钥。",
+  "smartHomeApiKeyDesc": "你需要API密钥将Home Assistant连接到PrayCalc账户。",
+  "smartHomeLinkedStatus": "已关联",
+  "smartHomeNotLinkedStatus": "未关联",
+  "smartHomeCouldNotOpen": "无法打开链接。",
+
+  "smartHomeDevices": "设备",
+  "smartHomeAddDevice": "添加设备",
+  "smartHomeDeleteDevice": "删除",
+  "smartHomeDeleteDeviceConfirm": "移除此设备？",
+  "smartHomeDeviceOnline": "在线",
+  "smartHomeDeviceOffline": "离线",
+  "smartHomeDeviceLastSeen": "最后在线：{time}",
+  "@smartHomeDeviceLastSeen": {
+    "placeholders": {
+      "time": { "type": "String" }
+    }
+  },
+  "smartHomeDeviceName": "设备名称",
+  "smartHomeDeviceType": "设备类型",
+  "smartHomeDeviceTypeTv": "电视",
+  "smartHomeDeviceTypeSpeaker": "音箱",
+  "smartHomeDeviceTypeWatch": "手表",
+  "smartHomeDeviceTypeDesktop": "桌面",
+  "smartHomeDeviceTypeOther": "其他",
+  "smartHomeDeviceAdhan": "宣礼通知",
+  "smartHomeDeviceAdhanDesc": "在此设备上接收宣礼提醒",
+  "smartHomeDeviceVolume": "音量",
+  "smartHomeDeviceAudioType": "音频类型",
+  "smartHomeDeviceEnabledPrayers": "已启用的礼拜",
+  "smartHomeDeviceSettings": "设备设置",
+  "smartHomeTesting": "测试中...",
+  "smartHomeTestSuccess": "连接已验证",
+  "smartHomeTestFailed": "连接测试失败",
+  "smartHomePairTv": "配对电视",
+  "smartHomePairingTv": "注册电视中...",
+  "smartHomePairTvSuccess": "电视配对成功",
+  "smartHomePairTvFailed": "电视配对失败",
+  "smartHomeLoadingDevices": "加载设备中...",
+  "smartHomeLoadingIntegrations": "加载集成中...",
+  "smartHomeServiceUnavailable": "智能家居服务暂时不可用。请稍后再试。",
+
+  "adhkarCompletedCount": "已完成 {completed} / {total}",
+  "@adhkarCompletedCount": {
+    "placeholders": {
+      "completed": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "adhkarReset": "重置",
+
+  "syncHistoryTitle": "同步历史",
+  "syncClearHistory": "清除历史",
+  "syncNoConflicts": "未检测到同步冲突。所有设备已同步。",
+  "syncDomainSettings": "设置",
+  "syncDomainCities": "已保存的城市",
+  "syncDomainPrayerLogs": "礼拜记录",
+  "syncTimeJustNow": "刚刚",
+  "syncTimeMinAgo": "{min}分钟前",
+  "@syncTimeMinAgo": {
+    "placeholders": {
+      "min": { "type": "int" }
+    }
+  },
+  "syncTimeHourAgo": "{hour}小时前",
+  "@syncTimeHourAgo": {
+    "placeholders": {
+      "hour": { "type": "int" }
+    }
+  },
+  "syncTimeDayAgo": "{day}天前",
+  "@syncTimeDayAgo": {
+    "placeholders": {
+      "day": { "type": "int" }
+    }
+  },
+
+  "pinCity": "置顶",
+  "pinMaxReached": "最多置顶5个城市。升级到Ummat+获取更多。",
+  "pinCityUnpinned": "已取消置顶 {city}",
+  "@pinCityUnpinned": {
+    "placeholders": {
+      "city": { "type": "String" }
+    }
+  },
+  "pinUndo": "撤销"
+}

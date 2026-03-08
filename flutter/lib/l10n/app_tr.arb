@@ -79,6 +79,8 @@
 
   "settingsTitle": "Ayarlar",
   "settingsSectionPrayerCalc": "Namaz Hesaplama",
+  "settingsCalcMethod": "Hesaplama Yontemi",
+  "settingsCalcMethodAuto": "Otomatik (Dinamik)",
   "settingsHanafiAsr": "Hanefi Ikindi",
   "settingsHanafiAsrSubtitle": "Golge katsayisi 2x (gec ikindi vakti)",
   "settingsSectionDisplay": "Gorunum",
@@ -681,5 +683,41 @@
   "travelJamTitle": "Namazları Birleştirme (Cem)",
   "travelDurationTitle": "Seyahat Süresi",
   "travelReferencesTitle": "İlmi Referanslar",
-  "travelLearnMore": "Daha fazla bilgi"
+  "travelLearnMore": "Daha fazla bilgi",
+
+  "smartHomeDevices": "Cihazlar",
+  "smartHomeAddDevice": "Cihaz Ekle",
+  "smartHomeDeleteDevice": "Sil",
+  "smartHomeDeleteDeviceConfirm": "Bu cihazı kaldır?",
+  "smartHomeDeviceOnline": "Çevrimiçi",
+  "smartHomeDeviceOffline": "Çevrimdışı",
+  "smartHomeDeviceLastSeen": "Son görülme: {time}",
+  "@smartHomeDeviceLastSeen": {
+    "placeholders": {
+      "time": { "type": "String" }
+    }
+  },
+  "smartHomeDeviceName": "Cihaz adı",
+  "smartHomeDeviceType": "Cihaz türü",
+  "smartHomeDeviceTypeTv": "TV",
+  "smartHomeDeviceTypeSpeaker": "Hoparlör",
+  "smartHomeDeviceTypeWatch": "Saat",
+  "smartHomeDeviceTypeDesktop": "Masaüstü",
+  "smartHomeDeviceTypeOther": "Diğer",
+  "smartHomeDeviceAdhan": "Ezan bildirimleri",
+  "smartHomeDeviceAdhanDesc": "Bu cihazda ezan uyarıları al",
+  "smartHomeDeviceVolume": "Ses düzeyi",
+  "smartHomeDeviceAudioType": "Ses türü",
+  "smartHomeDeviceEnabledPrayers": "Etkin namazlar",
+  "smartHomeDeviceSettings": "Cihaz Ayarları",
+  "smartHomeTesting": "Test ediliyor...",
+  "smartHomeTestSuccess": "Bağlantı doğrulandı",
+  "smartHomeTestFailed": "Bağlantı testi başarısız",
+  "smartHomePairTv": "TV Eşleştir",
+  "smartHomePairingTv": "TV kaydediliyor...",
+  "smartHomePairTvSuccess": "TV başarıyla eşleştirildi",
+  "smartHomePairTvFailed": "TV eşleştirme başarısız",
+  "smartHomeLoadingDevices": "Cihazlar yükleniyor...",
+  "smartHomeLoadingIntegrations": "Entegrasyonlar yükleniyor...",
+  "smartHomeServiceUnavailable": "Akıllı ev hizmeti şu anda kullanılamıyor. Lütfen daha sonra tekrar deneyin."
 }

@@ -8,6 +8,8 @@ import { alexaRouter } from './routes/alexa.js';
 import { webhookRouter } from './routes/webhooks.js';
 import { billingRouter } from './routes/billing.js';
 import { oauthRouter } from './routes/oauth.js';
+import { integrationsRouter } from './routes/integrations.js';
+import { devicesRouter } from './routes/devices.js';
 import { rateLimiter } from './middleware/rate-limit.js';
 import { errorHandler } from './middleware/error-handler.js';
 import { startPrayerCron } from './cron/prayer-events.js';
@@ -39,15 +41,19 @@ app.use('/google', googleRouter);
 app.use('/alexa', alexaRouter);
 app.use('/billing', billingRouter);
 app.use('/oauth', oauthRouter);
+app.use('/api/v1/integrations', integrationsRouter);
+app.use('/api/v1/devices', devicesRouter);
 
 // Error handler
 app.use(errorHandler);
 
-// Start cron for prayer event webhooks
-startPrayerCron();
-
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`praycalc-smart running on port ${PORT}`);
-});
+// Only start the server and cron when run directly, not when imported by tests
+const isMain = process.argv[1]?.endsWith('index.js') || process.argv[1]?.endsWith('index.ts');
+if (isMain) {
+  startPrayerCron();
+  app.listen(PORT, '0.0.0.0', () => {
+    console.log(`praycalc-smart running on port ${PORT}`);
+  });
+}
 
 export { app };

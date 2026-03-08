@@ -53,6 +53,21 @@ export default function SmartHomePage() {
     }
   }, [isLoggedIn, isUmmatPlus, fetchIntegrations]);
 
+  const handleTest = async (platform: string): Promise<boolean> => {
+    try {
+      const res = await fetch("/api/smart-home/integrations", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "test", platform }),
+      });
+      if (!res.ok) return false;
+      const data = await res.json();
+      return data.success === true;
+    } catch {
+      return false;
+    }
+  };
+
   const handleUnlink = async (platform: string) => {
     try {
       const res = await fetch("/api/smart-home/integrations", {
@@ -238,6 +253,7 @@ export default function SmartHomePage() {
                   linkType="oauth"
                   linkUrl="/oauth/authorize?client_id=google-home&redirect_uri=https://oauth-redirect.googleusercontent.com/r/praycalc&response_type=code"
                   onUnlink={() => handleUnlink("google-home")}
+                  onTest={() => handleTest("google-home")}
                 />
                 <IntegrationCard
                   platform="alexa"
@@ -248,6 +264,7 @@ export default function SmartHomePage() {
                   linkType="oauth"
                   linkUrl="/oauth/authorize?client_id=alexa&redirect_uri=https://pitangui.amazon.com/api/skill/link&response_type=code"
                   onUnlink={() => handleUnlink("alexa")}
+                  onTest={() => handleTest("alexa")}
                 />
                 <IntegrationCard
                   platform="siri"
@@ -265,6 +282,7 @@ export default function SmartHomePage() {
                     'Say "Hey Siri, prayer times" to trigger it.',
                   ]}
                   onUnlink={() => handleUnlink("siri")}
+                  onTest={() => handleTest("siri")}
                 />
                 <IntegrationCard
                   platform="home-assistant"
@@ -286,6 +304,7 @@ export default function SmartHomePage() {
                   ]}
                   apiKey="Generate an API key from your account settings."
                   onUnlink={() => handleUnlink("home-assistant")}
+                  onTest={() => handleTest("home-assistant")}
                 />
               </div>
             )}

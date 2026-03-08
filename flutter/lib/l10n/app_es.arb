@@ -98,6 +98,8 @@
 
   "settingsTitle": "Ajustes",
   "settingsSectionPrayerCalc": "Calculo de oracion",
+  "settingsCalcMethod": "Metodo de calculo",
+  "settingsCalcMethodAuto": "Automatico (Dinamico)",
   "settingsHanafiAsr": "Asr Hanafi",
   "settingsHanafiAsrSubtitle": "Factor de sombra 2x (hora de Asr tardia)",
   "settingsSectionDisplay": "Pantalla",
@@ -679,5 +681,41 @@
   "pinCity": "Fijar",
   "pinMaxReached": "Máximo 5 ciudades fijadas. Actualice a Ummat+ para más.",
   "pinCityUnpinned": "{city} desfijada",
-  "pinUndo": "Deshacer"
+  "pinUndo": "Deshacer",
+
+  "smartHomeDevices": "Dispositivos",
+  "smartHomeAddDevice": "Agregar dispositivo",
+  "smartHomeDeleteDevice": "Eliminar",
+  "smartHomeDeleteDeviceConfirm": "¿Eliminar este dispositivo?",
+  "smartHomeDeviceOnline": "En línea",
+  "smartHomeDeviceOffline": "Sin conexión",
+  "smartHomeDeviceLastSeen": "Visto por última vez: {time}",
+  "@smartHomeDeviceLastSeen": {
+    "placeholders": {
+      "time": { "type": "String" }
+    }
+  },
+  "smartHomeDeviceName": "Nombre del dispositivo",
+  "smartHomeDeviceType": "Tipo de dispositivo",
+  "smartHomeDeviceTypeTv": "TV",
+  "smartHomeDeviceTypeSpeaker": "Altavoz",
+  "smartHomeDeviceTypeWatch": "Reloj",
+  "smartHomeDeviceTypeDesktop": "Escritorio",
+  "smartHomeDeviceTypeOther": "Otro",
+  "smartHomeDeviceAdhan": "Notificaciones de adhan",
+  "smartHomeDeviceAdhanDesc": "Recibir alertas de adhan en este dispositivo",
+  "smartHomeDeviceVolume": "Volumen",
+  "smartHomeDeviceAudioType": "Tipo de audio",
+  "smartHomeDeviceEnabledPrayers": "Oraciones habilitadas",
+  "smartHomeDeviceSettings": "Ajustes del dispositivo",
+  "smartHomeTesting": "Probando...",
+  "smartHomeTestSuccess": "Conexión verificada",
+  "smartHomeTestFailed": "Prueba de conexión fallida",
+  "smartHomePairTv": "Vincular TV",
+  "smartHomePairingTv": "Registrando TV...",
+  "smartHomePairTvSuccess": "TV vinculada correctamente",
+  "smartHomePairTvFailed": "Error al vincular TV",
+  "smartHomeLoadingDevices": "Cargando dispositivos...",
+  "smartHomeLoadingIntegrations": "Cargando integraciones...",
+  "smartHomeServiceUnavailable": "El servicio de hogar inteligente no está disponible actualmente. Inténtelo de nuevo más tarde."
 }

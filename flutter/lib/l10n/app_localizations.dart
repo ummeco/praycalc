@@ -10,12 +10,23 @@ import 'app_localizations_bn.dart';
 import 'app_localizations_de.dart';
 import 'app_localizations_en.dart';
 import 'app_localizations_es.dart';
+import 'app_localizations_fa.dart';
 import 'app_localizations_fr.dart';
+import 'app_localizations_ha.dart';
 import 'app_localizations_hi.dart';
 import 'app_localizations_id.dart';
+import 'app_localizations_ku.dart';
+import 'app_localizations_ms.dart';
+import 'app_localizations_ps.dart';
+import 'app_localizations_pt.dart';
+import 'app_localizations_ru.dart';
 import 'app_localizations_so.dart';
+import 'app_localizations_sw.dart';
+import 'app_localizations_th.dart';
 import 'app_localizations_tr.dart';
 import 'app_localizations_ur.dart';
+import 'app_localizations_uz.dart';
+import 'app_localizations_zh.dart';
 
 // ignore_for_file: type=lint
 
@@ -108,12 +119,23 @@ abstract class AppLocalizations {
     Locale('de'),
     Locale('en'),
     Locale('es'),
+    Locale('fa'),
     Locale('fr'),
+    Locale('ha'),
     Locale('hi'),
     Locale('id'),
+    Locale('ku'),
+    Locale('ms'),
+    Locale('ps'),
+    Locale('pt'),
+    Locale('ru'),
     Locale('so'),
+    Locale('sw'),
+    Locale('th'),
     Locale('tr'),
     Locale('ur'),
+    Locale('uz'),
+    Locale('zh'),
   ];
 
   /// No description provided for @appTitle.
@@ -637,6 +659,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Prayer Calculation'**
   String get settingsSectionPrayerCalc;
+
+  /// No description provided for @settingsCalcMethod.
+  ///
+  /// In en, this message translates to:
+  /// **'Calculation Method'**
+  String get settingsCalcMethod;
+
+  /// No description provided for @settingsCalcMethodAuto.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto (Dynamic)'**
+  String get settingsCalcMethodAuto;
 
   /// No description provided for @settingsHanafiAsr.
   ///
@@ -3788,6 +3822,186 @@ abstract class AppLocalizations {
   /// **'Could not open the link.'**
   String get smartHomeCouldNotOpen;
 
+  /// No description provided for @smartHomeDevices.
+  ///
+  /// In en, this message translates to:
+  /// **'Devices'**
+  String get smartHomeDevices;
+
+  /// No description provided for @smartHomeAddDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Device'**
+  String get smartHomeAddDevice;
+
+  /// No description provided for @smartHomeDeleteDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get smartHomeDeleteDevice;
+
+  /// No description provided for @smartHomeDeleteDeviceConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove this device?'**
+  String get smartHomeDeleteDeviceConfirm;
+
+  /// No description provided for @smartHomeDeviceOnline.
+  ///
+  /// In en, this message translates to:
+  /// **'Online'**
+  String get smartHomeDeviceOnline;
+
+  /// No description provided for @smartHomeDeviceOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline'**
+  String get smartHomeDeviceOffline;
+
+  /// No description provided for @smartHomeDeviceLastSeen.
+  ///
+  /// In en, this message translates to:
+  /// **'Last seen: {time}'**
+  String smartHomeDeviceLastSeen(String time);
+
+  /// No description provided for @smartHomeDeviceName.
+  ///
+  /// In en, this message translates to:
+  /// **'Device name'**
+  String get smartHomeDeviceName;
+
+  /// No description provided for @smartHomeDeviceType.
+  ///
+  /// In en, this message translates to:
+  /// **'Device type'**
+  String get smartHomeDeviceType;
+
+  /// No description provided for @smartHomeDeviceTypeTv.
+  ///
+  /// In en, this message translates to:
+  /// **'TV'**
+  String get smartHomeDeviceTypeTv;
+
+  /// No description provided for @smartHomeDeviceTypeSpeaker.
+  ///
+  /// In en, this message translates to:
+  /// **'Speaker'**
+  String get smartHomeDeviceTypeSpeaker;
+
+  /// No description provided for @smartHomeDeviceTypeWatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Watch'**
+  String get smartHomeDeviceTypeWatch;
+
+  /// No description provided for @smartHomeDeviceTypeDesktop.
+  ///
+  /// In en, this message translates to:
+  /// **'Desktop'**
+  String get smartHomeDeviceTypeDesktop;
+
+  /// No description provided for @smartHomeDeviceTypeOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get smartHomeDeviceTypeOther;
+
+  /// No description provided for @smartHomeDeviceAdhan.
+  ///
+  /// In en, this message translates to:
+  /// **'Adhan notifications'**
+  String get smartHomeDeviceAdhan;
+
+  /// No description provided for @smartHomeDeviceAdhanDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Receive adhan alerts on this device'**
+  String get smartHomeDeviceAdhanDesc;
+
+  /// No description provided for @smartHomeDeviceVolume.
+  ///
+  /// In en, this message translates to:
+  /// **'Volume'**
+  String get smartHomeDeviceVolume;
+
+  /// No description provided for @smartHomeDeviceAudioType.
+  ///
+  /// In en, this message translates to:
+  /// **'Audio type'**
+  String get smartHomeDeviceAudioType;
+
+  /// No description provided for @smartHomeDeviceEnabledPrayers.
+  ///
+  /// In en, this message translates to:
+  /// **'Enabled prayers'**
+  String get smartHomeDeviceEnabledPrayers;
+
+  /// No description provided for @smartHomeDeviceSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Device Settings'**
+  String get smartHomeDeviceSettings;
+
+  /// No description provided for @smartHomeTesting.
+  ///
+  /// In en, this message translates to:
+  /// **'Testing...'**
+  String get smartHomeTesting;
+
+  /// No description provided for @smartHomeTestSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Connection verified'**
+  String get smartHomeTestSuccess;
+
+  /// No description provided for @smartHomeTestFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Connection test failed'**
+  String get smartHomeTestFailed;
+
+  /// No description provided for @smartHomePairTv.
+  ///
+  /// In en, this message translates to:
+  /// **'Pair TV'**
+  String get smartHomePairTv;
+
+  /// No description provided for @smartHomePairingTv.
+  ///
+  /// In en, this message translates to:
+  /// **'Registering TV...'**
+  String get smartHomePairingTv;
+
+  /// No description provided for @smartHomePairTvSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'TV paired successfully'**
+  String get smartHomePairTvSuccess;
+
+  /// No description provided for @smartHomePairTvFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'TV pairing failed'**
+  String get smartHomePairTvFailed;
+
+  /// No description provided for @smartHomeLoadingDevices.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading devices...'**
+  String get smartHomeLoadingDevices;
+
+  /// No description provided for @smartHomeLoadingIntegrations.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading integrations...'**
+  String get smartHomeLoadingIntegrations;
+
+  /// No description provided for @smartHomeServiceUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Smart home service is currently unavailable. Please try again later.'**
+  String get smartHomeServiceUnavailable;
+
   /// No description provided for @adhkarCompletedCount.
   ///
   /// In en, this message translates to:
@@ -3901,12 +4115,23 @@ class _AppLocalizationsDelegate
     'de',
     'en',
     'es',
+    'fa',
     'fr',
+    'ha',
     'hi',
     'id',
+    'ku',
+    'ms',
+    'ps',
+    'pt',
+    'ru',
     'so',
+    'sw',
+    'th',
     'tr',
     'ur',
+    'uz',
+    'zh',
   ].contains(locale.languageCode);
 
   @override
@@ -3926,18 +4151,40 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
       return AppLocalizationsEn();
     case 'es':
       return AppLocalizationsEs();
+    case 'fa':
+      return AppLocalizationsFa();
     case 'fr':
       return AppLocalizationsFr();
+    case 'ha':
+      return AppLocalizationsHa();
     case 'hi':
       return AppLocalizationsHi();
     case 'id':
       return AppLocalizationsId();
+    case 'ku':
+      return AppLocalizationsKu();
+    case 'ms':
+      return AppLocalizationsMs();
+    case 'ps':
+      return AppLocalizationsPs();
+    case 'pt':
+      return AppLocalizationsPt();
+    case 'ru':
+      return AppLocalizationsRu();
     case 'so':
       return AppLocalizationsSo();
+    case 'sw':
+      return AppLocalizationsSw();
+    case 'th':
+      return AppLocalizationsTh();
     case 'tr':
       return AppLocalizationsTr();
     case 'ur':
       return AppLocalizationsUr();
+    case 'uz':
+      return AppLocalizationsUz();
+    case 'zh':
+      return AppLocalizationsZh();
   }
 
   throw FlutterError(

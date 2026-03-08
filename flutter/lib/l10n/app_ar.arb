@@ -79,6 +79,8 @@
 
   "settingsTitle": "الإعدادات",
   "settingsSectionPrayerCalc": "حساب أوقات الصلاة",
+  "settingsCalcMethod": "طريقة الحساب",
+  "settingsCalcMethodAuto": "تلقائي (ديناميكي)",
   "settingsHanafiAsr": "عصر الحنفية",
   "settingsHanafiAsrSubtitle": "ضعف الظل (وقت العصر المتأخر)",
   "settingsSectionDisplay": "العرض",
@@ -681,5 +683,41 @@
   "pinCity": "تثبيت",
   "pinMaxReached": "الحد الأقصى 5 مدن مثبتة. رقِّ إلى أمة+ للمزيد.",
   "pinCityUnpinned": "تم إلغاء تثبيت {city}",
-  "pinUndo": "تراجع"
+  "pinUndo": "تراجع",
+
+  "smartHomeDevices": "الأجهزة",
+  "smartHomeAddDevice": "إضافة جهاز",
+  "smartHomeDeleteDevice": "حذف",
+  "smartHomeDeleteDeviceConfirm": "إزالة هذا الجهاز؟",
+  "smartHomeDeviceOnline": "متصل",
+  "smartHomeDeviceOffline": "غير متصل",
+  "smartHomeDeviceLastSeen": "آخر ظهور: {time}",
+  "@smartHomeDeviceLastSeen": {
+    "placeholders": {
+      "time": { "type": "String" }
+    }
+  },
+  "smartHomeDeviceName": "اسم الجهاز",
+  "smartHomeDeviceType": "نوع الجهاز",
+  "smartHomeDeviceTypeTv": "تلفاز",
+  "smartHomeDeviceTypeSpeaker": "سماعة",
+  "smartHomeDeviceTypeWatch": "ساعة",
+  "smartHomeDeviceTypeDesktop": "حاسوب",
+  "smartHomeDeviceTypeOther": "أخرى",
+  "smartHomeDeviceAdhan": "إشعارات الأذان",
+  "smartHomeDeviceAdhanDesc": "استقبال تنبيهات الأذان على هذا الجهاز",
+  "smartHomeDeviceVolume": "مستوى الصوت",
+  "smartHomeDeviceAudioType": "نوع الصوت",
+  "smartHomeDeviceEnabledPrayers": "الصلوات المفعّلة",
+  "smartHomeDeviceSettings": "إعدادات الجهاز",
+  "smartHomeTesting": "جاري الاختبار...",
+  "smartHomeTestSuccess": "تم التحقق من الاتصال",
+  "smartHomeTestFailed": "فشل اختبار الاتصال",
+  "smartHomePairTv": "ربط التلفاز",
+  "smartHomePairingTv": "جاري تسجيل التلفاز...",
+  "smartHomePairTvSuccess": "تم ربط التلفاز بنجاح",
+  "smartHomePairTvFailed": "فشل ربط التلفاز",
+  "smartHomeLoadingDevices": "جاري تحميل الأجهزة...",
+  "smartHomeLoadingIntegrations": "جاري تحميل التكاملات...",
+  "smartHomeServiceUnavailable": "خدمة المنزل الذكي غير متوفرة حالياً. يرجى المحاولة لاحقاً."
 }

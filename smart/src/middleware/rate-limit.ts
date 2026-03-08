@@ -16,6 +16,11 @@ function getKey(req: Request): string {
   return `ip:${ip}`;
 }
 
+/** Clear all rate limit buckets — for use in tests only. */
+export function resetRateLimiter(): void {
+  buckets.clear();
+}
+
 export function rateLimiter(req: Request, res: Response, next: NextFunction): void {
   if (req.path === '/health') {
     next();

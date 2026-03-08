@@ -279,6 +279,12 @@ class AppLocalizationsHi extends AppLocalizations {
   String get settingsSectionPrayerCalc => 'नमाज़ गणना';
 
   @override
+  String get settingsCalcMethod => 'गणना विधि';
+
+  @override
+  String get settingsCalcMethodAuto => 'स्वचालित (गतिशील)';
+
+  @override
   String get settingsHanafiAsr => 'हनफ़ी अस्र';
 
   @override
@@ -2008,6 +2014,100 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get smartHomeCouldNotOpen => 'लिंक नहीं खोला जा सका।';
+
+  @override
+  String get smartHomeDevices => 'डिवाइस';
+
+  @override
+  String get smartHomeAddDevice => 'डिवाइस जोड़ें';
+
+  @override
+  String get smartHomeDeleteDevice => 'हटाएं';
+
+  @override
+  String get smartHomeDeleteDeviceConfirm => 'इस डिवाइस को हटाएं?';
+
+  @override
+  String get smartHomeDeviceOnline => 'ऑनलाइन';
+
+  @override
+  String get smartHomeDeviceOffline => 'ऑफलाइन';
+
+  @override
+  String smartHomeDeviceLastSeen(String time) {
+    return 'अंतिम बार देखा: $time';
+  }
+
+  @override
+  String get smartHomeDeviceName => 'डिवाइस का नाम';
+
+  @override
+  String get smartHomeDeviceType => 'डिवाइस का प्रकार';
+
+  @override
+  String get smartHomeDeviceTypeTv => 'टीवी';
+
+  @override
+  String get smartHomeDeviceTypeSpeaker => 'स्पीकर';
+
+  @override
+  String get smartHomeDeviceTypeWatch => 'घड़ी';
+
+  @override
+  String get smartHomeDeviceTypeDesktop => 'डेस्कटॉप';
+
+  @override
+  String get smartHomeDeviceTypeOther => 'अन्य';
+
+  @override
+  String get smartHomeDeviceAdhan => 'अज़ान सूचनाएं';
+
+  @override
+  String get smartHomeDeviceAdhanDesc =>
+      'इस डिवाइस पर अज़ान अलर्ट प्राप्त करें';
+
+  @override
+  String get smartHomeDeviceVolume => 'वॉल्यूम';
+
+  @override
+  String get smartHomeDeviceAudioType => 'ऑडियो प्रकार';
+
+  @override
+  String get smartHomeDeviceEnabledPrayers => 'सक्रिय नमाज़ें';
+
+  @override
+  String get smartHomeDeviceSettings => 'डिवाइस सेटिंग्स';
+
+  @override
+  String get smartHomeTesting => 'परीक्षण हो रहा है...';
+
+  @override
+  String get smartHomeTestSuccess => 'कनेक्शन सत्यापित';
+
+  @override
+  String get smartHomeTestFailed => 'कनेक्शन परीक्षण विफल';
+
+  @override
+  String get smartHomePairTv => 'टीवी जोड़ें';
+
+  @override
+  String get smartHomePairingTv => 'टीवी पंजीकृत हो रहा है...';
+
+  @override
+  String get smartHomePairTvSuccess => 'टीवी सफलतापूर्वक जोड़ा गया';
+
+  @override
+  String get smartHomePairTvFailed => 'टीवी जोड़ना विफल';
+
+  @override
+  String get smartHomeLoadingDevices => 'डिवाइस लोड हो रहे हैं...';
+
+  @override
+  String get smartHomeLoadingIntegrations => 'इंटीग्रेशन लोड हो रहे हैं...';
+
+  @override
+  String get smartHomeServiceUnavailable =>
+      'स्मार्ट होम सेवा वर्तमान में उपलब्ध नहीं है। कृपया बाद में पुनः प्रयास करें।';
 
   @override
   String adhkarCompletedCount(int completed, int total) {

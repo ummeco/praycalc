@@ -53,6 +53,7 @@ private val prayerIcons = mapOf(
 @Composable
 fun PrayerListScreen(
     prayerData: PrayerData,
+    locationError: String? = null,
     onCountdownClick: () -> Unit,
     onSettingsClick: () -> Unit,
     onRefresh: () -> Unit
@@ -86,7 +87,24 @@ fun PrayerListScreen(
             )
         }
 
-        if (prayerData.prayers.isEmpty()) {
+        if (locationError != null && prayerData.prayers.isEmpty()) {
+            item {
+                Text(
+                    text = locationError,
+                    style = MaterialTheme.typography.body2,
+                    color = MaterialTheme.colors.error,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(horizontal = 12.dp)
+                )
+            }
+            item {
+                CompactChip(
+                    onClick = onRefresh,
+                    label = { Text("Retry") },
+                    colors = ChipDefaults.secondaryChipColors()
+                )
+            }
+        } else if (prayerData.prayers.isEmpty()) {
             item {
                 Text(
                     text = "Loading...",

@@ -93,6 +93,25 @@ final tvSettingsProvider =
   TvSettingsNotifier.new,
 );
 
+// ---------------------------------------------------------------------------
+// Iqamah countdown provider (TV2-8.7)
+// ---------------------------------------------------------------------------
+
+/// Seconds remaining until iqamah for the currently-active prayer.
+///
+/// Yields null when no adhan alert is active. Non-null values are emitted
+/// every second by TvAdhanNotifier once an alert fires (wired at that layer).
+/// Consumers drive [TvAdhanBubble] and [TvPostAdhanBar] countdowns.
+final iqamahCountdownProvider = StreamProvider<int?>((ref) async* {
+  // Driven by TvAdhanNotifier in a real implementation. Yields null until
+  // the notifier broadcasts a countdown stream.
+  yield null;
+});
+
+// ---------------------------------------------------------------------------
+// Iqamah times provider
+// ---------------------------------------------------------------------------
+
 /// Computed iqamah times: prayer name -> fractional hours for the iqamah.
 /// Adds the configured offset (in minutes) to the adhan time.
 final iqamahTimesProvider =

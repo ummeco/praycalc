@@ -118,6 +118,8 @@
 
   "settingsTitle": "Settings",
   "settingsSectionPrayerCalc": "Prayer Calculation",
+  "settingsCalcMethod": "Calculation Method",
+  "settingsCalcMethodAuto": "Auto (Dynamic)",
   "settingsHanafiAsr": "Hanafi Asr",
   "settingsHanafiAsrSubtitle": "Shadow factor 2x (later Asr time)",
   "settingsSectionDisplay": "Display",
@@ -917,6 +919,42 @@
   "smartHomeLinkedStatus": "Linked",
   "smartHomeNotLinkedStatus": "Not linked",
   "smartHomeCouldNotOpen": "Could not open the link.",
+
+  "smartHomeDevices": "Devices",
+  "smartHomeAddDevice": "Add Device",
+  "smartHomeDeleteDevice": "Delete",
+  "smartHomeDeleteDeviceConfirm": "Remove this device?",
+  "smartHomeDeviceOnline": "Online",
+  "smartHomeDeviceOffline": "Offline",
+  "smartHomeDeviceLastSeen": "Last seen: {time}",
+  "@smartHomeDeviceLastSeen": {
+    "placeholders": {
+      "time": { "type": "String" }
+    }
+  },
+  "smartHomeDeviceName": "Device name",
+  "smartHomeDeviceType": "Device type",
+  "smartHomeDeviceTypeTv": "TV",
+  "smartHomeDeviceTypeSpeaker": "Speaker",
+  "smartHomeDeviceTypeWatch": "Watch",
+  "smartHomeDeviceTypeDesktop": "Desktop",
+  "smartHomeDeviceTypeOther": "Other",
+  "smartHomeDeviceAdhan": "Adhan notifications",
+  "smartHomeDeviceAdhanDesc": "Receive adhan alerts on this device",
+  "smartHomeDeviceVolume": "Volume",
+  "smartHomeDeviceAudioType": "Audio type",
+  "smartHomeDeviceEnabledPrayers": "Enabled prayers",
+  "smartHomeDeviceSettings": "Device Settings",
+  "smartHomeTesting": "Testing...",
+  "smartHomeTestSuccess": "Connection verified",
+  "smartHomeTestFailed": "Connection test failed",
+  "smartHomePairTv": "Pair TV",
+  "smartHomePairingTv": "Registering TV...",
+  "smartHomePairTvSuccess": "TV paired successfully",
+  "smartHomePairTvFailed": "TV pairing failed",
+  "smartHomeLoadingDevices": "Loading devices...",
+  "smartHomeLoadingIntegrations": "Loading integrations...",
+  "smartHomeServiceUnavailable": "Smart home service is currently unavailable. Please try again later.",
 
   "adhkarCompletedCount": "{completed} / {total} completed",
   "@adhkarCompletedCount": {

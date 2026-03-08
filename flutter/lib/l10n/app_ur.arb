@@ -79,6 +79,8 @@
 
   "settingsTitle": "ترتیبات",
   "settingsSectionPrayerCalc": "نماز کا حساب",
+  "settingsCalcMethod": "حساب کا طریقہ",
+  "settingsCalcMethodAuto": "خودکار (متحرک)",
   "settingsHanafiAsr": "حنفی عصر",
   "settingsHanafiAsrSubtitle": "سایہ ضرب 2 (بعد میں عصر کا وقت)",
   "settingsSectionDisplay": "ظاہری شکل",
@@ -681,5 +683,41 @@
   "travelJamTitle": "نمازیں جمع کرنا",
   "travelDurationTitle": "سفر کی مدت",
   "travelReferencesTitle": "علمی حوالے",
-  "travelLearnMore": "مزید جانیں"
+  "travelLearnMore": "مزید جانیں",
+
+  "smartHomeDevices": "آلات",
+  "smartHomeAddDevice": "آلہ شامل کریں",
+  "smartHomeDeleteDevice": "حذف کریں",
+  "smartHomeDeleteDeviceConfirm": "یہ آلہ ہٹائیں؟",
+  "smartHomeDeviceOnline": "آن لائن",
+  "smartHomeDeviceOffline": "آف لائن",
+  "smartHomeDeviceLastSeen": "آخری بار دیکھا: {time}",
+  "@smartHomeDeviceLastSeen": {
+    "placeholders": {
+      "time": { "type": "String" }
+    }
+  },
+  "smartHomeDeviceName": "آلے کا نام",
+  "smartHomeDeviceType": "آلے کی قسم",
+  "smartHomeDeviceTypeTv": "ٹی وی",
+  "smartHomeDeviceTypeSpeaker": "اسپیکر",
+  "smartHomeDeviceTypeWatch": "گھڑی",
+  "smartHomeDeviceTypeDesktop": "ڈیسکٹاپ",
+  "smartHomeDeviceTypeOther": "دیگر",
+  "smartHomeDeviceAdhan": "اذان کی اطلاعات",
+  "smartHomeDeviceAdhanDesc": "اس آلے پر اذان کے الرٹ وصول کریں",
+  "smartHomeDeviceVolume": "والیوم",
+  "smartHomeDeviceAudioType": "آواز کی قسم",
+  "smartHomeDeviceEnabledPrayers": "فعال نمازیں",
+  "smartHomeDeviceSettings": "آلے کی ترتیبات",
+  "smartHomeTesting": "جانچ ہو رہی ہے...",
+  "smartHomeTestSuccess": "کنکشن تصدیق ہو گیا",
+  "smartHomeTestFailed": "کنکشن ٹیسٹ ناکام",
+  "smartHomePairTv": "ٹی وی جوڑیں",
+  "smartHomePairingTv": "ٹی وی رجسٹر ہو رہا ہے...",
+  "smartHomePairTvSuccess": "ٹی وی کامیابی سے جوڑا گیا",
+  "smartHomePairTvFailed": "ٹی وی جوڑنا ناکام",
+  "smartHomeLoadingDevices": "آلات لوڈ ہو رہے ہیں...",
+  "smartHomeLoadingIntegrations": "انٹیگریشنز لوڈ ہو رہی ہیں...",
+  "smartHomeServiceUnavailable": "سمارٹ ہوم سروس ابھی دستیاب نہیں ہے۔ براہ کرم بعد میں دوبارہ کوشش کریں۔"
 }

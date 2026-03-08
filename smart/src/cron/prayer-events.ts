@@ -2,18 +2,44 @@ import cron from 'node-cron';
 import { calculatePrayerTimes } from '../lib/prayer-calculator.js';
 import { getAllActiveRegistrations } from '../routes/webhooks.js';
 
+/**
+ * Convert current UTC time to a user's local timezone and return HH:MM + local date string.
+ */
+function getLocalTime(timezone: string): { time: string; dateStr: string } {
+  const now = new Date();
+  try {
+    const formatter = new Intl.DateTimeFormat('en-CA', {
+      timeZone: timezone,
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+    });
+    const parts = formatter.formatToParts(now);
+    const get = (type: string) => parts.find(p => p.type === type)?.value || '00';
+    const dateStr = `${get('year')}-${get('month')}-${get('day')}`;
+    const time = `${get('hour')}:${get('minute')}`;
+    return { time, dateStr };
+  } catch {
+    // Fallback to UTC if timezone is invalid
+    const time = `${now.getUTCHours().toString().padStart(2, '0')}:${now.getUTCMinutes().toString().padStart(2, '0')}`;
+    const dateStr = now.toISOString().split('T')[0];
+    return { time, dateStr };
+  }
+}
+
 /** Fire webhook callbacks at each prayer time. Runs every minute. */
 export function startPrayerCron(): void {
   cron.schedule('* * * * *', async () => {
-    const registrations = getAllActiveRegistrations();
+    const registrations = await getAllActiveRegistrations();
     if (registrations.length === 0) return;
-
-    const now = new Date();
-    const currentTime = `${now.getUTCHours().toString().padStart(2, '0')}:${now.getUTCMinutes().toString().padStart(2, '0')}`;
-    const dateStr = now.toISOString().split('T')[0];
 
     for (const reg of registrations) {
       try {
+        // Use the user's timezone from their webhook registration
+        const { time: currentTime, dateStr } = getLocalTime(reg.timezone || 'UTC');
         const times = calculatePrayerTimes(reg.lat, reg.lng, dateStr);
         const prayers = times.prayers;
         const prayerEntries = Object.entries(prayers) as [string, string][];
@@ -29,6 +55,7 @@ export function startPrayerCron(): void {
               date: dateStr,
               lat: reg.lat,
               lng: reg.lng,
+              timezone: reg.timezone,
               hijriDate: times.hijriDate,
             });
           }

@@ -44,9 +44,10 @@ function cacheKey(lat: number, lng: number, date: string, method: string, madhab
   return `${rlat}:${rlng}:${date}:${method}:${madhab}`;
 }
 
-/** Convert decimal hours to HH:MM format. */
+/** Convert decimal hours to HH:MM format. Wraps times past midnight UTC (e.g. Isha in western zones). */
 function hoursToTime(h: number): string {
-  if (!isFinite(h) || h < 0 || h >= 24) return '--:--';
+  if (!isFinite(h) || h < 0) return '--:--';
+  h = h % 24; // Wrap e.g. 24.82 → 0.82 for Isha that crosses midnight UTC
   const hours = Math.floor(h);
   const minutes = Math.round((h - hours) * 60);
   return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;

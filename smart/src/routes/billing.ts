@@ -162,27 +162,55 @@ billingRouter.post('/webhook', raw({ type: 'application/json' }), async (req, re
   res.json({ received: true });
 });
 
-/** POST /billing/verify-receipt — Verify iOS/Android IAP receipt. */
+/** POST /billing/verify-receipt — Verify iOS/Android IAP receipt with Apple/Google servers. */
 billingRouter.post('/verify-receipt', requireAuth, async (req: AuthRequest, res) => {
   const { platform, receipt, productId } = req.body;
   const userId = req.userId!;
 
-  // In production: verify receipt with Apple/Google servers
-  // For now: trust client and upsert subscription
   if (!platform || !receipt || !productId) {
     res.status(400).json({ error: 'platform, receipt, and productId required' });
     return;
   }
 
-  if (productId === 'ummat_plus_yearly') {
-    await upsertSubscription(userId, {
-      plan: 'plus',
-      status: 'active',
-      currentPeriodEnd: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(),
-    });
-    res.json({ status: 'active', plan: 'plus' });
-  } else {
-    res.status(400).json({ error: 'Unknown product' });
+  const VALID_PRODUCTS = ['ummat_plus_yearly'];
+  if (!VALID_PRODUCTS.includes(productId)) {
+    res.status(400).json({ error: 'Unknown product', validProducts: VALID_PRODUCTS });
+    return;
+  }
+
+  try {
+    if (platform === 'ios') {
+      const verified = await verifyAppleReceipt(receipt);
+      if (!verified.valid) {
+        res.status(403).json({ error: 'Invalid receipt', detail: verified.reason });
+        return;
+      }
+
+      await upsertSubscription(userId, {
+        plan: 'plus',
+        status: 'active',
+        currentPeriodEnd: verified.expiresAt || new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(),
+      });
+      res.json({ status: 'active', plan: 'plus' });
+    } else if (platform === 'android') {
+      const verified = await verifyGoogleReceipt(receipt, productId);
+      if (!verified.valid) {
+        res.status(403).json({ error: 'Invalid receipt', detail: verified.reason });
+        return;
+      }
+
+      await upsertSubscription(userId, {
+        plan: 'plus',
+        status: 'active',
+        currentPeriodEnd: verified.expiresAt || new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(),
+      });
+      res.json({ status: 'active', plan: 'plus' });
+    } else {
+      res.status(400).json({ error: 'Unsupported platform. Use "ios" or "android"' });
+    }
+  } catch (err) {
+    console.error('[BILLING] Receipt verification error:', err);
+    res.status(500).json({ error: 'Receipt verification failed' });
   }
 });
 
@@ -265,4 +293,144 @@ async function upsertSubscription(userId: string, data: SubscriptionRecord): Pro
   } catch (err) {
     console.error('[BILLING] Upsert subscription failed:', err);
   }
+}
+
+// Apple receipt verification
+
+interface ReceiptVerificationResult {
+  valid: boolean;
+  reason?: string;
+  expiresAt?: string;
+}
+
+const APPLE_PROD_URL = 'https://buy.itunes.apple.com/verifyReceipt';
+const APPLE_SANDBOX_URL = 'https://sandbox.itunes.apple.com/verifyReceipt';
+
+async function verifyAppleReceipt(receiptData: string): Promise<ReceiptVerificationResult> {
+  const payload = {
+    'receipt-data': receiptData,
+    password: process.env.APPLE_SHARED_SECRET || '',
+    'exclude-old-transactions': true,
+  };
+
+  // Try production first
+  let response = await fetch(APPLE_PROD_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+  let data = await response.json() as any;
+
+  // Status 21007 means it's a sandbox receipt — retry against sandbox
+  if (data.status === 21007) {
+    response = await fetch(APPLE_SANDBOX_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    data = await response.json() as any;
+  }
+
+  if (data.status !== 0) {
+    return { valid: false, reason: `Apple verification failed with status ${data.status}` };
+  }
+
+  // Extract the latest subscription expiry from the receipt
+  const latestInfo = data.latest_receipt_info;
+  if (Array.isArray(latestInfo) && latestInfo.length > 0) {
+    const latest = latestInfo[latestInfo.length - 1];
+    const expiresMs = parseInt(latest.expires_date_ms, 10);
+    if (expiresMs && expiresMs > Date.now()) {
+      return { valid: true, expiresAt: new Date(expiresMs).toISOString() };
+    }
+    return { valid: false, reason: 'Subscription has expired' };
+  }
+
+  // Non-subscription IAP (one-time purchase) — valid if status is 0
+  return { valid: true };
+}
+
+// Google Play receipt verification
+
+async function verifyGoogleReceipt(purchaseToken: string, productId: string): Promise<ReceiptVerificationResult> {
+  const serviceAccountKey = process.env.GOOGLE_SERVICE_ACCOUNT_KEY;
+  if (!serviceAccountKey) {
+    console.error('[BILLING] GOOGLE_SERVICE_ACCOUNT_KEY not configured');
+    return { valid: false, reason: 'Google verification not configured' };
+  }
+
+  try {
+    const keyData = JSON.parse(serviceAccountKey);
+    const accessToken = await getGoogleAccessToken(keyData);
+
+    const packageName = process.env.GOOGLE_PACKAGE_NAME || 'com.praycalc.app';
+    const url = `https://androidpublisher.googleapis.com/androidpublisher/v3/applications/${packageName}/purchases/subscriptions/${productId}/tokens/${purchaseToken}`;
+
+    const response = await fetch(url, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      return { valid: false, reason: `Google API error: ${response.status} ${errorText}` };
+    }
+
+    const data = await response.json() as any;
+
+    // Check payment state: 0 = pending, 1 = received, 2 = free trial, 3 = deferred
+    if (data.paymentState === undefined || data.paymentState < 1) {
+      return { valid: false, reason: 'Payment not received' };
+    }
+
+    // Check cancellation
+    if (data.cancelReason !== undefined && data.cancelReason !== null) {
+      return { valid: false, reason: 'Subscription was canceled' };
+    }
+
+    const expiryTimeMs = parseInt(data.expiryTimeMillis, 10);
+    if (expiryTimeMs && expiryTimeMs > Date.now()) {
+      return { valid: true, expiresAt: new Date(expiryTimeMs).toISOString() };
+    }
+
+    return { valid: false, reason: 'Subscription has expired' };
+  } catch (err) {
+    console.error('[BILLING] Google receipt verification error:', err);
+    return { valid: false, reason: 'Google verification failed' };
+  }
+}
+
+/** Get a Google OAuth2 access token from a service account key. */
+async function getGoogleAccessToken(keyData: { client_email: string; private_key: string }): Promise<string> {
+  const now = Math.floor(Date.now() / 1000);
+  const header = { alg: 'RS256', typ: 'JWT' };
+  const payload = {
+    iss: keyData.client_email,
+    scope: 'https://www.googleapis.com/auth/androidpublisher',
+    aud: 'https://oauth2.googleapis.com/token',
+    iat: now,
+    exp: now + 3600,
+  };
+
+  const encode = (obj: unknown) => Buffer.from(JSON.stringify(obj)).toString('base64url');
+  const unsignedToken = `${encode(header)}.${encode(payload)}`;
+
+  const crypto = await import('crypto');
+  const sign = crypto.createSign('RSA-SHA256');
+  sign.update(unsignedToken);
+  const signature = sign.sign(keyData.private_key, 'base64url');
+
+  const jwt = `${unsignedToken}.${signature}`;
+
+  const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: `grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Ajwt-bearer&assertion=${jwt}`,
+  });
+
+  const tokenData = await tokenResponse.json() as any;
+  if (!tokenData.access_token) {
+    throw new Error(`Failed to get Google access token: ${JSON.stringify(tokenData)}`);
+  }
+
+  return tokenData.access_token;
 }

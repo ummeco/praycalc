@@ -98,6 +98,8 @@
 
   "settingsTitle": "सेटिंग्स",
   "settingsSectionPrayerCalc": "नमाज़ गणना",
+  "settingsCalcMethod": "गणना विधि",
+  "settingsCalcMethodAuto": "स्वचालित (गतिशील)",
   "settingsHanafiAsr": "हनफ़ी अस्र",
   "settingsHanafiAsrSubtitle": "छाया गुणक 2x (देर से अस्र का समय)",
   "settingsSectionDisplay": "प्रदर्शन",
@@ -679,5 +681,41 @@
   "pinCity": "पिन",
   "pinMaxReached": "अधिकतम 5 पिन किए शहर। अधिक के लिए Ummat+ में अपग्रेड करें।",
   "pinCityUnpinned": "{city} अनपिन किया गया",
-  "pinUndo": "पूर्ववत करें"
+  "pinUndo": "पूर्ववत करें",
+
+  "smartHomeDevices": "डिवाइस",
+  "smartHomeAddDevice": "डिवाइस जोड़ें",
+  "smartHomeDeleteDevice": "हटाएं",
+  "smartHomeDeleteDeviceConfirm": "इस डिवाइस को हटाएं?",
+  "smartHomeDeviceOnline": "ऑनलाइन",
+  "smartHomeDeviceOffline": "ऑफलाइन",
+  "smartHomeDeviceLastSeen": "अंतिम बार देखा: {time}",
+  "@smartHomeDeviceLastSeen": {
+    "placeholders": {
+      "time": { "type": "String" }
+    }
+  },
+  "smartHomeDeviceName": "डिवाइस का नाम",
+  "smartHomeDeviceType": "डिवाइस का प्रकार",
+  "smartHomeDeviceTypeTv": "टीवी",
+  "smartHomeDeviceTypeSpeaker": "स्पीकर",
+  "smartHomeDeviceTypeWatch": "घड़ी",
+  "smartHomeDeviceTypeDesktop": "डेस्कटॉप",
+  "smartHomeDeviceTypeOther": "अन्य",
+  "smartHomeDeviceAdhan": "अज़ान सूचनाएं",
+  "smartHomeDeviceAdhanDesc": "इस डिवाइस पर अज़ान अलर्ट प्राप्त करें",
+  "smartHomeDeviceVolume": "वॉल्यूम",
+  "smartHomeDeviceAudioType": "ऑडियो प्रकार",
+  "smartHomeDeviceEnabledPrayers": "सक्रिय नमाज़ें",
+  "smartHomeDeviceSettings": "डिवाइस सेटिंग्स",
+  "smartHomeTesting": "परीक्षण हो रहा है...",
+  "smartHomeTestSuccess": "कनेक्शन सत्यापित",
+  "smartHomeTestFailed": "कनेक्शन परीक्षण विफल",
+  "smartHomePairTv": "टीवी जोड़ें",
+  "smartHomePairingTv": "टीवी पंजीकृत हो रहा है...",
+  "smartHomePairTvSuccess": "टीवी सफलतापूर्वक जोड़ा गया",
+  "smartHomePairTvFailed": "टीवी जोड़ना विफल",
+  "smartHomeLoadingDevices": "डिवाइस लोड हो रहे हैं...",
+  "smartHomeLoadingIntegrations": "इंटीग्रेशन लोड हो रहे हैं...",
+  "smartHomeServiceUnavailable": "स्मार्ट होम सेवा वर्तमान में उपलब्ध नहीं है। कृपया बाद में पुनः प्रयास करें।"
 }

@@ -279,6 +279,12 @@ class AppLocalizationsSo extends AppLocalizations {
   String get settingsSectionPrayerCalc => 'Xisaabinta Salaadda';
 
   @override
+  String get settingsCalcMethod => 'Habka Xisaabinta';
+
+  @override
+  String get settingsCalcMethodAuto => 'Toos (Firfircoon)';
+
+  @override
   String get settingsHanafiAsr => 'Asr Xanafi';
 
   @override
@@ -2027,6 +2033,101 @@ class AppLocalizationsSo extends AppLocalizations {
 
   @override
   String get smartHomeCouldNotOpen => 'Lama furin karin xiriirka.';
+
+  @override
+  String get smartHomeDevices => 'Aaladaha';
+
+  @override
+  String get smartHomeAddDevice => 'Ku dar Aalad';
+
+  @override
+  String get smartHomeDeleteDevice => 'Tirtir';
+
+  @override
+  String get smartHomeDeleteDeviceConfirm => 'Ka saar aaladdan?';
+
+  @override
+  String get smartHomeDeviceOnline => 'Khadka ku jira';
+
+  @override
+  String get smartHomeDeviceOffline => 'Khadka kama jirto';
+
+  @override
+  String smartHomeDeviceLastSeen(String time) {
+    return 'Markii ugu dambeysay la arkay: $time';
+  }
+
+  @override
+  String get smartHomeDeviceName => 'Magaca aaladda';
+
+  @override
+  String get smartHomeDeviceType => 'Nooca aaladda';
+
+  @override
+  String get smartHomeDeviceTypeTv => 'TV';
+
+  @override
+  String get smartHomeDeviceTypeSpeaker => 'Isbitaalka codka';
+
+  @override
+  String get smartHomeDeviceTypeWatch => 'Saacad';
+
+  @override
+  String get smartHomeDeviceTypeDesktop => 'Kombiyuutar';
+
+  @override
+  String get smartHomeDeviceTypeOther => 'Kale';
+
+  @override
+  String get smartHomeDeviceAdhan => 'Ogeysiisyada aadaanka';
+
+  @override
+  String get smartHomeDeviceAdhanDesc =>
+      'Ka hel digniinooyinka aadaanka aaladdan';
+
+  @override
+  String get smartHomeDeviceVolume => 'Codka';
+
+  @override
+  String get smartHomeDeviceAudioType => 'Nooca codka';
+
+  @override
+  String get smartHomeDeviceEnabledPrayers => 'Salaadaha la hawlgeliyay';
+
+  @override
+  String get smartHomeDeviceSettings => 'Dejinta Aaladda';
+
+  @override
+  String get smartHomeTesting => 'Waa la tijaabinayaa...';
+
+  @override
+  String get smartHomeTestSuccess => 'Xiriirka waa la xaqiijiyay';
+
+  @override
+  String get smartHomeTestFailed => 'Tijaabinta xiriirka way guul darreysatay';
+
+  @override
+  String get smartHomePairTv => 'Ku xidh TV';
+
+  @override
+  String get smartHomePairingTv => 'TV waa la diiwaangelinayaa...';
+
+  @override
+  String get smartHomePairTvSuccess => 'TV si guul leh ayaa loo xidhay';
+
+  @override
+  String get smartHomePairTvFailed => 'Xidhista TV way guul darreysatay';
+
+  @override
+  String get smartHomeLoadingDevices => 'Aaladaha waa la soo rarayaa...';
+
+  @override
+  String get smartHomeLoadingIntegrations =>
+      'Isku xidhka waa la soo rarayaa...';
+
+  @override
+  String get smartHomeServiceUnavailable =>
+      'Adeegga guriga casriga ah hadda ma diyaara. Fadlan dib u isku day hadhow.';
 
   @override
   String adhkarCompletedCount(int completed, int total) {

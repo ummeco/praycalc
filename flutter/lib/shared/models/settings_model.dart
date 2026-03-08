@@ -14,6 +14,9 @@ class AppSettings {
   final bool darkMode; // null = follow system
   final bool? followSystem;
   final String? locale; // null = follow system locale
+  /// Preferred calculation method key (e.g. 'isna', 'mwl', 'egypt').
+  /// null = auto (DPC dynamic method). Used by the API and displayed in settings.
+  final String? calcMethod;
 
   // ── Home Screen ────────────────────────────────────────────
   final bool skyGradientEnabled;
@@ -51,6 +54,7 @@ class AppSettings {
     this.darkMode = false,
     this.followSystem = true,
     this.locale,
+    this.calcMethod,
     this.skyGradientEnabled = true,
     this.skyGradientWeather = false,
     this.countdownAnimationEnabled = true,
@@ -73,6 +77,7 @@ class AppSettings {
     bool? darkMode,
     bool? followSystem,
     Object? locale = _sentinel,
+    Object? calcMethod = _sentinel,
     bool? skyGradientEnabled,
     bool? skyGradientWeather,
     bool? countdownAnimationEnabled,
@@ -93,6 +98,7 @@ class AppSettings {
         darkMode: darkMode ?? this.darkMode,
         followSystem: followSystem ?? this.followSystem,
         locale: locale == _sentinel ? this.locale : locale as String?,
+        calcMethod: calcMethod == _sentinel ? this.calcMethod : calcMethod as String?,
         skyGradientEnabled: skyGradientEnabled ?? this.skyGradientEnabled,
         skyGradientWeather: skyGradientWeather ?? this.skyGradientWeather,
         countdownAnimationEnabled:
@@ -116,6 +122,7 @@ class AppSettings {
         darkMode: prefs['darkMode'] as bool? ?? false,
         followSystem: prefs['followSystem'] as bool? ?? true,
         locale: prefs['locale'] as String?,
+        calcMethod: prefs['calc_method'] as String?,
         skyGradientEnabled: prefs['sky_gradient_enabled'] as bool? ?? true,
         skyGradientWeather: prefs['sky_gradient_weather'] as bool? ?? false,
         countdownAnimationEnabled:
@@ -155,6 +162,7 @@ class AppSettings {
         'darkMode': darkMode,
         'followSystem': followSystem,
         'locale': locale,
+        'calc_method': calcMethod,
         'sky_gradient_enabled': skyGradientEnabled,
         'sky_gradient_weather': skyGradientWeather,
         'countdown_animation_enabled': countdownAnimationEnabled,

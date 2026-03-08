@@ -86,7 +86,76 @@ class PrayerService: NSObject, ObservableObject, CLLocationManagerDelegate {
         }
     }
 
-    // MARK: - API
+    // MARK: - Primary Calculation (C Core — Offline-First)
+    //
+    // watchOS uses an offline-first approach: the C core library is the primary
+    // prayer time engine, computing on-device with no network. The PrayCalc API
+    // (fetchPrayerTimesFromAPI) serves as a fallback only when C core fails.
+
+    private func calculateOffline(latitude: Double, longitude: Double) {
+        let method = PrayCalcEngine.CalculationMethod(apiKey: calculationMethod) ?? .isna
+        let asrMadhab = PrayCalcEngine.AsrMadhab(apiKey: madhab) ?? .shafi
+
+        guard let times = PrayCalcEngine.calculatePrayerTimes(
+            latitude: latitude,
+            longitude: longitude,
+            date: Date(),
+            method: method,
+            madhab: asrMadhab
+        ) else {
+            // Offline calculation failed, try API
+            fetchPrayerTimesFromAPI(latitude: latitude, longitude: longitude)
+            return
+        }
+
+        let formatter = DateFormatter()
+        formatter.dateFormat = "h:mm a"
+
+        let prayers = PrayerTimes(
+            fajr: formatter.string(from: times.fajr),
+            sunrise: formatter.string(from: times.sunrise),
+            dhuhr: formatter.string(from: times.dhuhr),
+            asr: formatter.string(from: times.asr),
+            maghrib: formatter.string(from: times.maghrib),
+            isha: formatter.string(from: times.isha)
+        )
+
+        let now = Date()
+        let orderedDates = [times.fajr, times.sunrise, times.dhuhr, times.asr, times.maghrib, times.isha]
+        let orderedNames = ["fajr", "sunrise", "dhuhr", "asr", "maghrib", "isha"]
+        var nextPrayerName = "fajr"
+        var nextPrayerTime = formatter.string(from: times.fajr)
+
+        for (i, date) in orderedDates.enumerated() {
+            if date > now {
+                nextPrayerName = orderedNames[i]
+                nextPrayerTime = formatter.string(from: date)
+                break
+            }
+        }
+
+        let response = PrayerResponse(
+            prayers: prayers,
+            nextPrayer: NextPrayerInfo(
+                name: nextPrayerName,
+                time: nextPrayerTime,
+                remaining: ""
+            ),
+            qibla: QiblaData(bearing: times.qiblaBearing),
+            meta: PrayerMeta(
+                method: calculationMethod,
+                madhab: madhab,
+                latitude: latitude,
+                longitude: longitude,
+                timezone: TimeZone.current.identifier,
+                date: todayDateString()
+            )
+        )
+
+        applyResponse(response)
+    }
+
+    // MARK: - Prayer Time Resolution
 
     private func fetchPrayerTimes(latitude: Double, longitude: Double) {
         let today = todayDateString()
@@ -95,6 +164,20 @@ class PrayerService: NSObject, ObservableObject, CLLocationManagerDelegate {
             applyResponse(cached)
             return
         }
+
+        // Primary path: C core on-device calculation (no network needed).
+        // Falls back to API only if C core computation fails.
+        calculateOffline(latitude: latitude, longitude: longitude)
+        cachedDate = today
+    }
+
+    // MARK: - API Fallback
+    //
+    // Called only when the C core on-device calculation fails.
+
+    /// Fetch prayer times from the PrayCalc API as a fallback.
+    private func fetchPrayerTimesFromAPI(latitude: Double, longitude: Double) {
+        let today = todayDateString()
 
         isLoading = true
         errorMessage = nil

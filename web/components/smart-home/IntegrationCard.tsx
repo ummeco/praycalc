@@ -13,6 +13,7 @@ interface IntegrationCardProps {
   instructions?: string[];
   apiKey?: string;
   onUnlink: () => void | Promise<void>;
+  onTest?: () => Promise<boolean>;
 }
 
 export default function IntegrationCard({
@@ -26,10 +27,13 @@ export default function IntegrationCard({
   instructions,
   apiKey,
   onUnlink,
+  onTest,
 }: IntegrationCardProps) {
   const [showInstructions, setShowInstructions] = useState(false);
   const [unlinking, setUnlinking] = useState(false);
   const [confirmUnlink, setConfirmUnlink] = useState(false);
+  const [testing, setTesting] = useState(false);
+  const [testResult, setTestResult] = useState<boolean | null>(null);
 
   const handleUnlink = async () => {
     if (!confirmUnlink) {
@@ -42,6 +46,20 @@ export default function IntegrationCard({
     } finally {
       setUnlinking(false);
       setConfirmUnlink(false);
+    }
+  };
+
+  const handleTest = async () => {
+    if (!onTest) return;
+    setTesting(true);
+    setTestResult(null);
+    try {
+      const ok = await onTest();
+      setTestResult(ok);
+    } catch {
+      setTestResult(false);
+    } finally {
+      setTesting(false);
     }
   };
 
@@ -113,20 +131,43 @@ export default function IntegrationCard({
           </button>
         )}
         {connected && (
-          <button
-            type="button"
-            onClick={handleUnlink}
-            disabled={unlinking}
-            className="rounded-lg border border-red-800/50 px-4 py-2 text-sm text-red-400 transition hover:bg-red-900/20 disabled:opacity-50"
-          >
-            {unlinking
-              ? "Unlinking..."
-              : confirmUnlink
-                ? "Confirm unlink"
-                : "Unlink"}
-          </button>
+          <>
+            <button
+              type="button"
+              onClick={handleTest}
+              disabled={testing}
+              className="rounded-lg bg-[#1E5E2F] px-4 py-2 text-sm font-medium text-[#C9F27A] transition hover:bg-[#1E5E2F]/80 disabled:opacity-50"
+            >
+              {testing ? "Testing..." : "Test Connection"}
+            </button>
+            <button
+              type="button"
+              onClick={handleUnlink}
+              disabled={unlinking}
+              className="rounded-lg border border-red-800/50 px-4 py-2 text-sm text-red-400 transition hover:bg-red-900/20 disabled:opacity-50"
+            >
+              {unlinking
+                ? "Unlinking..."
+                : confirmUnlink
+                  ? "Confirm unlink"
+                  : "Unlink"}
+            </button>
+          </>
         )}
       </div>
+
+      {/* Test result feedback */}
+      {testResult !== null && (
+        <p
+          className={`mt-3 text-xs ${
+            testResult ? "text-[#79C24C]" : "text-red-400"
+          }`}
+        >
+          {testResult
+            ? "Connection verified successfully."
+            : "Connection test failed. Check your account link."}
+        </p>
+      )}
 
       {/* Instructions modal */}
       {showInstructions && instructions && (

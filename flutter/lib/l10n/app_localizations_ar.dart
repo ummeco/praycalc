@@ -278,6 +278,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get settingsSectionPrayerCalc => 'حساب أوقات الصلاة';
 
   @override
+  String get settingsCalcMethod => 'طريقة الحساب';
+
+  @override
+  String get settingsCalcMethodAuto => 'تلقائي (ديناميكي)';
+
+  @override
   String get settingsHanafiAsr => 'عصر الحنفية';
 
   @override
@@ -1991,6 +1997,100 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get smartHomeCouldNotOpen => 'تعذّر فتح الرابط.';
+
+  @override
+  String get smartHomeDevices => 'الأجهزة';
+
+  @override
+  String get smartHomeAddDevice => 'إضافة جهاز';
+
+  @override
+  String get smartHomeDeleteDevice => 'حذف';
+
+  @override
+  String get smartHomeDeleteDeviceConfirm => 'إزالة هذا الجهاز؟';
+
+  @override
+  String get smartHomeDeviceOnline => 'متصل';
+
+  @override
+  String get smartHomeDeviceOffline => 'غير متصل';
+
+  @override
+  String smartHomeDeviceLastSeen(String time) {
+    return 'آخر ظهور: $time';
+  }
+
+  @override
+  String get smartHomeDeviceName => 'اسم الجهاز';
+
+  @override
+  String get smartHomeDeviceType => 'نوع الجهاز';
+
+  @override
+  String get smartHomeDeviceTypeTv => 'تلفاز';
+
+  @override
+  String get smartHomeDeviceTypeSpeaker => 'سماعة';
+
+  @override
+  String get smartHomeDeviceTypeWatch => 'ساعة';
+
+  @override
+  String get smartHomeDeviceTypeDesktop => 'حاسوب';
+
+  @override
+  String get smartHomeDeviceTypeOther => 'أخرى';
+
+  @override
+  String get smartHomeDeviceAdhan => 'إشعارات الأذان';
+
+  @override
+  String get smartHomeDeviceAdhanDesc =>
+      'استقبال تنبيهات الأذان على هذا الجهاز';
+
+  @override
+  String get smartHomeDeviceVolume => 'مستوى الصوت';
+
+  @override
+  String get smartHomeDeviceAudioType => 'نوع الصوت';
+
+  @override
+  String get smartHomeDeviceEnabledPrayers => 'الصلوات المفعّلة';
+
+  @override
+  String get smartHomeDeviceSettings => 'إعدادات الجهاز';
+
+  @override
+  String get smartHomeTesting => 'جاري الاختبار...';
+
+  @override
+  String get smartHomeTestSuccess => 'تم التحقق من الاتصال';
+
+  @override
+  String get smartHomeTestFailed => 'فشل اختبار الاتصال';
+
+  @override
+  String get smartHomePairTv => 'ربط التلفاز';
+
+  @override
+  String get smartHomePairingTv => 'جاري تسجيل التلفاز...';
+
+  @override
+  String get smartHomePairTvSuccess => 'تم ربط التلفاز بنجاح';
+
+  @override
+  String get smartHomePairTvFailed => 'فشل ربط التلفاز';
+
+  @override
+  String get smartHomeLoadingDevices => 'جاري تحميل الأجهزة...';
+
+  @override
+  String get smartHomeLoadingIntegrations => 'جاري تحميل التكاملات...';
+
+  @override
+  String get smartHomeServiceUnavailable =>
+      'خدمة المنزل الذكي غير متوفرة حالياً. يرجى المحاولة لاحقاً.';
 
   @override
   String adhkarCompletedCount(int completed, int total) {

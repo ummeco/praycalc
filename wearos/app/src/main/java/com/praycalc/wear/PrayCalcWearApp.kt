@@ -51,6 +51,7 @@ fun PrayCalcWearApp() {
     val context = LocalContext.current
     val repository = remember { PrayerRepository(context) }
     val prayerData by repository.prayerData.collectAsState()
+    val locationError by repository.locationError.collectAsState()
     val navController = rememberSwipeDismissableNavController()
 
     MaterialTheme(colors = PrayCalcColorPalette) {
@@ -61,6 +62,7 @@ fun PrayCalcWearApp() {
             composable(Routes.PRAYER_LIST) {
                 PrayerListScreen(
                     prayerData = prayerData,
+                    locationError = locationError,
                     onCountdownClick = {
                         navController.navigate(Routes.COUNTDOWN)
                     },

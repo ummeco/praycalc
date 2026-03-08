@@ -8,6 +8,7 @@ import '../../core/providers/settings_provider.dart';
 import '../../core/providers/sync_provider.dart';
 import '../../core/router/app_router.dart';
 import '../../core/services/sync_service.dart';
+import '../../core/utils/locale_calc_method.dart';
 
 /// Supported locales: (display name, language code or null for system default).
 const _supportedLocales = [
@@ -23,6 +24,17 @@ const _supportedLocales = [
   ('Deutsch', 'de'),
   ('Español', 'es'),
   ('हिन्दी', 'hi'),
+  ('Bahasa Melayu', 'ms'),
+  ('فارسی', 'fa'),
+  ('پښتو', 'ps'),
+  ('Kiswahili', 'sw'),
+  ('Hausa', 'ha'),
+  ('Oʻzbek', 'uz'),
+  ('کوردی', 'ku'),
+  ('ไทย', 'th'),
+  ('中文', 'zh'),
+  ('Русский', 'ru'),
+  ('Português', 'pt'),
 ];
 
 /// Settings screen: calculation method, madhab, time format, theme, language,
@@ -90,6 +102,13 @@ class SettingsScreen extends ConsumerWidget {
 
           // ── Prayer calculation ───────────────────────────────────────────
           _SectionHeader(l.settingsSectionPrayerCalc),
+          ListTile(
+            leading: const Icon(Icons.calculate_outlined),
+            title: Text(l.settingsCalcMethod),
+            subtitle: Text(_calcMethodLabel(settings.calcMethod)),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => _showCalcMethodPicker(context, settings.calcMethod, notifier, ref),
+          ),
           SwitchListTile(
             title: Text(l.settingsHanafiAsr),
             subtitle: Text(l.settingsHanafiAsrSubtitle),
@@ -296,6 +315,98 @@ class SettingsScreen extends ConsumerWidget {
       case SyncStatus.error:
         return l.syncError;
     }
+  }
+
+  /// Display label for the current calculation method.
+  String _calcMethodLabel(String? method) {
+    if (method == null) return 'Auto (Dynamic)';
+    const labels = {
+      'isna': 'ISNA',
+      'mwl': 'MWL',
+      'egypt': 'Egypt',
+      'ummAlQura': 'Umm al-Qura',
+      'tehran': 'Tehran',
+      'karachi': 'Karachi',
+      'kuwait': 'Kuwait',
+      'qatar': 'Qatar',
+      'singapore': 'Singapore',
+      'turkey': 'Turkey',
+      'dubai': 'Dubai',
+      'morocco': 'Morocco',
+      'moonsighting': 'Moon Sighting',
+    };
+    return labels[method] ?? method;
+  }
+
+  Future<void> _showCalcMethodPicker(
+    BuildContext context,
+    String? current,
+    SettingsNotifier notifier,
+    WidgetRef ref,
+  ) async {
+    final l = AppLocalizations.of(context)!;
+    final methods = <(String, String?)>[
+      (l.settingsCalcMethodAuto, null),
+      ('ISNA', 'isna'),
+      ('MWL', 'mwl'),
+      ('Egypt', 'egypt'),
+      ('Umm al-Qura', 'ummAlQura'),
+      ('Tehran', 'tehran'),
+      ('Karachi', 'karachi'),
+      ('Kuwait', 'kuwait'),
+      ('Qatar', 'qatar'),
+      ('Singapore', 'singapore'),
+      ('Turkey', 'turkey'),
+      ('Dubai', 'dubai'),
+      ('Morocco', 'morocco'),
+      ('Moon Sighting', 'moonsighting'),
+    ];
+
+    // Show the locale-suggested method at the top if not already selected
+    final locale = ref.read(settingsProvider).locale;
+    final suggested = locale != null ? getDefaultCalcMethod(locale).name : null;
+
+    final selected = await showDialog<String?>(
+      context: context,
+      builder: (ctx) => SimpleDialog(
+        title: Text(l.settingsCalcMethod),
+        children: [
+          for (final (label, code) in methods)
+            SimpleDialogOption(
+              onPressed: () => Navigator.of(ctx).pop(code ?? ''),
+              child: Row(
+                children: [
+                  Icon(
+                    code == current || (code == null && current == null)
+                        ? Icons.radio_button_checked
+                        : Icons.radio_button_unchecked,
+                    size: 20,
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(child: Text(label)),
+                  if (code != null && code == suggested && code != current)
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.primary.withAlpha(30),
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: Text(
+                        'Suggested',
+                        style: TextStyle(
+                          fontSize: 10,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+        ],
+      ),
+    );
+    if (selected == null) return; // dialog dismissed
+    await notifier.setCalcMethod(selected.isEmpty ? null : selected);
   }
 
   void _setHomeLocation(BuildContext context, WidgetRef ref, SettingsNotifier notifier) {

@@ -5,8 +5,10 @@ import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../core/providers/smart_home_provider.dart';
 import '../../core/providers/subscription_provider.dart';
 import '../../core/router/app_router.dart';
+import '../../core/services/smart_home_api_service.dart';
 import '../../core/theme/app_theme.dart';
 
 // ─── Prefs keys ───────────────────────────────────────────────────────────────
@@ -216,63 +218,68 @@ class _SmartHomeBody extends ConsumerWidget {
     final l = AppLocalizations.of(context)!;
     final sh = ref.watch(_smartHomeProvider);
     final notifier = ref.read(_smartHomeProvider.notifier);
+    final intState = ref.watch(integrationsProvider);
 
     return ListView(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       children: [
         // ── Integrations ──────────────────────────────────────────────────
         _SectionHeader(l.smartHomeIntegrations),
-        _IntegrationCard(
-          icon: Icons.home,
-          iconColor: const Color(0xFF4285F4),
-          name: l.smartHomeGoogleHome,
-          description: l.smartHomeBroadcastGoogle,
-          status: _IntegrationStatus.notLinked,
-          actionLabel: l.smartHomeLinkAccount,
-          onAction: () => _launchOAuth(
-            context,
-            'https://api.praycalc.com/integrations/google-home/auth',
+        if (intState.isLoading)
+          const Padding(
+            padding: EdgeInsets.all(20),
+            child: Center(child: CircularProgressIndicator()),
+          )
+        else if (intState.error != null)
+          _ErrorCard(
+            message: intState.error!,
+            onRetry: () => ref.read(integrationsProvider.notifier).load(),
+          )
+        else ...[
+          _IntegrationCardLive(
+            icon: Icons.home,
+            iconColor: const Color(0xFF4285F4),
+            name: l.smartHomeGoogleHome,
+            description: l.smartHomeBroadcastGoogle,
+            platform: 'google-home',
+            oauthUrl: 'https://api.praycalc.com/integrations/google-home/auth',
           ),
-        ),
-        const SizedBox(height: 10),
-        _IntegrationCard(
-          icon: Icons.speaker,
-          iconColor: const Color(0xFF00CAFF),
-          name: l.smartHomeAlexa,
-          description: l.smartHomeEnableAlexa,
-          status: _IntegrationStatus.notLinked,
-          actionLabel: l.smartHomeLinkAccount,
-          onAction: () => _launchOAuth(
-            context,
-            'https://api.praycalc.com/integrations/alexa/auth',
+          const SizedBox(height: 10),
+          _IntegrationCardLive(
+            icon: Icons.speaker,
+            iconColor: const Color(0xFF00CAFF),
+            name: l.smartHomeAlexa,
+            description: l.smartHomeEnableAlexa,
+            platform: 'alexa',
+            oauthUrl: 'https://api.praycalc.com/integrations/alexa/auth',
           ),
-        ),
-        const SizedBox(height: 10),
-        _IntegrationCard(
-          icon: Icons.phone_iphone,
-          iconColor: const Color(0xFF007AFF),
-          name: l.smartHomeSiri,
-          description: l.smartHomeSiriAsk,
-          status: _IntegrationStatus.notLinked,
-          actionLabel: l.smartHomeSetupGuide,
-          onAction: () => _showSiriInstructions(context),
-        ),
-        const SizedBox(height: 10),
-        _IntegrationCard(
-          icon: Icons.developer_board,
-          iconColor: const Color(0xFF41BDF5),
-          name: l.smartHomeHomeAssistant,
-          description: l.smartHomeHassAdd,
-          status: _IntegrationStatus.notLinked,
-          actionLabel: l.smartHomeSetupGuide,
-          onAction: () => _showHassInstructions(context),
-        ),
+          const SizedBox(height: 10),
+          _IntegrationCardLive(
+            icon: Icons.phone_iphone,
+            iconColor: const Color(0xFF007AFF),
+            name: l.smartHomeSiri,
+            description: l.smartHomeSiriAsk,
+            platform: 'siri',
+            isManualSetup: true,
+            onSetup: () => _showSiriInstructions(context),
+          ),
+          const SizedBox(height: 10),
+          _IntegrationCardLive(
+            icon: Icons.developer_board,
+            iconColor: const Color(0xFF41BDF5),
+            name: l.smartHomeHomeAssistant,
+            description: l.smartHomeHassAdd,
+            platform: 'home-assistant',
+            isManualSetup: true,
+            onSetup: () => _showHassInstructions(context),
+          ),
+        ],
 
         const SizedBox(height: 24),
 
         // ── Devices ───────────────────────────────────────────────────────
         _SectionHeader(l.smartHomeLinkedSpeakers),
-        _DevicesPlaceholder(),
+        const _DevicesSection(),
 
         const SizedBox(height: 24),
 
@@ -333,18 +340,6 @@ class _SmartHomeBody extends ConsumerWidget {
         const SizedBox(height: 32),
       ],
     );
-  }
-
-  Future<void> _launchOAuth(BuildContext context, String url) async {
-    final uri = Uri.parse(url);
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(uri, mode: LaunchMode.inAppBrowserView);
-    } else if (context.mounted) {
-      final l = AppLocalizations.of(context)!;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l.smartHomeCouldNotOpen)),
-      );
-    }
   }
 
   void _showSiriInstructions(BuildContext context) {
@@ -444,6 +439,570 @@ class _SmartHomeBody extends ConsumerWidget {
   }
 }
 
+// ─── Integration card (live API) ─────────────────────────────────────────────
+
+class _IntegrationCardLive extends ConsumerWidget {
+  const _IntegrationCardLive({
+    required this.icon,
+    required this.iconColor,
+    required this.name,
+    required this.description,
+    required this.platform,
+    this.oauthUrl,
+    this.isManualSetup = false,
+    this.onSetup,
+  });
+
+  final IconData icon;
+  final Color iconColor;
+  final String name;
+  final String description;
+  final String platform;
+  final String? oauthUrl;
+  final bool isManualSetup;
+  final VoidCallback? onSetup;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+    final intState = ref.watch(integrationsProvider);
+    final isLinked = intState.isConnected(platform);
+    final testResult = intState.testResults[platform]; // null=testing, true/false
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(14),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: 44,
+              height: 44,
+              decoration: BoxDecoration(
+                color: iconColor.withAlpha(30),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Icon(icon, color: iconColor, size: 24),
+            ),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Text(name,
+                          style: theme.textTheme.titleSmall
+                              ?.copyWith(fontWeight: FontWeight.w600)),
+                      const SizedBox(width: 8),
+                      _StatusBadge(isLinked: isLinked),
+                    ],
+                  ),
+                  const SizedBox(height: 3),
+                  Text(description,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant)),
+                  const SizedBox(height: 10),
+
+                  // Test result feedback
+                  if (intState.testResults.containsKey(platform)) ...[
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 8),
+                      child: testResult == null
+                          ? Row(
+                              children: [
+                                const SizedBox(
+                                  width: 14,
+                                  height: 14,
+                                  child: CircularProgressIndicator(strokeWidth: 2),
+                                ),
+                                const SizedBox(width: 8),
+                                Text(l.smartHomeTesting,
+                                    style: theme.textTheme.bodySmall),
+                              ],
+                            )
+                          : Row(
+                              children: [
+                                Icon(
+                                  testResult
+                                      ? Icons.check_circle
+                                      : Icons.error_outline,
+                                  size: 16,
+                                  color: testResult
+                                      ? PrayCalcColors.mid
+                                      : Colors.red[400],
+                                ),
+                                const SizedBox(width: 6),
+                                Expanded(
+                                  child: Text(
+                                    testResult
+                                        ? l.smartHomeTestSuccess
+                                        : l.smartHomeTestFailed,
+                                    style: theme.textTheme.bodySmall?.copyWith(
+                                      color: testResult
+                                          ? PrayCalcColors.mid
+                                          : Colors.red[400],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                    ),
+                  ],
+
+                  // Action buttons
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 6,
+                    children: [
+                      if (isLinked) ...[
+                        SizedBox(
+                          height: 34,
+                          child: OutlinedButton(
+                            onPressed: () => ref
+                                .read(integrationsProvider.notifier)
+                                .unlink(platform),
+                            child: Text(l.smartHomeUnlink),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 34,
+                          child: FilledButton.tonal(
+                            onPressed: () => ref
+                                .read(integrationsProvider.notifier)
+                                .testConnection(platform),
+                            child: Text(l.smartHomeTestConnection),
+                          ),
+                        ),
+                      ] else ...[
+                        SizedBox(
+                          height: 34,
+                          child: FilledButton.tonal(
+                            onPressed: isManualSetup
+                                ? onSetup
+                                : () => _launchOAuth(context, oauthUrl!),
+                            child: Text(isManualSetup
+                                ? l.smartHomeSetupGuide
+                                : l.smartHomeLinkAccount),
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _launchOAuth(BuildContext context, String url) async {
+    final uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.inAppBrowserView);
+    } else if (context.mounted) {
+      final l = AppLocalizations.of(context)!;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l.smartHomeCouldNotOpen)),
+      );
+    }
+  }
+}
+
+// ─── Devices section (live API) ──────────────────────────────────────────────
+
+class _DevicesSection extends ConsumerWidget {
+  const _DevicesSection();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+    final devState = ref.watch(devicesProvider);
+
+    if (devState.isLoading) {
+      return const Padding(
+        padding: EdgeInsets.all(20),
+        child: Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    if (devState.error != null) {
+      return _ErrorCard(
+        message: devState.error!,
+        onRetry: () => ref.read(devicesProvider.notifier).load(),
+      );
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (devState.devices.isEmpty)
+          Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: theme.colorScheme.surfaceContainerHighest.withAlpha(80),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: theme.colorScheme.outlineVariant.withAlpha(80),
+              ),
+            ),
+            child: Row(
+              children: [
+                Icon(Icons.devices_outlined,
+                    size: 32, color: theme.colorScheme.onSurfaceVariant),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(l.smartHomeNoDevices,
+                          style: theme.textTheme.titleSmall
+                              ?.copyWith(fontWeight: FontWeight.w600)),
+                      const SizedBox(height: 4),
+                      Text(
+                        l.smartHomeNoDevicesDesc,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          )
+        else
+          ...devState.devices.map((device) => _DeviceCard(device: device)),
+
+        const SizedBox(height: 12),
+        Center(
+          child: FilledButton.icon(
+            onPressed: () => _showAddDeviceDialog(context, ref),
+            icon: const Icon(Icons.add, size: 18),
+            label: Text(l.smartHomeAddDevice),
+            style: FilledButton.styleFrom(
+              minimumSize: const Size(180, 40),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  void _showAddDeviceDialog(BuildContext context, WidgetRef ref) {
+    final l = AppLocalizations.of(context)!;
+    final nameController = TextEditingController();
+    String selectedType = 'speaker';
+
+    showDialog(
+      context: context,
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setState) => AlertDialog(
+          title: Text(l.smartHomeAddDevice),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: nameController,
+                decoration: InputDecoration(
+                  labelText: l.smartHomeDeviceName,
+                  border: const OutlineInputBorder(),
+                ),
+              ),
+              const SizedBox(height: 16),
+              DropdownButtonFormField<String>(
+                initialValue: selectedType,
+                decoration: InputDecoration(
+                  labelText: l.smartHomeDeviceType,
+                  border: const OutlineInputBorder(),
+                ),
+                items: [
+                  DropdownMenuItem(value: 'tv', child: Text(l.smartHomeDeviceTypeTv)),
+                  DropdownMenuItem(value: 'speaker', child: Text(l.smartHomeDeviceTypeSpeaker)),
+                  DropdownMenuItem(value: 'watch', child: Text(l.smartHomeDeviceTypeWatch)),
+                  DropdownMenuItem(value: 'desktop', child: Text(l.smartHomeDeviceTypeDesktop)),
+                  DropdownMenuItem(value: 'other', child: Text(l.smartHomeDeviceTypeOther)),
+                ],
+                onChanged: (v) => setState(() => selectedType = v ?? 'speaker'),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop(),
+              child: Text(MaterialLocalizations.of(ctx).cancelButtonLabel),
+            ),
+            FilledButton(
+              onPressed: () {
+                final name = nameController.text.trim();
+                if (name.isEmpty) return;
+                ref.read(devicesProvider.notifier).addDevice(
+                      name: name,
+                      type: selectedType,
+                    );
+                Navigator.of(ctx).pop();
+              },
+              child: Text(l.smartHomeAddDevice),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ─── Device card ─────────────────────────────────────────────────────────────
+
+class _DeviceCard extends ConsumerWidget {
+  const _DeviceCard({required this.device});
+  final SmartHomeDevice device;
+
+  IconData get _deviceIcon {
+    switch (device.type) {
+      case 'tv': return Icons.tv;
+      case 'speaker': return Icons.speaker;
+      case 'watch': return Icons.watch;
+      case 'desktop': return Icons.desktop_windows;
+      default: return Icons.devices_other;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+
+    return Card(
+      margin: const EdgeInsets.only(bottom: 8),
+      child: ExpansionTile(
+        leading: Icon(_deviceIcon, color: PrayCalcColors.mid),
+        title: Row(
+          children: [
+            Expanded(
+              child: Text(device.name,
+                  style: theme.textTheme.titleSmall
+                      ?.copyWith(fontWeight: FontWeight.w600)),
+            ),
+            Container(
+              width: 8,
+              height: 8,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: device.online ? PrayCalcColors.mid : Colors.grey,
+              ),
+            ),
+            const SizedBox(width: 6),
+            Text(
+              device.online ? l.smartHomeDeviceOnline : l.smartHomeDeviceOffline,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
+            ),
+          ],
+        ),
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // ── Adhan toggle (PC-093-3.2) ────────────────────────
+                SwitchListTile(
+                  contentPadding: EdgeInsets.zero,
+                  title: Text(l.smartHomeDeviceAdhan),
+                  subtitle: Text(l.smartHomeDeviceAdhanDesc),
+                  value: device.adhanEnabled,
+                  onChanged: (v) => ref
+                      .read(devicesProvider.notifier)
+                      .updateDeviceSettings(
+                        id: device.id,
+                        adhanEnabled: v,
+                      ),
+                ),
+
+                if (device.adhanEnabled) ...[
+                  const Divider(),
+
+                  // ── Volume (PC-093-3.3) ────────────────────────────
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    child: Row(
+                      children: [
+                        Text(l.smartHomeDeviceVolume,
+                            style: theme.textTheme.bodyMedium),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Slider(
+                            value: device.volumeLevel.toDouble(),
+                            min: 0,
+                            max: 100,
+                            divisions: 20,
+                            label: '${device.volumeLevel}%',
+                            onChanged: (v) => ref
+                                .read(devicesProvider.notifier)
+                                .updateDeviceSettings(
+                                  id: device.id,
+                                  volumeLevel: v.round(),
+                                ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 40,
+                          child: Text('${device.volumeLevel}%',
+                              textAlign: TextAlign.center,
+                              style: theme.textTheme.bodySmall),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  // ── Audio type (PC-093-3.3) ────────────────────────
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(l.smartHomeDeviceAudioType,
+                            style: theme.textTheme.bodyMedium),
+                        const SizedBox(height: 8),
+                        _SegmentRow<int>(
+                          label: '',
+                          options: [
+                            _Opt(0, Icons.volume_up, l.smartHomeAudioAdhan),
+                            _Opt(1, Icons.notifications, l.smartHomeAudioBeep),
+                            _Opt(2, Icons.volume_off, l.smartHomeAudioSilent),
+                          ],
+                          selected: device.audioType,
+                          onChanged: (v) => ref
+                              .read(devicesProvider.notifier)
+                              .updateDeviceSettings(
+                                id: device.id,
+                                audioType: v,
+                              ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 8),
+
+                  // ── Enabled prayers (PC-093-3.3) ───────────────────
+                  Text(l.smartHomeDeviceEnabledPrayers,
+                      style: theme.textTheme.bodyMedium),
+                  const SizedBox(height: 4),
+                  Wrap(
+                    spacing: 6,
+                    runSpacing: 4,
+                    children: ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha']
+                        .map((prayer) {
+                      final enabled = device.enabledPrayers.contains(prayer);
+                      return FilterChip(
+                        label: Text(prayer),
+                        selected: enabled,
+                        onSelected: (v) {
+                          final updated = List<String>.from(device.enabledPrayers);
+                          if (v) {
+                            if (!updated.contains(prayer)) updated.add(prayer);
+                          } else {
+                            updated.remove(prayer);
+                          }
+                          ref
+                              .read(devicesProvider.notifier)
+                              .updateDeviceSettings(
+                                id: device.id,
+                                enabledPrayers: updated,
+                              );
+                        },
+                      );
+                    }).toList(),
+                  ),
+                ],
+
+                const SizedBox(height: 12),
+                // ── Delete device button ─────────────────────────────
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: TextButton.icon(
+                    onPressed: () => _confirmDelete(context, ref),
+                    icon: const Icon(Icons.delete_outline, size: 18,
+                        color: Colors.red),
+                    label: Text(l.smartHomeDeleteDevice,
+                        style: const TextStyle(color: Colors.red)),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _confirmDelete(BuildContext context, WidgetRef ref) {
+    final l = AppLocalizations.of(context)!;
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l.smartHomeDeleteDeviceConfirm),
+        content: Text(device.name),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: Text(MaterialLocalizations.of(ctx).cancelButtonLabel),
+          ),
+          FilledButton(
+            onPressed: () {
+              ref.read(devicesProvider.notifier).deleteDevice(device.id);
+              Navigator.of(ctx).pop();
+            },
+            style: FilledButton.styleFrom(backgroundColor: Colors.red),
+            child: Text(l.smartHomeDeleteDevice),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ─── Error card ──────────────────────────────────────────────────────────────
+
+class _ErrorCard extends StatelessWidget {
+  const _ErrorCard({required this.message, this.onRetry});
+  final String message;
+  final VoidCallback? onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.red.withAlpha(20),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.red.withAlpha(60)),
+      ),
+      child: Column(
+        children: [
+          Text(message,
+              style: theme.textTheme.bodySmall
+                  ?.copyWith(color: Colors.red[300])),
+          if (onRetry != null) ...[
+            const SizedBox(height: 8),
+            TextButton(
+              onPressed: onRetry,
+              child: const Text('Retry'),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
 // ─── Section header ───────────────────────────────────────────────────────────
 
 class _SectionHeader extends StatelessWidget {
@@ -462,50 +1021,6 @@ class _SectionHeader extends StatelessWidget {
           letterSpacing: 0.8,
           color: Theme.of(context).colorScheme.onSurfaceVariant,
         ),
-      ),
-    );
-  }
-}
-
-// ─── Devices placeholder ──────────────────────────────────────────────────────
-
-class _DevicesPlaceholder extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final l = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceContainerHighest.withAlpha(80),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: theme.colorScheme.outlineVariant.withAlpha(80),
-        ),
-      ),
-      child: Row(
-        children: [
-          Icon(Icons.devices_outlined,
-              size: 32, color: theme.colorScheme.onSurfaceVariant),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(l.smartHomeNoDevices,
-                    style: theme.textTheme.titleSmall
-                        ?.copyWith(fontWeight: FontWeight.w600)),
-                const SizedBox(height: 4),
-                Text(
-                  l.smartHomeNoDevicesDesc,
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.colorScheme.onSurfaceVariant,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
       ),
     );
   }
@@ -541,8 +1056,10 @@ class _SegmentRow<T> extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(label, style: theme.textTheme.bodyMedium),
-          const SizedBox(height: 8),
+          if (label.isNotEmpty)
+            Text(label, style: theme.textTheme.bodyMedium),
+          if (label.isNotEmpty)
+            const SizedBox(height: 8),
           Row(
             children: options.map((opt) {
               final isSelected = opt.value == selected;
@@ -747,90 +1264,7 @@ class _TimeRow extends StatelessWidget {
   }
 }
 
-// ─── Integration card ─────────────────────────────────────────────────────────
-
-enum _IntegrationStatus { linked, notLinked }
-
-class _IntegrationCard extends StatelessWidget {
-  const _IntegrationCard({
-    required this.icon,
-    required this.iconColor,
-    required this.name,
-    required this.description,
-    required this.status,
-    required this.actionLabel,
-    required this.onAction,
-  });
-
-  final IconData icon;
-  final Color iconColor;
-  final String name;
-  final String description;
-  final _IntegrationStatus status;
-  final String actionLabel;
-  final VoidCallback onAction;
-
-  @override
-  Widget build(BuildContext context) {
-    final l = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
-    final isLinked = status == _IntegrationStatus.linked;
-
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(14),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              width: 44,
-              height: 44,
-              decoration: BoxDecoration(
-                color: iconColor.withAlpha(30),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Icon(icon, color: iconColor, size: 24),
-            ),
-            const SizedBox(width: 14),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Text(name,
-                          style: theme.textTheme.titleSmall
-                              ?.copyWith(fontWeight: FontWeight.w600)),
-                      const SizedBox(width: 8),
-                      _StatusBadge(isLinked: isLinked),
-                    ],
-                  ),
-                  const SizedBox(height: 3),
-                  Text(description,
-                      style: theme.textTheme.bodySmall?.copyWith(
-                          color: theme.colorScheme.onSurfaceVariant)),
-                  const SizedBox(height: 10),
-                  SizedBox(
-                    height: 34,
-                    child: isLinked
-                        ? OutlinedButton(
-                            onPressed: onAction,
-                            child: Text(l.smartHomeUnlink),
-                          )
-                        : FilledButton.tonal(
-                            onPressed: onAction,
-                            child: Text(actionLabel),
-                          ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
+// ─── Status badge ────────────────────────────────────────────────────────────
 
 class _StatusBadge extends StatelessWidget {
   const _StatusBadge({required this.isLinked});

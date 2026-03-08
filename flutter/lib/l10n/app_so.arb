@@ -98,6 +98,8 @@
 
   "settingsTitle": "Dejinta",
   "settingsSectionPrayerCalc": "Xisaabinta Salaadda",
+  "settingsCalcMethod": "Habka Xisaabinta",
+  "settingsCalcMethodAuto": "Toos (Firfircoon)",
   "settingsHanafiAsr": "Asr Xanafi",
   "settingsHanafiAsrSubtitle": "Qiyaasta hooska 2x (waqti Asr ah oo dib u dhac)",
   "settingsSectionDisplay": "Muuqaalka",
@@ -679,5 +681,41 @@
   "pinCity": "Xidhidh",
   "pinMaxReached": "Ugu badnaan 5 magaalo la xidhay. U kor u qaad Ummat+ si aad wax badan u hesho.",
   "pinCityUnpinned": "{city} waa la furturay",
-  "pinUndo": "Ka noqo"
+  "pinUndo": "Ka noqo",
+
+  "smartHomeDevices": "Aaladaha",
+  "smartHomeAddDevice": "Ku dar Aalad",
+  "smartHomeDeleteDevice": "Tirtir",
+  "smartHomeDeleteDeviceConfirm": "Ka saar aaladdan?",
+  "smartHomeDeviceOnline": "Khadka ku jira",
+  "smartHomeDeviceOffline": "Khadka kama jirto",
+  "smartHomeDeviceLastSeen": "Markii ugu dambeysay la arkay: {time}",
+  "@smartHomeDeviceLastSeen": {
+    "placeholders": {
+      "time": { "type": "String" }
+    }
+  },
+  "smartHomeDeviceName": "Magaca aaladda",
+  "smartHomeDeviceType": "Nooca aaladda",
+  "smartHomeDeviceTypeTv": "TV",
+  "smartHomeDeviceTypeSpeaker": "Isbitaalka codka",
+  "smartHomeDeviceTypeWatch": "Saacad",
+  "smartHomeDeviceTypeDesktop": "Kombiyuutar",
+  "smartHomeDeviceTypeOther": "Kale",
+  "smartHomeDeviceAdhan": "Ogeysiisyada aadaanka",
+  "smartHomeDeviceAdhanDesc": "Ka hel digniinooyinka aadaanka aaladdan",
+  "smartHomeDeviceVolume": "Codka",
+  "smartHomeDeviceAudioType": "Nooca codka",
+  "smartHomeDeviceEnabledPrayers": "Salaadaha la hawlgeliyay",
+  "smartHomeDeviceSettings": "Dejinta Aaladda",
+  "smartHomeTesting": "Waa la tijaabinayaa...",
+  "smartHomeTestSuccess": "Xiriirka waa la xaqiijiyay",
+  "smartHomeTestFailed": "Tijaabinta xiriirka way guul darreysatay",
+  "smartHomePairTv": "Ku xidh TV",
+  "smartHomePairingTv": "TV waa la diiwaangelinayaa...",
+  "smartHomePairTvSuccess": "TV si guul leh ayaa loo xidhay",
+  "smartHomePairTvFailed": "Xidhista TV way guul darreysatay",
+  "smartHomeLoadingDevices": "Aaladaha waa la soo rarayaa...",
+  "smartHomeLoadingIntegrations": "Isku xidhka waa la soo rarayaa...",
+  "smartHomeServiceUnavailable": "Adeegga guriga casriga ah hadda ma diyaara. Fadlan dib u isku day hadhow."
 }

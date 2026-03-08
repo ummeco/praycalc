@@ -1,27 +1,39 @@
+import 'dart:io';
+
 import 'package:flutter/services.dart';
 
-/// Service for pausing media playback on TV during adhan (PC-F1-11).
+/// Service for pausing media playback during adhan on TV and desktop.
 ///
-/// Uses a platform MethodChannel to request and release Android audio focus.
-/// When audio focus is gained with [AudioFocus.AUDIOFOCUS_GAIN_TRANSIENT],
-/// other media apps (YouTube, Netflix, Spotify, etc.) will pause playback.
-/// Releasing focus allows them to resume automatically.
+/// Platform behavior:
+/// - **Android / Android TV:** Uses a MethodChannel to request and release
+///   Android audio focus (`AUDIOFOCUS_GAIN_TRANSIENT`). Other media apps
+///   (YouTube, Netflix, Spotify) pause automatically while focus is held.
+/// - **macOS:** Uses a MethodChannel to activate an AVAudioSession, which
+///   causes other audio apps to duck or pause. Falls back to no-op if the
+///   native plugin is not registered.
+/// - **Windows / Linux:** Audio focus APIs are not standardized. The adhan
+///   plays over existing audio. A future enhancement can simulate media key
+///   presses via platform plugins.
+/// - **iOS / web:** No-op (mobile notifications handle audio separately).
 ///
-/// This is an opt-in feature controlled by [TvSettings.mediaPauseEnabled].
+/// This is an opt-in feature controlled by [AlertSettings.mediaPauseEnabled]
+/// or [TvSettings.mediaPauseEnabled].
 ///
-/// Platform implementation required in:
+/// Platform implementations required in:
 /// - `android/app/src/main/kotlin/.../AudioFocusPlugin.kt`
-///
-/// The native side should:
-/// 1. Request `AUDIOFOCUS_GAIN_TRANSIENT` on `requestAudioFocus`
-/// 2. Release focus on `releaseAudioFocus`
-/// 3. Return `true` on success, `false` on failure
+/// - `macos/Runner/AudioSessionPlugin.swift` (optional)
 class MediaPauseService {
   MediaPauseService._();
   static final instance = MediaPauseService._();
 
-  static const _channel = MethodChannel(
+  /// Android TV audio focus channel.
+  static const _androidChannel = MethodChannel(
     'com.praycalc.app/audio_focus',
+  );
+
+  /// macOS AVAudioSession channel.
+  static const _macosChannel = MethodChannel(
+    'com.praycalc.app/audio_session',
   );
 
   bool _hasFocus = false;
@@ -34,14 +46,27 @@ class MediaPauseService {
   /// Call this when the adhan starts playing. Returns `true` if focus
   /// was granted, `false` otherwise.
   ///
-  /// On non-Android platforms (iOS, web), this is a no-op that returns `false`.
+  /// On unsupported platforms (iOS, web, Windows, Linux), this is a no-op
+  /// that returns `false`.
   Future<bool> requestAudioFocus() async {
     try {
-      final result = await _channel.invokeMethod<bool>('requestAudioFocus');
-      _hasFocus = result ?? false;
-      return _hasFocus;
+      if (Platform.isAndroid) {
+        final result =
+            await _androidChannel.invokeMethod<bool>('requestAudioFocus');
+        _hasFocus = result ?? false;
+        return _hasFocus;
+      }
+      if (Platform.isMacOS) {
+        final result =
+            await _macosChannel.invokeMethod<bool>('activateSession');
+        _hasFocus = result ?? false;
+        return _hasFocus;
+      }
+      // Windows/Linux: no standard audio focus API.
+      // Adhan will play over existing audio.
+      return false;
     } on MissingPluginException {
-      // Platform does not support audio focus (iOS, web, etc.).
+      // Platform plugin not registered. No-op.
       return false;
     } on PlatformException catch (_) {
       // Audio focus request denied by the system.
@@ -56,9 +81,20 @@ class MediaPauseService {
   /// successfully released.
   Future<bool> releaseAudioFocus() async {
     try {
-      final result = await _channel.invokeMethod<bool>('releaseAudioFocus');
-      _hasFocus = !(result ?? true);
-      return result ?? false;
+      if (Platform.isAndroid) {
+        final result =
+            await _androidChannel.invokeMethod<bool>('releaseAudioFocus');
+        _hasFocus = !(result ?? true);
+        return result ?? false;
+      }
+      if (Platform.isMacOS) {
+        final result =
+            await _macosChannel.invokeMethod<bool>('deactivateSession');
+        _hasFocus = !(result ?? true);
+        return result ?? false;
+      }
+      _hasFocus = false;
+      return false;
     } on MissingPluginException {
       _hasFocus = false;
       return false;

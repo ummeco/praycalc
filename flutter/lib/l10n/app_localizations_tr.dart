@@ -279,6 +279,12 @@ class AppLocalizationsTr extends AppLocalizations {
   String get settingsSectionPrayerCalc => 'Namaz Hesaplama';
 
   @override
+  String get settingsCalcMethod => 'Hesaplama Yontemi';
+
+  @override
+  String get settingsCalcMethodAuto => 'Otomatik (Dinamik)';
+
+  @override
   String get settingsHanafiAsr => 'Hanefi Ikindi';
 
   @override
@@ -2017,6 +2023,99 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get smartHomeCouldNotOpen => 'Bağlantı açılamadı.';
+
+  @override
+  String get smartHomeDevices => 'Cihazlar';
+
+  @override
+  String get smartHomeAddDevice => 'Cihaz Ekle';
+
+  @override
+  String get smartHomeDeleteDevice => 'Sil';
+
+  @override
+  String get smartHomeDeleteDeviceConfirm => 'Bu cihazı kaldır?';
+
+  @override
+  String get smartHomeDeviceOnline => 'Çevrimiçi';
+
+  @override
+  String get smartHomeDeviceOffline => 'Çevrimdışı';
+
+  @override
+  String smartHomeDeviceLastSeen(String time) {
+    return 'Son görülme: $time';
+  }
+
+  @override
+  String get smartHomeDeviceName => 'Cihaz adı';
+
+  @override
+  String get smartHomeDeviceType => 'Cihaz türü';
+
+  @override
+  String get smartHomeDeviceTypeTv => 'TV';
+
+  @override
+  String get smartHomeDeviceTypeSpeaker => 'Hoparlör';
+
+  @override
+  String get smartHomeDeviceTypeWatch => 'Saat';
+
+  @override
+  String get smartHomeDeviceTypeDesktop => 'Masaüstü';
+
+  @override
+  String get smartHomeDeviceTypeOther => 'Diğer';
+
+  @override
+  String get smartHomeDeviceAdhan => 'Ezan bildirimleri';
+
+  @override
+  String get smartHomeDeviceAdhanDesc => 'Bu cihazda ezan uyarıları al';
+
+  @override
+  String get smartHomeDeviceVolume => 'Ses düzeyi';
+
+  @override
+  String get smartHomeDeviceAudioType => 'Ses türü';
+
+  @override
+  String get smartHomeDeviceEnabledPrayers => 'Etkin namazlar';
+
+  @override
+  String get smartHomeDeviceSettings => 'Cihaz Ayarları';
+
+  @override
+  String get smartHomeTesting => 'Test ediliyor...';
+
+  @override
+  String get smartHomeTestSuccess => 'Bağlantı doğrulandı';
+
+  @override
+  String get smartHomeTestFailed => 'Bağlantı testi başarısız';
+
+  @override
+  String get smartHomePairTv => 'TV Eşleştir';
+
+  @override
+  String get smartHomePairingTv => 'TV kaydediliyor...';
+
+  @override
+  String get smartHomePairTvSuccess => 'TV başarıyla eşleştirildi';
+
+  @override
+  String get smartHomePairTvFailed => 'TV eşleştirme başarısız';
+
+  @override
+  String get smartHomeLoadingDevices => 'Cihazlar yükleniyor...';
+
+  @override
+  String get smartHomeLoadingIntegrations => 'Entegrasyonlar yükleniyor...';
+
+  @override
+  String get smartHomeServiceUnavailable =>
+      'Akıllı ev hizmeti şu anda kullanılamıyor. Lütfen daha sonra tekrar deneyin.';
 
   @override
   String adhkarCompletedCount(int completed, int total) {

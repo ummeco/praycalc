@@ -5,7 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:praycalc_app/l10n/app_localizations.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
+import '../../core/providers/smart_home_provider.dart';
+import '../../core/services/smart_home_api_service.dart';
 import '../../core/theme/app_theme.dart';
 
 /// TV pairing screen (PC-F1-10).
@@ -13,6 +17,10 @@ import '../../core/theme/app_theme.dart';
 /// Generates a 6-character alphanumeric pairing code displayed as large text
 /// and a QR code. The code expires after 5 minutes. Users scan the QR code
 /// or enter the code on their phone to pair the TV with their account.
+///
+/// On code generation, the code is registered with the backend via
+/// POST /api/v1/devices with type "tv". The screen polls for pairing
+/// confirmation.
 class TvPairingScreen extends ConsumerStatefulWidget {
   const TvPairingScreen({super.key});
 
@@ -28,8 +36,11 @@ class _TvPairingScreenState extends ConsumerState<TvPairingScreen> {
   String _pairingCode = '';
   late DateTime _expiresAt;
   Timer? _countdownTimer;
+  Timer? _pollTimer;
   int _remainingSeconds = 0;
   bool _isPaired = false;
+  bool _isRegistering = false;
+  String? _error;
 
   @override
   void initState() {
@@ -40,10 +51,11 @@ class _TvPairingScreenState extends ConsumerState<TvPairingScreen> {
   @override
   void dispose() {
     _countdownTimer?.cancel();
+    _pollTimer?.cancel();
     super.dispose();
   }
 
-  void _generateCode() {
+  Future<void> _generateCode() async {
     final random = Random.secure();
     final code = List.generate(
       _codeLength,
@@ -55,6 +67,8 @@ class _TvPairingScreenState extends ConsumerState<TvPairingScreen> {
       _expiresAt = DateTime.now().add(_codeDuration);
       _remainingSeconds = _codeDuration.inSeconds;
       _isPaired = false;
+      _isRegistering = true;
+      _error = null;
     });
 
     _countdownTimer?.cancel();
@@ -62,15 +76,61 @@ class _TvPairingScreenState extends ConsumerState<TvPairingScreen> {
       final remaining = _expiresAt.difference(DateTime.now()).inSeconds;
       if (remaining <= 0) {
         _countdownTimer?.cancel();
+        _pollTimer?.cancel();
         setState(() => _remainingSeconds = 0);
       } else {
         setState(() => _remainingSeconds = remaining);
       }
     });
 
-    // In production, register this code with the backend:
-    // POST /api/tv/pair { code: _pairingCode, deviceId: ... }
-    // Then poll for pairing confirmation.
+    // Register the pairing code with the backend as a TV device.
+    try {
+      await SmartHomeApiService.instance.addDevice(
+        name: 'TV (${_formatCode(code)})',
+        type: 'tv',
+        pairingCode: code,
+      );
+      setState(() {
+        _isRegistering = false;
+      });
+      // Start polling for pairing confirmation.
+      _startPolling();
+    } on SmartHomeApiException catch (e) {
+      setState(() {
+        _isRegistering = false;
+        _error = e.message;
+      });
+    } catch (_) {
+      setState(() {
+        _isRegistering = false;
+        // Non-blocking: pairing code is still shown for manual entry.
+      });
+    }
+  }
+
+  /// Poll the devices endpoint to check if this TV has been paired.
+  void _startPolling() {
+    _pollTimer?.cancel();
+    _pollTimer = Timer.periodic(const Duration(seconds: 5), (_) async {
+      if (_isPaired || _remainingSeconds <= 0) {
+        _pollTimer?.cancel();
+        return;
+      }
+      try {
+        final devices = await SmartHomeApiService.instance.getDevices();
+        final tvDevice = devices.where(
+          (d) => d.type == 'tv' && d.name.contains(_formatCode(_pairingCode)),
+        );
+        if (tvDevice.isNotEmpty && tvDevice.first.online) {
+          _pollTimer?.cancel();
+          // Refresh device list in the provider.
+          ref.read(devicesProvider.notifier).load();
+          setState(() => _isPaired = true);
+        }
+      } catch (_) {
+        // Silently continue polling.
+      }
+    });
   }
 
   String get _formattedTime {
@@ -120,6 +180,7 @@ class _TvPairingScreenState extends ConsumerState<TvPairingScreen> {
   }
 
   Widget _buildPairedState() {
+    final l = AppLocalizations.of(context)!;
     return Column(
       children: [
         const Icon(
@@ -128,9 +189,9 @@ class _TvPairingScreenState extends ConsumerState<TvPairingScreen> {
           size: 80,
         ),
         const SizedBox(height: 24),
-        const Text(
-          'Paired successfully',
-          style: TextStyle(
+        Text(
+          l.smartHomePairTvSuccess,
+          style: const TextStyle(
             color: Colors.white,
             fontSize: 32,
             fontWeight: FontWeight.bold,
@@ -196,7 +257,20 @@ class _TvPairingScreenState extends ConsumerState<TvPairingScreen> {
             borderRadius: BorderRadius.circular(16),
           ),
           padding: const EdgeInsets.all(16),
-          child: _QrCodePlaceholder(data: 'praycalc://pair?code=$_pairingCode'),
+          child: QrImageView(
+            data: 'praycalc://pair?code=$_pairingCode',
+            version: QrVersions.auto,
+            size: 188,
+            backgroundColor: Colors.white,
+            eyeStyle: const QrEyeStyle(
+              eyeShape: QrEyeShape.square,
+              color: Color(0xFF0D2F17),
+            ),
+            dataModuleStyle: const QrDataModuleStyle(
+              dataModuleShape: QrDataModuleShape.square,
+              color: Color(0xFF0D2F17),
+            ),
+          ),
         ),
         const SizedBox(height: 32),
 
@@ -231,6 +305,39 @@ class _TvPairingScreenState extends ConsumerState<TvPairingScreen> {
           ),
         ),
         const SizedBox(height: 16),
+
+        // Registration status
+        if (_isRegistering)
+          const Padding(
+            padding: EdgeInsets.only(bottom: 8),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
+                  width: 16,
+                  height: 16,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: Colors.white54,
+                  ),
+                ),
+                SizedBox(width: 8),
+                Text(
+                  'Registering with server...',
+                  style: TextStyle(color: Colors.white54, fontSize: 14),
+                ),
+              ],
+            ),
+          ),
+        if (_error != null)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: Text(
+              _error!,
+              style: TextStyle(color: Colors.red[300], fontSize: 14),
+              textAlign: TextAlign.center,
+            ),
+          ),
 
         // Timer
         Row(
@@ -299,47 +406,3 @@ class _TvPairingScreenState extends ConsumerState<TvPairingScreen> {
   }
 }
 
-/// Placeholder QR code widget.
-///
-/// In production, replace with `qr_flutter`'s `QrImageView`:
-/// ```dart
-/// QrImageView(
-///   data: data,
-///   version: QrVersions.auto,
-///   size: 188,
-///   backgroundColor: Colors.white,
-///   eyeStyle: const QrEyeStyle(
-///     eyeShape: QrEyeShape.roundedOuter,
-///     color: PrayCalcColors.deep,
-///   ),
-///   dataModuleStyle: const QrDataModuleStyle(
-///     dataModuleShape: QrDataModuleShape.roundedOutsideCorners,
-///     color: PrayCalcColors.deep,
-///   ),
-/// )
-/// ```
-class _QrCodePlaceholder extends StatelessWidget {
-  const _QrCodePlaceholder({required this.data});
-  final String data;
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.qr_code_2, size: 120, color: PrayCalcColors.deep),
-          const SizedBox(height: 8),
-          Text(
-            'QR Code',
-            style: TextStyle(
-              color: PrayCalcColors.deep,
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}

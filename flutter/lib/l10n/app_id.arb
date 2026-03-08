@@ -98,6 +98,8 @@
 
   "settingsTitle": "Pengaturan",
   "settingsSectionPrayerCalc": "Perhitungan Sholat",
+  "settingsCalcMethod": "Metode Perhitungan",
+  "settingsCalcMethodAuto": "Otomatis (Dinamis)",
   "settingsHanafiAsr": "Ashar Hanafi",
   "settingsHanafiAsrSubtitle": "Faktor bayangan 2x (waktu Ashar lebih lambat)",
   "settingsSectionDisplay": "Tampilan",
@@ -679,5 +681,41 @@
   "pinCity": "Sematkan",
   "pinMaxReached": "Maksimal 5 kota disematkan. Upgrade ke Ummat+ untuk lebih banyak.",
   "pinCityUnpinned": "{city} tidak disematkan",
-  "pinUndo": "Batalkan"
+  "pinUndo": "Batalkan",
+
+  "smartHomeDevices": "Perangkat",
+  "smartHomeAddDevice": "Tambah Perangkat",
+  "smartHomeDeleteDevice": "Hapus",
+  "smartHomeDeleteDeviceConfirm": "Hapus perangkat ini?",
+  "smartHomeDeviceOnline": "Online",
+  "smartHomeDeviceOffline": "Offline",
+  "smartHomeDeviceLastSeen": "Terakhir terlihat: {time}",
+  "@smartHomeDeviceLastSeen": {
+    "placeholders": {
+      "time": { "type": "String" }
+    }
+  },
+  "smartHomeDeviceName": "Nama perangkat",
+  "smartHomeDeviceType": "Jenis perangkat",
+  "smartHomeDeviceTypeTv": "TV",
+  "smartHomeDeviceTypeSpeaker": "Speaker",
+  "smartHomeDeviceTypeWatch": "Jam tangan",
+  "smartHomeDeviceTypeDesktop": "Desktop",
+  "smartHomeDeviceTypeOther": "Lainnya",
+  "smartHomeDeviceAdhan": "Notifikasi adzan",
+  "smartHomeDeviceAdhanDesc": "Terima peringatan adzan di perangkat ini",
+  "smartHomeDeviceVolume": "Volume",
+  "smartHomeDeviceAudioType": "Jenis audio",
+  "smartHomeDeviceEnabledPrayers": "Shalat yang diaktifkan",
+  "smartHomeDeviceSettings": "Pengaturan Perangkat",
+  "smartHomeTesting": "Menguji...",
+  "smartHomeTestSuccess": "Koneksi terverifikasi",
+  "smartHomeTestFailed": "Uji koneksi gagal",
+  "smartHomePairTv": "Pasangkan TV",
+  "smartHomePairingTv": "Mendaftarkan TV...",
+  "smartHomePairTvSuccess": "TV berhasil dipasangkan",
+  "smartHomePairTvFailed": "Pemasangan TV gagal",
+  "smartHomeLoadingDevices": "Memuat perangkat...",
+  "smartHomeLoadingIntegrations": "Memuat integrasi...",
+  "smartHomeServiceUnavailable": "Layanan rumah pintar saat ini tidak tersedia. Silakan coba lagi nanti."
 }

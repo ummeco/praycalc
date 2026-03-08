@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { calculatePrayerTimes } from '../lib/prayer-calculator.js';
 import { hasUmmatPlus, checkFreeQueryLimit } from '../lib/subscription.js';
 import { resolveUserFromToken } from './oauth.js';
+import { getUserLocation, NO_LOCATION_SPEECH } from '../lib/user-location.js';
 
 export const alexaRouter = Router();
 
@@ -20,7 +21,7 @@ alexaRouter.post('/fulfillment', async (req, res) => {
   const isPremium = await hasUmmatPlus(userId);
   if (!isPremium && requestType === 'IntentRequest') {
     const identifier = userId || body?.session?.sessionId || 'unknown';
-    const limit = checkFreeQueryLimit(identifier);
+    const limit = await checkFreeQueryLimit(identifier);
     if (!limit.allowed) {
       res.json(buildAlexaResponse(
         'You\'ve used your 5 free queries today. Subscribe to Ummat Plus for unlimited access at praycalc.com slash upgrade.',
@@ -30,9 +31,14 @@ alexaRouter.post('/fulfillment', async (req, res) => {
     }
   }
 
-  // Location: from device address API or defaults
-  const lat = 40.7128;
-  const lng = -74.0060;
+  // Get location from user's saved location in Hasura
+  const userLocation = await getUserLocation(userId);
+  if (!userLocation) {
+    res.json(buildAlexaResponse(NO_LOCATION_SPEECH, true));
+    return;
+  }
+  const lat = userLocation.lat;
+  const lng = userLocation.lng;
   const dateStr = new Date().toISOString().split('T')[0];
   const times = calculatePrayerTimes(lat, lng, dateStr);
 

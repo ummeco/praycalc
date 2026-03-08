@@ -3,8 +3,8 @@ import { requireAuth, type AuthRequest } from '../middleware/auth.js';
 
 export const webhookRouter = Router();
 
-// In-memory store (production: use database via Hasura GraphQL)
-const registrations = new Map<string, WebhookRegistration[]>();
+const HASURA_URL = process.env.HASURA_GRAPHQL_URL || 'http://hasura:8080/v1/graphql';
+const HASURA_ADMIN_SECRET = process.env.HASURA_GRAPHQL_ADMIN_SECRET || '';
 
 interface WebhookRegistration {
   id: string;
@@ -12,6 +12,7 @@ interface WebhookRegistration {
   callbackUrl: string;
   lat: number;
   lng: number;
+  timezone: string;
   events: string[];
   active: boolean;
   createdAt: string;
@@ -19,9 +20,22 @@ interface WebhookRegistration {
 
 const MAX_WEBHOOKS_PER_USER = 5;
 
+/** Execute a Hasura admin query. */
+async function hasuraQuery(query: string, variables: Record<string, unknown> = {}): Promise<any> {
+  const response = await fetch(HASURA_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-hasura-admin-secret': HASURA_ADMIN_SECRET,
+    },
+    body: JSON.stringify({ query, variables }),
+  });
+  return response.json();
+}
+
 /** POST /api/v1/webhooks — Register a webhook callback. */
-webhookRouter.post('/', requireAuth, (req: AuthRequest, res) => {
-  const { callbackUrl, lat, lng, events } = req.body;
+webhookRouter.post('/', requireAuth, async (req: AuthRequest, res) => {
+  const { callbackUrl, lat, lng, timezone, events } = req.body;
   const userId = req.userId!;
 
   if (!callbackUrl || typeof callbackUrl !== 'string') {
@@ -45,8 +59,17 @@ webhookRouter.post('/', requireAuth, (req: AuthRequest, res) => {
   const validEvents = ['adhan', 'iqamah'];
   const eventList = Array.isArray(events) ? events.filter((e: string) => validEvents.includes(e)) : ['adhan'];
 
-  const userRegs = registrations.get(userId) || [];
-  if (userRegs.length >= MAX_WEBHOOKS_PER_USER) {
+  // Check existing count
+  const countResult = await hasuraQuery(
+    `query CountWebhooks($userId: uuid!) {
+      pc_webhook_registrations_aggregate(where: { user_id: { _eq: $userId }, active: { _eq: true } }) {
+        aggregate { count }
+      }
+    }`,
+    { userId },
+  );
+  const currentCount = countResult?.data?.pc_webhook_registrations_aggregate?.aggregate?.count || 0;
+  if (currentCount >= MAX_WEBHOOKS_PER_USER) {
     res.status(409).json({
       error: 'Maximum webhooks reached',
       message: `Maximum ${MAX_WEBHOOKS_PER_USER} webhooks per user`,
@@ -54,47 +77,118 @@ webhookRouter.post('/', requireAuth, (req: AuthRequest, res) => {
     return;
   }
 
-  const registration: WebhookRegistration = {
-    id: crypto.randomUUID(),
-    userId,
-    callbackUrl,
-    lat,
-    lng,
-    events: eventList,
-    active: true,
-    createdAt: new Date().toISOString(),
-  };
+  const id = crypto.randomUUID();
+  const result = await hasuraQuery(
+    `mutation InsertWebhook($id: uuid!, $userId: uuid!, $callbackUrl: String!, $lat: float8!, $lng: float8!, $timezone: String!, $events: jsonb!, $active: Boolean!) {
+      insert_pc_webhook_registrations_one(object: {
+        id: $id
+        user_id: $userId
+        callback_url: $callbackUrl
+        lat: $lat
+        lng: $lng
+        timezone: $timezone
+        events: $events
+        active: $active
+      }) {
+        id user_id callback_url lat lng timezone events active created_at
+      }
+    }`,
+    { id, userId, callbackUrl, lat, lng, timezone: timezone || 'UTC', events: eventList, active: true },
+  );
 
-  userRegs.push(registration);
-  registrations.set(userId, userRegs);
+  const row = result?.data?.insert_pc_webhook_registrations_one;
+  if (!row) {
+    res.status(500).json({ error: 'Failed to create webhook registration' });
+    return;
+  }
+
+  const registration: WebhookRegistration = {
+    id: row.id,
+    userId: row.user_id,
+    callbackUrl: row.callback_url,
+    lat: row.lat,
+    lng: row.lng,
+    timezone: row.timezone,
+    events: row.events,
+    active: row.active,
+    createdAt: row.created_at,
+  };
 
   res.status(201).json(registration);
 });
 
 /** GET /api/v1/webhooks — List user's webhook registrations. */
-webhookRouter.get('/', requireAuth, (req: AuthRequest, res) => {
-  const userRegs = registrations.get(req.userId!) || [];
-  res.json({ webhooks: userRegs.filter(r => r.active) });
+webhookRouter.get('/', requireAuth, async (req: AuthRequest, res) => {
+  const result = await hasuraQuery(
+    `query GetUserWebhooks($userId: uuid!) {
+      pc_webhook_registrations(where: { user_id: { _eq: $userId }, active: { _eq: true } }) {
+        id user_id callback_url lat lng timezone events active created_at
+      }
+    }`,
+    { userId: req.userId! },
+  );
+
+  const rows = result?.data?.pc_webhook_registrations || [];
+  const webhooks: WebhookRegistration[] = rows.map((r: any) => ({
+    id: r.id,
+    userId: r.user_id,
+    callbackUrl: r.callback_url,
+    lat: r.lat,
+    lng: r.lng,
+    timezone: r.timezone,
+    events: r.events,
+    active: r.active,
+    createdAt: r.created_at,
+  }));
+
+  res.json({ webhooks });
 });
 
 /** DELETE /api/v1/webhooks/:id — Remove a webhook. */
-webhookRouter.delete('/:id', requireAuth, (req: AuthRequest, res) => {
-  const userRegs = registrations.get(req.userId!) || [];
-  const idx = userRegs.findIndex(r => r.id === req.params.id);
-  if (idx === -1) {
+webhookRouter.delete('/:id', requireAuth, async (req: AuthRequest, res) => {
+  const result = await hasuraQuery(
+    `mutation DeleteWebhook($id: uuid!, $userId: uuid!) {
+      delete_pc_webhook_registrations(where: { id: { _eq: $id }, user_id: { _eq: $userId } }) {
+        affected_rows
+      }
+    }`,
+    { id: req.params.id, userId: req.userId! },
+  );
+
+  const affected = result?.data?.delete_pc_webhook_registrations?.affected_rows || 0;
+  if (affected === 0) {
     res.status(404).json({ error: 'Webhook not found' });
     return;
   }
-  userRegs.splice(idx, 1);
-  registrations.set(req.userId!, userRegs);
+
   res.status(204).send();
 });
 
-/** Get all active registrations (for cron to fire). */
-export function getAllActiveRegistrations(): WebhookRegistration[] {
-  const all: WebhookRegistration[] = [];
-  for (const regs of registrations.values()) {
-    all.push(...regs.filter(r => r.active));
+/** Get all active registrations (for cron to fire). Queries Hasura. */
+export async function getAllActiveRegistrations(): Promise<WebhookRegistration[]> {
+  try {
+    const result = await hasuraQuery(
+      `query GetAllActiveWebhooks {
+        pc_webhook_registrations(where: { active: { _eq: true } }) {
+          id user_id callback_url lat lng timezone events active created_at
+        }
+      }`,
+    );
+
+    const rows = result?.data?.pc_webhook_registrations || [];
+    return rows.map((r: any) => ({
+      id: r.id,
+      userId: r.user_id,
+      callbackUrl: r.callback_url,
+      lat: r.lat,
+      lng: r.lng,
+      timezone: r.timezone || 'UTC',
+      events: r.events,
+      active: r.active,
+      createdAt: r.created_at,
+    }));
+  } catch (err) {
+    console.error('[WEBHOOKS] Failed to query active registrations:', err);
+    return [];
   }
-  return all;
 }

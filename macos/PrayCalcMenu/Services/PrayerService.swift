@@ -95,12 +95,70 @@ class PrayerService: NSObject, ObservableObject, CLLocationManagerDelegate {
         fetchPrayerTimes()
     }
 
+    // MARK: - Offline Calculation (C Core)
+
+    private func calculateOffline() {
+        let (lat, lng) = getCoordinates()
+        let methodKey = UserDefaults.standard.string(forKey: "calculationMethod") ?? "isna"
+        let madhabKey = UserDefaults.standard.string(forKey: "madhab") ?? "shafii"
+
+        let method = PrayCalcEngine.CalculationMethod(apiKey: methodKey) ?? .isna
+        let asrMadhab = PrayCalcEngine.AsrMadhab(apiKey: madhabKey) ?? .shafi
+
+        guard let times = PrayCalcEngine.calculatePrayerTimes(
+            latitude: lat,
+            longitude: lng,
+            date: Date(),
+            method: method,
+            madhab: asrMadhab
+        ) else {
+            // Offline calculation failed, try API
+            fetchPrayerTimesFromAPI()
+            return
+        }
+
+        let now = Date()
+        let prayerNames = ["Fajr", "Sunrise", "Dhuhr", "Asr", "Maghrib", "Isha"]
+        let prayerDates = [times.fajr, times.sunrise, times.dhuhr, times.asr, times.maghrib, times.isha]
+
+        var nextIndex = 0
+        for (i, date) in prayerDates.enumerated() {
+            if date > now {
+                nextIndex = i
+                break
+            }
+        }
+
+        var parsedPrayers: [PrayerTime] = []
+        for (index, name) in prayerNames.enumerated() {
+            parsedPrayers.append(PrayerTime(
+                name: name,
+                date: prayerDates[index],
+                isNext: index == nextIndex
+            ))
+        }
+
+        self.prayers = parsedPrayers
+        self.nextPrayer = parsedPrayers.first(where: { $0.isNext })
+        self.qiblaBearing = times.qiblaBearing
+        updateCountdown()
+        scheduleNotifications()
+    }
+
     // MARK: - Private
 
     private func fetchPrayerTimes() {
         let today = dateString(from: Date())
         if cachedDate == today && !prayers.isEmpty { return }
 
+        // Use offline C core calculation (no network needed)
+        calculateOffline()
+        cachedDate = today
+    }
+
+    /// Fetch from API as a fallback when offline calculation fails.
+    private func fetchPrayerTimesFromAPI() {
+        let today = dateString(from: Date())
         let (lat, lng) = getCoordinates()
         let method = UserDefaults.standard.string(forKey: "calculationMethod") ?? "isna"
         let madhab = UserDefaults.standard.string(forKey: "madhab") ?? "shafii"

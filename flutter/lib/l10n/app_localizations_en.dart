@@ -279,6 +279,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsSectionPrayerCalc => 'Prayer Calculation';
 
   @override
+  String get settingsCalcMethod => 'Calculation Method';
+
+  @override
+  String get settingsCalcMethodAuto => 'Auto (Dynamic)';
+
+  @override
   String get settingsHanafiAsr => 'Hanafi Asr';
 
   @override
@@ -2008,6 +2014,99 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get smartHomeCouldNotOpen => 'Could not open the link.';
+
+  @override
+  String get smartHomeDevices => 'Devices';
+
+  @override
+  String get smartHomeAddDevice => 'Add Device';
+
+  @override
+  String get smartHomeDeleteDevice => 'Delete';
+
+  @override
+  String get smartHomeDeleteDeviceConfirm => 'Remove this device?';
+
+  @override
+  String get smartHomeDeviceOnline => 'Online';
+
+  @override
+  String get smartHomeDeviceOffline => 'Offline';
+
+  @override
+  String smartHomeDeviceLastSeen(String time) {
+    return 'Last seen: $time';
+  }
+
+  @override
+  String get smartHomeDeviceName => 'Device name';
+
+  @override
+  String get smartHomeDeviceType => 'Device type';
+
+  @override
+  String get smartHomeDeviceTypeTv => 'TV';
+
+  @override
+  String get smartHomeDeviceTypeSpeaker => 'Speaker';
+
+  @override
+  String get smartHomeDeviceTypeWatch => 'Watch';
+
+  @override
+  String get smartHomeDeviceTypeDesktop => 'Desktop';
+
+  @override
+  String get smartHomeDeviceTypeOther => 'Other';
+
+  @override
+  String get smartHomeDeviceAdhan => 'Adhan notifications';
+
+  @override
+  String get smartHomeDeviceAdhanDesc => 'Receive adhan alerts on this device';
+
+  @override
+  String get smartHomeDeviceVolume => 'Volume';
+
+  @override
+  String get smartHomeDeviceAudioType => 'Audio type';
+
+  @override
+  String get smartHomeDeviceEnabledPrayers => 'Enabled prayers';
+
+  @override
+  String get smartHomeDeviceSettings => 'Device Settings';
+
+  @override
+  String get smartHomeTesting => 'Testing...';
+
+  @override
+  String get smartHomeTestSuccess => 'Connection verified';
+
+  @override
+  String get smartHomeTestFailed => 'Connection test failed';
+
+  @override
+  String get smartHomePairTv => 'Pair TV';
+
+  @override
+  String get smartHomePairingTv => 'Registering TV...';
+
+  @override
+  String get smartHomePairTvSuccess => 'TV paired successfully';
+
+  @override
+  String get smartHomePairTvFailed => 'TV pairing failed';
+
+  @override
+  String get smartHomeLoadingDevices => 'Loading devices...';
+
+  @override
+  String get smartHomeLoadingIntegrations => 'Loading integrations...';
+
+  @override
+  String get smartHomeServiceUnavailable =>
+      'Smart home service is currently unavailable. Please try again later.';
 
   @override
   String adhkarCompletedCount(int completed, int total) {

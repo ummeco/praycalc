@@ -25,6 +25,7 @@ class SettingsNotifier extends Notifier<AppSettings> {
       'darkMode': prefs.getBool('darkMode'),
       'followSystem': prefs.getBool('followSystem'),
       'locale': prefs.getString('locale'),
+      'calc_method': prefs.getString('calc_method'),
       'sky_gradient_enabled': prefs.getBool('sky_gradient_enabled'),
       'sky_gradient_weather': prefs.getBool('sky_gradient_weather'),
       'countdown_animation_enabled': prefs.getBool('countdown_animation_enabled'),
@@ -64,6 +65,7 @@ class SettingsNotifier extends Notifier<AppSettings> {
       update(state.copyWith(darkMode: v, followSystem: false));
   Future<void> setFollowSystem(bool v) => update(state.copyWith(followSystem: v));
   Future<void> setLocale(String? v) => update(state.copyWith(locale: v));
+  Future<void> setCalcMethod(String? v) => update(state.copyWith(calcMethod: v));
   Future<void> setSkyGradientEnabled(bool v) =>
       update(state.copyWith(skyGradientEnabled: v));
   Future<void> setSkyGradientWeather(bool v) =>

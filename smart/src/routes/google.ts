@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { calculatePrayerTimes } from '../lib/prayer-calculator.js';
 import { hasUmmatPlus, checkFreeQueryLimit } from '../lib/subscription.js';
 import { resolveUserFromToken } from './oauth.js';
+import { getUserLocation, NO_LOCATION_SPEECH } from '../lib/user-location.js';
 
 export const googleRouter = Router();
 
@@ -20,7 +21,7 @@ googleRouter.post('/fulfillment', async (req, res) => {
   const isPremium = await hasUmmatPlus(userId);
   if (!isPremium) {
     const identifier = userId || req.ip || 'unknown';
-    const limit = checkFreeQueryLimit(identifier);
+    const limit = await checkFreeQueryLimit(identifier);
     if (!limit.allowed) {
       res.json(buildGoogleResponse(
         'You\'ve used your 5 free queries today. Subscribe to Ummat Plus for unlimited access at praycalc.com/upgrade.',
@@ -30,9 +31,17 @@ googleRouter.post('/fulfillment', async (req, res) => {
     }
   }
 
-  // Get location
-  const lat = params.lat || body?.device?.location?.coordinates?.latitude || 40.7128;
-  const lng = params.lng || body?.device?.location?.coordinates?.longitude || -74.0060;
+  // Get location from user's saved location in Hasura
+  const userLocation = await getUserLocation(userId);
+  if (!userLocation) {
+    res.json(buildGoogleResponse(
+      `<speak>${NO_LOCATION_SPEECH}</speak>`,
+      true,
+    ));
+    return;
+  }
+  const lat = userLocation.lat;
+  const lng = userLocation.lng;
   const dateStr = new Date().toISOString().split('T')[0];
   const method = 'isna';
   const madhab = 'shafii';

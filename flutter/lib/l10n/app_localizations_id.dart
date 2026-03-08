@@ -279,6 +279,12 @@ class AppLocalizationsId extends AppLocalizations {
   String get settingsSectionPrayerCalc => 'Perhitungan Sholat';
 
   @override
+  String get settingsCalcMethod => 'Metode Perhitungan';
+
+  @override
+  String get settingsCalcMethodAuto => 'Otomatis (Dinamis)';
+
+  @override
   String get settingsHanafiAsr => 'Ashar Hanafi';
 
   @override
@@ -2016,6 +2022,100 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get smartHomeCouldNotOpen => 'Tidak dapat membuka tautan.';
+
+  @override
+  String get smartHomeDevices => 'Perangkat';
+
+  @override
+  String get smartHomeAddDevice => 'Tambah Perangkat';
+
+  @override
+  String get smartHomeDeleteDevice => 'Hapus';
+
+  @override
+  String get smartHomeDeleteDeviceConfirm => 'Hapus perangkat ini?';
+
+  @override
+  String get smartHomeDeviceOnline => 'Online';
+
+  @override
+  String get smartHomeDeviceOffline => 'Offline';
+
+  @override
+  String smartHomeDeviceLastSeen(String time) {
+    return 'Terakhir terlihat: $time';
+  }
+
+  @override
+  String get smartHomeDeviceName => 'Nama perangkat';
+
+  @override
+  String get smartHomeDeviceType => 'Jenis perangkat';
+
+  @override
+  String get smartHomeDeviceTypeTv => 'TV';
+
+  @override
+  String get smartHomeDeviceTypeSpeaker => 'Speaker';
+
+  @override
+  String get smartHomeDeviceTypeWatch => 'Jam tangan';
+
+  @override
+  String get smartHomeDeviceTypeDesktop => 'Desktop';
+
+  @override
+  String get smartHomeDeviceTypeOther => 'Lainnya';
+
+  @override
+  String get smartHomeDeviceAdhan => 'Notifikasi adzan';
+
+  @override
+  String get smartHomeDeviceAdhanDesc =>
+      'Terima peringatan adzan di perangkat ini';
+
+  @override
+  String get smartHomeDeviceVolume => 'Volume';
+
+  @override
+  String get smartHomeDeviceAudioType => 'Jenis audio';
+
+  @override
+  String get smartHomeDeviceEnabledPrayers => 'Shalat yang diaktifkan';
+
+  @override
+  String get smartHomeDeviceSettings => 'Pengaturan Perangkat';
+
+  @override
+  String get smartHomeTesting => 'Menguji...';
+
+  @override
+  String get smartHomeTestSuccess => 'Koneksi terverifikasi';
+
+  @override
+  String get smartHomeTestFailed => 'Uji koneksi gagal';
+
+  @override
+  String get smartHomePairTv => 'Pasangkan TV';
+
+  @override
+  String get smartHomePairingTv => 'Mendaftarkan TV...';
+
+  @override
+  String get smartHomePairTvSuccess => 'TV berhasil dipasangkan';
+
+  @override
+  String get smartHomePairTvFailed => 'Pemasangan TV gagal';
+
+  @override
+  String get smartHomeLoadingDevices => 'Memuat perangkat...';
+
+  @override
+  String get smartHomeLoadingIntegrations => 'Memuat integrasi...';
+
+  @override
+  String get smartHomeServiceUnavailable =>
+      'Layanan rumah pintar saat ini tidak tersedia. Silakan coba lagi nanti.';
 
   @override
   String adhkarCompletedCount(int completed, int total) {

@@ -11,6 +11,7 @@ import '../../core/providers/prayer_provider.dart';
 import '../../core/providers/settings_provider.dart';
 import '../../core/router/app_router.dart';
 import '../../core/theme/app_theme.dart';
+import '../../core/utils/locale_calc_method.dart';
 import '../../shared/models/settings_model.dart';
 
 /// Language options for onboarding picker (no "System default" here — user picks explicitly).
@@ -26,6 +27,17 @@ const _onboardingLocales = [
   ('Deutsch', 'de'),
   ('Español', 'es'),
   ('हिन्दी', 'hi'),
+  ('Bahasa Melayu', 'ms'),
+  ('فارسی', 'fa'),
+  ('پښتو', 'ps'),
+  ('Kiswahili', 'sw'),
+  ('Hausa', 'ha'),
+  ('Oʻzbek', 'uz'),
+  ('کوردی', 'ku'),
+  ('ไทย', 'th'),
+  ('中文', 'zh'),
+  ('Русский', 'ru'),
+  ('Português', 'pt'),
 ];
 
 const _kOnboardingDone = 'onboarding_done';
@@ -95,7 +107,11 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   static const _pageCount = 4;
 
   void _confirmLanguage() {
-    ref.read(settingsProvider.notifier).setLocale(_selectedLocale);
+    final notifier = ref.read(settingsProvider.notifier);
+    notifier.setLocale(_selectedLocale);
+    // Suggest a locale-appropriate calculation method for first-time users.
+    final suggestedMethod = getDefaultCalcMethod(_selectedLocale);
+    notifier.setCalcMethod(suggestedMethod.name);
     setState(() => _step = _Step.info);
   }
 

@@ -26,5 +26,14 @@ class MainActivity : FlutterActivity() {
                     else -> result.notImplemented()
                 }
             }
+
+        // IAP plugin (Google Play Billing)
+        IAPPlugin(this, flutterEngine)
+
+        // Audio focus plugin
+        AudioFocusPlugin(this, flutterEngine)
+
+        // TV launcher enable/disable + stock launcher escape
+        flutterEngine.plugins.add(TvLauncherPlugin())
     }
 }

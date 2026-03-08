@@ -98,6 +98,8 @@
 
   "settingsTitle": "Einstellungen",
   "settingsSectionPrayerCalc": "Gebetsberechnung",
+  "settingsCalcMethod": "Berechnungsmethode",
+  "settingsCalcMethodAuto": "Automatisch (Dynamisch)",
   "settingsHanafiAsr": "Hanafi Asr",
   "settingsHanafiAsrSubtitle": "Schattenfaktor 2x (spaetere Asr-Zeit)",
   "settingsSectionDisplay": "Anzeige",
@@ -679,5 +681,41 @@
   "pinCity": "Anheften",
   "pinMaxReached": "Maximal 5 angeheftete Staedte. Upgraden Sie auf Ummat+ fuer mehr.",
   "pinCityUnpinned": "{city} abgeheftet",
-  "pinUndo": "Rueckgaengig"
+  "pinUndo": "Rueckgaengig",
+
+  "smartHomeDevices": "Geraete",
+  "smartHomeAddDevice": "Geraet hinzufuegen",
+  "smartHomeDeleteDevice": "Loeschen",
+  "smartHomeDeleteDeviceConfirm": "Dieses Geraet entfernen?",
+  "smartHomeDeviceOnline": "Online",
+  "smartHomeDeviceOffline": "Offline",
+  "smartHomeDeviceLastSeen": "Zuletzt gesehen: {time}",
+  "@smartHomeDeviceLastSeen": {
+    "placeholders": {
+      "time": { "type": "String" }
+    }
+  },
+  "smartHomeDeviceName": "Geraetename",
+  "smartHomeDeviceType": "Geraetetyp",
+  "smartHomeDeviceTypeTv": "Fernseher",
+  "smartHomeDeviceTypeSpeaker": "Lautsprecher",
+  "smartHomeDeviceTypeWatch": "Uhr",
+  "smartHomeDeviceTypeDesktop": "Desktop",
+  "smartHomeDeviceTypeOther": "Sonstige",
+  "smartHomeDeviceAdhan": "Adhan-Benachrichtigungen",
+  "smartHomeDeviceAdhanDesc": "Adhan-Benachrichtigungen auf diesem Geraet empfangen",
+  "smartHomeDeviceVolume": "Lautstaerke",
+  "smartHomeDeviceAudioType": "Audiotyp",
+  "smartHomeDeviceEnabledPrayers": "Aktivierte Gebete",
+  "smartHomeDeviceSettings": "Geraeteeinstellungen",
+  "smartHomeTesting": "Teste...",
+  "smartHomeTestSuccess": "Verbindung bestaetigt",
+  "smartHomeTestFailed": "Verbindungstest fehlgeschlagen",
+  "smartHomePairTv": "Fernseher koppeln",
+  "smartHomePairingTv": "Fernseher wird registriert...",
+  "smartHomePairTvSuccess": "Fernseher erfolgreich gekoppelt",
+  "smartHomePairTvFailed": "Kopplung des Fernsehers fehlgeschlagen",
+  "smartHomeLoadingDevices": "Geraete werden geladen...",
+  "smartHomeLoadingIntegrations": "Integrationen werden geladen...",
+  "smartHomeServiceUnavailable": "Smart-Home-Dienst ist derzeit nicht verfuegbar. Bitte versuchen Sie es spaeter erneut."
 }

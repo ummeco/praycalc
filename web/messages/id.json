@@ -153,7 +153,18 @@
     "so": "Soomaali",
     "de": "Deutsch",
     "es": "Español",
-    "hi": "हिन्दी"
+    "hi": "हिन्दी",
+    "ms": "Bahasa Melayu",
+    "fa": "فارسی",
+    "ps": "پښتو",
+    "sw": "Kiswahili",
+    "ha": "Hausa",
+    "uz": "Oʻzbek",
+    "ku": "کوردی",
+    "th": "ไทย",
+    "zh": "中文",
+    "ru": "Русский",
+    "pt": "Português"
   },
   "footer": {
     "description": "Jadwal sholat Islam yang akurat untuk kota mana pun di seluruh dunia. Berbagai metode perhitungan, kalender Hijriah, fase bulan, dan arah Kiblat. Gratis, privat, dan tanpa iklan.",

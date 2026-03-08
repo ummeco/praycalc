@@ -153,7 +153,18 @@
     "so": "Soomaali",
     "de": "Deutsch",
     "es": "Español",
-    "hi": "हिन्दी"
+    "hi": "हिन्दी",
+    "ms": "Bahasa Melayu",
+    "fa": "فارسی",
+    "ps": "پښتو",
+    "sw": "Kiswahili",
+    "ha": "Hausa",
+    "uz": "Oʻzbek",
+    "ku": "کوردی",
+    "th": "ไทย",
+    "zh": "中文",
+    "ru": "Русский",
+    "pt": "Português"
   },
   "footer": {
     "description": "Horaires de prière islamiques précis pour toute ville dans le monde. Plusieurs méthodes de calcul, calendrier Hijri, phases lunaires et direction de la Qibla. Gratuit, privé et sans publicité.",
