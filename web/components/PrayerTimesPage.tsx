@@ -169,6 +169,25 @@ export default function PrayerTimesPage({
       <div className="moon-card">
         <MoonPhase />
       </div>
+
+      {/* Quick links to other PrayCalc tools */}
+      <div className="flex flex-wrap gap-2 justify-center px-4 pb-6">
+        {[
+          { href: '/duas', label: '🤲 Duas' },
+          { href: '/tasbeeh', label: '📿 Tasbeeh' },
+          { href: '/masjids', label: '🕌 Masjids' },
+          { href: '/agendas', label: '📋 Agendas' },
+          { href: '/stats', label: '📊 Stats' },
+        ].map(({ href, label }) => (
+          <a
+            key={href}
+            href={href}
+            className="text-xs text-white/40 hover:text-white/70 border border-white/10 hover:border-white/20 rounded-lg px-3 py-1.5 transition-colors"
+          >
+            {label}
+          </a>
+        ))}
+      </div>
     </div>
   );
 }
