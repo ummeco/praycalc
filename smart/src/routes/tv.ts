@@ -7,6 +7,8 @@
  *   GET  /api/v1/tv/auth/poll         — Poll for authorization status (TV2-1.6)
  *   POST /api/v1/tv/auth/refresh      — Refresh 30-day TV JWT (TV2-1.7)
  *   GET  /api/v1/tv/streams           — Curated stream library (TV2-3.8)
+ *   POST /api/v1/tv/guest-qr         — Generate 24h guest prayer-time QR URL (PC-TV2-3)
+ *   GET  /api/v1/tv/guest/:code      — Resolve guest QR code to lat/lng (PC-TV2-3)
  *   POST /api/v1/tv/heartbeat         — TV keepalive, updates last_seen (TV2-10.2)
  *   POST /api/v1/tv/:id/screenshot    — Request screenshot upload (TV2-10.3)
  *   PATCH /api/v1/tv/:id              — Rename device (TV2-10.5)
@@ -276,6 +278,53 @@ tvRouter.post('/auth/refresh', requireAuth, async (req: AuthRequest, res) => {
 
   const jwt = generateTvJwt(userId, device_id);
   res.json({ jwt, expiresIn: TV_JWT_TTL_MS / 1000 });
+});
+
+// ── PC-TV2-3: Guest QR code ───────────────────────────────────────────────────
+
+/** In-memory store for guest prayer-time QR codes (24h expiry). */
+const guestCodes = new Map<string, { lat: number; lng: number; expiresAt: number }>();
+const GUEST_QR_TTL_MS = 24 * 60 * 60 * 1000;
+
+/**
+ * POST /api/v1/tv/guest-qr
+ * Body: { lat: number, lng: number }
+ * Returns: { url: string, expiresAt: string }
+ *
+ * Generates a 24h QR code URL that points to the public guest prayer-time page.
+ * The TV sends its home coordinates; guests scan the resulting QR to view prayer
+ * times for that location without creating an account.
+ */
+tvRouter.post('/guest-qr', requireAuth, (req: AuthRequest, res) => {
+  const { lat, lng } = req.body as { lat?: unknown; lng?: unknown };
+  if (typeof lat !== 'number' || typeof lng !== 'number') {
+    res.status(400).json({ error: 'lat and lng (numbers) required' });
+    return;
+  }
+  const code = crypto.randomBytes(16).toString('hex');
+  const expiresAt = Date.now() + GUEST_QR_TTL_MS;
+  guestCodes.set(code, { lat, lng, expiresAt });
+  res.json({
+    code,
+    url: `https://praycalc.com/tv/guest/${code}`,
+    expiresAt: new Date(expiresAt).toISOString(),
+  });
+});
+
+/**
+ * GET /api/v1/tv/guest/:code
+ * Public — called by the web landing page to resolve the guest code to a location.
+ * Returns: { lat: number, lng: number } or 404 if expired/not found.
+ */
+tvRouter.get('/guest/:code', (req, res) => {
+  const code = req.params['code'] as string;
+  const entry = guestCodes.get(code);
+  if (!entry || entry.expiresAt < Date.now()) {
+    guestCodes.delete(code);
+    res.status(404).json({ error: 'Code expired or not found' });
+    return;
+  }
+  res.json({ lat: entry.lat, lng: entry.lng });
 });
 
 // ── TV2-3.8: GET /api/v1/tv/streams — Curated stream library ─────────────────

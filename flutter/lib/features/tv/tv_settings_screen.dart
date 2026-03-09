@@ -1,8 +1,13 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:praycalc_app/l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:http/http.dart' as http;
+import 'package:qr_flutter/qr_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../core/providers/settings_provider.dart';
 import '../../core/providers/tv_provider.dart';
@@ -300,6 +305,14 @@ class _TvSettingsScreenState extends ConsumerState<TvSettingsScreen> {
                   ),
                 ),
               ],
+              const SizedBox(height: 8),
+              _TvSettingsTile(
+                icon: Icons.qr_code_2,
+                title: 'Share Prayer Times (QR)',
+                subtitle: 'Generate a 24h QR code guests can scan to view prayer times',
+                trailing: const Icon(Icons.chevron_right, color: Colors.white54, size: 32),
+                onTap: () => _showGuestQrDialog(context, settings),
+              ),
               const SizedBox(height: 24),
             ],
 
@@ -1557,6 +1570,120 @@ class _TvSettingsScreenState extends ConsumerState<TvSettingsScreen> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  /// Calls the smart service to generate a 24h guest QR code for prayer times,
+  /// then shows a dialog with the QR code the TV can display to guests.
+  Future<void> _showGuestQrDialog(BuildContext context, dynamic settings) async {
+    const kSmartBase = 'https://smart.praycalc.com/api/v1/tv';
+    const kTvSessionJwt = 'tv_session_jwt';
+
+    final prefs = await SharedPreferences.getInstance();
+    final jwt = prefs.getString(kTvSessionJwt);
+
+    // Coordinates come from the app's home location setting.
+    final lat = (settings as dynamic).homeLat as double?;
+    final lng = (settings as dynamic).homeLng as double?;
+
+    if (jwt == null) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('TV not paired — cannot generate QR')),
+        );
+      }
+      return;
+    }
+    if (lat == null || lng == null) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Set a home location in Settings first')),
+        );
+      }
+      return;
+    }
+
+    // Show loading indicator while we fetch the code.
+    String? guestUrl;
+    String? expiresAt;
+    if (context.mounted) {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (_) => const Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    try {
+      final resp = await http.post(
+        Uri.parse('$kSmartBase/guest-qr'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $jwt',
+        },
+        body: jsonEncode({'lat': lat, 'lng': lng}),
+      );
+      if (resp.statusCode == 200) {
+        final body = jsonDecode(resp.body) as Map<String, dynamic>;
+        guestUrl = body['url'] as String?;
+        expiresAt = body['expiresAt'] as String?;
+      }
+    } catch (_) {
+      // fall through to error handling below
+    }
+
+    if (!context.mounted) return;
+    // Dismiss loading dialog.
+    Navigator.of(context, rootNavigator: true).pop();
+
+    if (guestUrl == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Could not generate guest QR — check connection')),
+      );
+      return;
+    }
+
+    final expiry = expiresAt != null
+        ? DateTime.tryParse(expiresAt)?.toLocal()
+        : null;
+    final expiryLabel = expiry != null
+        ? 'Expires ${expiry.hour.toString().padLeft(2, '0')}:${expiry.minute.toString().padLeft(2, '0')} tomorrow'
+        : 'Expires in 24h';
+
+    final url = guestUrl;
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: PrayCalcColors.surface,
+        title: const Text(
+          'Share Prayer Times',
+          style: TextStyle(color: Colors.white, fontSize: 28),
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            QrImageView(data: url, size: 220, backgroundColor: Colors.white),
+            const SizedBox(height: 16),
+            const Text(
+              'Guests scan with any camera app to view prayer times — no app needed.',
+              textAlign: TextAlign.center,
+              style: TextStyle(color: Colors.white70, fontSize: 16),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              expiryLabel,
+              style: const TextStyle(color: PrayCalcColors.mid, fontSize: 14),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: const Text('Close',
+                style: TextStyle(color: Colors.white54, fontSize: 22)),
+          ),
+        ],
       ),
     );
   }

@@ -233,4 +233,61 @@ describe('TV Routes', () => {
       expect(res.body.jwt.split('.').length).toBe(3); // JWT format
     });
   });
+
+  describe('POST /api/v1/tv/guest-qr', () => {
+    it('requires auth', async () => {
+      const res = await request(app)
+        .post('/api/v1/tv/guest-qr')
+        .send({ lat: 21.3891, lng: 39.8579 });
+      expect(res.status).toBe(401);
+    });
+
+    it('requires lat and lng', async () => {
+      const token = makeToken('user-guest-qr');
+      const res = await request(app)
+        .post('/api/v1/tv/guest-qr')
+        .set('Authorization', `Bearer ${token}`)
+        .send({});
+      expect(res.status).toBe(400);
+    });
+
+    it('returns a guest QR URL with 24h expiry', async () => {
+      const token = makeToken('user-guest-qr');
+      const res = await request(app)
+        .post('/api/v1/tv/guest-qr')
+        .set('Authorization', `Bearer ${token}`)
+        .send({ lat: 21.3891, lng: 39.8579 });
+      expect(res.status).toBe(200);
+      expect(typeof res.body.code).toBe('string');
+      expect(res.body.url).toMatch(/^https:\/\/praycalc\.com\/tv\/guest\//);
+      expect(typeof res.body.expiresAt).toBe('string');
+      const exp = new Date(res.body.expiresAt).getTime();
+      const now = Date.now();
+      expect(exp).toBeGreaterThan(now + 23 * 60 * 60 * 1000);
+      expect(exp).toBeLessThan(now + 25 * 60 * 60 * 1000);
+    });
+  });
+
+  describe('GET /api/v1/tv/guest/:code', () => {
+    it('returns 404 for unknown code', async () => {
+      const res = await request(app).get('/api/v1/tv/guest/nonexistent');
+      expect(res.status).toBe(404);
+    });
+
+    it('returns location for valid code', async () => {
+      // First generate a code.
+      const token = makeToken('user-guest-qr-lookup');
+      const post = await request(app)
+        .post('/api/v1/tv/guest-qr')
+        .set('Authorization', `Bearer ${token}`)
+        .send({ lat: 40.7128, lng: -74.006 });
+      expect(post.status).toBe(200);
+      const { code } = post.body as { code: string };
+
+      const get = await request(app).get(`/api/v1/tv/guest/${code}`);
+      expect(get.status).toBe(200);
+      expect(get.body.lat).toBe(40.7128);
+      expect(get.body.lng).toBe(-74.006);
+    });
+  });
 });
