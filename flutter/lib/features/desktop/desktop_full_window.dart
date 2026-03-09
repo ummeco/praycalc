@@ -12,6 +12,7 @@ import '../../core/providers/settings_provider.dart';
 import '../../core/providers/weather_provider.dart';
 import '../../core/theme/app_theme.dart';
 import '../../shared/models/moon_phase.dart';
+import '../tv/tv_device_list_screen.dart';
 
 /// Static helper to trigger showing the full window from outside widget tree.
 /// In practice, the router navigates to this screen.
@@ -169,76 +170,102 @@ class _DesktopFullWindowScreenState
     final timesAsync = ref.watch(prayerTimesProvider);
     final ramadan = ref.watch(ramadanProvider);
 
-    return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(gradient: _skyGradient()),
-        child: timesAsync.when(
-          loading: () => const Center(
-            child: CircularProgressIndicator(color: PrayCalcColors.mid),
-          ),
-          error: (e, _) => Center(
-            child: Text(
-              'Error: $e',
-              style: const TextStyle(color: Colors.white, fontSize: 20),
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        body: Container(
+          decoration: BoxDecoration(gradient: _skyGradient()),
+          child: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 48,
+                vertical: 32,
+              ),
+              child: Column(
+                children: [
+                  // Top bar: city + date (shared across tabs)
+                  _DesktopTopBar(
+                    cityName: city?.displayName ?? 'No city',
+                    hijri: _hijriDateString(_now),
+                    gregorian: _gregorianLabel(_now),
+                    onClose: () => Navigator.of(context).maybePop(),
+                  ),
+                  const SizedBox(height: 16),
+
+                  // Tab selector
+                  const TabBar(
+                    tabs: [
+                      Tab(icon: Icon(Icons.home_rounded), text: 'Prayer Times'),
+                      Tab(icon: Icon(Icons.tv_rounded), text: 'TV Displays'),
+                    ],
+                    labelColor: PrayCalcColors.light,
+                    unselectedLabelColor: Colors.white54,
+                    indicatorColor: PrayCalcColors.mid,
+                    dividerColor: Colors.transparent,
+                  ),
+                  const SizedBox(height: 16),
+
+                  // Tab content
+                  Expanded(
+                    child: TabBarView(
+                      children: [
+                        // Tab 0: Prayer times
+                        timesAsync.when(
+                          loading: () => const Center(
+                            child: CircularProgressIndicator(
+                                color: PrayCalcColors.mid),
+                          ),
+                          error: (e, _) => Center(
+                            child: Text(
+                              'Error: $e',
+                              style: const TextStyle(
+                                  color: Colors.white, fontSize: 20),
+                            ),
+                          ),
+                          data: (times) {
+                            final activeIdx = _activePrayerIndex(times);
+                            final nextIdx = _nextPrayerIndex(times);
+                            final countdown = _countdownString(times, nextIdx);
+                            final moonResult = MoonPhase.calculate(_now);
+
+                            return Column(
+                              children: [
+                                _DesktopCurrentTime(
+                                    now: _now, use24h: settings.use24h),
+                                const SizedBox(height: 8),
+                                _DesktopCountdownBanner(
+                                  label: _prayerLabel(
+                                    _prayers[nextIdx].label,
+                                    ramadan.isRamadan,
+                                  ),
+                                  countdown: countdown,
+                                ),
+                                const SizedBox(height: 32),
+                                Expanded(
+                                  child: _DesktopPrayerGrid(
+                                    times: times,
+                                    use24h: settings.use24h,
+                                    activeIdx: activeIdx,
+                                    nextIdx: nextIdx,
+                                    isRamadan: ramadan.isRamadan,
+                                  ),
+                                ),
+                                const SizedBox(height: 16),
+                                _DesktopBottomBar(moonResult: moonResult),
+                              ],
+                            );
+                          },
+                        ),
+
+                        // Tab 1: TV Displays — embeds TvDeviceListScreen
+                        const TvDeviceListScreen(),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
-          data: (times) {
-            final activeIdx = _activePrayerIndex(times);
-            final nextIdx = _nextPrayerIndex(times);
-            final countdown = _countdownString(times, nextIdx);
-            final moonResult = MoonPhase.calculate(_now);
-            final hijri = _hijriDateString(_now);
-
-            return SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 48,
-                  vertical: 32,
-                ),
-                child: Column(
-                  children: [
-                    // Top bar: city + date
-                    _DesktopTopBar(
-                      cityName: city?.displayName ?? 'No city',
-                      hijri: hijri,
-                      gregorian: _gregorianLabel(_now),
-                      onClose: () => Navigator.of(context).maybePop(),
-                    ),
-                    const SizedBox(height: 24),
-
-                    // Current time
-                    _DesktopCurrentTime(now: _now, use24h: settings.use24h),
-                    const SizedBox(height: 8),
-
-                    // Next prayer countdown
-                    _DesktopCountdownBanner(
-                      label: _prayerLabel(
-                        _prayers[nextIdx].label,
-                        ramadan.isRamadan,
-                      ),
-                      countdown: countdown,
-                    ),
-                    const SizedBox(height: 32),
-
-                    // Prayer times grid: 2 columns x 3 rows
-                    Expanded(
-                      child: _DesktopPrayerGrid(
-                        times: times,
-                        use24h: settings.use24h,
-                        activeIdx: activeIdx,
-                        nextIdx: nextIdx,
-                        isRamadan: ramadan.isRamadan,
-                      ),
-                    ),
-
-                    // Bottom: moon phase + weather
-                    const SizedBox(height: 16),
-                    _DesktopBottomBar(moonResult: moonResult),
-                  ],
-                ),
-              ),
-            );
-          },
         ),
       ),
     );

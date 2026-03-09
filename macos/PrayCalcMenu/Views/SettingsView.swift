@@ -93,6 +93,14 @@ struct SettingsView: View {
                 .tint(Color(red: 0x79/255.0, green: 0xC2/255.0, blue: 0x4C/255.0))
             }
 
+            if !prayerService.cityName.isEmpty {
+                HStack {
+                    Text("City:")
+                        .foregroundColor(.secondary)
+                    Text(prayerService.cityName)
+                }
+            }
+
             if let location = prayerService.currentLocation {
                 HStack {
                     Text("Current:")

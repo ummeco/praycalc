@@ -15,6 +15,9 @@ class DesktopTrayApp with TrayListener {
   final WidgetRef _ref;
   Timer? _updateTimer;
 
+  // Cached label for the dynamic "Next Prayer" menu item.
+  String _nextPrayerLabel = 'Next Prayer…';
+
   Future<void> init() async {
     final iconPath = Platform.isWindows
         ? 'assets/brand/icon.ico'
@@ -23,21 +26,83 @@ class DesktopTrayApp with TrayListener {
     await trayManager.setIcon(iconPath);
     await trayManager.setToolTip('PrayCalc - Prayer Times');
 
-    final menuItems = [
-      MenuItem(key: 'open', label: 'Open Full Window'),
-      MenuItem.separator(),
-      MenuItem(key: 'show', label: 'Show Prayer Times'),
-      MenuItem.separator(),
-      MenuItem(key: 'quit', label: 'Quit PrayCalc'),
-    ];
-    await trayManager.setContextMenu(Menu(items: menuItems));
+    await _rebuildMenu();
     trayManager.addListener(this);
 
     _updateTimer = Timer.periodic(
       const Duration(seconds: 30),
-      (_) => _updateTooltip(),
+      (_) => _updateTooltipAndMenu(),
     );
-    _updateTooltip();
+    _updateTooltipAndMenu();
+
+    // Set up platform auto-launch on first run.
+    _setupAutoLaunch();
+  }
+
+  Future<void> _rebuildMenu() async {
+    final menuItems = [
+      MenuItem(key: 'open', label: 'Open PrayCalc'),
+      MenuItem(key: 'next', label: _nextPrayerLabel, disabled: true),
+      MenuItem.separator(),
+      MenuItem(key: 'settings', label: 'Settings…'),
+      MenuItem(key: 'tvs', label: 'TV Displays…'),
+      MenuItem.separator(),
+      MenuItem(key: 'quit', label: 'Quit PrayCalc'),
+    ];
+    await trayManager.setContextMenu(Menu(items: menuItems));
+  }
+
+  /// Configures the app to launch at login.
+  /// - Windows: HKCU\Software\Microsoft\Windows\CurrentVersion\Run registry key.
+  /// - Linux: writes ~/.config/autostart/praycalc.desktop.
+  /// Runs silently — failures are non-fatal.
+  void _setupAutoLaunch() {
+    if (Platform.isWindows) {
+      _setWindowsAutoLaunch();
+    } else if (Platform.isLinux) {
+      _setLinuxAutostart();
+    }
+  }
+
+  void _setWindowsAutoLaunch() {
+    try {
+      final exe = Platform.resolvedExecutable;
+      Process.run('reg', [
+        'add',
+        r'HKCU\Software\Microsoft\Windows\CurrentVersion\Run',
+        '/v',
+        'PrayCalc',
+        '/t',
+        'REG_SZ',
+        '/d',
+        exe,
+        '/f',
+      ]);
+    } catch (_) {
+      // Non-fatal — user can enable manually via Settings.
+    }
+  }
+
+  void _setLinuxAutostart() {
+    try {
+      final exe = Platform.resolvedExecutable;
+      final autostartDir =
+          Directory('${Platform.environment['HOME']}/.config/autostart');
+      if (!autostartDir.existsSync()) autostartDir.createSync(recursive: true);
+      final desktopFile = File('${autostartDir.path}/praycalc.desktop');
+      desktopFile.writeAsStringSync(
+        '[Desktop Entry]\n'
+        'Type=Application\n'
+        'Name=PrayCalc\n'
+        'Comment=GPS-accurate Islamic prayer times\n'
+        'Exec=$exe\n'
+        'Icon=praycalc\n'
+        'X-GNOME-Autostart-enabled=true\n'
+        'Hidden=false\n',
+      );
+    } catch (_) {
+      // Non-fatal — user can enable manually via system settings.
+    }
   }
 
   @override
@@ -54,14 +119,16 @@ class DesktopTrayApp with TrayListener {
   void onTrayMenuItemClick(MenuItem menuItem) {
     switch (menuItem.key) {
       case 'open':
-      case 'show':
+      case 'settings':
+        DesktopFullWindow.show();
+      case 'tvs':
         DesktopFullWindow.show();
       case 'quit':
         exit(0);
     }
   }
 
-  void _updateTooltip() {
+  void _updateTooltipAndMenu() {
     final timesAsync = _ref.read(prayerTimesProvider);
     final settings = _ref.read(settingsProvider);
     final city = _ref.read(cityProvider);
@@ -96,6 +163,10 @@ class DesktopTrayApp with TrayListener {
           : '$nextName at $timeStr';
 
       trayManager.setToolTip(tooltip);
+
+      // Update the "Next Prayer" label in the context menu.
+      _nextPrayerLabel = 'Next: $nextName at $timeStr';
+      _rebuildMenu();
     });
   }
 

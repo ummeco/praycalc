@@ -12,24 +12,6 @@ struct PairedTV: Identifiable {
     let lastSeen: Date?
 }
 
-// Mock data — replace with smart service API call when backend is live.
-private let mockTVs: [PairedTV] = [
-    PairedTV(
-        id: "tv-1",
-        name: "Living Room TV",
-        model: "NVIDIA Shield TV Pro",
-        isOnline: true,
-        lastSeen: Date()
-    ),
-    PairedTV(
-        id: "tv-2",
-        name: "Bedroom TV",
-        model: "Amazon Fire Stick 4K",
-        isOnline: false,
-        lastSeen: Calendar.current.date(byAdding: .hour, value: -2, to: Date())
-    ),
-]
-
 // ---------------------------------------------------------------------------
 // TV Settings Sheet
 // ---------------------------------------------------------------------------
@@ -42,6 +24,7 @@ struct TVSettingsSheet: View {
     @State private var audioMode = "Silent"
     @State private var isSaving = false
     @State private var savedOK = false
+    @State private var isPlayingQuran = false
 
     private let brandPrimary = Color(red: 0x79/255.0, green: 0xC2/255.0, blue: 0x4C/255.0)
     private let brandAccent  = Color(red: 0xC9/255.0, green: 0xF2/255.0, blue: 0x7A/255.0)
@@ -136,21 +119,81 @@ struct TVSettingsSheet: View {
                     }
                     .buttonStyle(.plain)
                     .disabled(isSaving)
+
+                    // Play Quran button
+                    Button(action: playQuranOnTV) {
+                        HStack {
+                            if isPlayingQuran {
+                                ProgressView()
+                                    .scaleEffect(0.7)
+                                    .frame(width: 14, height: 14)
+                            } else {
+                                Image(systemName: "play.fill")
+                            }
+                            Text(isPlayingQuran ? "Starting..." : "Play Quran on TV")
+                                .font(.system(size: 12, weight: .medium))
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 7)
+                        .background(brandPrimary.opacity(0.1))
+                        .foregroundColor(brandAccent)
+                        .cornerRadius(6)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 6)
+                                .stroke(brandPrimary.opacity(0.3), lineWidth: 1)
+                        )
+                    }
+                    .buttonStyle(.plain)
+                    .disabled(isPlayingQuran)
                 }
                 .padding(16)
             }
         }
-        .frame(width: 260, height: 280)
+        .frame(width: 260, height: 320)
         .background(Color(nsColor: .windowBackgroundColor))
     }
 
     private func pushToTV() {
         isSaving = true
         savedOK = false
-        // Simulate async push — wire to smart API when live.
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
-            isSaving = false
-            savedOK = true
+        Task {
+            guard let token = UserDefaults.standard.string(forKey: "praycalc_access_token"),
+                  let url = URL(string: "https://smart.praycalc.com/api/v1/tv/\(tv.id)/settings") else {
+                await MainActor.run { isSaving = false }
+                return
+            }
+            var request = URLRequest(url: url)
+            request.httpMethod = "PATCH"
+            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            let layoutId = layoutOptions.firstIndex(of: layoutPreset).map { ["prayer-only", "split-stream", "split-art", "info-rich", "masjid"][$0] } ?? "prayer-only"
+            let audioId = audioOptions.firstIndex(of: audioMode).map { ["silent", "live-stream", "quran"][$0] } ?? "silent"
+            let body: [String: Any] = ["layout_preset": layoutId, "audio_mode": audioId]
+            request.httpBody = try? JSONSerialization.data(withJSONObject: body)
+            _ = try? await URLSession.shared.data(for: request)
+            await MainActor.run {
+                isSaving = false
+                savedOK = true
+            }
+        }
+    }
+
+    private func playQuranOnTV() {
+        isPlayingQuran = true
+        Task {
+            guard let token = UserDefaults.standard.string(forKey: "praycalc_access_token"),
+                  let url = URL(string: "https://smart.praycalc.com/api/v1/tv/\(tv.id)/quran") else {
+                await MainActor.run { isPlayingQuran = false }
+                return
+            }
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            let body: [String: Any] = ["action": "play", "surahNumber": 1, "reciterId": "sudais"]
+            request.httpBody = try? JSONSerialization.data(withJSONObject: body)
+            _ = try? await URLSession.shared.data(for: request)
+            await MainActor.run { isPlayingQuran = false }
         }
     }
 }
@@ -161,16 +204,29 @@ struct TVSettingsSheet: View {
 
 /// Shows all paired TVs with online status. Tapping a row opens settings.
 struct TVsView: View {
-    @State private var tvs: [PairedTV] = mockTVs
+    @State private var tvs: [PairedTV] = []
     @State private var selectedTV: PairedTV?
     @State private var showSettings = false
+    @State private var isLoading = false
+    @State private var errorMessage: String? = nil
+    @State private var refreshTimer: Timer? = nil
 
     private let brandPrimary = Color(red: 0x79/255.0, green: 0xC2/255.0, blue: 0x4C/255.0)
     private let brandAccent  = Color(red: 0xC9/255.0, green: 0xF2/255.0, blue: 0x7A/255.0)
 
     var body: some View {
         VStack(spacing: 0) {
-            if tvs.isEmpty {
+            if isLoading {
+                HStack {
+                    ProgressView()
+                        .scaleEffect(0.8)
+                    Text("Loading TVs...")
+                        .font(.system(size: 12))
+                        .foregroundColor(.secondary)
+                }
+                .frame(maxWidth: .infinity, minHeight: 60)
+                .padding(16)
+            } else if tvs.isEmpty {
                 emptyState
             } else {
                 ScrollView {
@@ -185,6 +241,20 @@ struct TVsView: View {
                     .padding(.horizontal, 8)
                     .padding(.vertical, 6)
                 }
+            }
+
+            if let error = errorMessage {
+                Text(error)
+                    .font(.system(size: 11))
+                    .foregroundColor(.red)
+                    .padding(.horizontal, 16)
+                    .padding(.bottom, 6)
+            }
+        }
+        .onAppear {
+            Task { await loadTVs() }
+            refreshTimer = Timer.scheduledTimer(withTimeInterval: 300, repeats: true) { _ in
+                Task { await loadTVs() }
             }
         }
         .sheet(isPresented: $showSettings) {
@@ -205,6 +275,39 @@ struct TVsView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .padding(24)
+    }
+
+    private func loadTVs() async {
+        isLoading = true
+        defer { isLoading = false }
+
+        // Get JWT from UserDefaults (stored by the auth flow)
+        guard let token = UserDefaults.standard.string(forKey: "praycalc_access_token") else {
+            // No token — show empty state
+            tvs = []
+            return
+        }
+
+        guard let url = URL(string: "https://smart.praycalc.com/api/v1/tv/") else { return }
+        var request = URLRequest(url: url)
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        request.timeoutInterval = 10
+
+        do {
+            let (data, _) = try await URLSession.shared.data(for: request)
+            if let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+               let devices = json["devices"] as? [[String: Any]] {
+                tvs = devices.compactMap { d in
+                    guard let id = d["id"] as? String,
+                          let name = d["device_name"] as? String else { return nil }
+                    let model = d["model"] as? String ?? "Android TV"
+                    let isOnline = d["is_online"] as? Bool ?? false
+                    return PairedTV(id: id, name: name, model: model, isOnline: isOnline, lastSeen: nil)
+                }
+            }
+        } catch {
+            errorMessage = "Could not load TVs"
+        }
     }
 }
 

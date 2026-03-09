@@ -7,8 +7,10 @@ class PrayerService: NSObject, ObservableObject, CLLocationManagerDelegate {
     @Published var prayers: [PrayerTime] = []
     @Published var nextPrayer: PrayerTime?
     @Published var qiblaBearing: Double?
+    @Published var qiblaDistance: Double = 0.0
     @Published var countdownText: String = "--:--"
     @Published var currentLocation: CLLocationCoordinate2D?
+    @Published var cityName: String = ""
 
     private let locationManager = CLLocationManager()
     private var countdownTimer: Timer?

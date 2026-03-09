@@ -10,7 +10,7 @@ struct MenuPopover: View {
     private let brandAccent = Color(red: 0xC9/255.0, green: 0xF2/255.0, blue: 0x7A/255.0)
     private let brandDeep = Color(red: 0x0D/255.0, green: 0x2F/255.0, blue: 0x17/255.0)
 
-    enum MenuTab { case prayers, tvs }
+    enum MenuTab { case prayers, tvs, qibla }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -18,6 +18,7 @@ struct MenuPopover: View {
             HStack(spacing: 0) {
                 tabButton(label: "Prayers", icon: "clock.fill", tab: .prayers)
                 tabButton(label: "TVs", icon: "tv.fill", tab: .tvs)
+                tabButton(label: "Qibla", icon: "location.north.fill", tab: .qibla)
             }
             .padding(.horizontal, 8)
             .padding(.top, 8)
@@ -32,6 +33,8 @@ struct MenuPopover: View {
             case .tvs:
                 TVsView()
                     .frame(minHeight: 120)
+            case .qibla:
+                QiblaView(prayerService: prayerService)
             }
 
             Divider()
@@ -233,5 +236,43 @@ struct PrayerRow: View {
         )
         .accessibilityElement(children: .combine)
         .accessibilityLabel("\(prayer.name) at \(prayer.displayTime)\(isNext ? ", next prayer" : "")")
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Qibla View
+// ---------------------------------------------------------------------------
+
+struct QiblaView: View {
+    @ObservedObject var prayerService: PrayerService
+
+    private let brandPrimary = Color(red: 0x79/255.0, green: 0xC2/255.0, blue: 0x4C/255.0)
+
+    var body: some View {
+        VStack(spacing: 12) {
+            // Rotating compass needle
+            ZStack {
+                Circle()
+                    .stroke(brandPrimary.opacity(0.3), lineWidth: 1)
+                    .frame(width: 80, height: 80)
+
+                // Arrow pointing toward Qibla
+                Image(systemName: "arrow.up")
+                    .font(.system(size: 32))
+                    .foregroundColor(brandPrimary)
+                    .rotationEffect(.degrees(prayerService.qiblaBearing ?? 0.0))
+            }
+
+            // Bearing info
+            Text(String(format: "%.1f° to Mecca", prayerService.qiblaBearing ?? 0.0))
+                .font(.system(size: 12))
+                .foregroundColor(.secondary)
+
+            Text("Distance: \(Int(prayerService.qiblaDistance)) km")
+                .font(.system(size: 11))
+                .foregroundColor(.secondary)
+        }
+        .padding(16)
+        .frame(maxWidth: .infinity)
     }
 }
