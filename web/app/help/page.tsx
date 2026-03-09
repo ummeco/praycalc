@@ -125,6 +125,41 @@ const faqSections: FAQSection[] = [
     ],
   },
   {
+    title: 'TV Display',
+    items: [
+      {
+        question: 'What is TV Display mode?',
+        answer:
+          'TV Display mode turns any Android TV, Fire TV, or large-screen Android device into a dedicated prayer time display. It shows a full-screen dashboard with the current and upcoming prayer times, an adhan countdown, Hijri date, and optional Quran verse. Perfect for masjids, homes, and prayer rooms.',
+      },
+      {
+        question: 'How do I pair my TV with PrayCalc?',
+        answer:
+          'Install the PrayCalc app on your Android TV or Fire TV device, then open it and select "Pair with Phone." A pairing code and QR code will appear on the TV. On your phone, go to Account, then "TV Displays," and enter the code or scan the QR code. The TV will immediately sync your location and settings.',
+      },
+      {
+        question: 'Can multiple TVs be paired to one account?',
+        answer:
+          'Yes. You can pair as many TVs as you need to your account. Each TV appears in the TV Displays section in your account and can have its own name, location, and display settings. All TVs update automatically when you change settings in the app.',
+      },
+      {
+        question: 'How does adhan audio work on TV?',
+        answer:
+          'PrayCalc plays the adhan through your TV\'s audio at each prayer time. You can choose different reciters for each prayer and adjust the volume. A gentle pre-adhan tone sounds two minutes before each prayer as a reminder. Adhan can be muted for specific prayers (e.g., Fajr) if needed.',
+      },
+      {
+        question: 'How do I share prayer times with guests (no account required)?',
+        answer:
+          'In the TV settings, tap "Share Prayer Times (QR)." This generates a 24-hour QR code that guests can scan with any camera app. The QR code opens a page with prayer times for your masjid\'s location — no account or app download required.',
+      },
+      {
+        question: 'The TV display stopped syncing after I changed locations.',
+        answer:
+          'Open the PrayCalc app on your phone, go to Account, then "TV Displays," and select the TV. Tap "Sync now" to push the updated settings. If the TV is still showing old times, restart the PrayCalc app on the TV. The display reconnects and pulls fresh settings within 30 seconds.',
+      },
+    ],
+  },
+  {
     title: 'Technical',
     items: [
       {
