@@ -83,6 +83,12 @@ class _TvHomeScreenState extends ConsumerState<TvHomeScreen> {
   final Set<String> _alertedToday = {};
   DateTime _lastAlertDate = DateTime.now();
 
+  // ── Pre-prayer signal state (P-4) ─────────────────────────────────────────
+  /// Prayer name for which the pre-signal is currently showing (null = none).
+  String? _signalPrayer;
+  /// Prayers for which a pre-signal has already fired today.
+  final Set<String> _signalledToday = {};
+
   // ── Snooze state ───────────────────────────────────────────────────────────
   Timer? _snoozeTimer;
 
@@ -253,9 +259,10 @@ class _TvHomeScreenState extends ConsumerState<TvHomeScreen> {
   // ─── Adhan alert controller (TV2-8.1, TV2-8.4, TV2-8.5, TV2-8.7) ─────────
 
   void _checkPrayerAlerts() {
-    // Reset alerted set at midnight.
+    // Reset alerted sets at midnight.
     if (_now.day != _lastAlertDate.day) {
       _alertedToday.clear();
+      _signalledToday.clear();
       _lastAlertDate = _now;
     }
 
@@ -274,16 +281,36 @@ class _TvHomeScreenState extends ConsumerState<TvHomeScreen> {
       for (final entry in prayerMap.entries) {
         final prayer = entry.key;
         final timeH = entry.value;
-
-        if (_alertedToday.contains(prayer)) continue;
         if (!timeH.isFinite) continue;
 
-        // Fire within a 30-second window of the prayer time.
         final diffSeconds = ((_nowH - timeH) * 3600).round();
+
+        // Pre-prayer signal (P-4): fire in the window 5 min before prayer.
+        if (!_signalledToday.contains(prayer)) {
+          // Window: -300s to -270s before prayer (30-second trigger).
+          if (diffSeconds >= -300 && diffSeconds < -270) {
+            _signalledToday.add(prayer);
+            _firePrePrayerSignal(prayer);
+          }
+        }
+
+        // Adhan alert: fire within a 30-second window of prayer time.
+        if (_alertedToday.contains(prayer)) continue;
         if (diffSeconds >= 0 && diffSeconds < 30) {
           _alertedToday.add(prayer);
           _fireAlert(prayer, timeH, tvSettings);
         }
+      }
+    });
+  }
+
+  void _firePrePrayerSignal(String prayer) {
+    if (!mounted) return;
+    setState(() => _signalPrayer = prayer);
+    // Auto-dismiss after 6 seconds.
+    Future.delayed(const Duration(seconds: 6), () {
+      if (mounted && _signalPrayer == prayer) {
+        setState(() => _signalPrayer = null);
       }
     });
   }
@@ -646,6 +673,17 @@ class _TvHomeScreenState extends ConsumerState<TvHomeScreen> {
                         ),
                       ),
                     ),
+                  ],
+                );
+              }
+
+              // ── Pre-prayer signal overlay (P-4) ──────────────────────
+              if (_signalPrayer != null) {
+                body = Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    body,
+                    TvPrePrayerSignal(prayerName: _signalPrayer!),
                   ],
                 );
               }
@@ -1616,6 +1654,110 @@ class _TvBottomBar extends ConsumerWidget {
           ),
         ],
       ],
+    );
+  }
+}
+
+// ─── P-4: Pre-prayer signal overlay ─────────────────────────────────────────
+//
+// A subtle full-screen border pulse shown 5 minutes before each prayer.
+// Three pulses of a green glow ring fade in and out over 6 seconds, then
+// the overlay self-removes (controlled by parent via _signalPrayer state).
+
+class TvPrePrayerSignal extends StatefulWidget {
+  const TvPrePrayerSignal({super.key, required this.prayerName});
+  final String prayerName;
+
+  @override
+  State<TvPrePrayerSignal> createState() => _TvPrePrayerSignalState();
+}
+
+class _TvPrePrayerSignalState extends State<TvPrePrayerSignal>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _ctrl;
+  late Animation<double> _pulse;
+
+  @override
+  void initState() {
+    super.initState();
+    _ctrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1800),
+    )..repeat(reverse: true);
+    _pulse = CurvedAnimation(parent: _ctrl, curve: Curves.easeInOut);
+  }
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _pulse,
+      builder: (ctx, _) {
+        final glow = _pulse.value;
+        return Stack(
+          fit: StackFit.expand,
+          children: [
+            // Outer glow ring.
+            DecoratedBox(
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: PrayCalcColors.mid
+                      .withValues(alpha: 0.15 + glow * 0.40),
+                  width: 3 + glow * 5,
+                ),
+                borderRadius: BorderRadius.circular(0),
+                boxShadow: [
+                  BoxShadow(
+                    color: PrayCalcColors.light
+                        .withValues(alpha: glow * 0.25),
+                    blurRadius: 32,
+                    spreadRadius: 8,
+                  ),
+                ],
+              ),
+            ),
+            // Label at top-center.
+            Positioned(
+              top: 24,
+              left: 0,
+              right: 0,
+              child: Center(
+                child: AnimatedOpacity(
+                  opacity: 0.6 + glow * 0.4,
+                  duration: const Duration(milliseconds: 200),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 8),
+                    decoration: BoxDecoration(
+                      color:
+                          PrayCalcColors.dark.withValues(alpha: 0.75),
+                      borderRadius: BorderRadius.circular(24),
+                      border: Border.all(
+                        color: PrayCalcColors.mid
+                            .withValues(alpha: 0.5 + glow * 0.5),
+                      ),
+                    ),
+                    child: Text(
+                      '${widget.prayerName} in 5 minutes',
+                      style: TextStyle(
+                        color: PrayCalcColors.light,
+                        fontSize: 22,
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }
