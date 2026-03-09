@@ -327,8 +327,17 @@ class _TvSettingsScreenState extends ConsumerState<TvSettingsScreen> {
               const SizedBox(height: 24),
             ],
 
-            // ── Screensaver (TV2-7.5 / TV2-7.6 / TV2-7.8 / TV2-7.9) ──
+            // ── Screensaver (TV2-7.5 / TV2-7.6 / TV2-7.8 / TV2-7.9 / P-15) ──
             _SectionHeader(title: 'Screensaver'),
+            const SizedBox(height: 8),
+            // P-15 — Screensaver mode
+            _TvSettingsTile(
+              icon: Icons.nights_stay,
+              title: 'Screensaver Mode',
+              subtitle: _screensaverModeLabel(tvSettings.screensaverMode),
+              trailing: const Icon(Icons.chevron_right, color: Colors.white54, size: 32),
+              onTap: () => _showScreensaverModeDialog(context, tvNotifier, tvSettings),
+            ),
             const SizedBox(height: 8),
             // TV2-7.5 — Photo source
             _TvSettingsTile(
@@ -1311,6 +1320,57 @@ class _TvSettingsScreenState extends ConsumerState<TvSettingsScreen> {
                       color: PrayCalcColors.mid, fontSize: 22)),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  // ── Screensaver helpers — P-15 / TV2-7.5 / 7.6 / 7.8 / 7.9 ────────────────
+
+  String _screensaverModeLabel(String mode) => switch (mode) {
+    'photo' => 'Photos',
+    'pattern' => 'Islamic Pattern',
+    'starfield' => 'Starfield',
+    'calligraphy' => 'Calligraphy',
+    _ => 'Photos',
+  };
+
+  void _showScreensaverModeDialog(
+    BuildContext context,
+    TvSettingsNotifier notifier,
+    TvSettings tvSettings,
+  ) {
+    const options = [
+      ('photo', 'Photos', Icons.photo_library),
+      ('pattern', 'Islamic Pattern', Icons.star),
+      ('starfield', 'Starfield', Icons.nights_stay),
+      ('calligraphy', 'Calligraphy', Icons.menu_book),
+    ];
+    showDialog<void>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: const Color(0xFF1A2E1A),
+        title: const Text('Screensaver Mode',
+            style: TextStyle(color: Colors.white)),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: options.map((opt) {
+            final selected = tvSettings.screensaverMode == opt.$1;
+            return ListTile(
+              leading: Icon(opt.$3,
+                  color: selected ? PrayCalcColors.light : Colors.white54),
+              title: Text(opt.$2,
+                  style: TextStyle(
+                      color: selected ? Colors.white : Colors.white70)),
+              trailing: selected
+                  ? const Icon(Icons.check, color: PrayCalcColors.light)
+                  : null,
+              onTap: () {
+                notifier.setScreensaverMode(opt.$1);
+                Navigator.of(ctx).pop();
+              },
+            );
+          }).toList(),
         ),
       ),
     );

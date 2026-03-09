@@ -17,12 +17,192 @@ import '../../core/providers/tv_provider.dart';
 import '../../core/theme/app_theme.dart';
 import '../../shared/models/moon_phase.dart';
 
+// ─── Calligraphy content ─────────────────────────────────────────────────────
+
+class _CalligraphyEntry {
+  final String arabic;
+  final String transliteration;
+  final String translation;
+  final String source;
+
+  const _CalligraphyEntry({
+    required this.arabic,
+    required this.transliteration,
+    required this.translation,
+    required this.source,
+  });
+}
+
+const _kCalligraphyPhrases = [
+  _CalligraphyEntry(
+    arabic: 'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ',
+    transliteration: 'Bismillāhi r-raḥmāni r-raḥīm',
+    translation: 'In the name of Allah, the Most Gracious, the Most Merciful',
+    source: 'Quran 1:1',
+  ),
+  _CalligraphyEntry(
+    arabic: 'الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ',
+    transliteration: "Al-ḥamdu lillāhi rabbi l-'ālamīn",
+    translation: 'All praise is due to Allah, Lord of all worlds',
+    source: 'Quran 1:2',
+  ),
+  _CalligraphyEntry(
+    arabic: 'سُبْحَانَ اللَّهِ وَبِحَمْدِهِ',
+    transliteration: 'Subḥāna llāhi wa bi-ḥamdih',
+    translation: 'Glory be to Allah and all praise is due to Him',
+    source: 'Bukhari 6405',
+  ),
+  _CalligraphyEntry(
+    arabic: 'لَا إِلَٰهَ إِلَّا اللَّهُ',
+    transliteration: 'Lā ilāha illā llāh',
+    translation: 'There is no god worthy of worship but Allah',
+    source: 'Bukhari 6403',
+  ),
+  _CalligraphyEntry(
+    arabic: 'اللَّهُ أَكْبَرُ',
+    transliteration: 'Allāhu akbar',
+    translation: 'Allah is the Greatest',
+    source: 'Agreed upon',
+  ),
+  _CalligraphyEntry(
+    arabic: 'لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ',
+    transliteration: 'Lā ḥawla wa lā quwwata illā billāh',
+    translation: 'There is no power nor strength except through Allah',
+    source: 'Bukhari 6384',
+  ),
+  _CalligraphyEntry(
+    arabic: 'حَسْبُنَا اللَّهُ وَنِعْمَ الْوَكِيلُ',
+    transliteration: "Ḥasbunā llāhu wa ni'ma l-wakīl",
+    translation: 'Allah is sufficient for us and He is the best disposer of affairs',
+    source: 'Quran 3:173',
+  ),
+  _CalligraphyEntry(
+    arabic: 'إِنَّ مَعَ الْعُسْرِ يُسْرًا',
+    transliteration: "Inna ma'a l-'usri yusrā",
+    translation: 'Verily with hardship comes ease',
+    source: 'Quran 94:6',
+  ),
+  _CalligraphyEntry(
+    arabic: 'اللَّهُمَّ صَلِّ عَلَىٰ مُحَمَّدٍ',
+    transliteration: 'Allāhumma ṣalli ʿalā Muḥammad',
+    translation: 'O Allah, send blessings upon Muhammad ﷺ',
+    source: 'Agreed upon',
+  ),
+  _CalligraphyEntry(
+    arabic: 'رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً',
+    transliteration: "Rabbanā ātinā fi d-dunyā ḥasanatan wa fi l-ākhirati ḥasanatan",
+    translation: 'Our Lord, give us good in this world and good in the Hereafter',
+    source: 'Quran 2:201',
+  ),
+  _CalligraphyEntry(
+    arabic: 'اسْتَغْفِرِ اللَّهَ وَتُبْ إِلَيْهِ',
+    transliteration: 'Istaghfiri llāha wa tub ilayh',
+    translation: 'Seek forgiveness from Allah and repent to Him',
+    source: 'Quran 11:90',
+  ),
+  _CalligraphyEntry(
+    arabic: 'يَا حَيُّ يَا قَيُّومُ بِرَحْمَتِكَ أَسْتَغِيثُ',
+    transliteration: 'Yā ḥayyu yā qayyūmu bi-raḥmatika astaghīth',
+    translation: 'O Living, O Self-Sustaining, by Your mercy I seek help',
+    source: 'Tirmidhi 3524',
+  ),
+  _CalligraphyEntry(
+    arabic: 'وَعَلَى اللَّهِ فَلْيَتَوَكَّلِ الْمُؤْمِنُونَ',
+    transliteration: "Wa 'alā llāhi falyatawakkali l-mu'minūn",
+    translation: 'And upon Allah let the believers rely',
+    source: 'Quran 3:122',
+  ),
+  _CalligraphyEntry(
+    arabic: 'إِنَّ اللَّهَ مَعَ الصَّابِرِينَ',
+    transliteration: "Inna llāha ma'a ṣ-ṣābirīn",
+    translation: 'Indeed Allah is with those who are patient',
+    source: 'Quran 2:153',
+  ),
+  _CalligraphyEntry(
+    arabic: 'وَمَن يَتَّقِ اللَّهَ يَجْعَل لَّهُ مَخْرَجًا',
+    transliteration: 'Wa man yattaqi llāha yajʿal lahu makhrajā',
+    translation: 'And whoever fears Allah, He will make a way out for him',
+    source: 'Quran 65:2',
+  ),
+  _CalligraphyEntry(
+    arabic: 'رَبِّ اشْرَحْ لِي صَدْرِي',
+    transliteration: 'Rabbi shraḥ lī ṣadrī',
+    translation: 'My Lord, expand for me my chest',
+    source: 'Quran 20:25',
+  ),
+  _CalligraphyEntry(
+    arabic: 'رَبَّنَا لَا تُزِغْ قُلُوبَنَا بَعْدَ إِذْ هَدَيْتَنَا',
+    transliteration: 'Rabbanā lā tuzigh qulūbanā baʿda idh hadaytanā',
+    translation: 'Our Lord, do not let our hearts deviate after You have guided us',
+    source: 'Quran 3:8',
+  ),
+  _CalligraphyEntry(
+    arabic: 'وَهُوَ الْغَفُورُ الْوَدُودُ',
+    transliteration: 'Wa huwa l-ghafūru l-wadūd',
+    translation: 'And He is the Forgiving, the Affectionate',
+    source: 'Quran 85:14',
+  ),
+  _CalligraphyEntry(
+    arabic: 'اللَّهُمَّ إِنِّي أَسْأَلُكَ الْعَفْوَ وَالْعَافِيَةَ',
+    transliteration: "Allāhumma innī as'aluka l-'afwa wa l-'āfiyah",
+    translation: 'O Allah, I ask You for pardon and well-being',
+    source: 'Ibn Majah 3849',
+  ),
+  _CalligraphyEntry(
+    arabic: 'إِنَّ اللَّهَ لَا يُضِيعُ أَجْرَ الْمُحْسِنِينَ',
+    transliteration: 'Inna llāha lā yuḍīʿu ajra l-muḥsinīn',
+    translation: 'Indeed Allah does not allow the reward of the doers of good to be lost',
+    source: 'Quran 9:120',
+  ),
+];
+
+// ─── Star data for starfield mode ────────────────────────────────────────────
+
+class _StarData {
+  final double x; // normalized 0.0–1.0
+  final double y; // normalized 0.0–1.0
+  final double size; // 1.0–4.0
+  final double baseAlpha; // 0.3–1.0
+  final double twinklePhase; // 0.0–2π
+  final double twinkleSpeed; // 0.5–2.0
+  final double parallaxDepth; // 0.0–1.0 (0=far, 1=near)
+
+  const _StarData({
+    required this.x,
+    required this.y,
+    required this.size,
+    required this.baseAlpha,
+    required this.twinklePhase,
+    required this.twinkleSpeed,
+    required this.parallaxDepth,
+  });
+}
+
+// ─── Shooting star data ──────────────────────────────────────────────────────
+
+class _ShootingStarData {
+  final double startX; // normalized
+  final double startY;
+  final double endX;
+  final double endY;
+
+  const _ShootingStarData({
+    required this.startX,
+    required this.startY,
+    required this.endX,
+    required this.endY,
+  });
+}
+
 /// Ambient / screensaver mode for TV.
 ///
 /// Shows current time, next prayer countdown, Qibla direction, and moon phase
 /// over full-screen photos from MinIO storage (with crossfade transitions) or
 /// an Islamic geometric pattern fallback. Text drifts slowly for OLED burn-in
 /// prevention. Wakes on any remote button press.
+///
+/// New modes (P-15): 'starfield' (300 stars, parallax, shooting star) and
+/// 'calligraphy' (20 Arabic phrases, Amiri font, 60s rotation).
 class TvAmbientScreen extends ConsumerStatefulWidget {
   const TvAmbientScreen({super.key});
 
@@ -35,6 +215,17 @@ class _TvAmbientScreenState extends ConsumerState<TvAmbientScreen>
   late Timer _ticker;
   late AnimationController _patternController;
   late AnimationController _crossfadeController;
+  // P-15: starfield controllers
+  late AnimationController _twinkleController;
+  late AnimationController _shootingStarController;
+  List<_StarData> _stars = [];
+  _ShootingStarData? _shootingStar;
+  Timer? _shootingStarTimer;
+  // P-15: calligraphy controllers
+  late AnimationController _calligraphyFadeController;
+  int _calligraphyIdx = 0;
+  Timer? _calligraphyTimer;
+
   final _focusNode = FocusNode();
   DateTime _now = DateTime.now();
   Timer? _photoTimer;
@@ -60,6 +251,28 @@ class _TvAmbientScreenState extends ConsumerState<TvAmbientScreen>
       duration: const Duration(milliseconds: 1500),
     );
 
+    // P-15: starfield — twinkle loop + shooting star
+    _twinkleController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 4),
+    )..repeat();
+
+    _shootingStarController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 2000),
+    );
+    _shootingStarController.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        setState(() => _shootingStar = null);
+      }
+    });
+
+    // P-15: calligraphy — fade controller
+    _calligraphyFadeController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 800),
+    )..forward();
+
     _ticker = Timer.periodic(const Duration(seconds: 1), (_) {
       setState(() {
         _now = DateTime.now();
@@ -70,6 +283,62 @@ class _TvAmbientScreenState extends ConsumerState<TvAmbientScreen>
     // Start photo rotation timer after first frame.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _startPhotoRotation();
+      _generateStars();
+      _startShootingStarTimer();
+      _startCalligraphyTimer();
+    });
+  }
+
+  void _generateStars() {
+    final rng = math.Random();
+    _stars = List.generate(300, (_) => _StarData(
+      x: rng.nextDouble(),
+      y: rng.nextDouble(),
+      size: 1.0 + rng.nextDouble() * 3.0,
+      baseAlpha: 0.3 + rng.nextDouble() * 0.7,
+      twinklePhase: rng.nextDouble() * 2 * math.pi,
+      twinkleSpeed: 0.5 + rng.nextDouble() * 1.5,
+      parallaxDepth: rng.nextDouble(),
+    ));
+    setState(() {});
+  }
+
+  void _startShootingStarTimer() {
+    _shootingStarTimer?.cancel();
+    _shootingStarTimer = Timer.periodic(
+      Duration(seconds: 20 + math.Random().nextInt(20)),
+      (_) {
+        if (!mounted) return;
+        final rng = math.Random();
+        final startX = rng.nextDouble() * 0.5;
+        final startY = rng.nextDouble() * 0.4;
+        setState(() {
+          _shootingStar = _ShootingStarData(
+            startX: startX,
+            startY: startY,
+            endX: startX + 0.2 + rng.nextDouble() * 0.3,
+            endY: startY + 0.1 + rng.nextDouble() * 0.2,
+          );
+        });
+        _shootingStarController.forward(from: 0);
+        // Reset timer with new random interval
+        _startShootingStarTimer();
+      },
+    );
+  }
+
+  void _startCalligraphyTimer() {
+    _calligraphyTimer?.cancel();
+    _calligraphyTimer = Timer.periodic(const Duration(seconds: 60), (_) {
+      if (!mounted) return;
+      _calligraphyFadeController.reverse().then((_) {
+        if (!mounted) return;
+        setState(() {
+          _calligraphyIdx =
+              (_calligraphyIdx + 1) % _kCalligraphyPhrases.length;
+        });
+        _calligraphyFadeController.forward();
+      });
     });
   }
 
@@ -102,9 +371,14 @@ class _TvAmbientScreenState extends ConsumerState<TvAmbientScreen>
   void dispose() {
     _ticker.cancel();
     _photoTimer?.cancel();
+    _shootingStarTimer?.cancel();
+    _calligraphyTimer?.cancel();
     _focusNode.dispose();
     _patternController.dispose();
     _crossfadeController.dispose();
+    _twinkleController.dispose();
+    _shootingStarController.dispose();
+    _calligraphyFadeController.dispose();
     WakelockPlus.disable();
     super.dispose();
   }
@@ -123,8 +397,11 @@ class _TvAmbientScreenState extends ConsumerState<TvAmbientScreen>
     final ramadan = ref.watch(ramadanProvider);
     final screensaverMode = tvSettings.screensaverMode;
 
-    final showPhotos =
-        screensaverMode != 'pattern' && ssState.isReady && ssState.currentFile != null;
+    final showPhotos = screensaverMode == 'photo' &&
+        ssState.isReady &&
+        ssState.currentFile != null;
+    final isStarfield = screensaverMode == 'starfield';
+    final isCalligraphy = screensaverMode == 'calligraphy';
 
     return Scaffold(
       backgroundColor: Colors.black,
@@ -146,6 +423,40 @@ class _TvAmbientScreenState extends ConsumerState<TvAmbientScreen>
                 _PhotoBackground(
                   currentFile: ssState.currentFile!,
                   crossfadeAnimation: _crossfadeController,
+                )
+              else if (isStarfield)
+                Positioned.fill(
+                  child: AnimatedBuilder(
+                    animation: _twinkleController,
+                    builder: (context, child) {
+                      return CustomPaint(
+                        painter: _StarfieldPainter(
+                          stars: _stars,
+                          twinkleTime: _twinkleController.value,
+                          driftX: _driftX,
+                          driftY: _driftY,
+                          shootingStar: _shootingStar,
+                          shootingStarProgress:
+                              _shootingStarController.value,
+                        ),
+                      );
+                    },
+                  ),
+                )
+              else if (isCalligraphy)
+                Positioned.fill(
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      gradient: RadialGradient(
+                        center: Alignment.center,
+                        radius: 1.0,
+                        colors: [
+                          const Color(0xFF0D2F17).withAlpha(255),
+                          Colors.black,
+                        ],
+                      ),
+                    ),
+                  ),
                 )
               else
                 Positioned.fill(
@@ -177,6 +488,19 @@ class _TvAmbientScreenState extends ConsumerState<TvAmbientScreen>
                         ],
                         stops: const [0.0, 0.3, 0.7, 1.0],
                       ),
+                    ),
+                  ),
+                ),
+
+              // ── Calligraphy mode overlay ──
+              if (isCalligraphy)
+                Positioned.fill(
+                  child: FadeTransition(
+                    opacity: _calligraphyFadeController,
+                    child: _CalligraphyDisplay(
+                      entry: _kCalligraphyPhrases[_calligraphyIdx],
+                      driftX: _driftX * 0.3,
+                      driftY: _driftY * 0.3,
                     ),
                   ),
                 ),
@@ -605,4 +929,200 @@ class _IslamicPatternPainter extends CustomPainter {
   @override
   bool shouldRepaint(_IslamicPatternPainter oldDelegate) =>
       oldDelegate.rotation != rotation;
+}
+
+// ─── P-15: Starfield painter ──────────────────────────────────────────────────
+
+class _StarfieldPainter extends CustomPainter {
+  final List<_StarData> stars;
+  final double twinkleTime; // 0.0–1.0 from repeating 4s controller
+  final double driftX;
+  final double driftY;
+  final _ShootingStarData? shootingStar;
+  final double shootingStarProgress; // 0.0–1.0
+
+  _StarfieldPainter({
+    required this.stars,
+    required this.twinkleTime,
+    required this.driftX,
+    required this.driftY,
+    this.shootingStar,
+    required this.shootingStarProgress,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()..style = PaintingStyle.fill;
+    final t = twinkleTime * 2 * math.pi;
+
+    for (final star in stars) {
+      // Parallax: closer stars drift more
+      final px = star.x * size.width + driftX * star.parallaxDepth * 0.08;
+      final py = star.y * size.height + driftY * star.parallaxDepth * 0.08;
+
+      // Twinkle
+      final twinkle =
+          0.7 + 0.3 * math.sin(t * star.twinkleSpeed + star.twinklePhase);
+      final alpha = (star.baseAlpha * twinkle * 255).round().clamp(0, 255);
+
+      paint.color = Colors.white.withAlpha(alpha);
+      canvas.drawCircle(Offset(px, py), star.size * 0.5, paint);
+    }
+
+    // Shooting star
+    if (shootingStar != null && shootingStarProgress > 0) {
+      _paintShootingStar(canvas, size, shootingStar!, shootingStarProgress);
+    }
+  }
+
+  void _paintShootingStar(
+    Canvas canvas,
+    Size size,
+    _ShootingStarData data,
+    double progress,
+  ) {
+    final sx = data.startX * size.width;
+    final sy = data.startY * size.height;
+    final ex = data.endX * size.width;
+    final ey = data.endY * size.height;
+
+    // Trail: head advances with progress, tail lags 0.3
+    final headProgress = progress;
+    final tailProgress = (progress - 0.3).clamp(0.0, 1.0);
+
+    final hx = sx + (ex - sx) * headProgress;
+    final hy = sy + (ey - sy) * headProgress;
+    final tx = sx + (ex - sx) * tailProgress;
+    final ty = sy + (ey - sy) * tailProgress;
+
+    // Fade out in last 20% of animation
+    final alpha = progress > 0.8 ? ((1.0 - progress) / 0.2) : 1.0;
+
+    final paint = Paint()
+      ..shader = LinearGradient(
+        colors: [
+          Colors.white.withAlpha((255 * alpha).round()),
+          Colors.white.withAlpha(0),
+        ],
+      ).createShader(Rect.fromPoints(Offset(hx, hy), Offset(tx, ty)))
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.5
+      ..strokeCap = StrokeCap.round;
+
+    canvas.drawLine(Offset(hx, hy), Offset(tx, ty), paint);
+
+    // Bright head dot
+    final headPaint = Paint()
+      ..color = Colors.white.withAlpha((220 * alpha).round())
+      ..style = PaintingStyle.fill;
+    canvas.drawCircle(Offset(hx, hy), 3, headPaint);
+  }
+
+  @override
+  bool shouldRepaint(_StarfieldPainter old) =>
+      old.twinkleTime != twinkleTime ||
+      old.driftX != driftX ||
+      old.driftY != driftY ||
+      old.shootingStarProgress != shootingStarProgress;
+}
+
+// ─── P-15: Calligraphy display ────────────────────────────────────────────────
+
+class _CalligraphyDisplay extends StatelessWidget {
+  const _CalligraphyDisplay({
+    required this.entry,
+    required this.driftX,
+    required this.driftY,
+  });
+
+  final _CalligraphyEntry entry;
+  final double driftX;
+  final double driftY;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Transform.translate(
+        offset: Offset(driftX, driftY),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 80),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Arabic text — large Amiri
+              Text(
+                entry.arabic,
+                textAlign: TextAlign.center,
+                textDirection: TextDirection.rtl,
+                style: const TextStyle(
+                  fontFamily: 'Amiri',
+                  fontSize: 72,
+                  height: 1.8,
+                  color: Colors.white,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              const SizedBox(height: 24),
+
+              // Horizontal rule
+              Container(
+                height: 1,
+                width: 200,
+                color: PrayCalcColors.mid.withAlpha(80),
+              ),
+              const SizedBox(height: 20),
+
+              // Transliteration
+              Text(
+                entry.transliteration,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 20,
+                  height: 1.6,
+                  color: Colors.white.withAlpha(160),
+                  fontStyle: FontStyle.italic,
+                  letterSpacing: 0.5,
+                ),
+              ),
+              const SizedBox(height: 12),
+
+              // English translation
+              Text(
+                '"${entry.translation}"',
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 22,
+                  height: 1.5,
+                  color: Colors.white,
+                  fontWeight: FontWeight.w300,
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              // Source pill
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                decoration: BoxDecoration(
+                  color: PrayCalcColors.dark.withAlpha(120),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: PrayCalcColors.mid.withAlpha(60),
+                  ),
+                ),
+                child: Text(
+                  entry.source,
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: PrayCalcColors.light.withAlpha(180),
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }
