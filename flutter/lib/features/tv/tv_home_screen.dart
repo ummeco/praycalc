@@ -33,6 +33,7 @@ import 'tv_adhan_dua_overlay.dart';
 import 'tv_ayah_of_hour.dart';
 import 'tv_iqamah_board.dart';
 import 'tv_multi_city_board.dart';
+import 'tv_ramadan_display.dart';
 import 'tv_post_adhan_bar.dart';
 import 'tv_stream_library.dart';
 import 'tv_stream_player.dart';
@@ -1034,14 +1035,27 @@ class _TvHomeBody extends StatelessWidget {
                       _TvCurrentTime(now: now, use24h: settings.use24h),
                       const SizedBox(height: 8),
 
-                      // Next prayer countdown.
-                      _TvCountdownBanner(
-                        label: _prayerLabel(
-                          _prayers[nextIdx].label,
-                          ramadan.isRamadan,
+                      // Ramadan primary display (P-13) / standard countdown.
+                      if (ramadan.isRamadan)
+                        TvRamadanDisplay(
+                          ramadan: ramadan,
+                          suhoorTime: formatH(times.fajr, settings.use24h),
+                          iftarTime: formatH(times.maghrib, settings.use24h),
+                          countdown: countdown,
+                          countdownLabel: nowH < times.fajr
+                              ? 'Until Suhoor ends'
+                              : nowH < times.maghrib
+                                  ? 'Until Iftar'
+                                  : 'Until Fajr',
+                        )
+                      else
+                        _TvCountdownBanner(
+                          label: _prayerLabel(
+                            _prayers[nextIdx].label,
+                            false,
+                          ),
+                          countdown: countdown,
                         ),
-                        countdown: countdown,
-                      ),
                       const SizedBox(height: 16),
 
                       // Ayah of the hour (P-7).
