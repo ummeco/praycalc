@@ -180,9 +180,14 @@ class TvSettingsNotifier extends Notifier<TvSettings> {
         ),
       );
 
-  Future<void> setSecondCity(String? slug, String? timeZone) => update(
-        state.copyWith(secondCitySlug: slug, secondCityTimeZone: timeZone),
-      );
+  Future<void> setSecondCity(
+      String? slug, String? timeZone, double? lat, double? lng) =>
+      update(state.copyWith(
+        secondCitySlug: slug,
+        secondCityTimeZone: timeZone,
+        secondCityLat: lat,
+        secondCityLng: lng,
+      ));
 
   // ---------------------------------------------------------------------------
   // Info bar config setters (TV2-2.5)

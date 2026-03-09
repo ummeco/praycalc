@@ -31,6 +31,7 @@ import 'tv_jumuah_overlay.dart';
 import 'tv_sky_background.dart';
 import 'tv_adhan_dua_overlay.dart';
 import 'tv_ayah_of_hour.dart';
+import 'tv_multi_city_board.dart';
 import 'tv_post_adhan_bar.dart';
 import 'tv_stream_library.dart';
 import 'tv_stream_player.dart';
@@ -1042,6 +1043,27 @@ class _TvHomeBody extends StatelessWidget {
                           isRamadan: ramadan.isRamadan,
                         ),
                       ),
+
+                      // Multi-city prayer board (P-9).
+                      if (tvSettings.secondCitySlug != null &&
+                          tvSettings.secondCitySlug!.isNotEmpty &&
+                          tvSettings.secondCityLat != null &&
+                          tvSettings.secondCityLng != null) ...[
+                        const SizedBox(height: 12),
+                        TvMultiCityBoard(
+                          primaryLabel:
+                              city?.name ?? 'Primary',
+                          primaryTimes: times,
+                          secondaryLabel: tvSettings.secondCitySlug!,
+                          secondaryLat: tvSettings.secondCityLat!,
+                          secondaryLng: tvSettings.secondCityLng!,
+                          secondaryTimeZone:
+                              tvSettings.secondCityTimeZone ?? 'Asia/Riyadh',
+                          use24h: settings.use24h,
+                          activeIdx: activeIdx < 5 ? activeIdx : -1,
+                          isRamadan: ramadan.isRamadan,
+                        ),
+                      ],
 
                       // Hadith / Asma al-Husna ambient ticker (L-3).
                       if (tvSettings.infoBarConfig.showHadithTicker) ...[

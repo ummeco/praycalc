@@ -519,6 +519,12 @@ class TvSettings {
   /// Null means use the default (Asia/Riyadh = Mecca time).
   final String? secondCityTimeZone;
 
+  /// Latitude of the second city for prayer time computation.
+  final double? secondCityLat;
+
+  /// Longitude of the second city for prayer time computation.
+  final double? secondCityLng;
+
   // ---------------------------------------------------------------------------
   // TV2-11.4 — donation QR overlay
   // ---------------------------------------------------------------------------
@@ -660,6 +666,8 @@ class TvSettings {
     this.jumuahKhutbahMinute = 30,
     this.secondCitySlug,
     this.secondCityTimeZone,
+    this.secondCityLat,
+    this.secondCityLng,
     this.donationQrMode = 'never',
     this.donationQrUrl,
     this.infoBarConfig = const TvInfoBarConfig(),
@@ -709,6 +717,8 @@ class TvSettings {
     int? jumuahKhutbahMinute,
     Object? secondCitySlug = _sentinel,
     Object? secondCityTimeZone = _sentinel,
+    Object? secondCityLat = _sentinel,
+    Object? secondCityLng = _sentinel,
     String? donationQrMode,
     Object? donationQrUrl = _sentinel,
     TvInfoBarConfig? infoBarConfig,
@@ -767,6 +777,12 @@ class TvSettings {
       secondCityTimeZone: secondCityTimeZone == _sentinel
           ? this.secondCityTimeZone
           : secondCityTimeZone as String?,
+      secondCityLat: secondCityLat == _sentinel
+          ? this.secondCityLat
+          : secondCityLat as double?,
+      secondCityLng: secondCityLng == _sentinel
+          ? this.secondCityLng
+          : secondCityLng as double?,
       donationQrMode: donationQrMode ?? this.donationQrMode,
       donationQrUrl: donationQrUrl == _sentinel
           ? this.donationQrUrl
@@ -826,6 +842,8 @@ class TvSettings {
         'jumuahKhutbahMinute': jumuahKhutbahMinute,
         'secondCitySlug': secondCitySlug,
         'secondCityTimeZone': secondCityTimeZone,
+        'secondCityLat': secondCityLat,
+        'secondCityLng': secondCityLng,
         'donationQrMode': donationQrMode,
         'donationQrUrl': donationQrUrl,
         'infoBarConfig': infoBarConfig.toJson(),
@@ -919,6 +937,8 @@ class TvSettings {
       jumuahKhutbahMinute: json['jumuahKhutbahMinute'] as int? ?? 30,
       secondCitySlug: json['secondCitySlug'] as String?,
       secondCityTimeZone: json['secondCityTimeZone'] as String?,
+      secondCityLat: (json['secondCityLat'] as num?)?.toDouble(),
+      secondCityLng: (json['secondCityLng'] as num?)?.toDouble(),
       donationQrMode: json['donationQrMode'] as String? ?? 'never',
       donationQrUrl: json['donationQrUrl'] as String?,
       prayerBrightnessOverrides:

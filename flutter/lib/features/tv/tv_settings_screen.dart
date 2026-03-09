@@ -136,9 +136,10 @@ class _TvSettingsScreenState extends ConsumerState<TvSettingsScreen> {
                 onChanged: (v) {
                   if (v) {
                     // Default to Mecca when enabling
-                    tvNotifier.setSecondCity('mecca', 'Asia/Riyadh');
+                    tvNotifier.setSecondCity(
+                        'mecca', 'Asia/Riyadh', 21.3891, 39.8579);
                   } else {
-                    tvNotifier.setSecondCity(null, null);
+                    tvNotifier.setSecondCity(null, null, null, null);
                   }
                 },
               ),
@@ -146,9 +147,10 @@ class _TvSettingsScreenState extends ConsumerState<TvSettingsScreen> {
                 final active = tvSettings.secondCitySlug != null &&
                     tvSettings.secondCitySlug!.isNotEmpty;
                 if (active) {
-                  tvNotifier.setSecondCity(null, null);
+                  tvNotifier.setSecondCity(null, null, null, null);
                 } else {
-                  tvNotifier.setSecondCity('mecca', 'Asia/Riyadh');
+                  tvNotifier.setSecondCity(
+                      'mecca', 'Asia/Riyadh', 21.3891, 39.8579);
                 }
               },
             ),
@@ -805,17 +807,18 @@ class _TvSettingsScreenState extends ConsumerState<TvSettingsScreen> {
   // ── Second Timezone helpers (TV2-9.7) ────────────────────────────────────────
 
   /// Well-known city slugs with display name and IANA timezone.
+  // (slug, label, timezone, lat, lng)
   static const _kSecondCities = [
-    ('mecca', 'Mecca', 'Asia/Riyadh'),
-    ('medina', 'Medina', 'Asia/Riyadh'),
-    ('istanbul', 'Istanbul', 'Europe/Istanbul'),
-    ('cairo', 'Cairo', 'Africa/Cairo'),
-    ('karachi', 'Karachi', 'Asia/Karachi'),
-    ('jakarta', 'Jakarta', 'Asia/Jakarta'),
-    ('london', 'London', 'Europe/London'),
-    ('new-york', 'New York', 'America/New_York'),
-    ('dubai', 'Dubai', 'Asia/Dubai'),
-    ('kuala-lumpur', 'Kuala Lumpur', 'Asia/Kuala_Lumpur'),
+    ('mecca', 'Mecca', 'Asia/Riyadh', 21.3891, 39.8579),
+    ('medina', 'Medina', 'Asia/Riyadh', 24.5247, 39.5692),
+    ('istanbul', 'Istanbul', 'Europe/Istanbul', 41.0082, 28.9784),
+    ('cairo', 'Cairo', 'Africa/Cairo', 30.0444, 31.2357),
+    ('karachi', 'Karachi', 'Asia/Karachi', 24.8607, 67.0011),
+    ('jakarta', 'Jakarta', 'Asia/Jakarta', -6.2088, 106.8456),
+    ('london', 'London', 'Europe/London', 51.5074, -0.1278),
+    ('new-york', 'New York', 'America/New_York', 40.7128, -74.0060),
+    ('dubai', 'Dubai', 'Asia/Dubai', 25.2048, 55.2708),
+    ('kuala-lumpur', 'Kuala Lumpur', 'Asia/Kuala_Lumpur', 3.1390, 101.6869),
   ];
 
   String _secondCityLabel(String slug) {
@@ -845,7 +848,7 @@ class _TvSettingsScreenState extends ConsumerState<TvSettingsScreen> {
                 label: city.$2,
                 isSelected: isSelected,
                 onTap: () {
-                  tvNotifier.setSecondCity(city.$1, city.$3);
+                  tvNotifier.setSecondCity(city.$1, city.$3, city.$4, city.$5);
                   Navigator.of(ctx).pop();
                 },
               );
