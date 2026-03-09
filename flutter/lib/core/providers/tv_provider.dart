@@ -257,6 +257,16 @@ class TvSettingsNotifier extends Notifier<TvSettings> {
       update(state.copyWith(skyBackgroundEnabled: v));
 
   // ---------------------------------------------------------------------------
+  // P-8 — Geometric pattern setters
+  // ---------------------------------------------------------------------------
+
+  Future<void> setGeometricPatternEnabled(bool v) =>
+      update(state.copyWith(geometricPatternEnabled: v));
+
+  Future<void> setGeometricPatternStyle(String v) =>
+      update(state.copyWith(geometricPatternStyle: v));
+
+  // ---------------------------------------------------------------------------
   // P-17 — Font scale setter
   // ---------------------------------------------------------------------------
 

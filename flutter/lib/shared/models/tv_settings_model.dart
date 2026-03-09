@@ -599,6 +599,16 @@ class TvSettings {
   /// When true, TvSkyBackground replaces the flat deep-green background.
   final bool skyBackgroundEnabled;
 
+  // ---------------------------------------------------------------------------
+  // P-8 — Islamic geometric pattern overlay
+  // ---------------------------------------------------------------------------
+
+  /// When true, TvGeometricPattern is rendered behind content.
+  final bool geometricPatternEnabled;
+
+  /// Which geometric style to draw: 'moroccanStar' or 'girih'.
+  final String geometricPatternStyle;
+
   /// Font scale multiplier applied to all TV text sizes.
   /// Valid values: 0.8, 1.0, 1.2, 1.4, 1.6. Default 1.0.
   final double tvFontScale;
@@ -663,6 +673,8 @@ class TvSettings {
     this.screensaverIdleSeconds = 300,
     this.customStreams = const [],
     this.skyBackgroundEnabled = false,
+    this.geometricPatternEnabled = false,
+    this.geometricPatternStyle = 'moroccanStar',
     this.tvFontScale = 1.0,
     this.goodNightEnabled = false,
     this.goodNightDelayMinutes = 30,
@@ -710,6 +722,8 @@ class TvSettings {
     int? screensaverIdleSeconds,
     List<TvCustomStream>? customStreams,
     bool? skyBackgroundEnabled,
+    bool? geometricPatternEnabled,
+    String? geometricPatternStyle,
     double? tvFontScale,
     bool? goodNightEnabled,
     int? goodNightDelayMinutes,
@@ -770,6 +784,10 @@ class TvSettings {
           screensaverIdleSeconds ?? this.screensaverIdleSeconds,
       customStreams: customStreams ?? this.customStreams,
       skyBackgroundEnabled: skyBackgroundEnabled ?? this.skyBackgroundEnabled,
+      geometricPatternEnabled:
+          geometricPatternEnabled ?? this.geometricPatternEnabled,
+      geometricPatternStyle:
+          geometricPatternStyle ?? this.geometricPatternStyle,
       tvFontScale: tvFontScale ?? this.tvFontScale,
       goodNightEnabled: goodNightEnabled ?? this.goodNightEnabled,
       goodNightDelayMinutes:
@@ -821,6 +839,8 @@ class TvSettings {
         'screensaverIdleSeconds': screensaverIdleSeconds,
         'customStreams': customStreams.map((s) => s.toJson()).toList(),
         'skyBackgroundEnabled': skyBackgroundEnabled,
+        'geometricPatternEnabled': geometricPatternEnabled,
+        'geometricPatternStyle': geometricPatternStyle,
         'tvFontScale': tvFontScale,
         'goodNightEnabled': goodNightEnabled,
         'goodNightDelayMinutes': goodNightDelayMinutes,
@@ -930,6 +950,10 @@ class TvSettings {
           const [],
       skyBackgroundEnabled:
           json['skyBackgroundEnabled'] as bool? ?? false,
+      geometricPatternEnabled:
+          json['geometricPatternEnabled'] as bool? ?? false,
+      geometricPatternStyle:
+          json['geometricPatternStyle'] as String? ?? 'moroccanStar',
       tvFontScale: (json['tvFontScale'] as num?)?.toDouble() ?? 1.0,
       goodNightEnabled: json['goodNightEnabled'] as bool? ?? false,
       goodNightDelayMinutes: json['goodNightDelayMinutes'] as int? ?? 30,

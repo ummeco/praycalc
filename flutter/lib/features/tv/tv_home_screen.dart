@@ -26,8 +26,9 @@ import 'tv_eid_overlay.dart';
 import 'tv_countdown_flip.dart';
 import 'tv_good_night_overlay.dart';
 import 'tv_hadith_ticker.dart';
-import 'tv_sky_background.dart';
+import 'tv_geometric_pattern.dart';
 import 'tv_jumuah_overlay.dart';
+import 'tv_sky_background.dart';
 import 'tv_post_adhan_bar.dart';
 import 'tv_stream_library.dart';
 import 'tv_stream_player.dart';
@@ -463,7 +464,7 @@ class _TvHomeScreenState extends ConsumerState<TvHomeScreen> {
 
   Widget _buildBody(TvSettings tvSettings, dynamic timesAsync, dynamic city,
       dynamic settings, dynamic ramadan) {
-    return FocusTraversalGroup(
+    final inner = FocusTraversalGroup(
         policy: OrderedTraversalPolicy(),
         child: KeyboardListener(
           focusNode: _focusNode,
@@ -670,6 +671,11 @@ class _TvHomeScreenState extends ConsumerState<TvHomeScreen> {
           ),
         ),
     );
+    if (!tvSettings.geometricPatternEnabled) return inner;
+    final style = tvSettings.geometricPatternStyle == 'girih'
+        ? TvGeometricStyle.girih
+        : TvGeometricStyle.moroccanStar;
+    return TvGeometricPattern(style: style, opacity: 0.08, child: inner);
   }
 
   /// True when current time is in the Good Night window:

@@ -394,6 +394,29 @@ class _TvSettingsScreenState extends ConsumerState<TvSettingsScreen> {
             // ── Brightness (TV2-6.4 / TV2-6.5 / TV2-6.7) ──
             _SectionHeader(title: 'Brightness'),
             const SizedBox(height: 8),
+            // P-8 — Islamic geometric pattern
+            _TvSettingsTile(
+              icon: Icons.blur_on,
+              title: 'Geometric Pattern',
+              subtitle: tvSettings.geometricPatternEnabled
+                  ? _geometricStyleLabel(tvSettings.geometricPatternStyle)
+                  : 'Off — Islamic pattern overlay',
+              trailing: Switch(
+                value: tvSettings.geometricPatternEnabled,
+                activeThumbColor: PrayCalcColors.mid,
+                onChanged: (v) =>
+                    tvNotifier.setGeometricPatternEnabled(v),
+              ),
+              onTap: () {
+                if (tvSettings.geometricPatternEnabled) {
+                  _showGeometricStyleDialog(
+                      context, tvNotifier, tvSettings);
+                } else {
+                  tvNotifier.setGeometricPatternEnabled(true);
+                }
+              },
+            ),
+            const SizedBox(height: 8),
             // P-1 — Sky gradient background
             _TvSettingsTile(
               icon: Icons.gradient,
@@ -584,6 +607,68 @@ class _TvSettingsScreenState extends ConsumerState<TvSettingsScreen> {
   }
 
   // ── Layout helpers ──────────────────────────────────────────────────────────
+
+  // ── P-8: Geometric pattern helpers ─────────────────────────────────────────
+
+  String _geometricStyleLabel(String style) =>
+      style == 'girih' ? 'Girih Tiling' : 'Moroccan Star';
+
+  void _showGeometricStyleDialog(
+    BuildContext context,
+    TvSettingsNotifier tvNotifier,
+    TvSettings tvSettings,
+  ) {
+    const options = [
+      ('moroccanStar', 'Moroccan Star'),
+      ('girih', 'Girih Tiling'),
+    ];
+    showDialog<void>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: PrayCalcColors.surface,
+        title: const Text('Pattern Style',
+            style: TextStyle(color: Colors.white, fontSize: 28)),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: options.map((opt) {
+            final isSelected = tvSettings.geometricPatternStyle == opt.$1;
+            return Focus(
+              onKeyEvent: (_, event) {
+                if (event is KeyDownEvent &&
+                    (event.logicalKey == LogicalKeyboardKey.select ||
+                        event.logicalKey == LogicalKeyboardKey.enter)) {
+                  tvNotifier.setGeometricPatternStyle(opt.$1);
+                  Navigator.of(ctx).pop();
+                  return KeyEventResult.handled;
+                }
+                return KeyEventResult.ignored;
+              },
+              child: ListTile(
+                title: Text(opt.$2,
+                    style: TextStyle(
+                      color: isSelected
+                          ? PrayCalcColors.light
+                          : Colors.white70,
+                      fontSize: 24,
+                      fontWeight: isSelected
+                          ? FontWeight.bold
+                          : FontWeight.normal,
+                    )),
+                trailing: isSelected
+                    ? const Icon(Icons.check,
+                        color: PrayCalcColors.light, size: 28)
+                    : null,
+                onTap: () {
+                  tvNotifier.setGeometricPatternStyle(opt.$1);
+                  Navigator.of(ctx).pop();
+                },
+              ),
+            );
+          }).toList(),
+        ),
+      ),
+    );
+  }
 
   // ── P-17: Font scale helpers ────────────────────────────────────────────────
 
