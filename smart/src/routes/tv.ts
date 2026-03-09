@@ -19,6 +19,7 @@
  */
 
 import crypto from 'crypto';
+import { EventEmitter } from 'events';
 import { Router } from 'express';
 import { requireAuth, type AuthRequest } from '../middleware/auth.js';
 
@@ -387,6 +388,40 @@ tvRouter.get('/streams', (_req, res) => {
   });
 });
 
+// ── R-1: GET /api/v1/tv — List user's TV devices ─────────────────────────────
+
+tvRouter.get('/', requireAuth, async (req: AuthRequest, res) => {
+  const userId = req.userId!;
+
+  try {
+    const result = await hasuraQuery(
+      `query ListUserTvDevices($userId: uuid!) {
+        pc_tv_devices(
+          where: { user_id: { _eq: $userId } }
+          order_by: { created_at: asc }
+        ) {
+          id
+          device_name
+          model
+          manufacturer
+          is_online
+          last_seen
+          location_city_slug
+          firmware_version
+          settings_json
+        }
+      }`,
+      { userId },
+    );
+
+    const devices = result?.data?.pc_tv_devices ?? [];
+    res.json({ devices });
+  } catch (err) {
+    console.error('[GET /tv] list devices error:', err);
+    res.status(500).json({ error: 'Failed to list devices' });
+  }
+});
+
 // ── TV2-10.2: POST /api/v1/tv/heartbeat — TV keepalive ───────────────────────
 
 tvRouter.post('/heartbeat', requireAuth, async (req: AuthRequest, res) => {
@@ -724,4 +759,136 @@ tvRouter.get('/:id/announcements', requireAuth, async (req: AuthRequest, res) =>
   pendingAnnouncements.set(deviceId, active);
 
   res.json({ announcements: active });
+});
+
+// ── S-1: GET /api/v1/tv/platform-config ──────────────────────────────────────
+// Public endpoint — no auth required. Returns platform-wide defaults that all
+// TVs fetch on startup and every 60 minutes. Changing this file + deploying
+// updates all TVs within 60 min without a Flutter release.
+
+tvRouter.get('/platform-config', (req, res) => {
+  res.json({
+    version: '1',
+    attributionText: 'PrayCalc · praycalc.com',
+    defaultRailPosition: 'top',
+    defaultContentCycle: [
+      { type: 'artSlideshow', durationSeconds: 30, enabled: true },
+      { type: 'ayahOfHour',   durationSeconds: 60, enabled: true },
+      { type: 'weather',      durationSeconds: 20, enabled: true },
+      { type: 'clock',        durationSeconds: 20, enabled: true },
+    ],
+    featureFlags: {
+      quranPlayerEnabled: true,
+      googlePhotosEnabled: false,
+      sseEnabled: true,
+    },
+    minAppVersion: '0.9.7',
+    updatedAt: '2026-03-09T00:00:00Z',
+  });
+});
+
+// ── R-7: Server-Sent Events for real-time settings push ──────────────────────
+// GET /api/v1/tv/:id/events — authenticated by device bearer JWT.
+// PATCH settings also emits to the SSE channel for instant push.
+// TV falls back to 30s polling if SSE disconnects.
+
+const tvEventEmitter = new EventEmitter();
+tvEventEmitter.setMaxListeners(200); // support up to 200 concurrent TVs
+
+tvRouter.get('/:id/events', requireAuth, (req: AuthRequest, res) => {
+  const deviceId = req.params['id'] as string;
+
+  res.setHeader('Content-Type', 'text/event-stream');
+  res.setHeader('Cache-Control', 'no-cache');
+  res.setHeader('Connection', 'keep-alive');
+  res.setHeader('X-Accel-Buffering', 'no');
+  res.flushHeaders();
+
+  // Send initial ping so client knows connection is live
+  res.write('event: ping\ndata: {}\n\n');
+
+  const onSettings = (payload: unknown) => {
+    res.write(`event: settings\ndata: ${JSON.stringify(payload)}\n\n`);
+  };
+
+  const onQuran = (payload: unknown) => {
+    res.write(`event: quran\ndata: ${JSON.stringify(payload)}\n\n`);
+  };
+
+  const settingsKey = `settings:${deviceId}`;
+  const quranKey = `quran:${deviceId}`;
+
+  tvEventEmitter.on(settingsKey, onSettings);
+  tvEventEmitter.on(quranKey, onQuran);
+
+  // Keepalive ping every 25 seconds to prevent proxy timeouts
+  const keepalive = setInterval(() => {
+    if (!res.writableEnded) res.write('event: ping\ndata: {}\n\n');
+  }, 25_000);
+
+  req.on('close', () => {
+    clearInterval(keepalive);
+    tvEventEmitter.off(settingsKey, onSettings);
+    tvEventEmitter.off(quranKey, onQuran);
+  });
+});
+
+// ── T-8: POST /api/v1/tv/:id/quran — Quran playback control ─────────────────
+// Authenticated by user bearer JWT. Accepts play/pause/resume/stop and
+// surah/reciter selection. Emits SSE event for instant TV response.
+
+tvRouter.post('/:id/quran', requireAuth, async (req: AuthRequest, res) => {
+  const userId = req.userId!;
+  const { id: deviceId } = req.params;
+  const { action, surahNumber, reciterId, verseNumber, backgroundMode } = req.body;
+
+  const validActions = ['play', 'pause', 'resume', 'stop', 'next-verse', 'prev-verse', 'next-surah', 'prev-surah'];
+  if (!action || !validActions.includes(action)) {
+    res.status(400).json({ error: `action must be one of: ${validActions.join(', ')}` });
+    return;
+  }
+
+  try {
+    // Verify ownership
+    const check = await hasuraQuery(
+      `query CheckOwner($deviceId: uuid!, $userId: uuid!) {
+        pc_tv_devices(where: { id: { _eq: $deviceId }, user_id: { _eq: $userId } }) { id settings }
+      }`,
+      { deviceId, userId },
+    );
+    const devices = check?.data?.pc_tv_devices ?? [];
+    if (devices.length === 0) {
+      res.status(404).json({ error: 'Device not found' });
+      return;
+    }
+
+    const command = {
+      action,
+      surahNumber: surahNumber ?? undefined,
+      verseNumber: verseNumber ?? undefined,
+      reciterId: reciterId ?? undefined,
+      backgroundMode: backgroundMode ?? undefined,
+      issuedAt: new Date().toISOString(),
+    };
+
+    // Merge quranCommand into settings JSONB
+    const currentSettings = devices[0].settings || {};
+    await hasuraQuery(
+      `mutation UpdateQuranCmd($deviceId: uuid!, $userId: uuid!, $settings: jsonb!) {
+        update_pc_tv_devices(
+          where: { id: { _eq: $deviceId }, user_id: { _eq: $userId } }
+          _set: { settings: $settings, updated_at: "now()" }
+        ) { affected_rows }
+      }`,
+      { deviceId, userId, settings: { ...currentSettings, quranCommand: command } },
+    );
+
+    // Emit SSE for instant push
+    tvEventEmitter.emit(`quran:${deviceId}`, command);
+
+    res.json({ ok: true, command });
+  } catch (err) {
+    console.error('[TV] Quran command error:', err);
+    res.status(500).json({ error: 'Failed to send Quran command' });
+  }
 });

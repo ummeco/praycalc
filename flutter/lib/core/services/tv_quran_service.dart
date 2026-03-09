@@ -11,6 +11,72 @@ import '../../shared/models/tv_settings_model.dart';
 export '../../shared/models/tv_settings_model.dart' show QuranPlaybackMode;
 
 // ---------------------------------------------------------------------------
+// QuranPlaybackState — broadcast stream payload for T-2 player screen
+// ---------------------------------------------------------------------------
+
+/// Immutable snapshot of the current Quran playback position and status.
+///
+/// Emitted on every meaningful change: ayah advance, play/pause toggle, and
+/// surah-boundary announcements.
+@immutable
+class QuranPlaybackState {
+  const QuranPlaybackState({
+    required this.surah,
+    required this.ayah,
+    required this.isPlaying,
+    this.isSurahAnnouncement = false,
+    this.announcementSurahName,
+    this.announcementCountdown,
+  });
+
+  final int surah;
+  final int ayah;
+  final bool isPlaying;
+
+  /// True for the 5-second window between surahs.
+  final bool isSurahAnnouncement;
+
+  /// English name of the *next* surah during an announcement.
+  final String? announcementSurahName;
+
+  /// Seconds remaining in the announcement countdown (5 → 1).
+  final int? announcementCountdown;
+
+  QuranPlaybackState copyWith({
+    int? surah,
+    int? ayah,
+    bool? isPlaying,
+    bool? isSurahAnnouncement,
+    String? announcementSurahName,
+    int? announcementCountdown,
+  }) {
+    return QuranPlaybackState(
+      surah: surah ?? this.surah,
+      ayah: ayah ?? this.ayah,
+      isPlaying: isPlaying ?? this.isPlaying,
+      isSurahAnnouncement: isSurahAnnouncement ?? this.isSurahAnnouncement,
+      announcementSurahName: announcementSurahName ?? this.announcementSurahName,
+      announcementCountdown: announcementCountdown ?? this.announcementCountdown,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is QuranPlaybackState &&
+          surah == other.surah &&
+          ayah == other.ayah &&
+          isPlaying == other.isPlaying &&
+          isSurahAnnouncement == other.isSurahAnnouncement &&
+          announcementSurahName == other.announcementSurahName &&
+          announcementCountdown == other.announcementCountdown;
+
+  @override
+  int get hashCode => Object.hash(surah, ayah, isPlaying, isSurahAnnouncement,
+      announcementSurahName, announcementCountdown);
+}
+
+// ---------------------------------------------------------------------------
 // Reciter catalogue
 // ---------------------------------------------------------------------------
 
@@ -298,8 +364,303 @@ class TvQuranService extends ChangeNotifier {
     }
   }
 
+  // ---------------------------------------------------------------------------
+  // T-3: Gapless playback via AudioPlayer.setAudioSources + QuranPlaybackState
+  // ---------------------------------------------------------------------------
+
+  final StreamController<QuranPlaybackState> _playbackController =
+      StreamController<QuranPlaybackState>.broadcast();
+
+  /// Broadcast stream of [QuranPlaybackState]. The player screen subscribes to
+  /// this to drive UI updates without polling.
+  Stream<QuranPlaybackState> get playbackStream => _playbackController.stream;
+
+  QuranPlaybackState _playbackState = const QuranPlaybackState(
+    surah: 1,
+    ayah: 1,
+    isPlaying: false,
+  );
+
+  QuranPlaybackState get currentPlaybackState => _playbackState;
+
+  // Tracks how many AudioSources have been added to the player's internal
+  // playlist so _buildNextSources knows where to continue the sequence from.
+  int _playlistLength = 0;
+
+  StreamSubscription<int?>? _indexSub;
+  bool _gaplessActive = false;
+
+  // How many ayahs to prefetch ahead in the gapless source list.
+  static const _kLookahead = 4;
+
+  // Surah names (English) for announcements — mirrors _kSurahNames in display.
+  static const List<String> _kSurahNames = [
+    'Al-Fatihah', 'Al-Baqarah', "Ali 'Imran", "An-Nisa'", "Al-Ma'idah",
+    "Al-An'am", "Al-A'raf", 'Al-Anfal', 'At-Tawbah', 'Yunus',
+    'Hud', 'Yusuf', "Ar-Ra'd", 'Ibrahim', 'Al-Hijr',
+    'An-Nahl', 'Al-Isra', 'Al-Kahf', 'Maryam', 'Ta-Ha',
+    "Al-Anbiya'", 'Al-Hajj', "Al-Mu'minun", 'An-Nur', 'Al-Furqan',
+    "Ash-Shu'ara'", 'An-Naml', 'Al-Qasas', "Al-'Ankabut", 'Ar-Rum',
+    'Luqman', 'As-Sajdah', 'Al-Ahzab', 'Saba', 'Fatir',
+    'Ya-Sin', 'As-Saffat', 'Sad', 'Az-Zumar', 'Ghafir',
+    'Fussilat', 'Ash-Shura', 'Az-Zukhruf', 'Ad-Dukhan', 'Al-Jathiyah',
+    'Al-Ahqaf', 'Muhammad', 'Al-Fath', 'Al-Hujurat', 'Qaf',
+    'Adh-Dhariyat', 'At-Tur', 'An-Najm', 'Al-Qamar', 'Ar-Rahman',
+    "Al-Waqi'ah", 'Al-Hadid', 'Al-Mujadila', 'Al-Hashr', 'Al-Mumtahanah',
+    'As-Saf', "Al-Jumu'ah", 'Al-Munafiqun', 'At-Taghabun', 'At-Talaq',
+    'At-Tahrim', 'Al-Mulk', 'Al-Qalam', 'Al-Haqqah', "Al-Ma'arij",
+    'Nuh', 'Al-Jinn', 'Al-Muzzammil', 'Al-Muddaththir', 'Al-Qiyamah',
+    'Al-Insan', 'Al-Mursalat', "An-Naba'", "An-Nazi'at", "'Abasa",
+    'At-Takwir', 'Al-Infitar', 'Al-Mutaffifin', 'Al-Inshiqaq', 'Al-Buruj',
+    'At-Tariq', "Al-A'la", 'Al-Ghashiyah', 'Al-Fajr', 'Al-Balad',
+    'Ash-Shams', 'Al-Layl', 'Ad-Duha', 'Ash-Sharh', 'At-Tin',
+    "Al-'Alaq", 'Al-Qadr', 'Al-Bayyinah', 'Az-Zalzalah', "Al-'Adiyat",
+    "Al-Qari'ah", 'At-Takathur', "Al-'Asr", 'Al-Humazah', 'Al-Fil',
+    'Quraysh', "Al-Ma'un", 'Al-Kawthar', 'Al-Kafirun', 'An-Nasr',
+    'Al-Masad', 'Al-Ikhlas', 'Al-Falaq', 'An-Nas',
+  ];
+
+  String _surahName(int surah) {
+    final idx = surah - 1;
+    if (idx >= 0 && idx < _kSurahNames.length) return _kSurahNames[idx];
+    return 'Surah $surah';
+  }
+
+  /// Public accessor for surah English name. Used by T-2 player screen.
+  String surahName(int surah) => _surahName(surah);
+
+  /// Start gapless Quran playback from [surah]:[ayah] with optional [reciter].
+  ///
+  /// Uses [AudioPlayer.setAudioSources] (just_audio ≥0.10) and extends the
+  /// list with [addAudioSources] as playback advances.
+  /// At surah boundaries emits a 5-second announcement before continuing.
+  Future<void> startPlayback({
+    int surah = 1,
+    int ayah = 1,
+    QuranReciter? reciter,
+  }) async {
+    // Cancel any existing gapless session.
+    await _stopGapless();
+
+    if (reciter != null) _reciter = reciter;
+
+    _currentSurah = surah.clamp(1, 114);
+    _currentAyah = ayah.clamp(1, kSurahAyahCounts[_currentSurah - 1]);
+    _gaplessActive = true;
+    _playlistLength = 0;
+
+    final initial = _buildNextSources(_kLookahead);
+
+    try {
+      await _player.setAudioSources(initial);
+    } catch (_) {
+      _setOffline(true);
+      _gaplessActive = false;
+      return;
+    }
+
+    _indexSub = _player.currentIndexStream.listen(_onPlaylistIndexChanged);
+
+    await _player.play();
+    _isPlaying = true;
+    _emitPlaybackState();
+    notifyListeners();
+  }
+
+  /// Build [count] [AudioSource]s starting from the logical position that
+  /// follows the last item already added ([_playlistLength] items ahead of
+  /// [_currentSurah]/[_currentAyah]).
+  List<AudioSource> _buildNextSources(int count) {
+    int s = _currentSurah;
+    int a = _currentAyah;
+
+    // Walk past what is already queued.
+    for (int i = 0; i < _playlistLength; i++) {
+      a++;
+      if (a > kSurahAyahCounts[s - 1]) {
+        s = (s % 114) + 1;
+        a = 1;
+      }
+    }
+
+    final sources = <AudioSource>[];
+    for (int i = 0; i < count; i++) {
+      sources.add(AudioSource.uri(Uri.parse(
+          quranAyahUrl(_reciter.cdnIdentifier, s, a))));
+      _playlistLength++;
+      a++;
+      if (a > kSurahAyahCounts[s - 1]) {
+        s = (s % 114) + 1;
+        a = 1;
+      }
+    }
+    return sources;
+  }
+
+  void _onPlaylistIndexChanged(int? index) {
+    if (!_gaplessActive || index == null) return;
+
+    // Recompute logical surah/ayah from playlist index.
+    int s = _currentSurah;
+    int a = _currentAyah;
+    for (int i = 0; i < index; i++) {
+      a++;
+      if (a > kSurahAyahCounts[s - 1]) {
+        // Surah boundary crossed — fire announcement on the step that crosses.
+        final nextS = (s % 114) + 1;
+        if (i == index - 1) {
+          _triggerSurahAnnouncement(nextS);
+        }
+        s = nextS;
+        a = 1;
+      }
+    }
+
+    final newSurah = s;
+    final newAyah = a;
+
+    // Extend when nearing the end of the queued list.
+    if (_gaplessActive && index >= _playlistLength - 2) {
+      final more = _buildNextSources(_kLookahead);
+      _player.addAudioSources(more);
+    }
+
+    if (_playbackState.surah != newSurah || _playbackState.ayah != newAyah) {
+      _playbackState = QuranPlaybackState(
+        surah: newSurah,
+        ayah: newAyah,
+        isPlaying: _isPlaying,
+      );
+      _playbackController.add(_playbackState);
+      notifyListeners();
+    }
+  }
+
+  /// Shows a 5-second surah announcement then resumes (or starts next surah).
+  void _triggerSurahAnnouncement(int nextSurah) {
+    final name = _surahName(nextSurah);
+    // Broadcast announcement state with countdown 5..1
+    for (int countdown = 5; countdown >= 1; countdown--) {
+      final c = countdown;
+      Future.delayed(Duration(seconds: 5 - c), () {
+        if (!_gaplessActive) return;
+        _playbackState = QuranPlaybackState(
+          surah: _playbackState.surah,
+          ayah: _playbackState.ayah,
+          isPlaying: _isPlaying,
+          isSurahAnnouncement: true,
+          announcementSurahName: name,
+          announcementCountdown: c,
+        );
+        _playbackController.add(_playbackState);
+      });
+    }
+    // After 5s, clear announcement state.
+    Future.delayed(const Duration(seconds: 5), () {
+      if (!_gaplessActive) return;
+      _playbackState = QuranPlaybackState(
+        surah: _playbackState.surah,
+        ayah: _playbackState.ayah,
+        isPlaying: _isPlaying,
+        isSurahAnnouncement: false,
+      );
+      _playbackController.add(_playbackState);
+    });
+  }
+
+  void _emitPlaybackState() {
+    _playbackState = QuranPlaybackState(
+      surah: _currentSurah,
+      ayah: _currentAyah,
+      isPlaying: _isPlaying,
+    );
+    _playbackController.add(_playbackState);
+  }
+
+  // ---------------------------------------------------------------------------
+  // Navigation helpers
+  // ---------------------------------------------------------------------------
+
+  /// Advance to the next verse.
+  void nextVerse() {
+    final maxAyah = kSurahAyahCounts[_currentSurah - 1];
+    if (_currentAyah < maxAyah) {
+      _currentAyah++;
+    } else {
+      _currentSurah = (_currentSurah % 114) + 1;
+      _currentAyah = 1;
+    }
+    _seekToCurrentPosition();
+  }
+
+  /// Go back to the previous verse.
+  void prevVerse() {
+    if (_currentAyah > 1) {
+      _currentAyah--;
+    } else if (_currentSurah > 1) {
+      _currentSurah--;
+      _currentAyah = kSurahAyahCounts[_currentSurah - 1];
+    }
+    _seekToCurrentPosition();
+  }
+
+  /// Jump to the next surah from the beginning.
+  void nextSurah() {
+    _currentSurah = (_currentSurah % 114) + 1;
+    _currentAyah = 1;
+    _seekToCurrentPosition();
+  }
+
+  /// Jump to the previous surah from the beginning.
+  void prevSurah() {
+    if (_currentSurah > 1) _currentSurah--;
+    _currentAyah = 1;
+    _seekToCurrentPosition();
+  }
+
+  /// Restarts gapless playback from the current [_currentSurah]/[_currentAyah].
+  void _seekToCurrentPosition() {
+    if (_gaplessActive) {
+      startPlayback(surah: _currentSurah, ayah: _currentAyah);
+    } else {
+      _emitPlaybackState();
+      notifyListeners();
+    }
+  }
+
+  /// Toggle play/pause on the gapless player.
+  Future<void> togglePlayPause() async {
+    if (_isPlaying) {
+      await _player.pause();
+      _isPlaying = false;
+    } else {
+      await _player.play();
+      _isPlaying = true;
+    }
+    _emitPlaybackState();
+    notifyListeners();
+  }
+
+  /// Stop gapless playback and clean up listeners.
+  Future<void> stopGapless() async {
+    await _stopGapless();
+    _emitPlaybackState();
+    notifyListeners();
+  }
+
+  Future<void> _stopGapless() async {
+    _gaplessActive = false;
+    await _indexSub?.cancel();
+    _indexSub = null;
+    await _player.stop();
+    _playlistLength = 0;
+    _isPlaying = false;
+  }
+
   @override
   void dispose() {
+    _stopGapless();
+    _playbackController.close();
     _player.dispose();
     super.dispose();
   }
