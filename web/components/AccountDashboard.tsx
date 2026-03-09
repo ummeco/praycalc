@@ -184,6 +184,19 @@ export default function AccountDashboard({ session, settings, onLogout }: Props)
         />
       </div>
 
+      {/* TV Command Center entry point */}
+      {session.isUmmatPlus && (
+        <div className="dashboard-card">
+          <h2 className="dashboard-card-title">TV Command Center</h2>
+          <p className="dashboard-premium-desc">
+            Control your prayer time displays, schedule announcements, and manage TV groups.
+          </p>
+          <Link href="/dashboard/tvs" className="dashboard-link-btn">
+            Manage TVs →
+          </Link>
+        </div>
+      )}
+
       {/* Ummat+ upsell card */}
       {!session.isUmmatPlus && (
         <div className="dashboard-plus-card">

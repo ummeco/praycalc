@@ -2963,6 +2963,26 @@ html[data-theme="light"] .account-back { color: #1E5E2F; }
   transition: none;
 }
 
+.dashboard-link-btn {
+  display: block;
+  text-align: center;
+  text-decoration: none;
+  width: 100%;
+  padding: 0.625rem 1rem;
+  background: rgba(201, 242, 122, 0.12);
+  border: 1px solid rgba(201, 242, 122, 0.2);
+  border-radius: 8px;
+  color: rgba(201, 242, 122, 0.7);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+.dashboard-link-btn:hover {
+  background: rgba(201, 242, 122, 0.2);
+  border-color: rgba(201, 242, 122, 0.4);
+}
+
 /* Footer: sign out + back */
 .dashboard-footer {
   display: flex;
@@ -3040,6 +3060,16 @@ html[data-theme="light"] .dashboard-plus-btn {
   background: rgba(30, 94, 47, 0.08);
   border-color: rgba(30, 94, 47, 0.15);
   color: rgba(30, 94, 47, 0.45);
+}
+
+html[data-theme="light"] .dashboard-link-btn {
+  background: rgba(30, 94, 47, 0.08);
+  border-color: rgba(30, 94, 47, 0.15);
+  color: rgba(30, 94, 47, 0.7);
+}
+html[data-theme="light"] .dashboard-link-btn:hover {
+  background: rgba(30, 94, 47, 0.14);
+  border-color: rgba(30, 94, 47, 0.3);
 }
 
 html[data-theme="light"] .dashboard-signout-btn { color: rgba(30, 94, 47, 0.4); }
