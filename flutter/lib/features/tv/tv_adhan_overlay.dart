@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -199,9 +200,24 @@ class _TvAdhanOverlayState extends ConsumerState<TvAdhanOverlay>
   }
 }
 
-// ── Full-screen modal overlay ──────────────────────────────────────────────
+// ── P-3: Redesigned full-screen modal overlay ─────────────────────────────
+//
+// Three-phase display:
+//   1. Calligraphy phase (0–4 s): Arabic prayer name fades in large
+//   2. Details phase (4 s+): English name, time, waveform, Hijri
+//   3. On dismiss: closes with fade-out
 
-class _ModalAlert extends StatelessWidget {
+// Arabic prayer name lookup
+const _kArabicPrayerNames = {
+  'Fajr': 'الفجر',
+  'Sunrise': 'الشروق',
+  'Dhuhr': 'الظهر',
+  'Asr': 'العصر',
+  'Maghrib': 'المغرب',
+  'Isha': 'العشاء',
+};
+
+class _ModalAlert extends StatefulWidget {
   const _ModalAlert({
     required this.prayerName,
     required this.prayerTime,
@@ -212,87 +228,36 @@ class _ModalAlert extends StatelessWidget {
   final String prayerName;
   final String prayerTime;
   final VoidCallback onDismiss;
-
-  /// When non-null, snooze buttons are shown. Called with the chosen delay.
   final void Function(Duration delay)? onSnooze;
 
   @override
-  Widget build(BuildContext context) {
-    final hijri = _hijriString();
+  State<_ModalAlert> createState() => _ModalAlertState();
+}
 
-    return GestureDetector(
-      onTap: onDismiss,
-      child: Container(
-        color: Colors.black.withAlpha(220),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // ── Main content ──
-            const Icon(
-              Icons.mosque,
-              color: PrayCalcColors.light,
-              size: 80,
-            ),
-            const SizedBox(height: 24),
-            Text(
-              prayerName,
-              style: const TextStyle(
-                color: PrayCalcColors.light,
-                fontSize: 72,
-                fontWeight: FontWeight.bold,
-                letterSpacing: 2,
-              ),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              prayerTime,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 56,
-                fontWeight: FontWeight.w300,
-                fontFeatures: [FontFeature.tabularFigures()],
-              ),
-            ),
-            const SizedBox(height: 24),
-            if (hijri.isNotEmpty)
-              Text(
-                hijri,
-                style: const TextStyle(
-                  color: Colors.white54,
-                  fontSize: 28,
-                ),
-              ),
-            const SizedBox(height: 48),
-            Text(
-              'Press OK to dismiss',
-              style: TextStyle(
-                color: Colors.white.withAlpha(80),
-                fontSize: 20,
-              ),
-            ),
+class _ModalAlertState extends State<_ModalAlert>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _detailsCtrl;
+  late Animation<double> _detailsOpacity;
 
-            // ── Snooze buttons (TV2-8.8) ──
-            if (onSnooze != null) ...[
-              const SizedBox(height: 32),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  _SnoozeButton(
-                    label: 'Snooze 5 min',
-                    onTap: () => onSnooze!(const Duration(minutes: 5)),
-                  ),
-                  const SizedBox(width: 24),
-                  _SnoozeButton(
-                    label: 'Snooze 10 min',
-                    onTap: () => onSnooze!(const Duration(minutes: 10)),
-                  ),
-                ],
-              ),
-            ],
-          ],
-        ),
-      ),
+  @override
+  void initState() {
+    super.initState();
+    _detailsCtrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 800),
     );
+    _detailsOpacity =
+        CurvedAnimation(parent: _detailsCtrl, curve: Curves.easeIn);
+    // Show details panel after 4-second calligraphy phase.
+    Future.delayed(const Duration(seconds: 4), () {
+      if (mounted) _detailsCtrl.forward();
+    });
+  }
+
+  @override
+  void dispose() {
+    _detailsCtrl.dispose();
+    super.dispose();
   }
 
   String _hijriString() {
@@ -307,6 +272,179 @@ class _ModalAlert extends StatelessWidget {
     } catch (_) {
       return '';
     }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final arabic = _kArabicPrayerNames[widget.prayerName] ?? widget.prayerName;
+    final hijri = _hijriString();
+
+    return GestureDetector(
+      onTap: widget.onDismiss,
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: RadialGradient(
+            center: Alignment.center,
+            radius: 1.0,
+            colors: [
+              PrayCalcColors.deep.withValues(alpha: 0.96),
+              Colors.black.withValues(alpha: 0.98),
+            ],
+          ),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // ── Arabic calligraphy (always visible) ──
+            Text(
+              arabic,
+              textDirection: TextDirection.rtl,
+              style: TextStyle(
+                fontFamily: 'Amiri',
+                fontSize: 96,
+                height: 1.2,
+                color: PrayCalcColors.light,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            const SizedBox(height: 8),
+
+            // ── Animated waveform ──
+            const SizedBox(height: 8),
+            const _AdhanWaveform(),
+            const SizedBox(height: 24),
+
+            // ── Details panel (fades in after 4 s) ──
+            FadeTransition(
+              opacity: _detailsOpacity,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    widget.prayerName,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 40,
+                      fontWeight: FontWeight.w300,
+                      letterSpacing: 4,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    widget.prayerTime,
+                    style: const TextStyle(
+                      color: Colors.white70,
+                      fontSize: 36,
+                      fontWeight: FontWeight.w300,
+                      fontFeatures: [FontFeature.tabularFigures()],
+                    ),
+                  ),
+                  if (hijri.isNotEmpty) ...[
+                    const SizedBox(height: 14),
+                    Text(
+                      hijri,
+                      style: TextStyle(
+                        color: Colors.white.withValues(alpha: 0.4),
+                        fontSize: 20,
+                      ),
+                    ),
+                  ],
+                  const SizedBox(height: 40),
+                  Text(
+                    'Press OK to dismiss',
+                    style: TextStyle(
+                      color: Colors.white.withValues(alpha: 0.3),
+                      fontSize: 18,
+                    ),
+                  ),
+                  // ── Snooze buttons (TV2-8.8) ──
+                  if (widget.onSnooze != null) ...[
+                    const SizedBox(height: 28),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        _SnoozeButton(
+                          label: 'Snooze 5 min',
+                          onTap: () =>
+                              widget.onSnooze!(const Duration(minutes: 5)),
+                        ),
+                        const SizedBox(width: 24),
+                        _SnoozeButton(
+                          label: 'Snooze 10 min',
+                          onTap: () =>
+                              widget.onSnooze!(const Duration(minutes: 10)),
+                        ),
+                      ],
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ── Animated waveform (P-3) ────────────────────────────────────────────────
+
+class _AdhanWaveform extends StatefulWidget {
+  const _AdhanWaveform();
+
+  @override
+  State<_AdhanWaveform> createState() => _AdhanWaveformState();
+}
+
+class _AdhanWaveformState extends State<_AdhanWaveform>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _ctrl;
+
+  @override
+  void initState() {
+    super.initState();
+    _ctrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 900),
+    )..repeat(reverse: true);
+  }
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _ctrl,
+      builder: (ctx, _) {
+        return SizedBox(
+          height: 48,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: List.generate(13, (i) {
+              // Each bar has a different phase so they ripple.
+              final phase = i * math.pi / 6;
+              final h = 8.0 +
+                  (math.sin(_ctrl.value * math.pi * 2 + phase) + 1) / 2 * 36;
+              return Container(
+                width: 6,
+                height: h,
+                margin: const EdgeInsets.symmetric(horizontal: 3),
+                decoration: BoxDecoration(
+                  color: PrayCalcColors.mid
+                      .withValues(alpha: 0.5 + (_ctrl.value * 0.5)),
+                  borderRadius: BorderRadius.circular(3),
+                ),
+              );
+            }),
+          ),
+        );
+      },
+    );
   }
 }
 
