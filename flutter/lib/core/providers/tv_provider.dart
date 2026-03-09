@@ -250,6 +250,23 @@ class TvSettingsNotifier extends Notifier<TvSettings> {
   }
 
   // ---------------------------------------------------------------------------
+  // P-17 — Font scale setter
+  // ---------------------------------------------------------------------------
+
+  Future<void> setTvFontScale(double v) =>
+      update(state.copyWith(tvFontScale: v.clamp(0.8, 1.6)));
+
+  // ---------------------------------------------------------------------------
+  // P-14 — Good Night mode setters
+  // ---------------------------------------------------------------------------
+
+  Future<void> setGoodNightEnabled(bool v) =>
+      update(state.copyWith(goodNightEnabled: v));
+
+  Future<void> setGoodNightDelayMinutes(int v) =>
+      update(state.copyWith(goodNightDelayMinutes: v.clamp(0, 120)));
+
+  // ---------------------------------------------------------------------------
   // TV2-11.3 — Kiosk layout enforcement
   // ---------------------------------------------------------------------------
 

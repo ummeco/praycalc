@@ -95,6 +95,15 @@ class _TvSettingsScreenState extends ConsumerState<TvSettingsScreen> {
                     : () => _showLayoutPresetDialog(context, tvNotifier, tvSettings),
               ),
             ),
+            const SizedBox(height: 8),
+            // P-17 — Font size scale
+            _TvSettingsTile(
+              icon: Icons.text_fields,
+              title: 'Font Size',
+              subtitle: _fontScaleLabel(tvSettings.tvFontScale),
+              trailing: const Icon(Icons.chevron_right, color: Colors.white54, size: 32),
+              onTap: () => _showFontScaleDialog(context, tvNotifier, tvSettings),
+            ),
             const SizedBox(height: 24),
 
             // ── Info Bar (TV2-2.5) ──
@@ -385,6 +394,20 @@ class _TvSettingsScreenState extends ConsumerState<TvSettingsScreen> {
             // ── Brightness (TV2-6.4 / TV2-6.5 / TV2-6.7) ──
             _SectionHeader(title: 'Brightness'),
             const SizedBox(height: 8),
+            // P-14 — Good Night Isha mode
+            _TvSettingsTile(
+              icon: Icons.nightlight_round,
+              title: 'Good Night Mode',
+              subtitle: 'Dim screen ${tvSettings.goodNightDelayMinutes} min after Isha',
+              trailing: Switch(
+                value: tvSettings.goodNightEnabled,
+                activeThumbColor: PrayCalcColors.mid,
+                onChanged: (v) => tvNotifier.setGoodNightEnabled(v),
+              ),
+              onTap: () => tvNotifier
+                  .setGoodNightEnabled(!tvSettings.goodNightEnabled),
+            ),
+            const SizedBox(height: 8),
             // TV2-6.5 — Night mode
             _TvSettingsTile(
               icon: Icons.bedtime,
@@ -547,6 +570,78 @@ class _TvSettingsScreenState extends ConsumerState<TvSettingsScreen> {
   }
 
   // ── Layout helpers ──────────────────────────────────────────────────────────
+
+  // ── P-17: Font scale helpers ────────────────────────────────────────────────
+
+  String _fontScaleLabel(double scale) {
+    if (scale <= 0.85) return 'Small (80%)';
+    if (scale <= 0.95) return 'Compact (90%)';
+    if (scale <= 1.05) return 'Normal (100%)';
+    if (scale <= 1.15) return 'Large (120%)';
+    if (scale <= 1.35) return 'X-Large (140%)';
+    return 'XX-Large (160%)';
+  }
+
+  void _showFontScaleDialog(
+    BuildContext context,
+    TvSettingsNotifier tvNotifier,
+    TvSettings tvSettings,
+  ) {
+    const options = [
+      (0.8, 'Small (80%)'),
+      (1.0, 'Normal (100%)'),
+      (1.2, 'Large (120%)'),
+      (1.4, 'X-Large (140%)'),
+      (1.6, 'XX-Large (160%)'),
+    ];
+    showDialog<void>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: PrayCalcColors.surface,
+        title: const Text('Font Size',
+            style: TextStyle(color: Colors.white, fontSize: 28)),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: options.map((opt) {
+            final isSelected =
+                (tvSettings.tvFontScale - opt.$1).abs() < 0.05;
+            return Focus(
+              onKeyEvent: (_, event) {
+                if (event is KeyDownEvent &&
+                    (event.logicalKey == LogicalKeyboardKey.select ||
+                        event.logicalKey == LogicalKeyboardKey.enter)) {
+                  tvNotifier.setTvFontScale(opt.$1);
+                  Navigator.of(ctx).pop();
+                  return KeyEventResult.handled;
+                }
+                return KeyEventResult.ignored;
+              },
+              child: ListTile(
+                title: Text(opt.$2,
+                    style: TextStyle(
+                      color: isSelected
+                          ? PrayCalcColors.light
+                          : Colors.white70,
+                      fontSize: 24,
+                      fontWeight: isSelected
+                          ? FontWeight.bold
+                          : FontWeight.normal,
+                    )),
+                trailing: isSelected
+                    ? const Icon(Icons.check,
+                        color: PrayCalcColors.light, size: 28)
+                    : null,
+                onTap: () {
+                  tvNotifier.setTvFontScale(opt.$1);
+                  Navigator.of(ctx).pop();
+                },
+              ),
+            );
+          }).toList(),
+        ),
+      ),
+    );
+  }
 
   String _layoutPresetLabel(TvLayoutPreset preset) {
     switch (preset) {

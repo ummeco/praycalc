@@ -588,6 +588,25 @@ class TvSettings {
   /// User-defined streams added via the custom URL dialog.
   final List<TvCustomStream> customStreams;
 
+  // ---------------------------------------------------------------------------
+  // P-17 — Font size scale
+  // ---------------------------------------------------------------------------
+
+  /// Font scale multiplier applied to all TV text sizes.
+  /// Valid values: 0.8, 1.0, 1.2, 1.4, 1.6. Default 1.0.
+  final double tvFontScale;
+
+  // ---------------------------------------------------------------------------
+  // P-14 — Good Night Isha mode
+  // ---------------------------------------------------------------------------
+
+  /// When true, the screen dims automatically 30 min (or [goodNightDelayMinutes])
+  /// after Isha and shows the TvGoodNightOverlay with next Fajr time.
+  final bool goodNightEnabled;
+
+  /// Minutes after Isha adhan before Good Night mode activates. Default 30.
+  final int goodNightDelayMinutes;
+
   const TvSettings({
     this.isMasjidMode = false,
     this.masjidName = '',
@@ -636,6 +655,9 @@ class TvSettings {
     this.overlayDensity = 'standard',
     this.screensaverIdleSeconds = 300,
     this.customStreams = const [],
+    this.tvFontScale = 1.0,
+    this.goodNightEnabled = false,
+    this.goodNightDelayMinutes = 30,
   });
 
   TvSettings copyWith({
@@ -679,6 +701,9 @@ class TvSettings {
     String? overlayDensity,
     int? screensaverIdleSeconds,
     List<TvCustomStream>? customStreams,
+    double? tvFontScale,
+    bool? goodNightEnabled,
+    int? goodNightDelayMinutes,
   }) {
     return TvSettings(
       isMasjidMode: isMasjidMode ?? this.isMasjidMode,
@@ -735,6 +760,10 @@ class TvSettings {
       screensaverIdleSeconds:
           screensaverIdleSeconds ?? this.screensaverIdleSeconds,
       customStreams: customStreams ?? this.customStreams,
+      tvFontScale: tvFontScale ?? this.tvFontScale,
+      goodNightEnabled: goodNightEnabled ?? this.goodNightEnabled,
+      goodNightDelayMinutes:
+          goodNightDelayMinutes ?? this.goodNightDelayMinutes,
     );
   }
 
@@ -781,6 +810,9 @@ class TvSettings {
         'overlayDensity': overlayDensity,
         'screensaverIdleSeconds': screensaverIdleSeconds,
         'customStreams': customStreams.map((s) => s.toJson()).toList(),
+        'tvFontScale': tvFontScale,
+        'goodNightEnabled': goodNightEnabled,
+        'goodNightDelayMinutes': goodNightDelayMinutes,
       };
 
   factory TvSettings.fromJson(Map<String, dynamic> json) {
@@ -885,6 +917,9 @@ class TvSettings {
                   TvCustomStream.fromJson(e as Map<String, dynamic>))
               .toList() ??
           const [],
+      tvFontScale: (json['tvFontScale'] as num?)?.toDouble() ?? 1.0,
+      goodNightEnabled: json['goodNightEnabled'] as bool? ?? false,
+      goodNightDelayMinutes: json['goodNightDelayMinutes'] as int? ?? 30,
     );
   }
 

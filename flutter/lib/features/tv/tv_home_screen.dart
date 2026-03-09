@@ -23,6 +23,8 @@ import '../../shared/models/tv_settings_model.dart';
 import 'tv_adhan_bubble.dart';
 import 'tv_announcement_overlay.dart';
 import 'tv_eid_overlay.dart';
+import 'tv_countdown_flip.dart';
+import 'tv_good_night_overlay.dart';
 import 'tv_hadith_ticker.dart';
 import 'tv_jumuah_overlay.dart';
 import 'tv_post_adhan_bar.dart';
@@ -100,6 +102,11 @@ class _TvHomeScreenState extends ConsumerState<TvHomeScreen> {
 
   // ── Guest mode (L-4): shows "Pair with phone" CTA when no JWT stored ──────
   bool _isGuestMode = false;
+
+  // ── Good Night mode (P-14): dimming overlay after Isha ────────────────────
+  /// True when user explicitly dismissed the overlay (resets at midnight).
+  bool _goodNightDismissed = false;
+  DateTime _goodNightDismissedDate = DateTime(2000);
 
   @override
   void initState() {
@@ -626,6 +633,23 @@ class _TvHomeScreenState extends ConsumerState<TvHomeScreen> {
                 );
               }
 
+              // ── Good Night overlay (P-14) ────────────────────────────
+              if (tvSettings.goodNightEnabled &&
+                  _isGoodNightTime(times, tvSettings)) {
+                body = Stack(
+                  children: [
+                    body,
+                    TvGoodNightOverlay(
+                      fajrTime: _formatH(times.fajr, settings.use24h),
+                      onDismiss: () => setState(() {
+                        _goodNightDismissed = true;
+                        _goodNightDismissedDate = DateTime.now();
+                      }),
+                    ),
+                  ],
+                );
+              }
+
               return body;
             },
           ),
@@ -634,6 +658,30 @@ class _TvHomeScreenState extends ConsumerState<TvHomeScreen> {
     ),  // end Scaffold
   );  // end PopScope
   }  // end build
+
+  /// True when current time is in the Good Night window:
+  /// [isha + delayMinutes, fajr + 30 min] (handles midnight crossing).
+  bool _isGoodNightTime(PrayerTimes times, TvSettings tvSettings) {
+    // Reset dismissal at midnight (new calendar day).
+    if (_goodNightDismissed) {
+      final now = DateTime.now();
+      if (now.day != _goodNightDismissedDate.day ||
+          now.month != _goodNightDismissedDate.month) {
+        _goodNightDismissed = false;
+      } else {
+        return false;
+      }
+    }
+    final delayH = tvSettings.goodNightDelayMinutes / 60.0;
+    final activationH = times.isha + delayH;
+    final fajrEndH = times.fajr + 0.5; // auto-dismiss 30 min after Fajr
+    // After midnight: _nowH is small (0..6), isha was large (20..23).
+    if (activationH >= 24) {
+      return _nowH >= (activationH - 24) || _nowH < fajrEndH;
+    }
+    return _nowH >= activationH &&
+        (_nowH < fajrEndH || fajrEndH < activationH);
+  }
 
   double? _getPrayerH(PrayerTimes times, String prayer) {
     switch (prayer) {
@@ -1187,15 +1235,7 @@ class _TvCountdownBanner extends StatelessWidget {
                 fontWeight: FontWeight.w500,
               ),
             ),
-            Text(
-              countdown,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 36,
-                fontWeight: FontWeight.bold,
-                fontFeatures: [FontFeature.tabularFigures()],
-              ),
-            ),
+            TvCountdownFlip(time: countdown, digitFontSize: 36),
           ],
         ),
       ),
