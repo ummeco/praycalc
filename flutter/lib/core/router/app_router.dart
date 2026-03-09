@@ -27,8 +27,12 @@ import '../../features/tv/tv_ambient_screen.dart';
 import '../../features/tv/tv_home_screen.dart';
 import '../../features/tv/tv_masjid_screen.dart';
 import '../../features/tv/tv_add_from_mobile_screen.dart';
+import '../../features/tv/tv_device_list_screen.dart';
+import '../../features/tv/tv_quran_control_screen.dart';
+import '../../features/tv/tv_onboarding_screen.dart';
 import '../../features/tv/tv_paired_screen.dart';
 import '../../features/tv/tv_pairing_screen.dart';
+import '../../features/tv/tv_quran_player_screen.dart';
 import '../../features/tv/tv_remote_settings_screen.dart';
 import '../../features/tv/tv_settings_screen.dart';
 
@@ -62,6 +66,10 @@ class Routes {
   static const pairedTvs            = '/paired-tvs';
   static const tvRemoteSettings     = '/paired-tvs/settings';
   static const tvAddFromMobile      = '/paired-tvs/add';
+  static const tvQuranPlayer        = '/tv/quran-player';
+  static const tvOnboarding         = '/tv/onboarding';
+  static const tvDeviceList         = '/tv/devices';
+  static const tvQuranControl       = '/paired-tvs/quran';
 }
 
 /// Set to true after first launch check resolves — prevents flicker redirect.
@@ -220,6 +228,28 @@ final appRouter = GoRouter(
     GoRoute(
       path: Routes.tvAddFromMobile,
       builder: (context, state) => const TvAddFromMobileScreen(),
+    ),
+    GoRoute(
+      path: Routes.tvQuranPlayer,
+      builder: (context, state) => const TvQuranPlayerScreen(),
+    ),
+    GoRoute(
+      path: Routes.tvOnboarding,
+      builder: (context, state) => const TvOnboardingScreen(),
+    ),
+    GoRoute(
+      path: Routes.tvDeviceList,
+      builder: (context, state) => const TvDeviceListScreen(),
+    ),
+    GoRoute(
+      path: Routes.tvQuranControl,
+      builder: (context, state) {
+        final extra = state.extra as Map<String, String>? ?? {};
+        return TvQuranControlScreen(
+          deviceId: extra['deviceId'],
+          deviceName: extra['deviceName'],
+        );
+      },
     ),
   ],
 );

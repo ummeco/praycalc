@@ -488,6 +488,22 @@ class TvLayoutSettings {
 const Object _sentinel = Object();
 
 // ---------------------------------------------------------------------------
+// U-1: TV color palette (named)
+// ---------------------------------------------------------------------------
+
+/// Named color theme for the TV display.
+///
+/// Resolved to actual [Color] values by [TvColorPalette.forName] in
+/// `core/theme/tv_color_palette.dart`.
+enum TvColorPaletteName {
+  emerald,       // default PrayCalc green
+  midnightBlue,  // deep navy + sky blue accent
+  warmGold,      // dark brown + warm gold accent
+  slate,         // charcoal grey + cool white accent
+  desertRose,    // deep burgundy + rose-gold accent
+}
+
+// ---------------------------------------------------------------------------
 // TvSettings
 // ---------------------------------------------------------------------------
 
@@ -725,6 +741,13 @@ class TvSettings {
   /// True once the user has customised [contentCycle] from the defaults.
   final bool contentCycleCustomized;
 
+  // ---------------------------------------------------------------------------
+  // U-1 — Color palette
+  // ---------------------------------------------------------------------------
+
+  /// Active color palette applied to rail, prayer cards, adhan overlay, etc.
+  final TvColorPaletteName colorPalette;
+
   const TvSettings({
     this.isMasjidMode = false,
     this.masjidName = '',
@@ -785,6 +808,7 @@ class TvSettings {
     this.railPosition = TvRailPosition.top,
     this.contentCycle = _kDefaultContentCycle,
     this.contentCycleCustomized = false,
+    this.colorPalette = TvColorPaletteName.emerald,
   });
 
   TvSettings copyWith({
@@ -840,6 +864,7 @@ class TvSettings {
     TvRailPosition? railPosition,
     List<TvContentItem>? contentCycle,
     bool? contentCycleCustomized,
+    TvColorPaletteName? colorPalette,
   }) {
     return TvSettings(
       isMasjidMode: isMasjidMode ?? this.isMasjidMode,
@@ -916,6 +941,7 @@ class TvSettings {
       contentCycle: contentCycle ?? this.contentCycle,
       contentCycleCustomized:
           contentCycleCustomized ?? this.contentCycleCustomized,
+      colorPalette: colorPalette ?? this.colorPalette,
     );
   }
 
@@ -974,6 +1000,7 @@ class TvSettings {
         'railPosition': railPosition.name,
         'contentCycle': contentCycle.map((i) => i.toJson()).toList(),
         'contentCycleCustomized': contentCycleCustomized,
+        'colorPalette': colorPalette.name,
       };
 
   factory TvSettings.fromJson(Map<String, dynamic> json) {
@@ -1099,6 +1126,8 @@ class TvSettings {
           _kDefaultContentCycle,
       contentCycleCustomized:
           json['contentCycleCustomized'] as bool? ?? false,
+      colorPalette: parseEnum(TvColorPaletteName.values,
+          json['colorPalette'] as String?, TvColorPaletteName.emerald),
     );
   }
 
