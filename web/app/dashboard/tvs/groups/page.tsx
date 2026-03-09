@@ -1,11 +1,6 @@
 'use client';
-import { useState } from 'react';
-
-// Mock data — replace with Hasura GraphQL query when backend is deployed
-const mockGroups = [
-  { id: '1', name: 'Masjid TVs', deviceCount: 3 },
-  { id: '2', name: 'Entrance Hall', deviceCount: 1 },
-];
+import { useState, useEffect, useCallback } from 'react';
+import { getSession } from '../../../../lib/session';
 
 interface Group {
   id: string;
@@ -93,12 +88,14 @@ function AnnounceModal({ group, onClose }: { group: Group; onClose: () => void }
 
             <div className="flex gap-3">
               <button
+                type="button"
                 onClick={onClose}
                 className="flex-1 py-3 rounded-xl border border-white/10 text-white/60 hover:text-white hover:border-white/20 transition-colors"
               >
                 Cancel
               </button>
               <button
+                type="button"
                 onClick={handleSend}
                 disabled={!text.trim() || sending}
                 className="flex-1 py-3 rounded-xl bg-[#1E5E2F] text-[#C9F27A] font-semibold hover:bg-[#79C24C]/20 border border-[#79C24C]/30 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
@@ -114,17 +111,56 @@ function AnnounceModal({ group, onClose }: { group: Group; onClose: () => void }
 }
 
 export default function TvGroupsPage() {
-  const [groups, setGroups] = useState<Group[]>(mockGroups);
+  const [groups, setGroups] = useState<Group[]>([]);
+  const [loading, setLoading] = useState(true);
   const [newGroupName, setNewGroupName] = useState('');
   const [announceGroup, setAnnounceGroup] = useState<Group | null>(null);
 
-  function createGroup() {
+  const fetchGroups = useCallback(async () => {
+    const session = getSession();
+    const token = session?.tokens?.accessToken;
+    if (!token) { setLoading(false); return; }
+    try {
+      const res = await fetch('/api/dashboard/tvs/groups', {
+        headers: { Authorization: `Bearer ${token}` },
+        cache: 'no-store',
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json() as { groups?: Array<{ id: string; name: string; device_count?: number }> };
+      setGroups((data.groups ?? []).map(g => ({ id: g.id, name: g.name, deviceCount: g.device_count ?? 0 })));
+    } catch {
+      // keep empty
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => { void fetchGroups(); }, [fetchGroups]);
+
+  async function createGroup() {
     if (!newGroupName.trim()) return;
-    setGroups(g => [
-      ...g,
-      { id: Date.now().toString(), name: newGroupName.trim(), deviceCount: 0 },
-    ]);
+    const session = getSession();
+    const token = session?.tokens?.accessToken;
+    const name = newGroupName.trim();
     setNewGroupName('');
+    // Optimistic add
+    const tempId = `temp-${Date.now()}`;
+    setGroups(g => [...g, { id: tempId, name, deviceCount: 0 }]);
+    if (token) {
+      try {
+        const res = await fetch('/api/dashboard/tvs/groups', {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name }),
+        });
+        if (res.ok) {
+          const data = await res.json() as { group?: { id: string } };
+          if (data.group?.id) {
+            setGroups(g => g.map(x => x.id === tempId ? { ...x, id: data.group!.id } : x));
+          }
+        }
+      } catch { /* keep optimistic */ }
+    }
   }
 
   return (
@@ -134,6 +170,7 @@ export default function TvGroupsPage() {
       )}
 
       <h1 className="text-3xl font-bold text-white mb-2">TV Groups</h1>
+      {loading && <p className="text-white/40 text-sm mb-4">Loading groups...</p>}
       <p className="text-white/60 mb-8">
         Group TVs together to push settings or announcements in bulk.
       </p>
@@ -171,6 +208,7 @@ export default function TvGroupsPage() {
               {/* TV2-11.5: Bulk announce — only shown when group has 3+ TVs */}
               {g.deviceCount >= 3 && (
                 <button
+                  type="button"
                   onClick={() => setAnnounceGroup(g)}
                   className="bg-[#0D2F17] text-[#C9F27A] px-4 py-2 rounded-xl text-sm hover:bg-[#1E5E2F]/60 border border-[#79C24C]/20 transition-colors"
                   title="Send crawler announcement to all TVs in this group"
@@ -178,10 +216,11 @@ export default function TvGroupsPage() {
                   Announce
                 </button>
               )}
-              <button className="bg-[#1E5E2F]/40 text-[#C9F27A] px-4 py-2 rounded-xl text-sm hover:bg-[#1E5E2F]/60 transition-colors">
+              <button type="button" className="bg-[#1E5E2F]/40 text-[#C9F27A] px-4 py-2 rounded-xl text-sm hover:bg-[#1E5E2F]/60 transition-colors">
                 Push Settings
               </button>
               <button
+                type="button"
                 className="text-white/30 hover:text-red-400 px-3 py-2 rounded-xl text-sm transition-colors"
                 onClick={() => setGroups(g2 => g2.filter(x => x.id !== g.id))}
               >

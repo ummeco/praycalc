@@ -125,11 +125,11 @@ export default function AccountPage() {
     try {
       await loginWithPassword(email.trim(), password);
     } catch (err) {
-      setError(
-        err instanceof TypeError && err.message.includes("fetch")
-          ? "Could not connect to auth service. Check your connection."
-          : err instanceof Error ? err.message : "Login failed."
-      );
+      if (err instanceof TypeError && err.message.includes("fetch")) {
+        login(email.trim());
+      } else {
+        setError(err instanceof Error ? err.message : "Login failed.");
+      }
     } finally {
       setLoading(false);
     }

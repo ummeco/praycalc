@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react';
 import TvLayoutEditor from './TvLayoutEditor';
 import TvScreenshotModal from './TvScreenshotModal';
+import TvQuranPanel from './TvQuranPanel';
+import IqamahTimesEditor from './IqamahTimesEditor';
 
 export type TvDevice = {
   id: string;
@@ -47,7 +49,10 @@ const SCREENSAVER_INTERVALS = [
   { id: '300', label: '5 minutes' },
 ] as const;
 
+type PanelTab = 'settings' | 'quran';
+
 export default function TvSettingsPanel({ device, onClose }: TvSettingsPanelProps) {
+  const [activeTab, setActiveTab] = useState<PanelTab>('settings');
   const [layout, setLayout] = useState('prayer-only');
   const [audioMode, setAudioMode] = useState('silent');
   const [screensaverSource, setScreensaverSource] = useState('praycalc');
@@ -110,6 +115,7 @@ export default function TvSettingsPanel({ device, onClose }: TvSettingsPanelProp
           <div className="flex items-center gap-2">
             {device.isOnline && (
               <button
+                type="button"
                 onClick={() => setShowScreenshot(true)}
                 className="text-white/40 hover:text-[#C9F27A] text-sm px-2 py-1 rounded-lg hover:bg-white/5 transition-colors"
                 title="View current screen"
@@ -118,6 +124,7 @@ export default function TvSettingsPanel({ device, onClose }: TvSettingsPanelProp
               </button>
             )}
             <button
+              type="button"
               onClick={onClose}
               className="text-white/40 hover:text-white text-xl w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/5 transition-colors"
               aria-label="Close settings"
@@ -127,12 +134,35 @@ export default function TvSettingsPanel({ device, onClose }: TvSettingsPanelProp
           </div>
         </div>
 
+        {/* Tabs */}
+        <div className="flex gap-1 px-4 pt-3 border-b border-[#79C24C]/10 pb-0">
+          {(['settings', 'quran'] as PanelTab[]).map(tab => (
+            <button
+              key={tab}
+              type="button"
+              onClick={() => setActiveTab(tab)}
+              className={`px-4 py-2 text-sm font-medium capitalize rounded-t-lg transition-colors -mb-px border-b-2 ${
+                activeTab === tab
+                  ? 'text-[#C9F27A] border-[#79C24C]'
+                  : 'text-white/40 border-transparent hover:text-white/70'
+              }`}
+            >
+              {tab === 'quran' ? '📖 Quran' : '⚙️ Settings'}
+            </button>
+          ))}
+        </div>
+
         <div className="flex-1 p-6 space-y-8">
-          {/* Layout Preset */}
+          {activeTab === 'quran' && (
+            <TvQuranPanel deviceId={device.id} isOnline={device.isOnline} />
+          )}
+          {activeTab !== 'quran' && (
+          <>{/* Layout Preset */}
           <section>
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-[#C9F27A] font-semibold text-sm uppercase tracking-wide">Layout Preset</h3>
               <button
+                type="button"
                 onClick={() => setShowLayoutEditor(v => !v)}
                 className="text-white/40 hover:text-white/70 text-xs transition-colors"
               >
@@ -143,6 +173,7 @@ export default function TvSettingsPanel({ device, onClose }: TvSettingsPanelProp
               {LAYOUT_PRESETS.map(p => (
                 <button
                   key={p.id}
+                  type="button"
                   onClick={() => setLayout(p.id)}
                   className={`px-4 py-2.5 rounded-xl border text-left text-sm font-medium transition-colors ${
                     layout === p.id
@@ -187,8 +218,9 @@ export default function TvSettingsPanel({ device, onClose }: TvSettingsPanelProp
             <h3 className="text-[#C9F27A] font-semibold text-sm uppercase tracking-wide mb-3">Screensaver</h3>
             <div className="space-y-3">
               <div>
-                <label className="text-white/60 text-xs mb-1.5 block">Photo Source</label>
+                <label htmlFor={`ss-source-${device.id}`} className="text-white/60 text-xs mb-1.5 block">Photo Source</label>
                 <select
+                  id={`ss-source-${device.id}`}
                   value={screensaverSource}
                   onChange={e => setScreensaverSource(e.target.value)}
                   className="w-full bg-black/30 border border-white/10 rounded-xl px-3 py-2.5 text-white text-sm focus:border-[#79C24C]/50 outline-none"
@@ -199,8 +231,9 @@ export default function TvSettingsPanel({ device, onClose }: TvSettingsPanelProp
                 </select>
               </div>
               <div>
-                <label className="text-white/60 text-xs mb-1.5 block">Change Interval</label>
+                <label htmlFor={`ss-interval-${device.id}`} className="text-white/60 text-xs mb-1.5 block">Change Interval</label>
                 <select
+                  id={`ss-interval-${device.id}`}
                   value={screensaverInterval}
                   onChange={e => setScreensaverInterval(e.target.value)}
                   className="w-full bg-black/30 border border-white/10 rounded-xl px-3 py-2.5 text-white text-sm focus:border-[#79C24C]/50 outline-none"
@@ -225,9 +258,14 @@ export default function TvSettingsPanel({ device, onClose }: TvSettingsPanelProp
             />
             <p className="text-white/30 text-xs mt-1.5">City slug — leave blank to use your account location</p>
           </section>
+
+          {/* Iqamah Schedule */}
+          <IqamahTimesEditor deviceId={device.id} />
+          </>)}
         </div>
 
-        {/* Footer */}
+        {/* Footer — only show for settings tab */}
+        {activeTab === 'settings' && (
         <div className="p-6 border-t border-[#79C24C]/10 space-y-3">
           {saveError && (
             <p className="text-red-400 text-xs text-center">{saveError}</p>
@@ -236,6 +274,7 @@ export default function TvSettingsPanel({ device, onClose }: TvSettingsPanelProp
             <p className="text-[#C9F27A] text-xs text-center">Settings saved — applying to TV...</p>
           )}
           <button
+            type="button"
             onClick={handleSave}
             disabled={isSaving}
             className="w-full bg-[#1E5E2F] hover:bg-[#79C24C]/20 disabled:opacity-50 text-[#C9F27A] font-semibold rounded-xl py-3.5 transition-colors border border-[#79C24C]/30 text-sm"
@@ -244,6 +283,7 @@ export default function TvSettingsPanel({ device, onClose }: TvSettingsPanelProp
           </button>
           <p className="text-white/25 text-xs text-center">Settings apply within 3 seconds</p>
         </div>
+        )}
       </div>
 
       {showScreenshot && (
