@@ -31,6 +31,7 @@ import 'tv_jumuah_overlay.dart';
 import 'tv_sky_background.dart';
 import 'tv_adhan_dua_overlay.dart';
 import 'tv_ayah_of_hour.dart';
+import 'tv_iqamah_board.dart';
 import 'tv_multi_city_board.dart';
 import 'tv_post_adhan_bar.dart';
 import 'tv_stream_library.dart';
@@ -678,6 +679,20 @@ class _TvHomeScreenState extends ConsumerState<TvHomeScreen> {
                           ),
                         ),
                       ),
+                    ),
+                  ],
+                );
+              }
+
+              // ── Iqamah board (P-10) — full-screen when ≤ 120 s ──────
+              if (_iqamahPrayer != null) {
+                body = Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    body,
+                    TvIqamahBoard(
+                      prayerName: _iqamahPrayer!,
+                      secondsRemaining: _iqamahSecondsRemaining,
                     ),
                   ],
                 );
