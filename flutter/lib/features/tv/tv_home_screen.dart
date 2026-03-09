@@ -1267,6 +1267,15 @@ class _TvCountdownBanner extends StatelessWidget {
   }
 }
 
+// P-2: Redesigned prayer card grid.
+// Four card states:
+//   past     — prayer already passed today (muted, checkmark badge)
+//   active   — currently active window (green glow border)
+//   next     — next upcoming prayer (bright accent, pulsing dot)
+//   upcoming — future prayer (neutral glass card)
+
+enum _CardState { past, active, next, upcoming }
+
 class _TvPrayerGrid extends StatelessWidget {
   const _TvPrayerGrid({
     required this.times,
@@ -1292,90 +1301,179 @@ class _TvPrayerGrid extends StatelessWidget {
         Expanded(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: leftIndices.map((i) => _buildTile(i)).toList(),
+            children: leftIndices
+                .map((i) => Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4),
+                      child: _buildCard(i),
+                    ))
+                .toList(),
           ),
         ),
-        const SizedBox(width: 32),
+        const SizedBox(width: 16),
         Expanded(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: rightIndices.map((i) => _buildTile(i)).toList(),
+            children: rightIndices
+                .map((i) => Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4),
+                      child: _buildCard(i),
+                    ))
+                .toList(),
           ),
         ),
       ],
     );
   }
 
-  Widget _buildTile(int idx) {
+  _CardState _stateFor(int idx) {
+    if (idx == activeIdx) return _CardState.active;
+    if (idx == nextIdx) return _CardState.next;
+    // Past: index comes before activeIdx in the circular prayer cycle.
+    // Simple heuristic: all indices strictly less than nextIdx and not active.
+    if (nextIdx > 0 && idx < nextIdx && idx != activeIdx) {
+      return _CardState.past;
+    }
+    return _CardState.upcoming;
+  }
+
+  Widget _buildCard(int idx) {
     final meta = _prayers[idx];
     final h = meta.getValue(times);
-    final timeStr = h.isFinite ? _formatH(h) : 'N/A';
-    final isActive = idx == activeIdx;
-    final isNext = idx == nextIdx;
+    final timeStr = h.isFinite ? _formatH(h) : '--:--';
+    final state = _stateFor(idx);
 
     String label = meta.label;
     if (isRamadan && label == 'Fajr') label = 'Suhoor';
     if (isRamadan && label == 'Maghrib') label = 'Iftar';
 
-    final semanticLabel = isNext
-        ? '$label at $timeStr, next prayer'
-        : isActive
-            ? '$label at $timeStr, current prayer'
-            : '$label at $timeStr';
+    final semanticLabel = switch (state) {
+      _CardState.active => '$label at $timeStr, current prayer',
+      _CardState.next => '$label at $timeStr, next prayer',
+      _CardState.past => '$label at $timeStr, completed',
+      _CardState.upcoming => '$label at $timeStr',
+    };
+
+    // Colors per state.
+    final Color bgColor = switch (state) {
+      _CardState.active =>
+        PrayCalcColors.dark.withValues(alpha: 0.75),
+      _CardState.next =>
+        PrayCalcColors.deep.withValues(alpha: 0.85),
+      _CardState.past =>
+        Colors.black.withValues(alpha: 0.25),
+      _CardState.upcoming =>
+        Colors.white.withValues(alpha: 0.06),
+    };
+    final Color borderColor = switch (state) {
+      _CardState.active => PrayCalcColors.mid,
+      _CardState.next => PrayCalcColors.light,
+      _CardState.past => Colors.white.withValues(alpha: 0.10),
+      _CardState.upcoming => Colors.white.withValues(alpha: 0.15),
+    };
+    final double borderWidth = switch (state) {
+      _CardState.active => 2.0,
+      _CardState.next => 2.5,
+      _ => 1.0,
+    };
+    final List<BoxShadow> shadows = switch (state) {
+      _CardState.next => [
+          BoxShadow(
+            color: PrayCalcColors.light.withValues(alpha: 0.25),
+            blurRadius: 16,
+            spreadRadius: 2,
+          ),
+        ],
+      _CardState.active => [
+          BoxShadow(
+            color: PrayCalcColors.mid.withValues(alpha: 0.18),
+            blurRadius: 12,
+          ),
+        ],
+      _ => const [],
+    };
+    final Color iconColor = switch (state) {
+      _CardState.next => PrayCalcColors.light,
+      _CardState.active => PrayCalcColors.mid,
+      _CardState.past => Colors.white30,
+      _CardState.upcoming => Colors.white54,
+    };
+    final Color labelColor = switch (state) {
+      _CardState.past => Colors.white38,
+      _ => Colors.white,
+    };
+    final Color timeColor = switch (state) {
+      _CardState.next => PrayCalcColors.light,
+      _CardState.active => Colors.white,
+      _CardState.past => Colors.white30,
+      _CardState.upcoming => Colors.white70,
+    };
 
     return Semantics(
       label: semanticLabel,
       child: Container(
-        padding:
-            const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
         decoration: BoxDecoration(
-          color: isNext
-              ? PrayCalcColors.dark.withAlpha(120)
-              : isActive
-                  ? PrayCalcColors.deep.withAlpha(200)
-                  : Colors.transparent,
-          borderRadius: BorderRadius.circular(16),
-          border: isNext
-              ? Border.all(color: PrayCalcColors.mid, width: 2)
-              : null,
+          color: bgColor,
+          borderRadius: BorderRadius.circular(18),
+          border: Border.all(color: borderColor, width: borderWidth),
+          boxShadow: shadows,
         ),
         child: Row(
           children: [
-            Icon(
-              meta.icon,
-              color: isNext
-                  ? PrayCalcColors.light
-                  : isActive
-                      ? PrayCalcColors.mid
-                      : Colors.white54,
-              size: 36,
+            // State indicator column.
+            Stack(
+              alignment: Alignment.topRight,
+              children: [
+                Icon(meta.icon, color: iconColor, size: 32),
+                if (state == _CardState.past)
+                  Positioned(
+                    top: -2,
+                    right: -2,
+                    child: Container(
+                      width: 14,
+                      height: 14,
+                      decoration: BoxDecoration(
+                        color: Colors.white24,
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(Icons.check, size: 10,
+                          color: Colors.white54),
+                    ),
+                  ),
+                if (state == _CardState.next)
+                  Positioned(
+                    top: -2,
+                    right: -2,
+                    child: _PulsingDot(color: PrayCalcColors.light),
+                  ),
+              ],
             ),
-            const SizedBox(width: 16),
+            const SizedBox(width: 14),
+            // Label.
             Expanded(
               child: Text(
                 label,
                 style: TextStyle(
-                  color:
-                      isActive || isNext ? Colors.white : Colors.white70,
-                  fontSize: 32,
-                  fontWeight: isActive || isNext
-                      ? FontWeight.bold
-                      : FontWeight.normal,
+                  color: labelColor,
+                  fontSize: 28,
+                  fontWeight: state == _CardState.past
+                      ? FontWeight.normal
+                      : FontWeight.w600,
                 ),
+                overflow: TextOverflow.ellipsis,
               ),
             ),
+            // Time.
             Text(
               timeStr,
               style: TextStyle(
-                color: isNext
-                    ? PrayCalcColors.light
-                    : isActive
-                        ? Colors.white
-                        : Colors.white70,
-                fontSize: 48,
-                fontWeight: isActive || isNext
-                    ? FontWeight.bold
-                    : FontWeight.normal,
+                color: timeColor,
+                fontSize: 38,
+                fontWeight: state == _CardState.upcoming ||
+                        state == _CardState.past
+                    ? FontWeight.normal
+                    : FontWeight.bold,
                 fontFeatures: const [FontFeature.tabularFigures()],
               ),
             ),
@@ -1395,6 +1493,57 @@ class _TvPrayerGrid extends StatelessWidget {
     final period = hh >= 12 ? 'PM' : 'AM';
     final h12 = hh % 12 == 0 ? 12 : hh % 12;
     return '$h12:${mm.toString().padLeft(2, '0')} $period';
+  }
+}
+
+// Pulsing dot for the "next prayer" card indicator.
+class _PulsingDot extends StatefulWidget {
+  const _PulsingDot({required this.color});
+  final Color color;
+
+  @override
+  State<_PulsingDot> createState() => _PulsingDotState();
+}
+
+class _PulsingDotState extends State<_PulsingDot>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _ctrl;
+
+  @override
+  void initState() {
+    super.initState();
+    _ctrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1200),
+    )..repeat(reverse: true);
+  }
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _ctrl,
+      builder: (ctx, _) => Container(
+        width: 12,
+        height: 12,
+        decoration: BoxDecoration(
+          color: widget.color.withValues(alpha: 0.5 + _ctrl.value * 0.5),
+          shape: BoxShape.circle,
+          boxShadow: [
+            BoxShadow(
+              color: widget.color.withValues(alpha: _ctrl.value * 0.6),
+              blurRadius: 6,
+              spreadRadius: 1,
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
 
