@@ -250,6 +250,13 @@ class TvSettingsNotifier extends Notifier<TvSettings> {
   }
 
   // ---------------------------------------------------------------------------
+  // P-1 — Sky background setter
+  // ---------------------------------------------------------------------------
+
+  Future<void> setSkyBackgroundEnabled(bool v) =>
+      update(state.copyWith(skyBackgroundEnabled: v));
+
+  // ---------------------------------------------------------------------------
   // P-17 — Font scale setter
   // ---------------------------------------------------------------------------
 

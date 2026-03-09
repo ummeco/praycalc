@@ -26,6 +26,7 @@ import 'tv_eid_overlay.dart';
 import 'tv_countdown_flip.dart';
 import 'tv_good_night_overlay.dart';
 import 'tv_hadith_ticker.dart';
+import 'tv_sky_background.dart';
 import 'tv_jumuah_overlay.dart';
 import 'tv_post_adhan_bar.dart';
 import 'tv_stream_library.dart';
@@ -447,8 +448,22 @@ class _TvHomeScreenState extends ConsumerState<TvHomeScreen> {
       canPop: false,
       onPopInvokedWithResult: (didPop, _) => _onBackInvoked(),
       child: Scaffold(
-      backgroundColor: PrayCalcColors.deep,
-      body: FocusTraversalGroup(
+      backgroundColor: tvSettings.skyBackgroundEnabled
+          ? Colors.transparent
+          : PrayCalcColors.deep,
+      body: tvSettings.skyBackgroundEnabled
+          ? TvSkyBackground(
+              hour: _nowH,
+              child: _buildBody(tvSettings, timesAsync, city, settings, ramadan),
+            )
+          : _buildBody(tvSettings, timesAsync, city, settings, ramadan),
+    ),  // end Scaffold
+  );  // end PopScope
+  }  // end build
+
+  Widget _buildBody(TvSettings tvSettings, dynamic timesAsync, dynamic city,
+      dynamic settings, dynamic ramadan) {
+    return FocusTraversalGroup(
         policy: OrderedTraversalPolicy(),
         child: KeyboardListener(
           focusNode: _focusNode,
@@ -654,10 +669,8 @@ class _TvHomeScreenState extends ConsumerState<TvHomeScreen> {
             },
           ),
         ),
-      ),
-    ),  // end Scaffold
-  );  // end PopScope
-  }  // end build
+    );
+  }
 
   /// True when current time is in the Good Night window:
   /// [isha + delayMinutes, fajr + 30 min] (handles midnight crossing).

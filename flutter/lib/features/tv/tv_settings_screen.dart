@@ -394,6 +394,20 @@ class _TvSettingsScreenState extends ConsumerState<TvSettingsScreen> {
             // ── Brightness (TV2-6.4 / TV2-6.5 / TV2-6.7) ──
             _SectionHeader(title: 'Brightness'),
             const SizedBox(height: 8),
+            // P-1 — Sky gradient background
+            _TvSettingsTile(
+              icon: Icons.gradient,
+              title: 'Sky Background',
+              subtitle: 'Time-of-day gradient with stars at night',
+              trailing: Switch(
+                value: tvSettings.skyBackgroundEnabled,
+                activeThumbColor: PrayCalcColors.mid,
+                onChanged: (v) => tvNotifier.setSkyBackgroundEnabled(v),
+              ),
+              onTap: () => tvNotifier
+                  .setSkyBackgroundEnabled(!tvSettings.skyBackgroundEnabled),
+            ),
+            const SizedBox(height: 8),
             // P-14 — Good Night Isha mode
             _TvSettingsTile(
               icon: Icons.nightlight_round,

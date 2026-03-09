@@ -592,6 +592,13 @@ class TvSettings {
   // P-17 — Font size scale
   // ---------------------------------------------------------------------------
 
+  // ---------------------------------------------------------------------------
+  // P-1 — Sky gradient background
+  // ---------------------------------------------------------------------------
+
+  /// When true, TvSkyBackground replaces the flat deep-green background.
+  final bool skyBackgroundEnabled;
+
   /// Font scale multiplier applied to all TV text sizes.
   /// Valid values: 0.8, 1.0, 1.2, 1.4, 1.6. Default 1.0.
   final double tvFontScale;
@@ -655,6 +662,7 @@ class TvSettings {
     this.overlayDensity = 'standard',
     this.screensaverIdleSeconds = 300,
     this.customStreams = const [],
+    this.skyBackgroundEnabled = false,
     this.tvFontScale = 1.0,
     this.goodNightEnabled = false,
     this.goodNightDelayMinutes = 30,
@@ -701,6 +709,7 @@ class TvSettings {
     String? overlayDensity,
     int? screensaverIdleSeconds,
     List<TvCustomStream>? customStreams,
+    bool? skyBackgroundEnabled,
     double? tvFontScale,
     bool? goodNightEnabled,
     int? goodNightDelayMinutes,
@@ -760,6 +769,7 @@ class TvSettings {
       screensaverIdleSeconds:
           screensaverIdleSeconds ?? this.screensaverIdleSeconds,
       customStreams: customStreams ?? this.customStreams,
+      skyBackgroundEnabled: skyBackgroundEnabled ?? this.skyBackgroundEnabled,
       tvFontScale: tvFontScale ?? this.tvFontScale,
       goodNightEnabled: goodNightEnabled ?? this.goodNightEnabled,
       goodNightDelayMinutes:
@@ -810,6 +820,7 @@ class TvSettings {
         'overlayDensity': overlayDensity,
         'screensaverIdleSeconds': screensaverIdleSeconds,
         'customStreams': customStreams.map((s) => s.toJson()).toList(),
+        'skyBackgroundEnabled': skyBackgroundEnabled,
         'tvFontScale': tvFontScale,
         'goodNightEnabled': goodNightEnabled,
         'goodNightDelayMinutes': goodNightDelayMinutes,
@@ -917,6 +928,8 @@ class TvSettings {
                   TvCustomStream.fromJson(e as Map<String, dynamic>))
               .toList() ??
           const [],
+      skyBackgroundEnabled:
+          json['skyBackgroundEnabled'] as bool? ?? false,
       tvFontScale: (json['tvFontScale'] as num?)?.toDouble() ?? 1.0,
       goodNightEnabled: json['goodNightEnabled'] as bool? ?? false,
       goodNightDelayMinutes: json['goodNightDelayMinutes'] as int? ?? 30,
