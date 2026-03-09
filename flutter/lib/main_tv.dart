@@ -8,6 +8,8 @@ import 'package:go_router/go_router.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:shorebird_code_push/shorebird_code_push.dart';
 
+import 'package:shared_preferences/shared_preferences.dart';
+
 import 'core/providers/geo_provider.dart';
 import 'core/providers/prayer_provider.dart';
 import 'core/providers/settings_provider.dart';
@@ -17,8 +19,13 @@ import 'features/city_search/city_search_screen.dart';
 import 'features/tv/tv_ambient_screen.dart';
 import 'features/tv/tv_home_screen.dart';
 import 'features/tv/tv_masjid_screen.dart';
+import 'features/tv/tv_onboarding_screen.dart';
+import 'features/tv/tv_pairing_screen.dart';
 import 'features/tv/tv_settings_screen.dart';
 import 'l10n/app_localizations.dart';
+
+// P-21: Whether a TV session JWT is already stored.
+bool _kTvIsPaired = false;
 
 // DSN is injected at build time via --dart-define=SENTRY_DSN=https://...
 const _kSentryDsn = String.fromEnvironment('SENTRY_DSN');
@@ -39,15 +46,26 @@ Future<void> _checkShorebirdUpdate() async {
 // ─── TV Router ─────────────────────────────────────────────────────────────
 
 class _TvRoutes {
-  static const home = '/';
-  static const masjid = '/masjid';
-  static const settings = '/settings';
-  static const ambient = '/ambient';
-  static const citySearch = '/city-search';
+  static const home        = '/';
+  static const masjid      = '/masjid';
+  static const settings    = '/settings';
+  static const ambient     = '/ambient';
+  static const citySearch  = '/city-search';
+  static const onboarding  = '/onboarding';
+  static const pairing     = '/pairing';
 }
 
 final _tvRouter = GoRouter(
   initialLocation: _TvRoutes.home,
+  // P-21: Redirect unpaired TVs to the onboarding screen.
+  redirect: (context, state) {
+    final loc = state.matchedLocation;
+    final onboardingPaths = {_TvRoutes.onboarding, _TvRoutes.pairing};
+    if (!_kTvIsPaired && !onboardingPaths.contains(loc)) {
+      return _TvRoutes.onboarding;
+    }
+    return null;
+  },
   routes: [
     GoRoute(
       path: _TvRoutes.home,
@@ -68,6 +86,23 @@ final _tvRouter = GoRouter(
     GoRoute(
       path: _TvRoutes.citySearch,
       builder: (context, state) => const CitySearchScreen(),
+    ),
+    GoRoute(
+      path: _TvRoutes.onboarding,
+      builder: (context, state) => const TvOnboardingScreen(),
+    ),
+    GoRoute(
+      path: _TvRoutes.pairing,
+      builder: (context, state) => const TvPairingScreen(),
+    ),
+    // Alias: TvPairingScreen internally calls context.go('/tv') on success.
+    // Mark as paired so the redirect allows navigation to home.
+    GoRoute(
+      path: '/tv',
+      redirect: (_, _) {
+        _kTvIsPaired = true;
+        return _TvRoutes.home;
+      },
     ),
   ],
 );
@@ -109,6 +144,10 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await NotificationService.instance.init();
   final lastCity = await loadLastCity();
+
+  // P-21: Check pairing state before launching — avoids redirect flicker.
+  final prefs = await SharedPreferences.getInstance();
+  _kTvIsPaired = (prefs.getString('tv_session_jwt') ?? '').isNotEmpty;
 
   // Immersive full-screen for TV.
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
