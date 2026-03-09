@@ -29,6 +29,7 @@ import 'tv_hadith_ticker.dart';
 import 'tv_geometric_pattern.dart';
 import 'tv_jumuah_overlay.dart';
 import 'tv_sky_background.dart';
+import 'tv_ayah_of_hour.dart';
 import 'tv_post_adhan_bar.dart';
 import 'tv_stream_library.dart';
 import 'tv_stream_player.dart';
@@ -969,7 +970,11 @@ class _TvHomeBody extends StatelessWidget {
                         ),
                         countdown: countdown,
                       ),
-                      const SizedBox(height: 32),
+                      const SizedBox(height: 16),
+
+                      // Ayah of the hour (P-7).
+                      TvAyahOfHour(hour: now.hour),
+                      const SizedBox(height: 16),
 
                       // Prayer times grid: 2 columns x 3 rows.
                       Expanded(
