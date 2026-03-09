@@ -23,6 +23,7 @@ import '../../shared/models/tv_settings_model.dart';
 import 'tv_adhan_bubble.dart';
 import 'tv_announcement_overlay.dart';
 import 'tv_eid_overlay.dart';
+import 'tv_hadith_ticker.dart';
 import 'tv_jumuah_overlay.dart';
 import 'tv_post_adhan_bar.dart';
 import 'tv_stream_library.dart';
@@ -97,10 +98,14 @@ class _TvHomeScreenState extends ConsumerState<TvHomeScreen> {
   // ── Idle / ambient timer (TV2-7.9) ────────────────────────────────────────
   DateTime _lastKeyEvent = DateTime.now();
 
+  // ── Guest mode (L-4): shows "Pair with phone" CTA when no JWT stored ──────
+  bool _isGuestMode = false;
+
   @override
   void initState() {
     super.initState();
     WakelockPlus.enable();
+    _checkGuestMode();
     _ticker = Timer.periodic(const Duration(seconds: 1), (_) {
       setState(() => _now = DateTime.now());
       _checkPrayerAlerts();
@@ -225,6 +230,14 @@ class _TvHomeScreenState extends ConsumerState<TvHomeScreen> {
     final period = hh >= 12 ? 'PM' : 'AM';
     final h12 = hh % 12 == 0 ? 12 : hh % 12;
     return '$h12:${mm.toString().padLeft(2, '0')} $period';
+  }
+
+  // ─── Guest mode detection (L-4) ────────────────────────────────────────────
+
+  Future<void> _checkGuestMode() async {
+    final prefs = await ref.read(sharedPrefsProvider.future);
+    final jwt = prefs.getString('tv_session_jwt');
+    if (mounted) setState(() => _isGuestMode = jwt == null || jwt.isEmpty);
   }
 
   // ─── Adhan alert controller (TV2-8.1, TV2-8.4, TV2-8.5, TV2-8.7) ─────────
@@ -573,6 +586,46 @@ class _TvHomeScreenState extends ConsumerState<TvHomeScreen> {
                 }
               }
 
+              // ── Guest mode: persistent "Pair with phone" CTA (L-4) ──
+              if (_isGuestMode) {
+                body = Stack(
+                  children: [
+                    body,
+                    Positioned(
+                      bottom: 16,
+                      right: 16,
+                      child: GestureDetector(
+                        onTap: () => context.push(Routes.tvPairing),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 8),
+                          decoration: BoxDecoration(
+                            color: PrayCalcColors.dark.withAlpha(230),
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(
+                                color: PrayCalcColors.mid.withAlpha(100),
+                                width: 1),
+                          ),
+                          child: const Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.phone_android,
+                                  color: PrayCalcColors.mid, size: 18),
+                              SizedBox(width: 8),
+                              Text(
+                                'Pair with phone',
+                                style: TextStyle(
+                                    color: Colors.white54, fontSize: 14),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              }
+
               return body;
             },
           ),
@@ -862,6 +915,18 @@ class _TvHomeBody extends StatelessWidget {
                         ),
                       ),
 
+                      // Hadith / Asma al-Husna ambient ticker (L-3).
+                      if (tvSettings.infoBarConfig.showHadithTicker) ...[
+                        const SizedBox(height: 12),
+                        SizedBox(
+                          height: 44,
+                          child: TvHadithTicker(
+                            includeAsmaAlHusna:
+                                tvSettings.infoBarConfig.showAsmaAlHusna,
+                          ),
+                        ),
+                      ],
+
                       // Bottom: moon phase + weather.
                       const SizedBox(height: 16),
                       _TvBottomBar(moonResult: moonResult),
@@ -913,6 +978,7 @@ class _TvHomeBody extends StatelessWidget {
                 ),
               ),
             ),
+
         ],
       ),
     );

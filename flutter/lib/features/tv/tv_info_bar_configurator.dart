@@ -138,6 +138,15 @@ class TvInfoBarConfigurator extends ConsumerWidget {
               onChanged: (v) => tvNotifier.setInfoBarConfig(
                   config.copyWith(showCalendarTicker: v)),
             ),
+            const SizedBox(height: 8),
+            _InfoBarToggle(
+              icon: Icons.auto_awesome,
+              title: '99 Names of Allah',
+              subtitle: 'Mix Asmāʾ al-Ḥusnā into the hadith ticker rotation',
+              value: config.showAsmaAlHusna,
+              onChanged: (v) => tvNotifier.setInfoBarConfig(
+                  config.copyWith(showAsmaAlHusna: v)),
+            ),
             const SizedBox(height: 48),
           ],
         ),

@@ -18,6 +18,9 @@ class TvInfoBarConfig {
   final bool showHadithTicker;
   final bool showCalendarTicker;
 
+  /// When true, the hadith ticker also rotates in the 99 Names of Allah.
+  final bool showAsmaAlHusna;
+
   /// Slug of a second city to show in a multi-timezone display. Null = off.
   final String? secondCitySlug;
 
@@ -30,6 +33,7 @@ class TvInfoBarConfig {
     this.showMoon = false,
     this.showHadithTicker = false,
     this.showCalendarTicker = false,
+    this.showAsmaAlHusna = false,
     this.secondCitySlug,
   });
 
@@ -42,6 +46,7 @@ class TvInfoBarConfig {
     bool? showMoon,
     bool? showHadithTicker,
     bool? showCalendarTicker,
+    bool? showAsmaAlHusna,
     Object? secondCitySlug = _sentinel,
   }) {
     return TvInfoBarConfig(
@@ -53,6 +58,7 @@ class TvInfoBarConfig {
       showMoon: showMoon ?? this.showMoon,
       showHadithTicker: showHadithTicker ?? this.showHadithTicker,
       showCalendarTicker: showCalendarTicker ?? this.showCalendarTicker,
+      showAsmaAlHusna: showAsmaAlHusna ?? this.showAsmaAlHusna,
       secondCitySlug: secondCitySlug == _sentinel
           ? this.secondCitySlug
           : secondCitySlug as String?,
@@ -68,6 +74,7 @@ class TvInfoBarConfig {
         'showMoon': showMoon,
         'showHadithTicker': showHadithTicker,
         'showCalendarTicker': showCalendarTicker,
+        'showAsmaAlHusna': showAsmaAlHusna,
         'secondCitySlug': secondCitySlug,
       };
 
@@ -81,6 +88,7 @@ class TvInfoBarConfig {
         showMoon: json['showMoon'] as bool? ?? false,
         showHadithTicker: json['showHadithTicker'] as bool? ?? false,
         showCalendarTicker: json['showCalendarTicker'] as bool? ?? false,
+        showAsmaAlHusna: json['showAsmaAlHusna'] as bool? ?? false,
         secondCitySlug: json['secondCitySlug'] as String?,
       );
 }
