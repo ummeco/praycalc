@@ -2,6 +2,22 @@
 
 All notable changes to PrayCalc are documented here.
 
+## v0.9.4 (2026-03-09)
+
+TV Command Center — Android TV and Fire TV support.
+
+- **Android TV app:** Dedicated TV home screen with full-screen prayer times, live Hijri date, adhan overlay with countdown, and automatic adhan audio playback.
+- **TV Command Center (mobile):** Manage connected TVs from the PrayCalc mobile app. View online/offline status, push settings, rename devices.
+- **QR pairing:** Pair a TV to your account by scanning the QR code shown on the TV pairing screen. Manual 6-character code entry as fallback.
+- **Kiosk mode:** Lock the TV display to prevent unauthorized access. Admin PIN entry to exit kiosk.
+- **TV settings push:** Push calculation method, adhan voice, display theme, and brightness settings from mobile to TV in real time.
+- **Live stream library:** Curated Islamic live streams (Makkah, Madinah, Al-Quds) available as ambient TV background.
+- **Quran display:** Rotating ayahs displayed on the TV home screen with reciter selection.
+- **Smart home dashboard:** TV-optimized overview of all smart home devices and prayer-time automations.
+- **macOS TV management:** Manage connected TVs from the macOS menu bar popover (TVsView).
+- **i18n TV pairing:** TV pairing strings localized to all 22 supported languages.
+- **CI:** Added Windows and Linux Flutter build jobs to GitHub Actions.
+
 ## v0.9.3 (2026-03-08)
 
 The "everything release": C core engine, desktop platforms, alerts, 22 languages.

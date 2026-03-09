@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 import '../../core/theme/app_theme.dart';
 import 'tv_stream_library.dart';
@@ -8,9 +9,9 @@ import 'tv_stream_library.dart';
 /// Plays a [TvStream].
 ///
 /// Audio streams: played via just_audio with a full-screen art card.
-/// Video streams: YouTube links — opens in external browser/app via url_launcher,
-/// and shows an ambient art card in the meantime. webview_flutter is not in
-/// pubspec.yaml so in-app video is not available; add it to enable inline video.
+/// Video streams: YouTube links — rendered inline using webview_flutter with
+/// the YouTube embed URL (autoplay, no controls). A small "Open in app" button
+/// is available as fallback for devices where WebView is not supported.
 ///
 /// When a stream is detected as offline (via [TvStreamHealthChecker]), a red
 /// dot indicator is shown and [onStreamOffline] is called so the parent can
@@ -35,10 +36,26 @@ class TvStreamPlayer extends StatefulWidget {
 
 class _TvStreamPlayerState extends State<TvStreamPlayer> {
   AudioPlayer? _audioPlayer;
+  WebViewController? _webController;
   bool _isLoading = false;
   bool _hasError = false;
   bool _isPlaying = false;
   bool _streamOffline = false;
+
+  /// Extracts the YouTube video ID from a watch URL.
+  /// e.g. https://www.youtube.com/watch?v=ABC123 → ABC123
+  static String? _youtubeId(String url) {
+    final uri = Uri.tryParse(url);
+    return uri?.queryParameters['v'];
+  }
+
+  /// Returns the YouTube embed URL for inline WebView playback.
+  static String? _embedUrl(String url) {
+    final id = _youtubeId(url);
+    if (id == null) return null;
+    return 'https://www.youtube.com/embed/$id'
+        '?autoplay=1&controls=0&modestbranding=1&rel=0&playsinline=1';
+  }
 
   @override
   void initState() {
@@ -46,6 +63,8 @@ class _TvStreamPlayerState extends State<TvStreamPlayer> {
     _checkHealth();
     if (widget.stream.type == TvStreamType.audio) {
       _initAudio();
+    } else {
+      _initVideo();
     }
   }
 
@@ -55,12 +74,15 @@ class _TvStreamPlayerState extends State<TvStreamPlayer> {
     if (old.stream.id != widget.stream.id) {
       _audioPlayer?.dispose();
       _audioPlayer = null;
+      _webController = null;
       _hasError = false;
       _isPlaying = false;
       _streamOffline = false;
       _checkHealth();
       if (widget.stream.type == TvStreamType.audio) {
         _initAudio();
+      } else {
+        _initVideo();
       }
     }
     if (old.muted != widget.muted && _audioPlayer != null) {
@@ -86,6 +108,16 @@ class _TvStreamPlayerState extends State<TvStreamPlayer> {
         widget.onStreamOffline?.call();
       }
     });
+  }
+
+  void _initVideo() {
+    final embedUrl = _embedUrl(widget.stream.url);
+    if (embedUrl == null) return;
+    final controller = WebViewController()
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setBackgroundColor(Colors.black)
+      ..loadRequest(Uri.parse(embedUrl));
+    setState(() => _webController = controller);
   }
 
   Future<void> _initAudio() async {
@@ -131,7 +163,7 @@ class _TvStreamPlayerState extends State<TvStreamPlayer> {
     if (_isLoading) return _buildLoading();
     final content = widget.stream.type == TvStreamType.audio
         ? _buildAudioCard()
-        : _buildVideoPlaceholder();
+        : _buildVideoPlayer();
     if (!_streamOffline) return content;
     return Stack(children: [content, _buildOfflineDot()]);
   }
@@ -265,9 +297,40 @@ class _TvStreamPlayerState extends State<TvStreamPlayer> {
         ),
       );
 
-  /// Video streams require webview_flutter (not in pubspec.yaml).
-  /// Shows ambient art card with a button to open the stream in an external app.
-  Widget _buildVideoPlaceholder() => Container(
+  /// Video streams — inline WebView using YouTube embed URL.
+  /// Falls back to ambient art card if no embed URL can be derived.
+  Widget _buildVideoPlayer() {
+    final controller = _webController;
+    if (controller == null) {
+      // No embed URL (non-YouTube stream) — show art card with external link.
+      return _buildVideoFallback();
+    }
+    return Stack(
+      children: [
+        WebViewWidget(controller: controller),
+        // Small "open in app" button in corner for user escape hatch.
+        Positioned(
+          bottom: 16,
+          right: 16,
+          child: Opacity(
+            opacity: 0.6,
+            child: ElevatedButton.icon(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.black54,
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              ),
+              icon: const Icon(Icons.open_in_new, size: 16),
+              label: const Text('Open in YouTube', style: TextStyle(fontSize: 13)),
+              onPressed: _openVideoInBrowser,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildVideoFallback() => Container(
         color: Colors.black,
         child: Center(
           child: Column(
@@ -303,11 +366,6 @@ class _TvStreamPlayerState extends State<TvStreamPlayer> {
                 icon: const Icon(Icons.open_in_new),
                 label: const Text('Open in YouTube', style: TextStyle(fontSize: 16)),
                 onPressed: _openVideoInBrowser,
-              ),
-              const SizedBox(height: 16),
-              const Text(
-                'Add webview_flutter to pubspec.yaml for inline video',
-                style: TextStyle(color: Colors.white24, fontSize: 12),
               ),
             ],
           ),
