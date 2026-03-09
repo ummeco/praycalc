@@ -20,6 +20,8 @@ export default function Footer() {
         <div className="site-footer-col">
           <p className="site-footer-col-title">PrayCalc</p>
           <Link href="/">{t("home")}</Link>
+          <Link href="/duas">Duas &amp; Adhkar</Link>
+          <Link href="/tasbeeh">Tasbeeh</Link>
           <Link href="/institutions">{t("institutions")}</Link>
           <Link href="/masjids">{t("masjids")}</Link>
         </div>
