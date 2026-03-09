@@ -32,6 +32,7 @@ import 'tv_sky_background.dart';
 import 'tv_adhan_dua_overlay.dart';
 import 'tv_ayah_of_hour.dart';
 import 'tv_iqamah_board.dart';
+import 'tv_mode_switcher.dart';
 import 'tv_multi_city_board.dart';
 import 'tv_ramadan_display.dart';
 import 'tv_post_adhan_bar.dart';
@@ -118,6 +119,9 @@ class _TvHomeScreenState extends ConsumerState<TvHomeScreen> {
 
   // ── Guest mode (L-4): shows "Pair with phone" CTA when no JWT stored ──────
   bool _isGuestMode = false;
+
+  // ── Mode switcher (P-5) ────────────────────────────────────────────────────
+  bool _modeSwitcherVisible = false;
 
   // ── Good Night mode (P-14): dimming overlay after Isha ────────────────────
   /// True when user explicitly dismissed the overlay (resets at midnight).
@@ -461,6 +465,11 @@ class _TvHomeScreenState extends ConsumerState<TvHomeScreen> {
     if (key == LogicalKeyboardKey.audioVolumeMute) {
       _toggleMute();
     }
+    // Menu/Guide key toggles the mode switcher (P-5).
+    if (key == LogicalKeyboardKey.contextMenu ||
+        key == LogicalKeyboardKey.f10) {
+      setState(() => _modeSwitcherVisible = !_modeSwitcherVisible);
+    }
     // Show mute overlay on any D-pad movement when stream is active.
     if (key == LogicalKeyboardKey.arrowUp ||
         key == LogicalKeyboardKey.arrowDown ||
@@ -488,12 +497,24 @@ class _TvHomeScreenState extends ConsumerState<TvHomeScreen> {
       backgroundColor: tvSettings.skyBackgroundEnabled
           ? Colors.transparent
           : PrayCalcColors.deep,
-      body: tvSettings.skyBackgroundEnabled
-          ? TvSkyBackground(
-              hour: _nowH,
-              child: _buildBody(tvSettings, timesAsync, city, settings, ramadan),
-            )
-          : _buildBody(tvSettings, timesAsync, city, settings, ramadan),
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          tvSettings.skyBackgroundEnabled
+              ? TvSkyBackground(
+                  hour: _nowH,
+                  child: _buildBody(
+                      tvSettings, timesAsync, city, settings, ramadan),
+                )
+              : _buildBody(tvSettings, timesAsync, city, settings, ramadan),
+          // Mode switcher overlay (P-5).
+          if (_modeSwitcherVisible)
+            TvModeSwitcher(
+              currentPreset: tvSettings.layoutSettings.preset,
+              onDismiss: () => setState(() => _modeSwitcherVisible = false),
+            ),
+        ],
+      ),
     ),  // end Scaffold
   );  // end PopScope
   }  // end build
