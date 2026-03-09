@@ -94,9 +94,7 @@ class AuthService {
   AuthService._();
   static final instance = AuthService._();
 
-  final _storage = const FlutterSecureStorage(
-    aOptions: AndroidOptions(encryptedSharedPreferences: true),
-  );
+  final _storage = const FlutterSecureStorage();
 
   static const _accessTokenKey = 'pc_access_token';
   static const _refreshTokenKey = 'pc_refresh_token';

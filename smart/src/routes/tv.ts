@@ -666,7 +666,7 @@ tvRouter.post('/groups/:id/announce', requireAuth, async (req: AuthRequest, res)
 // TV polls this to fetch pending announcements (called alongside heartbeat).
 
 tvRouter.get('/:id/announcements', requireAuth, async (req: AuthRequest, res) => {
-  const { id: deviceId } = req.params;
+  const deviceId = req.params['id'] as string;
   const now = Date.now();
 
   const all = pendingAnnouncements.get(deviceId) ?? [];

@@ -39,7 +39,7 @@ dependencies:
 
   # Auth + Sync
   graphql: ^5.2.0
-  flutter_secure_storage: ^9.2.0
+  flutter_secure_storage: ^10.0.0
   connectivity_plus: ^6.1.0
 
   # Network
