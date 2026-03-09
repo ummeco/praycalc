@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:praycalc_app/l10n/app_localizations.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -55,6 +56,12 @@ class _TvPairingScreenState extends ConsumerState<TvPairingScreen>
   String? _deviceFlowError;
   DateTime? _deviceCodeExpiry;
   Timer? _pollTimer;
+  bool _isGoogleLoading = false;
+  String? _googleError;
+
+  static final _googleSignIn = GoogleSignIn(
+    scopes: ['email', 'openid'],
+  );
 
   // ---------- QR tab state ----------
   static const _codeDuration = Duration(minutes: 5);
@@ -131,6 +138,68 @@ class _TvPairingScreenState extends ConsumerState<TvPairingScreen>
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_kTvSessionJwt, jwt);
     await prefs.setString(_kTvSessionExpiry, expiry.toIso8601String());
+  }
+
+  // ---------------------------------------------------------------------------
+  // Google sign-in (Android TV account picker → Hasura Auth)
+  // ---------------------------------------------------------------------------
+
+  Future<void> _signInWithGoogle() async {
+    if (_isGoogleLoading) return;
+    setState(() {
+      _isGoogleLoading = true;
+      _googleError = null;
+    });
+    try {
+      final account = await _googleSignIn.signIn();
+      if (account == null) {
+        // User cancelled.
+        setState(() => _isGoogleLoading = false);
+        return;
+      }
+      final auth = await account.authentication;
+      final idToken = auth.idToken;
+      if (idToken == null) throw Exception('No ID token from Google');
+
+      // Exchange Google ID token for a Hasura Auth session JWT.
+      final resp = await http.post(
+        Uri.parse('https://auth.ummat.dev/signin/provider/google'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'id_token': idToken}),
+      ).timeout(const Duration(seconds: 10));
+
+      if (resp.statusCode != 200) {
+        throw Exception('Auth failed (${resp.statusCode})');
+      }
+      final body = jsonDecode(resp.body) as Map<String, dynamic>;
+      final session = body['session'] as Map<String, dynamic>? ?? {};
+      final jwt = session['accessToken'] as String? ?? '';
+      final email = (session['user'] as Map<String, dynamic>?)?['email']
+              as String? ??
+          account.email;
+      final expiresIn = (session['accessTokenExpiresIn'] as num?)?.toInt() ??
+          86400;
+      final expiry = DateTime.now().add(Duration(seconds: expiresIn));
+
+      await _saveSession(jwt, expiry);
+      if (mounted) {
+        setState(() {
+          _isGoogleLoading = false;
+          _isSignedIn = true;
+          _signedInEmail = email;
+        });
+        Future.delayed(const Duration(seconds: 2), () {
+          if (mounted) context.go('/tv');
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isGoogleLoading = false;
+          _googleError = e.toString().replaceFirst('Exception: ', '');
+        });
+      }
+    }
   }
 
   // ---------------------------------------------------------------------------
@@ -585,6 +654,43 @@ class _TvPairingScreenState extends ConsumerState<TvPairingScreen>
           label: 'Generate new code',
           onPressed: _startDeviceFlow,
           outlined: true,
+        ),
+        const SizedBox(height: 32),
+
+        // Google sign-in divider
+        const Row(
+          children: [
+            Expanded(child: Divider(color: Colors.white24)),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              child: Text('or', style: TextStyle(color: Colors.white38, fontSize: 18)),
+            ),
+            Expanded(child: Divider(color: Colors.white24)),
+          ],
+        ),
+        const SizedBox(height: 24),
+
+        if (_googleError != null) ...[
+          Text(
+            _googleError!,
+            style: const TextStyle(color: Colors.redAccent, fontSize: 18),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 16),
+        ],
+
+        _isGoogleLoading
+            ? const CircularProgressIndicator(color: PrayCalcColors.mid)
+            : _focusableButton(
+                icon: Icons.account_circle_outlined,
+                label: 'Sign in with Google',
+                onPressed: _signInWithGoogle,
+              ),
+        const SizedBox(height: 8),
+        const Text(
+          'Uses your Google account on this TV — no phone needed',
+          style: TextStyle(color: Colors.white38, fontSize: 16),
+          textAlign: TextAlign.center,
         ),
       ],
     );
