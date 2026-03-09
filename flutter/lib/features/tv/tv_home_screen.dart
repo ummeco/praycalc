@@ -29,6 +29,7 @@ import 'tv_hadith_ticker.dart';
 import 'tv_geometric_pattern.dart';
 import 'tv_jumuah_overlay.dart';
 import 'tv_sky_background.dart';
+import 'tv_adhan_dua_overlay.dart';
 import 'tv_ayah_of_hour.dart';
 import 'tv_post_adhan_bar.dart';
 import 'tv_stream_library.dart';
@@ -82,6 +83,9 @@ class _TvHomeScreenState extends ConsumerState<TvHomeScreen> {
   /// Which prayers have been alerted today (prevents re-firing).
   final Set<String> _alertedToday = {};
   DateTime _lastAlertDate = DateTime.now();
+
+  // ── Post-adhan dua state (P-12) ────────────────────────────────────────────
+  bool _showDua = false;
 
   // ── Pre-prayer signal state (P-4) ─────────────────────────────────────────
   /// Prayer name for which the pre-signal is currently showing (null = none).
@@ -356,6 +360,7 @@ class _TvHomeScreenState extends ConsumerState<TvHomeScreen> {
     setState(() {
       _alertPrayer = null;
       _alertMode = TvAlertMode.none;
+      _showDua = true; // P-12: show post-adhan dua
     });
   }
 
@@ -672,6 +677,19 @@ class _TvHomeScreenState extends ConsumerState<TvHomeScreen> {
                           ),
                         ),
                       ),
+                    ),
+                  ],
+                );
+              }
+
+              // ── Post-adhan dua overlay (P-12) ────────────────────────
+              if (_showDua) {
+                body = Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    body,
+                    TvAdhanDuaOverlay(
+                      onDone: () => setState(() => _showDua = false),
                     ),
                   ],
                 );
