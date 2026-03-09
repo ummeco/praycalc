@@ -90,6 +90,20 @@ ThemeData _tvTheme() {
 }
 
 // ─── Entry point ───────────────────────────────────────────────────────────
+//
+// Fast boot flow (TV2-5.4):
+//   1. WidgetsFlutterBinding.ensureInitialized() — synchronous, no delay
+//   2. NotificationService.init() — background init, does not block UI
+//   3. loadLastCity() — reads SharedPreferences (cached city slug)
+//   4. Router initialLocation = '/' → TvHomeScreen renders immediately
+//   5. Prayer times provider reads from SharedPreferences cache on first
+//      build, shows cached times while network fetch resolves in background
+//   6. GPS location is fetched lazily by geolocator — never blocks first frame
+//   7. TV JWT token lives in flutter_secure_storage; the TV build does not
+//      show OnboardingScreen — pairing is handled by the separate TV pairing
+//      flow (TvPairingScreen) only when no token is present.
+//
+// Target: <2 s from cold launch to prayer times on screen (cached path).
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

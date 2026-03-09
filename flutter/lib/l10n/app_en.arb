@@ -999,5 +999,24 @@
       "city": { "type": "String" }
     }
   },
-  "pinUndo": "Undo"
+  "pinUndo": "Undo",
+
+  "tvPairingScanQr": "Scan TV QR Code",
+  "tvPairingScanInstruction": "Point your camera at the QR code on your TV",
+  "tvPairingEnterManually": "Enter code manually",
+  "tvPairingEnterCode": "Enter pairing code",
+  "tvPairingCodeHint": "6-character code shown on your TV",
+  "tvPairingNameThisTv": "Name this TV",
+  "tvPairingNameHint": "e.g. Living Room TV",
+  "tvPairingSuccess": "{name} paired!",
+  "@tvPairingSuccess": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "tvPairingSuccessSubtitle": "Your TV is now connected to your account.",
+  "tvPairingBackToMyTvs": "Back to My TVs",
+  "tvPairingTimeout": "Request timed out. Is the TV on and connected?",
+  "tvPairingServerError": "Could not connect to server.",
+  "tvPairingSignInRequired": "Sign in to your account before pairing a TV."
 }

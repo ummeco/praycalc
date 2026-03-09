@@ -1,24 +1,43 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/providers/tv_provider.dart';
+import '../../core/services/tv_audio_router.dart';
 import '../../core/theme/app_theme.dart';
 import '../../shared/models/tv_settings_model.dart';
 
 // ---------------------------------------------------------------------------
-// TvAdhanBubble — corner pill widget (TV2-8.1)
+// TvAdhanBubble — corner pill widget (TV2-8.1, TV2-8.4, TV2-8.5, TV2-8.7)
 // ---------------------------------------------------------------------------
 
 /// A small pill shown in a screen corner during/after adhan.
 ///
 /// Slides in from the nearest edge. Shows prayer emoji, prayer name, and a
-/// status line ("Adhan Now" or "Iqamah in MM:SS"). Pressing OK/Enter on the
-/// remote expands to the full overlay; Back/Escape dismisses it.
-class TvAdhanBubble extends StatefulWidget {
+/// status line that cycles through three phases:
+///
+/// 1. **Adhan phase** — "Adhan Now" (iqamahCountdown == null)
+/// 2. **Iqamah wait** — "Iqamah in MM:SS" (iqamahCountdown > 0)
+/// 3. **Iqamah time** — "Time to stand" for 30 s, then auto-dismisses
+///
+/// Pressing OK/Enter on the remote expands to the full overlay; Back/Escape
+/// dismisses the bubble.
+///
+/// Audio focus is requested on init based on the prayer's [TvMediaAction]
+/// config (TV2-8.4/8.5) and released when the bubble dismisses (TV2-8.4).
+///
+/// When [snoozed] is true the status line shows "Snoozed" to indicate the
+/// alert was re-shown after a snooze.
+class TvAdhanBubble extends ConsumerStatefulWidget {
   const TvAdhanBubble({
     super.key,
     required this.prayerName,
     required this.position,
+    this.iqamahMinutes = 15,
     this.iqamahCountdown,
+    this.snoozed = false,
     this.onDismiss,
     this.onExpand,
   });
@@ -29,8 +48,17 @@ class TvAdhanBubble extends StatefulWidget {
   /// Screen corner where the pill appears.
   final TvBubblePosition position;
 
-  /// Seconds remaining until iqamah. Null means adhan is playing now.
+  /// Iqamah wait time in minutes (default 15). Used to drive the internal
+  /// countdown when the parent does not supply [iqamahCountdown].
+  final int iqamahMinutes;
+
+  /// Seconds remaining until iqamah supplied by the parent. When null the
+  /// bubble is in adhan phase. When the parent drives this, the internal
+  /// countdown is not started.
   final int? iqamahCountdown;
+
+  /// When true the status line shows "Snoozed" instead of the normal text.
+  final bool snoozed;
 
   /// Called when the user dismisses the bubble without expanding.
   final VoidCallback? onDismiss;
@@ -39,35 +67,109 @@ class TvAdhanBubble extends StatefulWidget {
   final VoidCallback? onExpand;
 
   @override
-  State<TvAdhanBubble> createState() => _TvAdhanBubbleState();
+  ConsumerState<TvAdhanBubble> createState() => _TvAdhanBubbleState();
 }
 
-class _TvAdhanBubbleState extends State<TvAdhanBubble>
+/// Iqamah display phase.
+enum _IqamahPhase { adhan, countdown, stand }
+
+class _TvAdhanBubbleState extends ConsumerState<TvAdhanBubble>
     with SingleTickerProviderStateMixin {
-  late final AnimationController _controller;
+  late final AnimationController _slideController;
   late final Animation<Offset> _slideAnimation;
+
+  _IqamahPhase _phase = _IqamahPhase.adhan;
+
+  Timer? _countdownTicker;
+  Timer? _standDismissTimer;
 
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
+
+    _slideController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 400),
     );
     _slideAnimation = Tween<Offset>(
       begin: _slideBegin,
       end: Offset.zero,
-    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
-    _controller.forward();
+    ).animate(
+        CurvedAnimation(parent: _slideController, curve: Curves.easeOut));
+    _slideController.forward();
+
+    // Determine initial phase from parent-supplied countdown.
+    if (widget.iqamahCountdown != null) {
+      _phase = widget.iqamahCountdown! > 0
+          ? _IqamahPhase.countdown
+          : _IqamahPhase.stand;
+    }
+
+    // Request audio focus based on prayer's media action (TV2-8.4, TV2-8.5).
+    _applyMediaAction();
+  }
+
+  @override
+  void didUpdateWidget(TvAdhanBubble old) {
+    super.didUpdateWidget(old);
+
+    if (widget.iqamahCountdown != old.iqamahCountdown) {
+      final c = widget.iqamahCountdown;
+      if (c == null) {
+        _setPhase(_IqamahPhase.adhan);
+      } else if (c > 0) {
+        _setPhase(_IqamahPhase.countdown);
+      } else {
+        _setPhase(_IqamahPhase.stand);
+      }
+    }
+  }
+
+  void _setPhase(_IqamahPhase phase) {
+    if (_phase == phase) return;
+    setState(() => _phase = phase);
+    if (phase == _IqamahPhase.stand) {
+      _startStandDismissTimer();
+    }
+  }
+
+  /// Starts the 30 s auto-dismiss after iqamah time arrives.
+  void _startStandDismissTimer() {
+    _standDismissTimer?.cancel();
+    _standDismissTimer =
+        Timer(const Duration(seconds: 30), _dismissWithFocusRelease);
+  }
+
+  Future<void> _applyMediaAction() async {
+    final tvSettings = ref.read(tvSettingsProvider);
+    final config = tvSettings.prayerAlertConfigs[widget.prayerName];
+    final action = config?.mediaAction ?? TvMediaAction.pause;
+
+    switch (action) {
+      case TvMediaAction.pause:
+        await TvAudioRouter.requestTransientFocus();
+      case TvMediaAction.duck:
+        await TvAudioRouter.duckAudio();
+      case TvMediaAction.nothing:
+        break;
+    }
+  }
+
+  void _dismissWithFocusRelease() {
+    _countdownTicker?.cancel();
+    _standDismissTimer?.cancel();
+    TvAudioRouter.releaseFocus();
+    widget.onDismiss?.call();
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    _slideController.dispose();
+    _countdownTicker?.cancel();
+    _standDismissTimer?.cancel();
     super.dispose();
   }
 
-  /// Slide-in direction: pills enter from the closest screen edge.
   Offset get _slideBegin {
     switch (widget.position) {
       case TvBubblePosition.topLeft:
@@ -101,10 +203,26 @@ class _TvAdhanBubbleState extends State<TvAdhanBubble>
   }
 
   String get _statusText {
-    if (widget.iqamahCountdown == null) return 'Adhan Now';
-    final m = widget.iqamahCountdown! ~/ 60;
-    final s = widget.iqamahCountdown! % 60;
-    return 'Iqamah in ${m.toString().padLeft(2, '0')}:${s.toString().padLeft(2, '0')}';
+    if (widget.snoozed) return 'Snoozed';
+
+    switch (_phase) {
+      case _IqamahPhase.adhan:
+        return 'Adhan Now';
+      case _IqamahPhase.countdown:
+        final seconds = widget.iqamahCountdown ?? 0;
+        final m = seconds ~/ 60;
+        final s = seconds % 60;
+        return 'Iqamah in '
+            '${m.toString().padLeft(2, '0')}:'
+            '${s.toString().padLeft(2, '0')}';
+      case _IqamahPhase.stand:
+        return 'Time to stand for prayer';
+    }
+  }
+
+  Color get _statusColor {
+    if (_phase == _IqamahPhase.stand) return PrayCalcColors.light;
+    return PrayCalcColors.light;
   }
 
   @override
@@ -121,7 +239,7 @@ class _TvAdhanBubbleState extends State<TvAdhanBubble>
             }
             if (event.logicalKey == LogicalKeyboardKey.escape ||
                 event.logicalKey == LogicalKeyboardKey.goBack) {
-              widget.onDismiss?.call();
+              _dismissWithFocusRelease();
               return KeyEventResult.handled;
             }
           }
@@ -175,7 +293,7 @@ class _TvAdhanBubbleState extends State<TvAdhanBubble>
                         Text(
                           _statusText,
                           style: TextStyle(
-                            color: PrayCalcColors.light,
+                            color: _statusColor,
                             fontSize: 14,
                           ),
                         ),
@@ -213,6 +331,7 @@ class TvAdhanBubbleOverlay extends StatelessWidget {
     this.prayerName,
     this.position = TvBubblePosition.topRight,
     this.iqamahCountdown,
+    this.snoozed = false,
     this.onDismiss,
     this.onExpand,
   });
@@ -227,6 +346,9 @@ class TvAdhanBubbleOverlay extends StatelessWidget {
 
   /// Seconds until iqamah. Null = adhan is live now.
   final int? iqamahCountdown;
+
+  /// When true the bubble shows "Snoozed" label.
+  final bool snoozed;
 
   final VoidCallback? onDismiss;
   final VoidCallback? onExpand;
@@ -265,6 +387,7 @@ class TvAdhanBubbleOverlay extends StatelessWidget {
                 prayerName: prayerName!,
                 position: position,
                 iqamahCountdown: iqamahCountdown,
+                snoozed: snoozed,
                 onDismiss: onDismiss,
                 onExpand: onExpand,
               ),

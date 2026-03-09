@@ -717,5 +717,19 @@
   "smartHomePairTvFailed": "टीवी जोड़ना विफल",
   "smartHomeLoadingDevices": "डिवाइस लोड हो रहे हैं...",
   "smartHomeLoadingIntegrations": "इंटीग्रेशन लोड हो रहे हैं...",
-  "smartHomeServiceUnavailable": "स्मार्ट होम सेवा वर्तमान में उपलब्ध नहीं है। कृपया बाद में पुनः प्रयास करें।"
+  "smartHomeServiceUnavailable": "स्मार्ट होम सेवा वर्तमान में उपलब्ध नहीं है। कृपया बाद में पुनः प्रयास करें।",
+
+  "tvPairingScanQr": "Scan TV QR Code",
+  "tvPairingScanInstruction": "Point your camera at the QR code on your TV",
+  "tvPairingEnterManually": "Enter code manually",
+  "tvPairingEnterCode": "Enter pairing code",
+  "tvPairingCodeHint": "6-character code shown on your TV",
+  "tvPairingNameThisTv": "Name this TV",
+  "tvPairingNameHint": "e.g. Living Room TV",
+  "tvPairingSuccess": "{name} paired!",
+  "tvPairingSuccessSubtitle": "Your TV is now connected to your account.",
+  "tvPairingBackToMyTvs": "Back to My TVs",
+  "tvPairingTimeout": "Request timed out. Is the TV on and connected?",
+  "tvPairingServerError": "Could not connect to server.",
+  "tvPairingSignInRequired": "Sign in to your account before pairing a TV."
 }

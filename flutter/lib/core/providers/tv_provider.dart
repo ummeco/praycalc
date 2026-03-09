@@ -85,6 +85,180 @@ class TvSettingsNotifier extends Notifier<TvSettings> {
         state.announcements.where((a) => a.id != id).toList();
     return update(state.copyWith(announcements: list));
   }
+
+  // ---------------------------------------------------------------------------
+  // Layout setters (TV2-1.9)
+  // ---------------------------------------------------------------------------
+
+  Future<void> setLayoutSettings(TvLayoutSettings v) =>
+      update(state.copyWith(layoutSettings: v));
+
+  // ---------------------------------------------------------------------------
+  // Per-prayer alert config setters (TV2-8.x)
+  // ---------------------------------------------------------------------------
+
+  Future<void> setPrayerAlertConfig(
+      String prayer, TvPrayerAlertConfig config) {
+    final configs =
+        Map<String, TvPrayerAlertConfig>.from(state.prayerAlertConfigs);
+    configs[prayer] = config;
+    return update(state.copyWith(prayerAlertConfigs: configs));
+  }
+
+  Future<void> setGlobalAudioMode(TvAudioMode v) =>
+      update(state.copyWith(globalAudioMode: v));
+
+  Future<void> setDefaultBubblePosition(TvBubblePosition v) =>
+      update(state.copyWith(defaultBubblePosition: v));
+
+  // ---------------------------------------------------------------------------
+  // Kiosk mode setters (TV2-11.x)
+  // ---------------------------------------------------------------------------
+
+  Future<void> setKioskMode(bool v) =>
+      update(state.copyWith(kioskMode: v));
+
+  Future<void> setKioskPinHash(String v) =>
+      update(state.copyWith(kioskPinHash: v));
+
+  // ---------------------------------------------------------------------------
+  // Audio / stream setters (TV2-4.x)
+  // ---------------------------------------------------------------------------
+
+  Future<void> setTvAudioMode(String v) =>
+      update(state.copyWith(tvAudioMode: v));
+
+  Future<void> setSelectedStreamId(String v) =>
+      update(state.copyWith(selectedStreamId: v));
+
+  Future<void> setSelectedReciterId(String v) =>
+      update(state.copyWith(selectedReciterId: v));
+
+  Future<void> setQuranPlaybackMode(QuranPlaybackMode v) =>
+      update(state.copyWith(quranPlaybackMode: v));
+
+  Future<void> setQuranSpecificSurah(int? v) =>
+      update(state.copyWith(quranSpecificSurah: v));
+
+  // ---------------------------------------------------------------------------
+  // Donation QR setters (TV2-11.4)
+  // ---------------------------------------------------------------------------
+
+  Future<void> setDonationQrMode(String v) =>
+      update(state.copyWith(donationQrMode: v));
+
+  Future<void> setDonationQrUrl(String? v) =>
+      update(state.copyWith(donationQrUrl: v));
+
+  // ---------------------------------------------------------------------------
+  // Brightness schedule setters (TV2-6.x)
+  // ---------------------------------------------------------------------------
+
+  Future<void> setBrightnessSchedule(List<TvBrightnessRule> v) =>
+      update(state.copyWith(brightnessSchedule: v));
+
+  Future<void> setPrayerBrightnessOverride(String prayer, int brightness) {
+    final overrides = Map<String, int>.from(state.prayerBrightnessOverrides);
+    overrides[prayer] = brightness.clamp(0, 100);
+    return update(state.copyWith(prayerBrightnessOverrides: overrides));
+  }
+
+  Future<void> clearPrayerBrightnessOverride(String prayer) {
+    final overrides = Map<String, int>.from(state.prayerBrightnessOverrides);
+    overrides.remove(prayer);
+    return update(state.copyWith(prayerBrightnessOverrides: overrides));
+  }
+
+  // ---------------------------------------------------------------------------
+  // Jumu'ah + second timezone setters (TV2-9.2, TV2-9.7)
+  // ---------------------------------------------------------------------------
+
+  Future<void> setJumuahKhutbahTime(int hour, int minute) => update(
+        state.copyWith(
+          jumuahKhutbahHour: hour.clamp(0, 23),
+          jumuahKhutbahMinute: minute.clamp(0, 59),
+        ),
+      );
+
+  Future<void> setSecondCity(String? slug, String? timeZone) => update(
+        state.copyWith(secondCitySlug: slug, secondCityTimeZone: timeZone),
+      );
+
+  // ---------------------------------------------------------------------------
+  // Info bar config setters (TV2-2.5)
+  // ---------------------------------------------------------------------------
+
+  Future<void> setInfoBarConfig(TvInfoBarConfig v) =>
+      update(state.copyWith(infoBarConfig: v));
+
+  // ---------------------------------------------------------------------------
+  // Night mode / brightness setters (TV2-6.5)
+  // ---------------------------------------------------------------------------
+
+  Future<void> setNightModeEnabled(bool v) =>
+      update(state.copyWith(nightModeEnabled: v));
+
+  Future<void> setCurrentBrightness(int v) =>
+      update(state.copyWith(currentBrightness: v.clamp(0, 100)));
+
+  // ---------------------------------------------------------------------------
+  // Photo source / categories setters (TV2-7.5)
+  // ---------------------------------------------------------------------------
+
+  Future<void> setPhotoSource(String v) =>
+      update(state.copyWith(photoSource: v));
+
+  Future<void> setPhotoCategories(List<String> v) =>
+      update(state.copyWith(photoCategories: v));
+
+  // ---------------------------------------------------------------------------
+  // Slideshow timing setters (TV2-7.6)
+  // ---------------------------------------------------------------------------
+
+  Future<void> setSlideshowDurationSeconds(int v) =>
+      update(state.copyWith(slideshowDurationSeconds: v));
+
+  Future<void> setSlideshowTransition(String v) =>
+      update(state.copyWith(slideshowTransition: v));
+
+  // ---------------------------------------------------------------------------
+  // Overlay density setter (TV2-7.8)
+  // ---------------------------------------------------------------------------
+
+  Future<void> setOverlayDensity(String v) =>
+      update(state.copyWith(overlayDensity: v));
+
+  // ---------------------------------------------------------------------------
+  // Screensaver idle timeout setter (TV2-7.9)
+  // ---------------------------------------------------------------------------
+
+  Future<void> setScreensaverIdleSeconds(int v) =>
+      update(state.copyWith(screensaverIdleSeconds: v));
+
+  // ---------------------------------------------------------------------------
+  // Custom stream setters (TV2-3.5)
+  // ---------------------------------------------------------------------------
+
+  Future<void> addCustomStream(TvCustomStream s) {
+    final list = [...state.customStreams, s];
+    return update(state.copyWith(customStreams: list));
+  }
+
+  Future<void> removeCustomStream(String id) {
+    final list = state.customStreams.where((s) => s.id != id).toList();
+    return update(state.copyWith(customStreams: list));
+  }
+
+  // ---------------------------------------------------------------------------
+  // TV2-11.3 — Kiosk layout enforcement
+  // ---------------------------------------------------------------------------
+
+  /// Returns the effective layout preset, forcing [TvLayoutPreset.masjid]
+  /// when kiosk mode is active.
+  TvLayoutPreset get effectiveLayoutPreset {
+    if (state.kioskMode) return TvLayoutPreset.masjid;
+    return state.layoutSettings.preset;
+  }
 }
 
 /// Provider for TV settings.

@@ -6,10 +6,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hijri/hijri_calendar.dart';
 
 import '../../core/models/alert_config.dart';
+import '../../core/providers/tv_provider.dart';
 import '../../core/services/adhan_service.dart';
 import '../../core/services/media_pause_service.dart';
+import '../../core/services/tv_adhan_audio_coordinator.dart';
+import '../../core/services/tv_audio_router.dart';
 import '../../core/theme/app_theme.dart';
 import '../../shared/models/notification_model.dart';
+import '../../shared/models/tv_settings_model.dart';
 
 /// Full-screen or corner adhan alert overlay for TV.
 ///
@@ -21,6 +25,10 @@ import '../../shared/models/notification_model.dart';
 /// Plays adhan audio (or beep) based on [PrayerAlertConfig], auto-dismisses
 /// after the configured duration, and responds to remote control OK/Select
 /// button for early dismissal.
+///
+/// TV2-8.8: modal mode shows Snooze 5 min / Snooze 10 min buttons. On snooze
+/// the overlay dismisses and re-shows as a bubble after the delay via
+/// [onSnooze].
 class TvAdhanOverlay extends ConsumerStatefulWidget {
   const TvAdhanOverlay({
     super.key,
@@ -28,6 +36,7 @@ class TvAdhanOverlay extends ConsumerStatefulWidget {
     required this.prayerTimeFormatted,
     required this.config,
     required this.onDismiss,
+    this.onSnooze,
   });
 
   /// Display name of the prayer (e.g. "Fajr", "Maghrib").
@@ -42,6 +51,10 @@ class TvAdhanOverlay extends ConsumerStatefulWidget {
   /// Called when the overlay should be removed (auto-dismiss or user dismiss).
   final VoidCallback onDismiss;
 
+  /// Called when the user snoozes. [delay] is how long to wait before
+  /// re-showing the alert as a bubble. Null if snooze is not supported.
+  final void Function(Duration delay)? onSnooze;
+
   @override
   ConsumerState<TvAdhanOverlay> createState() => _TvAdhanOverlayState();
 }
@@ -49,6 +62,7 @@ class TvAdhanOverlay extends ConsumerStatefulWidget {
 class _TvAdhanOverlayState extends ConsumerState<TvAdhanOverlay>
     with SingleTickerProviderStateMixin {
   Timer? _dismissTimer;
+  Timer? _snoozeTimer;
   final _focusNode = FocusNode();
   late final AnimationController _fadeController;
   late final Animation<double> _fadeAnimation;
@@ -67,11 +81,11 @@ class _TvAdhanOverlayState extends ConsumerState<TvAdhanOverlay>
     );
     _fadeController.forward();
 
-    // Play audio based on config.
-    _playAudio();
+    // Audio routing based on media action config (TV2-8.4, TV2-8.5).
+    _handleMediaAction();
 
-    // Request media pause if enabled.
-    _requestMediaPause();
+    // Play audio based on config (TV2-4.6: coordinator handles fade + focus).
+    _playAudio();
 
     // Start auto-dismiss timer.
     if (widget.config.autoDismiss) {
@@ -82,7 +96,34 @@ class _TvAdhanOverlayState extends ConsumerState<TvAdhanOverlay>
     }
   }
 
+  Future<void> _handleMediaAction() async {
+    final tvSettings = ref.read(tvSettingsProvider);
+    final prayerConfig = tvSettings.prayerAlertConfigs[widget.prayerName];
+    final mediaAction = prayerConfig?.mediaAction ?? TvMediaAction.pause;
+
+    switch (mediaAction) {
+      case TvMediaAction.pause:
+        await TvAudioRouter.requestTransientFocus();
+        final alertSettings = ref.read(alertSettingsProvider);
+        if (alertSettings.mediaPauseEnabled) {
+          MediaPauseService.instance.pauseForAdhan(
+            duration: Duration(seconds: widget.config.durationSeconds),
+          );
+        }
+      case TvMediaAction.duck:
+        await TvAudioRouter.duckAudio();
+      case TvMediaAction.nothing:
+        break;
+    }
+  }
+
   Future<void> _playAudio() async {
+    final tvSettings = ref.read(tvSettingsProvider);
+    final audioMode = tvSettings.tvAudioMode;
+
+    // Coordinator handles fade-out + focus before adhan (TV2-4.6).
+    await TvAdhanAudioCoordinator.onAdhanStart(audioMode: audioMode);
+
     switch (widget.config.audioType) {
       case AlertAudioType.adhan:
         await AdhanService.instance.play(AdhanType.makkah);
@@ -93,26 +134,34 @@ class _TvAdhanOverlayState extends ConsumerState<TvAdhanOverlay>
     }
   }
 
-  void _requestMediaPause() {
-    final alertSettings = ref.read(alertSettingsProvider);
-    if (alertSettings.mediaPauseEnabled) {
-      MediaPauseService.instance.pauseForAdhan(
-        duration: Duration(seconds: widget.config.durationSeconds),
-      );
-    }
-  }
-
   void _dismiss() {
     _dismissTimer?.cancel();
+    _snoozeTimer?.cancel();
     AdhanService.instance.fadeOut();
+    // Release focus and fade audio back in (TV2-4.6).
+    TvAdhanAudioCoordinator.onAdhanEnd();
     _fadeController.reverse().then((_) {
       if (mounted) widget.onDismiss();
+    });
+  }
+
+  void _snooze(Duration delay) {
+    _dismissTimer?.cancel();
+    _snoozeTimer?.cancel();
+    AdhanService.instance.fadeOut();
+    TvAdhanAudioCoordinator.onAdhanEnd();
+    _fadeController.reverse().then((_) {
+      if (mounted) {
+        widget.onDismiss();
+        widget.onSnooze?.call(delay);
+      }
     });
   }
 
   @override
   void dispose() {
     _dismissTimer?.cancel();
+    _snoozeTimer?.cancel();
     _fadeController.dispose();
     _focusNode.dispose();
     super.dispose();
@@ -143,6 +192,7 @@ class _TvAdhanOverlayState extends ConsumerState<TvAdhanOverlay>
                 prayerName: widget.prayerName,
                 prayerTime: widget.prayerTimeFormatted,
                 onDismiss: _dismiss,
+                onSnooze: widget.onSnooze != null ? _snooze : null,
               ),
       ),
     );
@@ -156,11 +206,15 @@ class _ModalAlert extends StatelessWidget {
     required this.prayerName,
     required this.prayerTime,
     required this.onDismiss,
+    this.onSnooze,
   });
 
   final String prayerName;
   final String prayerTime;
   final VoidCallback onDismiss;
+
+  /// When non-null, snooze buttons are shown. Called with the chosen delay.
+  final void Function(Duration delay)? onSnooze;
 
   @override
   Widget build(BuildContext context) {
@@ -170,63 +224,72 @@ class _ModalAlert extends StatelessWidget {
       onTap: onDismiss,
       child: Container(
         color: Colors.black.withAlpha(220),
-        child: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Prayer icon
-              const Icon(
-                Icons.mosque,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // ── Main content ──
+            const Icon(
+              Icons.mosque,
+              color: PrayCalcColors.light,
+              size: 80,
+            ),
+            const SizedBox(height: 24),
+            Text(
+              prayerName,
+              style: const TextStyle(
                 color: PrayCalcColors.light,
-                size: 80,
+                fontSize: 72,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 2,
               ),
-              const SizedBox(height: 24),
-
-              // Prayer name
+            ),
+            const SizedBox(height: 16),
+            Text(
+              prayerTime,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 56,
+                fontWeight: FontWeight.w300,
+                fontFeatures: [FontFeature.tabularFigures()],
+              ),
+            ),
+            const SizedBox(height: 24),
+            if (hijri.isNotEmpty)
               Text(
-                prayerName,
+                hijri,
                 style: const TextStyle(
-                  color: PrayCalcColors.light,
-                  fontSize: 72,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 2,
+                  color: Colors.white54,
+                  fontSize: 28,
                 ),
               ),
-              const SizedBox(height: 16),
-
-              // Prayer time
-              Text(
-                prayerTime,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 56,
-                  fontWeight: FontWeight.w300,
-                  fontFeatures: [FontFeature.tabularFigures()],
-                ),
+            const SizedBox(height: 48),
+            Text(
+              'Press OK to dismiss',
+              style: TextStyle(
+                color: Colors.white.withAlpha(80),
+                fontSize: 20,
               ),
-              const SizedBox(height: 24),
+            ),
 
-              // Hijri date
-              if (hijri.isNotEmpty)
-                Text(
-                  hijri,
-                  style: const TextStyle(
-                    color: Colors.white54,
-                    fontSize: 28,
+            // ── Snooze buttons (TV2-8.8) ──
+            if (onSnooze != null) ...[
+              const SizedBox(height: 32),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  _SnoozeButton(
+                    label: 'Snooze 5 min',
+                    onTap: () => onSnooze!(const Duration(minutes: 5)),
                   ),
-                ),
-              const SizedBox(height: 48),
-
-              // Dismiss hint
-              Text(
-                'Press OK to dismiss',
-                style: TextStyle(
-                  color: Colors.white.withAlpha(80),
-                  fontSize: 20,
-                ),
+                  const SizedBox(width: 24),
+                  _SnoozeButton(
+                    label: 'Snooze 10 min',
+                    onTap: () => onSnooze!(const Duration(minutes: 10)),
+                  ),
+                ],
               ),
             ],
-          ),
+          ],
         ),
       ),
     );
@@ -244,6 +307,70 @@ class _ModalAlert extends StatelessWidget {
     } catch (_) {
       return '';
     }
+  }
+}
+
+// ── Snooze button (TV2-8.8) ────────────────────────────────────────────────
+
+class _SnoozeButton extends StatefulWidget {
+  const _SnoozeButton({required this.label, required this.onTap});
+
+  final String label;
+  final VoidCallback onTap;
+
+  @override
+  State<_SnoozeButton> createState() => _SnoozeButtonState();
+}
+
+class _SnoozeButtonState extends State<_SnoozeButton> {
+  bool _focused = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Focus(
+      onFocusChange: (f) => setState(() => _focused = f),
+      onKeyEvent: (_, event) {
+        if (event is KeyDownEvent &&
+            (event.logicalKey == LogicalKeyboardKey.select ||
+                event.logicalKey == LogicalKeyboardKey.enter)) {
+          widget.onTap();
+          return KeyEventResult.handled;
+        }
+        return KeyEventResult.ignored;
+      },
+      child: GestureDetector(
+        onTap: widget.onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 150),
+          padding:
+              const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
+          decoration: BoxDecoration(
+            color: _focused
+                ? PrayCalcColors.dark
+                : Colors.white.withAlpha(20),
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(
+              color: _focused ? PrayCalcColors.light : Colors.white38,
+              width: _focused ? 2 : 1,
+            ),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(Icons.snooze, color: Colors.white70, size: 20),
+              const SizedBox(width: 10),
+              Text(
+                widget.label,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
 

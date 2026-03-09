@@ -2179,4 +2179,49 @@ class AppLocalizationsSw extends AppLocalizations {
 
   @override
   String get pinUndo => 'Tendua';
+
+  @override
+  String get tvPairingScanQr => 'Scan TV QR Code';
+
+  @override
+  String get tvPairingScanInstruction =>
+      'Point your camera at the QR code on your TV';
+
+  @override
+  String get tvPairingEnterManually => 'Enter code manually';
+
+  @override
+  String get tvPairingEnterCode => 'Enter pairing code';
+
+  @override
+  String get tvPairingCodeHint => '6-character code shown on your TV';
+
+  @override
+  String get tvPairingNameThisTv => 'Name this TV';
+
+  @override
+  String get tvPairingNameHint => 'e.g. Living Room TV';
+
+  @override
+  String tvPairingSuccess(String name) {
+    return '$name paired!';
+  }
+
+  @override
+  String get tvPairingSuccessSubtitle =>
+      'Your TV is now connected to your account.';
+
+  @override
+  String get tvPairingBackToMyTvs => 'Back to My TVs';
+
+  @override
+  String get tvPairingTimeout =>
+      'Request timed out. Is the TV on and connected?';
+
+  @override
+  String get tvPairingServerError => 'Could not connect to server.';
+
+  @override
+  String get tvPairingSignInRequired =>
+      'Sign in to your account before pairing a TV.';
 }

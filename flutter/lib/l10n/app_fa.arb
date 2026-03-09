@@ -710,5 +710,19 @@
   "smartHomePairTvFailed": "جفت‌سازی تلویزیون ناموفق بود",
   "smartHomeLoadingDevices": "در حال بارگذاری دستگاه‌ها...",
   "smartHomeLoadingIntegrations": "در حال بارگذاری یکپارچه‌سازی‌ها...",
-  "smartHomeServiceUnavailable": "سرویس خانه هوشمند در حال حاضر در دسترس نیست. لطفاً بعداً دوباره تلاش کنید."
+  "smartHomeServiceUnavailable": "سرویس خانه هوشمند در حال حاضر در دسترس نیست. لطفاً بعداً دوباره تلاش کنید.",
+
+  "tvPairingScanQr": "Scan TV QR Code",
+  "tvPairingScanInstruction": "Point your camera at the QR code on your TV",
+  "tvPairingEnterManually": "Enter code manually",
+  "tvPairingEnterCode": "Enter pairing code",
+  "tvPairingCodeHint": "6-character code shown on your TV",
+  "tvPairingNameThisTv": "Name this TV",
+  "tvPairingNameHint": "e.g. Living Room TV",
+  "tvPairingSuccess": "{name} paired!",
+  "tvPairingSuccessSubtitle": "Your TV is now connected to your account.",
+  "tvPairingBackToMyTvs": "Back to My TVs",
+  "tvPairingTimeout": "Request timed out. Is the TV on and connected?",
+  "tvPairingServerError": "Could not connect to server.",
+  "tvPairingSignInRequired": "Sign in to your account before pairing a TV."
 }

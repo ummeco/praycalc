@@ -9,13 +9,24 @@ import 'package:pray_calc_dart/pray_calc_dart.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
 import '../../core/providers/prayer_provider.dart';
-import '../../core/router/app_router.dart';
 import '../../core/providers/ramadan_provider.dart';
 import '../../core/providers/settings_provider.dart';
+import '../../core/providers/tv_provider.dart';
 import '../../core/providers/weather_provider.dart';
+import '../../core/router/app_router.dart';
+import '../../core/services/media_pause_service.dart';
+import '../../core/services/tv_launcher_service.dart';
 import '../../core/theme/app_theme.dart';
 import '../../shared/models/moon_phase.dart';
 import '../../shared/models/settings_model.dart';
+import '../../shared/models/tv_settings_model.dart';
+import 'tv_adhan_bubble.dart';
+import 'tv_announcement_overlay.dart';
+import 'tv_eid_overlay.dart';
+import 'tv_jumuah_overlay.dart';
+import 'tv_post_adhan_bar.dart';
+import 'tv_stream_library.dart';
+import 'tv_stream_player.dart';
 
 // ─── Prayer metadata (shared with home_screen pattern) ─────────────────────
 
@@ -57,12 +68,43 @@ class _TvHomeScreenState extends ConsumerState<TvHomeScreen> {
   final _focusNode = FocusNode();
   DateTime _now = DateTime.now();
 
+  // ── Adhan alert state ──────────────────────────────────────────────────────
+  /// Prayer currently firing an alert (null = none active).
+  String? _alertPrayer;
+  /// Alert mode for the active prayer (controls overlay vs bubble).
+  TvAlertMode _alertMode = TvAlertMode.none;
+  /// Which prayers have been alerted today (prevents re-firing).
+  final Set<String> _alertedToday = {};
+  DateTime _lastAlertDate = DateTime.now();
+
+  // ── Snooze state ───────────────────────────────────────────────────────────
+  Timer? _snoozeTimer;
+
+  // ── Post-adhan iqamah bar state ────────────────────────────────────────────
+  String? _iqamahPrayer;
+  int _iqamahSecondsRemaining = 0;
+  Timer? _iqamahTimer;
+
+  // ── Stream mute state (TV2-3.6) ────────────────────────────────────────────
+  bool _streamMuted = false;
+  bool _muteButtonVisible = false;
+  Timer? _muteButtonHideTimer;
+
+  // ── Triple back-press escape (TV2-5.3) ────────────────────────────────────
+  final List<DateTime> _backPresses = [];
+  OverlayEntry? _exitHintOverlay;
+
+  // ── Idle / ambient timer (TV2-7.9) ────────────────────────────────────────
+  DateTime _lastKeyEvent = DateTime.now();
+
   @override
   void initState() {
     super.initState();
     WakelockPlus.enable();
     _ticker = Timer.periodic(const Duration(seconds: 1), (_) {
       setState(() => _now = DateTime.now());
+      _checkPrayerAlerts();
+      _checkIdleAmbient();
     });
   }
 
@@ -70,9 +112,72 @@ class _TvHomeScreenState extends ConsumerState<TvHomeScreen> {
   void dispose() {
     _ticker.cancel();
     _focusNode.dispose();
+    _snoozeTimer?.cancel();
+    _iqamahTimer?.cancel();
+    _muteButtonHideTimer?.cancel();
+    _exitHintOverlay?.remove();
     WakelockPlus.disable();
     super.dispose();
   }
+
+  // ─── Triple back-press escape (TV2-5.3) ───────────────────────────────────
+
+  Future<void> _onBackInvoked() async {
+    final now = DateTime.now();
+    _backPresses.removeWhere(
+      (t) => now.difference(t) > const Duration(seconds: 2),
+    );
+    _backPresses.add(now);
+    if (_backPresses.length >= 3) {
+      _backPresses.clear();
+      _hideExitHint();
+      try {
+        await TvLauncherService.launchStockLauncher();
+      } catch (_) {
+        // Channel not available on non-TV builds — safe to ignore.
+      }
+    } else {
+      _showExitHint();
+    }
+  }
+
+  void _showExitHint() {
+    _hideExitHint();
+    final overlay = Overlay.of(context);
+    _exitHintOverlay = OverlayEntry(
+      builder: (_) => Positioned(
+        bottom: 48,
+        left: 0,
+        right: 0,
+        child: Center(
+          child: Material(
+            color: Colors.transparent,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 12),
+              decoration: BoxDecoration(
+                color: PrayCalcColors.deep.withAlpha(230),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: PrayCalcColors.mid, width: 1),
+              ),
+              child: const Text(
+                'Press back 3\u00d7 to exit',
+                style: TextStyle(color: Colors.white, fontSize: 22),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+    overlay.insert(_exitHintOverlay!);
+    Future.delayed(const Duration(seconds: 2), _hideExitHint);
+  }
+
+  void _hideExitHint() {
+    _exitHintOverlay?.remove();
+    _exitHintOverlay = null;
+  }
+
+  // ─── Helpers ──────────────────────────────────────────────────────────────
 
   double get _nowH =>
       _now.hour + _now.minute / 60.0 + _now.second / 3600.0;
@@ -93,7 +198,7 @@ class _TvHomeScreenState extends ConsumerState<TvHomeScreen> {
       if (!h.isFinite) continue;
       if (h > _nowH) return i;
     }
-    return 0; // wrap to Fajr
+    return 0;
   }
 
   String _countdownString(PrayerTimes times, int nextIdx) {
@@ -110,33 +215,228 @@ class _TvHomeScreenState extends ConsumerState<TvHomeScreen> {
         '${ss.toString().padLeft(2, '0')}';
   }
 
+  String _formatH(double h, bool use24h) {
+    final totalMin = (h * 60).round();
+    final hh = (totalMin ~/ 60) % 24;
+    final mm = totalMin % 60;
+    if (use24h) {
+      return '${hh.toString().padLeft(2, '0')}:${mm.toString().padLeft(2, '0')}';
+    }
+    final period = hh >= 12 ? 'PM' : 'AM';
+    final h12 = hh % 12 == 0 ? 12 : hh % 12;
+    return '$h12:${mm.toString().padLeft(2, '0')} $period';
+  }
+
+  // ─── Adhan alert controller (TV2-8.1, TV2-8.4, TV2-8.5, TV2-8.7) ─────────
+
+  void _checkPrayerAlerts() {
+    // Reset alerted set at midnight.
+    if (_now.day != _lastAlertDate.day) {
+      _alertedToday.clear();
+      _lastAlertDate = _now;
+    }
+
+    final timesAsync = ref.read(prayerTimesProvider);
+    final tvSettings = ref.read(tvSettingsProvider);
+
+    timesAsync.whenData((times) {
+      final prayerMap = <String, double>{
+        'Fajr': times.fajr,
+        'Dhuhr': times.dhuhr,
+        'Asr': times.asr,
+        'Maghrib': times.maghrib,
+        'Isha': times.isha,
+      };
+
+      for (final entry in prayerMap.entries) {
+        final prayer = entry.key;
+        final timeH = entry.value;
+
+        if (_alertedToday.contains(prayer)) continue;
+        if (!timeH.isFinite) continue;
+
+        // Fire within a 30-second window of the prayer time.
+        final diffSeconds = ((_nowH - timeH) * 3600).round();
+        if (diffSeconds >= 0 && diffSeconds < 30) {
+          _alertedToday.add(prayer);
+          _fireAlert(prayer, timeH, tvSettings);
+        }
+      }
+    });
+  }
+
+  void _fireAlert(String prayer, double timeH, TvSettings tvSettings) {
+    final config = tvSettings.prayerAlertConfigs[prayer] ??
+        const TvPrayerAlertConfig();
+
+    if (config.alertMode == TvAlertMode.none) return;
+
+    // Handle media action.
+    _applyMediaAction(config.mediaAction);
+
+    setState(() {
+      _alertPrayer = prayer;
+      _alertMode = config.alertMode;
+    });
+
+    // Auto-dismiss after configured duration.
+    if (config.autoDismissSeconds > 0) {
+      Future.delayed(Duration(seconds: config.autoDismissSeconds), () {
+        if (mounted && _alertPrayer == prayer) {
+          _dismissAlert(prayer, tvSettings);
+        }
+      });
+    }
+  }
+
+  void _applyMediaAction(TvMediaAction action) {
+    switch (action) {
+      case TvMediaAction.pause:
+        MediaPauseService.instance.requestAudioFocus();
+      case TvMediaAction.duck:
+        MediaPauseService.instance.duckMedia();
+      case TvMediaAction.nothing:
+        break;
+    }
+  }
+
+  void _dismissAlert(String prayer, TvSettings tvSettings) {
+    MediaPauseService.instance.releaseAudioFocus();
+    _startIqamahCountdown(prayer, tvSettings);
+    setState(() {
+      _alertPrayer = null;
+      _alertMode = TvAlertMode.none;
+    });
+  }
+
+  void _snooze(String prayer, int minutes, TvSettings tvSettings) {
+    // Dismiss current alert.
+    setState(() {
+      _alertPrayer = null;
+      _alertMode = TvAlertMode.none;
+    });
+    // Re-show bubble after snooze duration.
+    _snoozeTimer?.cancel();
+    _snoozeTimer = Timer(Duration(minutes: minutes), () {
+      if (mounted) {
+        setState(() {
+          _alertPrayer = prayer;
+          _alertMode = TvAlertMode.bubble;
+        });
+      }
+    });
+  }
+
+  // ─── Iqamah countdown (TV2-8.7, TV2-8.9) ──────────────────────────────────
+
+  void _startIqamahCountdown(String prayer, TvSettings tvSettings) {
+    final iqamahTimes = ref.read(iqamahTimesProvider);
+    final iqamahH = iqamahTimes[prayer];
+    if (iqamahH == null) return;
+
+    final diffSeconds = ((iqamahH - _nowH) * 3600).round();
+    if (diffSeconds <= 0) return;
+
+    _iqamahTimer?.cancel();
+    setState(() {
+      _iqamahPrayer = prayer;
+      _iqamahSecondsRemaining = diffSeconds;
+    });
+
+    _iqamahTimer = Timer.periodic(const Duration(seconds: 1), (t) {
+      if (!mounted) {
+        t.cancel();
+        return;
+      }
+      setState(() => _iqamahSecondsRemaining--);
+      if (_iqamahSecondsRemaining <= 0) {
+        t.cancel();
+        setState(() => _iqamahPrayer = null);
+      }
+    });
+  }
+
+  // ─── Idle / ambient detection (TV2-7.9) ────────────────────────────────────
+
+  void _checkIdleAmbient() {
+    final tvSettings = ref.read(tvSettingsProvider);
+    final idleMin = tvSettings.ambientIdleMinutes;
+    if (idleMin <= 0) return;
+
+    final idle = _now.difference(_lastKeyEvent);
+    if (idle.inMinutes >= idleMin) {
+      if (mounted) context.push(Routes.tvAmbient);
+      // Reset so we don't navigate every second.
+      _lastKeyEvent = _now;
+    }
+  }
+
+  void _resetIdleTimer() {
+    _lastKeyEvent = DateTime.now();
+  }
+
+  // ─── Stream mute toggle (TV2-3.6) ─────────────────────────────────────────
+
+  void _toggleMute() {
+    setState(() => _streamMuted = !_streamMuted);
+    _showMuteButton();
+  }
+
+  void _showMuteButton() {
+    setState(() => _muteButtonVisible = true);
+    _muteButtonHideTimer?.cancel();
+    _muteButtonHideTimer = Timer(const Duration(seconds: 3), () {
+      if (mounted) setState(() => _muteButtonVisible = false);
+    });
+  }
+
+  // ─── Key handler ──────────────────────────────────────────────────────────
+
+  void _onKey(KeyEvent event) {
+    if (event is! KeyDownEvent) return;
+    _resetIdleTimer();
+
+    final key = event.logicalKey;
+    if (key == LogicalKeyboardKey.select || key == LogicalKeyboardKey.enter) {
+      context.push(Routes.tvSettings);
+    }
+    if (key == LogicalKeyboardKey.audioVolumeMute) {
+      _toggleMute();
+    }
+    // Show mute overlay on any D-pad movement when stream is active.
+    if (key == LogicalKeyboardKey.arrowUp ||
+        key == LogicalKeyboardKey.arrowDown ||
+        key == LogicalKeyboardKey.arrowLeft ||
+        key == LogicalKeyboardKey.arrowRight) {
+      final tvSettings = ref.read(tvSettingsProvider);
+      if (tvSettings.tvAudioMode == 'stream') _showMuteButton();
+    }
+  }
+
+  // ─── Build ────────────────────────────────────────────────────────────────
+
   @override
   Widget build(BuildContext context) {
     final city = ref.watch(cityProvider);
     final settings = ref.watch(settingsProvider);
     final timesAsync = ref.watch(prayerTimesProvider);
     final ramadan = ref.watch(ramadanProvider);
+    final tvSettings = ref.watch(tvSettingsProvider);
 
-    return Scaffold(
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, _) => _onBackInvoked(),
+      child: Scaffold(
       backgroundColor: PrayCalcColors.deep,
       body: FocusTraversalGroup(
         policy: OrderedTraversalPolicy(),
         child: KeyboardListener(
           focusNode: _focusNode,
           autofocus: true,
-          onKeyEvent: (event) {
-            if (event is KeyDownEvent) {
-              if (event.logicalKey == LogicalKeyboardKey.select ||
-                  event.logicalKey == LogicalKeyboardKey.enter) {
-                context.push(Routes.tvSettings);
-              }
-            }
-          },
+          onKeyEvent: _onKey,
           child: timesAsync.when(
             loading: () => const Center(
-              child: CircularProgressIndicator(
-                color: PrayCalcColors.mid,
-              ),
+              child: CircularProgressIndicator(color: PrayCalcColors.mid),
             ),
             error: (e, _) => Center(
               child: Text(
@@ -144,21 +444,303 @@ class _TvHomeScreenState extends ConsumerState<TvHomeScreen> {
                 style: const TextStyle(color: Colors.white, fontSize: 28),
               ),
             ),
-            data: (times) => _TvHomeBody(
-              times: times,
-              now: _now,
-              nowH: _nowH,
-              city: city,
-              settings: settings,
-              ramadan: ramadan,
-              activeIdx: _activePrayerIndex(times),
-              nextIdx: _nextPrayerIndex(times),
-              countdown: _countdownString(times, _nextPrayerIndex(times)),
+            data: (times) {
+              final activeIdx = _activePrayerIndex(times);
+              final nextIdx = _nextPrayerIndex(times);
+
+              // Determine Eid state.
+              final eidType = detectEid(_now);
+
+              // Build the base body.
+              Widget body = Column(
+                children: [
+                  // Jumu'ah banner (Friday 11:00–14:00).
+                  if (TvJumuahOverlay.shouldShow(_now))
+                    TvJumuahOverlay(
+                      now: _now,
+                      khutbahHour: tvSettings.jumuahKhutbahHour,
+                      khutbahMinute: tvSettings.jumuahKhutbahMinute,
+                    ),
+
+                  // Main content.
+                  Expanded(
+                    child: _TvHomeBody(
+                      times: times,
+                      now: _now,
+                      nowH: _nowH,
+                      city: city,
+                      settings: settings,
+                      tvSettings: tvSettings,
+                      ramadan: ramadan,
+                      activeIdx: activeIdx,
+                      nextIdx: nextIdx,
+                      countdown: _countdownString(times, nextIdx),
+                      streamMuted: _streamMuted,
+                      muteButtonVisible: _muteButtonVisible,
+                      onToggleMute: _toggleMute,
+                      formatH: _formatH,
+                    ),
+                  ),
+
+                  // Post-adhan iqamah bar.
+                  if (_iqamahPrayer != null)
+                    TvPostAdhanBar(
+                      prayerName: _iqamahPrayer!,
+                      iqamahCountdownSeconds: _iqamahSecondsRemaining,
+                    ),
+                ],
+              );
+
+              // Night mode warm color filter (TV2-6.5): currentBrightness < 30.
+              if (tvSettings.nightModeEnabled &&
+                  tvSettings.currentBrightness < 30) {
+                body = ColorFiltered(
+                  colorFilter: const ColorFilter.matrix([
+                    1, 0,    0, 0, 0,
+                    0, 0.92, 0, 0, 0,
+                    0, 0,    0.5, 0, 0,
+                    0, 0,    0, 1, 0,
+                  ]),
+                  child: body,
+                );
+              }
+
+              // Eid overlay (full-screen, below alert overlay).
+              if (eidType != null) {
+                body = Stack(
+                  children: [
+                    body,
+                    TvEidOverlay(eidType: eidType),
+                  ],
+                );
+              }
+
+              // Announcement ticker (masjid kiosk mode — TV2-11.5).
+              if (tvSettings.announcements.isNotEmpty) {
+                body = Stack(
+                  children: [
+                    body,
+                    Positioned(
+                      left: 16,
+                      right: 16,
+                      bottom: 16,
+                      child: TvAnnouncementOverlay(
+                        announcements: tvSettings.announcements,
+                      ),
+                    ),
+                  ],
+                );
+              }
+
+              // Adhan alert layer.
+              if (_alertPrayer != null) {
+                final config =
+                    tvSettings.prayerAlertConfigs[_alertPrayer!] ??
+                        const TvPrayerAlertConfig();
+                final prayerH = _getPrayerH(times, _alertPrayer!);
+                final timeStr = prayerH != null
+                    ? _formatH(prayerH, settings.use24h)
+                    : '';
+
+                if (_alertMode == TvAlertMode.full) {
+                  body = Stack(
+                    children: [
+                      body,
+                      _TvFullAlertOverlay(
+                        prayerName: _alertPrayer!,
+                        prayerTimeFormatted: timeStr,
+                        config: config,
+                        onDismiss: () => _dismissAlert(
+                            _alertPrayer!, tvSettings),
+                        onSnooze: (minutes) =>
+                            _snooze(_alertPrayer!, minutes, tvSettings),
+                      ),
+                    ],
+                  );
+                } else if (_alertMode == TvAlertMode.bubble) {
+                  body = TvAdhanBubbleOverlay(
+                    prayerName: _alertPrayer,
+                    position: tvSettings.defaultBubblePosition,
+                    iqamahCountdown: _iqamahSecondsRemaining > 0
+                        ? _iqamahSecondsRemaining
+                        : null,
+                    onDismiss: () =>
+                        _dismissAlert(_alertPrayer!, tvSettings),
+                    onExpand: () => setState(
+                        () => _alertMode = TvAlertMode.full),
+                    child: body,
+                  );
+                }
+              }
+
+              return body;
+            },
+          ),
+        ),
+      ),
+    ),  // end Scaffold
+  );  // end PopScope
+  }  // end build
+
+  double? _getPrayerH(PrayerTimes times, String prayer) {
+    switch (prayer) {
+      case 'Fajr':
+        return times.fajr;
+      case 'Dhuhr':
+        return times.dhuhr;
+      case 'Asr':
+        return times.asr;
+      case 'Maghrib':
+        return times.maghrib;
+      case 'Isha':
+        return times.isha;
+      default:
+        return null;
+    }
+  }
+}
+
+// ─── Full-screen adhan alert overlay (wired to TV2-8.8 snooze) ────────────
+
+class _TvFullAlertOverlay extends StatefulWidget {
+  const _TvFullAlertOverlay({
+    required this.prayerName,
+    required this.prayerTimeFormatted,
+    required this.config,
+    required this.onDismiss,
+    required this.onSnooze,
+  });
+
+  final String prayerName;
+  final String prayerTimeFormatted;
+  final TvPrayerAlertConfig config;
+  final VoidCallback onDismiss;
+  final void Function(int minutes) onSnooze;
+
+  @override
+  State<_TvFullAlertOverlay> createState() => _TvFullAlertOverlayState();
+}
+
+class _TvFullAlertOverlayState extends State<_TvFullAlertOverlay>
+    with SingleTickerProviderStateMixin {
+  final _focusNode = FocusNode();
+  late final AnimationController _fadeCtrl;
+  late final Animation<double> _fadeAnim;
+
+  @override
+  void initState() {
+    super.initState();
+    _fadeCtrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 500),
+    )..forward();
+    _fadeAnim =
+        CurvedAnimation(parent: _fadeCtrl, curve: Curves.easeIn);
+  }
+
+  @override
+  void dispose() {
+    _fadeCtrl.dispose();
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  void _dismiss() {
+    _fadeCtrl.reverse().then((_) {
+      if (mounted) widget.onDismiss();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final hijri = _hijriString();
+
+    return KeyboardListener(
+      focusNode: _focusNode,
+      autofocus: true,
+      onKeyEvent: (event) {
+        if (event is KeyDownEvent &&
+            (event.logicalKey == LogicalKeyboardKey.select ||
+                event.logicalKey == LogicalKeyboardKey.enter ||
+                event.logicalKey == LogicalKeyboardKey.escape)) {
+          _dismiss();
+        }
+      },
+      child: FadeTransition(
+        opacity: _fadeAnim,
+        child: GestureDetector(
+          onTap: _dismiss,
+          child: Container(
+            color: Colors.black.withAlpha(220),
+            child: Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(Icons.mosque,
+                      color: PrayCalcColors.light, size: 80),
+                  const SizedBox(height: 24),
+                  Text(
+                    widget.prayerName,
+                    style: const TextStyle(
+                      color: PrayCalcColors.light,
+                      fontSize: 72,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 2,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    widget.prayerTimeFormatted,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 56,
+                      fontWeight: FontWeight.w300,
+                      fontFeatures: [FontFeature.tabularFigures()],
+                    ),
+                  ),
+                  if (hijri.isNotEmpty) ...[
+                    const SizedBox(height: 24),
+                    Text(
+                      hijri,
+                      style: const TextStyle(
+                          color: Colors.white54, fontSize: 28),
+                    ),
+                  ],
+                  const SizedBox(height: 48),
+                  // Snooze buttons (TV2-8.8).
+                  TvSnoozeBar(
+                    onSnooze: widget.onSnooze,
+                    onDismiss: _dismiss,
+                  ),
+                  const SizedBox(height: 24),
+                  Text(
+                    'Press OK to dismiss',
+                    style: TextStyle(
+                      color: Colors.white.withAlpha(80),
+                      fontSize: 20,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
       ),
     );
+  }
+
+  String _hijriString() {
+    try {
+      final hj = HijriCalendar.fromDate(DateTime.now());
+      const months = [
+        'Muharram', 'Safar', "Rabi' al-Awwal", "Rabi' al-Thani",
+        'Jumada al-Awwal', 'Jumada al-Thani', 'Rajab', "Sha'ban",
+        'Ramadan', 'Shawwal', "Dhu al-Qi'dah", 'Dhu al-Hijjah',
+      ];
+      return '${hj.hDay} ${months[hj.hMonth - 1]} ${hj.hYear} AH';
+    } catch (_) {
+      return '';
+    }
   }
 }
 
@@ -171,10 +753,15 @@ class _TvHomeBody extends StatelessWidget {
     required this.nowH,
     required this.city,
     required this.settings,
+    required this.tvSettings,
     required this.ramadan,
     required this.activeIdx,
     required this.nextIdx,
     required this.countdown,
+    required this.streamMuted,
+    required this.muteButtonVisible,
+    required this.onToggleMute,
+    required this.formatH,
   });
 
   final PrayerTimes times;
@@ -182,59 +769,151 @@ class _TvHomeBody extends StatelessWidget {
   final double nowH;
   final City? city;
   final AppSettings settings;
+  final TvSettings tvSettings;
   final RamadanState ramadan;
   final int activeIdx;
   final int nextIdx;
   final String countdown;
+  final bool streamMuted;
+  final bool muteButtonVisible;
+  final VoidCallback onToggleMute;
+  final String Function(double h, bool use24h) formatH;
 
   @override
   Widget build(BuildContext context) {
     final moonResult = MoonPhase.calculate(now);
     final hijri = _hijriDateString(now);
 
+    // Second timezone display (TV2-9.7).
+    final secondTz = tvSettings.secondCityTimeZone ?? 'Asia/Riyadh';
+    final secondLabel = tvSettings.secondCitySlug ?? 'Mecca';
+
+    // Live stream panel (TV2-3.6, TV2-3.7).
+    final showStream = tvSettings.tvAudioMode == 'stream' &&
+        tvSettings.layoutSettings.leftPanel == TvPanelType.liveStream;
+    TvStream? activeStream;
+    if (showStream) {
+      try {
+        activeStream = kBuiltInStreams.firstWhere(
+          (s) => s.id == tvSettings.selectedStreamId,
+        );
+      } catch (_) {
+        activeStream = kBuiltInStreams.first;
+      }
+    }
+
     return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 48, vertical: 32),
-        child: Column(
-          children: [
-            // ── Top bar: city + date ──
-            _TvTopBar(
-              cityName: city?.displayName ?? 'No city',
-              hijri: hijri,
-              gregorian: _gregorianLabel(now),
+      child: Stack(
+        children: [
+          // ── Main layout ──
+          Padding(
+            padding: const EdgeInsets.symmetric(
+                horizontal: 48, vertical: 32),
+            child: Row(
+              children: [
+                // Left panel: stream or main content.
+                if (showStream && activeStream != null)
+                  Expanded(
+                    child: TvStreamPlayer(
+                      stream: activeStream,
+                      muted: streamMuted,
+                    ),
+                  )
+                else
+                  const SizedBox.shrink(),
+
+                // Right: prayer times column.
+                Expanded(
+                  child: Column(
+                    children: [
+                      // Top bar: city + date.
+                      _TvTopBar(
+                        cityName: city?.displayName ?? 'No city',
+                        hijri: hijri,
+                        gregorian: _gregorianLabel(now),
+                        secondLabel: secondLabel,
+                        secondTz: secondTz,
+                        now: now,
+                      ),
+                      const SizedBox(height: 24),
+
+                      // Current time.
+                      _TvCurrentTime(now: now, use24h: settings.use24h),
+                      const SizedBox(height: 8),
+
+                      // Next prayer countdown.
+                      _TvCountdownBanner(
+                        label: _prayerLabel(
+                          _prayers[nextIdx].label,
+                          ramadan.isRamadan,
+                        ),
+                        countdown: countdown,
+                      ),
+                      const SizedBox(height: 32),
+
+                      // Prayer times grid: 2 columns x 3 rows.
+                      Expanded(
+                        child: _TvPrayerGrid(
+                          times: times,
+                          use24h: settings.use24h,
+                          activeIdx: activeIdx,
+                          nextIdx: nextIdx,
+                          isRamadan: ramadan.isRamadan,
+                        ),
+                      ),
+
+                      // Bottom: moon phase + weather.
+                      const SizedBox(height: 16),
+                      _TvBottomBar(moonResult: moonResult),
+                    ],
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(height: 24),
+          ),
 
-            // ── Current time ──
-            _TvCurrentTime(now: now, use24h: settings.use24h),
-            const SizedBox(height: 8),
-
-            // ── Next prayer countdown ──
-            _TvCountdownBanner(
-              label: _prayerLabel(
-                _prayers[nextIdx].label,
-                ramadan.isRamadan,
+          // ── Mute overlay button (TV2-3.6) ──
+          if (muteButtonVisible && showStream)
+            Positioned(
+              top: 24,
+              right: 24,
+              child: AnimatedOpacity(
+                opacity: muteButtonVisible ? 1.0 : 0.0,
+                duration: const Duration(milliseconds: 300),
+                child: GestureDetector(
+                  onTap: onToggleMute,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 10),
+                    decoration: BoxDecoration(
+                      color: PrayCalcColors.deep.withAlpha(220),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                          color: PrayCalcColors.mid, width: 1),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          streamMuted
+                              ? Icons.volume_off
+                              : Icons.volume_up,
+                          color: PrayCalcColors.light,
+                          size: 24,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          streamMuted ? 'Muted' : 'Audio on',
+                          style: const TextStyle(
+                              color: Colors.white, fontSize: 18),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ),
-              countdown: countdown,
             ),
-            const SizedBox(height: 32),
-
-            // ── Prayer times grid: 2 columns x 3 rows ──
-            Expanded(
-              child: _TvPrayerGrid(
-                times: times,
-                use24h: settings.use24h,
-                activeIdx: activeIdx,
-                nextIdx: nextIdx,
-                isRamadan: ramadan.isRamadan,
-              ),
-            ),
-
-            // ── Bottom: moon phase + weather ──
-            const SizedBox(height: 16),
-            _TvBottomBar(moonResult: moonResult),
-          ],
-        ),
+        ],
       ),
     );
   }
@@ -276,22 +955,60 @@ class _TvTopBar extends StatelessWidget {
     required this.cityName,
     required this.hijri,
     required this.gregorian,
+    required this.secondLabel,
+    required this.secondTz,
+    required this.now,
   });
 
   final String cityName;
   final String hijri;
   final String gregorian;
+  final String secondLabel;
+  final String secondTz;
+  final DateTime now;
+
+  /// Returns the current time in [tzName] as a simple HH:MM string.
+  /// Uses DateTime offset approximation via named timezone offsets.
+  /// For full accuracy, add the `timezone` package; for now we use a static
+  /// offset table for the most common Islamic city timezones.
+  String _secondCityTime() {
+    // Static UTC offsets for supported zones (covers common Islamic cities).
+    const offsets = <String, int>{
+      'Asia/Riyadh': 3,      // Mecca, Medina, Riyadh
+      'Asia/Dubai': 4,       // Dubai, Abu Dhabi
+      'Africa/Cairo': 2,     // Cairo (ignores DST)
+      'Asia/Istanbul': 3,    // Istanbul (ignores DST)
+      'Asia/Karachi': 5,     // Karachi
+      'Asia/Dhaka': 6,       // Dhaka
+      'Asia/Jakarta': 7,     // Jakarta
+      'Asia/Kuala_Lumpur': 8, // Kuala Lumpur
+      'Asia/Tehran': 3,      // Tehran (ignores 0.5h offset)
+      'Africa/Casablanca': 1, // Casablanca
+      'America/New_York': -4, // New York (EDT approx)
+      'America/Chicago': -5,  // Chicago (CDT approx)
+      'America/Los_Angeles': -7, // LA (PDT approx)
+      'Europe/London': 1,    // London (BST approx)
+      'Europe/Paris': 2,     // Paris (CEST approx)
+    };
+    final offsetH = offsets[secondTz] ?? 0;
+    final utc = now.toUtc();
+    final shifted = utc.add(Duration(hours: offsetH));
+    final hh = shifted.hour.toString().padLeft(2, '0');
+    final mm = shifted.minute.toString().padLeft(2, '0');
+    return '$hh:$mm';
+  }
 
   @override
   Widget build(BuildContext context) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // City name (left)
+        // City name (left).
         Expanded(
           child: Row(
             children: [
-              const Icon(Icons.location_on, color: PrayCalcColors.mid, size: 28),
+              const Icon(Icons.location_on,
+                  color: PrayCalcColors.mid, size: 28),
               const SizedBox(width: 8),
               Flexible(
                 child: Text(
@@ -304,10 +1021,19 @@ class _TvTopBar extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
+              // Second city time (TV2-9.7).
+              const SizedBox(width: 24),
+              Text(
+                '$secondLabel  ${_secondCityTime()}',
+                style: const TextStyle(
+                  color: Colors.white54,
+                  fontSize: 20,
+                ),
+              ),
             ],
           ),
         ),
-        // Date (right)
+        // Date (right).
         Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
@@ -318,7 +1044,8 @@ class _TvTopBar extends StatelessWidget {
             if (hijri.isNotEmpty)
               Text(
                 hijri,
-                style: const TextStyle(color: Colors.white54, fontSize: 20),
+                style:
+                    const TextStyle(color: Colors.white54, fontSize: 20),
               ),
           ],
         ),
@@ -427,7 +1154,6 @@ class _TvPrayerGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // 2 columns x 3 rows: left = Fajr, Dhuhr, Maghrib; right = Sunrise, Asr, Isha
     const leftIndices = [0, 2, 4]; // Fajr, Dhuhr, Maghrib
     const rightIndices = [1, 3, 5]; // Sunrise, Asr, Isha
 
@@ -436,18 +1162,14 @@ class _TvPrayerGrid extends StatelessWidget {
         Expanded(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: leftIndices
-                .map((i) => _buildTile(i))
-                .toList(),
+            children: leftIndices.map((i) => _buildTile(i)).toList(),
           ),
         ),
         const SizedBox(width: 32),
         Expanded(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: rightIndices
-                .map((i) => _buildTile(i))
-                .toList(),
+            children: rightIndices.map((i) => _buildTile(i)).toList(),
           ),
         ),
       ],
@@ -474,58 +1196,62 @@ class _TvPrayerGrid extends StatelessWidget {
     return Semantics(
       label: semanticLabel,
       child: Container(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-      decoration: BoxDecoration(
-        color: isNext
-            ? PrayCalcColors.dark.withAlpha(120)
-            : isActive
-                ? PrayCalcColors.deep.withAlpha(200)
-                : Colors.transparent,
-        borderRadius: BorderRadius.circular(16),
-        border: isNext
-            ? Border.all(color: PrayCalcColors.mid, width: 2)
-            : null,
-      ),
-      child: Row(
-        children: [
-          Icon(
-            meta.icon,
-            color: isNext
-                ? PrayCalcColors.light
-                : isActive
-                    ? PrayCalcColors.mid
-                    : Colors.white54,
-            size: 36,
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Text(
-              label,
-              style: TextStyle(
-                color: isActive || isNext ? Colors.white : Colors.white70,
-                fontSize: 32,
-                fontWeight:
-                    isActive || isNext ? FontWeight.bold : FontWeight.normal,
-              ),
-            ),
-          ),
-          Text(
-            timeStr,
-            style: TextStyle(
+        padding:
+            const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+        decoration: BoxDecoration(
+          color: isNext
+              ? PrayCalcColors.dark.withAlpha(120)
+              : isActive
+                  ? PrayCalcColors.deep.withAlpha(200)
+                  : Colors.transparent,
+          borderRadius: BorderRadius.circular(16),
+          border: isNext
+              ? Border.all(color: PrayCalcColors.mid, width: 2)
+              : null,
+        ),
+        child: Row(
+          children: [
+            Icon(
+              meta.icon,
               color: isNext
                   ? PrayCalcColors.light
                   : isActive
-                      ? Colors.white
-                      : Colors.white70,
-              fontSize: 48,
-              fontWeight:
-                  isActive || isNext ? FontWeight.bold : FontWeight.normal,
-              fontFeatures: const [FontFeature.tabularFigures()],
+                      ? PrayCalcColors.mid
+                      : Colors.white54,
+              size: 36,
             ),
-          ),
-        ],
+            const SizedBox(width: 16),
+            Expanded(
+              child: Text(
+                label,
+                style: TextStyle(
+                  color:
+                      isActive || isNext ? Colors.white : Colors.white70,
+                  fontSize: 32,
+                  fontWeight: isActive || isNext
+                      ? FontWeight.bold
+                      : FontWeight.normal,
+                ),
+              ),
+            ),
+            Text(
+              timeStr,
+              style: TextStyle(
+                color: isNext
+                    ? PrayCalcColors.light
+                    : isActive
+                        ? Colors.white
+                        : Colors.white70,
+                fontSize: 48,
+                fontWeight: isActive || isNext
+                    ? FontWeight.bold
+                    : FontWeight.normal,
+                fontFeatures: const [FontFeature.tabularFigures()],
+              ),
+            ),
+          ],
+        ),
       ),
-    ),
     );
   }
 
@@ -556,7 +1282,6 @@ class _TvBottomBar extends ConsumerWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        // Moon phase (left)
         Semantics(
           label: 'Moon phase: $phaseName, $pct% illumination',
           child: Row(
@@ -569,28 +1294,25 @@ class _TvBottomBar extends ConsumerWidget {
               const SizedBox(width: 12),
               Text(
                 phaseName,
-                style: const TextStyle(color: Colors.white54, fontSize: 24),
+                style: const TextStyle(
+                    color: Colors.white54, fontSize: 24),
               ),
               const SizedBox(width: 8),
               Text(
                 '$pct%',
-                style: const TextStyle(color: Colors.white38, fontSize: 20),
+                style: const TextStyle(
+                    color: Colors.white38, fontSize: 20),
               ),
             ],
           ),
         ),
-
-        // Weather (right) — only shown when data is available
         if (weather != null) ...[
           const SizedBox(width: 32),
-          Container(
-            width: 1,
-            height: 28,
-            color: Colors.white24,
-          ),
+          Container(width: 1, height: 28, color: Colors.white24),
           const SizedBox(width: 32),
           Semantics(
-            label: 'Weather: ${weather.description}, ${weather.tempCelsius.round()}°C',
+            label:
+                'Weather: ${weather.description}, ${weather.tempCelsius.round()}°C',
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -601,12 +1323,14 @@ class _TvBottomBar extends ConsumerWidget {
                 const SizedBox(width: 12),
                 Text(
                   '${weather.tempCelsius.round()}°C',
-                  style: const TextStyle(color: Colors.white54, fontSize: 24),
+                  style: const TextStyle(
+                      color: Colors.white54, fontSize: 24),
                 ),
                 const SizedBox(width: 8),
                 Text(
                   weather.description,
-                  style: const TextStyle(color: Colors.white38, fontSize: 20),
+                  style: const TextStyle(
+                      color: Colors.white38, fontSize: 20),
                 ),
               ],
             ),

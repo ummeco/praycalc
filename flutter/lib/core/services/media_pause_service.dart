@@ -118,4 +118,29 @@ class MediaPauseService {
       await releaseAudioFocus();
     }
   }
+
+  /// Request transient audio focus with "duck" behaviour.
+  ///
+  /// On Android this uses `AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK`, causing other
+  /// media apps to lower their volume rather than pause completely. On macOS
+  /// and other platforms this falls back to the same behaviour as
+  /// [requestAudioFocus] (full pause), as duck-specific APIs are not exposed
+  /// by the current native plugins.
+  Future<bool> duckMedia() async {
+    try {
+      if (Platform.isAndroid) {
+        final result = await _androidChannel
+            .invokeMethod<bool>('requestAudioFocusDuck');
+        _hasFocus = result ?? false;
+        return _hasFocus;
+      }
+      // On non-Android platforms, fall back to full pause.
+      return requestAudioFocus();
+    } on MissingPluginException {
+      return false;
+    } on PlatformException catch (_) {
+      _hasFocus = false;
+      return false;
+    }
+  }
 }

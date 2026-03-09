@@ -4097,6 +4097,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Undo'**
   String get pinUndo;
+
+  /// No description provided for @tvPairingScanQr.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan TV QR Code'**
+  String get tvPairingScanQr;
+
+  /// No description provided for @tvPairingScanInstruction.
+  ///
+  /// In en, this message translates to:
+  /// **'Point your camera at the QR code on your TV'**
+  String get tvPairingScanInstruction;
+
+  /// No description provided for @tvPairingEnterManually.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter code manually'**
+  String get tvPairingEnterManually;
+
+  /// No description provided for @tvPairingEnterCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter pairing code'**
+  String get tvPairingEnterCode;
+
+  /// No description provided for @tvPairingCodeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'6-character code shown on your TV'**
+  String get tvPairingCodeHint;
+
+  /// No description provided for @tvPairingNameThisTv.
+  ///
+  /// In en, this message translates to:
+  /// **'Name this TV'**
+  String get tvPairingNameThisTv;
+
+  /// No description provided for @tvPairingNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Living Room TV'**
+  String get tvPairingNameHint;
+
+  /// No description provided for @tvPairingSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} paired!'**
+  String tvPairingSuccess(String name);
+
+  /// No description provided for @tvPairingSuccessSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your TV is now connected to your account.'**
+  String get tvPairingSuccessSubtitle;
+
+  /// No description provided for @tvPairingBackToMyTvs.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to My TVs'**
+  String get tvPairingBackToMyTvs;
+
+  /// No description provided for @tvPairingTimeout.
+  ///
+  /// In en, this message translates to:
+  /// **'Request timed out. Is the TV on and connected?'**
+  String get tvPairingTimeout;
+
+  /// No description provided for @tvPairingServerError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not connect to server.'**
+  String get tvPairingServerError;
+
+  /// No description provided for @tvPairingSignInRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in to your account before pairing a TV.'**
+  String get tvPairingSignInRequired;
 }
 
 class _AppLocalizationsDelegate

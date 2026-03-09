@@ -7,7 +7,11 @@ import 'package:go_router/go_router.dart';
 import '../../core/providers/settings_provider.dart';
 import '../../core/providers/tv_provider.dart';
 import '../../core/router/app_router.dart';
+import '../../core/services/tv_launcher_service.dart';
 import '../../core/theme/app_theme.dart';
+import '../../shared/models/tv_settings_model.dart';
+import 'tv_info_bar_configurator.dart';
+import 'tv_kiosk_gate.dart' show isLayoutLocked;
 
 /// TV settings screen, fully D-pad navigable.
 class TvSettingsScreen extends ConsumerStatefulWidget {
@@ -64,6 +68,91 @@ class _TvSettingsScreenState extends ConsumerState<TvSettingsScreen> {
         child: ListView(
           padding: const EdgeInsets.symmetric(horizontal: 48, vertical: 24),
           children: [
+            // ── Layout (TV2-11.3: locked to masjid in kiosk mode) ──
+            _SectionHeader(title: 'Layout'),
+            const SizedBox(height: 8),
+            Tooltip(
+              message: isLayoutLocked(tvSettings)
+                  ? 'Layout locked — change via remote dashboard'
+                  : '',
+              child: _TvSettingsTile(
+                icon: Icons.dashboard,
+                title: 'Layout Preset',
+                subtitle: isLayoutLocked(tvSettings)
+                    ? 'Masjid (locked)'
+                    : _layoutPresetLabel(tvSettings.layoutSettings.preset),
+                trailing: isLayoutLocked(tvSettings)
+                    ? const Icon(Icons.lock_outline, color: Colors.white24, size: 28)
+                    : const Icon(Icons.chevron_right, color: Colors.white54, size: 32),
+                // Grey out tile when kiosk mode locks the layout.
+                onTap: isLayoutLocked(tvSettings)
+                    ? null
+                    : () => _showLayoutPresetDialog(context, tvNotifier, tvSettings),
+              ),
+            ),
+            const SizedBox(height: 24),
+
+            // ── Info Bar (TV2-2.5) ──
+            _SectionHeader(title: 'Info Bar'),
+            const SizedBox(height: 8),
+            _TvSettingsTile(
+              icon: Icons.view_compact,
+              title: 'Configure Info Bar',
+              subtitle: _infoBarSummary(tvSettings.infoBarConfig),
+              trailing: const Icon(Icons.chevron_right,
+                  color: Colors.white54, size: 32),
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                    builder: (_) => const TvInfoBarConfigurator()),
+              ),
+            ),
+            const SizedBox(height: 24),
+
+            // ── Second Timezone (TV2-9.7) ──
+            _SectionHeader(title: 'Second City Time'),
+            const SizedBox(height: 8),
+            _TvSettingsTile(
+              icon: Icons.public,
+              title: 'Show Second City Time',
+              subtitle: 'Display a second city\'s clock in the info bar',
+              trailing: Switch(
+                value: tvSettings.secondCitySlug != null &&
+                    tvSettings.secondCitySlug!.isNotEmpty,
+                activeThumbColor: PrayCalcColors.mid,
+                onChanged: (v) {
+                  if (v) {
+                    // Default to Mecca when enabling
+                    tvNotifier.setSecondCity('mecca', 'Asia/Riyadh');
+                  } else {
+                    tvNotifier.setSecondCity(null, null);
+                  }
+                },
+              ),
+              onTap: () {
+                final active = tvSettings.secondCitySlug != null &&
+                    tvSettings.secondCitySlug!.isNotEmpty;
+                if (active) {
+                  tvNotifier.setSecondCity(null, null);
+                } else {
+                  tvNotifier.setSecondCity('mecca', 'Asia/Riyadh');
+                }
+              },
+            ),
+            if (tvSettings.secondCitySlug != null &&
+                tvSettings.secondCitySlug!.isNotEmpty) ...[
+              const SizedBox(height: 8),
+              _TvSettingsTile(
+                icon: Icons.location_city,
+                title: 'Second City',
+                subtitle: _secondCityLabel(tvSettings.secondCitySlug!),
+                trailing: const Icon(Icons.chevron_right,
+                    color: Colors.white54, size: 32),
+                onTap: () => _showSecondCityDialog(
+                    context, tvNotifier, tvSettings),
+              ),
+            ],
+            const SizedBox(height: 24),
+
             // ── Display Mode ──
             _SectionHeader(title: l.tvDisplayMode),
             const SizedBox(height: 8),
@@ -93,6 +182,64 @@ class _TvSettingsScreenState extends ConsumerState<TvSettingsScreen> {
                   controller: _masjidNameController,
                   onSave: (v) => tvNotifier.setMasjidName(v),
                 ),
+              ),
+            ],
+            const SizedBox(height: 24),
+
+            // ── Audio & Streams ──
+            _SectionHeader(title: 'Audio & Streams'),
+            const SizedBox(height: 8),
+            _TvSettingsTile(
+              icon: Icons.volume_up,
+              title: 'Background Audio',
+              subtitle: _audioModeLabel(tvSettings.tvAudioMode),
+              trailing: const Icon(Icons.chevron_right, color: Colors.white54, size: 32),
+              onTap: () => _showAudioModeDialog(context, tvNotifier, tvSettings),
+            ),
+            if (tvSettings.tvAudioMode == 'stream') ...[
+              const SizedBox(height: 8),
+              _TvSettingsTile(
+                icon: Icons.radio,
+                title: 'Stream Source',
+                subtitle: tvSettings.selectedStreamId.isNotEmpty
+                    ? tvSettings.selectedStreamId
+                    : 'Mecca Live',
+                trailing: const Icon(Icons.chevron_right, color: Colors.white54, size: 32),
+                onTap: () => _showStreamSourceDialog(context, tvNotifier, tvSettings),
+              ),
+              const SizedBox(height: 8),
+              _TvSettingsTile(
+                icon: Icons.link,
+                title: 'Custom Stream URL',
+                subtitle: tvSettings.customStreams.isNotEmpty
+                    ? tvSettings.customStreams.last.url
+                    : 'Enter an HLS or MP4 URL',
+                trailing: const Icon(Icons.chevron_right, color: Colors.white54, size: 32),
+                onTap: () =>
+                    _showCustomStreamUrlDialog(context, tvNotifier, tvSettings),
+              ),
+            ],
+            if (tvSettings.tvAudioMode == 'quran') ...[
+              const SizedBox(height: 8),
+              _TvSettingsTile(
+                icon: Icons.menu_book,
+                title: 'Reciter',
+                subtitle: tvSettings.selectedReciterId.isNotEmpty
+                    ? tvSettings.selectedReciterId
+                    : 'Al-Sudais',
+                trailing: const Icon(Icons.chevron_right, color: Colors.white54, size: 32),
+                onTap: () => _showReciterDialog(context, tvNotifier, tvSettings),
+              ),
+              // TV2-4.5 — Playback mode
+              const SizedBox(height: 8),
+              _TvSettingsTile(
+                icon: Icons.playlist_play,
+                title: 'Playback Mode',
+                subtitle: _quranPlaybackModeLabel(tvSettings.quranPlaybackMode),
+                trailing: const Icon(Icons.chevron_right,
+                    color: Colors.white54, size: 32),
+                onTap: () => _showQuranPlaybackModeDialog(
+                    context, tvNotifier, tvSettings),
               ),
             ],
             const SizedBox(height: 24),
@@ -156,52 +303,168 @@ class _TvSettingsScreenState extends ConsumerState<TvSettingsScreen> {
               const SizedBox(height: 24),
             ],
 
-            // ── Ambient Mode ──
-            _SectionHeader(title: l.tvAmbientModeSection),
+            // ── Screensaver (TV2-7.5 / TV2-7.6 / TV2-7.8 / TV2-7.9) ──
+            _SectionHeader(title: 'Screensaver'),
             const SizedBox(height: 8),
-            _TvSettingsTile(
-              icon: Icons.timer,
-              title: l.tvIdleTimeout,
-              subtitle: l.tvIdleTimeoutSubtitle(tvSettings.ambientIdleMinutes),
-              trailing: _CompactSlider(
-                value: tvSettings.ambientIdleMinutes.toDouble(),
-                min: 1,
-                max: 60,
-                divisions: 59,
-                label: '${tvSettings.ambientIdleMinutes} min',
-                onChanged: (v) =>
-                    tvNotifier.setAmbientIdleMinutes(v.round()),
-              ),
-            ),
-            const SizedBox(height: 8),
-            _TvSettingsTile(
-              icon: Icons.rotate_right,
-              title: l.tvPhotoInterval,
-              subtitle: l.tvPhotoIntervalSubtitle(tvSettings.ambientIntervalSeconds),
-              trailing: _CompactSlider(
-                value: tvSettings.ambientIntervalSeconds.toDouble(),
-                min: 30,
-                max: 120,
-                divisions: 9,
-                label: '${tvSettings.ambientIntervalSeconds}s',
-                onChanged: (v) =>
-                    tvNotifier.setAmbientIntervalSeconds(v.round()),
-              ),
-            ),
-            const SizedBox(height: 8),
+            // TV2-7.5 — Photo source
             _TvSettingsTile(
               icon: Icons.wallpaper,
-              title: l.tvBackground,
-              subtitle: _screensaverModeLabel(l, tvSettings.screensaverMode),
-              onTap: () => _showScreensaverModeDialog(context, l, tvNotifier),
+              title: 'Photo Source',
+              subtitle: _photoSourceLabel(tvSettings.photoSource),
+              trailing: const Icon(Icons.chevron_right, color: Colors.white54, size: 32),
+              onTap: () => _showPhotoSourceV2Dialog(context, tvNotifier, tvSettings),
             ),
             const SizedBox(height: 8),
+            // TV2-7.5 — Category checkboxes
             _TvSettingsTile(
               icon: Icons.photo_library,
               title: l.tvPhotoCategory,
-              subtitle: _screensaverCategoryLabel(l, tvSettings.screensaverCategory),
+              subtitle: _photoCategoriesLabel(tvSettings.photoCategories),
+              trailing: const Icon(Icons.chevron_right, color: Colors.white54, size: 32),
               onTap: () =>
-                  _showScreensaverCategoryDialog(context, l, tvNotifier),
+                  _showPhotoCategoriesDialog(context, tvNotifier, tvSettings),
+            ),
+            const SizedBox(height: 8),
+            // TV2-7.6 — Photo duration
+            _TvSettingsTile(
+              icon: Icons.rotate_right,
+              title: 'Photo Duration',
+              subtitle: _slideshowDurationLabel(
+                  tvSettings.slideshowDurationSeconds),
+              trailing: const Icon(Icons.chevron_right, color: Colors.white54, size: 32),
+              onTap: () =>
+                  _showSlideshowDurationDialog(context, tvNotifier, tvSettings),
+            ),
+            const SizedBox(height: 8),
+            // TV2-7.6 — Transition style
+            _TvSettingsTile(
+              icon: Icons.animation,
+              title: 'Transition',
+              subtitle:
+                  _slideshowTransitionLabel(tvSettings.slideshowTransition),
+              trailing: const Icon(Icons.chevron_right, color: Colors.white54, size: 32),
+              onTap: () => _showSlideshowTransitionDialog(
+                  context, tvNotifier, tvSettings),
+            ),
+            const SizedBox(height: 8),
+            // TV2-7.8 — Overlay density
+            _TvSettingsTile(
+              icon: Icons.layers,
+              title: 'Overlay Density',
+              subtitle: _overlayDensityLabel(tvSettings.overlayDensity),
+              trailing: const Icon(Icons.chevron_right, color: Colors.white54, size: 32),
+              onTap: () =>
+                  _showOverlayDensityDialog(context, tvNotifier, tvSettings),
+            ),
+            const SizedBox(height: 8),
+            // TV2-7.9 — Screensaver idle timeout
+            _TvSettingsTile(
+              icon: Icons.timer,
+              title: 'Screensaver Starts After',
+              subtitle:
+                  _screensaverIdleLabel(tvSettings.screensaverIdleSeconds),
+              trailing: const Icon(Icons.chevron_right, color: Colors.white54, size: 32),
+              onTap: () =>
+                  _showScreensaverIdleDialog(context, tvNotifier, tvSettings),
+            ),
+            const SizedBox(height: 24),
+
+            // ── Brightness (TV2-6.4 / TV2-6.5 / TV2-6.7) ──
+            _SectionHeader(title: 'Brightness'),
+            const SizedBox(height: 8),
+            // TV2-6.5 — Night mode
+            _TvSettingsTile(
+              icon: Icons.bedtime,
+              title: 'Night Mode',
+              subtitle: 'Warm colour filter when brightness < 30%',
+              trailing: Switch(
+                value: tvSettings.nightModeEnabled,
+                activeThumbColor: PrayCalcColors.mid,
+                onChanged: (v) => tvNotifier.setNightModeEnabled(v),
+              ),
+              onTap: () =>
+                  tvNotifier.setNightModeEnabled(!tvSettings.nightModeEnabled),
+            ),
+            const SizedBox(height: 8),
+            // TV2-6.4 — Brightness schedule list
+            _SectionHeader(title: 'Brightness Schedule'),
+            const SizedBox(height: 8),
+            ...tvSettings.brightnessSchedule.asMap().entries.map((entry) {
+              final idx = entry.key;
+              final rule = entry.value;
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: _TvSettingsTile(
+                  icon: Icons.brightness_medium,
+                  title: _brightnessRuleTitle(rule),
+                  subtitle: rule.screenOff
+                      ? 'Screen off'
+                      : '${rule.brightnessPercent}% brightness',
+                  trailing: IconButton(
+                    icon: const Icon(Icons.delete_outline,
+                        color: Colors.white38, size: 28),
+                    onPressed: () {
+                      final updated = [...tvSettings.brightnessSchedule];
+                      updated.removeAt(idx);
+                      tvNotifier.setBrightnessSchedule(updated);
+                    },
+                  ),
+                  onTap: null,
+                ),
+              );
+            }),
+            const SizedBox(height: 8),
+            _TvSettingsTile(
+              icon: Icons.add_circle_outline,
+              title: 'Add Rule',
+              subtitle: 'Schedule a brightness change',
+              trailing: const Icon(Icons.chevron_right, color: Colors.white54, size: 32),
+              onTap: () =>
+                  _showAddBrightnessRuleDialog(context, tvNotifier, tvSettings),
+            ),
+            const SizedBox(height: 16),
+            // TV2-6.7 — Per-prayer brightness overrides
+            _SectionHeader(title: 'Prayer Brightness Overrides'),
+            const SizedBox(height: 8),
+            ..._buildPrayerBrightnessOverrides(tvNotifier, tvSettings),
+            const SizedBox(height: 24),
+
+            // ── Launcher ──
+            _SectionHeader(title: 'Launcher'),
+            const SizedBox(height: 8),
+            _TvSettingsTile(
+              icon: Icons.home,
+              title: 'Set as Home Launcher',
+              subtitle: 'PrayCalc becomes the default TV home screen',
+              trailing: Switch(
+                value: tvSettings.kioskMode,
+                activeThumbColor: PrayCalcColors.mid,
+                onChanged: (v) async {
+                  if (v) {
+                    await TvLauncherService.enableLauncher();
+                  } else {
+                    await TvLauncherService.disableLauncher();
+                  }
+                  tvNotifier.setKioskMode(v);
+                },
+              ),
+              onTap: () async {
+                final next = !tvSettings.kioskMode;
+                if (next) {
+                  await TvLauncherService.enableLauncher();
+                } else {
+                  await TvLauncherService.disableLauncher();
+                }
+                tvNotifier.setKioskMode(next);
+              },
+            ),
+            const SizedBox(height: 8),
+            _TvSettingsTile(
+              icon: Icons.flash_on,
+              title: 'Fast Launch Mode',
+              subtitle:
+                  'Triple-press Back at any time to return to the stock launcher',
+              onTap: null,
             ),
             const SizedBox(height: 24),
 
@@ -270,62 +533,816 @@ class _TvSettingsScreenState extends ConsumerState<TvSettingsScreen> {
     }).toList();
   }
 
-  String _screensaverModeLabel(AppLocalizations l, String mode) {
+  // ── Layout helpers ──────────────────────────────────────────────────────────
+
+  String _layoutPresetLabel(TvLayoutPreset preset) {
+    switch (preset) {
+      case TvLayoutPreset.prayerOnly:
+        return 'Prayer Only';
+      case TvLayoutPreset.splitStream:
+        return 'Split + Stream';
+      case TvLayoutPreset.splitArt:
+        return 'Split + Art';
+      case TvLayoutPreset.infoRich:
+        return 'Info Rich';
+      case TvLayoutPreset.masjid:
+        return 'Masjid';
+    }
+  }
+
+  void _showLayoutPresetDialog(
+    BuildContext context,
+    TvSettingsNotifier tvNotifier,
+    TvSettings tvSettings,
+  ) {
+    final options = [
+      (TvLayoutPreset.prayerOnly, 'Prayer Only',
+          'Prayer times panel + hadith ticker'),
+      (TvLayoutPreset.splitStream, 'Split + Stream',
+          'Live stream left, prayer times right'),
+      (TvLayoutPreset.splitArt, 'Split + Art',
+          'Art slideshow left, prayer times right'),
+      (TvLayoutPreset.infoRich, 'Info Rich',
+          'Prayer times + weather + crawlers'),
+      (TvLayoutPreset.masjid, 'Masjid',
+          'Prayer times + announcement crawl'),
+    ];
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: PrayCalcColors.surface,
+        title: const Text('Layout Preset',
+            style: TextStyle(color: Colors.white, fontSize: 28)),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: options.map((opt) {
+              final isSelected =
+                  tvSettings.layoutSettings.preset == opt.$1;
+              return _LanguageOption(
+                label: '${opt.$2}\n${opt.$3}',
+                isSelected: isSelected,
+                onTap: () {
+                  tvNotifier.setLayoutSettings(
+                      TvLayoutSettings.forPreset(opt.$1));
+                  Navigator.of(ctx).pop();
+                },
+              );
+            }).toList(),
+          ),
+        ),
+      ),
+    );
+  }
+
+  // ── Second Timezone helpers (TV2-9.7) ────────────────────────────────────────
+
+  /// Well-known city slugs with display name and IANA timezone.
+  static const _kSecondCities = [
+    ('mecca', 'Mecca', 'Asia/Riyadh'),
+    ('medina', 'Medina', 'Asia/Riyadh'),
+    ('istanbul', 'Istanbul', 'Europe/Istanbul'),
+    ('cairo', 'Cairo', 'Africa/Cairo'),
+    ('karachi', 'Karachi', 'Asia/Karachi'),
+    ('jakarta', 'Jakarta', 'Asia/Jakarta'),
+    ('london', 'London', 'Europe/London'),
+    ('new-york', 'New York', 'America/New_York'),
+    ('dubai', 'Dubai', 'Asia/Dubai'),
+    ('kuala-lumpur', 'Kuala Lumpur', 'Asia/Kuala_Lumpur'),
+  ];
+
+  String _secondCityLabel(String slug) {
+    for (final c in _kSecondCities) {
+      if (c.$1 == slug) return c.$2;
+    }
+    return slug;
+  }
+
+  void _showSecondCityDialog(
+    BuildContext context,
+    TvSettingsNotifier tvNotifier,
+    TvSettings tvSettings,
+  ) {
+    showDialog<void>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: PrayCalcColors.deep,
+        title: const Text('Second City',
+            style: TextStyle(color: Colors.white, fontSize: 28)),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: _kSecondCities.map((city) {
+              final isSelected = tvSettings.secondCitySlug == city.$1;
+              return _LanguageOption(
+                label: city.$2,
+                isSelected: isSelected,
+                onTap: () {
+                  tvNotifier.setSecondCity(city.$1, city.$3);
+                  Navigator.of(ctx).pop();
+                },
+              );
+            }).toList(),
+          ),
+        ),
+      ),
+    );
+  }
+
+  // ── Audio & Streams helpers ──────────────────────────────────────────────────
+
+  String _audioModeLabel(String mode) {
     switch (mode) {
-      case 'photo':
-        return l.tvScreensaverPhotos;
-      case 'pattern':
-        return l.tvScreensaverPattern;
+      case 'stream':
+        return 'Live Stream';
+      case 'quran':
+        return 'Quran Recitation';
+      case 'silent':
+      default:
+        return 'Silent';
+    }
+  }
+
+  void _showAudioModeDialog(
+    BuildContext context,
+    TvSettingsNotifier tvNotifier,
+    TvSettings tvSettings,
+  ) {
+    final options = [
+      ('silent', 'Silent', Icons.volume_off),
+      ('stream', 'Live Stream', Icons.radio),
+      ('quran', 'Quran Recitation', Icons.menu_book),
+    ];
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: PrayCalcColors.surface,
+        title: const Text('Background Audio',
+            style: TextStyle(color: Colors.white, fontSize: 28)),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: options.map((opt) {
+            final isSelected = tvSettings.tvAudioMode == opt.$1;
+            return _LanguageOption(
+              label: opt.$2,
+              isSelected: isSelected,
+              onTap: () {
+                tvNotifier.setTvAudioMode(opt.$1);
+                Navigator.of(ctx).pop();
+              },
+            );
+          }).toList(),
+        ),
+      ),
+    );
+  }
+
+  void _showStreamSourceDialog(
+    BuildContext context,
+    TvSettingsNotifier tvNotifier,
+    TvSettings tvSettings,
+  ) {
+    const streams = [
+      ('mecca', 'Mecca Live — Masjid al-Haram'),
+      ('medina', 'Medina Live — Masjid an-Nabawi'),
+      ('quds', 'Al-Quds — Masjid al-Aqsa'),
+      ('azhar', 'Al-Azhar Mosque'),
+    ];
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: PrayCalcColors.surface,
+        title: const Text('Stream Source',
+            style: TextStyle(color: Colors.white, fontSize: 28)),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: streams.map((s) {
+              final isSelected = tvSettings.selectedStreamId == s.$1;
+              return _LanguageOption(
+                label: s.$2,
+                isSelected: isSelected,
+                onTap: () {
+                  tvNotifier.setSelectedStreamId(s.$1);
+                  Navigator.of(ctx).pop();
+                },
+              );
+            }).toList(),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showCustomStreamUrlDialog(
+    BuildContext context,
+    TvSettingsNotifier tvNotifier,
+    TvSettings tvSettings,
+  ) {
+    final controller = TextEditingController(
+      text: tvSettings.customStreams.isNotEmpty
+          ? tvSettings.customStreams.last.url
+          : '',
+    );
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: PrayCalcColors.surface,
+        title: const Text(
+          'Custom Stream URL',
+          style: TextStyle(color: Colors.white, fontSize: 28),
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Enter an HLS (.m3u8) or MP4 URL',
+              style: TextStyle(color: Colors.white54, fontSize: 18),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: controller,
+              autofocus: true,
+              style: const TextStyle(color: Colors.white, fontSize: 20),
+              decoration: InputDecoration(
+                hintText: 'https://example.com/stream.m3u8',
+                hintStyle: const TextStyle(color: Colors.white38),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: PrayCalcColors.mid),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: PrayCalcColors.light, width: 2),
+                ),
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: const Text('Cancel',
+                style: TextStyle(color: Colors.white54, fontSize: 20)),
+          ),
+          TextButton(
+            onPressed: () {
+              final url = controller.text.trim();
+              if (url.isNotEmpty) {
+                final stream = TvCustomStream(
+                  id: 'custom_${DateTime.now().millisecondsSinceEpoch}',
+                  name: 'Custom Stream',
+                  url: url,
+                );
+                // Replace previous custom entry (keep only latest).
+                final updated = tvSettings.customStreams
+                    .where((s) => !s.id.startsWith('custom_'))
+                    .toList()
+                  ..add(stream);
+                tvNotifier.update(
+                    tvSettings.copyWith(customStreams: updated));
+              }
+              Navigator.of(ctx).pop();
+            },
+            child: const Text('Save',
+                style: TextStyle(color: PrayCalcColors.light, fontSize: 20)),
+          ),
+        ],
+      ),
+    ).then((_) => controller.dispose());
+  }
+
+  void _showReciterDialog(
+    BuildContext context,
+    TvSettingsNotifier tvNotifier,
+    TvSettings tvSettings,
+  ) {
+    const reciters = [
+      ('sudais', 'Abdul Rahman Al-Sudais'),
+      ('shuraim', 'Saud Al-Shuraim'),
+      ('ghamdi', 'Saad Al-Ghamdi'),
+      ('minshawi', 'Mohamed Siddiq Al-Minshawi'),
+      ('husary', 'Mahmoud Khalil Al-Husary'),
+      ('alafasy', 'Mishary Rashid Alafasy'),
+    ];
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: PrayCalcColors.surface,
+        title: const Text('Select Reciter',
+            style: TextStyle(color: Colors.white, fontSize: 28)),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: reciters.map((r) {
+              final isSelected = tvSettings.selectedReciterId == r.$1;
+              return _LanguageOption(
+                label: r.$2,
+                isSelected: isSelected,
+                onTap: () {
+                  tvNotifier.setSelectedReciterId(r.$1);
+                  Navigator.of(ctx).pop();
+                },
+              );
+            }).toList(),
+          ),
+        ),
+      ),
+    );
+  }
+
+  // ── Quran playback mode helpers (TV2-4.5) ────────────────────────────────────
+
+  String _quranPlaybackModeLabel(QuranPlaybackMode mode) {
+    switch (mode) {
+      case QuranPlaybackMode.continuous:
+        return 'Continuous';
+      case QuranPlaybackMode.randomSurah:
+        return 'Random Surah';
+      case QuranPlaybackMode.specificSurah:
+        return 'Specific Surah';
+      case QuranPlaybackMode.juzByJuz:
+        return 'Juz-by-Juz';
+    }
+  }
+
+  void _showQuranPlaybackModeDialog(
+    BuildContext context,
+    TvSettingsNotifier tvNotifier,
+    TvSettings tvSettings,
+  ) {
+    const options = [
+      (QuranPlaybackMode.continuous, 'Continuous',
+          'Play surahs in order, looping'),
+      (QuranPlaybackMode.randomSurah, 'Random Surah',
+          'Pick a random surah each time'),
+      (QuranPlaybackMode.specificSurah, 'Specific Surah',
+          'Always start from one surah'),
+      (QuranPlaybackMode.juzByJuz, 'Juz-by-Juz',
+          'Advance through the 30 juz'),
+    ];
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: PrayCalcColors.surface,
+        title: const Text('Playback Mode',
+            style: TextStyle(color: Colors.white, fontSize: 28)),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: options.map((opt) {
+              final isSelected = tvSettings.quranPlaybackMode == opt.$1;
+              return _LanguageOption(
+                label: '${opt.$2}\n${opt.$3}',
+                isSelected: isSelected,
+                onTap: () {
+                  tvNotifier.setQuranPlaybackMode(opt.$1);
+                  Navigator.of(ctx).pop();
+                },
+              );
+            }).toList(),
+          ),
+        ),
+      ),
+    );
+  }
+
+  // ── Info Bar helpers (TV2-2.5) ──────────────────────────────────────────────
+
+  String _infoBarSummary(TvInfoBarConfig cfg) {
+    final items = <String>[];
+    if (cfg.showHijri) items.add('Hijri');
+    if (cfg.showGregorian) items.add('Gregorian');
+    if (cfg.showLocation) items.add('Location');
+    if (cfg.showWeather) items.add('Weather');
+    if (cfg.showMoon) items.add('Moon');
+    if (cfg.showHadithTicker) items.add('Hadith');
+    if (cfg.showCalendarTicker) items.add('Calendar');
+    return items.isEmpty ? 'Nothing shown' : items.join(', ');
+  }
+
+  // ── Brightness Schedule helpers ──────────────────────────────────────────────
+
+  String _brightnessRuleTitle(TvBrightnessRule rule) {
+    switch (rule.trigger) {
+      case BrightnessTrigger.prayerTime:
+        return 'At ${rule.prayerName ?? 'Prayer'}';
+      case BrightnessTrigger.fixedTime:
+        final h = (rule.fixedHour ?? 0).toString().padLeft(2, '0');
+        final m = (rule.fixedMinute ?? 0).toString().padLeft(2, '0');
+        return 'At $h:$m';
+      case BrightnessTrigger.sunset:
+        return 'At Sunset';
+    }
+  }
+
+  void _showAddBrightnessRuleDialog(
+    BuildContext context,
+    TvSettingsNotifier tvNotifier,
+    TvSettings tvSettings,
+  ) {
+    BrightnessTrigger trigger = BrightnessTrigger.prayerTime;
+    String prayerName = 'Fajr';
+    int fixedHour = 22;
+    int fixedMinute = 0;
+    int brightnessPercent = 80;
+    bool screenOff = false;
+
+    showDialog(
+      context: context,
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setDialogState) => AlertDialog(
+          backgroundColor: PrayCalcColors.surface,
+          title: const Text('Add Brightness Rule',
+              style: TextStyle(color: Colors.white, fontSize: 28)),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Trigger type
+                const Text('Trigger',
+                    style: TextStyle(color: Colors.white54, fontSize: 20)),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    _DialogChip(
+                      label: 'Prayer Time',
+                      selected: trigger == BrightnessTrigger.prayerTime,
+                      onTap: () => setDialogState(
+                          () => trigger = BrightnessTrigger.prayerTime),
+                    ),
+                    const SizedBox(width: 8),
+                    _DialogChip(
+                      label: 'Fixed Time',
+                      selected: trigger == BrightnessTrigger.fixedTime,
+                      onTap: () => setDialogState(
+                          () => trigger = BrightnessTrigger.fixedTime),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+
+                // Prayer picker or hour input
+                if (trigger == BrightnessTrigger.prayerTime) ...[
+                  const Text('Prayer',
+                      style: TextStyle(color: Colors.white54, fontSize: 20)),
+                  const SizedBox(height: 8),
+                  Wrap(
+                    spacing: 8,
+                    children: ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha']
+                        .map((p) => _DialogChip(
+                              label: p,
+                              selected: prayerName == p,
+                              onTap: () =>
+                                  setDialogState(() => prayerName = p),
+                            ))
+                        .toList(),
+                  ),
+                ] else ...[
+                  const Text('Time (hour)',
+                      style: TextStyle(color: Colors.white54, fontSize: 20)),
+                  const SizedBox(height: 8),
+                  Wrap(
+                    spacing: 6,
+                    children: List.generate(24, (h) => _DialogChip(
+                      label: h.toString().padLeft(2, '0'),
+                      selected: fixedHour == h,
+                      onTap: () => setDialogState(() => fixedHour = h),
+                    )),
+                  ),
+                  const SizedBox(height: 8),
+                  const Text('Minute',
+                      style: TextStyle(color: Colors.white54, fontSize: 20)),
+                  const SizedBox(height: 8),
+                  Wrap(
+                    spacing: 6,
+                    children: [0, 15, 30, 45]
+                        .map((m) => _DialogChip(
+                              label: m.toString().padLeft(2, '0'),
+                              selected: fixedMinute == m,
+                              onTap: () =>
+                                  setDialogState(() => fixedMinute = m),
+                            ))
+                        .toList(),
+                  ),
+                ],
+                const SizedBox(height: 16),
+
+                // Screen off toggle
+                Row(
+                  children: [
+                    const Text('Screen Off',
+                        style:
+                            TextStyle(color: Colors.white, fontSize: 22)),
+                    const Spacer(),
+                    Switch(
+                      value: screenOff,
+                      activeThumbColor: PrayCalcColors.mid,
+                      onChanged: (v) =>
+                          setDialogState(() => screenOff = v),
+                    ),
+                  ],
+                ),
+
+                // Brightness slider (only if not screen-off)
+                if (!screenOff) ...[
+                  const SizedBox(height: 8),
+                  Text('Brightness: $brightnessPercent%',
+                      style: const TextStyle(
+                          color: Colors.white, fontSize: 22)),
+                  SliderTheme(
+                    data: SliderTheme.of(ctx).copyWith(
+                      activeTrackColor: PrayCalcColors.mid,
+                      inactiveTrackColor: Colors.white12,
+                      thumbColor: PrayCalcColors.light,
+                    ),
+                    child: Slider(
+                      value: brightnessPercent.toDouble(),
+                      min: 0,
+                      max: 100,
+                      divisions: 20,
+                      onChanged: (v) => setDialogState(
+                          () => brightnessPercent = v.round()),
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop(),
+              child: const Text('Cancel',
+                  style:
+                      TextStyle(color: Colors.white54, fontSize: 22)),
+            ),
+            TextButton(
+              onPressed: () {
+                final rule = TvBrightnessRule(
+                  trigger: trigger,
+                  prayerName: trigger == BrightnessTrigger.prayerTime
+                      ? prayerName
+                      : null,
+                  fixedHour: trigger == BrightnessTrigger.fixedTime
+                      ? fixedHour
+                      : null,
+                  fixedMinute: trigger == BrightnessTrigger.fixedTime
+                      ? fixedMinute
+                      : null,
+                  brightnessPercent: brightnessPercent,
+                  screenOff: screenOff,
+                );
+                tvNotifier.setBrightnessSchedule(
+                    [...tvSettings.brightnessSchedule, rule]);
+                Navigator.of(ctx).pop();
+              },
+              child: const Text('Add',
+                  style: TextStyle(
+                      color: PrayCalcColors.mid, fontSize: 22)),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ── Screensaver helpers — TV2-7.5 / 7.6 / 7.8 / 7.9 ───────────────────────
+
+  String _photoSourceLabel(String source) {
+    switch (source) {
+      case 'mix':
+        return 'Mix — Library + Pattern';
+      case 'library':
+      default:
+        return 'PrayCalc Library';
+    }
+  }
+
+  void _showPhotoSourceV2Dialog(
+    BuildContext context,
+    TvSettingsNotifier tvNotifier,
+    TvSettings tvSettings,
+  ) {
+    const options = [
+      ('library', 'PrayCalc Library'),
+      ('mix', 'Mix — Library + Pattern'),
+    ];
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: PrayCalcColors.surface,
+        title: const Text('Photo Source',
+            style: TextStyle(color: Colors.white, fontSize: 28)),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: options.map((opt) {
+            final isSelected = tvSettings.photoSource == opt.$1;
+            return _LanguageOption(
+              label: opt.$2,
+              isSelected: isSelected,
+              onTap: () {
+                tvNotifier.setPhotoSource(opt.$1);
+                Navigator.of(ctx).pop();
+              },
+            );
+          }).toList(),
+        ),
+      ),
+    );
+  }
+
+  static const _kPhotoCategories = [
+    ('mecca-kaaba', 'Mecca — Kaaba'),
+    ('medina', 'Medina'),
+    ('al-aqsa', 'Al-Aqsa'),
+    ('masjid-exterior', 'Masjid Exterior'),
+    ('masjid-interior', 'Masjid Interior'),
+    ('geometric', 'Geometric Art'),
+    ('calligraphy', 'Calligraphy'),
+    ('landscape', 'Landscape'),
+  ];
+
+  String _photoCategoriesLabel(List<String> cats) {
+    if (cats.isEmpty) return 'All categories';
+    if (cats.length == _kPhotoCategories.length) return 'All categories';
+    return '${cats.length} selected';
+  }
+
+  void _showPhotoCategoriesDialog(
+    BuildContext context,
+    TvSettingsNotifier tvNotifier,
+    TvSettings tvSettings,
+  ) {
+    showDialog(
+      context: context,
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setDialogState) {
+          final selected = List<String>.from(tvSettings.photoCategories);
+          return AlertDialog(
+            backgroundColor: PrayCalcColors.surface,
+            title: const Text('Photo Categories',
+                style: TextStyle(color: Colors.white, fontSize: 28)),
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: _kPhotoCategories.map((cat) {
+                  final checked = selected.isEmpty || selected.contains(cat.$1);
+                  return Focus(
+                    onKeyEvent: (node, event) {
+                      if (event is KeyDownEvent &&
+                          (event.logicalKey == LogicalKeyboardKey.select ||
+                              event.logicalKey == LogicalKeyboardKey.enter)) {
+                        setDialogState(() {
+                          if (selected.contains(cat.$1)) {
+                            selected.remove(cat.$1);
+                          } else {
+                            selected.add(cat.$1);
+                          }
+                        });
+                        return KeyEventResult.handled;
+                      }
+                      return KeyEventResult.ignored;
+                    },
+                    child: CheckboxListTile(
+                      title: Text(cat.$2,
+                          style: const TextStyle(
+                              color: Colors.white, fontSize: 22)),
+                      value: checked,
+                      activeColor: PrayCalcColors.mid,
+                      checkColor: PrayCalcColors.deep,
+                      onChanged: (v) {
+                        setDialogState(() {
+                          if (v == true) {
+                            if (!selected.contains(cat.$1)) {
+                              selected.add(cat.$1);
+                            }
+                          } else {
+                            selected.remove(cat.$1);
+                          }
+                        });
+                      },
+                    ),
+                  );
+                }).toList(),
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(ctx).pop(),
+                child: const Text('Cancel',
+                    style:
+                        TextStyle(color: Colors.white54, fontSize: 22)),
+              ),
+              TextButton(
+                onPressed: () {
+                  // Empty list = all categories
+                  final toSave = selected.length == _kPhotoCategories.length
+                      ? <String>[]
+                      : selected;
+                  tvNotifier.setPhotoCategories(toSave);
+                  Navigator.of(ctx).pop();
+                },
+                child: const Text('Save',
+                    style: TextStyle(
+                        color: PrayCalcColors.mid, fontSize: 22)),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
+  String _slideshowDurationLabel(int seconds) {
+    switch (seconds) {
+      case 15:
+        return '15 seconds';
+      case 60:
+        return '1 minute';
+      case 180:
+        return '3 minutes';
+      case 300:
+        return '5 minutes';
+      case 30:
+      default:
+        return '30 seconds';
+    }
+  }
+
+  void _showSlideshowDurationDialog(
+    BuildContext context,
+    TvSettingsNotifier tvNotifier,
+    TvSettings tvSettings,
+  ) {
+    const options = [
+      (15, '15 seconds'),
+      (30, '30 seconds'),
+      (60, '1 minute'),
+      (180, '3 minutes'),
+      (300, '5 minutes'),
+    ];
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: PrayCalcColors.surface,
+        title: const Text('Photo Duration',
+            style: TextStyle(color: Colors.white, fontSize: 28)),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: options.map((opt) {
+            final isSelected =
+                tvSettings.slideshowDurationSeconds == opt.$1;
+            return _LanguageOption(
+              label: opt.$2,
+              isSelected: isSelected,
+              onTap: () {
+                tvNotifier.setSlideshowDurationSeconds(opt.$1);
+                Navigator.of(ctx).pop();
+              },
+            );
+          }).toList(),
+        ),
+      ),
+    );
+  }
+
+  String _slideshowTransitionLabel(String transition) {
+    switch (transition) {
+      case 'crossfade':
+        return 'Crossfade';
       case 'both':
-        return l.tvScreensaverBoth;
+        return 'Both';
+      case 'kenburns':
       default:
-        return l.tvScreensaverPhotos;
+        return 'Ken Burns';
     }
   }
 
-  String _screensaverCategoryLabel(AppLocalizations l, String category) {
-    switch (category) {
-      case 'masjid-exterior':
-        return l.tvCategoryMasjids;
-      case 'masjid-interior':
-        return l.tvCategoryInteriors;
-      case 'geometric':
-        return l.tvCategoryGeometric;
-      case 'calligraphy':
-        return l.tvCategoryCalligraphy;
-      case 'landscape':
-        return l.tvCategoryLandscapes;
-      case 'ramadan':
-        return l.tvCategoryRamadan;
-      case '':
-      default:
-        return l.tvCategoryAll;
-    }
-  }
-
-  void _showScreensaverModeDialog(
-      BuildContext context, AppLocalizations l, TvSettingsNotifier tvNotifier) {
-    final options = [
-      ('photo', l.tvScreensaverPhotos),
-      ('pattern', l.tvScreensaverPattern),
-      ('both', l.tvScreensaverBoth),
+  void _showSlideshowTransitionDialog(
+    BuildContext context,
+    TvSettingsNotifier tvNotifier,
+    TvSettings tvSettings,
+  ) {
+    const options = [
+      ('crossfade', 'Crossfade'),
+      ('kenburns', 'Ken Burns'),
+      ('both', 'Both'),
     ];
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: PrayCalcColors.surface,
-        title: Text(l.tvScreensaverBg,
-            style: const TextStyle(color: Colors.white, fontSize: 28)),
+        title: const Text('Transitions',
+            style: TextStyle(color: Colors.white, fontSize: 28)),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: options.map((opt) {
-            final isSelected =
-                ref.read(tvSettingsProvider).screensaverMode == opt.$1;
+            final isSelected = tvSettings.slideshowTransition == opt.$1;
             return _LanguageOption(
               label: opt.$2,
               isSelected: isSelected,
               onTap: () {
-                tvNotifier.setScreensaverMode(opt.$1);
+                tvNotifier.setSlideshowTransition(opt.$1);
                 Navigator.of(ctx).pop();
               },
             );
@@ -335,33 +1352,43 @@ class _TvSettingsScreenState extends ConsumerState<TvSettingsScreen> {
     );
   }
 
-  void _showScreensaverCategoryDialog(
-      BuildContext context, AppLocalizations l, TvSettingsNotifier tvNotifier) {
-    final options = [
-      ('', l.tvCategoryAll),
-      ('masjid-exterior', l.tvCategoryMasjids),
-      ('masjid-interior', l.tvCategoryInteriors),
-      ('geometric', l.tvCategoryGeometric),
-      ('calligraphy', l.tvCategoryCalligraphy),
-      ('landscape', l.tvCategoryLandscapes),
-      ('ramadan', l.tvCategoryRamadan),
+  String _overlayDensityLabel(String density) {
+    switch (density) {
+      case 'minimal':
+        return 'Minimal — time only';
+      case 'full':
+        return 'Full — all prayers + weather';
+      case 'standard':
+      default:
+        return 'Standard — time + next prayer';
+    }
+  }
+
+  void _showOverlayDensityDialog(
+    BuildContext context,
+    TvSettingsNotifier tvNotifier,
+    TvSettings tvSettings,
+  ) {
+    const options = [
+      ('minimal', 'Minimal', 'Time only'),
+      ('standard', 'Standard', 'Time + next prayer'),
+      ('full', 'Full', 'All prayers + weather'),
     ];
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: PrayCalcColors.surface,
-        title: Text(l.tvPhotoCategoryTitle,
-            style: const TextStyle(color: Colors.white, fontSize: 28)),
+        title: const Text('Overlay Density',
+            style: TextStyle(color: Colors.white, fontSize: 28)),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: options.map((opt) {
-            final isSelected =
-                ref.read(tvSettingsProvider).screensaverCategory == opt.$1;
+            final isSelected = tvSettings.overlayDensity == opt.$1;
             return _LanguageOption(
-              label: opt.$2,
+              label: '${opt.$2} — ${opt.$3}',
               isSelected: isSelected,
               onTap: () {
-                tvNotifier.setScreensaverCategory(opt.$1);
+                tvNotifier.setOverlayDensity(opt.$1);
                 Navigator.of(ctx).pop();
               },
             );
@@ -369,6 +1396,106 @@ class _TvSettingsScreenState extends ConsumerState<TvSettingsScreen> {
         ),
       ),
     );
+  }
+
+  String _screensaverIdleLabel(int seconds) {
+    if (seconds == 0) return 'Never';
+    if (seconds < 60) return '${seconds}s';
+    final min = seconds ~/ 60;
+    return '$min minute${min == 1 ? '' : 's'}';
+  }
+
+  void _showScreensaverIdleDialog(
+    BuildContext context,
+    TvSettingsNotifier tvNotifier,
+    TvSettings tvSettings,
+  ) {
+    const options = [
+      (60, '1 minute'),
+      (300, '5 minutes'),
+      (600, '10 minutes'),
+      (1800, '30 minutes'),
+      (0, 'Never'),
+    ];
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: PrayCalcColors.surface,
+        title: const Text('Screensaver Starts After',
+            style: TextStyle(color: Colors.white, fontSize: 28)),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: options.map((opt) {
+            final isSelected =
+                tvSettings.screensaverIdleSeconds == opt.$1;
+            return _LanguageOption(
+              label: opt.$2,
+              isSelected: isSelected,
+              onTap: () {
+                tvNotifier.setScreensaverIdleSeconds(opt.$1);
+                Navigator.of(ctx).pop();
+              },
+            );
+          }).toList(),
+        ),
+      ),
+    );
+  }
+
+  // ── Brightness helpers — TV2-6.7 ────────────────────────────────────────────
+
+  List<Widget> _buildPrayerBrightnessOverrides(
+    TvSettingsNotifier tvNotifier,
+    TvSettings tvSettings,
+  ) {
+    const prayers = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
+    return prayers.map((prayer) {
+      final override = tvSettings.prayerBrightnessOverrides[prayer];
+      final displayValue = override ?? 80;
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 8),
+        child: _TvSettingsTile(
+          icon: Icons.brightness_6,
+          title: prayer,
+          subtitle: override != null ? '$override%' : 'Default',
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(
+                width: 180,
+                child: SliderTheme(
+                  data: SliderTheme.of(
+                          // Use a dummy context key — will be replaced
+                          // by the actual context inside Builder.
+                          // We resolve via the _CompactSlider widget below.
+                          // ignore: prefer_const_constructors
+                          const Key('') as dynamic)
+                      .copyWith(),
+                  child: _CompactSlider(
+                    value: displayValue.toDouble(),
+                    min: 0,
+                    max: 100,
+                    divisions: 20,
+                    label: '$displayValue%',
+                    onChanged: (v) => tvNotifier
+                        .setPrayerBrightnessOverride(prayer, v.round()),
+                  ),
+                ),
+              ),
+              if (override != null)
+                IconButton(
+                  icon: const Icon(Icons.refresh,
+                      color: Colors.white38, size: 24),
+                  tooltip: 'Reset to default',
+                  onPressed: () =>
+                      tvNotifier.clearPrayerBrightnessOverride(prayer),
+                ),
+            ],
+          ),
+          onTap: null,
+        ),
+      );
+    }).toList();
   }
 
   static const _supportedLocales = [
@@ -649,6 +1776,56 @@ class _LanguageOption extends StatelessWidget {
             ? const Icon(Icons.check, color: PrayCalcColors.light, size: 28)
             : null,
         onTap: onTap,
+      ),
+    );
+  }
+}
+
+/// Small focusable chip used inside dialogs (e.g. the Add Brightness Rule dialog).
+class _DialogChip extends StatelessWidget {
+  const _DialogChip({
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Focus(
+      onKeyEvent: (node, event) {
+        if (event is KeyDownEvent &&
+            (event.logicalKey == LogicalKeyboardKey.select ||
+                event.logicalKey == LogicalKeyboardKey.enter)) {
+          onTap();
+          return KeyEventResult.handled;
+        }
+        return KeyEventResult.ignored;
+      },
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          decoration: BoxDecoration(
+            color: selected ? PrayCalcColors.dark : Colors.white10,
+            borderRadius: BorderRadius.circular(8),
+            border: selected
+                ? Border.all(color: PrayCalcColors.mid, width: 2)
+                : Border.all(color: Colors.white24),
+          ),
+          child: Text(
+            label,
+            style: TextStyle(
+              color: selected ? PrayCalcColors.light : Colors.white70,
+              fontSize: 20,
+              fontWeight:
+                  selected ? FontWeight.bold : FontWeight.normal,
+            ),
+          ),
+        ),
       ),
     );
   }

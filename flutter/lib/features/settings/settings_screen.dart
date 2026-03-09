@@ -277,6 +277,13 @@ class SettingsScreen extends ConsumerWidget {
             trailing: const Icon(Icons.chevron_right),
             onTap: () => context.push(Routes.tvSettings),
           ),
+          ListTile(
+            leading: const Icon(Icons.devices_outlined),
+            title: const Text('My TVs'),
+            subtitle: const Text('Manage paired TV displays'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => context.push(Routes.pairedTvs),
+          ),
 
           // ── About ─────────────────────────────────────────────────────────
           _SectionHeader(l.commonAbout),

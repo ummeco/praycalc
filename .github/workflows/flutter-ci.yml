@@ -99,6 +99,50 @@ jobs:
           path: flutter/build/ios/iphonesimulator/Runner.app
           retention-days: 14
 
+  build-windows:
+    name: Build Windows
+    runs-on: windows-latest
+    needs: test
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - name: Get dependencies
+        working-directory: flutter
+        run: flutter pub get
+      - name: Build Windows
+        working-directory: flutter
+        run: flutter build windows --release
+
+  build-linux:
+    name: Build Linux
+    runs-on: ubuntu-latest
+    needs: test
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - name: Install Linux dependencies
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev libstdc++-12-dev
+      - name: Get dependencies
+        working-directory: flutter
+        run: flutter pub get
+      - name: Build Linux
+        working-directory: flutter
+        run: flutter build linux --release
+
   shorebird-patch-android:
     name: Shorebird Patch Android
     runs-on: ubuntu-latest

@@ -4,52 +4,101 @@ struct MenuPopover: View {
     @ObservedObject var prayerService: PrayerService
     @Binding var showSettings: Bool
 
+    @State private var selectedTab: MenuTab = .prayers
+
     private let brandPrimary = Color(red: 0x79/255.0, green: 0xC2/255.0, blue: 0x4C/255.0)
     private let brandAccent = Color(red: 0xC9/255.0, green: 0xF2/255.0, blue: 0x7A/255.0)
     private let brandDeep = Color(red: 0x0D/255.0, green: 0x2F/255.0, blue: 0x17/255.0)
 
+    enum MenuTab { case prayers, tvs }
+
     var body: some View {
         VStack(spacing: 0) {
-            // Header with date
-            headerSection
-                .padding(.horizontal, 16)
-                .padding(.top, 12)
-                .padding(.bottom, 8)
+            // Tab bar
+            HStack(spacing: 0) {
+                tabButton(label: "Prayers", icon: "clock.fill", tab: .prayers)
+                tabButton(label: "TVs", icon: "tv.fill", tab: .tvs)
+            }
+            .padding(.horizontal, 8)
+            .padding(.top, 8)
+            .padding(.bottom, 4)
 
             Divider()
 
-            // Prayer list
-            ScrollView {
-                VStack(spacing: 2) {
-                    ForEach(prayerService.prayers) { prayer in
-                        PrayerRow(
-                            prayer: prayer,
-                            isNext: prayer.id == prayerService.nextPrayer?.id,
-                            brandPrimary: brandPrimary,
-                            brandDeep: brandDeep
-                        )
-                    }
-                }
-                .padding(.horizontal, 8)
-                .padding(.vertical, 6)
+            // Tab content
+            switch selectedTab {
+            case .prayers:
+                prayersContent
+            case .tvs:
+                TVsView()
+                    .frame(minHeight: 120)
             }
 
             Divider()
 
-            // Qibla + countdown
-            if let next = prayerService.nextPrayer {
-                countdownSection(next: next)
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 8)
-                Divider()
-            }
-
-            // Footer actions
+            // Footer actions (always visible)
             footerSection
                 .padding(.horizontal, 16)
                 .padding(.vertical, 8)
         }
         .background(Color(nsColor: .windowBackgroundColor))
+    }
+
+    @ViewBuilder
+    private var prayersContent: some View {
+        // Header with date
+        headerSection
+            .padding(.horizontal, 16)
+            .padding(.top, 12)
+            .padding(.bottom, 8)
+
+        Divider()
+
+        // Prayer list
+        ScrollView {
+            VStack(spacing: 2) {
+                ForEach(prayerService.prayers) { prayer in
+                    PrayerRow(
+                        prayer: prayer,
+                        isNext: prayer.id == prayerService.nextPrayer?.id,
+                        brandPrimary: brandPrimary,
+                        brandDeep: brandDeep
+                    )
+                }
+            }
+            .padding(.horizontal, 8)
+            .padding(.vertical, 6)
+        }
+
+        Divider()
+
+        // Qibla + countdown
+        if let next = prayerService.nextPrayer {
+            countdownSection(next: next)
+                .padding(.horizontal, 16)
+                .padding(.vertical, 8)
+            Divider()
+        }
+    }
+
+    private func tabButton(label: String, icon: String, tab: MenuTab) -> some View {
+        let isSelected = selectedTab == tab
+        return Button(action: { selectedTab = tab }) {
+            HStack(spacing: 4) {
+                Image(systemName: icon)
+                    .font(.system(size: 11))
+                Text(label)
+                    .font(.system(size: 11, weight: isSelected ? .semibold : .regular))
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 5)
+            .background(
+                RoundedRectangle(cornerRadius: 6)
+                    .fill(isSelected ? brandPrimary.opacity(0.15) : Color.clear)
+            )
+            .foregroundColor(isSelected ? brandAccent : .secondary)
+        }
+        .buttonStyle(.plain)
     }
 
     private var headerSection: some View {

@@ -35,5 +35,8 @@ class MainActivity : FlutterActivity() {
 
         // TV launcher enable/disable + stock launcher escape
         flutterEngine.plugins.add(TvLauncherPlugin())
+
+        // TV brightness control (WRITE_SETTINGS via WindowManager)
+        flutterEngine.plugins.add(TvBrightnessPlugin())
     }
 }

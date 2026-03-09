@@ -665,5 +665,19 @@
   "smartHomePairTvFailed": "TV ulash muvaffaqiyatsiz",
   "smartHomeLoadingDevices": "Qurilmalar yuklanmoqda...",
   "smartHomeLoadingIntegrations": "Integratsiyalar yuklanmoqda...",
-  "smartHomeServiceUnavailable": "Aqlli uy xizmati hozirda mavjud emas. Iltimos, keyinroq qayta urinib ko'ring."
+  "smartHomeServiceUnavailable": "Aqlli uy xizmati hozirda mavjud emas. Iltimos, keyinroq qayta urinib ko'ring.",
+
+  "tvPairingScanQr": "Scan TV QR Code",
+  "tvPairingScanInstruction": "Point your camera at the QR code on your TV",
+  "tvPairingEnterManually": "Enter code manually",
+  "tvPairingEnterCode": "Enter pairing code",
+  "tvPairingCodeHint": "6-character code shown on your TV",
+  "tvPairingNameThisTv": "Name this TV",
+  "tvPairingNameHint": "e.g. Living Room TV",
+  "tvPairingSuccess": "{name} paired!",
+  "tvPairingSuccessSubtitle": "Your TV is now connected to your account.",
+  "tvPairingBackToMyTvs": "Back to My TVs",
+  "tvPairingTimeout": "Request timed out. Is the TV on and connected?",
+  "tvPairingServerError": "Could not connect to server.",
+  "tvPairingSignInRequired": "Sign in to your account before pairing a TV."
 }

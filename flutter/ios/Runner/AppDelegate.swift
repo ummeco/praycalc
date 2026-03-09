@@ -2,23 +2,20 @@ import Flutter
 import UIKit
 
 @main
-@objc class AppDelegate: FlutterAppDelegate, FlutterImplicitEngineDelegate {
+@objc class AppDelegate: FlutterAppDelegate {
   override func application(
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
-    let controller = window?.rootViewController as! FlutterViewController
-    let registrar = controller.registrar(forPlugin: "IAPPlugin")!
+    GeneratedPluginRegistrant.register(with: self)
     if #available(iOS 15.0, *) {
-      IAPPlugin.register(with: registrar)
+      if let registrar = self.registrar(forPlugin: "IAPPlugin") {
+        IAPPlugin.register(with: registrar)
+      }
     }
-    let audioRegistrar = controller.registrar(forPlugin: "AudioPlugin")!
-    AudioPlugin.register(with: audioRegistrar)
-
+    if let registrar = self.registrar(forPlugin: "AudioPlugin") {
+      AudioPlugin.register(with: registrar)
+    }
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
-  }
-
-  func didInitializeImplicitFlutterEngine(_ engineBridge: FlutterImplicitEngineBridge) {
-    GeneratedPluginRegistrant.register(with: engineBridge.pluginRegistry)
   }
 }

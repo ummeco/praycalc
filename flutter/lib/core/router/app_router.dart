@@ -26,7 +26,10 @@ import '../../features/travel/travel_rulings_screen.dart';
 import '../../features/tv/tv_ambient_screen.dart';
 import '../../features/tv/tv_home_screen.dart';
 import '../../features/tv/tv_masjid_screen.dart';
+import '../../features/tv/tv_add_from_mobile_screen.dart';
+import '../../features/tv/tv_paired_screen.dart';
 import '../../features/tv/tv_pairing_screen.dart';
+import '../../features/tv/tv_remote_settings_screen.dart';
 import '../../features/tv/tv_settings_screen.dart';
 
 /// Named route paths.
@@ -56,6 +59,9 @@ class Routes {
   static const tvSettings           = '/tv/settings';
   static const tvAmbient            = '/tv/ambient';
   static const tvPairing            = '/tv/pairing';
+  static const pairedTvs            = '/paired-tvs';
+  static const tvRemoteSettings     = '/paired-tvs/settings';
+  static const tvAddFromMobile      = '/paired-tvs/add';
 }
 
 /// Set to true after first launch check resolves — prevents flicker redirect.
@@ -196,6 +202,24 @@ final appRouter = GoRouter(
     GoRoute(
       path: Routes.tvPairing,
       builder: (context, state) => const TvPairingScreen(),
+    ),
+    GoRoute(
+      path: Routes.pairedTvs,
+      builder: (context, state) => const TvPairedScreen(),
+    ),
+    GoRoute(
+      path: Routes.tvRemoteSettings,
+      builder: (context, state) {
+        final extra = state.extra as Map<String, String>? ?? {};
+        return TvRemoteSettingsScreen(
+          deviceId: extra['deviceId'] ?? '',
+          deviceName: extra['deviceName'] ?? 'TV',
+        );
+      },
+    ),
+    GoRoute(
+      path: Routes.tvAddFromMobile,
+      builder: (context, state) => const TvAddFromMobileScreen(),
     ),
   ],
 );

@@ -16,6 +16,7 @@ export default defineConfig({
       DEFAULT_LAT: '40.7128',
       DEFAULT_LNG: '-74.006',
       DEFAULT_TIMEZONE: 'America/New_York',
+      STRIPE_SECRET_KEY: 'sk_test_dummy',
     },
   },
 });

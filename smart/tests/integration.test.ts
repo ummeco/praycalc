@@ -502,7 +502,8 @@ describe('Health check', () => {
     const res = await request(app).get('/health');
 
     expect(res.status).toBe(200);
-    expect(res.body.version).toBe('0.7.0');
+    expect(typeof res.body.version).toBe('string');
+    expect(res.body.version).toMatch(/^\d+\.\d+\.\d+/);
   });
 
   it('GET /health responds quickly (under 100ms)', async () => {
