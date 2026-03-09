@@ -22,6 +22,8 @@ export default function Footer() {
           <Link href="/">{t("home")}</Link>
           <Link href="/duas">Duas &amp; Adhkar</Link>
           <Link href="/tasbeeh">Tasbeeh</Link>
+          <Link href="/stats">Prayer Stats</Link>
+          <Link href="/agendas">Agendas</Link>
           <Link href="/institutions">{t("institutions")}</Link>
           <Link href="/masjids">{t("masjids")}</Link>
         </div>

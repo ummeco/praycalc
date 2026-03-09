@@ -12,6 +12,7 @@ import { integrationsRouter } from './routes/integrations.js';
 import { devicesRouter } from './routes/devices.js';
 import { tvRouter } from './routes/tv.js';
 import { agendasRouter } from './routes/agendas.js';
+import { statsRouter } from './routes/stats.js';
 import { rateLimiter } from './middleware/rate-limit.js';
 import { errorHandler } from './middleware/error-handler.js';
 import { startPrayerCron } from './cron/prayer-events.js';
@@ -47,6 +48,7 @@ app.use('/api/v1/integrations', integrationsRouter);
 app.use('/api/v1/devices', devicesRouter);
 app.use('/api/v1/tv', tvRouter);
 app.use('/api/v1/agendas', agendasRouter);
+app.use('/api/v1/stats', statsRouter);
 
 // Error handler
 app.use(errorHandler);
