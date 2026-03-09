@@ -1,0 +1,22 @@
+[
+  {"file": "mosque_01.jpg", "category": "mosque", "title": "Masjid al-Haram, Makkah", "credit": "PrayCalc"},
+  {"file": "mosque_02.jpg", "category": "mosque", "title": "Al-Masjid an-Nabawi, Madinah", "credit": "PrayCalc"},
+  {"file": "mosque_03.jpg", "category": "mosque", "title": "Al-Aqsa Mosque, Jerusalem", "credit": "PrayCalc"},
+  {"file": "mosque_04.jpg", "category": "mosque", "title": "Sultan Ahmed Mosque, Istanbul", "credit": "PrayCalc"},
+  {"file": "mosque_05.jpg", "category": "mosque", "title": "Sheikh Zayed Grand Mosque, Abu Dhabi", "credit": "PrayCalc"},
+  {"file": "mosque_06.jpg", "category": "mosque", "title": "Faisal Mosque, Islamabad", "credit": "PrayCalc"},
+  {"file": "mosque_07.jpg", "category": "mosque", "title": "Hassan II Mosque, Casablanca", "credit": "PrayCalc"},
+  {"file": "mosque_08.jpg", "category": "mosque", "title": "Islamic Cultural Centre, Rome", "credit": "PrayCalc"},
+  {"file": "nature_01.jpg", "category": "nature", "title": "Desert Sunrise", "credit": "PrayCalc"},
+  {"file": "nature_02.jpg", "category": "nature", "title": "Mountain Dawn", "credit": "PrayCalc"},
+  {"file": "nature_03.jpg", "category": "nature", "title": "Ocean at Fajr", "credit": "PrayCalc"},
+  {"file": "nature_04.jpg", "category": "nature", "title": "Starry Night Sky", "credit": "PrayCalc"},
+  {"file": "nature_05.jpg", "category": "nature", "title": "Green Valley at Dusk", "credit": "PrayCalc"},
+  {"file": "nature_06.jpg", "category": "nature", "title": "Golden Hour Forest", "credit": "PrayCalc"},
+  {"file": "geometric_01.jpg", "category": "geometric", "title": "Moroccan Zellige Pattern", "credit": "PrayCalc"},
+  {"file": "geometric_02.jpg", "category": "geometric", "title": "Girih Tile Pattern", "credit": "PrayCalc"},
+  {"file": "geometric_03.jpg", "category": "geometric", "title": "Muqarnas Detail, Isfahan", "credit": "PrayCalc"},
+  {"file": "geometric_04.jpg", "category": "geometric", "title": "Arabesque Pattern", "credit": "PrayCalc"},
+  {"file": "calligraphy_01.jpg", "category": "calligraphy", "title": "Bismillah Calligraphy", "credit": "PrayCalc"},
+  {"file": "calligraphy_02.jpg", "category": "calligraphy", "title": "Ayat al-Kursi Calligraphy", "credit": "PrayCalc"}
+]

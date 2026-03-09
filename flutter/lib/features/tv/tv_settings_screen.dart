@@ -339,6 +339,22 @@ class _TvSettingsScreenState extends ConsumerState<TvSettingsScreen> {
               onTap: () => _showScreensaverModeDialog(context, tvNotifier, tvSettings),
             ),
             const SizedBox(height: 8),
+            // P-16 — Bundled wallpapers toggle
+            _TvSettingsTile(
+              icon: Icons.photo_album,
+              title: 'Use PrayCalc Wallpapers',
+              subtitle: tvSettings.useBundledWallpapers
+                  ? 'Bundled mosque & nature photos'
+                  : 'Stream from cloud library',
+              trailing: Switch(
+                value: tvSettings.useBundledWallpapers,
+                onChanged: (v) => tvNotifier.setUseBundledWallpapers(v),
+                activeThumbColor: PrayCalcColors.light,
+              ),
+              onTap: () => tvNotifier
+                  .setUseBundledWallpapers(!tvSettings.useBundledWallpapers),
+            ),
+            const SizedBox(height: 8),
             // TV2-7.5 — Photo source
             _TvSettingsTile(
               icon: Icons.wallpaper,

@@ -275,6 +275,77 @@ const _kDefaultPrayerAlertConfigs = <String, TvPrayerAlertConfig>{
 };
 
 // ---------------------------------------------------------------------------
+// Q-1: Rail position (TvPrayerRail)
+// ---------------------------------------------------------------------------
+
+/// Which edge of the screen the prayer rail occupies.
+enum TvRailPosition { top, bottom, left, right }
+
+// ---------------------------------------------------------------------------
+// Q-2: Content cycle types (TvContentCycler)
+// ---------------------------------------------------------------------------
+
+/// Identifies a content type that can occupy the content canvas.
+enum TvContentType {
+  liveStream,
+  artSlideshow,
+  quranDisplay,
+  weather,
+  ayahOfHour,
+  clock,
+  hadithDisplay,
+  multiCity,
+  googlePhotos,
+}
+
+/// A single item in the TV content rotation cycle.
+class TvContentItem {
+  final TvContentType type;
+  final int durationSeconds;
+  final bool enabled;
+
+  const TvContentItem({
+    required this.type,
+    this.durationSeconds = 30,
+    this.enabled = true,
+  });
+
+  TvContentItem copyWith({
+    TvContentType? type,
+    int? durationSeconds,
+    bool? enabled,
+  }) {
+    return TvContentItem(
+      type: type ?? this.type,
+      durationSeconds: durationSeconds ?? this.durationSeconds,
+      enabled: enabled ?? this.enabled,
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        'type': type.name,
+        'durationSeconds': durationSeconds,
+        'enabled': enabled,
+      };
+
+  factory TvContentItem.fromJson(Map<String, dynamic> j) => TvContentItem(
+        type: TvContentType.values.firstWhere(
+          (e) => e.name == j['type'],
+          orElse: () => TvContentType.artSlideshow,
+        ),
+        durationSeconds: j['durationSeconds'] as int? ?? 30,
+        enabled: j['enabled'] as bool? ?? true,
+      );
+}
+
+/// Default content cycle used when none is configured.
+const List<TvContentItem> _kDefaultContentCycle = [
+  TvContentItem(type: TvContentType.artSlideshow, durationSeconds: 30, enabled: true),
+  TvContentItem(type: TvContentType.ayahOfHour, durationSeconds: 60, enabled: true),
+  TvContentItem(type: TvContentType.clock, durationSeconds: 20, enabled: true),
+];
+
+// ---------------------------------------------------------------------------
 // Panel & layout enums
 // ---------------------------------------------------------------------------
 
@@ -560,6 +631,9 @@ class TvSettings {
   /// Photo source mode: 'library' (PrayCalc library) or 'mix'.
   final String photoSource;
 
+  /// P-16: Use bundled PrayCalc wallpaper pack instead of MinIO library.
+  final bool useBundledWallpapers;
+
   /// Active photo categories. Empty list = all categories.
   final List<String> photoCategories;
 
@@ -630,6 +704,27 @@ class TvSettings {
   /// Minutes after Isha adhan before Good Night mode activates. Default 30.
   final int goodNightDelayMinutes;
 
+  // ---------------------------------------------------------------------------
+  // Q-1 — Prayer rail position
+  // ---------------------------------------------------------------------------
+
+  /// Which screen edge the TvPrayerRail occupies.
+  final TvRailPosition railPosition;
+
+  // ---------------------------------------------------------------------------
+  // Q-2 — Content cycle
+  // ---------------------------------------------------------------------------
+
+  /// Ordered list of content items that TvContentCycler rotates through.
+  final List<TvContentItem> contentCycle;
+
+  // ---------------------------------------------------------------------------
+  // Q-3 — Canvas layout
+  // ---------------------------------------------------------------------------
+
+  /// True once the user has customised [contentCycle] from the defaults.
+  final bool contentCycleCustomized;
+
   const TvSettings({
     this.isMasjidMode = false,
     this.masjidName = '',
@@ -674,6 +769,7 @@ class TvSettings {
     this.nightModeEnabled = true,
     this.currentBrightness = 100,
     this.photoSource = 'library',
+    this.useBundledWallpapers = false,
     this.photoCategories = const [],
     this.slideshowDurationSeconds = 30,
     this.slideshowTransition = 'kenburns',
@@ -686,6 +782,9 @@ class TvSettings {
     this.tvFontScale = 1.0,
     this.goodNightEnabled = false,
     this.goodNightDelayMinutes = 30,
+    this.railPosition = TvRailPosition.top,
+    this.contentCycle = _kDefaultContentCycle,
+    this.contentCycleCustomized = false,
   });
 
   TvSettings copyWith({
@@ -725,6 +824,7 @@ class TvSettings {
     bool? nightModeEnabled,
     int? currentBrightness,
     String? photoSource,
+    bool? useBundledWallpapers,
     List<String>? photoCategories,
     int? slideshowDurationSeconds,
     String? slideshowTransition,
@@ -737,6 +837,9 @@ class TvSettings {
     double? tvFontScale,
     bool? goodNightEnabled,
     int? goodNightDelayMinutes,
+    TvRailPosition? railPosition,
+    List<TvContentItem>? contentCycle,
+    bool? contentCycleCustomized,
   }) {
     return TvSettings(
       isMasjidMode: isMasjidMode ?? this.isMasjidMode,
@@ -791,6 +894,7 @@ class TvSettings {
       nightModeEnabled: nightModeEnabled ?? this.nightModeEnabled,
       currentBrightness: currentBrightness ?? this.currentBrightness,
       photoSource: photoSource ?? this.photoSource,
+      useBundledWallpapers: useBundledWallpapers ?? this.useBundledWallpapers,
       photoCategories: photoCategories ?? this.photoCategories,
       slideshowDurationSeconds:
           slideshowDurationSeconds ?? this.slideshowDurationSeconds,
@@ -808,6 +912,10 @@ class TvSettings {
       goodNightEnabled: goodNightEnabled ?? this.goodNightEnabled,
       goodNightDelayMinutes:
           goodNightDelayMinutes ?? this.goodNightDelayMinutes,
+      railPosition: railPosition ?? this.railPosition,
+      contentCycle: contentCycle ?? this.contentCycle,
+      contentCycleCustomized:
+          contentCycleCustomized ?? this.contentCycleCustomized,
     );
   }
 
@@ -850,6 +958,7 @@ class TvSettings {
         'nightModeEnabled': nightModeEnabled,
         'currentBrightness': currentBrightness,
         'photoSource': photoSource,
+        'useBundledWallpapers': useBundledWallpapers,
         'photoCategories': photoCategories,
         'slideshowDurationSeconds': slideshowDurationSeconds,
         'slideshowTransition': slideshowTransition,
@@ -862,6 +971,9 @@ class TvSettings {
         'tvFontScale': tvFontScale,
         'goodNightEnabled': goodNightEnabled,
         'goodNightDelayMinutes': goodNightDelayMinutes,
+        'railPosition': railPosition.name,
+        'contentCycle': contentCycle.map((i) => i.toJson()).toList(),
+        'contentCycleCustomized': contentCycleCustomized,
       };
 
   factory TvSettings.fromJson(Map<String, dynamic> json) {
@@ -952,6 +1064,7 @@ class TvSettings {
       nightModeEnabled: json['nightModeEnabled'] as bool? ?? true,
       currentBrightness: json['currentBrightness'] as int? ?? 100,
       photoSource: json['photoSource'] as String? ?? 'library',
+      useBundledWallpapers: json['useBundledWallpapers'] as bool? ?? false,
       photoCategories: (json['photoCategories'] as List<dynamic>?)
               ?.map((e) => e as String)
               .toList() ??
@@ -977,6 +1090,15 @@ class TvSettings {
       tvFontScale: (json['tvFontScale'] as num?)?.toDouble() ?? 1.0,
       goodNightEnabled: json['goodNightEnabled'] as bool? ?? false,
       goodNightDelayMinutes: json['goodNightDelayMinutes'] as int? ?? 30,
+      railPosition: parseEnum(TvRailPosition.values,
+          json['railPosition'] as String?, TvRailPosition.top),
+      contentCycle: (json['contentCycle'] as List<dynamic>?)
+              ?.map((e) =>
+                  TvContentItem.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          _kDefaultContentCycle,
+      contentCycleCustomized:
+          json['contentCycleCustomized'] as bool? ?? false,
     );
   }
 

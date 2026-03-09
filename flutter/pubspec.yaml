@@ -121,6 +121,7 @@ flutter:
     - assets/data/
     - assets/brand/
     - assets/audio/
+    - assets/tv/wallpapers/
     - shorebird.yaml
 
   fonts:

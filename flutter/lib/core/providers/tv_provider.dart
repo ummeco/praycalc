@@ -213,6 +213,9 @@ class TvSettingsNotifier extends Notifier<TvSettings> {
   Future<void> setPhotoSource(String v) =>
       update(state.copyWith(photoSource: v));
 
+  Future<void> setUseBundledWallpapers(bool v) =>
+      update(state.copyWith(useBundledWallpapers: v));
+
   Future<void> setPhotoCategories(List<String> v) =>
       update(state.copyWith(photoCategories: v));
 
