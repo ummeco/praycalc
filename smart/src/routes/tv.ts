@@ -745,7 +745,7 @@ tvRouter.post('/heartbeat', requireAuth, async (req: AuthRequest, res) => {
 // ── TV2-10.3: POST /api/v1/tv/:id/screenshot ─────────────────────────────────
 
 tvRouter.post('/:id/screenshot', requireAuth, async (req: AuthRequest, res) => {
-  const { id } = req.params;
+  const id = req.params.id as string;
   // In production: notify the TV via WebSocket/MQTT to take a screenshot and upload to MinIO.
   // The TV uploads to praycalc-tv-screenshots/{device_id}/{timestamp}.png in MinIO.
   // Here we return a signed URL for the TV to upload to.
@@ -764,7 +764,7 @@ tvRouter.post('/:id/screenshot', requireAuth, async (req: AuthRequest, res) => {
 
 tvRouter.patch('/:id', requireAuth, async (req: AuthRequest, res) => {
   const userId = req.userId!;
-  const { id } = req.params;
+  const id = req.params.id as string;
   const { device_name } = req.body;
 
   if (!device_name || typeof device_name !== 'string' || device_name.length > 50) {
@@ -799,7 +799,7 @@ tvRouter.patch('/:id', requireAuth, async (req: AuthRequest, res) => {
 
 tvRouter.delete('/:id', requireAuth, async (req: AuthRequest, res) => {
   const userId = req.userId!;
-  const { id } = req.params;
+  const id = req.params.id as string;
 
   // Remove from in-memory registry
   deviceRegistry.delete(id);
@@ -856,7 +856,7 @@ const deviceSettings = new Map<string, Record<string, unknown>>();
 // ── GET /api/v1/tv/:id/settings — TV polls for its latest settings ────────────
 
 tvRouter.get('/:id/settings', async (req: AuthRequest, res) => {
-  const { id } = req.params;
+  const id = req.params.id as string;
   const mem = deviceSettings.get(id) ?? {};
 
   // Try Hasura for persisted settings too
@@ -877,7 +877,7 @@ tvRouter.get('/:id/settings', async (req: AuthRequest, res) => {
 
 tvRouter.patch('/:id/settings', requireAuth, async (req: AuthRequest, res) => {
   const userId = req.userId!;
-  const { id } = req.params;
+  const id = req.params.id as string;
 
   // Extract only the allowed fields from the request body
   const patch: Record<string, unknown> = {};
@@ -1031,7 +1031,7 @@ tvRouter.post('/groups', requireAuth, async (req: AuthRequest, res) => {
 
 tvRouter.patch('/groups/:id/settings', requireAuth, async (req: AuthRequest, res) => {
   const userId = req.userId!;
-  const { id } = req.params;
+  const id = req.params.id as string;
   const { settings_json } = req.body;
 
   if (!settings_json) {
@@ -1086,7 +1086,7 @@ const pendingAnnouncements = new Map<string, Array<{ id: string; text: string; e
 
 tvRouter.post('/groups/:id/announce', requireAuth, async (req: AuthRequest, res) => {
   const userId = req.userId!;
-  const { id: groupId } = req.params;
+  const groupId = req.params.id as string;
   const { text, expires_in_minutes = 60 } = req.body;
 
   if (!text || typeof text !== 'string' || text.trim().length === 0) {
@@ -1273,7 +1273,7 @@ tvRouter.get('/:id/events', requireAuth, (req: AuthRequest, res) => {
 // Emits a 'prayer_complete' SSE event on the existing /:id/events channel.
 
 tvRouter.post('/:id/prayer-complete', requireAuth, async (req: AuthRequest, res) => {
-  const { id: deviceId } = req.params;
+  const deviceId = req.params.id as string;
   const userId = req.userId!;
   const { prayer } = req.body;
 
@@ -1313,7 +1313,7 @@ tvRouter.post('/:id/prayer-complete', requireAuth, async (req: AuthRequest, res)
 
 tvRouter.post('/:id/quran', requireAuth, async (req: AuthRequest, res) => {
   const userId = req.userId!;
-  const { id: deviceId } = req.params;
+  const deviceId = req.params.id as string;
   const { action, surahNumber, reciterId, verseNumber, backgroundMode } = req.body;
 
   const validActions = ['play', 'pause', 'resume', 'stop', 'next-verse', 'prev-verse', 'next-surah', 'prev-surah'];
