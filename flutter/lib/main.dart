@@ -115,7 +115,7 @@ class _PrayCalcAppState extends ConsumerState<PrayCalcApp> with WindowListener {
       windowManager.addListener(this);
       // Intercept close button so we can hide-to-tray instead of quitting.
       windowManager.setPreventClose(true);
-      DesktopAdhanAlert.init();
+      DesktopAdhanAlert.init().catchError((_) {});
       WidgetsBinding.instance.addPostFrameCallback((_) {
         DesktopFullWindow.registerShowCallback(() {
           appRouter.push(Routes.desktopFullWindow);
