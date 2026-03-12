@@ -80,7 +80,7 @@ dependencies:
   qr_flutter: ^4.1.0
 
   # Audio recording (H-2: custom adhan recording)
-  record: ^5.0.0
+  record: ^6.0.0
 
   # Social sign-in
   sign_in_with_apple: ^7.0.0
