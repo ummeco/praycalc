@@ -16,6 +16,7 @@ import '../../core/providers/settings_provider.dart';
 import '../../core/providers/tv_provider.dart';
 import '../../core/theme/app_theme.dart';
 import '../../shared/models/moon_phase.dart';
+import 'tv_world_map_data.dart';
 
 // ─── Calligraphy content ─────────────────────────────────────────────────────
 
@@ -156,6 +157,205 @@ const _kCalligraphyPhrases = [
   ),
 ];
 
+// ─── Quran verse data for W-1 quranVerses mode ───────────────────────────────
+
+class _VerseEntry {
+  final String arabic;
+  final String transliteration;
+  final String translation;
+  final String ref;
+
+  const _VerseEntry({
+    required this.arabic,
+    required this.transliteration,
+    required this.translation,
+    required this.ref,
+  });
+}
+
+const _kVerses = [
+  _VerseEntry(
+    arabic: 'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ',
+    transliteration: 'Bismillāhi r-raḥmāni r-raḥīm',
+    translation: 'In the name of Allah, the Most Gracious, the Most Merciful',
+    ref: '1:1',
+  ),
+  _VerseEntry(
+    arabic: 'الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ',
+    transliteration: "Al-ḥamdu lillāhi rabbi l-'ālamīn",
+    translation: 'All praise is due to Allah, Lord of all worlds',
+    ref: '1:2',
+  ),
+  _VerseEntry(
+    arabic: 'اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ',
+    transliteration: 'Allāhu lā ilāha illā huwa l-ḥayyu l-qayyūm',
+    translation: 'Allah — there is no god except Him, the Ever-Living, the Sustainer of existence',
+    ref: '2:255',
+  ),
+  _VerseEntry(
+    arabic: 'لَا يُكَلِّفُ اللَّهُ نَفْسًا إِلَّا وُسْعَهَا',
+    transliteration: "Lā yukallifu llāhu nafsan illā wus'ahā",
+    translation: 'Allah does not burden a soul beyond what it can bear',
+    ref: '2:286',
+  ),
+  _VerseEntry(
+    arabic: 'فَاذْكُرُونِي أَذْكُرْكُمْ',
+    transliteration: 'Fadhkurūnī adhkurkum',
+    translation: 'Remember Me, and I will remember you',
+    ref: '2:152',
+  ),
+  _VerseEntry(
+    arabic: 'وَإِذَا سَأَلَكَ عِبَادِي عَنِّي فَإِنِّي قَرِيبٌ',
+    transliteration: "Wa idhā sa'alaka 'ibādī 'annī fa'innī qarīb",
+    translation: 'When My servants ask you about Me — I am near',
+    ref: '2:186',
+  ),
+  _VerseEntry(
+    arabic: 'وَعَسَىٰ أَن تَكْرَهُوا شَيْئًا وَهُوَ خَيْرٌ لَّكُمْ',
+    transliteration: "Wa 'asā an takrahū shay'an wa huwa khayrun lakum",
+    translation: 'Perhaps you dislike something, but it is good for you',
+    ref: '2:216',
+  ),
+  _VerseEntry(
+    arabic: 'حَسْبُنَا اللَّهُ وَنِعْمَ الْوَكِيلُ',
+    transliteration: "Ḥasbunā llāhu wa ni'ma l-wakīl",
+    translation: 'Allah is sufficient for us and He is the best disposer of affairs',
+    ref: '3:173',
+  ),
+  _VerseEntry(
+    arabic: 'قُلْ هُوَ اللَّهُ أَحَدٌ',
+    transliteration: 'Qul huwa llāhu aḥad',
+    translation: 'Say: He is Allah, the One',
+    ref: '112:1',
+  ),
+  _VerseEntry(
+    arabic: 'إِنَّا لِلَّهِ وَإِنَّا إِلَيْهِ رَاجِعُونَ',
+    transliteration: 'Innā lillāhi wa innā ilayhi rājiʿūn',
+    translation: 'Verily, we belong to Allah, and to Him we shall return',
+    ref: '2:156',
+  ),
+  _VerseEntry(
+    arabic: 'إِنَّ مَعَ الْعُسْرِ يُسْرًا',
+    transliteration: "Inna ma'a l-'usri yusrā",
+    translation: 'Verily, with hardship comes ease',
+    ref: '94:6',
+  ),
+  _VerseEntry(
+    arabic: 'أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ',
+    transliteration: "Alā bi-dhikri llāhi taṭma'innu l-qulūb",
+    translation: 'Verily, in the remembrance of Allah do hearts find rest',
+    ref: '13:28',
+  ),
+  _VerseEntry(
+    arabic: 'وَهُوَ مَعَكُمْ أَيْنَ مَا كُنتُمْ',
+    transliteration: 'Wa huwa maʿakum ayna mā kuntum',
+    translation: 'And He is with you wherever you are',
+    ref: '57:4',
+  ),
+  _VerseEntry(
+    arabic: 'إِنَّ اللَّهَ مَعَ الصَّابِرِينَ',
+    transliteration: "Inna llāha ma'a ṣ-ṣābirīn",
+    translation: 'Indeed Allah is with those who are patient',
+    ref: '2:153',
+  ),
+  _VerseEntry(
+    arabic: 'وَلَسَوْفَ يُعْطِيكَ رَبُّكَ فَتَرْضَىٰ',
+    transliteration: 'Wa lasawfa yuʿṭīka rabbuka fa-tarḍā',
+    translation: 'And your Lord will give you, and you will be satisfied',
+    ref: '93:5',
+  ),
+  _VerseEntry(
+    arabic: 'وَاصْبِرْ وَمَا صَبْرُكَ إِلَّا بِاللَّهِ',
+    transliteration: 'Waṣbir wa mā ṣabruka illā billāh',
+    translation: 'Be patient, and your patience is only through Allah',
+    ref: '16:127',
+  ),
+  _VerseEntry(
+    arabic: 'وَتَوَكَّلْ عَلَى اللَّهِ وَكَفَىٰ بِاللَّهِ وَكِيلًا',
+    transliteration: 'Wa tawakkal ʿalā llāhi wa kafā billāhi wakīlā',
+    translation: 'Put your trust in Allah. Allah is sufficient as a disposer of affairs',
+    ref: '33:3',
+  ),
+  _VerseEntry(
+    arabic: 'إِنَّمَا يُوَفَّى الصَّابِرُونَ أَجْرَهُم بِغَيْرِ حِسَابٍ',
+    transliteration: 'Innamā yuwaffā ṣ-ṣābirūna ajrahum bi-ghayri ḥisāb',
+    translation: 'The patient will be given their reward without limit',
+    ref: '39:10',
+  ),
+  _VerseEntry(
+    arabic: 'يُرِيدُ اللَّهُ بِكُمُ الْيُسْرَ وَلَا يُرِيدُ بِكُمُ الْعُسْرَ',
+    transliteration: "Yurīdu llāhu bikumu l-yusra wa lā yurīdu bikumu l-'usr",
+    translation: 'Allah intends for you ease and does not intend for you hardship',
+    ref: '2:185',
+  ),
+  _VerseEntry(
+    arabic: 'وَقُل رَّبِّ زِدْنِي عِلْمًا',
+    transliteration: 'Wa qul rabbi zidnī ʿilmā',
+    translation: 'Say: My Lord, increase me in knowledge',
+    ref: '20:114',
+  ),
+  _VerseEntry(
+    arabic: 'رَبِّ اشْرَحْ لِي صَدْرِي',
+    transliteration: 'Rabbi shraḥ lī ṣadrī',
+    translation: 'My Lord, expand for me my chest',
+    ref: '20:25',
+  ),
+  _VerseEntry(
+    arabic: 'سَنُرِيهِمْ آيَاتِنَا فِي الْآفَاقِ وَفِي أَنفُسِهِمْ',
+    transliteration: 'Sanurīhim āyātinā fi l-āfāqi wa fī anfusihim',
+    translation: 'We will show them Our signs in the horizons and within themselves',
+    ref: '41:53',
+  ),
+  _VerseEntry(
+    arabic: 'إِنَّ اللَّهَ لَا يُضِيعُ أَجْرَ الْمُحْسِنِينَ',
+    transliteration: 'Inna llāha lā yuḍīʿu ajra l-muḥsinīn',
+    translation: 'Indeed Allah does not allow the reward of the doers of good to be lost',
+    ref: '9:120',
+  ),
+  _VerseEntry(
+    arabic: 'وَمَن يَتَّقِ اللَّهَ يَجْعَل لَّهُ مَخْرَجًا',
+    transliteration: 'Wa man yattaqi llāha yajʿal lahu makhrajā',
+    translation: 'Whoever fears Allah, He will make a way out for him',
+    ref: '65:2',
+  ),
+  _VerseEntry(
+    arabic: 'رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً',
+    transliteration: "Rabbanā ātinā fi d-dunyā ḥasanatan wa fi l-ākhirati ḥasanatan",
+    translation: 'Our Lord, give us good in this world and good in the Hereafter',
+    ref: '2:201',
+  ),
+  _VerseEntry(
+    arabic: 'وَهُوَ عَلَىٰ كُلِّ شَيْءٍ قَدِيرٌ',
+    transliteration: "Wa huwa 'alā kulli shay'in qadīr",
+    translation: 'And He is over all things capable',
+    ref: '67:1',
+  ),
+  _VerseEntry(
+    arabic: 'وَبَشِّرِ الصَّابِرِينَ',
+    transliteration: 'Wa bashshiri ṣ-ṣābirīn',
+    translation: 'And give good tidings to the patient',
+    ref: '2:155',
+  ),
+  _VerseEntry(
+    arabic: 'وَاللَّهُ غَالِبٌ عَلَىٰ أَمْرِهِ',
+    transliteration: 'Wallāhu ghālibun ʿalā amrih',
+    translation: 'Allah is predominant over His affair',
+    ref: '12:21',
+  ),
+  _VerseEntry(
+    arabic: 'وَهُوَ الْغَفُورُ الْوَدُودُ',
+    transliteration: 'Wa huwa l-ghafūru l-wadūd',
+    translation: 'And He is the Forgiving, the Affectionate',
+    ref: '85:14',
+  ),
+  _VerseEntry(
+    arabic: 'رَبَّنَا لَا تُزِغْ قُلُوبَنَا بَعْدَ إِذْ هَدَيْتَنَا',
+    transliteration: 'Rabbanā lā tuzigh qulūbanā baʿda idh hadaytanā',
+    translation: 'Our Lord, do not let our hearts deviate after You have guided us',
+    ref: '3:8',
+  ),
+];
+
 // ─── Star data for starfield mode ────────────────────────────────────────────
 
 class _StarData {
@@ -226,6 +426,14 @@ class _TvAmbientScreenState extends ConsumerState<TvAmbientScreen>
   int _calligraphyIdx = 0;
   Timer? _calligraphyTimer;
 
+  // W-1: Quran verse rotation
+  late AnimationController _verseFadeController;
+  int _verseIdx = 0;
+  Timer? _verseTimer;
+
+  // P-15b: world map pan
+  late AnimationController _worldMapController;
+
   final _focusNode = FocusNode();
   DateTime _now = DateTime.now();
   Timer? _photoTimer;
@@ -273,6 +481,18 @@ class _TvAmbientScreenState extends ConsumerState<TvAmbientScreen>
       duration: const Duration(milliseconds: 800),
     )..forward();
 
+    // W-1: verse fade controller
+    _verseFadeController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 300),
+    )..forward();
+
+    // P-15b: world map slow pan — full rotation every 3 minutes
+    _worldMapController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 180),
+    )..repeat();
+
     _ticker = Timer.periodic(const Duration(seconds: 1), (_) {
       setState(() {
         _now = DateTime.now();
@@ -286,6 +506,7 @@ class _TvAmbientScreenState extends ConsumerState<TvAmbientScreen>
       _generateStars();
       _startShootingStarTimer();
       _startCalligraphyTimer();
+      _startVerseTimer();
     });
   }
 
@@ -342,6 +563,20 @@ class _TvAmbientScreenState extends ConsumerState<TvAmbientScreen>
     });
   }
 
+  void _startVerseTimer() {
+    _verseTimer?.cancel();
+    _verseTimer = Timer.periodic(const Duration(seconds: 30), (_) {
+      if (!mounted) return;
+      _verseFadeController.reverse().then((_) {
+        if (!mounted) return;
+        setState(() {
+          _verseIdx = (_verseIdx + 1) % _kVerses.length;
+        });
+        _verseFadeController.forward();
+      });
+    });
+  }
+
   void _startPhotoRotation() {
     final tvSettings = ref.read(tvSettingsProvider);
     final intervalSec = tvSettings.ambientIntervalSeconds;
@@ -379,6 +614,9 @@ class _TvAmbientScreenState extends ConsumerState<TvAmbientScreen>
     _twinkleController.dispose();
     _shootingStarController.dispose();
     _calligraphyFadeController.dispose();
+    _verseFadeController.dispose();
+    _worldMapController.dispose();
+    _verseTimer?.cancel();
     WakelockPlus.disable();
     super.dispose();
   }
@@ -402,6 +640,8 @@ class _TvAmbientScreenState extends ConsumerState<TvAmbientScreen>
         ssState.currentFile != null;
     final isStarfield = screensaverMode == 'starfield';
     final isCalligraphy = screensaverMode == 'calligraphy';
+    final isQuranVerses = screensaverMode == 'quranVerses';
+    final isWorldMap = screensaverMode == 'worldMap';
 
     return Scaffold(
       backgroundColor: Colors.black,
@@ -458,6 +698,38 @@ class _TvAmbientScreenState extends ConsumerState<TvAmbientScreen>
                     ),
                   ),
                 )
+
+              // W-1: Quran verses — deep indigo radial gradient background
+              else if (isQuranVerses)
+                Positioned.fill(
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      gradient: RadialGradient(
+                        center: Alignment.center,
+                        radius: 1.2,
+                        colors: [
+                          const Color(0xFF1A0A2E),
+                          Colors.black,
+                        ],
+                      ),
+                    ),
+                  ),
+                )
+
+              // P-15b: World map — animated equirectangular projection
+              else if (isWorldMap)
+                Positioned.fill(
+                  child: AnimatedBuilder(
+                    animation: _worldMapController,
+                    builder: (_, _) => CustomPaint(
+                      painter: TvWorldMapPainter(
+                        panOffset: _worldMapController.value,
+                        driftX: _driftX / 1000,
+                      ),
+                    ),
+                  ),
+                )
+
               else
                 Positioned.fill(
                   child: AnimatedBuilder(
@@ -501,6 +773,23 @@ class _TvAmbientScreenState extends ConsumerState<TvAmbientScreen>
                       entry: _kCalligraphyPhrases[_calligraphyIdx],
                       driftX: _driftX * 0.3,
                       driftY: _driftY * 0.3,
+                    ),
+                  ),
+                ),
+
+              // ── W-1: Quran verse mode overlay ──
+              if (isQuranVerses)
+                Positioned.fill(
+                  child: FadeTransition(
+                    opacity: _verseFadeController,
+                    child: AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 300),
+                      child: _QuranVerseDisplay(
+                        key: ValueKey(_verseIdx),
+                        entry: _kVerses[_verseIdx],
+                        driftX: _driftX * 0.3,
+                        driftY: _driftY * 0.3,
+                      ),
                     ),
                   ),
                 ),
@@ -1024,6 +1313,109 @@ class _StarfieldPainter extends CustomPainter {
       old.driftX != driftX ||
       old.driftY != driftY ||
       old.shootingStarProgress != shootingStarProgress;
+}
+
+// ─── W-1: Quran verse display ─────────────────────────────────────────────────
+
+class _QuranVerseDisplay extends StatelessWidget {
+  const _QuranVerseDisplay({
+    super.key,
+    required this.entry,
+    required this.driftX,
+    required this.driftY,
+  });
+
+  final _VerseEntry entry;
+  final double driftX;
+  final double driftY;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Transform.translate(
+        offset: Offset(driftX, driftY),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 80),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Surah reference pill
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF6B21A8).withAlpha(120),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: const Color(0xFFD8B4FE).withAlpha(80),
+                  ),
+                ),
+                child: Text(
+                  'Quran ${entry.ref}',
+                  style: const TextStyle(
+                    fontSize: 14,
+                    color: Color(0xFFD8B4FE),
+                    fontWeight: FontWeight.w500,
+                    letterSpacing: 1.5,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 32),
+
+              // Arabic text — large Amiri
+              Text(
+                entry.arabic,
+                textAlign: TextAlign.center,
+                textDirection: TextDirection.rtl,
+                style: const TextStyle(
+                  fontFamily: 'Amiri',
+                  fontSize: 68,
+                  height: 1.9,
+                  color: Colors.white,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              const SizedBox(height: 28),
+
+              // Divider
+              Container(
+                height: 1,
+                width: 200,
+                color: const Color(0xFF9333EA).withAlpha(120),
+              ),
+              const SizedBox(height: 24),
+
+              // English translation
+              Text(
+                '"${entry.translation}"',
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 26,
+                  height: 1.5,
+                  color: Colors.white,
+                  fontWeight: FontWeight.w300,
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              // Transliteration
+              Text(
+                entry.transliteration,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 18,
+                  height: 1.6,
+                  color: Colors.white.withAlpha(150),
+                  fontStyle: FontStyle.italic,
+                  letterSpacing: 0.5,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 // ─── P-15: Calligraphy display ────────────────────────────────────────────────

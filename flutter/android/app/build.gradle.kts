@@ -63,6 +63,23 @@ android {
             )
         }
     }
+
+    // Product flavors: google (Play Store) and amazon (Amazon Appstore / Fire TV)
+    flavorDimensions += "distribution"
+    productFlavors {
+        create("google") {
+            dimension = "distribution"
+            applicationId = "com.praycalc.app"
+            resValue("string", "flavor", "google")
+        }
+        create("amazon") {
+            dimension = "distribution"
+            applicationId = "com.praycalc.app.amazon"
+            resValue("string", "flavor", "amazon")
+            // Fire TV has no Google Play Services — exclude Firebase/GMS at dependency level.
+            // FCM is removed via the amazon source-set manifest (tools:node="remove").
+        }
+    }
 }
 
 dependencies {

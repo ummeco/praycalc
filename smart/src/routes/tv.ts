@@ -27,8 +27,51 @@ export const tvRouter = Router();
 
 const HASURA_URL = process.env.HASURA_GRAPHQL_URL || 'http://hasura:8080/v1/graphql';
 const HASURA_ADMIN_SECRET = process.env.HASURA_GRAPHQL_ADMIN_SECRET || '';
-const JWT_SECRET = process.env.HASURA_GRAPHQL_JWT_SECRET || 'tv-secret';
+// Parse Hasura JSON format {"type":"HS256","key":"<hex>"} or use raw string.
+function parseJwtSecret(raw: string): string {
+  if (!raw) return raw;
+  try { const p = JSON.parse(raw); if (typeof p?.key === 'string') return p.key; } catch { /* not valid JSON */ }
+  const m = raw.match(/key[=:]\s*([a-zA-Z0-9._~+/=\-]{16,})/);
+  if (m?.[1]) return m[1];
+  return raw;
+}
+const JWT_SECRET = parseJwtSecret(process.env.HASURA_GRAPHQL_JWT_SECRET || 'tv-secret');
 const TV_JWT_TTL_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
+
+/** In-memory device registry — fallback when Hasura is unavailable. */
+interface DeviceRecord {
+  id: string;
+  device_name: string;
+  model: string | null;
+  manufacturer: string | null;
+  is_online: boolean;
+  last_seen: string;
+  location_city_slug: string | null;
+  firmware_version: string | null;
+  settings_json: Record<string, unknown>;
+  userId: string;
+  created_at: string;
+}
+const deviceRegistry = new Map<string, DeviceRecord>(); // key: deviceId
+const userDevices = new Map<string, Set<string>>();       // key: userId → Set<deviceId>
+
+/**
+ * Recent heartbeats — updated on every POST /heartbeat call.
+ * This is the source of truth for online status and last_seen regardless
+ * of whether Hasura is reachable (it often isn't in local dev via Docker URL).
+ */
+const deviceHeartbeats = new Map<string, { lastSeen: string; firmwareVersion: string | null }>();
+
+function registerDevice(userId: string, deviceId: string, name: string) {
+  const now = new Date().toISOString();
+  deviceRegistry.set(deviceId, {
+    id: deviceId, device_name: name, model: null, manufacturer: null,
+    is_online: true, last_seen: now, location_city_slug: null,
+    firmware_version: null, settings_json: {}, userId, created_at: now,
+  });
+  if (!userDevices.has(userId)) userDevices.set(userId, new Set());
+  userDevices.get(userId)!.add(deviceId);
+}
 
 /** In-memory store for RFC 8628 device auth codes (expires in 10 min). */
 const deviceAuthCodes = new Map<string, {
@@ -45,6 +88,19 @@ const pairingCodes = new Map<string, {
   userId: string | null;
   deviceId: string | null;
   expiresAt: number;
+}>();
+
+/**
+ * App-generated pairing codes (reversed flow).
+ * App calls POST /app-code → gets 4-digit code → shows it to user.
+ * TV enters the code → calls POST /activate → gets JWT.
+ */
+const appCodes = new Map<string, {
+  code: string;
+  userId: string;
+  deviceId: string | null;
+  expiresAt: number;
+  activated: boolean;
 }>();
 
 async function hasuraQuery(query: string, variables: Record<string, unknown> = {}): Promise<any> {
@@ -139,12 +195,11 @@ tvRouter.post('/pair', requireAuth, async (req: AuthRequest, res) => {
   }
 });
 
-// ── TV2-1.3b: POST /api/v1/tv/code — TV requests a pairing code ───────────────
+// ── TV2-1.3b: POST /api/v1/tv/code — TV requests a 4-digit pairing code ─────────
 
 tvRouter.post('/code', async (req, res) => {
-  const { deviceModel, androidId } = req.body;
-  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-  const code = Array.from({ length: 6 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+  // 4-digit numeric: 1000–9999
+  const code = (Math.floor(Math.random() * 9000) + 1000).toString();
 
   pairingCodes.set(code, {
     code,
@@ -156,7 +211,7 @@ tvRouter.post('/code', async (req, res) => {
   res.json({
     code,
     expiresInSeconds: 300,
-    qrData: `praycalc://pair?code=${code}&model=${encodeURIComponent(deviceModel || '')}&androidId=${androidId || ''}`,
+    qrData: `praycalc://pair?code=${code}`,
   });
 });
 
@@ -218,7 +273,10 @@ tvRouter.get('/auth/poll', async (req, res) => {
   res.json({ status: 'authorized', jwt, userId: entry.userId, deviceId: entry.deviceId });
 });
 
-// ── TV2-1.6b: POST /api/v1/tv/auth/authorize — Called by web /activate page ───
+// ── TV2-1.6b: POST /api/v1/tv/auth/authorize — Mobile claims a pairing code ───
+//   Accepts either:
+//   • 4-digit code shown on TV (pairingCodes map)
+//   • 8-char RFC 8628 user_code (deviceAuthCodes map)
 
 tvRouter.post('/auth/authorize', requireAuth, async (req: AuthRequest, res) => {
   const userId = req.userId!;
@@ -229,19 +287,34 @@ tvRouter.post('/auth/authorize', requireAuth, async (req: AuthRequest, res) => {
     return;
   }
 
-  const normalized = user_code.replace('-', '').toUpperCase();
+  const trimmed = user_code.trim();
 
-  // Find matching entry by user_code
+  // ── Case 1: 4-digit numeric code (pairingCodes) ──────────────────────────────
+  if (/^\d{4}$/.test(trimmed)) {
+    const entry = pairingCodes.get(trimmed);
+    if (!entry || entry.expiresAt < Date.now()) {
+      pairingCodes.delete(trimmed);
+      res.status(400).json({ error: 'Invalid or expired code. Check the TV screen.' });
+      return;
+    }
+    entry.userId = userId;
+    pairingCodes.set(trimmed, entry);
+    res.json({ authorized: true });
+    return;
+  }
+
+  // ── Case 2: RFC 8628 8-char user_code (deviceAuthCodes) ──────────────────────
+  const normalizedUpper = trimmed.replace('-', '').toUpperCase();
   let found: { deviceCode: string; entry: typeof deviceAuthCodes extends Map<string, infer V> ? V : never } | null = null;
   for (const [deviceCode, entry] of deviceAuthCodes) {
-    if (entry.userCode.replace('-', '') === normalized) {
+    if (entry.userCode.replace('-', '') === normalizedUpper) {
       found = { deviceCode, entry };
       break;
     }
   }
 
   if (!found || found.entry.expiresAt < Date.now()) {
-    res.status(400).json({ error: 'Invalid or expired user code' });
+    res.status(400).json({ error: 'Invalid or expired code. Check the TV screen.' });
     return;
   }
 
@@ -279,6 +352,118 @@ tvRouter.post('/auth/refresh', requireAuth, async (req: AuthRequest, res) => {
 
   const jwt = generateTvJwt(userId, device_id);
   res.json({ jwt, expiresIn: TV_JWT_TTL_MS / 1000 });
+});
+
+// ── TV2-1.6c: GET /api/v1/tv/code/:code/status — TV polls for auth (no auth) ──
+
+tvRouter.get('/code/:code/status', (req, res) => {
+  const { code } = req.params;
+  if (!code) { res.status(400).json({ error: 'code required' }); return; }
+
+  const entry = pairingCodes.get(code);
+  if (!entry || entry.expiresAt < Date.now()) {
+    pairingCodes.delete(code);
+    res.json({ status: 'expired' });
+    return;
+  }
+
+  if (!entry.userId) {
+    res.json({ status: 'pending' });
+    return;
+  }
+
+  // Authorized — generate JWT and clean up
+  const deviceId = entry.deviceId || crypto.randomUUID();
+  const jwt = generateTvJwt(entry.userId, deviceId);
+  pairingCodes.delete(code);
+  res.json({ status: 'authorized', jwt, userId: entry.userId, deviceId });
+});
+
+// ── Reversed pairing flow: App generates code, TV enters it ──────────────────
+//
+//   POST /api/v1/tv/app-code           — authenticated (app/web user)
+//   GET  /api/v1/tv/app-code/:c/status — authenticated poll (app waits for TV)
+//   POST /api/v1/tv/activate           — unauthenticated (TV submits code, gets JWT)
+
+tvRouter.post('/app-code', requireAuth, async (req: AuthRequest, res) => {
+  const userId = req.userId!;
+  const code = (Math.floor(Math.random() * 9000) + 1000).toString();
+
+  appCodes.set(code, {
+    code,
+    userId,
+    deviceId: null,
+    expiresAt: Date.now() + 5 * 60 * 1000,
+    activated: false,
+  });
+
+  res.json({ code, expiresInSeconds: 300 });
+});
+
+tvRouter.get('/app-code/:code/status', requireAuth, (req: AuthRequest, res) => {
+  const userId = req.userId!;
+  const code = req.params['code'] as string;
+
+  const entry = appCodes.get(code);
+  if (!entry || entry.expiresAt < Date.now()) {
+    appCodes.delete(code);
+    res.json({ status: 'expired' });
+    return;
+  }
+  // Reject if code doesn't belong to this user
+  if (entry.userId !== userId) {
+    res.status(403).json({ error: 'Forbidden' });
+    return;
+  }
+  if (!entry.activated) {
+    res.json({ status: 'pending' });
+    return;
+  }
+  const deviceId = entry.deviceId as string;
+  appCodes.delete(code);
+  res.json({ status: 'activated', deviceId });
+});
+
+tvRouter.post('/activate', async (req, res) => {
+  const { code } = req.body as { code?: string };
+  if (!code || typeof code !== 'string' || !/^\d{4}$/.test(code.trim())) {
+    res.status(400).json({ error: 'A 4-digit code is required' });
+    return;
+  }
+
+  const trimmed = code.trim();
+  const entry = appCodes.get(trimmed);
+  if (!entry || entry.expiresAt < Date.now()) {
+    appCodes.delete(trimmed);
+    res.status(400).json({ error: 'Invalid or expired code. Get a new one from the app.' });
+    return;
+  }
+  if (entry.activated) {
+    res.status(400).json({ error: 'Code already used.' });
+    return;
+  }
+
+  const deviceId = crypto.randomUUID();
+  const jwt = generateTvJwt(entry.userId, deviceId);
+
+  entry.deviceId = deviceId;
+  entry.activated = true;
+  appCodes.set(trimmed, entry);
+
+  // Register in-memory so GET /tv lists it immediately (even if Hasura is down).
+  registerDevice(entry.userId, deviceId, 'My TV');
+
+  // Persist device to DB (non-blocking — TV gets JWT even if Hasura is down)
+  hasuraQuery(
+    `mutation InsertTvDevice($userId: uuid!, $deviceId: uuid!) {
+      insert_pc_tv_devices_one(object: {
+        id: $deviceId, user_id: $userId, device_name: "My TV", is_online: true
+      }, on_conflict: { constraint: pc_tv_devices_pkey, update_columns: [is_online] }) { id }
+    }`,
+    { userId: entry.userId, deviceId },
+  ).catch(() => {/* ignore — in-memory is source of truth for polling */});
+
+  res.json({ jwt, deviceId, userId: entry.userId });
 });
 
 // ── PC-TV2-3: Guest QR code ───────────────────────────────────────────────────
@@ -334,12 +519,26 @@ tvRouter.get('/streams', (_req, res) => {
   res.json({
     streams: [
       {
+        // Al Quran Al Kareem TV — Saudi state channel broadcast from Mecca/Kaaba.
+        // Served on Akamai CDN as HLS — stable, no embedding restrictions.
         id: 'mecca',
-        name: 'Mecca — Masjid al-Haram',
+        name: 'Mecca — Al Quran Al Kareem TV',
         type: 'video',
-        url: 'https://www.youtube.com/watch?v=XfrItTSiJAE',
-        embed: 'https://www.youtube-nocookie.com/embed/XfrItTSiJAE?autoplay=1&mute=0',
+        url: 'https://cdn-globecast.akamaized.net/live/eds/saudi_quran/hls_roku/index.m3u8',
         thumbnail: 'https://praycalc.com/images/streams/mecca.jpg',
+        thumbnailEmoji: '🕋',
+        category: 'live',
+        healthy: true,
+      },
+      {
+        // Makkah TV — alternative HLS stream from Mecca.
+        id: 'makkah-tv',
+        name: 'Makkah TV — Live',
+        type: 'video',
+        url: 'https://media2.streambrothers.com:1936/8122/8122/playlist.m3u8',
+        thumbnail: 'https://praycalc.com/images/streams/mecca.jpg',
+        thumbnailEmoji: '🕌',
+        category: 'live',
         healthy: true,
       },
       {
@@ -347,8 +546,9 @@ tvRouter.get('/streams', (_req, res) => {
         name: 'Medina — Masjid an-Nabawi',
         type: 'video',
         url: 'https://www.youtube.com/watch?v=2L1LRFnl3As',
-        embed: 'https://www.youtube-nocookie.com/embed/2L1LRFnl3As?autoplay=1&mute=0',
         thumbnail: 'https://praycalc.com/images/streams/medina.jpg',
+        thumbnailEmoji: '🌿',
+        category: 'live',
         healthy: true,
       },
       {
@@ -356,8 +556,9 @@ tvRouter.get('/streams', (_req, res) => {
         name: 'Al-Aqsa Mosque, Jerusalem',
         type: 'video',
         url: 'https://www.youtube.com/watch?v=6FRfPF0SPAI',
-        embed: 'https://www.youtube-nocookie.com/embed/6FRfPF0SPAI?autoplay=1&mute=0',
         thumbnail: 'https://praycalc.com/images/streams/aqsa.jpg',
+        thumbnailEmoji: '🏛️',
+        category: 'live',
         healthy: true,
       },
       {
@@ -366,6 +567,8 @@ tvRouter.get('/streams', (_req, res) => {
         type: 'audio',
         url: 'https://stream.radiojar.com/mishary',
         thumbnail: 'https://praycalc.com/images/streams/mishary.jpg',
+        thumbnailEmoji: '🎙️',
+        category: 'quran',
         healthy: true,
       },
       {
@@ -374,6 +577,8 @@ tvRouter.get('/streams', (_req, res) => {
         type: 'audio',
         url: 'https://stream.radiojar.com/sudais',
         thumbnail: 'https://praycalc.com/images/streams/sudais.jpg',
+        thumbnailEmoji: '🎙️',
+        category: 'quran',
         healthy: true,
       },
       {
@@ -382,6 +587,8 @@ tvRouter.get('/streams', (_req, res) => {
         type: 'audio',
         url: 'https://audio.islamweb.net/audio/Alquraan_Radio128K.mp3',
         thumbnail: 'https://praycalc.com/images/streams/islamweb.jpg',
+        thumbnailEmoji: '📻',
+        category: 'quran',
         healthy: true,
       },
     ],
@@ -414,11 +621,48 @@ tvRouter.get('/', requireAuth, async (req: AuthRequest, res) => {
       { userId },
     );
 
-    const devices = result?.data?.pc_tv_devices ?? [];
+    const hasuraDevices: DeviceRecord[] = result?.data?.pc_tv_devices ?? [];
+
+    // Merge with in-memory registry: add any in-memory devices not in Hasura results.
+    const hasuraIds = new Set(hasuraDevices.map((d: DeviceRecord) => d.id));
+    const memIds = userDevices.get(userId) ?? new Set<string>();
+    const memOnly = [...memIds]
+      .filter(id => !hasuraIds.has(id))
+      .map(id => deviceRegistry.get(id))
+      .filter(Boolean) as DeviceRecord[];
+
+    // Overlay live heartbeat data — heartbeat timestamps always override the DB.
+    // This ensures TVs that recently sent a heartbeat show as online even when
+    // Hasura's last_seen is stale (e.g. Docker URL unreachable in local dev).
+    const ONLINE_WINDOW_MS = 3 * 60 * 1000; // 3 minutes — matches web dashboard
+    const withHeartbeat = [...hasuraDevices, ...memOnly].map(d => {
+      const hb = deviceHeartbeats.get(d.id);
+      if (hb && Date.now() - new Date(hb.lastSeen).getTime() < ONLINE_WINDOW_MS) {
+        return { ...d, is_online: true, last_seen: hb.lastSeen };
+      }
+      return d;
+    });
+
+    // Strip userId from output
+    const devices = withHeartbeat.map(({ userId: _u, ...d }) => d);
     res.json({ devices });
   } catch (err) {
     console.error('[GET /tv] list devices error:', err);
-    res.status(500).json({ error: 'Failed to list devices' });
+    // Fallback to in-memory only if Hasura is completely unreachable.
+    const ONLINE_WINDOW_MS_FB = 3 * 60 * 1000;
+    const memIds = userDevices.get(userId) ?? new Set<string>();
+    const devices = [...memIds]
+      .map(id => deviceRegistry.get(id))
+      .filter(Boolean)
+      .map(d => {
+        const hb = deviceHeartbeats.get(d!.id);
+        if (hb && Date.now() - new Date(hb.lastSeen).getTime() < ONLINE_WINDOW_MS_FB) {
+          return { ...d!, is_online: true, last_seen: hb.lastSeen };
+        }
+        return d!;
+      })
+      .map(({ userId: _u, ...d }) => d as Omit<DeviceRecord, 'userId'>);
+    res.json({ devices });
   }
 });
 
@@ -426,26 +670,74 @@ tvRouter.get('/', requireAuth, async (req: AuthRequest, res) => {
 
 tvRouter.post('/heartbeat', requireAuth, async (req: AuthRequest, res) => {
   const userId = req.userId!;
-  const { device_id, screen_state, firmware_version } = req.body;
+  const { device_id, screen_state, firmware_version, location_city, location_country, location_lat, location_lng, location_timezone } = req.body;
 
   if (!device_id) {
     res.status(400).json({ error: 'device_id required' });
     return;
   }
 
-  try {
-    await hasuraQuery(
-      `mutation TvHeartbeat($deviceId: uuid!, $userId: uuid!, $firmware: String) {
-        update_pc_tv_devices(
-          where: { id: { _eq: $deviceId }, user_id: { _eq: $userId } }
-          _set: { last_seen: "now()", is_online: true, firmware_version: $firmware }
-        ) { affected_rows }
-      }`,
-      { deviceId: device_id, userId, firmware: firmware_version || null },
-    );
-  } catch {
-    // Silently fail — TV continues operation even if heartbeat can't persist
+  const now = new Date().toISOString();
+
+  // Always update in-memory heartbeat cache — this is the live source of truth
+  // for online status. Hasura updates are best-effort (Docker URL may be
+  // unreachable in local dev).
+  deviceHeartbeats.set(device_id, { lastSeen: now, firmwareVersion: firmware_version || null });
+
+  // If TV reports its location, merge into settings_json (only fills gaps —
+  // doesn't overwrite location already set from the web dashboard).
+  const locationPatch: Record<string, unknown> = {};
+  if (location_city) {
+    const memDevice = deviceRegistry.get(device_id);
+    const existing = memDevice?.settings_json ?? {};
+    if (!existing['location_city']) {
+      locationPatch['location_city'] = location_city;
+      locationPatch['location_country'] = location_country ?? '';
+      if (location_lat !== undefined) locationPatch['location_lat'] = location_lat;
+      if (location_lng !== undefined) locationPatch['location_lng'] = location_lng;
+      if (location_timezone) locationPatch['location_timezone'] = location_timezone;
+    }
   }
+
+  // Update device registry if this device is tracked in-memory.
+  const memDevice = deviceRegistry.get(device_id);
+  if (memDevice) {
+    memDevice.is_online = true;
+    memDevice.last_seen = now;
+    if (firmware_version) memDevice.firmware_version = firmware_version;
+    if (Object.keys(locationPatch).length) {
+      memDevice.settings_json = { ...memDevice.settings_json, ...locationPatch };
+    }
+  } else {
+    // Server restart wipes in-memory registry. Re-register the device so it
+    // shows up in GET /tv even if Hasura is unreachable.
+    registerDevice(userId, device_id, 'My TV');
+    const restored = deviceRegistry.get(device_id)!;
+    if (firmware_version) restored.firmware_version = firmware_version;
+    if (Object.keys(locationPatch).length) {
+      restored.settings_json = { ...restored.settings_json, ...locationPatch };
+    }
+  }
+
+  // Persist to Hasura (non-blocking — TV stays online even if this fails).
+  hasuraQuery(
+    `mutation TvHeartbeat($deviceId: uuid!, $userId: uuid!, $firmware: String) {
+      update_pc_tv_devices(
+        where: { id: { _eq: $deviceId }, user_id: { _eq: $userId } }
+        _set: { last_seen: "now()", is_online: true, firmware_version: $firmware }
+      ) { affected_rows }
+    }`,
+    { deviceId: device_id, userId, firmware: firmware_version || null },
+  ).catch(() => { /* Hasura unavailable — in-memory is sufficient */ });
+
+  // Push live status to any open web dashboard SSE connections for this user.
+  tvEventEmitter.emit(`dashboard:${userId}`, {
+    type: 'heartbeat',
+    deviceId: device_id,
+    isOnline: true,
+    lastSeen: now,
+    screenState: screen_state ?? null,
+  });
 
   res.json({ ok: true, screen_state });
 });
@@ -480,41 +772,108 @@ tvRouter.patch('/:id', requireAuth, async (req: AuthRequest, res) => {
     return;
   }
 
+  // Always update in-memory registry immediately — this is the source of truth
+  // for GET /tvs and prevents the name from reverting on the next poll.
+  const memDevice = deviceRegistry.get(id);
+  if (memDevice && memDevice.userId === userId) {
+    memDevice.device_name = device_name;
+  }
+
+  // Persist to Hasura (non-blocking — in-memory update is immediately visible).
+  hasuraQuery(
+    `mutation RenameTvDevice($deviceId: uuid!, $userId: uuid!, $name: String!) {
+      update_pc_tv_devices(
+        where: { id: { _eq: $deviceId }, user_id: { _eq: $userId } }
+        _set: { device_name: $name }
+      ) { affected_rows }
+    }`,
+    { deviceId: id, userId, name: device_name },
+  ).catch(err => {
+    console.error('[TV] Rename Hasura error (in-memory updated):', err);
+  });
+
+  res.json({ ok: true, device_name });
+});
+
+// ── DELETE /api/v1/tv/:id — Remove a TV device ───────────────────────────────
+
+tvRouter.delete('/:id', requireAuth, async (req: AuthRequest, res) => {
+  const userId = req.userId!;
+  const { id } = req.params;
+
+  // Remove from in-memory registry
+  deviceRegistry.delete(id);
+  userDevices.get(userId)?.delete(id);
+
   try {
-    const result = await hasuraQuery(
-      `mutation RenameTvDevice($deviceId: uuid!, $userId: uuid!, $name: String!) {
-        update_pc_tv_devices(
+    await hasuraQuery(
+      `mutation DeleteTvDevice($deviceId: uuid!, $userId: uuid!) {
+        delete_pc_tv_devices(
           where: { id: { _eq: $deviceId }, user_id: { _eq: $userId } }
-          _set: { device_name: $name }
         ) { affected_rows }
       }`,
-      { deviceId: id, userId, name: device_name },
+      { deviceId: id, userId },
     );
-
-    const affected = result?.data?.update_pc_tv_devices?.affected_rows;
-    if (affected === 0) {
-      res.status(404).json({ error: 'Device not found' });
-      return;
-    }
-
-    res.json({ ok: true, device_name });
+    res.json({ ok: true });
   } catch (err) {
-    console.error('[TV] Rename error:', err);
-    res.status(500).json({ error: 'Failed to rename device' });
+    console.error('[TV] Delete error:', err);
+    // In-memory already cleaned — return ok so UI removes it
+    res.json({ ok: true });
   }
 });
 
 // ── TV2-10.7: PATCH /api/v1/tv/:id/settings ─────────────────────────────────
 
 const ALLOWED_SETTINGS_FIELDS = [
-  'city_slug',
-  'audio_mode',
-  'layout_preset',
-  'screensaver_enabled',
-  'brightness',
-  'night_mode_enabled',
-  'kiosk_mode',
+  // Legacy snake_case fields
+  'city_slug', 'audio_mode', 'layout_preset', 'screensaver_enabled',
+  'brightness', 'night_mode_enabled', 'kiosk_mode',
+  // Location fields (snake_case — remapped by the web proxy)
+  'location_lat', 'location_lng', 'location_city', 'location_country', 'location_state', 'location_timezone',
+  // TV camelCase fields (matching TvSettings.fromJson keys used by the Flutter TV app)
+  'tvAudioMode', 'selectedStreamId', 'selectedReciterId',
+  'videoAreaSource',
+  'layout', 'layoutSettings',
+  'screensaverPhotoSource', 'screensaverIntervalSeconds', 'screensaverIdleSeconds',
+  'screensaverMode', 'photoSource', 'slideshowDurationSeconds',
+  'iqamahEnabled', 'iqamahOffsets', 'isMasjidMode', 'masjidName',
+  'mediaPauseEnabled',
+  'cityOverride',
+  'quranVideoMode', 'quranPlaybackMode', 'quranSpecificSurah',
+  'contentCycle', 'contentCycleCustomized',
+  'kioskMode', 'kioskPinHash',
+  'skyBackgroundEnabled', 'geometricPatternEnabled', 'geometricPatternStyle',
+  'tvFontScale', 'colorPalette',
+  'goodNightEnabled', 'goodNightDelayMinutes',
+  'railPosition',
+  'showStreamAyahBar', 'showStreamRamadanOverlay',
+  'infoBarConfig',
 ] as const;
+
+/** In-memory settings per device — source of truth for TV polling. */
+const deviceSettings = new Map<string, Record<string, unknown>>();
+
+// ── GET /api/v1/tv/:id/settings — TV polls for its latest settings ────────────
+
+tvRouter.get('/:id/settings', async (req: AuthRequest, res) => {
+  const { id } = req.params;
+  const mem = deviceSettings.get(id) ?? {};
+
+  // Try Hasura for persisted settings too
+  try {
+    const result = await hasuraQuery(
+      `query GetTvSettings($deviceId: uuid!) {
+        pc_tv_devices_by_pk(id: $deviceId) { settings_json }
+      }`,
+      { deviceId: id },
+    );
+    const dbSettings = result?.data?.pc_tv_devices_by_pk?.settings_json ?? {};
+    // Merge: in-memory wins (more recent push)
+    res.json({ settings: { ...dbSettings, ...mem } });
+  } catch {
+    res.json({ settings: mem });
+  }
+});
 
 tvRouter.patch('/:id/settings', requireAuth, async (req: AuthRequest, res) => {
   const userId = req.userId!;
@@ -524,7 +883,7 @@ tvRouter.patch('/:id/settings', requireAuth, async (req: AuthRequest, res) => {
   const patch: Record<string, unknown> = {};
   for (const field of ALLOWED_SETTINGS_FIELDS) {
     if (field in req.body) {
-      patch[field] = req.body[field];
+      patch[field] = (req.body as Record<string, unknown>)[field];
     }
   }
 
@@ -533,49 +892,85 @@ tvRouter.patch('/:id/settings', requireAuth, async (req: AuthRequest, res) => {
     return;
   }
 
-  try {
-    // First verify the device belongs to this user
-    const checkResult = await hasuraQuery(
-      `query CheckTvDeviceOwner($deviceId: uuid!, $userId: uuid!) {
-        pc_tv_devices(where: { id: { _eq: $deviceId }, user_id: { _eq: $userId } }) {
-          id
-          settings
-        }
-      }`,
-      { deviceId: id, userId },
-    );
+  // Always update in-memory first — TV polling will pick it up immediately.
+  const current = deviceSettings.get(id) ?? {};
+  const merged = { ...current, ...patch };
+  deviceSettings.set(id, merged);
 
+  // Update device registry if device is in memory.
+  const memDevice = deviceRegistry.get(id);
+  if (memDevice && memDevice.userId === userId) {
+    memDevice.settings_json = merged;
+  }
+
+  // ── SSE push — TV gets the update instantly without polling ──────────────────
+  // tvEventEmitter is declared later in this file but initialized before any
+  // request handler runs, so this reference is always valid at call time.
+  tvEventEmitter.emit(`settings:${id}`, { settings: merged });
+
+  // Persist to Hasura (non-blocking — in-memory is immediately available).
+  hasuraQuery(
+    `query GetTvDeviceOwner($deviceId: uuid!, $userId: uuid!) {
+      pc_tv_devices(where: { id: { _eq: $deviceId }, user_id: { _eq: $userId } }) { id settings_json }
+    }`,
+    { deviceId: id, userId },
+  ).then(checkResult => {
     const devices = checkResult?.data?.pc_tv_devices || [];
-    if (devices.length === 0) {
-      res.status(404).json({ error: 'Device not found' });
-      return;
-    }
-
-    // Merge patch into existing settings via JSONB merge (|| operator)
-    const currentSettings = devices[0].settings || {};
-    const mergedSettings = { ...currentSettings, ...patch };
-
-    const result = await hasuraQuery(
+    if (devices.length === 0) return;
+    const mergedDb = { ...(devices[0].settings_json || {}), ...patch };
+    return hasuraQuery(
       `mutation UpdateTvDeviceSettings($deviceId: uuid!, $userId: uuid!, $settings: jsonb!) {
         update_pc_tv_devices(
           where: { id: { _eq: $deviceId }, user_id: { _eq: $userId } }
-          _set: { settings: $settings, updated_at: "now()" }
+          _set: { settings_json: $settings, updated_at: "now()" }
         ) { affected_rows }
       }`,
-      { deviceId: id, userId, settings: mergedSettings },
+      { deviceId: id, userId, settings: mergedDb },
     );
+  }).catch(() => { /* Hasura unavailable — in-memory is sufficient */ });
 
-    const affected = result?.data?.update_pc_tv_devices?.affected_rows;
-    if (affected === 0) {
-      res.status(404).json({ error: 'Device not found' });
-      return;
-    }
+  res.json({ ok: true });
+});
 
-    res.json({ ok: true });
-  } catch (err) {
-    console.error('[TV] Settings update error:', err);
-    res.status(500).json({ error: 'Failed to update settings' });
+// ── POST /api/v1/tv/:id/quran — Push Quran playback command to device ─────────
+//
+// Body: { action: 'play'|'pause'|'resume'|'stop', surah?, ayah?, reciterId?, afterSurah? }
+// Stores `quranCommand` in deviceSettings — TV polls /:id/settings every few seconds to pick it up.
+
+tvRouter.post('/:id/quran', requireAuth, async (req: AuthRequest, res) => {
+  const userId = req.userId!;
+  const id = req.params.id as string;
+  const { action, surah, ayah, reciterId, afterSurah, backgroundMode, restore } = req.body as Record<string, unknown>;
+
+  const validActions = ['play', 'pause', 'resume', 'stop'];
+  if (!action || !validActions.includes(action as string)) {
+    res.status(400).json({ error: `action must be one of: ${validActions.join(', ')}` });
+    return;
   }
+
+  // Ownership check — device must belong to this user (in-memory or Hasura).
+  const memDevice = deviceRegistry.get(id);
+  if (memDevice && memDevice.userId !== userId) {
+    res.status(403).json({ error: 'Device not found' });
+    return;
+  }
+
+  const command: Record<string, unknown> = { action, isPlaying: action === 'play' || action === 'resume' };
+  if (surah !== undefined) command.surah = surah;
+  if (ayah !== undefined) command.ayah = ayah;
+  if (reciterId !== undefined) command.reciterId = reciterId;
+  if (afterSurah !== undefined) command.afterSurah = afterSurah;
+  if (backgroundMode !== undefined) command.backgroundMode = backgroundMode;
+  if (restore !== undefined) command.restore = restore;
+
+  // Store in-memory — TV polls GET /:id/settings to pick this up.
+  const current = deviceSettings.get(id) ?? {};
+  deviceSettings.set(id, { ...current, quranCommand: command });
+
+  // Also emit via SSE for instant TV response (no polling delay).
+  tvEventEmitter.emit(`quran:${id}`, command);
+
+  res.json({ ok: true });
 });
 
 // ── TV2-10.4: TV Groups ───────────────────────────────────────────────────────
@@ -795,6 +1190,38 @@ tvRouter.get('/platform-config', (req, res) => {
 const tvEventEmitter = new EventEmitter();
 tvEventEmitter.setMaxListeners(200); // support up to 200 concurrent TVs
 
+// ── GET /api/v1/tv/dashboard/stream — real-time device status for web dashboard ──
+//
+// Authenticated by user bearer JWT. Streams heartbeat + status events for all
+// TVs belonging to this user. Web dashboard subscribes once on page load instead
+// of polling every 30s.
+
+tvRouter.get('/dashboard/stream', requireAuth, (req: AuthRequest, res) => {
+  const userId = req.userId!;
+
+  res.setHeader('Content-Type', 'text/event-stream');
+  res.setHeader('Cache-Control', 'no-cache');
+  res.setHeader('Connection', 'keep-alive');
+  res.setHeader('X-Accel-Buffering', 'no');
+  res.flushHeaders();
+
+  res.write('event: ping\ndata: {}\n\n');
+
+  const onEvent = (payload: unknown) => {
+    res.write(`event: device\ndata: ${JSON.stringify(payload)}\n\n`);
+  };
+
+  const key = `dashboard:${userId}`;
+  tvEventEmitter.on(key, onEvent);
+
+  const keepalive = setInterval(() => res.write('event: ping\ndata: {}\n\n'), 25_000);
+
+  req.on('close', () => {
+    clearInterval(keepalive);
+    tvEventEmitter.off(key, onEvent);
+  });
+});
+
 tvRouter.get('/:id/events', requireAuth, (req: AuthRequest, res) => {
   const deviceId = req.params['id'] as string;
 
@@ -815,11 +1242,17 @@ tvRouter.get('/:id/events', requireAuth, (req: AuthRequest, res) => {
     res.write(`event: quran\ndata: ${JSON.stringify(payload)}\n\n`);
   };
 
+  const onPrayerComplete = (payload: unknown) => {
+    res.write(`event: prayer_complete\ndata: ${JSON.stringify(payload)}\n\n`);
+  };
+
   const settingsKey = `settings:${deviceId}`;
   const quranKey = `quran:${deviceId}`;
+  const prayerCompleteKey = `prayer_complete:${deviceId}`;
 
   tvEventEmitter.on(settingsKey, onSettings);
   tvEventEmitter.on(quranKey, onQuran);
+  tvEventEmitter.on(prayerCompleteKey, onPrayerComplete);
 
   // Keepalive ping every 25 seconds to prevent proxy timeouts
   const keepalive = setInterval(() => {
@@ -830,7 +1263,48 @@ tvRouter.get('/:id/events', requireAuth, (req: AuthRequest, res) => {
     clearInterval(keepalive);
     tvEventEmitter.off(settingsKey, onSettings);
     tvEventEmitter.off(quranKey, onQuran);
+    tvEventEmitter.off(prayerCompleteKey, onPrayerComplete);
   });
+});
+
+// ── L-5: POST /api/v1/tv/:id/prayer-complete ─────────────────────────────────
+// Body: { prayer: 'fajr' | 'dhuhr' | 'asr' | 'maghrib' | 'isha' }
+// Marks a prayer as complete for the TV device and broadcasts via SSE to connected clients.
+// Emits a 'prayer_complete' SSE event on the existing /:id/events channel.
+
+tvRouter.post('/:id/prayer-complete', requireAuth, async (req: AuthRequest, res) => {
+  const { id: deviceId } = req.params;
+  const userId = req.userId!;
+  const { prayer } = req.body;
+
+  const validPrayers = ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha'];
+  if (!prayer || !validPrayers.includes(prayer)) {
+    res.status(400).json({ error: `Valid prayer name required. Must be one of: ${validPrayers.join(', ')}` });
+    return;
+  }
+
+  // Verify device ownership before broadcasting
+  try {
+    const check = await hasuraQuery(
+      `query CheckTvDeviceOwnerForComplete($deviceId: uuid!, $userId: uuid!) {
+        pc_tv_devices(where: { id: { _eq: $deviceId }, user_id: { _eq: $userId } }) { id }
+      }`,
+      { deviceId, userId },
+    );
+    const devices = check?.data?.pc_tv_devices ?? [];
+    if (devices.length === 0) {
+      res.status(404).json({ error: 'Device not found' });
+      return;
+    }
+  } catch {
+    // If Hasura is unavailable (dev), allow the broadcast to proceed
+  }
+
+  const payload = { prayer, completedAt: new Date().toISOString() };
+  tvEventEmitter.emit(`prayer_complete:${deviceId}`, payload);
+
+  const listenerCount = tvEventEmitter.listenerCount(`prayer_complete:${deviceId}`);
+  res.json({ ok: true, prayer, broadcastTo: listenerCount });
 });
 
 // ── T-8: POST /api/v1/tv/:id/quran — Quran playback control ─────────────────

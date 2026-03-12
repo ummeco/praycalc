@@ -28,7 +28,7 @@ const LOCALES = [
   { code: "pt", dir: "ltr" },
 ] as const;
 
-export default function LanguageSwitcher({ variant = "header" }: { variant?: "header" | "footer" }) {
+export default function LanguageSwitcher({ variant = "header" }: { variant?: "header" | "footer" | "panel" }) {
   const locale = useLocale();
   const t = useTranslations("language");
   const [open, setOpen] = useState(false);
@@ -52,9 +52,10 @@ export default function LanguageSwitcher({ variant = "header" }: { variant?: "he
   }
 
   const isFooter = variant === "footer";
+  const isPanel = variant === "panel";
 
   return (
-    <div ref={ref} className={`lang-switcher ${isFooter ? "lang-switcher--footer" : ""}`}>
+    <div ref={ref} className={`lang-switcher${isFooter ? " lang-switcher--footer" : ""}${isPanel ? " lang-switcher--panel" : ""}`}>
       <button
         type="button"
         className="lang-switcher-btn"
@@ -75,7 +76,7 @@ export default function LanguageSwitcher({ variant = "header" }: { variant?: "he
       </button>
 
       {open && (
-        <ul className={`lang-switcher-menu ${isFooter ? "lang-switcher-menu--above" : ""}`} role="listbox">
+        <ul className={`lang-switcher-menu${isFooter ? " lang-switcher-menu--above" : ""}${isPanel ? " lang-switcher-menu--panel" : ""}`} role="listbox">
           {LOCALES.map((l) => (
             <li key={l.code} role="option" aria-selected={l.code === locale}>
               <button

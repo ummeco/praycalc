@@ -2735,6 +2735,13 @@ html[data-theme="light"] .account-sent {
 }
 html[data-theme="light"] .account-back { color: #1E5E2F; }
 
+/* Modifier: dashboard logged-in view — top-aligned, not vertically centered */
+.account-page--dashboard {
+  justify-content: flex-start;
+  padding-top: 2.5rem;
+  padding-bottom: 3rem;
+}
+
 /* ── Account dashboard ───────────────────────────────────────────────────── */
 
 .dashboard-page {
@@ -5077,6 +5084,46 @@ html[data-theme="light"] .onboarding-tooltip-arrow--up {
   margin-top: 0;
   margin-bottom: 4px;
 }
+/* Panel variant — sits inside the settings dropdown */
+.lang-switcher--panel {
+  width: 100%;
+}
+.lang-switcher--panel .lang-switcher-btn {
+  width: 100%;
+  justify-content: space-between;
+  border: none;
+  background: none;
+  padding: 0;
+  font-size: 0.8125rem;
+  color: rgba(255, 255, 255, 0.55);
+}
+.lang-switcher--panel .lang-switcher-btn:hover {
+  background: none;
+  color: rgba(255, 255, 255, 0.85);
+}
+.lang-switcher-menu--panel {
+  top: auto;
+  bottom: 100%;
+  margin-top: 0;
+  margin-bottom: 4px;
+  left: 0;
+  right: 0;
+  min-width: unset;
+  max-height: 260px;
+  overflow-y: auto;
+}
+.settings-language-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+}
+html[data-theme="light"] .lang-switcher--panel .lang-switcher-btn {
+  color: rgba(30, 94, 47, 0.55);
+}
+html[data-theme="light"] .lang-switcher--panel .lang-switcher-btn:hover {
+  color: #1E5E2F;
+}
 .lang-switcher-option {
   display: flex;
   align-items: center;
@@ -5124,3 +5171,21 @@ html[data-theme="light"] .lang-switcher-option:hover {
 html[data-theme="light"] .lang-switcher-option--active {
   color: #1E5E2F;
 }
+
+/* Dev-only login bypass button */
+.account-dev-login {
+  display: block;
+  width: 100%;
+  margin-bottom: 12px;
+  padding: 10px;
+  background: #1a3a1a;
+  border: 1px solid #4a7a2a;
+  border-radius: 8px;
+  color: #79C24C;
+  font-size: 13px;
+  font-family: monospace;
+  cursor: pointer;
+  text-align: center;
+}
+.account-dev-login:hover { background: #1f461f; }
+.account-dev-login:disabled { opacity: 0.5; cursor: default; }

@@ -21,8 +21,13 @@ import '../../core/services/rating_service.dart';
 import '../../core/theme/app_theme.dart';
 import '../../shared/models/settings_model.dart';
 import '../../shared/widgets/adhan_modal.dart';
-import '../../shared/widgets/sky_gradient_background.dart';
 import '../../shared/widgets/travel_banner.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'home_moon_icon.dart';
+import 'prayer_card_fan.dart';
+import 'sky_gradient_background.dart';
+import 'widgets/share_agenda_sheet.dart';
 
 // ─── Prayer metadata ──────────────────────────────────────────────────────────
 
@@ -130,6 +135,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   int _tick = 0;
   late final PageController _pageController;
   int _dayPage = 1; // 0 = yesterday · 1 = today · 2 = tomorrow
+  bool _fanLayout = false;
 
   @override
   void initState() {
@@ -141,6 +147,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(settingsProvider.notifier).load();
       maybeRequestReview();
+    });
+    SharedPreferences.getInstance().then((prefs) {
+      if (mounted) setState(() => _fanLayout = prefs.getBool('home_layout_fan') ?? false);
     });
   }
 
@@ -171,9 +180,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       value: SystemUiOverlayStyle.light,
       child: Scaffold(
         backgroundColor: PrayCalcColors.canvas,
-        body: SkyGradientBackground(
+        body: HomeWeatherSkyBackground(
           prayers: todayTimes,
           settings: settings,
+          condition: null,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -196,6 +206,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       dayOffset: i - 1,
                       now: cityNow,
                       settings: settings,
+                      fanLayout: _fanLayout,
                     ),
                   ),
                 ),
@@ -360,6 +371,8 @@ class _HomeHeader extends ConsumerWidget {
                           ],
                   ),
                 ),
+                const SizedBox(width: 8),
+                const HomeMoonIcon(size: 30),
               ],
             ),
           ],
@@ -476,11 +489,13 @@ class _HomeDayPage extends ConsumerWidget {
     required this.dayOffset,
     required this.now,
     required this.settings,
+    this.fanLayout = false,
   });
 
   final int dayOffset;
   final DateTime now;
   final AppSettings settings;
+  final bool fanLayout;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -503,6 +518,7 @@ class _HomeDayPage extends ConsumerWidget {
         viewDate: viewDate,
         settings: settings,
         isToday: dayOffset == 0,
+        fanLayout: fanLayout,
       ),
     );
   }
@@ -597,6 +613,7 @@ class _HomeBody extends ConsumerStatefulWidget {
     required this.viewDate,
     required this.settings,
     required this.isToday,
+    this.fanLayout = false,
   });
 
   final PrayerTimes times;
@@ -604,6 +621,7 @@ class _HomeBody extends ConsumerStatefulWidget {
   final DateTime viewDate;
   final AppSettings settings;
   final bool isToday;
+  final bool fanLayout;
 
   @override
   ConsumerState<_HomeBody> createState() => _HomeBodyState();
@@ -688,7 +706,19 @@ class _HomeBodyState extends ConsumerState<_HomeBody> {
         if (widget.isToday && ramadan.isRamadan) ...[const SizedBox(height: 10), _RamadanBanner(ramadan: ramadan)],
         const SizedBox(height: 10),
 
-        // ── Prayer list — unified card ────────────────────────────────────
+        // ── Prayer list — fan or unified card ────────────────────────────
+        if (widget.fanLayout) ...[
+          PrayerCardFan(
+            times: widget.times,
+            use24h: widget.settings.use24h,
+            nextPrayerIndex: () {
+              // Map full _prayers index to 0-based fard-only index (Fajr=0..Isha=4).
+              // Full indices: 0=Fajr,1=Sunrise,2=Dhuhr,3=Asr,4=Maghrib,5=Isha,6=Qiyam
+              const fardMap = {0: 0, 2: 1, 3: 2, 4: 3, 5: 4};
+              return fardMap[nextIdx] ?? 0;
+            }(),
+          ),
+        ] else ...[
         ClipRRect(
           borderRadius: BorderRadius.circular(16),
           child: Container(
@@ -760,6 +790,7 @@ class _HomeBodyState extends ConsumerState<_HomeBody> {
             ),
           ),
         ),
+        ], // end else (fanLayout)
 
         const SizedBox(height: 10),
 
@@ -782,6 +813,21 @@ class _HomeBodyState extends ConsumerState<_HomeBody> {
               icon: Icons.bar_chart_outlined,
               label: l.homeActionPrayerStats,
               onTap: () => context.push(Routes.stats),
+            ),
+            const SizedBox(width: 10),
+            _ActionCard(
+              icon: Icons.share_outlined,
+              label: 'Share',
+              onTap: () {
+                final city = ref.read(cityProvider);
+                if (city == null) return;
+                showShareAgendaSheet(
+                  context: context,
+                  city: city,
+                  times: widget.times,
+                  settings: widget.settings,
+                );
+              },
             ),
           ],
         ),

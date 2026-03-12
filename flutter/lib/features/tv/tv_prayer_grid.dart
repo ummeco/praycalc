@@ -1,8 +1,11 @@
 // P-2: Prayer card grid redesign
+// L-5: Prayer-complete badge overlay (green checkmark from SSE event)
 //
 // A 3×2 grid of prayer time cards covering all 6 prayers: Fajr, Sunrise,
 // Dhuhr, Asr, Maghrib, Isha. The current prayer card pulses with a green
 // animated dot; past cards are dimmed; future cards are subtle.
+// When a prayer_complete event arrives via TvSseService, the card for that
+// prayer shows a green checkmark badge in the top-right corner.
 
 import 'package:flutter/material.dart';
 
@@ -36,16 +39,21 @@ class PrayerCardData {
 
 /// Displays [prayers] (exactly 6 expected) in a 3-column grid.
 ///
-/// [fontScale] — multiplied against all text sizes; useful for larger screens.
+/// [fontScale]        — multiplied against all text sizes; useful for larger screens.
+/// [completedPrayers] — L-5: set of prayer names that received a prayer_complete event.
+///                      Cards whose [PrayerCardData.nameEnglish] is in this set show
+///                      a green checkmark badge.
 class TvPrayerGrid extends StatelessWidget {
   const TvPrayerGrid({
     super.key,
     required this.prayers,
     this.fontScale = 1.0,
+    this.completedPrayers = const {},
   });
 
   final List<PrayerCardData> prayers;
   final double fontScale;
+  final Set<String> completedPrayers;
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +65,11 @@ class TvPrayerGrid extends StatelessWidget {
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       children: prayers
-          .map((p) => _TvPrayerCard(data: p, fontScale: fontScale))
+          .map((p) => _TvPrayerCard(
+                data: p,
+                fontScale: fontScale,
+                completed: completedPrayers.contains(p.nameEnglish),
+              ))
           .toList(),
     );
   }
@@ -66,10 +78,16 @@ class TvPrayerGrid extends StatelessWidget {
 // ─── Single prayer card ───────────────────────────────────────────────────────
 
 class _TvPrayerCard extends StatefulWidget {
-  const _TvPrayerCard({required this.data, required this.fontScale});
+  const _TvPrayerCard({
+    required this.data,
+    required this.fontScale,
+    this.completed = false,
+  });
 
   final PrayerCardData data;
   final double fontScale;
+  // L-5: true when a prayer_complete SSE event was received for this prayer
+  final bool completed;
 
   @override
   State<_TvPrayerCard> createState() => _TvPrayerCardState();
@@ -187,9 +205,12 @@ class _TvPrayerCardState extends State<_TvPrayerCard>
   @override
   Widget build(BuildContext context) {
     final fs = widget.fontScale;
-    return Opacity(
-      opacity: _cardOpacity,
-      child: Container(
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        Opacity(
+          opacity: _cardOpacity,
+          child: Container(
         decoration: BoxDecoration(
           color: _bgColor,
           borderRadius: BorderRadius.circular(16),
@@ -238,6 +259,28 @@ class _TvPrayerCardState extends State<_TvPrayerCard>
           ],
         ),
       ),
-    );
+    ),
+
+    // L-5: Prayer-complete badge — green checkmark in top-right corner
+    if (widget.completed)
+      Positioned(
+        top: 6,
+        right: 6,
+        child: Container(
+          width: 22,
+          height: 22,
+          decoration: const BoxDecoration(
+            color: Color(0xFF1E5E2F),
+            shape: BoxShape.circle,
+          ),
+          child: const Icon(
+            Icons.check,
+            color: Colors.white,
+            size: 14,
+          ),
+        ),
+      ),
+  ],
+);
   }
 }

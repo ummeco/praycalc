@@ -1,7 +1,25 @@
 import type { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 
-const HASURA_JWT_SECRET = process.env.HASURA_GRAPHQL_JWT_SECRET || '';
+// HASURA_GRAPHQL_JWT_SECRET may be:
+//   1. Valid JSON:   {"type":"HS256","key":"<hex>"}
+//   2. Bash-mangled: {type:HS256,key:<hex>}  (shell source strips inner quotes)
+//   3. Raw string:   <hex>
+function parseJwtSecret(raw: string): string {
+  if (!raw) return raw;
+  // 1. Try valid JSON first
+  try {
+    const parsed = JSON.parse(raw);
+    if (typeof parsed?.key === 'string') return parsed.key;
+  } catch { /* not valid JSON */ }
+  // 2. Handle bash-mangled format — extract key:<value> with regex
+  const keyMatch = raw.match(/key[=:]\s*([a-zA-Z0-9._~+/=\-]{16,})/);
+  if (keyMatch?.[1]) return keyMatch[1];
+  // 3. Raw string
+  return raw;
+}
+
+const HASURA_JWT_SECRET = parseJwtSecret(process.env.HASURA_GRAPHQL_JWT_SECRET || '');
 
 export interface AuthRequest extends Request {
   userId?: string;

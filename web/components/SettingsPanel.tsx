@@ -3,6 +3,7 @@
 import { useTranslations } from "next-intl";
 import type { AdhanVoice, HomeMode } from "@/lib/settings";
 import type { SoundMode } from "@/hooks/useSettings";
+import LanguageSwitcher from "./LanguageSwitcher";
 
 interface Props {
   // Display toggles
@@ -178,20 +179,6 @@ export default function SettingsPanel({
         </>
       )}
 
-      {/* When signed in, link to account instead */}
-      {isLoggedIn && (
-        <div className="settings-row settings-row--manage">
-          <span className="settings-label">{t("accountSettings")}</span>
-          <button
-            type="button"
-            className="settings-manage-link"
-            onClick={onLogin}
-          >
-            {t("manageInAccount")}
-          </button>
-        </div>
-      )}
-
       {/* Notification */}
       <p className="settings-panel-title settings-panel-section">{t("notification")}</p>
       <div className="settings-sound-opts" role="group" aria-label={t("notification")}>
@@ -321,6 +308,13 @@ export default function SettingsPanel({
             </button>
           </>
         )}
+      </div>
+
+      {/* Language */}
+      <div className="settings-divider" />
+      <div className="settings-language-row">
+        <span className="settings-label">{t("language")}</span>
+        <LanguageSwitcher variant="panel" />
       </div>
 
     </div>

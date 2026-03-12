@@ -1,13 +1,17 @@
 import 'dart:async';
+import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hijri/hijri_calendar.dart';
 import 'package:pray_calc_dart/pray_calc_dart.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
+import '../../core/providers/geo_provider.dart';
 import '../../core/providers/prayer_provider.dart';
 import '../../core/providers/ramadan_provider.dart';
 import '../../core/providers/settings_provider.dart';
@@ -23,9 +27,7 @@ import '../../shared/models/tv_settings_model.dart';
 import 'tv_adhan_bubble.dart';
 import 'tv_announcement_overlay.dart';
 import 'tv_eid_overlay.dart';
-import 'tv_countdown_flip.dart';
 import 'tv_good_night_overlay.dart';
-import 'tv_hadith_ticker.dart';
 import 'tv_geometric_pattern.dart';
 import 'tv_jumuah_overlay.dart';
 import 'tv_sky_background.dart';
@@ -34,12 +36,17 @@ import 'tv_ayah_of_hour.dart';
 import 'tv_iqamah_board.dart';
 import 'tv_prayer_grid.dart';
 import 'tv_mode_switcher.dart';
-import 'tv_multi_city_board.dart';
 import 'tv_ramadan_display.dart';
 import 'tv_post_adhan_bar.dart';
 import '../../core/services/tv_platform_config_service.dart';
+import 'tv_children_mode.dart';
+import 'tv_children_pin_screen.dart';
 import 'tv_stream_library.dart';
+import 'tv_stream_overlays.dart';
 import 'tv_stream_player.dart';
+import 'tv_quran_verse_display.dart';
+import '../../core/services/tv_sse_service.dart';
+import 'tv_quran_service.dart';
 
 // ─── Prayer metadata (shared with home_screen pattern) ─────────────────────
 
@@ -130,11 +137,31 @@ class _TvHomeScreenState extends ConsumerState<TvHomeScreen> {
   bool _goodNightDismissed = false;
   DateTime _goodNightDismissedDate = DateTime(2000);
 
+  // ── Children's mode (Y-1/Y-2) ─────────────────────────────────────────────
+  bool _showChildrenPinScreen = false;
+
+  // ── SSE service (L-5) — prayer_complete tracking ──────────────────────────
+  TvSseService? _sseService;
+  StreamSubscription<TvSseEvent>? _sseSub;
+  final Set<String> _completedPrayers = {};
+
+  // ── Settings polling — picks up location + commands pushed from web dashboard
+  Timer? _settingsPollTimer;
+  /// Hash of the last executed quranCommand — prevents re-executing on each poll.
+  String? _lastQuranCommandHash;
+
+  // ── Quran background mode — set by remote play command ────────────────────
+  /// 'keep-video': play Quran audio over existing video background.
+  /// 'quran-display': replace left panel with per-ayat verse display.
+  String _quranBackgroundMode = 'keep-video';
+
   @override
   void initState() {
     super.initState();
     WakelockPlus.enable();
     _checkGuestMode();
+    _startSseService();
+    _startSettingsPoll();
     _ticker = Timer.periodic(const Duration(seconds: 1), (_) {
       setState(() => _now = DateTime.now());
       _checkPrayerAlerts();
@@ -145,10 +172,13 @@ class _TvHomeScreenState extends ConsumerState<TvHomeScreen> {
   @override
   void dispose() {
     _ticker.cancel();
+    _settingsPollTimer?.cancel();
     _focusNode.dispose();
     _snoozeTimer?.cancel();
     _iqamahTimer?.cancel();
     _muteButtonHideTimer?.cancel();
+    _sseSub?.cancel();
+    _sseService?.dispose();
     _exitHintOverlay?.remove();
     WakelockPlus.disable();
     super.dispose();
@@ -267,6 +297,269 @@ class _TvHomeScreenState extends ConsumerState<TvHomeScreen> {
     final prefs = await ref.read(sharedPrefsProvider.future);
     final jwt = prefs.getString('tv_session_jwt');
     if (mounted) setState(() => _isGuestMode = jwt == null || jwt.isEmpty);
+  }
+
+  // ─── SSE service startup (L-5) ────────────────────────────────────────────
+
+  Future<void> _startSseService() async {
+    final prefs = await ref.read(sharedPrefsProvider.future);
+    final jwt = prefs.getString('tv_session_jwt');
+    if (jwt == null || jwt.isEmpty) return;
+
+    // Decode device_id from JWT payload (second base64url segment).
+    String? deviceId;
+    try {
+      final parts = jwt.split('.');
+      if (parts.length == 3) {
+        final padded = parts[1].padRight((parts[1].length + 3) & ~3, '=');
+        final payload =
+            jsonDecode(utf8.decode(base64Url.decode(padded))) as Map<String, dynamic>;
+        deviceId = payload['device_id'] as String?;
+      }
+    } catch (_) {
+      // Malformed JWT — skip SSE.
+    }
+    if (deviceId == null || deviceId.isEmpty) return;
+
+    final isLocal = kIsWeb &&
+        (Uri.base.host == 'localhost' || Uri.base.host.startsWith('127.'));
+    final smartBase =
+        isLocal ? 'http://localhost:4010' : 'https://smart.praycalc.com';
+
+    final svc = TvSseService(
+      baseUrl: smartBase,
+      deviceId: deviceId,
+      token: jwt,
+    );
+    _sseService = svc;
+    _sseSub = svc.events.listen((event) {
+      if (event is TvSseSettingsEvent && mounted) {
+        // Merge incoming settings patch into current state — never replace entirely,
+        // because the SSE payload may be a partial push missing layoutSettings etc.
+        try {
+          final current = ref.read(tvSettingsProvider);
+          final merged = Map<String, dynamic>.from(current.toJson())
+            ..addAll(event.settingsJson
+              ..remove('quranCommand')
+              ..remove('location_lat')
+              ..remove('location_lng')
+              ..remove('location_city')
+              ..remove('location_country')
+              ..remove('location_state')
+              ..remove('location_timezone'));
+          ref.read(tvSettingsProvider.notifier).update(TvSettings.fromJson(merged));
+        } catch (_) {
+          // Malformed — keep existing settings.
+        }
+        // Apply city display name override without changing prayer time coordinates.
+        final cityDisplayOverride = event.settingsJson['cityOverride'] as String?;
+        if (cityDisplayOverride != null && cityDisplayOverride.isNotEmpty && mounted) {
+          final currentCity = ref.read(cityProvider);
+          if (currentCity != null && currentCity.name != cityDisplayOverride) {
+            ref.read(cityProvider.notifier).state = City(
+              name: cityDisplayOverride,
+              country: '',
+              state: null,
+              lat: currentCity.lat,
+              lng: currentCity.lng,
+              timezone: currentCity.timezone,
+            );
+          }
+        }
+      } else if (event is TvSsePrayerCompleteEvent && mounted) {
+        setState(() => _completedPrayers.add(event.prayerName));
+      } else if (event is TvSseQuranCommandEvent && mounted) {
+        final quranSvc = ref.read(tvQuranServiceProvider);
+        switch (event.action) {
+          case 'play':
+            if (event.surah != null) {
+              setState(() => _quranBackgroundMode = event.backgroundMode ?? 'keep-video');
+              quranSvc.playSurah(event.surah!, startVerse: event.ayah ?? 1);
+            }
+          case 'pause':
+            quranSvc.pause();
+          case 'resume':
+            quranSvc.resume();
+          case 'stop':
+            setState(() => _quranBackgroundMode = 'keep-video');
+            quranSvc.pause();
+          case 'next':
+            quranSvc.nextVerse();
+          case 'prev':
+            quranSvc.prevVerse();
+        }
+      }
+    });
+    await svc.connect();
+  }
+
+  // ─── Settings polling — picks up location pushed from web dashboard ────────
+
+  Future<void> _startSettingsPoll() async {
+    // Initial poll immediately.
+    await _pollSettings();
+    // 5s when no city (setup screen visible), 30s when city is set.
+    _settingsPollTimer = Timer.periodic(const Duration(seconds: 5), (_) async {
+      await _pollSettings();
+      // Once city is set, slow down to 30s intervals.
+      if (ref.read(cityProvider) != null) {
+        _settingsPollTimer?.cancel();
+        _settingsPollTimer =
+            Timer.periodic(const Duration(seconds: 10), (_) => _pollSettings());
+      }
+    });
+  }
+
+  Future<void> _pollSettings() async {
+    final prefs = await ref.read(sharedPrefsProvider.future);
+    final jwt = prefs.getString('tv_session_jwt');
+    if (jwt == null || jwt.isEmpty) return;
+
+    String? deviceId;
+    try {
+      final parts = jwt.split('.');
+      if (parts.length == 3) {
+        final padded = parts[1].padRight((parts[1].length + 3) & ~3, '=');
+        final payload =
+            jsonDecode(utf8.decode(base64Url.decode(padded))) as Map<String, dynamic>;
+        deviceId = payload['device_id'] as String?;
+      }
+    } catch (_) { return; }
+    if (deviceId == null || deviceId.isEmpty) return;
+
+    final isLocal = kIsWeb &&
+        (Uri.base.host == 'localhost' || Uri.base.host.startsWith('127.'));
+    final smartBase =
+        isLocal ? 'http://localhost:4010' : 'https://smart.praycalc.com';
+
+    // Heartbeat — tells the dashboard this TV is online.
+    // Include current location so the web dashboard can display it.
+    final city = ref.read(cityProvider);
+    final heartbeatBody = <String, dynamic>{
+      'device_id': deviceId,
+      'screen_state': 'home',
+      if (city != null) ...{
+        'location_city': city.name,
+        'location_country': city.country,
+        'location_lat': city.lat,
+        'location_lng': city.lng,
+        'location_timezone': city.timezone,
+      },
+    };
+    http.post(
+      Uri.parse('$smartBase/api/v1/tv/heartbeat'),
+      headers: {'Authorization': 'Bearer $jwt', 'Content-Type': 'application/json'},
+      body: jsonEncode(heartbeatBody),
+    ).ignore();
+
+    try {
+      final resp = await http.get(
+        Uri.parse('$smartBase/api/v1/tv/$deviceId/settings'),
+        headers: {'Authorization': 'Bearer $jwt'},
+      );
+      if (resp.statusCode != 200) return;
+      final body = jsonDecode(resp.body) as Map<String, dynamic>;
+      final settings = body['settings'] as Map<String, dynamic>?;
+      if (settings == null) return;
+
+      final lat = (settings['location_lat'] as num?)?.toDouble();
+      final lng = (settings['location_lng'] as num?)?.toDouble();
+      final cityName = settings['location_city'] as String?;
+      final country = settings['location_country'] as String?;
+      final state = settings['location_state'] as String?;
+      final tz = settings['location_timezone'] as String? ?? 'UTC';
+
+      if (lat != null && lng != null && cityName != null && mounted) {
+        final city = City(
+          name: cityName,
+          country: country ?? '',
+          state: state,
+          lat: lat,
+          lng: lng,
+          timezone: tz,
+        );
+        // Persist so the city survives page refreshes (loadLastCity in main).
+        await persistCity(city, ref);
+        ref.read(cityProvider.notifier).state = city;
+      }
+
+      // City display name override — changes only what's shown on screen without
+      // altering prayer time coordinates. Applied last so it wins over location_city.
+      final cityDisplayOverride = settings['cityOverride'] as String?;
+      if (cityDisplayOverride != null && cityDisplayOverride.isNotEmpty && mounted) {
+        final currentCity = ref.read(cityProvider);
+        if (currentCity != null && currentCity.name != cityDisplayOverride) {
+          ref.read(cityProvider.notifier).state = City(
+            name: cityDisplayOverride,
+            // Clear state/country so the display shows just the override name
+            // without ", OH" or ", United States" suffix.
+            country: '',
+            state: null,
+            lat: currentCity.lat,
+            lng: currentCity.lng,
+            timezone: currentCity.timezone,
+          );
+        }
+      }
+
+      // Apply TV display settings pushed from web dashboard.
+      // Only update if server has meaningful settings (not just location data).
+      final hasDisplaySettings = settings.containsKey('tvAudioMode') ||
+          settings.containsKey('videoAreaSource') ||
+          settings.containsKey('selectedStreamId') ||
+          settings.containsKey('layoutSettings') ||
+          settings.containsKey('layout');
+      if (hasDisplaySettings && mounted) {
+        try {
+          final current = ref.read(tvSettingsProvider);
+          // Merge: start from current TV settings, overlay what the server sent.
+          final merged = Map<String, dynamic>.from(current.toJson())
+            ..addAll(settings..remove('quranCommand')..remove('location_lat')
+              ..remove('location_lng')..remove('location_city')
+              ..remove('location_country')..remove('location_state')
+              ..remove('location_timezone'));
+          ref.read(tvSettingsProvider.notifier).update(TvSettings.fromJson(merged));
+        } catch (_) {
+          // Malformed — keep existing settings.
+        }
+      }
+
+      // Handle quranCommand pushed from web dashboard.
+      final rawCmd = settings['quranCommand'];
+      if (rawCmd is Map<String, dynamic> && mounted) {
+        final cmdHash = jsonEncode(rawCmd);
+        if (cmdHash != _lastQuranCommandHash) {
+          _lastQuranCommandHash = cmdHash;
+          final action = rawCmd['action'] as String?;
+          final surahNum = (rawCmd['surah'] as num?)?.toInt();
+          final ayahNum = (rawCmd['ayah'] as num?)?.toInt() ?? 1;
+          final reciterId = rawCmd['reciterId'] as String?;
+          final bgMode = rawCmd['backgroundMode'] as String? ?? 'keep-video';
+          final quranSvc = ref.read(tvQuranServiceProvider);
+          if (action == 'play' && surahNum != null) {
+            if (reciterId != null) {
+              final reciter = kTvReciters.firstWhere(
+                (r) => r.id == reciterId,
+                orElse: () => kTvReciters.firstWhere(
+                  (r) => r.id == 'Sudais_192kbps',
+                  orElse: () => kTvReciters.first,
+                ),
+              );
+              quranSvc.setReciter(reciter);
+            }
+            if (mounted) setState(() => _quranBackgroundMode = bgMode);
+            unawaited(quranSvc.playSurah(surahNum, startVerse: ayahNum));
+          } else if (action == 'pause') {
+            unawaited(quranSvc.pause());
+          } else if (action == 'resume') {
+            unawaited(quranSvc.resume());
+          } else if (action == 'stop') {
+            if (mounted) setState(() => _quranBackgroundMode = 'keep-video');
+            unawaited(quranSvc.pause());
+          }
+        }
+      }
+    } catch (_) { /* network error — try again next cycle */ }
   }
 
   // ─── Adhan alert controller (TV2-8.1, TV2-8.4, TV2-8.5, TV2-8.7) ─────────
@@ -491,24 +784,31 @@ class _TvHomeScreenState extends ConsumerState<TvHomeScreen> {
     final timesAsync = ref.watch(prayerTimesProvider);
     final ramadan = ref.watch(ramadanProvider);
     final tvSettings = ref.watch(tvSettingsProvider);
+    // Always watch these providers unconditionally so Riverpod tracks them
+    // consistently across builds — avoids assertion when city first becomes non-null.
+    final quranSvc = ref.watch(tvQuranServiceProvider);
 
+    // Keep a single consistent widget tree regardless of city being null or not.
+    // _buildBody handles the null case via timesAsync.when(loading:) which
+    // returns AsyncLoading when city==null — avoiding a Scaffold-level swap
+    // that crashes on Flutter web profile/release builds.
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, _) => _onBackInvoked(),
       child: Scaffold(
-      backgroundColor: tvSettings.skyBackgroundEnabled
+      backgroundColor: tvSettings.skyBackgroundEnabled && city != null
           ? Colors.transparent
           : PrayCalcColors.deep,
       body: Stack(
         fit: StackFit.expand,
         children: [
-          tvSettings.skyBackgroundEnabled
+          tvSettings.skyBackgroundEnabled && city != null
               ? TvSkyBackground(
                   hour: _nowH,
                   child: _buildBody(
-                      tvSettings, timesAsync, city, settings, ramadan),
+                      tvSettings, timesAsync, city, settings, ramadan, quranSvc),
                 )
-              : _buildBody(tvSettings, timesAsync, city, settings, ramadan),
+              : _buildBody(tvSettings, timesAsync, city, settings, ramadan, quranSvc),
           // Mode switcher overlay (P-5).
           if (_modeSwitcherVisible)
             TvModeSwitcher(
@@ -542,8 +842,9 @@ class _TvHomeScreenState extends ConsumerState<TvHomeScreen> {
   );  // end PopScope
   }  // end build
 
-  Widget _buildBody(TvSettings tvSettings, dynamic timesAsync, dynamic city,
-      dynamic settings, dynamic ramadan) {
+  Widget _buildBody(TvSettings tvSettings, AsyncValue<PrayerTimes> timesAsync,
+      City? city, AppSettings settings, RamadanState ramadan,
+      TvQuranService quranSvc) {
     final inner = FocusTraversalGroup(
         policy: OrderedTraversalPolicy(),
         child: KeyboardListener(
@@ -551,9 +852,43 @@ class _TvHomeScreenState extends ConsumerState<TvHomeScreen> {
           autofocus: true,
           onKeyEvent: _onKey,
           child: timesAsync.when(
-            loading: () => const Center(
-              child: CircularProgressIndicator(color: PrayCalcColors.mid),
-            ),
+            // AsyncLoading fires when city==null. Fall back to Mecca prayer
+            // times so the TV always shows a useful display right after pairing.
+            // The "Set location" banner inside _TvHomeBody prompts the user.
+            loading: () {
+              try {
+                final now = DateTime.now();
+                final date = DateTime.utc(now.year, now.month, now.day, 12);
+                final meccaTimes = getTimes(date, 21.4225, 39.8262, 3.0);
+                final activeIdx = _activePrayerIndex(meccaTimes);
+                final nextIdx = _nextPrayerIndex(meccaTimes);
+                return _TvHomeBody(
+                  times: meccaTimes,
+                  now: now,
+                  nowH: now.hour + now.minute / 60.0,
+                  city: null, // null → shows "Set location" in top bar
+                  settings: ref.read(settingsProvider),
+                  tvSettings: tvSettings,
+                  ramadan: ref.read(ramadanProvider),
+                  activeIdx: activeIdx,
+                  nextIdx: nextIdx,
+                  countdown: _countdownString(meccaTimes, nextIdx),
+                  streamMuted: _streamMuted,
+                  muteButtonVisible: _muteButtonVisible,
+                  onToggleMute: _toggleMute,
+                  formatH: _formatH,
+                  quranSvc: quranSvc,
+                  quranBackgroundMode: _quranBackgroundMode,
+                );
+              } catch (_) {
+                return _TvNoLocationLayout(
+                  tvSettings: tvSettings,
+                  streamMuted: _streamMuted,
+                  muteButtonVisible: _muteButtonVisible,
+                  onToggleMute: _toggleMute,
+                );
+              }
+            },
             error: (e, _) => Center(
               child: Text(
                 'Error: $e',
@@ -595,6 +930,9 @@ class _TvHomeScreenState extends ConsumerState<TvHomeScreen> {
                       muteButtonVisible: _muteButtonVisible,
                       onToggleMute: _toggleMute,
                       formatH: _formatH,
+                      quranSvc: quranSvc,
+                      quranBackgroundMode: _quranBackgroundMode,
+                      completedPrayers: Set<String>.unmodifiable(_completedPrayers),
                     ),
                   ),
 
@@ -784,15 +1122,71 @@ class _TvHomeScreenState extends ConsumerState<TvHomeScreen> {
                 );
               }
 
+              // ── Children's mode (Y-1/Y-2/Y-3) ──────────────────────
+              if (tvSettings.childrenModeEnabled) {
+                if (_showChildrenPinScreen) {
+                  body = Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      body,
+                      TvChildrenPinScreen(
+                        onSuccess: () =>
+                            setState(() => _showChildrenPinScreen = false),
+                        onCancel: () =>
+                            setState(() => _showChildrenPinScreen = false),
+                      ),
+                    ],
+                  );
+                } else {
+                  final currentPrayerName = activeIdx >= 0 && activeIdx < _prayers.length
+                      ? _prayers[activeIdx].label
+                      : '';
+                  final nextPrayerName = nextIdx >= 0 && nextIdx < _prayers.length
+                      ? _prayers[nextIdx].label
+                      : '';
+                  body = Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      body,
+                      TvChildrenMode(
+                        currentPrayer: currentPrayerName,
+                        nextPrayer: nextPrayerName,
+                        nextPrayerCountdown: _countdownString(times, nextIdx),
+                        onExitRequested: () =>
+                            setState(() => _showChildrenPinScreen = true),
+                      ),
+                    ],
+                  );
+                }
+              }
+
+              // ── Quran verse display (Z-TV-4) ─────────────────────────
+              // In 'keep-video' mode: overlay verse display on top of video.
+              // In 'quran-display' mode: left panel already shows verse display,
+              //   so no overlay needed here.
+              if (quranSvc.isPlaying && _quranBackgroundMode == 'keep-video') {
+                body = Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    body,
+                    TvQuranVerseDisplay(service: quranSvc),
+                  ],
+                );
+              }
+
               return body;
             },
           ),
         ),
     );
     if (!tvSettings.geometricPatternEnabled) return inner;
-    final style = tvSettings.geometricPatternStyle == 'girih'
-        ? TvGeometricStyle.girih
-        : TvGeometricStyle.moroccanStar;
+    final style = switch (tvSettings.geometricPatternStyle) {
+      'girih' => TvGeometricStyle.girih,
+      'muqarnas' => TvGeometricStyle.muqarnas,
+      'kufic' => TvGeometricStyle.kufic,
+      'isometric' => TvGeometricStyle.isometric,
+      _ => TvGeometricStyle.moroccanStar,
+    };
     return TvGeometricPattern(style: style, opacity: 0.08, child: inner);
   }
 
@@ -1000,6 +1394,9 @@ class _TvHomeBody extends StatelessWidget {
     required this.muteButtonVisible,
     required this.onToggleMute,
     required this.formatH,
+    required this.quranSvc,
+    required this.quranBackgroundMode,
+    this.completedPrayers = const {},
   });
 
   final PrayerTimes times;
@@ -1016,6 +1413,9 @@ class _TvHomeBody extends StatelessWidget {
   final bool muteButtonVisible;
   final VoidCallback onToggleMute;
   final String Function(double h, bool use24h) formatH;
+  final TvQuranService quranSvc;
+  final String quranBackgroundMode;
+  final Set<String> completedPrayers;
 
   // P-2: Arabic prayer names for the card grid.
   static const _kArabicNames = [
@@ -1062,155 +1462,144 @@ class _TvHomeBody extends StatelessWidget {
   Widget build(BuildContext context) {
     final moonResult = MoonPhase.calculate(now);
     final hijri = _hijriDateString(now);
+    final size = MediaQuery.sizeOf(context);
+    final fs = tvSettings.tvFontScale;
 
-    // Second timezone display (TV2-9.7).
-    final secondTz = tvSettings.secondCityTimeZone ?? 'Asia/Riyadh';
-    final secondLabel = tvSettings.secondCitySlug ?? 'Mecca';
+    // Layout preset — drives which panels are visible.
+    final preset = tvSettings.layoutSettings.preset;
+    final leftPanel = tvSettings.layoutSettings.leftPanel;
 
-    // Live stream panel (TV2-3.6, TV2-3.7).
-    final showStream = tvSettings.tvAudioMode == 'stream' &&
-        tvSettings.layoutSettings.leftPanel == TvPanelType.liveStream;
+    // Prayer-only and Masjid: no left panel — right panel fills full width.
+    final isPrayerOnly = preset == TvLayoutPreset.prayerOnly ||
+        preset == TvLayoutPreset.masjid;
+
+    // Right panel width: clamped column normally, full screen for prayer-only.
+    final rightW = isPrayerOnly
+        ? size.width
+        : (size.width * 0.25).clamp(280.0, 480.0);
+
+    // Live stream panel config.
+    // Show stream when leftPanel == liveStream AND videoAreaSource or legacy mode.
+    final showStream = !isPrayerOnly &&
+        leftPanel == TvPanelType.liveStream &&
+        (tvSettings.videoAreaSource == 'live-stream' ||
+            tvSettings.tvAudioMode == 'stream');
     TvStream? activeStream;
     if (showStream) {
       try {
         activeStream = kBuiltInStreams.firstWhere(
-          (s) => s.id == tvSettings.selectedStreamId,
-        );
+            (s) => s.id == tvSettings.selectedStreamId);
       } catch (_) {
         activeStream = kBuiltInStreams.first;
       }
     }
 
+    // ── Right panel: city + dates + weather + clock + prayer rows ───────────
+    final rightPanel = _TvRightPanel(
+      width: rightW,
+      city: city,
+      hijri: hijri,
+      gregorian: _gregorianLabel(now),
+      now: now,
+      times: times,
+      activeIdx: activeIdx,
+      nextIdx: nextIdx,
+      formatH: formatH,
+      use24h: settings.use24h,
+      isRamadan: ramadan.isRamadan,
+      completedPrayers: completedPrayers,
+      fontScale: fs,
+      moonResult: moonResult,
+      tvSettings: tvSettings,
+      countdown: countdown,
+    );
+
+    // ── Left panel: ambient area ─────────────────────────────────────────────
+    Widget leftContent;
+    final nextPrayerName = nextIdx >= 0 && nextIdx < _prayers.length
+        ? _prayers[nextIdx].label
+        : 'Next';
+
+    if (showStream && activeStream != null) {
+      // Vertical layout: 16:9 video at top → ayah bar → context bar.
+      // Using AspectRatio so the video fills its container with no letterbox.
+      final nextPrayerH = nextIdx >= 0 && nextIdx < _prayers.length
+          ? _prayers[nextIdx].getValue(times)
+          : times.maghrib;
+      leftContent = Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // 16:9 video — natural height = left_width × 9/16.
+          AspectRatio(
+            aspectRatio: 16 / 9,
+            child: TvStreamPlayer(stream: activeStream, muted: streamMuted),
+          ),
+          // Middle: ayah bar (Expanded fills all remaining space).
+          Expanded(
+            child: tvSettings.showStreamAyahBar
+                ? const Padding(
+                    padding: EdgeInsets.fromLTRB(16, 12, 16, 8),
+                    child: TvStreamAyahBar(),
+                  )
+                : const SizedBox.shrink(),
+          ),
+          // Bottom: always-present context bar (next prayer or Ramadan info).
+          TvStreamContextBar(
+            isRamadan: ramadan.isRamadan,
+            ramadan: ramadan,
+            nextPrayerName: nextPrayerName,
+            nextPrayerH: nextPrayerH,
+            suhoorTime: formatH(times.fajr, settings.use24h),
+            iftarTime: formatH(times.maghrib, settings.use24h),
+            fajrH: times.fajr,
+            maghribH: times.maghrib,
+            now: now,
+          ),
+        ],
+      );
+    } else if (quranSvc.isPlaying && quranBackgroundMode == 'quran-display') {
+      // Quran playing in quran-display mode: replace left panel with verse display.
+      leftContent = TvQuranVerseDisplay(service: quranSvc);
+    } else {
+      // Default ambient: large Quranic verse (ayah of the hour) centered.
+      leftContent = _TvAmbientArea(
+        hour: now.hour,
+        ramadan: ramadan,
+        times: times,
+        settings: settings,
+        countdown: countdown,
+        nowH: nowH,
+        nextPrayerName: nextPrayerName,
+        tvSettings: tvSettings,
+        city: city,
+        formatH: formatH,
+      );
+    }
+
     return SafeArea(
       child: Stack(
         children: [
-          // ── Main layout ──
-          Padding(
-            padding: const EdgeInsets.symmetric(
-                horizontal: 48, vertical: 32),
-            child: Row(
+          // ── Main layout ──────────────────────────────────────────────────
+          // Prayer-only / Masjid: single full-width panel. All other presets:
+          // two-column Row with left content + fixed-width right panel.
+          if (isPrayerOnly)
+            rightPanel
+          else
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                // Left panel: stream or main content.
-                if (showStream && activeStream != null)
-                  Expanded(
-                    child: TvStreamPlayer(
-                      stream: activeStream,
-                      muted: streamMuted,
-                    ),
-                  )
-                else
-                  const SizedBox.shrink(),
-
-                // Right: prayer times column.
-                Expanded(
-                  child: Column(
-                    children: [
-                      // Top bar: city + date.
-                      _TvTopBar(
-                        cityName: city?.displayName ?? 'No city',
-                        hijri: hijri,
-                        gregorian: _gregorianLabel(now),
-                        secondLabel: secondLabel,
-                        secondTz: secondTz,
-                        now: now,
-                      ),
-                      const SizedBox(height: 24),
-
-                      // Current time.
-                      _TvCurrentTime(now: now, use24h: settings.use24h),
-                      const SizedBox(height: 8),
-
-                      // Ramadan primary display (P-13) / standard countdown.
-                      if (ramadan.isRamadan)
-                        TvRamadanDisplay(
-                          ramadan: ramadan,
-                          suhoorTime: formatH(times.fajr, settings.use24h),
-                          iftarTime: formatH(times.maghrib, settings.use24h),
-                          countdown: countdown,
-                          countdownLabel: nowH < times.fajr
-                              ? 'Until Suhoor ends'
-                              : nowH < times.maghrib
-                                  ? 'Until Iftar'
-                                  : 'Until Fajr',
-                        )
-                      else
-                        _TvCountdownBanner(
-                          label: _prayerLabel(
-                            _prayers[nextIdx].label,
-                            false,
-                          ),
-                          countdown: countdown,
-                        ),
-                      const SizedBox(height: 16),
-
-                      // Ayah of the hour (P-7).
-                      TvAyahOfHour(hour: now.hour),
-                      const SizedBox(height: 16),
-
-                      // Prayer times grid: 3 columns x 2 rows (P-2).
-                      Expanded(
-                        child: TvPrayerGrid(
-                          prayers: _buildPrayerCards(
-                            times: times,
-                            use24h: settings.use24h,
-                            activeIdx: activeIdx,
-                            nextIdx: nextIdx,
-                            isRamadan: ramadan.isRamadan,
-                          ),
-                          fontScale: tvSettings.tvFontScale,
-                        ),
-                      ),
-
-                      // Multi-city prayer board (P-9).
-                      if (tvSettings.secondCitySlug != null &&
-                          tvSettings.secondCitySlug!.isNotEmpty &&
-                          tvSettings.secondCityLat != null &&
-                          tvSettings.secondCityLng != null) ...[
-                        const SizedBox(height: 12),
-                        TvMultiCityBoard(
-                          primaryLabel:
-                              city?.name ?? 'Primary',
-                          primaryTimes: times,
-                          secondaryLabel: tvSettings.secondCitySlug!,
-                          secondaryLat: tvSettings.secondCityLat!,
-                          secondaryLng: tvSettings.secondCityLng!,
-                          secondaryTimeZone:
-                              tvSettings.secondCityTimeZone ?? 'Asia/Riyadh',
-                          use24h: settings.use24h,
-                          activeIdx: activeIdx < 5 ? activeIdx : -1,
-                          isRamadan: ramadan.isRamadan,
-                        ),
-                      ],
-
-                      // Hadith / Asma al-Husna ambient ticker (L-3).
-                      if (tvSettings.infoBarConfig.showHadithTicker) ...[
-                        const SizedBox(height: 12),
-                        SizedBox(
-                          height: 44,
-                          child: TvHadithTicker(
-                            includeAsmaAlHusna:
-                                tvSettings.infoBarConfig.showAsmaAlHusna,
-                          ),
-                        ),
-                      ],
-
-                      // Bottom: moon phase + weather.
-                      const SizedBox(height: 16),
-                      _TvBottomBar(moonResult: moonResult),
-                    ],
-                  ),
-                ),
+                Expanded(child: leftContent),
+                rightPanel,
               ],
             ),
-          ),
 
-          // ── Mute overlay button (TV2-3.6) ──
+          // ── Mute overlay button (stream mode) ───────────────────────────
           if (muteButtonVisible && showStream)
             Positioned(
               top: 24,
-              right: 24,
+              right: rightW + 16,
               child: AnimatedOpacity(
-                opacity: muteButtonVisible ? 1.0 : 0.0,
+                opacity: 1.0,
                 duration: const Duration(milliseconds: 300),
                 child: GestureDetector(
                   onTap: onToggleMute,
@@ -1220,16 +1609,13 @@ class _TvHomeBody extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: PrayCalcColors.deep.withAlpha(220),
                       borderRadius: BorderRadius.circular(8),
-                      border: Border.all(
-                          color: PrayCalcColors.mid, width: 1),
+                      border: Border.all(color: PrayCalcColors.mid, width: 1),
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Icon(
-                          streamMuted
-                              ? Icons.volume_off
-                              : Icons.volume_up,
+                          streamMuted ? Icons.volume_off : Icons.volume_up,
                           color: PrayCalcColors.light,
                           size: 24,
                         ),
@@ -1245,7 +1631,6 @@ class _TvHomeBody extends StatelessWidget {
                 ),
               ),
             ),
-
         ],
       ),
     );
@@ -1281,107 +1666,404 @@ class _TvHomeBody extends StatelessWidget {
   }
 }
 
-// ─── Sub-widgets ───────────────────────────────────────────────────────────
+// ─── Right panel ───────────────────────────────────────────────────────────
+// City · Hijri/Greg dates · weather · big clock · prayer rows
 
-class _TvTopBar extends StatelessWidget {
-  const _TvTopBar({
-    required this.cityName,
+class _TvRightPanel extends ConsumerWidget {
+  const _TvRightPanel({
+    required this.width,
+    required this.city,
     required this.hijri,
     required this.gregorian,
-    required this.secondLabel,
-    required this.secondTz,
     required this.now,
+    required this.times,
+    required this.activeIdx,
+    required this.nextIdx,
+    required this.formatH,
+    required this.use24h,
+    required this.isRamadan,
+    required this.completedPrayers,
+    required this.fontScale,
+    required this.moonResult,
+    required this.tvSettings,
+    required this.countdown,
   });
 
-  final String cityName;
+  final double width;
+  final City? city;
   final String hijri;
   final String gregorian;
-  final String secondLabel;
-  final String secondTz;
   final DateTime now;
+  final PrayerTimes times;
+  final int activeIdx;
+  final int nextIdx;
+  final String Function(double h, bool use24h) formatH;
+  final bool use24h;
+  final bool isRamadan;
+  final Set<String> completedPrayers;
+  final double fontScale;
+  final MoonPhaseResult moonResult;
+  final TvSettings tvSettings;
+  final String countdown;
 
-  /// Returns the current time in [tzName] as a simple HH:MM string.
-  /// Uses DateTime offset approximation via named timezone offsets.
-  /// For full accuracy, add the `timezone` package; for now we use a static
-  /// offset table for the most common Islamic city timezones.
-  String _secondCityTime() {
-    // Static UTC offsets for supported zones (covers common Islamic cities).
-    const offsets = <String, int>{
-      'Asia/Riyadh': 3,      // Mecca, Medina, Riyadh
-      'Asia/Dubai': 4,       // Dubai, Abu Dhabi
-      'Africa/Cairo': 2,     // Cairo (ignores DST)
-      'Asia/Istanbul': 3,    // Istanbul (ignores DST)
-      'Asia/Karachi': 5,     // Karachi
-      'Asia/Dhaka': 6,       // Dhaka
-      'Asia/Jakarta': 7,     // Jakarta
-      'Asia/Kuala_Lumpur': 8, // Kuala Lumpur
-      'Asia/Tehran': 3,      // Tehran (ignores 0.5h offset)
-      'Africa/Casablanca': 1, // Casablanca
-      'America/New_York': -4, // New York (EDT approx)
-      'America/Chicago': -5,  // Chicago (CDT approx)
-      'America/Los_Angeles': -7, // LA (PDT approx)
-      'Europe/London': 1,    // London (BST approx)
-      'Europe/Paris': 2,     // Paris (CEST approx)
-    };
-    final offsetH = offsets[secondTz] ?? 0;
-    final utc = now.toUtc();
-    final shifted = utc.add(Duration(hours: offsetH));
-    final hh = shifted.hour.toString().padLeft(2, '0');
-    final mm = shifted.minute.toString().padLeft(2, '0');
-    return '$hh:$mm';
+  static String _cityDisplayName(City? city) {
+    if (city == null) return 'Set location';
+    final state = city.state?.toUpperCase();
+    if (state != null && state.isNotEmpty) return '${city.name}, $state';
+    if (city.country.isNotEmpty) return '${city.name}, ${city.country}';
+    return city.name;
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // City name (left).
-        Expanded(
-          child: Row(
-            children: [
-              const Icon(Icons.location_on,
-                  color: PrayCalcColors.mid, size: 28),
-              const SizedBox(width: 8),
-              Flexible(
-                child: Text(
-                  cityName,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 28,
-                    fontWeight: FontWeight.w500,
+  Widget build(BuildContext context, WidgetRef ref) {
+    final weather = ref.watch(weatherProvider);
+    final fs = fontScale;
+
+    return Container(
+      width: width,
+      decoration: const BoxDecoration(
+        border: Border(
+          left: BorderSide(color: Color(0xFF1E5E2F), width: 1),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // ── Header: city + dates ────────────────────────────────────
+          Container(
+            padding: const EdgeInsets.fromLTRB(20, 24, 20, 16),
+            decoration: const BoxDecoration(
+              border: Border(
+                bottom: BorderSide(color: Color(0xFF1E5E2F), width: 1),
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                // City name
+                Text(
+                  _cityDisplayName(city),
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: city != null ? Colors.white : Colors.white38,
+                    fontSize: 22 * fs,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 0.3,
                   ),
+                  maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
-              ),
-              // Second city time (TV2-9.7).
-              const SizedBox(width: 24),
-              Text(
-                '$secondLabel  ${_secondCityTime()}',
-                style: const TextStyle(
-                  color: Colors.white54,
-                  fontSize: 20,
+                const SizedBox(height: 4),
+                // Hijri date
+                Text(
+                  hijri,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: PrayCalcColors.light,
+                    fontSize: 14 * fs,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
-              ),
-            ],
-          ),
-        ),
-        // Date (right).
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Text(
-              gregorian,
-              style: const TextStyle(color: Colors.white70, fontSize: 24),
+                const SizedBox(height: 2),
+                // Gregorian date
+                Text(
+                  gregorian,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white54,
+                    fontSize: 13 * fs,
+                  ),
+                ),
+                // Weather row
+                if (weather != null) ...[
+                  const SizedBox(height: 8),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        weather.icon,
+                        style: TextStyle(fontSize: 16 * fs),
+                      ),
+                      const SizedBox(width: 6),
+                      Flexible(
+                        child: Text(
+                          '${weather.tempCelsius.round()}°C  ${weather.description}',
+                          style: TextStyle(
+                            color: Colors.white60,
+                            fontSize: 13 * fs,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ],
             ),
-            if (hijri.isNotEmpty)
+          ),
+
+          // ── Clock ───────────────────────────────────────────────────
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 16, 20, 4),
+            child: Center(
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 22, vertical: 10),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF080808),
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(
+                    color: const Color(0xFF1A1A1A),
+                    width: 1,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withAlpha(120),
+                      blurRadius: 16,
+                      spreadRadius: 2,
+                    ),
+                  ],
+                ),
+                child: _TvCurrentTime(now: now, use24h: use24h),
+              ),
+            ),
+          ),
+
+          // ── Prayer rows ─────────────────────────────────────────────
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: _TvPrayerRows(
+                times: times,
+                activeIdx: activeIdx,
+                nextIdx: nextIdx,
+                formatH: formatH,
+                use24h: use24h,
+                isRamadan: isRamadan,
+                completedPrayers: completedPrayers,
+                fontScale: fs,
+                countdown: countdown,
+              ),
+            ),
+          ),
+
+          // ── Moon phase ──────────────────────────────────────────────
+          Container(
+            padding: const EdgeInsets.fromLTRB(20, 10, 20, 16),
+            decoration: const BoxDecoration(
+              border: Border(
+                top: BorderSide(color: Color(0xFF1E5E2F), width: 1),
+              ),
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    '${MoonPhase.phaseName(moonResult.phase)}  '
+                    '${moonResult.illuminationPct.round()}%',
+                    style: TextStyle(color: Colors.white38, fontSize: 12 * fs),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  MoonPhase.phaseEmoji(moonResult.phase),
+                  style: TextStyle(fontSize: 18 * fs),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ─── Prayer rows ───────────────────────────────────────────────────────────
+// Vertical list of prayers matching the web app's prayer-row style.
+
+class _TvPrayerRows extends StatelessWidget {
+  const _TvPrayerRows({
+    required this.times,
+    required this.activeIdx,
+    required this.nextIdx,
+    required this.formatH,
+    required this.use24h,
+    required this.isRamadan,
+    required this.completedPrayers,
+    required this.fontScale,
+    required this.countdown,
+  });
+
+  final PrayerTimes times;
+  final int activeIdx;
+  final int nextIdx;
+  final String Function(double h, bool use24h) formatH;
+  final bool use24h;
+  final bool isRamadan;
+  final Set<String> completedPrayers;
+  final double fontScale;
+  final String countdown;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        for (int i = 0; i < _prayers.length; i++) _buildRow(i),
+      ],
+    );
+  }
+
+  Widget _buildRow(int i) {
+    final meta = _prayers[i];
+    final h = meta.getValue(times);
+    final timeStr = h.isFinite ? formatH(h, use24h) : '--:--';
+    final isCurrent = i == activeIdx;
+    final isPast = !isCurrent && nextIdx > 0 && i < nextIdx;
+    final isDone = completedPrayers.contains(meta.label);
+    final fs = fontScale;
+
+    // Ramadan subtitle (Suhoor under Fajr, Iftar under Maghrib)
+    String? ramadanSub;
+    if (isRamadan) {
+      if (meta.label == 'Fajr') ramadanSub = 'Suhoor';
+      if (meta.label == 'Maghrib') ramadanSub = 'Iftar';
+    }
+
+    final nameColor = isCurrent
+        ? Colors.white
+        : isPast
+            ? Colors.white30
+            : Colors.white70;
+    final timeColor = isCurrent
+        ? PrayCalcColors.light
+        : isPast
+            ? Colors.white24
+            : Colors.white60;
+
+    return Expanded(
+      child: Container(
+        decoration: BoxDecoration(
+          color: isCurrent
+              ? PrayCalcColors.dark.withAlpha(120)
+              : Colors.transparent,
+          border: isCurrent
+              ? const Border(
+                  left: BorderSide(color: PrayCalcColors.mid, width: 3),
+                )
+              : null,
+        ),
+        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4 * fs),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            // Prayer name + optional Ramadan subtitle
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    meta.label,
+                    style: TextStyle(
+                      color: nameColor,
+                      fontSize: 17 * fs,
+                      fontWeight: isCurrent
+                          ? FontWeight.w600
+                          : FontWeight.normal,
+                    ),
+                  ),
+                  if (ramadanSub != null)
+                    Text(
+                      ramadanSub,
+                      style: TextStyle(
+                        color: PrayCalcColors.light.withAlpha(180),
+                        fontSize: 11 * fs,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                ],
+              ),
+            ),
+            // Time / check
+            if (isDone)
+              Icon(Icons.check_circle,
+                  color: PrayCalcColors.mid, size: 14 * fs)
+            else
               Text(
-                hijri,
-                style:
-                    const TextStyle(color: Colors.white54, fontSize: 20),
+                timeStr,
+                style: TextStyle(
+                  color: timeColor,
+                  fontSize: 18 * fs,
+                  fontWeight:
+                      isCurrent ? FontWeight.w600 : FontWeight.normal,
+                ),
               ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+// ─── Ambient left area ─────────────────────────────────────────────────────
+// Default: large Quranic verse (ayah of the hour) + optional Ramadan card.
+
+class _TvAmbientArea extends StatelessWidget {
+  const _TvAmbientArea({
+    required this.hour,
+    required this.ramadan,
+    required this.times,
+    required this.settings,
+    required this.countdown,
+    required this.nowH,
+    required this.nextPrayerName,
+    required this.tvSettings,
+    required this.city,
+    required this.formatH,
+  });
+
+  final int hour;
+  final RamadanState ramadan;
+  final PrayerTimes times;
+  final AppSettings settings;
+  final String countdown;
+  final double nowH;
+  final String nextPrayerName;
+  final TvSettings tvSettings;
+  final City? city;
+  final String Function(double h, bool use24h) formatH;
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        // Centered ayah
+        Center(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 48, vertical: 32),
+            child: TvAyahOfHour(hour: hour),
+          ),
+        ),
+
+        // Ramadan card — bottom-left overlay
+        if (ramadan.isRamadan)
+          Positioned(
+            left: 32,
+            bottom: 32,
+            child: TvRamadanDisplay(
+              ramadan: ramadan,
+              suhoorTime: formatH(times.fajr, settings.use24h),
+              iftarTime: formatH(times.maghrib, settings.use24h),
+              countdown: countdown,
+              countdownLabel: ramadan.isRamadan && nextPrayerName == 'Fajr'
+                  ? 'Until Suhoor ends'
+                  : ramadan.isRamadan && nextPrayerName == 'Maghrib'
+                      ? 'Until Iftar'
+                      : 'Until $nextPrayerName',
+            ),
+          ),
       ],
     );
   }
@@ -1396,16 +2078,37 @@ class _TvCurrentTime extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final timeStr = _formatCurrentTime();
+    final periodStr = _periodStr();
     return Semantics(
       label: 'Current time: $timeStr',
-      child: Text(
-        timeStr,
-        style: const TextStyle(
-          color: Colors.white,
-          fontSize: 72,
-          fontWeight: FontWeight.bold,
-          fontFeatures: [FontFeature.tabularFigures()],
-        ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.baseline,
+        textBaseline: TextBaseline.alphabetic,
+        children: [
+          Text(
+            timeStr,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 42,
+              fontWeight: FontWeight.w300,
+              letterSpacing: -1,
+              fontFeatures: [FontFeature.tabularFigures()],
+            ),
+          ),
+          if (periodStr != null) ...[
+            const SizedBox(width: 4),
+            Text(
+              periodStr,
+              style: const TextStyle(
+                color: Colors.white54,
+                fontSize: 16,
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+          ],
+        ],
       ),
     );
   }
@@ -1417,44 +2120,96 @@ class _TvCurrentTime extends StatelessWidget {
     if (use24h) {
       return '${hh.toString().padLeft(2, '0')}:$mm:$ss';
     }
-    final period = hh >= 12 ? 'PM' : 'AM';
     final h12 = hh % 12 == 0 ? 12 : hh % 12;
-    return '$h12:$mm:$ss $period';
+    return '$h12:$mm:$ss';
+  }
+
+  String? _periodStr() {
+    if (use24h) return null;
+    return now.hour >= 12 ? 'PM' : 'AM';
   }
 }
 
-class _TvCountdownBanner extends StatelessWidget {
-  const _TvCountdownBanner({
-    required this.label,
-    required this.countdown,
+// ─── No-location split layout ────────────────────────────────────────────────
+//
+// Shown when city==null. Shows Mecca Live stream on the left and a set-location
+// prompt on the right, matching the normal TV home layout so the screen looks
+// polished immediately after pairing.
+
+class _TvNoLocationLayout extends StatelessWidget {
+  const _TvNoLocationLayout({
+    required this.tvSettings,
+    required this.streamMuted,
+    required this.muteButtonVisible,
+    required this.onToggleMute,
   });
 
-  final String label;
-  final String countdown;
+  final TvSettings tvSettings;
+  final bool streamMuted;
+  final bool muteButtonVisible;
+  final VoidCallback onToggleMute;
 
   @override
   Widget build(BuildContext context) {
-    return Semantics(
-      label: '$label in $countdown',
-      liveRegion: true,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
-        decoration: BoxDecoration(
-          color: PrayCalcColors.dark,
-          borderRadius: BorderRadius.circular(16),
-        ),
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 48, vertical: 32),
         child: Row(
-          mainAxisSize: MainAxisSize.min,
           children: [
-            Text(
-              '$label in  ',
-              style: const TextStyle(
-                color: PrayCalcColors.light,
-                fontSize: 32,
-                fontWeight: FontWeight.w500,
+            // Left: Islamic geometric pattern + Quran verse — works immediately
+            // without a live stream or network dependency.
+            Expanded(
+              child: TvGeometricPattern(
+                style: TvGeometricStyle.moroccanStar,
+                opacity: 0.35,
+                child: Center(
+                  child: TvAyahOfHour(hour: DateTime.now().hour),
+                ),
               ),
             ),
-            TvCountdownFlip(time: countdown, digitFontSize: 36),
+            // Right: set-location prompt.
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset('assets/brand/logo.png', height: 56),
+                  const SizedBox(height: 40),
+                  const Icon(Icons.location_on_outlined,
+                      color: PrayCalcColors.mid, size: 56),
+                  const SizedBox(height: 20),
+                  const Text(
+                    'No location set',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 28,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  const Text(
+                    'Open PrayCalc on your phone or at',
+                    style: TextStyle(color: Colors.white54, fontSize: 18),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 4),
+                  const Text(
+                    'praycalc.com/dashboard/tvs',
+                    style: TextStyle(
+                      color: Color(0xFFC9F27A),
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 4),
+                  const Text(
+                    'Sign in and tap "Set location" for this TV.',
+                    style: TextStyle(color: Colors.white54, fontSize: 18),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
       ),
@@ -1462,78 +2217,135 @@ class _TvCountdownBanner extends StatelessWidget {
   }
 }
 
+// ─── No-location setup screen ────────────────────────────────────────────────
+//
+// Kept as fallback. Shown on TvHomeScreen when cityProvider is null (no
+// location configured). Instructs the user to open the web dashboard.
 
-class _TvBottomBar extends ConsumerWidget {
-  const _TvBottomBar({required this.moonResult});
+class _TvNoLocationScreen extends StatefulWidget {
+  @override
+  State<_TvNoLocationScreen> createState() => _TvNoLocationScreenState();
+}
 
-  final MoonPhaseResult moonResult;
+class _TvNoLocationScreenState extends State<_TvNoLocationScreen>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _pulse;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final phaseName = MoonPhase.phaseName(moonResult.phase);
-    final pct = moonResult.illuminationPct.round();
-    final weather = ref.watch(weatherProvider);
+  void initState() {
+    super.initState();
+    _pulse = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 2000),
+    )..repeat(reverse: true);
+  }
 
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
+  @override
+  void dispose() {
+    _pulse.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      fit: StackFit.expand,
       children: [
-        Semantics(
-          label: 'Moon phase: $phaseName, $pct% illumination',
-          child: Row(
+        // Green radial glow (same as pairing screen)
+        CustomPaint(painter: _GlowPainterNL()),
+        Center(
+          child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
-                MoonPhase.phaseEmoji(moonResult.phase),
-                style: const TextStyle(fontSize: 32),
+              Image.asset('assets/brand/logo.png', height: 64),
+              const SizedBox(height: 48),
+              const Icon(Icons.location_on_outlined,
+                  color: PrayCalcColors.mid, size: 64),
+              const SizedBox(height: 24),
+              const Text(
+                'No location configured',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 32,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
-              const SizedBox(width: 12),
-              Text(
-                phaseName,
-                style: const TextStyle(
-                    color: Colors.white54, fontSize: 24),
+              const SizedBox(height: 16),
+              const Text(
+                'To get started, open PrayCalc on your phone or at',
+                style: TextStyle(color: Colors.white54, fontSize: 20),
+                textAlign: TextAlign.center,
               ),
-              const SizedBox(width: 8),
-              Text(
-                '$pct%',
-                style: const TextStyle(
-                    color: Colors.white38, fontSize: 20),
+              const SizedBox(height: 4),
+              const Text(
+                'praycalc.com/dashboard/tvs',
+                style: TextStyle(
+                  color: Color(0xFFC9F27A),
+                  fontSize: 22,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 0.3,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 4),
+              const Text(
+                'Sign in with the same account, find this TV, and tap "Set location".',
+                style: TextStyle(color: Colors.white54, fontSize: 20),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 40),
+              AnimatedBuilder(
+                animation: _pulse,
+                builder: (context2, child2) => Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
+                  decoration: BoxDecoration(
+                    color: PrayCalcColors.dark.withAlpha(200),
+                    borderRadius: BorderRadius.circular(30),
+                    border: Border.all(
+                      color: PrayCalcColors.mid.withValues(alpha: 0.3 + _pulse.value * 0.4),
+                      width: 1.5,
+                    ),
+                  ),
+                  child: const Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.sync, color: PrayCalcColors.mid, size: 18),
+                      SizedBox(width: 8),
+                      Text(
+                        'Checking for location…',
+                        style: TextStyle(color: Colors.white60, fontSize: 16),
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ],
           ),
         ),
-        if (weather != null) ...[
-          const SizedBox(width: 32),
-          Container(width: 1, height: 28, color: Colors.white24),
-          const SizedBox(width: 32),
-          Semantics(
-            label:
-                'Weather: ${weather.description}, ${weather.tempCelsius.round()}°C',
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  weather.emoji,
-                  style: const TextStyle(fontSize: 32),
-                ),
-                const SizedBox(width: 12),
-                Text(
-                  '${weather.tempCelsius.round()}°C',
-                  style: const TextStyle(
-                      color: Colors.white54, fontSize: 24),
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  weather.description,
-                  style: const TextStyle(
-                      color: Colors.white38, fontSize: 20),
-                ),
-              ],
-            ),
-          ),
-        ],
       ],
     );
   }
+}
+
+class _GlowPainterNL extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..shader = RadialGradient(
+        center: Alignment.bottomCenter,
+        radius: 0.8,
+        colors: [
+          const Color(0xFF1E5E2F).withAlpha(180),
+          const Color(0xFF0D2F17).withAlpha(60),
+          Colors.transparent,
+        ],
+        stops: const [0.0, 0.5, 1.0],
+      ).createShader(Rect.fromLTWH(0, 0, size.width, size.height));
+    canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
 // ─── P-4: Pre-prayer signal overlay ─────────────────────────────────────────

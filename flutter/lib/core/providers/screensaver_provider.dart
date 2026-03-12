@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math' as math;
 
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
@@ -71,6 +72,12 @@ class ScreensaverNotifier extends Notifier<ScreensaverState> {
   ScreensaverPhotoService get _service => ScreensaverPhotoService.instance;
 
   Future<void> _init() async {
+    // File I/O is not available on Flutter web — skip silently.
+    if (kIsWeb) {
+      state = state.copyWith(isReady: true);
+      return;
+    }
+
     // P-16: Check if bundled wallpapers are enabled.
     final tvSettings = ref.read(tvSettingsProvider);
     if (tvSettings.useBundledWallpapers) {

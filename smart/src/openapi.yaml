@@ -1,0 +1,158 @@
+openapi: 3.1.0
+info:
+  title: PrayCalc Public API
+  version: 1.0.0
+  description: |
+    The PrayCalc Public API provides accurate Islamic prayer times for any location worldwide.
+
+    **Base URL:** `https://api.praycalc.com`
+
+    **Rate Limiting:** 100 requests per minute per IP.
+
+    **Authentication:** None required for public endpoints.
+  contact:
+    name: PrayCalc
+    url: https://praycalc.com
+  license:
+    name: MIT
+
+servers:
+  - url: https://api.praycalc.com
+    description: Production
+
+paths:
+  /api/v1/public/times:
+    get:
+      summary: Get prayer times
+      description: Calculate Islamic prayer times for a given location and date.
+      operationId: getPrayerTimes
+      tags:
+        - Prayer Times
+      parameters:
+        - name: lat
+          in: query
+          required: true
+          schema:
+            type: number
+            format: double
+            minimum: -90
+            maximum: 90
+          description: Latitude in decimal degrees
+          example: 21.3891
+        - name: lng
+          in: query
+          required: true
+          schema:
+            type: number
+            format: double
+            minimum: -180
+            maximum: 180
+          description: Longitude in decimal degrees
+          example: 39.8579
+        - name: date
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+            pattern: '^\d{4}-\d{2}-\d{2}$'
+          description: Date in YYYY-MM-DD format (defaults to today UTC)
+          example: '2024-03-20'
+        - name: method
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [isna, mwl, egypt, umm_al_qura, tehran, karachi]
+            default: isna
+          description: Prayer time calculation method
+        - name: madhab
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [shafi, hanafi]
+            default: shafi
+          description: Asr shadow ratio (Shafi = 1x, Hanafi = 2x)
+      responses:
+        '200':
+          description: Prayer times calculated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PrayerTimesResponse'
+              example:
+                prayers:
+                  fajr: "05:12"
+                  sunrise: "06:28"
+                  dhuhr: "12:17"
+                  asr: "15:42"
+                  maghrib: "18:06"
+                  isha: "19:24"
+                nextPrayer: "asr"
+                hijriDate: "10 Ramadan 1447"
+                qibla: 281.5
+                meta:
+                  method: "isna"
+                  madhab: "shafi"
+                  latitude: 21.3891
+                  longitude: 39.8579
+                  date: "2024-03-20"
+        '400':
+          description: Invalid parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    PrayerTimesResponse:
+      type: object
+      required: [prayers, nextPrayer, meta]
+      properties:
+        prayers:
+          type: object
+          required: [fajr, sunrise, dhuhr, asr, maghrib, isha]
+          properties:
+            fajr:     { type: string, example: "05:12" }
+            sunrise:  { type: string, example: "06:28" }
+            dhuhr:    { type: string, example: "12:17" }
+            asr:      { type: string, example: "15:42" }
+            maghrib:  { type: string, example: "18:06" }
+            isha:     { type: string, example: "19:24" }
+        nextPrayer:
+          type: string
+          enum: [fajr, dhuhr, asr, maghrib, isha]
+          example: "asr"
+        hijriDate:
+          type: string
+          example: "10 Ramadan 1447"
+        qibla:
+          type: number
+          description: Qibla direction in degrees (0=North, clockwise)
+          example: 281.5
+        meta:
+          type: object
+          properties:
+            method:    { type: string, example: "isna" }
+            madhab:    { type: string, example: "shafi" }
+            latitude:  { type: number, example: 21.3891 }
+            longitude: { type: number, example: 39.8579 }
+            date:      { type: string, example: "2024-03-20" }
+
+    ErrorResponse:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: string
+          example: "lat and lng query parameters are required"
+        message:
+          type: string

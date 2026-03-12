@@ -1,9 +1,15 @@
+import 'dart:async';
+
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show KeyDownEvent, LogicalKeyboardKey;
 import 'package:just_audio/just_audio.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 import '../../core/theme/app_theme.dart';
+import 'tv_stream_player_web_stub.dart'
+    if (dart.library.html) 'tv_stream_player_web.dart';
 import 'tv_stream_library.dart';
 
 /// Plays a [TvStream].
@@ -42,6 +48,25 @@ class _TvStreamPlayerState extends State<TvStreamPlayer> {
   bool _isPlaying = false;
   bool _streamOffline = false;
 
+  // Fallback URL cycling — index into widget.stream.allUrls.
+  int _urlIndex = 0;
+  bool _isTryingFallback = false;
+
+  // Web-only: starts muted for browser autoplay policy compliance.
+  // Incremented on unmute to force iframe recreation with a new viewId.
+  bool _webMuted = true;
+  int _webViewVersion = 0;
+  Timer? _webFallbackTimer;
+  // Periodic reload to recover from frozen YouTube/HLS streams on web.
+  Timer? _webPeriodicReloadTimer;
+  static const Duration _periodicReloadInterval = Duration(minutes: 60);
+
+  final _focusNode = FocusNode();
+
+  /// Returns the active URL based on the current fallback index.
+  String get _currentUrl => widget.stream.allUrls[
+      _urlIndex.clamp(0, widget.stream.allUrls.length - 1)];
+
   /// Extracts the YouTube video ID from a watch URL.
   /// e.g. https://www.youtube.com/watch?v=ABC123 → ABC123
   static String? _youtubeId(String url) {
@@ -49,12 +74,83 @@ class _TvStreamPlayerState extends State<TvStreamPlayer> {
     return uri?.queryParameters['v'];
   }
 
-  /// Returns the YouTube embed URL for inline WebView playback.
-  static String? _embedUrl(String url) {
+  /// Returns the YouTube embed URL. [muted] controls the mute param.
+  ///
+  /// Note: loop=1&playlist=id is intentionally omitted — it causes
+  /// "Video unavailable" on live streams when the loop timer fires.
+  static String? _embedUrl(String url, {bool muted = false}) {
     final id = _youtubeId(url);
     if (id == null) return null;
+    final muteParam = muted ? '&mute=1' : '';
     return 'https://www.youtube.com/embed/$id'
-        '?autoplay=1&controls=0&modestbranding=1&rel=0&playsinline=1';
+        '?autoplay=1$muteParam&controls=1&rel=0'
+        '&playsinline=1&iv_load_policy=3&cc_load_policy=0';
+  }
+
+  /// Advances to the next fallback URL. No-op when all URLs are exhausted.
+  void _tryNextUrl() {
+    final total = widget.stream.allUrls.length;
+    if (_urlIndex >= total - 1) {
+      // All fallbacks exhausted — mark as fully offline.
+      if (mounted) {
+        setState(() {
+          _streamOffline = true;
+          _isTryingFallback = false;
+        });
+        widget.onStreamOffline?.call();
+      }
+      return;
+    }
+    if (!mounted) return;
+    setState(() {
+      _urlIndex++;
+      _isTryingFallback = true;
+      _streamOffline = false;
+      _webViewVersion++; // force iframe recreation on web
+    });
+    // Re-init native video/audio with the new URL.
+    if (!kIsWeb) {
+      _webController = null;
+      if (widget.stream.type == TvStreamType.audio) {
+        _audioPlayer?.dispose();
+        _audioPlayer = null;
+        _initAudio();
+      } else {
+        _initVideo();
+        _checkHealth();
+      }
+    }
+  }
+
+  void _webUnmute() {
+    if (!_webMuted) return;
+    setState(() {
+      _webMuted = false;
+      _webViewVersion++;
+    });
+    // Reset the periodic reload timer so we don't reload right after user
+    // interacted with the stream.
+    _schedulePeriodicReload();
+  }
+
+  /// Schedules a silent iframe reload every [_periodicReloadInterval] to
+  /// recover from frozen YouTube / HLS streams on web without user action.
+  void _schedulePeriodicReload() {
+    if (!kIsWeb) return;
+    _webPeriodicReloadTimer?.cancel();
+    _webPeriodicReloadTimer = Timer.periodic(_periodicReloadInterval, (_) {
+      if (!mounted) return;
+      setState(() => _webViewVersion++);
+    });
+  }
+
+  /// Schedules a web fallback to try the next URL after [delay].
+  /// Not used for HLS streams — they handle errors internally via HLS.js.
+  /// Not triggered by muted state — on TV the stream is intentionally muted
+  /// for autoplay compliance and should never be cycled away from that state.
+  void _scheduleWebFallback() {
+    // Disabled: on TV the stream stays muted indefinitely by design.
+    // The periodic reload (every 60 min) handles frozen streams instead.
   }
 
   @override
@@ -65,6 +161,8 @@ class _TvStreamPlayerState extends State<TvStreamPlayer> {
       _initAudio();
     } else {
       _initVideo();
+      _scheduleWebFallback();
+      _schedulePeriodicReload();
     }
   }
 
@@ -78,11 +176,17 @@ class _TvStreamPlayerState extends State<TvStreamPlayer> {
       _hasError = false;
       _isPlaying = false;
       _streamOffline = false;
+      _urlIndex = 0;
+      _isTryingFallback = false;
+      _webFallbackTimer?.cancel();
+      _webPeriodicReloadTimer?.cancel();
       _checkHealth();
       if (widget.stream.type == TvStreamType.audio) {
         _initAudio();
       } else {
         _initVideo();
+        _scheduleWebFallback();
+        _schedulePeriodicReload();
       }
     }
     if (old.muted != widget.muted && _audioPlayer != null) {
@@ -91,27 +195,31 @@ class _TvStreamPlayerState extends State<TvStreamPlayer> {
   }
 
   void _checkHealth() {
+    // On web the iframe handles errors natively; HEAD checks fail due to CORS.
+    if (kIsWeb) return;
     final cached = TvStreamHealthChecker.isHealthy(widget.stream.id);
     if (!cached) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) {
-          setState(() => _streamOffline = true);
-          widget.onStreamOffline?.call();
-        }
+        if (mounted) _tryNextUrl();
       });
+      return;
     }
-    TvStreamHealthChecker.checkStream(widget.stream.url).then((ok) {
+    TvStreamHealthChecker.checkStream(_currentUrl).then((ok) {
       if (!mounted) return;
-      final wasOffline = _streamOffline;
-      setState(() => _streamOffline = !ok);
-      if (!ok && !wasOffline) {
-        widget.onStreamOffline?.call();
+      if (!ok) {
+        _tryNextUrl();
+      } else {
+        setState(() {
+          _streamOffline = false;
+          _isTryingFallback = false;
+        });
       }
     });
   }
 
   void _initVideo() {
-    final embedUrl = _embedUrl(widget.stream.url);
+    if (kIsWeb) return; // Web uses HtmlElementView iframe — no controller needed.
+    final embedUrl = _embedUrl(_currentUrl, muted: widget.muted);
     if (embedUrl == null) return;
     final controller = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
@@ -145,7 +253,7 @@ class _TvStreamPlayerState extends State<TvStreamPlayer> {
   }
 
   Future<void> _openVideoInBrowser() async {
-    final uri = Uri.parse(widget.stream.url);
+    final uri = Uri.parse(_currentUrl);
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri, mode: LaunchMode.externalApplication);
     }
@@ -154,6 +262,8 @@ class _TvStreamPlayerState extends State<TvStreamPlayer> {
   @override
   void dispose() {
     _audioPlayer?.dispose();
+    _webFallbackTimer?.cancel();
+    _webPeriodicReloadTimer?.cancel();
     super.dispose();
   }
 
@@ -164,31 +274,78 @@ class _TvStreamPlayerState extends State<TvStreamPlayer> {
     final content = widget.stream.type == TvStreamType.audio
         ? _buildAudioCard()
         : _buildVideoPlayer();
-    if (!_streamOffline) return content;
-    return Stack(children: [content, _buildOfflineDot()]);
+    if (_streamOffline) {
+      return Stack(children: [content, _buildOfflineDot()]);
+    }
+    if (_isTryingFallback) {
+      return Stack(children: [content, _buildFallbackBadge()]);
+    }
+    return content;
   }
 
-  /// Small overlay dot shown in the top-right corner when the stream is offline.
+  /// Shown when all fallback URLs are exhausted and stream is truly offline.
   Widget _buildOfflineDot() => Positioned(
         top: 16,
         right: 16,
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 10,
-              height: 10,
-              decoration: const BoxDecoration(
-                color: Colors.red,
-                shape: BoxShape.circle,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+          decoration: BoxDecoration(
+            color: Colors.black.withValues(alpha: 0.65),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: Colors.red.withValues(alpha: 0.6)),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 8,
+                height: 8,
+                decoration: const BoxDecoration(
+                  color: Colors.red,
+                  shape: BoxShape.circle,
+                ),
               ),
-            ),
-            const SizedBox(width: 6),
-            const Text(
-              'Offline',
-              style: TextStyle(color: Colors.red, fontSize: 14),
-            ),
-          ],
+              const SizedBox(width: 6),
+              const Text(
+                'Stream offline',
+                style: TextStyle(color: Colors.red, fontSize: 13),
+              ),
+            ],
+          ),
+        ),
+      );
+
+  /// Subtle badge shown while trying a backup stream URL.
+  Widget _buildFallbackBadge() => Positioned(
+        top: 16,
+        right: 16,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+          decoration: BoxDecoration(
+            color: Colors.black.withValues(alpha: 0.65),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+                color: PrayCalcColors.mid.withValues(alpha: 0.5)),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(
+                width: 8,
+                height: 8,
+                child: CircularProgressIndicator(
+                  strokeWidth: 1.5,
+                  color: PrayCalcColors.light,
+                ),
+              ),
+              const SizedBox(width: 6),
+              Text(
+                'Backup $_urlIndex',
+                style: const TextStyle(
+                    color: PrayCalcColors.light, fontSize: 13),
+              ),
+            ],
+          ),
         ),
       );
 
@@ -297,18 +454,91 @@ class _TvStreamPlayerState extends State<TvStreamPlayer> {
         ),
       );
 
-  /// Video streams — inline WebView using YouTube embed URL.
-  /// Falls back to ambient art card if no embed URL can be derived.
+  /// Returns true when the current URL is an HLS manifest.
+  bool get _isHlsUrl => _currentUrl.contains('.m3u8');
+
+  /// Video streams — iframe on web, WebView on native.
   Widget _buildVideoPlayer() {
-    final controller = _webController;
-    if (controller == null) {
-      // No embed URL (non-YouTube stream) — show art card with external link.
-      return _buildVideoFallback();
+    if (kIsWeb) {
+      // ── HLS streams (e.g. Akamai CDN, m3u8 URLs) ────────────────────────────
+      if (_isHlsUrl) {
+        // Version suffix forces iframe recreation when mute state changes.
+        final viewId = 'hls-player-${widget.stream.id}-$_webViewVersion';
+        return KeyboardListener(
+          focusNode: _focusNode,
+          autofocus: true,
+          onKeyEvent: (e) {
+            if (e is! KeyDownEvent) return;
+            final k = e.logicalKey;
+            if (k == LogicalKeyboardKey.select ||
+                k == LogicalKeyboardKey.enter ||
+                k == LogicalKeyboardKey.audioVolumeUp ||
+                k == LogicalKeyboardKey.audioVolumeDown) {
+              _webUnmute();
+            }
+          },
+          child: GestureDetector(
+            onTap: _webUnmute,
+            child: Stack(
+              children: [
+                buildHlsVideoPlayer(_currentUrl, viewId, muted: _webMuted),
+                Positioned(
+                  top: 16,
+                  left: 16,
+                  child: _WebVolumeButton(
+                    muted: _webMuted,
+                    onTap: _webUnmute,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      }
+
+      // ── YouTube embeds ───────────────────────────────────────────────────────
+      final embedUrl = _embedUrl(_currentUrl, muted: _webMuted);
+      if (embedUrl == null) return _buildVideoFallback();
+      // Version suffix forces iframe recreation when mute state changes.
+      final viewId = 'yt-iframe-${widget.stream.id}-$_webViewVersion';
+      return KeyboardListener(
+        focusNode: _focusNode,
+        autofocus: true,
+        onKeyEvent: (e) {
+          if (e is! KeyDownEvent) return;
+          final k = e.logicalKey;
+          if (k == LogicalKeyboardKey.select ||
+              k == LogicalKeyboardKey.enter ||
+              k == LogicalKeyboardKey.audioVolumeUp ||
+              k == LogicalKeyboardKey.audioVolumeDown) {
+            _webUnmute();
+          }
+        },
+        child: GestureDetector(
+          onTap: _webUnmute,
+          child: Stack(
+            children: [
+              buildYouTubeIframe(embedUrl, viewId),
+              // Volume indicator — always visible top-left.
+              // Red muted icon when muted, green when live audio.
+              Positioned(
+                top: 16,
+                left: 16,
+                child: _WebVolumeButton(
+                  muted: _webMuted,
+                  onTap: _webUnmute,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
     }
+    final controller = _webController;
+    if (controller == null) return _buildVideoFallback();
     return Stack(
       children: [
         WebViewWidget(controller: controller),
-        // Small "open in app" button in corner for user escape hatch.
         Positioned(
           bottom: 16,
           right: 16,
@@ -372,6 +602,50 @@ class _TvStreamPlayerState extends State<TvStreamPlayer> {
         ),
       );
 }
+
+// ─── Volume indicator button (web stream mode) ────────────────────────────────
+
+/// Persistent volume icon shown top-left of the stream iframe.
+/// Red + slashed when muted, green when audio is live.
+/// Tapping while muted triggers the unmute callback.
+class _WebVolumeButton extends StatelessWidget {
+  const _WebVolumeButton({required this.muted, required this.onTap});
+
+  final bool muted;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final isMuted = muted;
+    final iconColor = isMuted ? const Color(0xFFE05555) : const Color(0xFF79C24C);
+    final glowColor = isMuted
+        ? const Color(0xFFE05555).withValues(alpha: 0.35)
+        : const Color(0xFF79C24C).withValues(alpha: 0.30);
+
+    return GestureDetector(
+      onTap: isMuted ? onTap : null,
+      child: Container(
+        width: 44,
+        height: 44,
+        decoration: BoxDecoration(
+          color: Colors.black.withValues(alpha: 0.55),
+          shape: BoxShape.circle,
+          border: Border.all(color: iconColor.withValues(alpha: 0.7), width: 1.5),
+          boxShadow: [
+            BoxShadow(color: glowColor, blurRadius: 12, spreadRadius: 2),
+          ],
+        ),
+        child: Icon(
+          isMuted ? Icons.volume_off_rounded : Icons.volume_up_rounded,
+          color: iconColor,
+          size: 22,
+        ),
+      ),
+    );
+  }
+}
+
+// ─── Generic control button ───────────────────────────────────────────────────
 
 class _ControlButton extends StatelessWidget {
   const _ControlButton({

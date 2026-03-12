@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const SMART_BASE = 'https://smart.praycalc.com/api/v1/tv';
+const SMART_BASE = `${process.env.NEXT_PUBLIC_SMART_SERVICE_URL ?? 'https://smart.praycalc.com'}/api/v1/tv`;
 
 /**
  * GET /api/dashboard/tvs

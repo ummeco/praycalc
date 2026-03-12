@@ -10,6 +10,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_web_plugins:
+    sdk: flutter
 
   # Prayer time engine
   pray_calc_dart:
@@ -69,10 +71,16 @@ dependencies:
   # Desktop system tray
   tray_manager: ^0.2.3
 
+  # Desktop window management
+  window_manager: ^0.4.3
+
   # OTA auto-update
   shorebird_code_push: ^1.1.0
   url_launcher: ^6.3.1
   qr_flutter: ^4.1.0
+
+  # Audio recording (H-2: custom adhan recording)
+  record: ^5.0.0
 
   # Social sign-in
   sign_in_with_apple: ^7.0.0
@@ -82,6 +90,7 @@ dependencies:
   flutter_map: ^8.2.2
   latlong2: ^0.9.1
   webview_flutter: ^4.13.1
+  web: ^1.1.1
 
 dev_dependencies:
   flutter_test:
@@ -100,6 +109,10 @@ flutter_launcher_icons:
   # Adaptive icon (Android 8+) — rounded green background
   adaptive_icon_background: "#1E5E2F"
   adaptive_icon_foreground: "assets/brand/icon.png"
+  windows:
+    generate: true
+    image_path: "assets/brand/icon.png"
+    icon_size: 256
 
 flutter_native_splash:
   color: "#1E5E2F"

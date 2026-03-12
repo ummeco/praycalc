@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/providers/notification_configs_provider.dart';
 import '../../core/providers/settings_provider.dart';
 import '../../core/services/adhan_service.dart';
+import '../../core/services/notification_service.dart';
 import '../../core/theme/app_theme.dart';
 import '../../shared/models/notification_model.dart';
 
@@ -64,6 +65,7 @@ class NotificationSettingsScreen extends ConsumerWidget {
               AdhanService.instance.play(t);
             },
           ),
+          const HapticAdhanTile(),
           const Divider(height: 24),
 
           // ── Per-prayer overrides ───────────────────────────────
@@ -88,6 +90,46 @@ class NotificationSettingsScreen extends ConsumerWidget {
           const SizedBox(height: 32),
         ],
       ),
+    );
+  }
+}
+
+// ── Haptic adhan toggle ────────────────────────────────────────────────────────
+
+/// SwitchListTile that toggles haptic adhan mode.
+/// When enabled, prayer notifications with silent adhan type vibrate instead
+/// of playing a sound — useful during quiet hours.
+class HapticAdhanTile extends StatefulWidget {
+  const HapticAdhanTile({super.key});
+
+  @override
+  State<HapticAdhanTile> createState() => _HapticAdhanTileState();
+}
+
+class _HapticAdhanTileState extends State<HapticAdhanTile> {
+  bool _enabled = false;
+
+  @override
+  void initState() {
+    super.initState();
+    NotificationService.instance.getAdhanHapticMode().then((v) {
+      if (mounted) setState(() => _enabled = v);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SwitchListTile(
+      title: const Text('Haptic Mode'),
+      subtitle: Text(
+        'Vibrate instead of sound during silent hours',
+        style: TextStyle(color: Colors.white.withAlpha(100), fontSize: 12),
+      ),
+      value: _enabled,
+      onChanged: (v) {
+        setState(() => _enabled = v);
+        NotificationService.instance.setAdhanHapticMode(v);
+      },
     );
   }
 }

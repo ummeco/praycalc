@@ -16,6 +16,17 @@ import '../../core/theme/app_theme.dart';
 import '../../shared/models/notification_model.dart';
 import '../../shared/models/tv_settings_model.dart';
 
+// ── Adhan phases ─────────────────────────────────────────────────────────────
+
+/// Phases of the full-screen adhan overlay animation sequence.
+///
+/// [silhouette] → [calligraphy] → [details]
+enum AdhanPhase { silhouette, calligraphy, details }
+
+/// When true, the mosque silhouette phase is shown before the Arabic
+/// calligraphy phase. Set to false to skip directly to calligraphy.
+const bool kAdhanSilhouetteEnabled = true;
+
 /// Full-screen or corner adhan alert overlay for TV.
 ///
 /// Displays the prayer name, time, and Hijri date when a prayer time arrives.
@@ -235,27 +246,65 @@ class _ModalAlert extends StatefulWidget {
 }
 
 class _ModalAlertState extends State<_ModalAlert>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   late AnimationController _detailsCtrl;
   late Animation<double> _detailsOpacity;
+
+  // Silhouette phase controller (0→1 over 4 seconds).
+  late AnimationController _silhouetteCtrl;
+  // Fade-out for silhouette exit (last 0.5s of silhouette phase).
+  late AnimationController _silhouetteFadeOutCtrl;
+
+  AdhanPhase _phase = kAdhanSilhouetteEnabled
+      ? AdhanPhase.silhouette
+      : AdhanPhase.calligraphy;
 
   @override
   void initState() {
     super.initState();
+
+    _silhouetteCtrl = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 4),
+    );
+    _silhouetteFadeOutCtrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 500),
+      value: 1.0,
+    );
+
     _detailsCtrl = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 800),
     );
     _detailsOpacity =
         CurvedAnimation(parent: _detailsCtrl, curve: Curves.easeIn);
-    // Show details panel after 4-second calligraphy phase.
-    Future.delayed(const Duration(seconds: 4), () {
-      if (mounted) _detailsCtrl.forward();
-    });
+
+    if (kAdhanSilhouetteEnabled) {
+      _silhouetteCtrl.forward();
+      // Fade out silhouette at 3.5s, then switch to calligraphy at 4s.
+      Future.delayed(const Duration(milliseconds: 3500), () {
+        if (mounted) _silhouetteFadeOutCtrl.reverse();
+      });
+      Future.delayed(const Duration(seconds: 4), () {
+        if (mounted) setState(() => _phase = AdhanPhase.calligraphy);
+      });
+      // Show details panel after silhouette(4s) + calligraphy(4s).
+      Future.delayed(const Duration(seconds: 8), () {
+        if (mounted) _detailsCtrl.forward();
+      });
+    } else {
+      // Show details panel after 4-second calligraphy phase.
+      Future.delayed(const Duration(seconds: 4), () {
+        if (mounted) _detailsCtrl.forward();
+      });
+    }
   }
 
   @override
   void dispose() {
+    _silhouetteCtrl.dispose();
+    _silhouetteFadeOutCtrl.dispose();
     _detailsCtrl.dispose();
     super.dispose();
   }
@@ -292,99 +341,268 @@ class _ModalAlertState extends State<_ModalAlert>
             ],
           ),
         ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+        child: Stack(
           children: [
-            // ── Arabic calligraphy (always visible) ──
-            Text(
-              arabic,
-              textDirection: TextDirection.rtl,
-              style: TextStyle(
-                fontFamily: 'Amiri',
-                fontSize: 96,
-                height: 1.2,
-                color: PrayCalcColors.light,
-                fontWeight: FontWeight.w700,
+            // ── Silhouette phase ──
+            if (_phase == AdhanPhase.silhouette)
+              Positioned.fill(
+                child: FadeTransition(
+                  opacity: _silhouetteFadeOutCtrl,
+                  child: AnimatedBuilder(
+                    animation: _silhouetteCtrl,
+                    builder: (_, _) => CustomPaint(
+                      painter: _MosqueSilhouettePainter(
+                        animValue: _silhouetteCtrl.value,
+                      ),
+                      child: const SizedBox.expand(),
+                    ),
+                  ),
+                ),
               ),
-            ),
-            const SizedBox(height: 8),
 
-            // ── Animated waveform ──
-            const SizedBox(height: 8),
-            const _AdhanWaveform(),
-            const SizedBox(height: 24),
-
-            // ── Details panel (fades in after 4 s) ──
-            FadeTransition(
-              opacity: _detailsOpacity,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    widget.prayerName,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 40,
-                      fontWeight: FontWeight.w300,
-                      letterSpacing: 4,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    widget.prayerTime,
-                    style: const TextStyle(
-                      color: Colors.white70,
-                      fontSize: 36,
-                      fontWeight: FontWeight.w300,
-                      fontFeatures: [FontFeature.tabularFigures()],
-                    ),
-                  ),
-                  if (hijri.isNotEmpty) ...[
-                    const SizedBox(height: 14),
+            // ── Calligraphy + details phase ──
+            if (_phase != AdhanPhase.silhouette)
+              Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // ── Arabic calligraphy (always visible) ──
                     Text(
-                      hijri,
+                      arabic,
+                      textDirection: TextDirection.rtl,
                       style: TextStyle(
-                        color: Colors.white.withValues(alpha: 0.4),
-                        fontSize: 20,
+                        fontFamily: 'Amiri',
+                        fontSize: 96,
+                        height: 1.2,
+                        color: PrayCalcColors.light,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+
+                    // ── Animated waveform ──
+                    const SizedBox(height: 8),
+                    const _AdhanWaveform(),
+                    const SizedBox(height: 24),
+
+                    // ── Details panel (fades in after calligraphy phase) ──
+                    FadeTransition(
+                      opacity: _detailsOpacity,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            widget.prayerName,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 40,
+                              fontWeight: FontWeight.w300,
+                              letterSpacing: 4,
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          Text(
+                            widget.prayerTime,
+                            style: const TextStyle(
+                              color: Colors.white70,
+                              fontSize: 36,
+                              fontWeight: FontWeight.w300,
+                              fontFeatures: [FontFeature.tabularFigures()],
+                            ),
+                          ),
+                          if (hijri.isNotEmpty) ...[
+                            const SizedBox(height: 14),
+                            Text(
+                              hijri,
+                              style: TextStyle(
+                                color: Colors.white.withValues(alpha: 0.4),
+                                fontSize: 20,
+                              ),
+                            ),
+                          ],
+                          const SizedBox(height: 40),
+                          Text(
+                            'Press OK to dismiss',
+                            style: TextStyle(
+                              color: Colors.white.withValues(alpha: 0.3),
+                              fontSize: 18,
+                            ),
+                          ),
+                          // ── Snooze buttons (TV2-8.8) ──
+                          if (widget.onSnooze != null) ...[
+                            const SizedBox(height: 28),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                _SnoozeButton(
+                                  label: 'Snooze 5 min',
+                                  onTap: () => widget.onSnooze!(
+                                      const Duration(minutes: 5)),
+                                ),
+                                const SizedBox(width: 24),
+                                _SnoozeButton(
+                                  label: 'Snooze 10 min',
+                                  onTap: () => widget.onSnooze!(
+                                      const Duration(minutes: 10)),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ],
                       ),
                     ),
                   ],
-                  const SizedBox(height: 40),
-                  Text(
-                    'Press OK to dismiss',
-                    style: TextStyle(
-                      color: Colors.white.withValues(alpha: 0.3),
-                      fontSize: 18,
-                    ),
-                  ),
-                  // ── Snooze buttons (TV2-8.8) ──
-                  if (widget.onSnooze != null) ...[
-                    const SizedBox(height: 28),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        _SnoozeButton(
-                          label: 'Snooze 5 min',
-                          onTap: () =>
-                              widget.onSnooze!(const Duration(minutes: 5)),
-                        ),
-                        const SizedBox(width: 24),
-                        _SnoozeButton(
-                          label: 'Snooze 10 min',
-                          onTap: () =>
-                              widget.onSnooze!(const Duration(minutes: 10)),
-                        ),
-                      ],
-                    ),
-                  ],
-                ],
+                ),
               ),
-            ),
           ],
         ),
       ),
     );
   }
+}
+
+// ── Mosque silhouette painter (TV-SIL-1) ─────────────────────────────────────
+
+/// Paints a mosque silhouette rising from the bottom with a glowing aura.
+///
+/// [animValue] runs 0.0→1.0 over the 4-second silhouette phase:
+///   - Rise: silhouette translates from +150px to 0 over the full duration.
+///   - Glow: aura pulses with sin(animValue * π).
+class _MosqueSilhouettePainter extends CustomPainter {
+  const _MosqueSilhouettePainter({required this.animValue});
+  final double animValue;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    // Background gradient
+    final bgPaint = Paint()
+      ..shader = LinearGradient(
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        colors: const [Color(0xFF0D2F17), Color(0xFF1E5E2F)],
+      ).createShader(Rect.fromLTWH(0, 0, size.width, size.height));
+    canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), bgPaint);
+
+    // Rise offset: starts at +150px below final position, slides to 0.
+    final riseOffset = 150.0 * (1.0 - animValue);
+
+    // Glow pulse: peaks at mid-animation.
+    final glowAlpha = (math.sin(animValue * math.pi) * 0.08).clamp(0.0, 1.0);
+
+    final cx = size.width / 2;
+    // Baseline: bottom 35% of screen.
+    final baseline = size.height * 0.65 + riseOffset;
+
+    // Glow aura behind dome.
+    final glowPaint = Paint()
+      ..shader = RadialGradient(
+        colors: [
+          Colors.white.withValues(alpha: glowAlpha),
+          Colors.white.withValues(alpha: 0),
+        ],
+      ).createShader(Rect.fromCircle(
+          center: Offset(cx, baseline - 120), radius: 200));
+    canvas.drawCircle(Offset(cx, baseline - 120), 200, glowPaint);
+
+    final silhouetteColor = const Color(0xFF1A4A2E);
+    final fillPaint = Paint()
+      ..color = silhouetteColor
+      ..style = PaintingStyle.fill;
+    final strokePaint = Paint()
+      ..color = silhouetteColor.withValues(alpha: 0.7)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.0;
+
+    // ── Central dome ──────────────────────────────────────────────────────
+    // Dome: semicircle 300px wide, center of screen.
+    final domeRadius = 150.0;
+    final domeCenterY = baseline - domeRadius;
+    final domePath = Path()
+      ..moveTo(cx - domeRadius, baseline)
+      ..arcTo(
+        Rect.fromCircle(center: Offset(cx, domeCenterY), radius: domeRadius),
+        math.pi,
+        -math.pi,
+        false,
+      )
+      ..lineTo(cx + domeRadius, baseline)
+      ..close();
+    canvas.drawPath(domePath, fillPaint);
+    canvas.drawPath(domePath, strokePaint);
+
+    // ── Left minaret ─────────────────────────────────────────────────────
+    _drawMinaret(canvas, fillPaint, strokePaint,
+        cx: cx - 200, baseline: baseline, width: 40, height: 200);
+
+    // ── Right minaret ─────────────────────────────────────────────────────
+    _drawMinaret(canvas, fillPaint, strokePaint,
+        cx: cx + 200, baseline: baseline, width: 40, height: 200);
+  }
+
+  void _drawMinaret(
+    Canvas canvas,
+    Paint fillPaint,
+    Paint strokePaint, {
+    required double cx,
+    required double baseline,
+    required double width,
+    required double height,
+  }) {
+    final half = width / 2;
+    final top = baseline - height;
+
+    // Shaft
+    final shaft = Path()
+      ..moveTo(cx - half, baseline)
+      ..lineTo(cx - half, top + 20)
+      ..lineTo(cx, top)
+      ..lineTo(cx + half, top + 20)
+      ..lineTo(cx + half, baseline)
+      ..close();
+    canvas.drawPath(shaft, fillPaint);
+    canvas.drawPath(shaft, strokePaint);
+
+    // Crescent atop minaret
+    _drawCrescent(canvas, fillPaint, cx: cx, cy: top - 14, r: 10);
+
+    // Star beside crescent
+    _drawStar(canvas, fillPaint, cx: cx + 14, cy: top - 20, r: 5);
+  }
+
+  void _drawCrescent(Canvas canvas, Paint paint,
+      {required double cx, required double cy, required double r}) {
+    final path = Path()
+      ..addOval(Rect.fromCircle(center: Offset(cx, cy), radius: r));
+    // Subtract inner circle to form crescent
+    final inner = Path()
+      ..addOval(Rect.fromCircle(center: Offset(cx + r * 0.4, cy), radius: r * 0.75));
+    final crescent = Path.combine(PathOperation.difference, path, inner);
+    canvas.drawPath(crescent, paint);
+  }
+
+  void _drawStar(Canvas canvas, Paint paint,
+      {required double cx, required double cy, required double r}) {
+    const points = 5;
+    final inner = r * 0.4;
+    final path = Path();
+    for (int i = 0; i < points * 2; i++) {
+      final angle = (i * math.pi / points) - math.pi / 2;
+      final radius = i.isEven ? r : inner;
+      final x = cx + radius * math.cos(angle);
+      final y = cy + radius * math.sin(angle);
+      if (i == 0) {
+        path.moveTo(x, y);
+      } else {
+        path.lineTo(x, y);
+      }
+    }
+    path.close();
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(_MosqueSilhouettePainter old) =>
+      old.animValue != animValue;
 }
 
 // ── Animated waveform (P-3) ────────────────────────────────────────────────

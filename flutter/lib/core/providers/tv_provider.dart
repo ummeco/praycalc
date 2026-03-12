@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pray_calc_dart/pray_calc_dart.dart';
 
+import '../../features/tv/tv_quran_service.dart';
 import '../../shared/models/tv_settings_model.dart';
 import 'prayer_provider.dart';
 import 'settings_provider.dart';
@@ -292,6 +293,13 @@ class TvSettingsNotifier extends Notifier<TvSettings> {
       update(state.copyWith(goodNightDelayMinutes: v.clamp(0, 120)));
 
   // ---------------------------------------------------------------------------
+  // Y-1 — Children's mode
+  // ---------------------------------------------------------------------------
+
+  Future<void> setChildrenModeEnabled(bool v) =>
+      update(state.copyWith(childrenModeEnabled: v));
+
+  // ---------------------------------------------------------------------------
   // TV2-11.3 — Kiosk layout enforcement
   // ---------------------------------------------------------------------------
 
@@ -323,6 +331,16 @@ final iqamahCountdownProvider = StreamProvider<int?>((ref) async* {
   // the notifier broadcasts a countdown stream.
   yield null;
 });
+
+// ---------------------------------------------------------------------------
+// Iqamah times provider
+// ---------------------------------------------------------------------------
+
+/// Riverpod provider for the TV Quran audio service.
+/// ChangeNotifierProvider auto-disposes the ChangeNotifier when the scope is destroyed.
+final tvQuranServiceProvider = ChangeNotifierProvider<TvQuranService>(
+  (ref) => TvQuranService(),
+);
 
 // ---------------------------------------------------------------------------
 // Iqamah times provider

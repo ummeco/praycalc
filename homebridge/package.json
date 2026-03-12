@@ -1,0 +1,17 @@
+{
+  "name": "homebridge-praycalc",
+  "version": "1.0.0",
+  "description": "Homebridge plugin for PrayCalc prayer times as HomeKit sensors",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w"
+  },
+  "keywords": ["homebridge-plugin", "praycalc", "prayer", "muslim", "islamic"],
+  "engines": { "homebridge": ">=1.6.0" },
+  "dependencies": {},
+  "devDependencies": {
+    "homebridge": "^1.8.0",
+    "typescript": "^5.0.0"
+  }
+}

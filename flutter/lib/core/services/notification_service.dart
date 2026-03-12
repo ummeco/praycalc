@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -192,6 +193,25 @@ class NotificationService {
       AdhanService.instance.fadeOut();
       return;
     }
+    // ── Adhan arrival actions ────────────────────────────────────────────────
+    if (response.actionId == 'i_prayed') {
+      // Log prayer completion and dismiss — no further notification needed.
+      _logPrayerCompletion(response.payload);
+      return;
+    }
+    if (response.actionId == 'snooze_10') {
+      // Re-schedule a new notification 10 minutes from now with the same prayer.
+      final prayerName = response.payload ?? 'Prayer';
+      _scheduleNotification(
+        id: NotificationIds.snooze,
+        title: prayerName,
+        body: "It's time for $prayerName prayer",
+        scheduledDate: DateTime.now().add(const Duration(minutes: 10)),
+        channelId: NotificationChannels.prayers,
+        payload: prayerName,
+      );
+      return;
+    }
     // Prayer check-in actions: payload = "PrayerName|YYYY-MM-DD"
     if (response.actionId == 'prayer_check_yes') {
       _markPrayerFromNotification(response.payload);
@@ -206,6 +226,28 @@ class NotificationService {
     final payload = response.payload;
     if (payload != null && payload.startsWith('https://')) {
       launchUrl(Uri.parse(payload), mode: LaunchMode.externalApplication);
+    }
+  }
+
+  /// Log that the user prayed. Appends to the `prayer_completions` JSON list
+  /// stored in SharedPreferences. Each entry: {prayer, timestamp}.
+  Future<void> _logPrayerCompletion(String? prayerName) async {
+    if (prayerName == null || prayerName.isEmpty) return;
+    final prefs = await SharedPreferences.getInstance();
+    final raw = prefs.getString('prayer_completions') ?? '[]';
+    try {
+      final list = List<Map<String, dynamic>>.from(
+          (jsonDecode(raw) as List).cast<Map<String, dynamic>>());
+      list.add({
+        'prayer': prayerName,
+        'timestamp': DateTime.now().toIso8601String(),
+      });
+      await prefs.setString('prayer_completions', jsonEncode(list));
+    } catch (_) {
+      // If parse fails, start fresh with this entry.
+      await prefs.setString('prayer_completions', jsonEncode([
+        {'prayer': prayerName, 'timestamp': DateTime.now().toIso8601String()},
+      ]));
     }
   }
 
@@ -291,6 +333,7 @@ class NotificationService {
     _ensureTzData();
     await cancelAllPrayerNotifications();
     final now = DateTime.now();
+    final hapticMode = await getAdhanHapticMode();
 
     for (var dayOffset = 0; dayOffset <= 1; dayOffset++) {
       final targetDate = now.add(Duration(days: dayOffset));
@@ -326,9 +369,10 @@ class NotificationService {
             channelId: NotificationChannels.prayers,
             isTimeSensitive: i == 0 || i == 5,
             iosSound: _iosSoundName(c.adhanType),
+            hapticMode: hapticMode && c.adhanType == AdhanType.silent,
             actions: const [
-              AndroidNotificationAction('snooze', 'Snooze 10 min'),
-              AndroidNotificationAction('dismiss', 'Dismiss'),
+              AndroidNotificationAction('i_prayed', 'I Prayed ✓', showsUserInterface: false),
+              AndroidNotificationAction('snooze_10', 'Remind in 10m', showsUserInterface: false),
             ],
             payload: c.prayerName,
           );
@@ -542,6 +586,24 @@ class NotificationService {
 
   // ── Internal ────────────────────────────────────────────────────────────────
 
+  // ── Haptic adhan mode ───────────────────────────────────────────────────────
+
+  /// Returns true if haptic adhan mode is enabled.
+  /// When enabled and audio is disabled, prayer notifications use a vibration
+  /// pattern instead of playing a sound.
+  Future<bool> getAdhanHapticMode() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool('adhan_haptic_mode') ?? false;
+  }
+
+  /// Persists the haptic adhan mode setting.
+  Future<void> setAdhanHapticMode(bool enabled) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('adhan_haptic_mode', enabled);
+  }
+
+  // ── Internal schedule helper ─────────────────────────────────────────────────
+
   Future<void> _scheduleNotification({
     required int id,
     required String title,
@@ -552,8 +614,16 @@ class NotificationService {
     String? iosSound,
     List<AndroidNotificationAction>? actions,
     String? payload,
+    bool hapticMode = false,
   }) async {
     final tzDate = tz.TZDateTime.from(scheduledDate, tz.local);
+
+    // Haptic vibration pattern mimicking adhan rhythm:
+    // two short pulses (500ms) then one long (1000ms), with 300ms gaps.
+    final Int64List? vibrationPattern = hapticMode
+        ? Int64List.fromList([0, 500, 300, 500, 300, 1000])
+        : null;
+
     await _plugin.zonedSchedule(
       id: id,
       title: title,
@@ -569,15 +639,19 @@ class NotificationService {
               : Importance.defaultImportance,
           priority: Priority.high,
           actions: actions,
+          vibrationPattern: vibrationPattern,
         ),
         iOS: DarwinNotificationDetails(
           interruptionLevel: isTimeSensitive
               ? InterruptionLevel.timeSensitive
               : InterruptionLevel.active,
+          // When haptic mode is active on iOS the sound is suppressed;
+          // the system notification itself triggers the device haptic.
+          presentSound: !hapticMode,
           // iosSound is the filename of a sound bundled in the Runner target.
           // Files must be added via Xcode: Runner → Build Phases → Copy Bundle Resources.
           // Supported formats: .caf, .aiff, .mp3 (≤ 30 seconds).
-          sound: iosSound,
+          sound: hapticMode ? null : iosSound,
         ),
       ),
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,

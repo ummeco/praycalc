@@ -17,6 +17,8 @@ type Mode =
   | "link-sent"
   | "reset-sent";
 
+const IS_DEV = process.env.NODE_ENV === "development";
+
 const SOCIAL_PROVIDERS = [
   {
     id: "google",
@@ -71,6 +73,7 @@ export default function AccountPage() {
     isLoggedIn,
     login,
     loginWithPassword,
+    loginWithResult,
     register,
     sendMagicLink,
     sendPasswordReset,
@@ -100,6 +103,36 @@ export default function AccountPage() {
     setMode(next);
     setError("");
     setConfirmPassword("");
+  }
+
+  async function handleDevLogin() {
+    setLoading(true);
+    setError("");
+    try {
+      // Ensure the dev account exists (creates it if needed), returns a session with tokens.
+      const res = await fetch("/api/dev/login", { method: "POST" });
+      if (!res.ok) throw new Error("Dev login failed");
+      const { session: s } = await res.json();
+      if (!s) throw new Error("No session returned");
+      // Save a real session with tokens so dashboard API calls work.
+      loginWithResult({
+        user: {
+          id: s.user.id,
+          email: s.user.email,
+          displayName: s.user.displayName,
+          avatarUrl: s.user.avatarUrl ?? undefined,
+        },
+        tokens: {
+          accessToken: s.accessToken,
+          refreshToken: s.refreshToken,
+          accessTokenExpiresAt: Date.now() + s.accessTokenExpiresIn * 1000,
+        },
+      });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Dev login failed.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   async function handleMagicLink(e: React.FormEvent) {
@@ -178,8 +211,13 @@ export default function AccountPage() {
 
   if (isLoggedIn && session) {
     return (
-      <main className="account-page">
-        <AccountDashboard session={session} settings={settings} onLogout={logout} />
+      <main className="account-page account-page--dashboard">
+        <div className="w-full max-w-lg">
+          <div className="mb-6 flex items-center gap-3">
+            <Link href={backHref} className="text-white/40 hover:text-white/70 text-sm transition-colors">← Back</Link>
+          </div>
+          <AccountDashboard session={session} settings={settings} onLogout={logout} />
+        </div>
       </main>
     );
   }
@@ -202,6 +240,18 @@ export default function AccountPage() {
         <p className="account-sub">
           Your account will sync all settings, preferences, and history across all of your devices.
         </p>
+
+        {/* Dev-only login bypass */}
+        {IS_DEV && showTabs && (
+          <button
+            type="button"
+            className="account-dev-login"
+            onClick={handleDevLogin}
+            disabled={loading}
+          >
+            {loading ? "Logging in…" : "⚡ Dev Login (alisalaah@gmail.com)"}
+          </button>
+        )}
 
         {/* Login Link / Password tabs */}
         {showTabs && (

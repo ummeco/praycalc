@@ -3,7 +3,6 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
-import '../../shared/models/tv_settings_model.dart';
 
 // ---------------------------------------------------------------------------
 // TvSseEvent — a parsed push event from the smart service SSE endpoint.
@@ -15,10 +14,12 @@ sealed class TvSseEvent {}
 /// The server acknowledged the connection.
 class TvSseConnectedEvent extends TvSseEvent {}
 
-/// A settings object was pushed to this device.
+/// A settings patch was pushed to this device.
+/// Holds the raw JSON map so the consumer can merge it with existing state
+/// rather than replacing all settings with a partial object.
 class TvSseSettingsEvent extends TvSseEvent {
-  TvSseSettingsEvent(this.settings);
-  final TvSettings settings;
+  TvSseSettingsEvent(this.settingsJson);
+  final Map<String, dynamic> settingsJson;
 }
 
 /// A Quran playback command was pushed to this device.
@@ -29,12 +30,24 @@ class TvSseQuranCommandEvent extends TvSseEvent {
     this.ayah,
     this.reciterId,
     this.afterSurah,
+    this.backgroundMode,
+    this.restore = false,
   });
   final String action;
   final int? surah;
   final int? ayah;
   final String? reciterId;
   final String? afterSurah;
+  /// 'keep-video' or 'quran-display' — how the TV background behaves during Quran.
+  final String? backgroundMode;
+  /// When true on 'stop', the TV should restore the previous audio/video state.
+  final bool restore;
+}
+
+/// A prayer was completed (prayer_complete event).
+class TvSsePrayerCompleteEvent extends TvSseEvent {
+  TvSsePrayerCompleteEvent(this.prayerName);
+  final String prayerName;
 }
 
 /// A keep-alive ping was received (no action needed).
@@ -165,10 +178,15 @@ class TvSseService {
         final settingsJson = json['settings'] as Map<String, dynamic>?;
         if (settingsJson != null) {
           try {
-            _controller.add(TvSseSettingsEvent(TvSettings.fromJson(settingsJson)));
+            _controller.add(TvSseSettingsEvent(settingsJson));
           } catch (_) {
             // Malformed settings — ignore.
           }
+        }
+      case 'prayer_complete':
+        final name = (json['prayerName'] ?? json['prayer'] ?? '').toString();
+        if (name.isNotEmpty) {
+          _controller.add(TvSsePrayerCompleteEvent(name));
         }
       case 'quran':
         final action = json['action'] as String?;
@@ -179,6 +197,8 @@ class TvSseService {
             ayah: json['ayah'] as int?,
             reciterId: json['reciterId'] as String?,
             afterSurah: json['afterSurah'] as String?,
+            backgroundMode: json['backgroundMode'] as String?,
+            restore: json['restore'] as bool? ?? false,
           ));
         }
       default:

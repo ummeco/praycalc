@@ -5,12 +5,13 @@ import { getSession } from '../../lib/session';
 
 // ── Quran data ────────────────────────────────────────────────────────────────
 
+// IDs match everyayah.com reciter identifiers used by the TV app (kTvReciters).
 const RECITERS = [
-  { id: 'ar.abdurrahmaansudais', name: 'Abdul Rahman Al-Sudais', flag: '🇸🇦' },
-  { id: 'ar.mahermuaiqly', name: 'Maher Al-Muaiqly', flag: '🇸🇦' },
-  { id: 'ar.misharyrachidfalamy', name: 'Mishary Rashid Alafasy', flag: '🇰🇼' },
-  { id: 'ar.husary', name: 'Mahmoud Khalil Al-Hussary', flag: '🇪🇬' },
-  { id: 'ar.minshawi', name: 'Mohamed Siddiq Al-Minshawi', flag: '🇪🇬' },
+  { id: 'Sudais_192kbps', name: 'Abdul Rahman Al-Sudais', flag: '🇸🇦' },
+  { id: 'Yasser_Ad-Dussary_128kbps', name: 'Yasser Al-Dosari', flag: '🇸🇦' },
+  { id: 'Muhammad_Jibreel_128kbps', name: 'Muhammad Jibreel', flag: '🇸🇦' },
+  { id: 'Husary_64kbps', name: 'Mahmoud Khalil Al-Hussary', flag: '🇪🇬' },
+  { id: 'Minshawi_Murattal_128kbps', name: 'Mohamed Siddiq Al-Minshawi', flag: '🇪🇬' },
 ] as const;
 
 // 114 surahs with names and ayah counts
@@ -149,11 +150,12 @@ interface NowPlaying {
 interface TvQuranPanelProps {
   deviceId: string;
   isOnline: boolean;
+  quranVideoMode?: 'keep-video' | 'quran-display';
 }
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
-export default function TvQuranPanel({ deviceId, isOnline }: TvQuranPanelProps) {
+export default function TvQuranPanel({ deviceId, isOnline, quranVideoMode }: TvQuranPanelProps) {
   const [reciterId, setReciterId] = useState(RECITERS[0].id as string);
   const [surahNumber, setSurahNumber] = useState(1);
   const [ayahNumber, setAyahNumber] = useState(1);
@@ -200,7 +202,7 @@ export default function TvQuranPanel({ deviceId, isOnline }: TvQuranPanelProps) 
     const token = session?.tokens?.accessToken;
     if (!token) { setError('Not signed in'); setSending(false); return; }
     try {
-      const res = await fetch(`https://smart.praycalc.com/api/v1/tv/${deviceId}/quran`, {
+      const res = await fetch(`/api/dashboard/tvs/${deviceId}/quran`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -218,11 +220,17 @@ export default function TvQuranPanel({ deviceId, isOnline }: TvQuranPanelProps) 
   }
 
   function handlePlay() {
-    void sendCommand('play', { surah: surahNumber, ayah: ayahNumber, reciterId, afterSurah });
+    void sendCommand('play', {
+      surah: surahNumber,
+      ayah: ayahNumber,
+      reciterId,
+      afterSurah,
+      backgroundMode: quranVideoMode ?? 'keep-video',
+    });
   }
   function handlePause() { void sendCommand('pause'); }
   function handleResume() { void sendCommand('resume'); }
-  function handleStop() { void sendCommand('stop'); }
+  function handleStop() { void sendCommand('stop', { restore: true }); }
 
   return (
     <div className="space-y-5">

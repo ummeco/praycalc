@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.backends.legacy:build"
+
+[project]
+name = "pray-calc"
+version = "0.9.4"
+description = "Accurate Islamic prayer time calculations for Python"
+license = { text = "MIT" }
+requires-python = ">=3.9"
+dependencies = []
+
+[project.urls]
+Homepage = "https://praycalc.com"
+Repository = "https://github.com/ummeco/praycalc"
+
+[tool.setuptools.packages.find]
+where = ["src"]

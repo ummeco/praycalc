@@ -1,138 +1,110 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:praycalc_app/l10n/app_localizations.dart';
-import 'package:qr_flutter/qr_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../core/providers/smart_home_provider.dart';
-import '../../core/services/smart_home_api_service.dart';
 import '../../core/theme/app_theme.dart';
 
 // ---------------------------------------------------------------------------
-// Constants
+// Constants & helpers
 // ---------------------------------------------------------------------------
 
 const _kTvSessionJwt = 'tv_session_jwt';
 const _kTvSessionExpiry = 'tv_session_expiry';
-const _kSmartBaseUrl = 'https://smart.praycalc.com/api/v1/tv';
-const _kDeviceAuthEndpoint = '$_kSmartBaseUrl/auth/device';
-const _kPollEndpoint = '$_kSmartBaseUrl/auth/poll';
+
+String _smartBase() {
+  if (kIsWeb) {
+    final host = Uri.base.host;
+    if (host == 'localhost' || host.startsWith('127.')) {
+      return 'http://localhost:4010/api/v1/tv';
+    }
+  }
+  return 'https://smart.praycalc.com/api/v1/tv';
+}
+
+String _devLoginUrl() => 'http://localhost:3041/api/dev/login';
 
 // ---------------------------------------------------------------------------
-// TV Pairing Screen (v2, TV2-1.8)
+// TV Pairing Screen
+//
+// New reversed flow:
+//   1. User opens PrayCalc app → Settings → My TVs → Add TV → app shows code
+//   2. User enters that 4-digit code here on TV
+//   3. TV calls POST /activate → receives JWT → navigates to prayer times
+//
+// Alternative: Sign in with Google directly on the TV.
 // ---------------------------------------------------------------------------
 
-/// Three-tab TV pairing screen.
-///
-/// Tab 0 — Sign In: RFC 8628 device-flow OAuth (praycalc.com/activate).
-/// Tab 1 — QR Code: 6-char pairing code + QR for phone pairing.
-/// Tab 2 — Guest: skip auth, choose a city and continue.
-class TvPairingScreen extends ConsumerStatefulWidget {
+class TvPairingScreen extends StatefulWidget {
   const TvPairingScreen({super.key});
 
   @override
-  ConsumerState<TvPairingScreen> createState() => _TvPairingScreenState();
+  State<TvPairingScreen> createState() => _TvPairingScreenState();
 }
 
-class _TvPairingScreenState extends ConsumerState<TvPairingScreen>
+class _TvPairingScreenState extends State<TvPairingScreen>
     with SingleTickerProviderStateMixin {
-  late TabController _tabController;
+  // Auth state
+  bool _isLoading = false;
+  String? _authError;
 
-  // ---------- Sign-In tab state ----------
-  String? _userCode;
-  String? _deviceCode;
-  bool _isDeviceFlowLoading = false;
-  bool _isPolling = false;
-  bool _isSignedIn = false;
-  String? _signedInEmail;
-  String? _deviceFlowError;
-  DateTime? _deviceCodeExpiry;
-  Timer? _pollTimer;
-  bool _isGoogleLoading = false;
-  String? _googleError;
+  // Code entry state
+  final _codeController = TextEditingController();
+  final _codeFocus = FocusNode();
+  bool _activating = false;
+  String? _codeError;
 
-  static final _googleSignIn = GoogleSignIn(
-    scopes: ['email', 'openid'],
-  );
+  // Entrance animation
+  late final AnimationController _enterCtrl;
+  late final Animation<double> _enterFade;
+  late final Animation<Offset> _enterSlide;
 
-  // ---------- QR tab state ----------
-  static const _codeDuration = Duration(minutes: 5);
-  static const _codeLength = 6;
-  static const _codeChars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-  String _pairingCode = '';
-  late DateTime _qrExpiresAt;
-  Timer? _qrCountdownTimer;
-  Timer? _qrPollTimer;
-  int _qrRemainingSeconds = 0;
-  bool _qrIsPaired = false;
-  bool _qrIsRegistering = false;
-  String? _qrError;
-
-  // ---------- Guest tab state ----------
-  final _cityController = TextEditingController();
-  final _cityFocusNode = FocusNode();
-  static const _sampleCities = ['Mecca', 'Medina', 'Istanbul'];
-
-  // ---------- Device name ----------
-  String _deviceName = 'My TV';
+  static final _googleSignIn = GoogleSignIn(scopes: ['email', 'openid']);
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
-    _tabController.addListener(_onTabChange);
-    _fetchDeviceName();
-    _startDeviceFlow();
-    _generateQrCode();
+
+    _enterCtrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 600),
+    );
+    _enterFade = CurvedAnimation(parent: _enterCtrl, curve: Curves.easeOut);
+    _enterSlide = Tween<Offset>(
+      begin: const Offset(0, 0.04),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(parent: _enterCtrl, curve: Curves.easeOut));
+
+    _checkExistingSession();
+  }
+
+  Future<void> _checkExistingSession() async {
+    final prefs = await SharedPreferences.getInstance();
+    final jwt = prefs.getString(_kTvSessionJwt);
+    final expiryStr = prefs.getString(_kTvSessionExpiry);
+    if (jwt != null && jwt.isNotEmpty) {
+      final expiry = expiryStr != null ? DateTime.tryParse(expiryStr) : null;
+      if (expiry == null || expiry.isAfter(DateTime.now())) {
+        if (mounted) context.go('/tv');
+        return;
+      }
+    }
+    _enterCtrl.forward();
   }
 
   @override
   void dispose() {
-    _tabController.dispose();
-    _pollTimer?.cancel();
-    _qrCountdownTimer?.cancel();
-    _qrPollTimer?.cancel();
-    _cityController.dispose();
-    _cityFocusNode.dispose();
+    _enterCtrl.dispose();
+    _codeController.dispose();
+    _codeFocus.dispose();
     super.dispose();
   }
-
-  void _onTabChange() {
-    // Ensure tab transitions are smooth with D-pad navigation.
-    setState(() {});
-  }
-
-  // ---------------------------------------------------------------------------
-  // Device name (TV2-1.12)
-  // ---------------------------------------------------------------------------
-
-  Future<void> _fetchDeviceName() async {
-    final name = await _getDeviceName();
-    if (mounted) setState(() => _deviceName = name);
-  }
-
-  Future<String> _getDeviceName() async {
-    const platform =
-        MethodChannel('com.praycalc.praycalc_app/device_info');
-    try {
-      final name = await platform.invokeMethod<String>('getDeviceName');
-      return name ?? 'My TV';
-    } catch (_) {
-      return 'My TV';
-    }
-  }
-
-  // ---------------------------------------------------------------------------
-  // Session persistence (TV2-1.9)
-  // ---------------------------------------------------------------------------
 
   Future<void> _saveSession(String jwt, DateTime expiry) async {
     final prefs = await SharedPreferences.getInstance();
@@ -141,264 +113,128 @@ class _TvPairingScreenState extends ConsumerState<TvPairingScreen>
   }
 
   // ---------------------------------------------------------------------------
-  // Google sign-in (Android TV account picker → Hasura Auth)
+  // Activate with 4-digit code (reversed flow: app generated, TV enters)
+  // ---------------------------------------------------------------------------
+
+  Future<void> _activateCode() async {
+    final code = _codeController.text.trim().replaceAll(RegExp(r'\D'), '');
+    if (code.length != 4) {
+      setState(() => _codeError = 'Enter all 4 digits');
+      return;
+    }
+    if (_activating) return;
+
+    setState(() { _activating = true; _codeError = null; });
+
+    try {
+      final res = await http.post(
+        Uri.parse('${_smartBase()}/activate'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'code': code}),
+      ).timeout(const Duration(seconds: 10));
+
+      final body = jsonDecode(res.body) as Map<String, dynamic>;
+
+      if (res.statusCode == 200) {
+        final jwt = body['jwt'] as String? ?? '';
+        if (jwt.isNotEmpty) {
+          await _saveSession(jwt, DateTime.now().add(const Duration(days: 30)));
+        }
+        if (mounted) {
+          setState(() => _activating = false);
+          context.go('/tv');
+        }
+      } else {
+        if (mounted) {
+          setState(() {
+            _activating = false;
+            _codeError = (body['error'] as String?)
+                ?? 'Invalid code. Check the code in your app.';
+          });
+          _codeController.clear();
+          _codeFocus.requestFocus();
+        }
+      }
+    } catch (_) {
+      if (mounted) {
+        setState(() {
+          _activating = false;
+          _codeError = 'Could not reach the server. Check your connection.';
+        });
+      }
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // Google sign-in
   // ---------------------------------------------------------------------------
 
   Future<void> _signInWithGoogle() async {
-    if (_isGoogleLoading) return;
-    setState(() {
-      _isGoogleLoading = true;
-      _googleError = null;
-    });
+    if (_isLoading) return;
+    setState(() { _isLoading = true; _authError = null; });
     try {
       final account = await _googleSignIn.signIn();
-      if (account == null) {
-        // User cancelled.
-        setState(() => _isGoogleLoading = false);
-        return;
-      }
+      if (account == null) { setState(() => _isLoading = false); return; }
       final auth = await account.authentication;
       final idToken = auth.idToken;
-      if (idToken == null) throw Exception('No ID token from Google');
+      if (idToken == null) throw Exception('No ID token');
 
-      // Exchange Google ID token for a Hasura Auth session JWT.
       final resp = await http.post(
         Uri.parse('https://auth.ummat.dev/signin/provider/google'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'id_token': idToken}),
       ).timeout(const Duration(seconds: 10));
 
-      if (resp.statusCode != 200) {
-        throw Exception('Auth failed (${resp.statusCode})');
+      if (resp.statusCode != 200) throw Exception('Auth failed (${resp.statusCode})');
+      final b = jsonDecode(resp.body) as Map<String, dynamic>;
+      final session = b['session'] as Map<String, dynamic>? ?? {};
+      final jwt = session['accessToken'] as String? ?? '';
+      final expiresIn = (session['accessTokenExpiresIn'] as num?)?.toInt() ?? 86400;
+      await _saveSession(jwt, DateTime.now().add(Duration(seconds: expiresIn)));
+      if (mounted) {
+        setState(() => _isLoading = false);
+        context.go('/tv');
       }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+          _authError = e.toString().replaceFirst('Exception: ', '');
+        });
+      }
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // Dev login bypass (debug web only)
+  // ---------------------------------------------------------------------------
+
+  Future<void> _devLogin() async {
+    if (_isLoading) return;
+    setState(() { _isLoading = true; _authError = null; });
+    try {
+      final resp = await http.post(
+        Uri.parse(_devLoginUrl()),
+        headers: {'Content-Type': 'application/json'},
+      ).timeout(const Duration(seconds: 10));
+      if (resp.statusCode != 200) throw Exception('Dev login failed (${resp.statusCode})');
       final body = jsonDecode(resp.body) as Map<String, dynamic>;
       final session = body['session'] as Map<String, dynamic>? ?? {};
       final jwt = session['accessToken'] as String? ?? '';
-      final email = (session['user'] as Map<String, dynamic>?)?['email']
-              as String? ??
-          account.email;
-      final expiresIn = (session['accessTokenExpiresIn'] as num?)?.toInt() ??
-          86400;
-      final expiry = DateTime.now().add(Duration(seconds: expiresIn));
-
-      await _saveSession(jwt, expiry);
+      final expiresIn = (session['accessTokenExpiresIn'] as num?)?.toInt() ?? 900;
+      await _saveSession(jwt, DateTime.now().add(Duration(seconds: expiresIn)));
       if (mounted) {
-        setState(() {
-          _isGoogleLoading = false;
-          _isSignedIn = true;
-          _signedInEmail = email;
-        });
-        Future.delayed(const Duration(seconds: 2), () {
-          if (mounted) context.go('/tv');
-        });
+        setState(() => _isLoading = false);
+        context.go('/tv');
       }
     } catch (e) {
       if (mounted) {
         setState(() {
-          _isGoogleLoading = false;
-          _googleError = e.toString().replaceFirst('Exception: ', '');
+          _isLoading = false;
+          _authError = 'Dev login: ${e.toString().replaceFirst('Exception: ', '')}';
         });
       }
     }
-  }
-
-  // ---------------------------------------------------------------------------
-  // Tab 0: Device-flow OAuth (RFC 8628)
-  // ---------------------------------------------------------------------------
-
-  Future<void> _startDeviceFlow() async {
-    if (_isDeviceFlowLoading) return;
-    setState(() {
-      _isDeviceFlowLoading = true;
-      _deviceFlowError = null;
-      _userCode = null;
-      _deviceCode = null;
-      _isSignedIn = false;
-      _signedInEmail = null;
-    });
-
-    try {
-      final resp = await http
-          .post(
-            Uri.parse(_kDeviceAuthEndpoint),
-            headers: {'Content-Type': 'application/json'},
-            body: jsonEncode({'device_name': _deviceName}),
-          )
-          .timeout(const Duration(seconds: 15));
-
-      if (resp.statusCode != 200) {
-        throw Exception('Server returned ${resp.statusCode}');
-      }
-
-      final body = jsonDecode(resp.body) as Map<String, dynamic>;
-      final expiresIn = (body['expires_in'] as num?)?.toInt() ?? 300;
-
-      setState(() {
-        _userCode = body['user_code'] as String? ?? '----';
-        _deviceCode = body['device_code'] as String?;
-        _deviceCodeExpiry =
-            DateTime.now().add(Duration(seconds: expiresIn));
-        _isDeviceFlowLoading = false;
-      });
-
-      _startPolling();
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _isDeviceFlowLoading = false;
-          _deviceFlowError = 'Could not reach server. Check your connection.';
-        });
-      }
-    }
-  }
-
-  void _startPolling() {
-    _pollTimer?.cancel();
-    _isPolling = true;
-    _pollTimer = Timer.periodic(const Duration(seconds: 5), (_) async {
-      if (!_isPolling || _deviceCode == null) return;
-      final expiry = _deviceCodeExpiry;
-      if (expiry != null && DateTime.now().isAfter(expiry)) {
-        _pollTimer?.cancel();
-        if (mounted) {
-          setState(() {
-            _isPolling = false;
-            _userCode = null; // triggers expired UI
-          });
-        }
-        return;
-      }
-
-      try {
-        final resp = await http
-            .get(
-              Uri.parse('$_kPollEndpoint?code=${Uri.encodeComponent(_deviceCode!)}'),
-              headers: {'Content-Type': 'application/json'},
-            )
-            .timeout(const Duration(seconds: 10));
-
-        if (resp.statusCode == 200) {
-          final body = jsonDecode(resp.body) as Map<String, dynamic>;
-          final status = body['status'] as String?;
-          if (status == 'authorized') {
-            _pollTimer?.cancel();
-            final jwt = body['access_token'] as String? ?? '';
-            final email = body['email'] as String? ?? '';
-            final expiresIn =
-                (body['expires_in'] as num?)?.toInt() ?? 86400;
-            final expiry =
-                DateTime.now().add(Duration(seconds: expiresIn));
-            await _saveSession(jwt, expiry);
-            if (mounted) {
-              setState(() {
-                _isPolling = false;
-                _isSignedIn = true;
-                _signedInEmail = email;
-              });
-              // Navigate to TV home after 2 seconds.
-              Future.delayed(const Duration(seconds: 2), () {
-                if (mounted) context.go('/tv');
-              });
-            }
-          }
-          // status == 'pending' → keep polling
-        }
-      } catch (_) {
-        // Silently continue polling.
-      }
-    });
-  }
-
-  // ---------------------------------------------------------------------------
-  // Tab 1: QR pairing code
-  // ---------------------------------------------------------------------------
-
-  Future<void> _generateQrCode() async {
-    final random = Random.secure();
-    final code = List.generate(
-      _codeLength,
-      (_) => _codeChars[random.nextInt(_codeChars.length)],
-    ).join();
-
-    setState(() {
-      _pairingCode = code;
-      _qrExpiresAt = DateTime.now().add(_codeDuration);
-      _qrRemainingSeconds = _codeDuration.inSeconds;
-      _qrIsPaired = false;
-      _qrIsRegistering = true;
-      _qrError = null;
-    });
-
-    _qrCountdownTimer?.cancel();
-    _qrCountdownTimer =
-        Timer.periodic(const Duration(seconds: 1), (_) {
-      final remaining =
-          _qrExpiresAt.difference(DateTime.now()).inSeconds;
-      if (remaining <= 0) {
-        _qrCountdownTimer?.cancel();
-        _qrPollTimer?.cancel();
-        if (mounted) setState(() => _qrRemainingSeconds = 0);
-      } else {
-        if (mounted) setState(() => _qrRemainingSeconds = remaining);
-      }
-    });
-
-    try {
-      await SmartHomeApiService.instance.addDevice(
-        name: 'TV (${_formatQrCode(code)})',
-        type: 'tv',
-        pairingCode: code,
-      );
-      if (mounted) setState(() => _qrIsRegistering = false);
-      _startQrPolling();
-    } on SmartHomeApiException catch (e) {
-      if (mounted) {
-        setState(() {
-          _qrIsRegistering = false;
-          _qrError = e.message;
-        });
-      }
-    } catch (_) {
-      if (mounted) setState(() => _qrIsRegistering = false);
-    }
-  }
-
-  void _startQrPolling() {
-    _qrPollTimer?.cancel();
-    _qrPollTimer =
-        Timer.periodic(const Duration(seconds: 5), (_) async {
-      if (_qrIsPaired || _qrRemainingSeconds <= 0) {
-        _qrPollTimer?.cancel();
-        return;
-      }
-      try {
-        final devices =
-            await SmartHomeApiService.instance.getDevices();
-        final tvDevice = devices.where(
-          (d) =>
-              d.type == 'tv' &&
-              d.name.contains(_formatQrCode(_pairingCode)),
-        );
-        if (tvDevice.isNotEmpty && tvDevice.first.online) {
-          _qrPollTimer?.cancel();
-          ref.read(devicesProvider.notifier).load();
-          if (mounted) setState(() => _qrIsPaired = true);
-        }
-      } catch (_) {
-        // Silently continue.
-      }
-    });
-  }
-
-  String get _qrFormattedTime {
-    final m = _qrRemainingSeconds ~/ 60;
-    final s = _qrRemainingSeconds % 60;
-    return '${m.toString().padLeft(2, '0')}:${s.toString().padLeft(2, '0')}';
-  }
-
-  String _formatQrCode(String code) {
-    if (code.length != _codeLength) return code;
-    return '${code.substring(0, 3)}-${code.substring(3)}';
   }
 
   // ---------------------------------------------------------------------------
@@ -408,702 +244,356 @@ class _TvPairingScreenState extends ConsumerState<TvPairingScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: PrayCalcColors.deep,
-      appBar: _buildAppBar(context),
-      body: Column(
+      backgroundColor: const Color(0xFF060806),
+      body: Stack(
+        fit: StackFit.expand,
         children: [
-          _buildTabBar(),
-          Expanded(
-            child: TabBarView(
-              controller: _tabController,
-              physics: const NeverScrollableScrollPhysics(),
-              children: [
-                _buildSignInTab(),
-                _buildQrTab(),
-                _buildGuestTab(),
-              ],
+          // Radial green glow at bottom — matches globals.css
+          CustomPaint(painter: _GlowPainter()),
+          FadeTransition(
+            opacity: _enterFade,
+            child: SlideTransition(
+              position: _enterSlide,
+              child: SafeArea(
+            child: Center(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(horizontal: 64, vertical: 48),
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 960),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      _buildHeader(),
+                      const SizedBox(height: 56),
+                      _buildTwoPanel(),
+                      const SizedBox(height: 40),
+                      TextButton(
+                        onPressed: () => context.go('/tv'),
+                        child: const Text(
+                          'Skip — continue without signing in',
+                          style: TextStyle(color: Colors.white24, fontSize: 15),
+                        ),
+                      ),
+                      if (kDebugMode && kIsWeb) ...[
+                        const SizedBox(height: 20),
+                        const Divider(color: Colors.white12),
+                        const SizedBox(height: 12),
+                        FilledButton.icon(
+                          onPressed: _isLoading ? null : _devLogin,
+                          icon: const Icon(Icons.developer_mode, size: 20),
+                          label: const Text(
+                            '⚡ Dev Login (alisalaah@gmail.com)',
+                            style: TextStyle(fontSize: 16),
+                          ),
+                          style: FilledButton.styleFrom(
+                            backgroundColor: Colors.amber.withAlpha(40),
+                            foregroundColor: Colors.amber,
+                            minimumSize: const Size(300, 48),
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+              ),
             ),
           ),
-        ],
-      ),
+        ),         // closes SlideTransition
+          ),       // closes FadeTransition
+        ],         // closes Stack children
+      ),           // closes Stack
     );
   }
 
-  AppBar _buildAppBar(BuildContext context) {
-    return AppBar(
-      backgroundColor: PrayCalcColors.deep,
-      foregroundColor: Colors.white,
-      title: const Text(
-        'Connect to PrayCalc',
-        style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
-      ),
-      leading: IconButton(
-        icon: const Icon(Icons.arrow_back, size: 32),
-        onPressed: () => context.pop(),
-      ),
-    );
-  }
-
-  Widget _buildTabBar() {
-    return Container(
-      color: PrayCalcColors.surface,
-      child: TabBar(
-        controller: _tabController,
-        labelColor: PrayCalcColors.light,
-        unselectedLabelColor: Colors.white54,
-        indicatorColor: PrayCalcColors.mid,
-        indicatorWeight: 3,
-        labelStyle: const TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.w600,
-        ),
-        tabs: const [
-          Tab(icon: Icon(Icons.login, size: 28), text: 'Sign In'),
-          Tab(icon: Icon(Icons.qr_code, size: 28), text: 'QR Code'),
-          Tab(icon: Icon(Icons.person_outline, size: 28), text: 'Guest'),
-        ],
-      ),
-    );
-  }
-
-  // ---------------------------------------------------------------------------
-  // Tab 0: Sign In (device flow)
-  // ---------------------------------------------------------------------------
-
-  Widget _buildSignInTab() {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(horizontal: 64, vertical: 40),
-      child: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 700),
-          child: _isSignedIn
-              ? _buildSignedInState()
-              : _buildDeviceFlowState(),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSignedInState() {
+  Widget _buildHeader() {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const Icon(Icons.check_circle, color: PrayCalcColors.mid, size: 96),
-        const SizedBox(height: 24),
-        Text(
-          'Signed in as $_signedInEmail',
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 28,
-            fontWeight: FontWeight.bold,
-          ),
-          textAlign: TextAlign.center,
+        Image.asset(
+          'assets/brand/logo.png',
+          height: 72,
+          fit: BoxFit.contain,
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 20),
         const Text(
-          'Taking you to your prayer times...',
-          style: TextStyle(color: Colors.white54, fontSize: 20),
+          'Connect this TV to your account',
+          style: TextStyle(color: Colors.white54, fontSize: 18),
         ),
       ],
     );
   }
 
-  Widget _buildDeviceFlowState() {
-    if (_isDeviceFlowLoading) {
-      return const Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          SizedBox(height: 60),
-          CircularProgressIndicator(color: PrayCalcColors.mid),
-          SizedBox(height: 24),
-          Text(
-            'Generating sign-in code...',
-            style: TextStyle(color: Colors.white54, fontSize: 22),
-          ),
-        ],
-      );
-    }
-
-    if (_deviceFlowError != null) {
-      return Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const SizedBox(height: 60),
-          const Icon(Icons.wifi_off, color: Colors.red, size: 64),
-          const SizedBox(height: 16),
-          Text(
-            _deviceFlowError!,
-            style: const TextStyle(color: Colors.red, fontSize: 20),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 32),
-          _focusableButton(
-            icon: Icons.refresh,
-            label: 'Try Again',
-            onPressed: _startDeviceFlow,
-          ),
-        ],
-      );
-    }
-
-    final isExpired = _deviceCode != null &&
-        _deviceCodeExpiry != null &&
-        DateTime.now().isAfter(_deviceCodeExpiry!);
-    final userCode = _userCode;
-
-    if (isExpired || userCode == null) {
-      return Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const SizedBox(height: 60),
-          const Icon(Icons.timer_off, color: Colors.orange, size: 64),
-          const SizedBox(height: 16),
-          const Text(
-            'Code expired',
-            style: TextStyle(color: Colors.orange, fontSize: 24),
-          ),
-          const SizedBox(height: 32),
-          _focusableButton(
-            icon: Icons.refresh,
-            label: 'Generate new code',
-            onPressed: _startDeviceFlow,
-          ),
-        ],
-      );
-    }
-
-    return Column(
+  Widget _buildTwoPanel() {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Step 1: URL
-        const Text(
-          'Step 1: On your phone or computer, go to:',
-          style: TextStyle(color: Colors.white70, fontSize: 20),
-          textAlign: TextAlign.center,
-        ),
-        const SizedBox(height: 12),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-          decoration: BoxDecoration(
-            color: PrayCalcColors.dark,
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: const Text(
-            'praycalc.com/activate',
-            style: TextStyle(
-              color: PrayCalcColors.light,
-              fontSize: 36,
-              fontWeight: FontWeight.bold,
-              letterSpacing: 1.5,
-            ),
-          ),
-        ),
-        const SizedBox(height: 32),
-
-        // Step 2: user code
-        const Text(
-          'Step 2: Enter this code:',
-          style: TextStyle(color: Colors.white70, fontSize: 20),
-          textAlign: TextAlign.center,
-        ),
-        const SizedBox(height: 12),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
-          decoration: BoxDecoration(
-            color: PrayCalcColors.surface,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: PrayCalcColors.mid, width: 2),
-          ),
-          child: Text(
-            userCode,
-            style: const TextStyle(
-              color: PrayCalcColors.light,
-              fontSize: 52,
-              fontWeight: FontWeight.bold,
-              letterSpacing: 10,
-              fontFamily: 'monospace',
-            ),
-          ),
-        ),
-        const SizedBox(height: 32),
-
-        // Waiting indicator
-        if (_isPolling) ...[
-          const Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SizedBox(
-                width: 20,
-                height: 20,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  color: Colors.white54,
+        // ── Left: Sign in with Google ──────────────────────────────────
+        Expanded(
+          child: _PairingCard(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const Icon(Icons.account_circle_outlined,
+                    color: PrayCalcColors.mid, size: 36),
+                const SizedBox(height: 12),
+                const Text(
+                  'Sign in with Google',
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
                 ),
+                const SizedBox(height: 6),
+                const Text(
+                  'Sign in directly on this TV using your Google account.',
+                  style: TextStyle(color: Colors.white38, fontSize: 14),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 28),
+                if (_authError != null) ...[
+                  Text(
+                    _authError!,
+                    style: const TextStyle(
+                        color: Colors.redAccent, fontSize: 13),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 12),
+                ],
+                SizedBox(
+                  height: 52,
+                  child: _isLoading
+                      ? const Center(
+                          child: CircularProgressIndicator(
+                              color: PrayCalcColors.mid))
+                      : FilledButton.icon(
+                          onPressed: _signInWithGoogle,
+                          icon: const Icon(Icons.account_circle, size: 22),
+                          label: const Text(
+                            'Sign in with Google',
+                            style: TextStyle(
+                                fontSize: 17, fontWeight: FontWeight.w600),
+                          ),
+                          style: FilledButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            foregroundColor: Colors.black87,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(14)),
+                          ),
+                        ),
+                ),
+              ],
+            ),
+          ),
+        ),
+
+        // ── Divider ─────────────────────────────────────────────────────
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Column(
+            children: [
+              const SizedBox(
+                height: 100,
+                child: VerticalDivider(color: Colors.white12, width: 1),
               ),
-              SizedBox(width: 12),
-              Text(
-                'Waiting for authorization...',
-                style: TextStyle(color: Colors.white54, fontSize: 20),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 10, vertical: 6),
+                decoration: BoxDecoration(
+                  color: PrayCalcColors.dark,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: const Text('or',
+                    style: TextStyle(
+                        color: Colors.white38, fontSize: 14)),
+              ),
+              const SizedBox(
+                height: 100,
+                child: VerticalDivider(color: Colors.white12, width: 1),
               ),
             ],
+          ),
+        ),
+
+        // ── Right: Enter code from app ───────────────────────────────────
+        Expanded(child: _buildCodeEntryPanel()),
+      ],
+    );
+  }
+
+  Widget _buildCodeEntryPanel() {
+    return _PairingCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const Icon(Icons.dialpad_outlined,
+              color: PrayCalcColors.mid, size: 36),
+          const SizedBox(height: 12),
+          const Text(
+            'Use the PrayCalc App',
+            style: TextStyle(
+                color: Colors.white,
+                fontSize: 20,
+                fontWeight: FontWeight.bold),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 6),
+          const Text(
+            'Open PrayCalc on your phone:\nSettings → My TVs → Add TV',
+            style: TextStyle(color: Colors.white38, fontSize: 14),
+            textAlign: TextAlign.center,
           ),
           const SizedBox(height: 24),
-        ],
-
-        _focusableButton(
-          icon: Icons.refresh,
-          label: 'Generate new code',
-          onPressed: _startDeviceFlow,
-          outlined: true,
-        ),
-        const SizedBox(height: 32),
-
-        // Google sign-in divider
-        const Row(
-          children: [
-            Expanded(child: Divider(color: Colors.white24)),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              child: Text('or', style: TextStyle(color: Colors.white38, fontSize: 18)),
-            ),
-            Expanded(child: Divider(color: Colors.white24)),
-          ],
-        ),
-        const SizedBox(height: 24),
-
-        if (_googleError != null) ...[
-          Text(
-            _googleError!,
-            style: const TextStyle(color: Colors.redAccent, fontSize: 18),
+          const Text(
+            'Enter the 4-digit code from the app:',
+            style: TextStyle(
+                color: Colors.white60,
+                fontSize: 14,
+                fontWeight: FontWeight.w500),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 16),
-        ],
+          const SizedBox(height: 12),
 
-        _isGoogleLoading
-            ? const CircularProgressIndicator(color: PrayCalcColors.mid)
-            : _focusableButton(
-                icon: Icons.account_circle_outlined,
-                label: 'Sign in with Google',
-                onPressed: _signInWithGoogle,
-              ),
-        const SizedBox(height: 8),
-        const Text(
-          'Uses your Google account on this TV — no phone needed',
-          style: TextStyle(color: Colors.white38, fontSize: 16),
-          textAlign: TextAlign.center,
-        ),
-      ],
-    );
-  }
-
-  // ---------------------------------------------------------------------------
-  // Tab 1: QR Code
-  // ---------------------------------------------------------------------------
-
-  Widget _buildQrTab() {
-    final l = AppLocalizations.of(context)!;
-    final isExpired = _qrRemainingSeconds <= 0;
-
-    return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(horizontal: 64, vertical: 40),
-      child: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 700),
-          child: _qrIsPaired
-              ? _buildQrPairedState(l)
-              : _buildQrPairingState(isExpired),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildQrPairedState(AppLocalizations l) {
-    return Column(
-      children: [
-        const Icon(Icons.check_circle, color: PrayCalcColors.mid, size: 80),
-        const SizedBox(height: 24),
-        Text(
-          l.smartHomePairTvSuccess,
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 32,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        const SizedBox(height: 12),
-        const Text(
-          'Your TV is now connected to your account.',
-          style: TextStyle(color: Colors.white54, fontSize: 20),
-          textAlign: TextAlign.center,
-        ),
-        const SizedBox(height: 32),
-        _focusableButton(
-          icon: Icons.check,
-          label: 'Done',
-          onPressed: () => context.pop(),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildQrPairingState(bool isExpired) {
-    return Column(
-      children: [
-        const Text(
-          'To pair this TV with your phone:',
-          style: TextStyle(color: Colors.white70, fontSize: 22),
-          textAlign: TextAlign.center,
-        ),
-        const SizedBox(height: 8),
-        const Text(
-          '1. Open PrayCalc on your phone\n'
-          '2. Go to Settings > TV Display\n'
-          '3. Tap "Pair a TV" and enter the code below',
-          style: TextStyle(color: Colors.white54, fontSize: 18),
-          textAlign: TextAlign.center,
-        ),
-        const SizedBox(height: 40),
-
-        // QR code
-        Container(
-          width: 220,
-          height: 220,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(16),
-          ),
-          padding: const EdgeInsets.all(16),
-          child: QrImageView(
-            data: 'praycalc://pair?code=$_pairingCode',
-            version: QrVersions.auto,
-            size: 188,
-            backgroundColor: Colors.white,
-            eyeStyle: const QrEyeStyle(
-              eyeShape: QrEyeShape.square,
-              color: Color(0xFF0D2F17),
-            ),
-            dataModuleStyle: const QrDataModuleStyle(
-              dataModuleShape: QrDataModuleShape.square,
-              color: Color(0xFF0D2F17),
-            ),
-          ),
-        ),
-        const SizedBox(height: 32),
-
-        // Pairing code
-        const Text(
-          'Or enter this code:',
-          style: TextStyle(color: Colors.white54, fontSize: 18),
-        ),
-        const SizedBox(height: 12),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-          decoration: BoxDecoration(
-            color: PrayCalcColors.surface,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(
-              color: isExpired ? Colors.red.withAlpha(100) : PrayCalcColors.mid,
-              width: 2,
-            ),
-          ),
-          child: Text(
-            isExpired ? 'EXPIRED' : _formatQrCode(_pairingCode),
+          // 4-digit input
+          TextField(
+            controller: _codeController,
+            focusNode: _codeFocus,
+            autofocus: false,
+            keyboardType: TextInputType.number,
+            maxLength: 4,
+            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+            textAlign: TextAlign.center,
             style: TextStyle(
-              color: isExpired ? Colors.red[300] : PrayCalcColors.light,
-              fontSize: 48,
+              color: _codeError != null
+                  ? Colors.redAccent
+                  : PrayCalcColors.light,
+              fontSize: 56,
               fontWeight: FontWeight.bold,
-              letterSpacing: 8,
+              letterSpacing: 20,
               fontFamily: 'monospace',
             ),
-          ),
-        ),
-        const SizedBox(height: 16),
-
-        // Registration status
-        if (_qrIsRegistering)
-          const Padding(
-            padding: EdgeInsets.only(bottom: 8),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SizedBox(
-                  width: 16,
-                  height: 16,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    color: Colors.white54,
-                  ),
-                ),
-                SizedBox(width: 8),
-                Text(
-                  'Registering with server...',
-                  style: TextStyle(color: Colors.white54, fontSize: 14),
-                ),
-              ],
+            decoration: InputDecoration(
+              counterText: '',
+              hintText: '••••',
+              hintStyle: const TextStyle(
+                color: Colors.white12,
+                fontSize: 48,
+                letterSpacing: 14,
+              ),
+              filled: true,
+              fillColor: PrayCalcColors.dark,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(16),
+                borderSide: BorderSide.none,
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(16),
+                borderSide:
+                    const BorderSide(color: PrayCalcColors.mid, width: 2),
+              ),
+              contentPadding: const EdgeInsets.symmetric(
+                  vertical: 20, horizontal: 16),
             ),
+            onChanged: (v) {
+              if (_codeError != null) setState(() => _codeError = null);
+              if (v.length == 4) _activateCode();
+            },
+            onSubmitted: (_) => _activateCode(),
           ),
-        if (_qrError != null)
-          Padding(
-            padding: const EdgeInsets.only(bottom: 8),
-            child: Text(
-              _qrError!,
-              style: TextStyle(color: Colors.red[300], fontSize: 14),
+
+          if (_codeError != null) ...[
+            const SizedBox(height: 8),
+            Text(
+              _codeError!,
+              style: const TextStyle(
+                  color: Colors.redAccent, fontSize: 13),
               textAlign: TextAlign.center,
             ),
-          ),
-
-        // Timer
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              isExpired ? Icons.timer_off : Icons.timer,
-              color: isExpired ? Colors.red[300] : Colors.white54,
-              size: 20,
-            ),
-            const SizedBox(width: 8),
-            Text(
-              isExpired ? 'Code expired' : 'Expires in $_qrFormattedTime',
-              style: TextStyle(
-                color: isExpired ? Colors.red[300] : Colors.white54,
-                fontSize: 18,
-              ),
-            ),
           ],
-        ),
-        const SizedBox(height: 32),
 
-        _focusableButton(
-          icon: Icons.refresh,
-          label: isExpired ? 'Generate new code' : 'New code',
-          onPressed: _generateQrCode,
-          outlined: true,
-        ),
-      ],
-    );
-  }
+          const SizedBox(height: 20),
 
-  // ---------------------------------------------------------------------------
-  // Tab 2: Guest mode (TV2-1.11)
-  // ---------------------------------------------------------------------------
-
-  Widget _buildGuestTab() {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(horizontal: 64, vertical: 40),
-      child: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 600),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const Icon(
-                Icons.person_outline,
-                color: PrayCalcColors.mid,
-                size: 72,
-              ),
-              const SizedBox(height: 20),
-              const Text(
-                'Continue as Guest',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 32,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 12),
-              const Text(
-                'Limited to one city. Settings are not synced across devices.',
-                style: TextStyle(color: Colors.white54, fontSize: 20),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 40),
-
-              // Quick-select city chips
-              const Text(
-                'Quick select a city:',
-                style: TextStyle(color: Colors.white70, fontSize: 18),
-              ),
-              const SizedBox(height: 12),
-              Wrap(
-                spacing: 12,
-                runSpacing: 8,
-                alignment: WrapAlignment.center,
-                children: _sampleCities
-                    .map((city) => _buildCityChip(city))
-                    .toList(),
-              ),
-              const SizedBox(height: 28),
-
-              // City text field
-              const Text(
-                'Or type your city:',
-                style: TextStyle(color: Colors.white70, fontSize: 18),
-              ),
-              const SizedBox(height: 12),
-              Focus(
-                onKeyEvent: (node, event) {
-                  if (event is KeyDownEvent &&
-                      event.logicalKey == LogicalKeyboardKey.arrowDown) {
-                    // Move focus to the Continue button below.
-                    node.nextFocus();
-                    return KeyEventResult.handled;
-                  }
-                  return KeyEventResult.ignored;
-                },
-                child: TextField(
-                  controller: _cityController,
-                  focusNode: _cityFocusNode,
-                  style: const TextStyle(color: Colors.white, fontSize: 22),
-                  cursorColor: PrayCalcColors.light,
-                  decoration: InputDecoration(
-                    hintText: 'e.g. Cairo',
-                    hintStyle: const TextStyle(color: Colors.white38),
-                    filled: true,
-                    fillColor: PrayCalcColors.surface,
-                    contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 20, vertical: 16),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide:
-                          const BorderSide(color: PrayCalcColors.dark),
+          SizedBox(
+            height: 52,
+            child: _activating
+                ? const Center(
+                    child: CircularProgressIndicator(
+                        color: PrayCalcColors.mid))
+                : FilledButton(
+                    onPressed: _activateCode,
+                    style: FilledButton.styleFrom(
+                      backgroundColor: PrayCalcColors.dark,
+                      foregroundColor: PrayCalcColors.light,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14)),
                     ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: const BorderSide(
-                          color: PrayCalcColors.mid, width: 2),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide:
-                          const BorderSide(color: PrayCalcColors.dark),
-                    ),
+                    child: const Text('Connect TV',
+                        style: TextStyle(
+                            fontSize: 17,
+                            fontWeight: FontWeight.w600)),
                   ),
-                  onSubmitted: (_) => _continueAsGuest(),
-                ),
-              ),
-              const SizedBox(height: 32),
-
-              _focusableButton(
-                icon: Icons.arrow_forward,
-                label: 'Continue',
-                onPressed: _continueAsGuest,
-              ),
-            ],
           ),
-        ),
+        ],
       ),
     );
   }
+}
 
-  Widget _buildCityChip(String city) {
-    return Focus(
-      onKeyEvent: (node, event) {
-        if (event is KeyDownEvent &&
-            (event.logicalKey == LogicalKeyboardKey.select ||
-                event.logicalKey == LogicalKeyboardKey.enter)) {
-          _selectCity(city);
-          return KeyEventResult.handled;
-        }
-        return KeyEventResult.ignored;
-      },
-      child: Builder(builder: (ctx) {
-        final hasFocus = Focus.of(ctx).hasFocus;
-        return GestureDetector(
-          onTap: () => _selectCity(city),
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 150),
-            padding:
-                const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            decoration: BoxDecoration(
-              color: hasFocus ? PrayCalcColors.dark : PrayCalcColors.surface,
-              borderRadius: BorderRadius.circular(24),
-              border: Border.all(
-                color: hasFocus ? PrayCalcColors.light : PrayCalcColors.dark,
-                width: hasFocus ? 2 : 1,
-              ),
-            ),
-            child: Text(
-              city,
-              style: TextStyle(
-                color:
-                    hasFocus ? PrayCalcColors.light : Colors.white70,
-                fontSize: 20,
-                fontWeight:
-                    hasFocus ? FontWeight.bold : FontWeight.normal,
-              ),
-            ),
-          ),
-        );
-      }),
-    );
+// ---------------------------------------------------------------------------
+// Reusable card widget
+// ---------------------------------------------------------------------------
+
+// ---------------------------------------------------------------------------
+// Bottom radial glow — rgba(121,194,76,0.22) ellipse at 50% 100%
+// ---------------------------------------------------------------------------
+
+class _GlowPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final cx = size.width / 2;
+    final cy = size.height;
+    final rx = size.width * 0.80;
+    final ry = size.height * 0.80;
+
+    final paint = Paint()
+      ..shader = RadialGradient(
+        colors: [
+          const Color(0xFF79C24C).withAlpha(56), // 0.22 * 255 ≈ 56
+          Colors.transparent,
+        ],
+        stops: const [0.0, 0.70],
+      ).createShader(Rect.fromCenter(
+        center: Offset(cx, cy),
+        width: rx * 2,
+        height: ry * 2,
+      ));
+
+    canvas.save();
+    canvas.translate(cx, cy);
+    canvas.scale(1.0, ry / rx);
+    canvas.drawCircle(Offset.zero, rx, paint);
+    canvas.restore();
   }
 
-  void _selectCity(String city) {
-    _cityController.text = city;
-    setState(() {});
-  }
+  @override
+  bool shouldRepaint(_GlowPainter old) => false;
+}
 
-  void _continueAsGuest() {
-    // City persistence is handled by the settings flow on the /tv screen
-    // (guest city is passed as a query parameter for the initial location lookup).
-    final city = _cityController.text.trim();
-    if (city.isNotEmpty) {
-      context.go('/tv', extra: {'guestCity': city});
-    } else {
-      context.go('/tv');
-    }
-  }
+// ---------------------------------------------------------------------------
 
-  // ---------------------------------------------------------------------------
-  // Shared focusable button helper (D-pad accessible)
-  // ---------------------------------------------------------------------------
+class _PairingCard extends StatelessWidget {
+  const _PairingCard({required this.child});
+  final Widget child;
 
-  Widget _focusableButton({
-    required IconData icon,
-    required String label,
-    required VoidCallback onPressed,
-    bool outlined = false,
-  }) {
-    return Focus(
-      onKeyEvent: (node, event) {
-        if (event is KeyDownEvent &&
-            (event.logicalKey == LogicalKeyboardKey.select ||
-                event.logicalKey == LogicalKeyboardKey.enter)) {
-          onPressed();
-          return KeyEventResult.handled;
-        }
-        return KeyEventResult.ignored;
-      },
-      child: Builder(builder: (ctx) {
-        final hasFocus = Focus.of(ctx).hasFocus;
-        if (outlined) {
-          return OutlinedButton.icon(
-            onPressed: onPressed,
-            icon: Icon(icon, size: 24),
-            label: Text(label, style: const TextStyle(fontSize: 20)),
-            style: OutlinedButton.styleFrom(
-              foregroundColor:
-                  hasFocus ? PrayCalcColors.light : Colors.white70,
-              side: BorderSide(
-                color: hasFocus ? PrayCalcColors.mid : Colors.white24,
-                width: hasFocus ? 2 : 1,
-              ),
-              minimumSize: const Size(200, 52),
-            ),
-          );
-        }
-        return FilledButton.icon(
-          onPressed: onPressed,
-          icon: Icon(icon, size: 24),
-          label: Text(label, style: const TextStyle(fontSize: 20)),
-          style: FilledButton.styleFrom(
-            backgroundColor:
-                hasFocus ? PrayCalcColors.mid : PrayCalcColors.dark,
-            foregroundColor: Colors.white,
-            minimumSize: const Size(200, 56),
-          ),
-        );
-      }),
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(32),
+      decoration: BoxDecoration(
+        color: const Color(0xFF1A3A22),
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: Colors.white10),
+      ),
+      child: child,
     );
   }
 }

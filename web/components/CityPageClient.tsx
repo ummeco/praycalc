@@ -13,7 +13,6 @@ import PrayerArrivalOverlay from "./PrayerArrivalOverlay";
 import AdhanToast from "./AdhanToast";
 import OnboardingTooltip from "./OnboardingTooltip";
 import SettingsGear from "./SettingsGear";
-import LanguageSwitcher from "./LanguageSwitcher";
 import { DISPLAY_PRAYERS, type PrayerResult } from "@/lib/prayer-utils";
 import { qiblaAngle, compassDir } from "@/lib/qibla";
 import { useSettings } from "@/hooks/useSettings";
@@ -219,8 +218,6 @@ export default function CityPageClient({
           <div className="flex-1 min-w-0">
             <LocationSearch compact />
           </div>
-
-          <LanguageSwitcher variant="header" />
 
           <OnboardingTooltip
             storageKey="praycalc-tooltip-adhan-seen"

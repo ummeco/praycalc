@@ -18,6 +18,7 @@ import 'core/theme/app_theme.dart';
 import 'features/city_search/city_search_screen.dart';
 import 'features/tv/tv_ambient_screen.dart';
 import 'features/tv/tv_home_screen.dart';
+import 'features/tv/tv_splash_screen.dart';
 import 'features/tv/tv_masjid_screen.dart';
 import 'features/tv/tv_onboarding_screen.dart';
 import 'features/tv/tv_pairing_screen.dart';
@@ -49,20 +50,27 @@ class _TvRoutes {
   static const home        = '/';
   static const masjid      = '/masjid';
   static const settings    = '/settings';
-  static const ambient     = '/ambient';
+  static const ambient     = '/tv/ambient';
   static const citySearch  = '/city-search';
+  static const splash      = '/splash';
   static const onboarding  = '/onboarding';
   static const pairing     = '/pairing';
 }
 
 final _tvRouter = GoRouter(
-  initialLocation: _TvRoutes.home,
-  // P-21: Redirect unpaired TVs to the onboarding screen.
+  // Always start with splash — it reads SharedPreferences and routes to
+  // home (paired) or onboarding (not paired) after the animation.
+  initialLocation: _TvRoutes.splash,
   redirect: (context, state) {
     final loc = state.matchedLocation;
-    final onboardingPaths = {_TvRoutes.onboarding, _TvRoutes.pairing};
-    if (!_kTvIsPaired && !onboardingPaths.contains(loc)) {
-      return _TvRoutes.onboarding;
+    const setupPaths = {
+      _TvRoutes.splash,
+      _TvRoutes.onboarding,
+      _TvRoutes.pairing,
+      '/tv', // pairing alias — must pass through so route-level redirect can set _kTvIsPaired
+    };
+    if (!_kTvIsPaired && !setupPaths.contains(loc)) {
+      return _TvRoutes.splash;
     }
     return null;
   },
@@ -88,6 +96,10 @@ final _tvRouter = GoRouter(
       builder: (context, state) => const CitySearchScreen(),
     ),
     GoRoute(
+      path: _TvRoutes.splash,
+      builder: (context, state) => const TvSplashScreen(),
+    ),
+    GoRoute(
       path: _TvRoutes.onboarding,
       builder: (context, state) => const TvOnboardingScreen(),
     ),
@@ -96,12 +108,13 @@ final _tvRouter = GoRouter(
       builder: (context, state) => const TvPairingScreen(),
     ),
     // Alias: TvPairingScreen internally calls context.go('/tv') on success.
-    // Mark as paired so the redirect allows navigation to home.
+    // Use a builder (not redirect) to avoid the double-redirect race where the
+    // global redirect fires before _kTvIsPaired is set, bouncing to splash.
     GoRoute(
       path: '/tv',
-      redirect: (_, _) {
+      builder: (context, state) {
         _kTvIsPaired = true;
-        return _TvRoutes.home;
+        return const TvHomeScreen();
       },
     ),
   ],
@@ -142,6 +155,21 @@ ThemeData _tvTheme() {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // DEV: show exceptions on-screen instead of grey blank canvas.
+  if (kIsWeb) {
+    ErrorWidget.builder = (details) => Material(
+      color: const Color(0xFF0D2F17),
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(24),
+        child: Text(
+          'Flutter error:\n${details.exception}\n\n${details.stack}',
+          style: const TextStyle(color: Colors.white, fontSize: 13, fontFamily: 'monospace'),
+        ),
+      ),
+    );
+  }
+
   await NotificationService.instance.init();
   final lastCity = await loadLastCity();
 

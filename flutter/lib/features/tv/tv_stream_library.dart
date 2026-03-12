@@ -17,6 +17,10 @@ class TvStream {
   /// True for streams added by the user via the custom URL dialog.
   final bool isCustom;
 
+  /// Backup URLs tried in order when the primary [url] is unavailable.
+  /// Each entry is a complete YouTube watch URL or direct stream URL.
+  final List<String> fallbackUrls;
+
   const TvStream({
     required this.id,
     required this.name,
@@ -25,6 +29,7 @@ class TvStream {
     this.thumbnailEmoji,
     required this.category,
     this.isCustom = false,
+    this.fallbackUrls = const [],
   });
 
   Map<String, dynamic> toJson() => {
@@ -35,6 +40,7 @@ class TvStream {
         'thumbnailEmoji': thumbnailEmoji,
         'category': category,
         'isCustom': isCustom,
+        'fallbackUrls': fallbackUrls,
       };
 
   factory TvStream.fromJson(Map<String, dynamic> j) => TvStream(
@@ -48,7 +54,14 @@ class TvStream {
         thumbnailEmoji: j['thumbnailEmoji'] as String?,
         category: j['category'] as String? ?? 'custom',
         isCustom: j['isCustom'] as bool? ?? false,
+        fallbackUrls: (j['fallbackUrls'] as List<dynamic>?)
+                ?.map((e) => e as String)
+                .toList() ??
+            const [],
       );
+
+  /// All URLs in priority order: primary first, then fallbacks.
+  List<String> get allUrls => [url, ...fallbackUrls];
 }
 
 // ---------------------------------------------------------------------------
@@ -115,15 +128,26 @@ class TvStreamHealthChecker {
 }
 
 /// Built-in curated stream list.
-/// Video streams are YouTube live links (require a webview player or url_launcher).
+/// HLS video streams play via HLS.js (no embedding restrictions, no YouTube).
 /// Audio streams are direct HLS/MP3 endpoints playable via just_audio.
 const List<TvStream> kBuiltInStreams = [
   TvStream(
+    // Al Quran Al Kareem TV — Saudi state channel, 24/7 Quran from Mecca/Kaaba.
+    // Akamai CDN HLS — stable, no embedding restrictions, works on Android TV.
     id: 'mecca',
-    name: 'Mecca — Al-Masjid Al-Haram',
-    url: 'https://www.youtube.com/watch?v=Cm1v4bteXbI',
+    name: 'Mecca — Al Quran Al Kareem TV',
+    url: 'https://cdn-globecast.akamaized.net/live/eds/saudi_quran/hls_roku/index.m3u8',
     type: TvStreamType.video,
     thumbnailEmoji: '🕋',
+    category: 'masjid',
+  ),
+  TvStream(
+    // Makkah TV — alternate HLS stream from Mecca.
+    id: 'makkah-tv',
+    name: 'Makkah TV — Live',
+    url: 'https://media2.streambrothers.com:1936/8122/8122/playlist.m3u8',
+    type: TvStreamType.video,
+    thumbnailEmoji: '🕌',
     category: 'masjid',
   ),
   TvStream(
@@ -140,14 +164,6 @@ const List<TvStream> kBuiltInStreams = [
     url: 'https://www.youtube.com/watch?v=2lGCVF8CfeA',
     type: TvStreamType.video,
     thumbnailEmoji: '🏛️',
-    category: 'masjid',
-  ),
-  TvStream(
-    id: 'aqsa-inside',
-    name: 'Al-Aqsa — Inside the mosque',
-    url: 'https://www.youtube.com/watch?v=ClySGxVcUcU',
-    type: TvStreamType.video,
-    thumbnailEmoji: '🕌',
     category: 'masjid',
   ),
   TvStream(

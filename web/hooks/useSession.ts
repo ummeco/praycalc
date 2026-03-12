@@ -163,6 +163,17 @@ export function useSession() {
     setSession(s);
   }, []);
 
+  /** Set a full session from an AuthResult (dev bypass, token exchange). */
+  const loginWithResult = useCallback(
+    (result: import("@/lib/auth-client").AuthResult) => {
+      const s = buildSessionFromAuth(result);
+      saveSession(s);
+      setSession(s);
+      scheduleRefresh(s);
+    },
+    [scheduleRefresh],
+  );
+
   const logout = useCallback(async () => {
     const current = getSession();
     if (current?.tokens?.refreshToken) {
@@ -181,6 +192,7 @@ export function useSession() {
     isUmmatPlus: session?.isUmmatPlus ?? false,
     login,
     loginWithPassword,
+    loginWithResult,
     register,
     sendMagicLink,
     sendPasswordReset,

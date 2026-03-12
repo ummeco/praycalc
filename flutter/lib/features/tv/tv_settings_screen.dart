@@ -458,6 +458,20 @@ class _TvSettingsScreenState extends ConsumerState<TvSettingsScreen> {
                   .setSkyBackgroundEnabled(!tvSettings.skyBackgroundEnabled),
             ),
             const SizedBox(height: 8),
+            // Y-1 — Children's mode
+            _TvSettingsTile(
+              icon: Icons.child_care,
+              title: "Children's Mode",
+              subtitle: 'Kid-friendly display with prayer explanations',
+              trailing: Switch(
+                value: tvSettings.childrenModeEnabled,
+                activeThumbColor: PrayCalcColors.mid,
+                onChanged: (v) => tvNotifier.setChildrenModeEnabled(v),
+              ),
+              onTap: () => tvNotifier
+                  .setChildrenModeEnabled(!tvSettings.childrenModeEnabled),
+            ),
+            const SizedBox(height: 8),
             // P-14 — Good Night Isha mode
             _TvSettingsTile(
               icon: Icons.nightlight_round,
@@ -637,8 +651,13 @@ class _TvSettingsScreenState extends ConsumerState<TvSettingsScreen> {
 
   // ── P-8: Geometric pattern helpers ─────────────────────────────────────────
 
-  String _geometricStyleLabel(String style) =>
-      style == 'girih' ? 'Girih Tiling' : 'Moroccan Star';
+  String _geometricStyleLabel(String style) => switch (style) {
+    'girih' => 'Girih Tiling',
+    'muqarnas' => 'Muqarnas',
+    'kufic' => 'Kufic Square',
+    'isometric' => 'Isometric Cubes',
+    _ => 'Moroccan Star',
+  };
 
   void _showGeometricStyleDialog(
     BuildContext context,
@@ -648,6 +667,9 @@ class _TvSettingsScreenState extends ConsumerState<TvSettingsScreen> {
     const options = [
       ('moroccanStar', 'Moroccan Star'),
       ('girih', 'Girih Tiling'),
+      ('muqarnas', 'Muqarnas'),
+      ('kufic', 'Kufic Square'),
+      ('isometric', 'Isometric Cubes'),
     ];
     showDialog<void>(
       context: context,
@@ -1348,6 +1370,8 @@ class _TvSettingsScreenState extends ConsumerState<TvSettingsScreen> {
     'pattern' => 'Islamic Pattern',
     'starfield' => 'Starfield',
     'calligraphy' => 'Calligraphy',
+    'quranVerses' => 'Quran Verses',
+    'worldMap' => 'World Map',
     _ => 'Photos',
   };
 
@@ -1361,6 +1385,8 @@ class _TvSettingsScreenState extends ConsumerState<TvSettingsScreen> {
       ('pattern', 'Islamic Pattern', Icons.star),
       ('starfield', 'Starfield', Icons.nights_stay),
       ('calligraphy', 'Calligraphy', Icons.menu_book),
+      ('quranVerses', 'Quran Verses', Icons.auto_stories),
+      ('worldMap', 'World Map', Icons.public),
     ];
     showDialog<void>(
       context: context,

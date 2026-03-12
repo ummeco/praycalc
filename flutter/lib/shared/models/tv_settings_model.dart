@@ -385,7 +385,7 @@ class TvLayoutSettings {
 
   const TvLayoutSettings({
     this.preset = TvLayoutPreset.prayerOnly,
-    this.leftPanel,
+    this.leftPanel = TvPanelType.liveStream,
     this.rightPanel,
     this.topBar,
     this.bottomBar,
@@ -557,8 +557,12 @@ class TvSettings {
   // TV2-4.3 — audio/stream/Quran fields
   // ---------------------------------------------------------------------------
 
+  /// What to show in the video area of the left panel.
+  /// 'live-stream' | 'artwork-cycle' | 'masjid-photos' | 'prayer-only'
+  final String videoAreaSource;
+
   /// Active audio mode for the TV background.
-  /// 'stream' = live internet stream, 'quran' = sequential Quran ayahs, 'silent' = off.
+  /// 'stream' = live internet stream audio on, 'silent' = video shown but muted.
   final String tvAudioMode;
 
   /// ID of the selected live stream (from kBuiltInStreams). Default: 'mecca'.
@@ -742,11 +746,28 @@ class TvSettings {
   final bool contentCycleCustomized;
 
   // ---------------------------------------------------------------------------
+  // Y-1 — Children's mode
+  // ---------------------------------------------------------------------------
+
+  /// When true, TvChildrenMode replaces the normal home screen.
+  final bool childrenModeEnabled;
+
+  // ---------------------------------------------------------------------------
   // U-1 — Color palette
   // ---------------------------------------------------------------------------
 
   /// Active color palette applied to rail, prayer cards, adhan overlay, etc.
   final TvColorPaletteName colorPalette;
+
+  // ---------------------------------------------------------------------------
+  // Stream overlays — ayah bar (top) + Ramadan card (bottom)
+  // ---------------------------------------------------------------------------
+
+  /// When true and a stream is active, cycles Quranic ayahs in the top black bar.
+  final bool showStreamAyahBar;
+
+  /// When true, Ramadan+Iftar card shows in the bottom black bar during stream mode.
+  final bool showStreamRamadanOverlay;
 
   const TvSettings({
     this.isMasjidMode = false,
@@ -773,7 +794,8 @@ class TvSettings {
     this.defaultBubblePosition = TvBubblePosition.topRight,
     this.kioskMode = false,
     this.kioskPinHash = '',
-    this.tvAudioMode = 'silent',
+    this.videoAreaSource = 'live-stream',
+    this.tvAudioMode = 'stream',
     this.selectedStreamId = 'mecca',
     this.selectedReciterId = 'sudais',
     this.quranPlaybackMode = QuranPlaybackMode.continuous,
@@ -808,7 +830,10 @@ class TvSettings {
     this.railPosition = TvRailPosition.top,
     this.contentCycle = _kDefaultContentCycle,
     this.contentCycleCustomized = false,
+    this.childrenModeEnabled = false,
     this.colorPalette = TvColorPaletteName.emerald,
+    this.showStreamAyahBar = true,
+    this.showStreamRamadanOverlay = true,
   });
 
   TvSettings copyWith({
@@ -829,6 +854,7 @@ class TvSettings {
     TvBubblePosition? defaultBubblePosition,
     bool? kioskMode,
     String? kioskPinHash,
+    String? videoAreaSource,
     String? tvAudioMode,
     String? selectedStreamId,
     String? selectedReciterId,
@@ -864,7 +890,10 @@ class TvSettings {
     TvRailPosition? railPosition,
     List<TvContentItem>? contentCycle,
     bool? contentCycleCustomized,
+    bool? childrenModeEnabled,
     TvColorPaletteName? colorPalette,
+    bool? showStreamAyahBar,
+    bool? showStreamRamadanOverlay,
   }) {
     return TvSettings(
       isMasjidMode: isMasjidMode ?? this.isMasjidMode,
@@ -887,6 +916,7 @@ class TvSettings {
           defaultBubblePosition ?? this.defaultBubblePosition,
       kioskMode: kioskMode ?? this.kioskMode,
       kioskPinHash: kioskPinHash ?? this.kioskPinHash,
+      videoAreaSource: videoAreaSource ?? this.videoAreaSource,
       tvAudioMode: tvAudioMode ?? this.tvAudioMode,
       selectedStreamId: selectedStreamId ?? this.selectedStreamId,
       selectedReciterId: selectedReciterId ?? this.selectedReciterId,
@@ -941,7 +971,11 @@ class TvSettings {
       contentCycle: contentCycle ?? this.contentCycle,
       contentCycleCustomized:
           contentCycleCustomized ?? this.contentCycleCustomized,
+      childrenModeEnabled: childrenModeEnabled ?? this.childrenModeEnabled,
       colorPalette: colorPalette ?? this.colorPalette,
+      showStreamAyahBar: showStreamAyahBar ?? this.showStreamAyahBar,
+      showStreamRamadanOverlay:
+          showStreamRamadanOverlay ?? this.showStreamRamadanOverlay,
     );
   }
 
@@ -964,6 +998,7 @@ class TvSettings {
         'defaultBubblePosition': defaultBubblePosition.name,
         'kioskMode': kioskMode,
         'kioskPinHash': kioskPinHash,
+        'videoAreaSource': videoAreaSource,
         'tvAudioMode': tvAudioMode,
         'selectedStreamId': selectedStreamId,
         'selectedReciterId': selectedReciterId,
@@ -1000,7 +1035,10 @@ class TvSettings {
         'railPosition': railPosition.name,
         'contentCycle': contentCycle.map((i) => i.toJson()).toList(),
         'contentCycleCustomized': contentCycleCustomized,
+        'childrenModeEnabled': childrenModeEnabled,
         'colorPalette': colorPalette.name,
+        'showStreamAyahBar': showStreamAyahBar,
+        'showStreamRamadanOverlay': showStreamRamadanOverlay,
       };
 
   factory TvSettings.fromJson(Map<String, dynamic> json) {
@@ -1048,10 +1086,7 @@ class TvSettings {
               .toList() ??
           const [],
       mediaPauseEnabled: json['mediaPauseEnabled'] as bool? ?? false,
-      layoutSettings: json['layoutSettings'] != null
-          ? TvLayoutSettings.fromJson(
-              json['layoutSettings'] as Map<String, dynamic>)
-          : const TvLayoutSettings(),
+      layoutSettings: TvSettings._parseLayoutSettings(json),
       prayerAlertConfigs: parsePrayerAlertConfigs(
           json['prayerAlertConfigs'] as Map<String, dynamic>?),
       globalAudioMode: parseEnum(TvAudioMode.values,
@@ -1061,7 +1096,8 @@ class TvSettings {
           TvBubblePosition.topRight),
       kioskMode: json['kioskMode'] as bool? ?? false,
       kioskPinHash: json['kioskPinHash'] as String? ?? '',
-      tvAudioMode: json['tvAudioMode'] as String? ?? 'silent',
+      videoAreaSource: json['videoAreaSource'] as String? ?? 'live-stream',
+      tvAudioMode: json['tvAudioMode'] as String? ?? 'stream',
       selectedStreamId: json['selectedStreamId'] as String? ?? 'mecca',
       selectedReciterId: json['selectedReciterId'] as String? ?? 'sudais',
       quranPlaybackMode: parseEnum(QuranPlaybackMode.values,
@@ -1126,8 +1162,13 @@ class TvSettings {
           _kDefaultContentCycle,
       contentCycleCustomized:
           json['contentCycleCustomized'] as bool? ?? false,
+      childrenModeEnabled:
+          json['childrenModeEnabled'] as bool? ?? false,
       colorPalette: parseEnum(TvColorPaletteName.values,
           json['colorPalette'] as String?, TvColorPaletteName.emerald),
+      showStreamAyahBar: json['showStreamAyahBar'] as bool? ?? true,
+      showStreamRamadanOverlay:
+          json['showStreamRamadanOverlay'] as bool? ?? true,
     );
   }
 
@@ -1137,6 +1178,34 @@ class TvSettings {
   /// Decode from a JSON string stored in SharedPreferences.
   factory TvSettings.decode(String source) =>
       TvSettings.fromJson(jsonDecode(source) as Map<String, dynamic>);
+
+  /// Resolves layoutSettings from either a nested object or a flat 'layout'
+  /// string (sent by the web dashboard). The explicit object always wins.
+  static TvLayoutSettings _parseLayoutSettings(Map<String, dynamic> json) {
+    if (json['layoutSettings'] is Map<String, dynamic>) {
+      return TvLayoutSettings.fromJson(
+          json['layoutSettings'] as Map<String, dynamic>);
+    }
+    final layoutStr = json['layout'] as String?;
+    if (layoutStr != null) {
+      return TvLayoutSettings.forPreset(_layoutStringToPreset(layoutStr));
+    }
+    // Legacy fallback: no layout info stored — default to splitStream so
+    // existing devices keep showing the stream on the left.
+    return TvLayoutSettings.forPreset(TvLayoutPreset.splitStream);
+  }
+
+  /// Maps kebab-case layout IDs (from web) to TvLayoutPreset enum values.
+  static TvLayoutPreset _layoutStringToPreset(String s) {
+    switch (s) {
+      case 'split-stream': return TvLayoutPreset.splitStream;
+      case 'prayer-only':  return TvLayoutPreset.prayerOnly;
+      case 'split-art':    return TvLayoutPreset.splitArt;
+      case 'info-rich':    return TvLayoutPreset.infoRich;
+      case 'masjid':       return TvLayoutPreset.masjid;
+      default:             return TvLayoutPreset.splitStream;
+    }
+  }
 }
 
 // ---------------------------------------------------------------------------

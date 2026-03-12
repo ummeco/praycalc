@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:praycalc_app/l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../core/providers/auth_provider.dart';
 import '../../core/providers/settings_provider.dart';
@@ -137,6 +138,7 @@ class SettingsScreen extends ConsumerWidget {
             value: settings.countdownAnimationEnabled,
             onChanged: notifier.setCountdownAnimationEnabled,
           ),
+          const _FanLayoutTile(),
 
           // ── Display ──────────────────────────────────────────────────────
           _SectionHeader(l.settingsSectionDisplay),
@@ -451,6 +453,39 @@ class SettingsScreen extends ConsumerWidget {
     );
     if (selected == null) return; // dialog dismissed
     await notifier.setLocale(selected.isEmpty ? null : selected);
+  }
+}
+
+class _FanLayoutTile extends StatefulWidget {
+  const _FanLayoutTile();
+
+  @override
+  State<_FanLayoutTile> createState() => _FanLayoutTileState();
+}
+
+class _FanLayoutTileState extends State<_FanLayoutTile> {
+  bool _value = false;
+
+  @override
+  void initState() {
+    super.initState();
+    SharedPreferences.getInstance().then((prefs) {
+      if (mounted) setState(() => _value = prefs.getBool('home_layout_fan') ?? false);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SwitchListTile(
+      title: const Text('Prayer Card Fan Layout'),
+      subtitle: const Text('Show prayer times as fanned cards on the home screen'),
+      value: _value,
+      onChanged: (v) async {
+        setState(() => _value = v);
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setBool('home_layout_fan', v);
+      },
+    );
   }
 }
 
