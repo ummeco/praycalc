@@ -195,6 +195,11 @@ void Win32Window::OnDestroy() {
   // No-op; provided for subclasses.
 }
 
+void Win32Window::Show() {
+  ShowWindow(window_handle_, SW_SHOWNORMAL);
+  UpdateWindow(window_handle_);
+}
+
 void Win32Window::UpdateTheme(HWND const window) {
   DWORD light_mode;
   DWORD light_mode_size = sizeof(light_mode);

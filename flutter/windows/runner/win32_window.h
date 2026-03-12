@@ -50,6 +50,9 @@ class Win32Window {
   // Return a RECT representing the bounds of the current client area.
   RECT GetClientArea();
 
+  // Shows the window, after it has been created and made visible.
+  void Show();
+
  protected:
   // Processes and routes salient window messages for handling.
   virtual bool OnCreate();
@@ -57,6 +60,7 @@ class Win32Window {
 
  private:
   friend class Win32WindowTest;
+  friend class WindowClassRegistrar;
 
   // OS callback called by message pump. Handles the WM_NCCREATE message which
   // is passed when the non-client area is being created and enables automatic
@@ -64,6 +68,12 @@ class Win32Window {
   // to changes in DPI.
   static LRESULT CALLBACK WndProc(HWND const window, UINT const message,
                                   WPARAM const wparam, LPARAM const lparam);
+
+  // Retrieves the Win32Window* from a HWND via GetWindowLongPtr.
+  static Win32Window* GetThisFromHandle(HWND const window) noexcept;
+
+  // Updates the window's theme (dark/light mode) via DWM attributes.
+  void UpdateTheme(HWND const window);
 
   // WM_DPICHANGED handler.
   LRESULT HandleDpiChange(HWND hwnd, WPARAM wparam, LPARAM lparam);

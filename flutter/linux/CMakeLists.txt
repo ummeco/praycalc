@@ -27,6 +27,9 @@ endif()
 # Define settings for the application build.
 set(CMAKE_INSTALL_RPATH "$ORIGIN/lib")
 
+# Fully qualified name of the custom manifest dir.
+set(FLUTTER_MANAGED_DIR "${CMAKE_CURRENT_SOURCE_DIR}/flutter")
+
 # Standard Flutter plugin build settings.
 # Required by plugins (e.g. flutter_secure_storage_linux) that call apply_standard_settings().
 function(apply_standard_settings TARGET)
@@ -76,6 +79,3 @@ foreach(bundled_library ${FLUTTER_BUNDLED_LIBRARIES})
     DESTINATION "${INSTALL_BUNDLE_LIB_DIR}"
     COMPONENT Runtime)
 endforeach(bundled_library)
-
-# Fully qualified name of the custom manifest dir.
-set(FLUTTER_MANAGED_DIR "${CMAKE_CURRENT_SOURCE_DIR}/flutter")
