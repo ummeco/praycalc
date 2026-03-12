@@ -11,6 +11,7 @@ app_id: fce68c58-486c-4ad5-a4bb-f00ac381e7e8
 # Amazon Appstore uses its own OTA mechanism — only google flavor uses Shorebird.
 flavors:
   google: fce68c58-486c-4ad5-a4bb-f00ac381e7e8
+  amazon: fce68c58-486c-4ad5-a4bb-f00ac381e7e8
 
 # auto_update controls if Shorebird should automatically update in the background on launch.
 # If auto_update: false, you will need to use package:shorebird_code_push to trigger updates.
