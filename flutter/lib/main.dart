@@ -1,4 +1,5 @@
 import 'dart:async' show unawaited;
+import 'dart:io' show Platform;
 
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
@@ -6,7 +7,10 @@ import 'package:praycalc_app/l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:shorebird_code_push/shorebird_code_push.dart';
+import 'package:window_manager/window_manager.dart';
 
+import 'core/models/alert_config.dart';
+import 'core/platform/url_strategy.dart';
 import 'core/providers/geo_provider.dart';
 import 'core/providers/notification_provider.dart';
 import 'core/providers/prayer_provider.dart';
@@ -16,6 +20,9 @@ import 'core/providers/travel_provider.dart';
 import 'core/router/app_router.dart';
 import 'core/services/notification_service.dart';
 import 'core/theme/app_theme.dart';
+import 'features/desktop/desktop_adhan_alert.dart';
+import 'features/desktop/desktop_full_window.dart';
+import 'features/desktop/desktop_tray_app.dart';
 import 'features/onboarding/onboarding_screen.dart';
 
 // DSN is injected at build time via --dart-define=SENTRY_DSN=https://...
@@ -37,7 +44,25 @@ Future<void> _checkShorebirdUpdate() async {
 }
 
 void main() async {
+  setPathUrlStrategy(); // path-based URLs on web (no hash); no-op on other platforms
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Desktop: initialize window manager before anything else.
+  if (!kIsWeb && (Platform.isMacOS || Platform.isWindows || Platform.isLinux)) {
+    await windowManager.ensureInitialized();
+    const WindowOptions windowOptions = WindowOptions(
+      size: Size(1280, 800),
+      minimumSize: Size(800, 600),
+      center: true,
+      title: 'PrayCalc',
+      titleBarStyle: TitleBarStyle.normal,
+    );
+    await windowManager.waitUntilReadyToShow(windowOptions, () async {
+      await windowManager.show();
+      await windowManager.focus();
+    });
+  }
+
   await NotificationService.instance.init();
   final lastCity = await loadLastCity();
   final onboardingDone = await isOnboardingDone();
@@ -73,11 +98,51 @@ void main() async {
   }
 }
 
-class PrayCalcApp extends ConsumerWidget {
+class PrayCalcApp extends ConsumerStatefulWidget {
   const PrayCalcApp({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<PrayCalcApp> createState() => _PrayCalcAppState();
+}
+
+class _PrayCalcAppState extends ConsumerState<PrayCalcApp> with WindowListener {
+  DesktopTrayApp? _trayApp;
+
+  @override
+  void initState() {
+    super.initState();
+    if (!kIsWeb && (Platform.isMacOS || Platform.isWindows || Platform.isLinux)) {
+      windowManager.addListener(this);
+      // Intercept close button so we can hide-to-tray instead of quitting.
+      windowManager.setPreventClose(true);
+      DesktopAdhanAlert.init();
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        DesktopFullWindow.registerShowCallback(() {
+          appRouter.push(Routes.desktopFullWindow);
+        });
+        final tray = DesktopTrayApp(ref);
+        tray.init();
+        _trayApp = tray;
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    if (!kIsWeb && (Platform.isMacOS || Platform.isWindows || Platform.isLinux)) {
+      windowManager.removeListener(this);
+    }
+    _trayApp?.dispose();
+    super.dispose();
+  }
+
+  @override
+  void onWindowClose() async {
+    await windowManager.hide();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     // Keep the notification rescheduler alive for the full app session.
     // It watches city + hanafi + agendas + configs and reschedules on any change.
     ref.listen(notificationReschedulerProvider, (_, _) {});
@@ -85,6 +150,42 @@ class PrayCalcApp extends ConsumerWidget {
     ref.listen(ramadanShadeWriterProvider, (_, _) {});
     // Auto-set home coordinates from the first city the user selects.
     ref.listen(travelHomeAutosetProvider, (_, _) {});
+
+    // Desktop prayer alert monitoring.
+    if (!kIsWeb && DesktopAlertScheduler.isDesktop) {
+      ref.listen(prayerTimesProvider, (_, next) {
+        next.whenData((times) {
+          final settings = ref.read(settingsProvider);
+          DesktopAlertScheduler.instance.start(
+            prayerTimesH: {
+              'Fajr': times.fajr,
+              'Sunrise': times.sunrise,
+              'Dhuhr': times.dhuhr,
+              'Asr': times.asr,
+              'Maghrib': times.maghrib,
+              'Isha': times.isha,
+            },
+            use24h: settings.use24h,
+          );
+        });
+      });
+      DesktopAlertScheduler.instance.onAlert ??= (prayer, formattedTime) {
+        final alertSettings = ref.read(alertSettingsProvider);
+        if (!alertSettings.globalEnabled) return;
+        final config = alertSettings.perPrayer[prayer.toLowerCase()]
+            ?? const PrayerAlertConfig();
+        final ctx = appRouter.routerDelegate.navigatorKey.currentContext;
+        if (ctx != null && ctx.mounted) {
+          DesktopAdhanAlert.show(
+            context: ctx,
+            prayerName: prayer,
+            prayerTimeFormatted: formattedTime,
+            config: config,
+            mediaPauseEnabled: alertSettings.mediaPauseEnabled,
+          );
+        }
+      };
+    }
 
     final settings = ref.watch(settingsProvider);
 
