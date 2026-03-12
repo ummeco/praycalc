@@ -51,6 +51,7 @@ class DesktopAdhanAlert {
     );
 
     const initSettings = InitializationSettings(
+      android: AndroidInitializationSettings('@mipmap/ic_launcher'),
       macOS: darwinSettings,
       linux: linuxSettings,
       windows: windowsSettings,
