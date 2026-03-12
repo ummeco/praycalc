@@ -44,9 +44,16 @@ class DesktopAdhanAlert {
       requestSoundPermission: true,
     );
 
+    const windowsSettings = WindowsInitializationSettings(
+      appName: 'PrayCalc',
+      appUserModelId: 'com.praycalc.app',
+      guid: 'd8f4f3c9-4b1a-4a0e-9c2e-7b5e3f1a8c4d',
+    );
+
     const initSettings = InitializationSettings(
       macOS: darwinSettings,
       linux: linuxSettings,
+      windows: windowsSettings,
     );
 
     await _notifications.initialize(settings: initSettings);
@@ -69,9 +76,12 @@ class DesktopAdhanAlert {
       urgency: LinuxNotificationUrgency.critical,
     );
 
+    const windowsDetails = WindowsNotificationDetails();
+
     const details = NotificationDetails(
       macOS: darwinDetails,
       linux: linuxDetails,
+      windows: windowsDetails,
     );
 
     await _notifications.show(

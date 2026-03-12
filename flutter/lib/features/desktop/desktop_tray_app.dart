@@ -1,12 +1,15 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tray_manager/tray_manager.dart';
 
 import '../../core/providers/prayer_provider.dart';
 import '../../core/providers/settings_provider.dart';
+import '../../core/router/app_router.dart';
 import 'desktop_full_window.dart';
+import 'desktop_popover.dart';
 
 /// Manages the system tray icon and its context menu for desktop platforms.
 class DesktopTrayApp with TrayListener {
@@ -61,6 +64,8 @@ class DesktopTrayApp with TrayListener {
       _setWindowsAutoLaunch();
     } else if (Platform.isLinux) {
       _setLinuxAutostart();
+    } else if (Platform.isMacOS) {
+      _setMacOSLaunchAgent();
     }
   }
 
@@ -105,9 +110,58 @@ class DesktopTrayApp with TrayListener {
     }
   }
 
+  void _setMacOSLaunchAgent() {
+    try {
+      final exe = Platform.resolvedExecutable;
+      final home = Platform.environment['HOME'] ?? '';
+      if (home.isEmpty) return;
+      final agentsDir = Directory('$home/Library/LaunchAgents');
+      if (!agentsDir.existsSync()) agentsDir.createSync(recursive: true);
+      final plist = File('${agentsDir.path}/com.praycalc.app.plist');
+      plist.writeAsStringSync(
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"'
+        ' "http://www.apple.com/DTDs/PropertyList-1.0.dtd">\n'
+        '<plist version="1.0">\n'
+        '<dict>\n'
+        '  <key>Label</key>\n'
+        '  <string>com.praycalc.app</string>\n'
+        '  <key>ProgramArguments</key>\n'
+        '  <array>\n'
+        '    <string>$exe</string>\n'
+        '  </array>\n'
+        '  <key>RunAtLoad</key>\n'
+        '  <true/>\n'
+        '  <key>KeepAlive</key>\n'
+        '  <false/>\n'
+        '</dict>\n'
+        '</plist>\n',
+      );
+    } catch (_) {
+      // Non-fatal — user can enable manually via System Settings > General > Login Items.
+    }
+  }
+
   @override
   void onTrayIconMouseDown() {
-    trayManager.popUpContextMenu();
+    if (Platform.isMacOS) {
+      final ctx = appRouter.routerDelegate.navigatorKey.currentContext;
+      if (ctx != null) {
+        showDialog(
+          context: ctx,
+          barrierColor: Colors.transparent,
+          builder: (_) => const Align(
+            alignment: Alignment.bottomRight,
+            child: Padding(
+              padding: EdgeInsets.only(bottom: 24, right: 24),
+              child: DesktopPopover(),
+            ),
+          ),
+        );
+      }
+    } else {
+      trayManager.popUpContextMenu();
+    }
   }
 
   @override
@@ -119,10 +173,11 @@ class DesktopTrayApp with TrayListener {
   void onTrayMenuItemClick(MenuItem menuItem) {
     switch (menuItem.key) {
       case 'open':
+        DesktopFullWindow.show();
       case 'settings':
-        DesktopFullWindow.show();
+        appRouter.push(Routes.settings);
       case 'tvs':
-        DesktopFullWindow.show();
+        appRouter.push(Routes.tvDeviceList);
       case 'quit':
         exit(0);
     }

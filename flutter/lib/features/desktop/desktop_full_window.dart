@@ -272,8 +272,9 @@ class _DesktopFullWindowScreenState
   }
 
   String _prayerLabel(String name, bool isRamadan) {
-    if (isRamadan && name == 'Fajr') return 'Suhoor';
-    if (isRamadan && name == 'Maghrib') return 'Iftar';
+    // Banner template appends " in  countdown" so we return the prefix only.
+    if (isRamadan && name == 'Fajr') return 'Suhoor ends';
+    if (isRamadan && name == 'Maghrib') return 'Iftar is';
     return name;
   }
 

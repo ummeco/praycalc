@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { TOP_CITIES } from '@/lib/top-cities';
 
-const SMART_BASE = 'https://smart.praycalc.com/api/v1/tv';
+const SMART_BASE = `${process.env.NEXT_PUBLIC_SMART_SERVICE_URL ?? 'https://smart.praycalc.com'}/api/v1/tv`;
 
 /**
  * GET /api/dashboard/tvs/[id]/settings
@@ -66,21 +67,50 @@ export async function PATCH(
     return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 });
   }
 
-  // Validate audioMode if provided
+  // Validate tvAudioMode if provided
   const validAudioModes = ['silent', 'live-stream', 'quran'];
-  if (body.audioMode !== undefined && !validAudioModes.includes(body.audioMode as string)) {
+  if (body.tvAudioMode !== undefined && !validAudioModes.includes(body.tvAudioMode as string)) {
     return NextResponse.json(
-      { error: `audioMode must be one of: ${validAudioModes.join(', ')}` },
+      { error: `tvAudioMode must be one of: ${validAudioModes.join(', ')}` },
       { status: 400 },
     );
   }
 
-  // Validate screensaverInterval if provided
-  if (body.screensaverInterval !== undefined) {
-    const interval = Number(body.screensaverInterval);
-    if (!Number.isInteger(interval) || interval < 15 || interval > 600) {
+  // Resolve city slug override → inject snake_case location fields for Flutter polling handler.
+  // Accepts both 'citySlugOverride' (TvSettingsPanel) and 'cityOverride' (account page).
+  const citySlug = (body.citySlugOverride ?? body.cityOverride) as string | null | undefined;
+  if (citySlug) {
+    const city = TOP_CITIES.find(c => c.slug === citySlug);
+    if (city) {
+      body.location_lat = city.lat;
+      body.location_lng = city.lng;
+      body.location_city = city.name;
+      body.location_country = city.country;
+      body.location_timezone = city.timezone;
+    }
+    // Normalize to single field name for storage
+    body.cityOverride = citySlug;
+    delete body.citySlugOverride;
+  } else if (citySlug === null || citySlug === '') {
+    // Explicit clear — remove the override
+    body.cityOverride = null;
+    delete body.citySlugOverride;
+  }
+
+  // Remap camelCase location fields to snake_case for smart backend
+  if (body.locationLat !== undefined) { body.location_lat = body.locationLat; delete body.locationLat; }
+  if (body.locationLng !== undefined) { body.location_lng = body.locationLng; delete body.locationLng; }
+  if (body.locationCity !== undefined) { body.location_city = body.locationCity; delete body.locationCity; }
+  if (body.locationCountry !== undefined) { body.location_country = body.locationCountry; delete body.locationCountry; }
+  if (body.locationState !== undefined) { body.location_state = body.locationState; delete body.locationState; }
+  if (body.locationTimezone !== undefined) { body.location_timezone = body.locationTimezone; delete body.locationTimezone; }
+
+  // Validate slideshowDurationSeconds if provided
+  if (body.slideshowDurationSeconds !== undefined && body.slideshowDurationSeconds !== null) {
+    const duration = Number(body.slideshowDurationSeconds);
+    if (!Number.isInteger(duration) || duration < 10 || duration > 600) {
       return NextResponse.json(
-        { error: 'screensaverInterval must be an integer between 15 and 600' },
+        { error: 'slideshowDurationSeconds must be an integer between 10 and 600' },
         { status: 400 },
       );
     }
