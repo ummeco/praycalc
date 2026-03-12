@@ -27,6 +27,15 @@ endif()
 # Define settings for the application build.
 set(CMAKE_INSTALL_RPATH "$ORIGIN/lib")
 
+# Standard Flutter plugin build settings.
+# Required by plugins (e.g. flutter_secure_storage_linux) that call apply_standard_settings().
+function(apply_standard_settings TARGET)
+  target_compile_features(${TARGET} PUBLIC cxx_std_14)
+  target_compile_options(${TARGET} PRIVATE -Wall -Werror)
+  target_compile_options(${TARGET} PRIVATE "$<$<NOT:$<CONFIG:Debug>>:-O2>")
+  target_compile_definitions(${TARGET} PRIVATE "$<$<CONFIG:Debug>:_DEBUG>")
+endfunction()
+
 # Application build. Provides the flutter_window.h header for the runner target.
 add_subdirectory(${FLUTTER_MANAGED_DIR})
 

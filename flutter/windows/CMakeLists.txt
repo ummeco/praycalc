@@ -34,6 +34,8 @@ function(APPLY_STANDARD_SETTINGS TARGET)
   target_compile_options(${TARGET} PRIVATE /EHsc)
   target_compile_definitions(${TARGET} PRIVATE "_HAS_EXCEPTIONS=0")
   target_compile_definitions(${TARGET} PRIVATE "$<$<CONFIG:Debug>:_DEBUG>")
+  # Ensure TCHAR resolves to wchar_t — required by flutter_secure_storage_windows.
+  target_compile_definitions(${TARGET} PRIVATE UNICODE _UNICODE)
 endfunction()
 
 # Flutter library and target platform.
