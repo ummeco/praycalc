@@ -69,12 +69,12 @@ android {
     productFlavors {
         create("google") {
             dimension = "distribution"
-            applicationId = "com.praycalc.app"
+            applicationId = "app.praycalc"
             resValue("string", "flavor", "google")
         }
         create("amazon") {
             dimension = "distribution"
-            applicationId = "com.praycalc.app.amazon"
+            applicationId = "app.praycalc.amazon"
             resValue("string", "flavor", "amazon")
             // Fire TV has no Google Play Services — exclude Firebase/GMS at dependency level.
             // FCM is removed via the amazon source-set manifest (tools:node="remove").
