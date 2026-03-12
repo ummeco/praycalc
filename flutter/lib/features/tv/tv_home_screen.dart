@@ -34,7 +34,6 @@ import 'tv_sky_background.dart';
 import 'tv_adhan_dua_overlay.dart';
 import 'tv_ayah_of_hour.dart';
 import 'tv_iqamah_board.dart';
-import 'tv_prayer_grid.dart';
 import 'tv_mode_switcher.dart';
 import 'tv_ramadan_display.dart';
 import 'tv_post_adhan_bar.dart';
@@ -1417,47 +1416,6 @@ class _TvHomeBody extends StatelessWidget {
   final String quranBackgroundMode;
   final Set<String> completedPrayers;
 
-  // P-2: Arabic prayer names for the card grid.
-  static const _kArabicNames = [
-    'الفجر', 'الشروق', 'الظهر', 'العصر', 'المغرب', 'العشاء',
-  ];
-
-  List<PrayerCardData> _buildPrayerCards({
-    required PrayerTimes times,
-    required bool use24h,
-    required int activeIdx,
-    required int nextIdx,
-    required bool isRamadan,
-  }) {
-    final cards = <PrayerCardData>[];
-    for (int i = 0; i < _prayers.length; i++) {
-      final meta = _prayers[i];
-      final h = meta.getValue(times);
-      final timeStr = h.isFinite ? formatH(h, use24h) : '--:--';
-      String label = meta.label;
-      if (isRamadan && label == 'Fajr') label = 'Suhoor';
-      if (isRamadan && label == 'Maghrib') label = 'Iftar';
-      final PrayerCardState state;
-      if (i == activeIdx) {
-        state = PrayerCardState.current;
-      } else if (i == nextIdx) {
-        state = PrayerCardState.next;
-      } else if (nextIdx > 0 && i < nextIdx && i != activeIdx) {
-        state = PrayerCardState.past;
-      } else {
-        state = PrayerCardState.future;
-      }
-      cards.add(PrayerCardData(
-        nameArabic: _kArabicNames[i],
-        nameEnglish: label,
-        timeFormatted: timeStr,
-        state: state,
-        iconPath: '',
-      ));
-    }
-    return cards;
-  }
-
   @override
   Widget build(BuildContext context) {
     final moonResult = MoonPhase.calculate(now);
@@ -1634,12 +1592,6 @@ class _TvHomeBody extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  String _prayerLabel(String name, bool isRamadan) {
-    if (isRamadan && name == 'Fajr') return 'Suhoor';
-    if (isRamadan && name == 'Maghrib') return 'Iftar';
-    return name;
   }
 
   String _gregorianLabel(DateTime dt) {
