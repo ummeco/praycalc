@@ -133,7 +133,7 @@ jobs:
           channel: stable
           cache: true
       - name: Pin CMake to 3.28 (avoids CMake 3.31 pkg_check_modules regression)
-        run: pip3 install cmake==3.28.6 && echo "$(python3 -c 'import cmake; print(cmake.CMAKE_BIN_DIR)')" >> $GITHUB_PATH
+        run: pip3 install cmake==3.28.4 && echo "$(python3 -c 'import cmake; print(cmake.CMAKE_BIN_DIR)')" >> $GITHUB_PATH
       - name: Install Linux dependencies
         run: |
           sudo apt-get update -y
