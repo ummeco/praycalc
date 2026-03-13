@@ -277,7 +277,7 @@ LRESULT CALLBACK Win32Window::WndProc(HWND const window, UINT const message,
 LRESULT Win32Window::HandleDpiChange(HWND hwnd, WPARAM wparam,
                                      LPARAM lparam) {
   if (child_content_ != nullptr) {
-    UINT uDpi = HIWORD(wparam);
+    [[maybe_unused]] UINT uDpi = HIWORD(wparam);
     RECT* const prcNewWindow = reinterpret_cast<RECT*>(lparam);
     SetWindowPos(hwnd, nullptr, prcNewWindow->left, prcNewWindow->top,
                  prcNewWindow->right - prcNewWindow->left,
