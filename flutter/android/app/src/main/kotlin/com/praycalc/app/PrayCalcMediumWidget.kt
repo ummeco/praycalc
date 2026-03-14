@@ -1,6 +1,7 @@
 package com.praycalc.app
 
 import android.content.Context
+import android.content.Intent
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -8,6 +9,8 @@ import androidx.compose.ui.unit.sp
 import androidx.glance.*
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetReceiver
+import androidx.glance.action.clickable
+import androidx.glance.appwidget.action.actionStartActivity
 import androidx.glance.appwidget.provideContent
 import androidx.glance.layout.*
 import androidx.glance.text.*
@@ -29,14 +32,19 @@ class PrayCalcMediumWidget : GlanceAppWidget() {
             prefs.getString("flutter.widget_isha", "Isha") to prefs.getString("flutter.widget_isha_time", "--:--"),
         )
         val activePrayer = prefs.getString("flutter.widget_next_prayer", "") ?: ""
-        provideContent { PrayCalcMediumContent(prayers = prayers, activePrayer = activePrayer) }
+        val ctx = context
+        provideContent { PrayCalcMediumContent(context = ctx, prayers = prayers, activePrayer = activePrayer) }
     }
 }
 
 @Composable
-fun PrayCalcMediumContent(prayers: List<Pair<String?, String?>>, activePrayer: String) {
+fun PrayCalcMediumContent(context: Context, prayers: List<Pair<String?, String?>>, activePrayer: String) {
     Column(
-        modifier = GlanceModifier.fillMaxSize().background(Color(0xFF1E5E2F)).padding(8.dp),
+        modifier = GlanceModifier
+            .fillMaxSize()
+            .background(Color(0xFF1E5E2F))
+            .padding(8.dp)
+            .clickable(actionStartActivity(Intent(context, MainActivity::class.java))),
     ) {
         Text("🕌 PrayCalc", style = TextStyle(color = ColorProvider(Color.White, Color.White), fontWeight = FontWeight.Bold, fontSize = 13.sp))
         Spacer(GlanceModifier.height(4.dp))

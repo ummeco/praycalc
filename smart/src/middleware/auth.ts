@@ -43,7 +43,11 @@ export function optionalAuth(req: AuthRequest, _res: Response, next: NextFunctio
     req.userId = claims['x-hasura-user-id'];
     req.userRole = claims['x-hasura-default-role'] || 'user';
     req.isAuthenticated = true;
-  } catch {
+  } catch (err) {
+    // JWT invalid or expired — treat as unauthenticated (expected for bad tokens).
+    if (process.env.NODE_ENV !== 'production') {
+      console.warn('[auth] JWT verification failed:', (err as Error).message);
+    }
     req.isAuthenticated = false;
   }
   next();

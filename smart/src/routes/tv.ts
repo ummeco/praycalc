@@ -16,17 +16,34 @@
  *   GET  /api/v1/tv/groups            — List TV groups for user (TV2-10.4)
  *   POST /api/v1/tv/groups            — Create TV group (TV2-10.4)
  *   PATCH /api/v1/tv/groups/:id/settings — Push settings to all TVs in group
+ *   POST /api/v1/tv/:id/share         — Share device with another user (SHARE-3)
+ *   DELETE /api/v1/tv/:id/share/:uid  — Remove a share (SHARE-4)
  */
 
 import crypto from 'crypto';
 import { EventEmitter } from 'events';
 import { Router } from 'express';
 import { requireAuth, type AuthRequest } from '../middleware/auth.js';
+import { isMinioConfigured, createPresignedUploadUrl, photoKey } from '../lib/minio.js';
+// CFG-B2: Import all tunable constants from the centralized config module.
+import {
+  HASURA_URL,
+  HASURA_ADMIN_SECRET,
+  HASURA_JWT_SECRET,
+  TV_JWT_TTL_MS,
+  DEVICE_NAME_MAX_LEN,
+  ANNOUNCEMENT_TEXT_MAX_LEN,
+} from '../lib/config.js';
+
+// ── Security helpers ──────────────────────────────────────────────────────────
+
+/** SEC-A8: Strip all HTML tags from a string so TV Text() widget can display safely. */
+function stripHtml(text: string): string {
+  return text.replace(/<[^>]*>/g, '').trim();
+}
 
 export const tvRouter = Router();
 
-const HASURA_URL = process.env.HASURA_GRAPHQL_URL || 'http://hasura:8080/v1/graphql';
-const HASURA_ADMIN_SECRET = process.env.HASURA_GRAPHQL_ADMIN_SECRET || '';
 // Parse Hasura JSON format {"type":"HS256","key":"<hex>"} or use raw string.
 function parseJwtSecret(raw: string): string {
   if (!raw) return raw;
@@ -35,8 +52,7 @@ function parseJwtSecret(raw: string): string {
   if (m?.[1]) return m[1];
   return raw;
 }
-const JWT_SECRET = parseJwtSecret(process.env.HASURA_GRAPHQL_JWT_SECRET || 'tv-secret');
-const TV_JWT_TTL_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
+const JWT_SECRET = parseJwtSecret(HASURA_JWT_SECRET || 'tv-secret');
 
 /** In-memory device registry — fallback when Hasura is unavailable. */
 interface DeviceRecord {
@@ -104,6 +120,8 @@ const appCodes = new Map<string, {
 }>();
 
 async function hasuraQuery(query: string, variables: Record<string, unknown> = {}): Promise<any> {
+  // BUG-A9: 10-second timeout on all Hasura calls to prevent hanging requests.
+  const signal = AbortSignal.timeout(10_000);
   const response = await fetch(HASURA_URL, {
     method: 'POST',
     headers: {
@@ -111,6 +129,7 @@ async function hasuraQuery(query: string, variables: Record<string, unknown> = {
       'x-hasura-admin-secret': HASURA_ADMIN_SECRET,
     },
     body: JSON.stringify({ query, variables }),
+    signal,
   });
   return response.json();
 }
@@ -328,7 +347,8 @@ tvRouter.post('/auth/authorize', requireAuth, async (req: AuthRequest, res) => {
       { userId },
     );
     deviceId = result?.data?.insert_pc_tv_devices_one?.id || crypto.randomUUID();
-  } catch {
+  } catch (err) {
+    console.error('[tv/auth] Hasura insert failed during activation; using ephemeral deviceId:', err);
     deviceId = crypto.randomUUID();
   }
 
@@ -424,7 +444,22 @@ tvRouter.get('/app-code/:code/status', requireAuth, (req: AuthRequest, res) => {
   res.json({ status: 'activated', deviceId });
 });
 
-tvRouter.post('/activate', async (req, res) => {
+// SEC-A6: Strict per-IP rate limit on /activate — max 10 req/min/IP to prevent brute-force.
+const activateBuckets = new Map<string, { tokens: number; lastRefill: number }>();
+function activateRateLimit(req: import('express').Request, res: import('express').Response, next: import('express').NextFunction): void {
+  const ip = req.ip || req.socket.remoteAddress || 'unknown';
+  const now = Date.now();
+  let bucket = activateBuckets.get(ip);
+  if (!bucket) { bucket = { tokens: 10, lastRefill: now }; activateBuckets.set(ip, bucket); }
+  const refill = Math.floor((now - bucket.lastRefill) / 60_000) * 10;
+  if (refill > 0) { bucket.tokens = Math.min(10, bucket.tokens + refill); bucket.lastRefill = now; }
+  if (bucket.tokens <= 0) { res.status(429).json({ error: 'Too many activation attempts. Try again in 1 minute.' }); return; }
+  bucket.tokens--;
+  next();
+}
+setInterval(() => { const cutoff = Date.now() - 300_000; activateBuckets.forEach((b, k) => { if (b.lastRefill < cutoff) activateBuckets.delete(k); }); }, 300_000);
+
+tvRouter.post('/activate', activateRateLimit, async (req, res) => {
   const { code } = req.body as { code?: string };
   if (!code || typeof code !== 'string' || !/^\d{4}$/.test(code.trim())) {
     res.status(400).json({ error: 'A 4-digit code is required' });
@@ -461,7 +496,7 @@ tvRouter.post('/activate', async (req, res) => {
       }, on_conflict: { constraint: pc_tv_devices_pkey, update_columns: [is_online] }) { id }
     }`,
     { userId: entry.userId, deviceId },
-  ).catch(() => {/* ignore — in-memory is source of truth for polling */});
+  ).catch((err: unknown) => { console.warn('[tv/activate] Hasura persist failed (non-critical):', err); });
 
   res.json({ jwt, deviceId, userId: entry.userId });
 });
@@ -595,39 +630,63 @@ tvRouter.get('/streams', (_req, res) => {
   });
 });
 
-// ── R-1: GET /api/v1/tv — List user's TV devices ─────────────────────────────
+// ── R-1: GET /api/v1/tv — List user's TV devices (owned + shared) ────────────
 
 tvRouter.get('/', requireAuth, async (req: AuthRequest, res) => {
   const userId = req.userId!;
 
   try {
-    const result = await hasuraQuery(
-      `query ListUserTvDevices($userId: uuid!) {
-        pc_tv_devices(
-          where: { user_id: { _eq: $userId } }
-          order_by: { created_at: asc }
-        ) {
-          id
-          device_name
-          model
-          manufacturer
-          is_online
-          last_seen
-          location_city_slug
-          firmware_version
-          settings_json
-        }
-      }`,
-      { userId },
-    );
+    // Fetch owned devices and shared devices in parallel.
+    const [ownedResult, sharedResult] = await Promise.all([
+      hasuraQuery(
+        `query ListUserTvDevices($userId: uuid!) {
+          pc_tv_devices(
+            where: { user_id: { _eq: $userId } }
+            order_by: { created_at: asc }
+          ) {
+            id
+            device_name
+            model
+            manufacturer
+            is_online
+            last_seen
+            location_city_slug
+            firmware_version
+            settings_json
+          }
+        }`,
+        { userId },
+      ),
+      hasuraQuery(
+        `query ListSharedTvDevices($userId: uuid!) {
+          pc_tv_shares(where: { shared_with_user_id: { _eq: $userId } }) {
+            permissions
+            pc_tv_device {
+              id
+              device_name
+              model
+              manufacturer
+              is_online
+              last_seen
+              location_city_slug
+              firmware_version
+              settings_json
+            }
+          }
+        }`,
+        { userId },
+      ),
+    ]);
 
-    const hasuraDevices: DeviceRecord[] = result?.data?.pc_tv_devices ?? [];
+    const ownedDevices: DeviceRecord[] = ownedResult?.data?.pc_tv_devices ?? [];
+    const sharedRows: Array<{ permissions: Record<string, boolean>; pc_tv_device: DeviceRecord }> =
+      sharedResult?.data?.pc_tv_shares ?? [];
 
     // Merge with in-memory registry: add any in-memory devices not in Hasura results.
-    const hasuraIds = new Set(hasuraDevices.map((d: DeviceRecord) => d.id));
+    const ownedIds = new Set(ownedDevices.map((d: DeviceRecord) => d.id));
     const memIds = userDevices.get(userId) ?? new Set<string>();
     const memOnly = [...memIds]
-      .filter(id => !hasuraIds.has(id))
+      .filter(id => !ownedIds.has(id))
       .map(id => deviceRegistry.get(id))
       .filter(Boolean) as DeviceRecord[];
 
@@ -635,17 +694,25 @@ tvRouter.get('/', requireAuth, async (req: AuthRequest, res) => {
     // This ensures TVs that recently sent a heartbeat show as online even when
     // Hasura's last_seen is stale (e.g. Docker URL unreachable in local dev).
     const ONLINE_WINDOW_MS = 3 * 60 * 1000; // 3 minutes — matches web dashboard
-    const withHeartbeat = [...hasuraDevices, ...memOnly].map(d => {
+
+    const applyHeartbeat = (d: DeviceRecord) => {
       const hb = deviceHeartbeats.get(d.id);
       if (hb && Date.now() - new Date(hb.lastSeen).getTime() < ONLINE_WINDOW_MS) {
         return { ...d, is_online: true, last_seen: hb.lastSeen };
       }
       return d;
-    });
+    };
 
-    // Strip userId from output
-    const devices = withHeartbeat.map(({ userId: _u, ...d }) => d);
-    res.json({ devices });
+    const ownedWithHb = [...ownedDevices, ...memOnly].map(applyHeartbeat);
+    const sharedWithHb = sharedRows
+      .filter(row => row.pc_tv_device)
+      .map(row => applyHeartbeat(row.pc_tv_device));
+
+    // Strip userId from owned devices; tag all with isShared flag.
+    const owned = ownedWithHb.map(({ userId: _u, ...d }) => ({ ...d, isShared: false }));
+    const shared = sharedWithHb.map(({ userId: _u, ...d }) => ({ ...d, isShared: true }));
+
+    res.json({ devices: [...owned, ...shared] });
   } catch (err) {
     console.error('[GET /tv] list devices error:', err);
     // Fallback to in-memory only if Hasura is completely unreachable.
@@ -661,7 +728,7 @@ tvRouter.get('/', requireAuth, async (req: AuthRequest, res) => {
         }
         return d!;
       })
-      .map(({ userId: _u, ...d }) => d as Omit<DeviceRecord, 'userId'>);
+      .map(({ userId: _u, ...d }) => ({ ...(d as Omit<DeviceRecord, 'userId'>), isShared: false }));
     res.json({ devices });
   }
 });
@@ -728,7 +795,7 @@ tvRouter.post('/heartbeat', requireAuth, async (req: AuthRequest, res) => {
       ) { affected_rows }
     }`,
     { deviceId: device_id, userId, firmware: firmware_version || null },
-  ).catch(() => { /* Hasura unavailable — in-memory is sufficient */ });
+  ).catch((err: unknown) => { console.warn('[tv/heartbeat] Hasura persist failed (non-critical):', err); });
 
   // Push live status to any open web dashboard SSE connections for this user.
   tvEventEmitter.emit(`dashboard:${userId}`, {
@@ -745,19 +812,140 @@ tvRouter.post('/heartbeat', requireAuth, async (req: AuthRequest, res) => {
 // ── TV2-10.3: POST /api/v1/tv/:id/screenshot ─────────────────────────────────
 
 tvRouter.post('/:id/screenshot', requireAuth, async (req: AuthRequest, res) => {
-  const id = req.params.id as string;
-  // In production: notify the TV via WebSocket/MQTT to take a screenshot and upload to MinIO.
-  // The TV uploads to praycalc-tv-screenshots/{device_id}/{timestamp}.png in MinIO.
-  // Here we return a signed URL for the TV to upload to.
-  const screenshotUrl = `https://storage.praycalc.com/praycalc-tv-screenshots/${id}/latest.png`;
-  const signedUploadUrl = `https://storage.praycalc.com/praycalc-tv-screenshots/${id}/latest.png?upload_token=placeholder`;
+  // Check if MinIO is configured
+  const minioConfigured = !!(
+    process.env.MINIO_ENDPOINT &&
+    process.env.MINIO_ACCESS_KEY &&
+    process.env.MINIO_SECRET_KEY &&
+    process.env.MINIO_BUCKET
+  );
+  if (!minioConfigured) {
+    return res.status(503).json({ error: 'Photo upload not configured', code: 'MINIO_NOT_CONFIGURED' });
+  }
+  // Real presigned URL generation comes in MINIO-2.
+  // Required env vars: MINIO_ENDPOINT, MINIO_ACCESS_KEY, MINIO_SECRET_KEY, MINIO_BUCKET
+  return res.status(501).json({ error: 'Not yet implemented' });
+});
 
-  res.json({
-    screenshotUrl,
-    signedUploadUrl,
-    expiresIn: 300, // 5 min
-    requestedAt: new Date().toISOString(),
-  });
+// ── MINIO-2: POST /api/v1/tv/:id/photo/upload — Presigned user photo upload URL ──
+
+tvRouter.post('/:id/photo/upload', requireAuth, async (req: AuthRequest, res) => {
+  const userId = req.userId!;
+  const deviceId = req.params.id as string;
+
+  // Ownership check: device must belong to this user
+  const memDevice = deviceRegistry.get(deviceId);
+  if (!memDevice || memDevice.userId !== userId) {
+    // Fall back to Hasura ownership check
+    try {
+      const result = await hasuraQuery(
+        `query CheckTvDeviceOwnership($deviceId: uuid!, $userId: uuid!) {
+          pc_tv_devices(where: { id: { _eq: $deviceId }, user_id: { _eq: $userId } }) {
+            id
+          }
+        }`,
+        { deviceId, userId },
+      );
+      const devices = result?.data?.pc_tv_devices ?? [];
+      if (devices.length === 0) {
+        return res.status(403).json({ error: 'Device not found or access denied' });
+      }
+    } catch (err) {
+      console.error("[tv] Hasura ownership check error:", err);
+      return res.status(403).json({ error: "Device not found or access denied" });
+    }
+  }
+
+  const { filename, contentType } = req.body as { filename?: unknown; contentType?: unknown };
+
+  if (!filename || typeof filename !== 'string' || filename.length === 0 || filename.length > 100) {
+    return res.status(400).json({ error: 'filename must be a non-empty string (max 100 chars)' });
+  }
+  if (!contentType || typeof contentType !== 'string' || !contentType.startsWith('image/')) {
+    return res.status(400).json({ error: 'contentType must be an image/* MIME type' });
+  }
+
+  if (!isMinioConfigured()) {
+    return res.status(503).json({ error: 'Photo storage not configured', code: 'MINIO_NOT_CONFIGURED' });
+  }
+
+  try {
+    const key = photoKey(deviceId, filename);
+    const uploadUrl = await createPresignedUploadUrl(key, contentType);
+    console.log(`[TV] Generated presigned upload URL for device ${deviceId}`);
+    return res.json({ uploadUrl, key, expiresIn: 300 });
+  } catch (err) {
+    console.error('[TV] Failed to generate presigned upload URL:', err);
+    return res.status(500).json({ error: 'Failed to generate upload URL' });
+  }
+});
+
+// ── MINIO-3: GET /api/v1/tv/:id/photos — List user-uploaded photos w/ presigned download URLs ──
+
+tvRouter.get('/:id/photos', requireAuth, async (req: AuthRequest, res) => {
+  const userId = req.userId!;
+  const deviceId = req.params.id as string;
+
+  // Ownership check
+  const memDevice = deviceRegistry.get(deviceId);
+  if (!memDevice || memDevice.userId !== userId) {
+    try {
+      const result = await hasuraQuery(
+        `query CheckTvDeviceOwnership($deviceId: uuid!, $userId: uuid!) {
+          pc_tv_devices(where: { id: { _eq: $deviceId }, user_id: { _eq: $userId } }) {
+            id settings_json
+          }
+        }`,
+        { deviceId, userId },
+      );
+      const devices = result?.data?.pc_tv_devices ?? [];
+      if (devices.length === 0) {
+        return res.status(403).json({ error: 'Device not found or access denied' });
+      }
+    } catch (err) {
+      console.error("[tv] Hasura ownership check error:", err);
+      return res.status(403).json({ error: "Device not found or access denied" });
+    }
+  }
+
+  if (!isMinioConfigured()) {
+    return res.json({ photos: [] });
+  }
+
+  // Read user_photo_keys from in-memory settings or Hasura
+  let keys: string[] = [];
+  if (memDevice?.settings_json?.user_photo_keys) {
+    keys = memDevice.settings_json.user_photo_keys as string[];
+  } else {
+    try {
+      const result = await hasuraQuery(
+        `query GetTvSettings($deviceId: uuid!) {
+          pc_tv_devices_by_pk(id: $deviceId) { settings_json }
+        }`,
+        { deviceId },
+      );
+      const storedKeys = result?.data?.pc_tv_devices_by_pk?.settings_json?.user_photo_keys;
+      if (Array.isArray(storedKeys)) keys = storedKeys as string[];
+    } catch { /* return empty on error */ }
+  }
+
+  if (keys.length === 0) {
+    return res.json({ photos: [] });
+  }
+
+  try {
+    const photos = await Promise.all(
+      keys.map(async (key) => {
+        const { createPresignedDownloadUrl } = await import('../lib/minio.js');
+        const downloadUrl = await createPresignedDownloadUrl(key, 3600);
+        return { key, downloadUrl };
+      }),
+    );
+    return res.json({ photos });
+  } catch (err) {
+    console.error('[TV] Failed to generate presigned download URLs:', err);
+    return res.status(500).json({ error: 'Failed to generate download URLs' });
+  }
 });
 
 // ── TV2-10.5: PATCH /api/v1/tv/:id — Rename device ───────────────────────────
@@ -767,8 +955,9 @@ tvRouter.patch('/:id', requireAuth, async (req: AuthRequest, res) => {
   const id = req.params.id as string;
   const { device_name } = req.body;
 
-  if (!device_name || typeof device_name !== 'string' || device_name.length > 50) {
-    res.status(400).json({ error: 'device_name must be a non-empty string (max 50 chars)' });
+  // SEC-A7: max 100 chars for device_name
+  if (!device_name || typeof device_name !== 'string' || device_name.length === 0 || device_name.length > 100) {
+    res.status(400).json({ error: 'device_name must be a non-empty string (max 100 chars)' });
     return;
   }
 
@@ -822,6 +1011,153 @@ tvRouter.delete('/:id', requireAuth, async (req: AuthRequest, res) => {
   }
 });
 
+// ── SHARE-3: POST /api/v1/tv/:id/share — Share a device with another user ────
+
+tvRouter.post('/:id/share', requireAuth, async (req: AuthRequest, res) => {
+  const userId = req.userId!;
+  const deviceId = req.params.id as string;
+  const { email, permissions } = req.body as {
+    email?: unknown;
+    permissions?: { view?: boolean; control?: boolean; announce?: boolean };
+  };
+
+  if (!email || typeof email !== 'string' || !email.includes('@')) {
+    res.status(400).json({ error: 'Valid email address required' });
+    return;
+  }
+
+  // Verify caller owns the device.
+  try {
+    const ownerCheck = await hasuraQuery(
+      `query CheckTvDeviceOwnerForShare($deviceId: uuid!, $userId: uuid!) {
+        pc_tv_devices(where: { id: { _eq: $deviceId }, user_id: { _eq: $userId } }) { id }
+      }`,
+      { deviceId, userId },
+    );
+    const owned = ownerCheck?.data?.pc_tv_devices ?? [];
+    if (owned.length === 0) {
+      res.status(403).json({ error: 'Device not found or not owned by you' });
+      return;
+    }
+  } catch (err) {
+    console.error('[TV] Share ownership check error:', err);
+    res.status(500).json({ error: 'Failed to verify device ownership' });
+    return;
+  }
+
+  // Look up target user by email.
+  let targetUserId: string;
+  let targetEmail: string;
+  try {
+    const userLookup = await hasuraQuery(
+      `query LookupUserByEmail($email: String!) {
+        umm_user_profiles(where: { email: { _eq: $email } }) { id email }
+      }`,
+      { email },
+    );
+    const users = userLookup?.data?.umm_user_profiles ?? [];
+    if (users.length === 0) {
+      res.status(404).json({ error: 'User not found' });
+      return;
+    }
+    targetUserId = users[0].id as string;
+    targetEmail = users[0].email as string;
+  } catch (err) {
+    console.error('[TV] Share user lookup error:', err);
+    res.status(500).json({ error: 'Failed to look up user' });
+    return;
+  }
+
+  // Prevent sharing with yourself.
+  if (targetUserId === userId) {
+    res.status(400).json({ error: 'Cannot share a device with yourself' });
+    return;
+  }
+
+  const resolvedPermissions = {
+    view: permissions?.view ?? true,
+    control: permissions?.control ?? true,
+    announce: permissions?.announce ?? false,
+  };
+
+  // Insert or update the share record.
+  try {
+    await hasuraQuery(
+      `mutation UpsertTvShare($deviceId: uuid!, $sharedWithUserId: uuid!, $permissions: jsonb!) {
+        insert_pc_tv_shares_one(
+          object: {
+            device_id: $deviceId
+            shared_with_user_id: $sharedWithUserId
+            permissions: $permissions
+          }
+          on_conflict: {
+            constraint: pc_tv_shares_device_id_shared_with_user_id_key
+            update_columns: [permissions]
+          }
+        ) { device_id shared_with_user_id }
+      }`,
+      { deviceId, sharedWithUserId: targetUserId, permissions: resolvedPermissions },
+    );
+
+    res.json({ success: true, sharedWith: { userId: targetUserId, email: targetEmail } });
+  } catch (err) {
+    console.error('[TV] Share upsert error:', err);
+    res.status(500).json({ error: 'Failed to create share' });
+  }
+});
+
+// ── SHARE-4: DELETE /api/v1/tv/:id/share/:userId — Remove a share ────────────
+
+tvRouter.delete('/:id/share/:sharedUserId', requireAuth, async (req: AuthRequest, res) => {
+  const callerId = req.userId!;
+  const deviceId = req.params.id as string;
+  const sharedUserId = req.params.sharedUserId as string;
+
+  // Allow if: caller owns the device OR caller is removing their own access.
+  const isSelfRemoval = callerId === sharedUserId;
+
+  if (!isSelfRemoval) {
+    // Check device ownership.
+    try {
+      const ownerCheck = await hasuraQuery(
+        `query CheckTvDeviceOwnerForUnshare($deviceId: uuid!, $userId: uuid!) {
+          pc_tv_devices(where: { id: { _eq: $deviceId }, user_id: { _eq: $userId } }) { id }
+        }`,
+        { deviceId, userId: callerId },
+      );
+      const owned = ownerCheck?.data?.pc_tv_devices ?? [];
+      if (owned.length === 0) {
+        res.status(403).json({ error: 'Forbidden: you do not own this device' });
+        return;
+      }
+    } catch (err) {
+      console.error('[TV] Unshare ownership check error:', err);
+      res.status(500).json({ error: 'Failed to verify device ownership' });
+      return;
+    }
+  }
+
+  // Delete the share record.
+  try {
+    await hasuraQuery(
+      `mutation DeleteTvShare($deviceId: uuid!, $sharedWithUserId: uuid!) {
+        delete_pc_tv_shares(
+          where: {
+            device_id: { _eq: $deviceId }
+            shared_with_user_id: { _eq: $sharedWithUserId }
+          }
+        ) { affected_rows }
+      }`,
+      { deviceId, sharedWithUserId: sharedUserId },
+    );
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error('[TV] Unshare delete error:', err);
+    res.status(500).json({ error: 'Failed to remove share' });
+  }
+});
+
 // ── TV2-10.7: PATCH /api/v1/tv/:id/settings ─────────────────────────────────
 
 const ALLOWED_SETTINGS_FIELDS = [
@@ -854,9 +1190,36 @@ const ALLOWED_SETTINGS_FIELDS = [
 const deviceSettings = new Map<string, Record<string, unknown>>();
 
 // ── GET /api/v1/tv/:id/settings — TV polls for its latest settings ────────────
+// SEC-A1: requireAuth + ownership check — only the owning user may read their TV's settings.
 
-tvRouter.get('/:id/settings', async (req: AuthRequest, res) => {
+tvRouter.get('/:id/settings', requireAuth, async (req: AuthRequest, res) => {
+  const userId = req.userId!;
   const id = req.params.id as string;
+
+  // Ownership: check in-memory registry first, fall back to Hasura.
+  const memDevice = deviceRegistry.get(id);
+  const isOwner = memDevice?.userId === userId;
+
+  if (!isOwner) {
+    try {
+      const result = await hasuraQuery(
+        `query CheckTvOwnerOrShare($deviceId: uuid!, $userId: uuid!) {
+          owned: pc_tv_devices(where: { id: { _eq: $deviceId }, user_id: { _eq: $userId } }) { id }
+          shared: pc_tv_shares(where: { device_id: { _eq: $deviceId }, shared_with_user_id: { _eq: $userId } }) { device_id }
+        }`,
+        { deviceId: id, userId },
+      );
+      const ownedCount = result?.data?.owned?.length ?? 0;
+      const sharedCount = result?.data?.shared?.length ?? 0;
+      if (ownedCount === 0 && sharedCount === 0) {
+        return res.status(403).json({ error: 'Access denied' });
+      }
+    } catch (err) {
+      console.error("[tv] Hasura access check error:", err);
+      return res.status(403).json({ error: "Access denied" });
+    }
+  }
+
   const mem = deviceSettings.get(id) ?? {};
 
   // Try Hasura for persisted settings too
@@ -869,9 +1232,10 @@ tvRouter.get('/:id/settings', async (req: AuthRequest, res) => {
     );
     const dbSettings = result?.data?.pc_tv_devices_by_pk?.settings_json ?? {};
     // Merge: in-memory wins (more recent push)
-    res.json({ settings: { ...dbSettings, ...mem } });
-  } catch {
-    res.json({ settings: mem });
+    return res.json({ settings: { ...dbSettings, ...mem } });
+  } catch (err) {
+    console.warn('[tv/settings] Hasura read failed, serving in-memory settings:', err);
+    return res.json({ settings: mem });
   }
 });
 
@@ -892,9 +1256,38 @@ tvRouter.patch('/:id/settings', requireAuth, async (req: AuthRequest, res) => {
     return;
   }
 
+  // SEC-A7: Limit string field sizes to prevent oversized payloads.
+  for (const [key, value] of Object.entries(patch)) {
+    if (typeof value === 'string' && value.length > 500) {
+      return res.status(400).json({ error: `Field '${key}' must be 500 characters or fewer` });
+    }
+  }
+
+  // SEC: Synchronous ownership check — must verify before writing to in-memory state.
+  // Check in-memory registry first (O(1)), fall back to Hasura if device not registered.
+  const regDevice = deviceRegistry.get(id);
+  if (!regDevice || regDevice.userId !== userId) {
+    try {
+      const ownerResult = await hasuraQuery(
+        `query GetTvDeviceOwner($deviceId: uuid!, $userId: uuid!) {
+          pc_tv_devices(where: { id: { _eq: $deviceId }, user_id: { _eq: $userId } }) { id settings_json }
+        }`,
+        { deviceId: id, userId },
+      );
+      const owned = ownerResult?.data?.pc_tv_devices ?? [];
+      if (owned.length === 0) {
+        return res.status(403).json({ error: 'Device not found or access denied' });
+      }
+    } catch (err) {
+      console.error('[tv/settings] Ownership check error:', err);
+      return res.status(403).json({ error: 'Device not found or access denied' });
+    }
+  }
+
   // Always update in-memory first — TV polling will pick it up immediately.
+  // SYNC-B2: Stamp last_modified so the TV app can do conflict resolution.
   const current = deviceSettings.get(id) ?? {};
-  const merged = { ...current, ...patch };
+  const merged = { ...current, ...patch, last_modified: new Date().toISOString() };
   deviceSettings.set(id, merged);
 
   // Update device registry if device is in memory.
@@ -927,51 +1320,13 @@ tvRouter.patch('/:id/settings', requireAuth, async (req: AuthRequest, res) => {
       }`,
       { deviceId: id, userId, settings: mergedDb },
     );
-  }).catch(() => { /* Hasura unavailable — in-memory is sufficient */ });
+  }).catch((err: unknown) => { console.warn('[tv/settings] Hasura persist failed (non-critical):', err); });
 
   res.json({ ok: true });
 });
 
-// ── POST /api/v1/tv/:id/quran — Push Quran playback command to device ─────────
-//
-// Body: { action: 'play'|'pause'|'resume'|'stop', surah?, ayah?, reciterId?, afterSurah? }
-// Stores `quranCommand` in deviceSettings — TV polls /:id/settings every few seconds to pick it up.
-
-tvRouter.post('/:id/quran', requireAuth, async (req: AuthRequest, res) => {
-  const userId = req.userId!;
-  const id = req.params.id as string;
-  const { action, surah, ayah, reciterId, afterSurah, backgroundMode, restore } = req.body as Record<string, unknown>;
-
-  const validActions = ['play', 'pause', 'resume', 'stop'];
-  if (!action || !validActions.includes(action as string)) {
-    res.status(400).json({ error: `action must be one of: ${validActions.join(', ')}` });
-    return;
-  }
-
-  // Ownership check — device must belong to this user (in-memory or Hasura).
-  const memDevice = deviceRegistry.get(id);
-  if (memDevice && memDevice.userId !== userId) {
-    res.status(403).json({ error: 'Device not found' });
-    return;
-  }
-
-  const command: Record<string, unknown> = { action, isPlaying: action === 'play' || action === 'resume' };
-  if (surah !== undefined) command.surah = surah;
-  if (ayah !== undefined) command.ayah = ayah;
-  if (reciterId !== undefined) command.reciterId = reciterId;
-  if (afterSurah !== undefined) command.afterSurah = afterSurah;
-  if (backgroundMode !== undefined) command.backgroundMode = backgroundMode;
-  if (restore !== undefined) command.restore = restore;
-
-  // Store in-memory — TV polls GET /:id/settings to pick this up.
-  const current = deviceSettings.get(id) ?? {};
-  deviceSettings.set(id, { ...current, quranCommand: command });
-
-  // Also emit via SSE for instant TV response (no polling delay).
-  tvEventEmitter.emit(`quran:${id}`, command);
-
-  res.json({ ok: true });
-});
+// SEC-A3: The Quran command handler with full Hasura ownership check is registered
+// further below (T-8 section). This duplicate with in-memory-only check was removed.
 
 // ── TV2-10.4: TV Groups ───────────────────────────────────────────────────────
 
@@ -1116,14 +1471,15 @@ tvRouter.post('/groups/:id/announce', requireAuth, async (req: AuthRequest, res)
 
     const deviceIds: string[] = groups[0].pc_tv_device_groups.map((d: any) => d.device_id);
 
-    if (deviceIds.length < 3) {
-      res.status(400).json({ error: 'Bulk announcements require at least 3 TVs in the group' });
+    // UX-A10: Removed the 3-TV minimum — groups with even 1 TV can use bulk announcements.
+    if (deviceIds.length < 1) {
+      res.status(400).json({ error: 'Group has no TVs' });
       return;
     }
 
     const announcement = {
       id: crypto.randomUUID(),
-      text: text.trim(),
+      text: stripHtml(text),
       expiresAt: Date.now() + expires_in_minutes * 60 * 1000,
     };
 
@@ -1145,15 +1501,40 @@ tvRouter.post('/groups/:id/announce', requireAuth, async (req: AuthRequest, res)
 // TV polls this to fetch pending announcements (called alongside heartbeat).
 
 tvRouter.get('/:id/announcements', requireAuth, async (req: AuthRequest, res) => {
+  const userId = req.userId!;
   const deviceId = req.params['id'] as string;
-  const now = Date.now();
 
+  // SEC-A2: Verify the requesting user owns (or shares) this device.
+  const memDevice = deviceRegistry.get(deviceId);
+  const isOwner = memDevice?.userId === userId;
+
+  if (!isOwner) {
+    try {
+      const result = await hasuraQuery(
+        `query CheckTvOwnerOrShare($deviceId: uuid!, $userId: uuid!) {
+          owned: pc_tv_devices(where: { id: { _eq: $deviceId }, user_id: { _eq: $userId } }) { id }
+          shared: pc_tv_shares(where: { device_id: { _eq: $deviceId }, shared_with_user_id: { _eq: $userId } }) { device_id }
+        }`,
+        { deviceId, userId },
+      );
+      const ownedCount = result?.data?.owned?.length ?? 0;
+      const sharedCount = result?.data?.shared?.length ?? 0;
+      if (ownedCount === 0 && sharedCount === 0) {
+        return res.status(403).json({ error: 'Access denied' });
+      }
+    } catch (err) {
+      console.error("[tv] Hasura access check error:", err);
+      return res.status(403).json({ error: "Access denied" });
+    }
+  }
+
+  const now = Date.now();
   const all = pendingAnnouncements.get(deviceId) ?? [];
   // Return only non-expired announcements; clear expired ones
   const active = all.filter(a => a.expiresAt > now);
   pendingAnnouncements.set(deviceId, active);
 
-  res.json({ announcements: active });
+  return res.json({ announcements: active });
 });
 
 // ── S-1: GET /api/v1/tv/platform-config ──────────────────────────────────────
@@ -1296,8 +1677,9 @@ tvRouter.post('/:id/prayer-complete', requireAuth, async (req: AuthRequest, res)
       res.status(404).json({ error: 'Device not found' });
       return;
     }
-  } catch {
-    // If Hasura is unavailable (dev), allow the broadcast to proceed
+  } catch (err) {
+    // If Hasura is unavailable (dev), allow the broadcast to proceed.
+    console.error('[tv/prayer-complete] Hasura check error (proceeding with broadcast):', err);
   }
 
   const payload = { prayer, completedAt: new Date().toISOString() };

@@ -2,7 +2,7 @@ name: praycalc_app
 description: PrayCalc — GPS-accurate Islamic prayer times for iOS and Android.
 publish_to: 'none'
 
-version: 0.9.4+1
+version: 1.1.0+1
 
 environment:
   sdk: ^3.7.0
@@ -53,10 +53,11 @@ dependencies:
   timezone: ^0.11.0
   flutter_compass: ^0.8.1
   share_plus: ^12.0.1
-  flutter_local_notifications: ^21.0.0-dev.2
+  flutter_local_notifications: ^21.0.0
   workmanager: ^0.9.0+3
   home_widget: ^0.9.0
   just_audio: ^0.10.5
+  audio_service: ^0.18.14
   audio_session: ^0.2.2
   hive: ^2.2.3
   hive_flutter: ^1.1.0
