@@ -54,7 +54,7 @@ class TvDeviceInfo {
       try {
         final decoded = jsonDecode(settings) as Map<String, dynamic>;
         layoutPreset = decoded['layoutPreset'] as String? ?? layoutPreset;
-      } catch (_) {}
+      } catch (e, st) { debugPrint("[TvDeviceList] $e\n$st"); }
     }
 
     return TvDeviceInfo(

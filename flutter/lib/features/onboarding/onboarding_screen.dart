@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:praycalc_app/l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,6 +12,7 @@ import '../../core/providers/geo_provider.dart';
 import '../../core/providers/prayer_provider.dart';
 import '../../core/providers/settings_provider.dart';
 import '../../core/router/app_router.dart';
+import '../../core/services/notification_service.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/utils/locale_calc_method.dart';
 import '../../shared/models/settings_model.dart';
@@ -87,6 +90,10 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   City? _gpsCity;
   String _selectedLocale = 'en';
 
+  // UX-A2: GPS failure recovery — show city search option after 10s or on denial.
+  bool _gpsTimedOut = false;
+  Timer? _gpsTimeoutTimer;
+
   @override
   void initState() {
     super.initState();
@@ -101,6 +108,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   @override
   void dispose() {
     _controller.dispose();
+    _gpsTimeoutTimer?.cancel();
     super.dispose();
   }
 
@@ -133,12 +141,37 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   }
 
   void _requestGpsInBackground() {
+    // UX-A2: Show "Enter your city instead" after 10s if GPS hasn't resolved.
+    _gpsTimeoutTimer = Timer(const Duration(seconds: 10), () {
+      if (mounted && !_gpsTimedOut) setState(() => _gpsTimedOut = true);
+    });
+
     ref.read(gpsProvider.notifier).requestLocation().then((_) async {
+      _gpsTimeoutTimer?.cancel();
       if (!mounted) return;
       final gpsState = ref.read(gpsProvider);
+      // If GPS was denied or unavailable, surface the manual city option immediately.
+      if (gpsState.status == GpsStatus.denied ||
+          gpsState.status == GpsStatus.unavailable) {
+        setState(() => _gpsTimedOut = true);
+        return;
+      }
       if (gpsState.hasPosition) {
-        final city = await reverseGeocodeToCity(gpsState.lat!, gpsState.lng!);
-        if (mounted) setState(() => _gpsCity = city);
+        try {
+          // BUG-A5: Wrap in try/catch — reverseGeocodeToCity can fail on network error.
+          final city = await reverseGeocodeToCity(gpsState.lat!, gpsState.lng!);
+          if (!mounted) return;
+          if (city == null) {
+            // Geocoding returned no match — user can still search manually.
+            debugPrint('[Onboarding] reverseGeocodeToCity returned null for '
+                '(${gpsState.lat}, ${gpsState.lng}) — city search required');
+            setState(() => _gpsTimedOut = true);
+          }
+          setState(() => _gpsCity = city);
+        } catch (e, st) {
+          debugPrint('[Onboarding] reverseGeocodeToCity error: $e\n$st');
+          if (mounted) setState(() => _gpsTimedOut = true);
+        }
       }
     });
   }
@@ -148,6 +181,10 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     setState(() => _completing = true);
 
     await markOnboardingDone();
+
+    // UX-A3: Request iOS notification permission now that the user has committed.
+    // No-op on Android/web — the Android channel permissions are handled at schedule time.
+    await NotificationService.instance.requestiOSPermissions();
 
     // Apply GPS city if we got one
     final city = _gpsCity;
@@ -462,6 +499,25 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
               style: TextStyle(color: cs.onSurface.withAlpha(130), fontSize: 14),
             ),
           ),
+
+          // UX-A2: GPS failure recovery — appears after 10s timeout or on denial.
+          if (_gpsTimedOut) ...[
+            const SizedBox(height: 8),
+            TextButton.icon(
+              onPressed: busy
+                  ? null
+                  : () async {
+                      final router = GoRouter.of(context);
+                      await _complete();
+                      if (mounted) router.push(Routes.citySearch);
+                    },
+              icon: Icon(Icons.search, size: 18, color: cs.primary),
+              label: Text(
+                'Enter your city instead',
+                style: TextStyle(color: cs.primary, fontSize: 14),
+              ),
+            ),
+          ],
 
           const Spacer(flex: 1),
         ],

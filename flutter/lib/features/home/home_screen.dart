@@ -564,9 +564,61 @@ class _ErrorBody extends StatelessWidget {
   final Object error;
   final VoidCallback? onRetry;
 
+  bool get _isLocationDenied {
+    if (error is NoLocationError) return true;
+    if (error is PrayerCalcError) {
+      final cause = (error as PrayerCalcError).cause;
+      return cause is NoLocationError;
+    }
+    return false;
+  }
+
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;
+
+    // UX-A1: Location denied — show "Set City Manually" card instead of generic error.
+    if (_isLocationDenied) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(32),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.location_off_rounded,
+                  size: 56, color: Colors.white.withAlpha(100)),
+              const SizedBox(height: 16),
+              Text(
+                l.homeCouldNotCalc,
+                style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                l.citySearchPermissionDenied,
+                style: TextStyle(
+                    color: Colors.white.withAlpha(140), fontSize: 14),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 24),
+              FilledButton.icon(
+                onPressed: () => context.push(Routes.citySearch),
+                icon: const Icon(Icons.search),
+                label: const Text('Set City Manually'),
+                style: FilledButton.styleFrom(
+                  backgroundColor: PrayCalcColors.light,
+                  foregroundColor: Colors.black87,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(24),
@@ -935,7 +987,17 @@ class _PrayerTile extends StatelessWidget {
       timeColor = Colors.white.withAlpha(isNext ? 200 : 160);
     }
 
-    return AnimatedContainer(
+    final semanticLabel = StringBuffer(label);
+    if (sublabel != null) semanticLabel.write(', $sublabel');
+    semanticLabel.write(', $timeStr');
+    if (countdown != null) semanticLabel.write(', in $countdown');
+    if (isActive) semanticLabel.write(', current prayer');
+    if (isNext && !isActive) semanticLabel.write(', next prayer');
+
+    return Semantics(
+      label: semanticLabel.toString(),
+      excludeSemantics: true,
+      child: AnimatedContainer(
       duration: const Duration(milliseconds: 250),
       decoration: BoxDecoration(color: bg),
       child: Padding(
@@ -1010,13 +1072,20 @@ class _PrayerTile extends StatelessWidget {
 
             // Sound mode dot (fard only) or blank spacer for alignment
             if (isFard)
-              GestureDetector(
-                onTap: onSoundTap,
-                behavior: HitTestBehavior.opaque,
-                child: SizedBox(
-                  width: 28,
-                  height: 28,
-                  child: Center(child: _SoundDot(mode: soundMode, isActive: isActive)),
+              Semantics(
+                label: 'Notification for $label: ${_soundModeLabel(soundMode)}. Tap to change.',
+                button: true,
+                child: GestureDetector(
+                  onTap: onSoundTap,
+                  behavior: HitTestBehavior.opaque,
+                  child: Tooltip(
+                    message: _soundModeLabel(soundMode),
+                    child: SizedBox(
+                      width: 28,
+                      height: 28,
+                      child: Center(child: _SoundDot(mode: soundMode, isActive: isActive)),
+                    ),
+                  ),
                 ),
               )
             else
@@ -1025,7 +1094,18 @@ class _PrayerTile extends StatelessWidget {
           ],
         ),
       ),
+    ),
     );
+  }
+
+  static String _soundModeLabel(PrayerSoundMode mode) {
+    switch (mode) {
+      case PrayerSoundMode.off:     return 'Notification off';
+      case PrayerSoundMode.silent:  return 'Silent (no sound)';
+      case PrayerSoundMode.vibrate: return 'Vibrate';
+      case PrayerSoundMode.beep:    return 'Beep';
+      case PrayerSoundMode.adhan:   return 'Adhan';
+    }
   }
 
   String _formatH(double h) {

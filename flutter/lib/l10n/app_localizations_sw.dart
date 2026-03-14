@@ -1283,6 +1283,31 @@ class AppLocalizationsSw extends AppLocalizations {
   String get statsShareBreakdown => 'Uchambuzi wa wiki:';
 
   @override
+  String get statsHeatmapTitle => 'Year at a Glance';
+
+  @override
+  String get statsHeatmapNoData => 'No prayers logged for this day';
+
+  @override
+  String statsHeatmapDetail(int count) {
+    return '$count / 5 prayers completed';
+  }
+
+  @override
+  String get statsDailyGoalTitle => 'Daily Prayer Goal';
+
+  @override
+  String statsDailyGoalLabel(int goal) {
+    return '$goal prayers / day';
+  }
+
+  @override
+  String get statsGoalStreak => 'Goal Streak';
+
+  @override
+  String get statsBestStreak => 'Best Streak';
+
+  @override
   String get aboutTitle => 'Kuhusu PrayCalc';
 
   @override
@@ -2224,4 +2249,73 @@ class AppLocalizationsSw extends AppLocalizations {
   @override
   String get tvPairingSignInRequired =>
       'Sign in to your account before pairing a TV.';
+
+  @override
+  String get tvJumuahGreeting => 'Jumu\'ah Mubarak';
+
+  @override
+  String get tvChildFajrExplanation =>
+      'Fajr is the morning prayer. We wake up before sunrise to thank Allah for a new day!';
+
+  @override
+  String get tvChildFajrFunFact =>
+      'The Prophet ‫ﷺ‬ said: “The best prayer in the sight of Allah is Fajr on Friday.” (Bukhari)';
+
+  @override
+  String get tvChildSunriseExplanation =>
+      'After Fajr, the sun rises. This is a blessed time to make dhikr and read Quran.';
+
+  @override
+  String get tvChildSunriseFunFact =>
+      'Sitting after Fajr until sunrise and praying two rak’ahs earns the reward of a full Hajj! (Tirmidhi)';
+
+  @override
+  String get tvChildDhuhrExplanation =>
+      'Dhuhr is the midday prayer. The sun is highest in the sky, and we pause to remember Allah.';
+
+  @override
+  String get tvChildDhuhrFunFact =>
+      'The Prophet ‫ﷺ‬ loved to pray Dhuhr early when the sun begins to decline. (Muslim)';
+
+  @override
+  String get tvChildAsrExplanation =>
+      'Asr is the afternoon prayer. Allah swears by this time in Surah Al-Asr — it is very important!';
+
+  @override
+  String get tvChildAsrFunFact =>
+      'Missing Asr prayer is like losing one’s family and wealth. That is how much Allah loves it! (Bukhari)';
+
+  @override
+  String get tvChildMaghribExplanation =>
+      'Maghrib is the sunset prayer. When the sun sets, we thank Allah for the beautiful day.';
+
+  @override
+  String get tvChildMaghribFunFact =>
+      'The angels of the day and night meet at Fajr and Maghrib. How special! (Bukhari)';
+
+  @override
+  String get tvChildIshaExplanation =>
+      'Isha is the night prayer. We end our day by thanking Allah before we sleep.';
+
+  @override
+  String get tvChildIshaFunFact =>
+      'Praying Isha and Fajr in congregation is like praying all night long! (Muslim)';
+
+  @override
+  String get desktopOpen => 'Open PrayCalc';
+
+  @override
+  String get desktopQuit => 'Quit PrayCalc';
+
+  @override
+  String get desktopSettings => 'Settings…';
+
+  @override
+  String get desktopTvDisplays => 'TV Displays…';
+
+  @override
+  String get desktopTrayTooltip => 'PrayCalc - Prayer Times';
+
+  @override
+  String get desktopNextPrayer => 'Next Prayer…';
 }

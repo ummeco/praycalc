@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:io' show Platform;
+
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:home_widget/home_widget.dart';
 import 'package:pray_calc_dart/pray_calc_dart.dart';
@@ -9,7 +12,6 @@ class WidgetService {
   static final instance = WidgetService._();
 
   static const _appGroupId = 'group.com.praycalc.app';
-  static const _iOSWidgetName = 'PrayCalcWidget';
   static const _androidWidgetName = 'PrayCalcWidgetReceiver';
 
   Future<void> init() async {
@@ -31,15 +33,33 @@ class WidgetService {
     await HomeWidget.saveWidgetData('widget_next_prayer', nextPrayer);
     await HomeWidget.saveWidgetData('widget_countdown', countdown);
 
+    final nextIdx = prayerNames.indexOf(nextPrayer);
+    final nextTime = nextIdx >= 0 ? _fmtT(prayerTimes[nextIdx], use24h) : '--:--';
+    await HomeWidget.saveWidgetData('widget_next_prayer_time', nextTime);
+    await HomeWidget.saveWidgetData('widget_location_name', city.name);
+
+    // Individual keys read by LockScreenWidget (Swift).
     for (var i = 0; i < prayerNames.length; i++) {
-      await HomeWidget.saveWidgetData('widget_${prayerNames[i].toLowerCase()}', prayerNames[i]);
-      await HomeWidget.saveWidgetData('widget_${prayerNames[i].toLowerCase()}_time', _fmtT(prayerTimes[i], use24h));
+      final key = 'widget_${prayerNames[i].toLowerCase()}';
+      await HomeWidget.saveWidgetData(key, _fmtT(prayerTimes[i], use24h));
     }
 
-    await HomeWidget.updateWidget(
-      androidName: _androidWidgetName,
-      iOSName: _iOSWidgetName,
-    );
+    // JSON array read by HomeScreenWidget systemMedium (Swift).
+    // Format: [{"name":"Fajr","time":"5:23 AM","isNext":false}, ...]
+    if (!kIsWeb && Platform.isIOS) {
+      final prayers = List.generate(prayerNames.length, (i) => {
+        'name': prayerNames[i],
+        'time': _fmtT(prayerTimes[i], use24h),
+        'isNext': prayerNames[i] == nextPrayer,
+      });
+      await HomeWidget.saveWidgetData('widget_prayers', jsonEncode(prayers));
+
+      // Reload timelines for both iOS widget kinds.
+      await HomeWidget.updateWidget(iOSName: 'LockScreenWidget');
+      await HomeWidget.updateWidget(iOSName: 'HomeScreenWidget');
+    } else {
+      await HomeWidget.updateWidget(androidName: _androidWidgetName);
+    }
   }
 
   String _fmtT(double h, bool use24h) {

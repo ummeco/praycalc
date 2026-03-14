@@ -52,6 +52,10 @@ class _AgendaEditScreenState extends ConsumerState<AgendaEditScreen> {
     return '$_offsetMinutes min after';
   }
 
+  // OFFLINE-C1: Agenda events are stored in SharedPreferences via agendaProvider
+  // and notification rescheduling uses WorkManager — both work fully offline.
+  // No network call is made during save; the rescheduler picks up the change
+  // automatically via ref.watch(agendaProvider) in notification_provider.dart.
   Future<void> _save() async {
     final label = _labelController.text.trim();
     if (label.isEmpty) {

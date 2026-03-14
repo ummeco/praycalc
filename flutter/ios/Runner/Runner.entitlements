@@ -10,5 +10,11 @@
 	<!-- Required for InterruptionLevel.timeSensitive in flutter_local_notifications -->
 	<key>com.apple.developer.usernotifications.time-sensitive</key>
 	<true/>
+	<!-- LINK-C1: Universal Links — handles praycalc.com deep links on iOS -->
+	<key>com.apple.developer.associated-domains</key>
+	<array>
+		<string>applinks:praycalc.com</string>
+		<string>applinks:www.praycalc.com</string>
+	</array>
 </dict>
 </plist>

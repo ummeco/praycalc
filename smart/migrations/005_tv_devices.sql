@@ -1,5 +1,6 @@
 -- Migration 005: TV Command Center tables
 -- Created: 2026-03-08
+-- Note: Created before 004_user_settings.sql — the gap is intentional and documented in README.md.
 
 -- TV devices registered by users
 CREATE TABLE IF NOT EXISTS pc_tv_devices (

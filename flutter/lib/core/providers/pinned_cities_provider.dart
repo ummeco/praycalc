@@ -60,7 +60,7 @@ class PinnedCitiesNotifier extends Notifier<List<City>> {
           .map(_cityFromJson)
           .toList();
       state = list;
-    } catch (_) {
+    } catch (e, st) {
       // Corrupted data — reset silently.
       state = [];
     }

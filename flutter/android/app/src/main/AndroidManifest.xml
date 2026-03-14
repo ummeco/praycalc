@@ -110,6 +110,14 @@
             <meta-data android:name="android.appwidget.provider" android:resource="@xml/praycalc_medium_widget_info" />
         </receiver>
 
+        <!-- Glance widget — large 4×2 full prayer list -->
+        <receiver android:name=".PrayCalcLargeWidgetReceiver" android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/praycalc_large_widget_info" />
+        </receiver>
+
         <!-- DreamService: system screensaver for Android TV / Fire TV -->
         <service
             android:name=".PrayCalcDreamService"

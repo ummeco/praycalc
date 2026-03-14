@@ -8,18 +8,20 @@ import 'package:tray_manager/tray_manager.dart';
 import '../../core/providers/prayer_provider.dart';
 import '../../core/providers/settings_provider.dart';
 import '../../core/router/app_router.dart';
+import '../../l10n/app_localizations.dart';
 import 'desktop_full_window.dart';
 import 'desktop_popover.dart';
 
 /// Manages the system tray icon and its context menu for desktop platforms.
 class DesktopTrayApp with TrayListener {
-  DesktopTrayApp(this._ref);
+  DesktopTrayApp(this._ref, this._l10n);
 
   final WidgetRef _ref;
+  final AppLocalizations _l10n;
   Timer? _updateTimer;
 
   // Cached label for the dynamic "Next Prayer" menu item.
-  String _nextPrayerLabel = 'Next Prayer…';
+  late String _nextPrayerLabel = _l10n.desktopNextPrayer;
 
   Future<void> init() async {
     final iconPath = Platform.isWindows
@@ -27,7 +29,7 @@ class DesktopTrayApp with TrayListener {
         : 'assets/brand/icon.png';
 
     await trayManager.setIcon(iconPath);
-    await trayManager.setToolTip('PrayCalc - Prayer Times');
+    await trayManager.setToolTip(_l10n.desktopTrayTooltip);
 
     await _rebuildMenu();
     trayManager.addListener(this);
@@ -44,13 +46,13 @@ class DesktopTrayApp with TrayListener {
 
   Future<void> _rebuildMenu() async {
     final menuItems = [
-      MenuItem(key: 'open', label: 'Open PrayCalc'),
+      MenuItem(key: 'open', label: _l10n.desktopOpen),
       MenuItem(key: 'next', label: _nextPrayerLabel, disabled: true),
       MenuItem.separator(),
-      MenuItem(key: 'settings', label: 'Settings…'),
-      MenuItem(key: 'tvs', label: 'TV Displays…'),
+      MenuItem(key: 'settings', label: _l10n.desktopSettings),
+      MenuItem(key: 'tvs', label: _l10n.desktopTvDisplays),
       MenuItem.separator(),
-      MenuItem(key: 'quit', label: 'Quit PrayCalc'),
+      MenuItem(key: 'quit', label: _l10n.desktopQuit),
     ];
     await trayManager.setContextMenu(Menu(items: menuItems));
   }
@@ -193,15 +195,15 @@ class DesktopTrayApp with TrayListener {
       final nowH = now.hour + now.minute / 60.0 + now.second / 3600.0;
 
       final prayers = [
-        ('Fajr', times.fajr),
-        ('Sunrise', times.sunrise),
-        ('Dhuhr', times.dhuhr),
-        ('Asr', times.asr),
-        ('Maghrib', times.maghrib),
-        ('Isha', times.isha),
+        (_l10n.prayerFajr, times.fajr),
+        (_l10n.prayerSunrise, times.sunrise),
+        (_l10n.prayerDhuhr, times.dhuhr),
+        (_l10n.prayerAsr, times.asr),
+        (_l10n.prayerMaghrib, times.maghrib),
+        (_l10n.prayerIsha, times.isha),
       ];
 
-      String nextName = 'Fajr';
+      String nextName = _l10n.prayerFajr;
       double nextTime = times.fajr;
       for (final (name, time) in prayers) {
         if (time > nowH) {

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -20,7 +21,7 @@ class NotificationConfigsNotifier
       try {
         final list = (jsonDecode(raw) as List).cast<Map<String, dynamic>>();
         state = list.map(PrayerNotificationConfig.fromJson).toList();
-      } catch (_) {}
+      } catch (e, st) { debugPrint('[NotifConfigs] parse error: $e\n$st'); }
     }
     await _persistShadeAdhanTypes(prefs);
   }

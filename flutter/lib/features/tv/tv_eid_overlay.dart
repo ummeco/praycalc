@@ -18,7 +18,7 @@ EidType? detectEid(DateTime date) {
     final hj = HijriCalendar.fromDate(date);
     if (hj.hMonth == 10 && hj.hDay == 1) return EidType.eidAlFitr;
     if (hj.hMonth == 12 && hj.hDay == 10) return EidType.eidAlAdha;
-  } catch (_) {}
+  } catch (e, st) { debugPrint("[TvEidOverlay] $e\n$st"); }
   return null;
 }
 

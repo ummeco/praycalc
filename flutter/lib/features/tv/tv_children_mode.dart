@@ -15,6 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../core/theme/app_theme.dart';
+import '../../l10n/app_localizations.dart';
 
 // ─── Y-3: Prayer explanations ─────────────────────────────────────────────────
 
@@ -36,66 +37,54 @@ class _PrayerExplanation {
   });
 }
 
-const kPrayerExplanations = <String, _PrayerExplanation>{
+Map<String, _PrayerExplanation> buildPrayerExplanations(AppLocalizations l10n) => {
   'Fajr': _PrayerExplanation(
-    name: 'Fajr',
+    name: l10n.prayerFajr,
     arabic: 'الفجر',
     emoji: '🌅',
-    color: Color(0xFF6B5CA5),
-    explanation: 'Fajr is the morning prayer. We wake up before sunrise '
-        'to thank Allah for a new day!',
-    funFact: 'The Prophet ﷺ said: "The best prayer in the sight of Allah '
-        'is Fajr on Friday." (Bukhari)',
+    color: const Color(0xFF6B5CA5),
+    explanation: l10n.tvChildFajrExplanation,
+    funFact: l10n.tvChildFajrFunFact,
   ),
   'Sunrise': _PrayerExplanation(
-    name: 'Sunrise',
+    name: l10n.prayerSunrise,
     arabic: 'الشروق',
     emoji: '☀️',
-    color: Color(0xFFE07B39),
-    explanation: 'After Fajr, the sun rises. This is a blessed time to '
-        'make dhikr and read Quran.',
-    funFact: 'Sitting after Fajr until sunrise and praying two rak\'ahs '
-        'earns the reward of a full Hajj! (Tirmidhi)',
+    color: const Color(0xFFE07B39),
+    explanation: l10n.tvChildSunriseExplanation,
+    funFact: l10n.tvChildSunriseFunFact,
   ),
   'Dhuhr': _PrayerExplanation(
-    name: 'Dhuhr',
+    name: l10n.prayerDhuhr,
     arabic: 'الظهر',
     emoji: '🌞',
-    color: Color(0xFFD4A017),
-    explanation: 'Dhuhr is the midday prayer. The sun is highest in the '
-        'sky, and we pause to remember Allah.',
-    funFact: 'The Prophet ﷺ loved to pray Dhuhr early when the sun '
-        'begins to decline. (Muslim)',
+    color: const Color(0xFFD4A017),
+    explanation: l10n.tvChildDhuhrExplanation,
+    funFact: l10n.tvChildDhuhrFunFact,
   ),
   'Asr': _PrayerExplanation(
-    name: 'Asr',
+    name: l10n.prayerAsr,
     arabic: 'العصر',
     emoji: '🌤️',
-    color: Color(0xFF2E86AB),
-    explanation: 'Asr is the afternoon prayer. Allah swears by this time '
-        'in Surah Al-Asr — it is very important!',
-    funFact: 'Missing Asr prayer is like losing one\'s family and wealth. '
-        'That is how much Allah loves it! (Bukhari)',
+    color: const Color(0xFF2E86AB),
+    explanation: l10n.tvChildAsrExplanation,
+    funFact: l10n.tvChildAsrFunFact,
   ),
   'Maghrib': _PrayerExplanation(
-    name: 'Maghrib',
+    name: l10n.prayerMaghrib,
     arabic: 'المغرب',
     emoji: '🌇',
-    color: Color(0xFFE84855),
-    explanation: 'Maghrib is the sunset prayer. When the sun sets, we '
-        'thank Allah for the beautiful day.',
-    funFact: 'The angels of the day and night meet at Fajr and Maghrib. '
-        'How special! (Bukhari)',
+    color: const Color(0xFFE84855),
+    explanation: l10n.tvChildMaghribExplanation,
+    funFact: l10n.tvChildMaghribFunFact,
   ),
   'Isha': _PrayerExplanation(
-    name: 'Isha',
+    name: l10n.prayerIsha,
     arabic: 'العشاء',
     emoji: '🌙',
-    color: Color(0xFF3D405B),
-    explanation: 'Isha is the night prayer. We end our day by thanking '
-        'Allah before we sleep.',
-    funFact: 'Praying Isha and Fajr in congregation is like praying all '
-        'night long! (Muslim)',
+    color: const Color(0xFF3D405B),
+    explanation: l10n.tvChildIshaExplanation,
+    funFact: l10n.tvChildIshaFunFact,
   ),
 };
 
@@ -271,9 +260,11 @@ class _TvChildrenModeState extends State<TvChildrenMode>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final prayerExps = buildPrayerExplanations(l10n);
     final explanation = widget.currentPrayer.isNotEmpty
-        ? kPrayerExplanations[widget.currentPrayer]
-        : kPrayerExplanations[widget.nextPrayer];
+        ? prayerExps[widget.currentPrayer]
+        : prayerExps[widget.nextPrayer];
 
     return AnimatedBuilder(
       animation: _bgColor,
@@ -413,7 +404,7 @@ class _TvChildrenModeState extends State<TvChildrenMode>
             if (_showEducation && _educationPrayer != null)
               _EducationOverlay(
                 explanation:
-                    kPrayerExplanations[_educationPrayer!]!,
+                    prayerExps[_educationPrayer!]!,
                 onDismiss: _dismissEducation,
               ),
           ],

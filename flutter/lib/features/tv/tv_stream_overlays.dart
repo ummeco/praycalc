@@ -448,7 +448,7 @@ class _TvStreamContextBarState extends State<TvStreamContextBar> {
       } else {
         specialDay = _specialDay(hj.hMonth, hj.hDay);
       }
-    } catch (_) {}
+    } catch (e, st) { debugPrint("[TvStreamOverlays] $e\n$st"); }
 
     final isQadr = widget.isRamadan && widget.ramadan.isLaylatulQadr;
     final borderColor =

@@ -247,7 +247,7 @@ class _TvStreamPlayerState extends State<TvStreamPlayer> {
       } else {
         player.dispose();
       }
-    } catch (_) {
+    } catch (e, st) {
       if (mounted) setState(() { _isLoading = false; _hasError = true; });
     }
   }

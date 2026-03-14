@@ -8,6 +8,7 @@ class NotificationChannels {
   static const String ramadan = 'praycalc_ramadan';       // Ramadan countdown shade (PC-ST-1.7)
   static const String travel = 'praycalc_travel';         // Travel detection alerts (PC-TR-1)
   static const String prayersCheck = 'praycalc_prayer_check'; // "Did you pray?" check-ins
+  static const String sunnah = 'praycalc_sunnah'; // Sunnah prayers: iqamah, tahajjud, duha
 }
 
 class NotificationIds {
@@ -50,4 +51,13 @@ class NotificationIds {
   //   tomorrow 820–824  (820 + prayerIdx)
   static int prayerCheck(int idx, {int dayOffset = 0}) =>
       800 + (dayOffset * 20) + idx;
+
+  // Sunnah / optional prayer notifications: 900+
+  // Iqamah: one per fard prayer per day (today + tomorrow)
+  //   today    900–904  (900 + prayerIdx)
+  //   tomorrow 910–914  (910 + prayerIdx)
+  static int iqamah(int idx, {int dayOffset = 0}) => 900 + (dayOffset * 10) + idx;
+
+  static const int tahajjud = 920;  // One per scheduling cycle
+  static const int duha = 921;      // One per scheduling cycle (today + tomorrow each overwrite same id)
 }

@@ -76,10 +76,18 @@ export function getSession(): PrayCalcSession | null {
   }
 }
 
+/** SEC-B2: Cookie name used to signal auth state to Next.js middleware.
+ *  Non-httpOnly (readable by JS) — carries no sensitive data. The actual
+ *  JWT is in localStorage; this cookie only tells the Edge Runtime whether
+ *  to redirect unauthenticated users away from /dashboard/* routes. */
+const AUTH_COOKIE = "pc-auth";
+
 export function saveSession(session: PrayCalcSession): void {
   if (typeof window === "undefined") return;
   try {
     localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+    // Signal to middleware that a session exists (1-year, SameSite=Lax, no token value).
+    document.cookie = `${AUTH_COOKIE}=1; path=/; max-age=${60 * 60 * 24 * 365}; SameSite=Lax`;
   } catch {
     // localStorage unavailable
   }
@@ -89,6 +97,8 @@ export function clearSession(): void {
   if (typeof window === "undefined") return;
   try {
     localStorage.removeItem(SESSION_KEY);
+    // Remove the auth signal cookie.
+    document.cookie = `${AUTH_COOKIE}=; path=/; max-age=0; SameSite=Lax`;
   } catch {
     // ignore
   }

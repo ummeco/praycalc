@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:praycalc_app/l10n/app_localizations.dart';
 
 // ---------------------------------------------------------------------------
 // P-5: TvInfoMode — 4-panel info display (weather/calendar/stats/events)
@@ -67,7 +68,7 @@ class TvInfoMode extends StatelessWidget {
               const SizedBox(height: 16),
               _DividerLine(),
               const SizedBox(height: 12),
-              Text('جمعة مباركة', // "Blessed Friday" placeholder
+              Text(AppLocalizations.of(context)!.tvJumuahGreeting,
                   textDirection: TextDirection.rtl,
                   style: TextStyle(
                     fontFamily: 'Amiri',

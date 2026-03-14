@@ -294,7 +294,7 @@ class _MasjidDateRow extends StatelessWidget {
         'Ramadan', 'Shawwal', "Dhu al-Qi'dah", 'Dhu al-Hijjah',
       ];
       hijri = '${hj.hDay} ${hMonths[hj.hMonth - 1]} ${hj.hYear} AH';
-    } catch (_) {}
+    } catch (e, st) { debugPrint("[TvMasjid] $e\n$st"); }
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,

@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 import 'package:google_sign_in/google_sign_in.dart';
@@ -50,6 +51,8 @@ class TvPairingScreen extends StatefulWidget {
 
 class _TvPairingScreenState extends State<TvPairingScreen>
     with SingleTickerProviderStateMixin {
+  static const _storage = FlutterSecureStorage();
+
   // Auth state
   bool _isLoading = false;
   String? _authError;
@@ -85,8 +88,8 @@ class _TvPairingScreenState extends State<TvPairingScreen>
   }
 
   Future<void> _checkExistingSession() async {
+    final jwt = await _storage.read(key: _kTvSessionJwt);
     final prefs = await SharedPreferences.getInstance();
-    final jwt = prefs.getString(_kTvSessionJwt);
     final expiryStr = prefs.getString(_kTvSessionExpiry);
     if (jwt != null && jwt.isNotEmpty) {
       final expiry = expiryStr != null ? DateTime.tryParse(expiryStr) : null;
@@ -107,8 +110,8 @@ class _TvPairingScreenState extends State<TvPairingScreen>
   }
 
   Future<void> _saveSession(String jwt, DateTime expiry) async {
+    await _storage.write(key: _kTvSessionJwt, value: jwt);
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_kTvSessionJwt, jwt);
     await prefs.setString(_kTvSessionExpiry, expiry.toIso8601String());
   }
 
@@ -155,7 +158,7 @@ class _TvPairingScreenState extends State<TvPairingScreen>
           _codeFocus.requestFocus();
         }
       }
-    } catch (_) {
+    } catch (e, st) {
       if (mounted) {
         setState(() {
           _activating = false;

@@ -19,11 +19,13 @@ import 'core/providers/settings_provider.dart';
 import 'core/providers/travel_provider.dart';
 import 'core/router/app_router.dart';
 import 'core/services/notification_service.dart';
+import 'core/services/watch_bridge_service.dart';
 import 'core/theme/app_theme.dart';
 import 'features/desktop/desktop_adhan_alert.dart';
 import 'features/desktop/desktop_full_window.dart';
 import 'features/desktop/desktop_tray_app.dart';
 import 'features/onboarding/onboarding_screen.dart';
+import 'features/quran/quran_audio_handler.dart';
 
 // DSN is injected at build time via --dart-define=SENTRY_DSN=https://...
 // If empty (dev / CI without secrets), Sentry initialises but sends nothing.
@@ -64,6 +66,11 @@ void main() async {
   }
 
   await NotificationService.instance.init();
+  // QURAN-2: Initialize audio_service handler for background playback + lock screen controls.
+  if (!kIsWeb) await QuranAudioHandler.init();
+  if (!kIsWeb && Platform.isIOS) {
+    await WatchBridgeService.instance.init();
+  }
   final lastCity = await loadLastCity();
   final onboardingDone = await isOnboardingDone();
   setOnboardingDone(onboardingDone);
@@ -120,11 +127,22 @@ class _PrayCalcAppState extends ConsumerState<PrayCalcApp> with WindowListener {
         DesktopFullWindow.registerShowCallback(() {
           appRouter.push(Routes.desktopFullWindow);
         });
-        final tray = DesktopTrayApp(ref);
+        final l10n = AppLocalizations.of(context)!;
+        final tray = DesktopTrayApp(ref, l10n);
         tray.init();
         _trayApp = tray;
       });
     }
+
+    // LINK-C2: Consume pendingRoute set during cold-start notification launch.
+    // Navigate once the first frame is rendered so GoRouter is ready.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final route = NotificationService.instance.pendingRoute;
+      if (route != null) {
+        NotificationService.instance.pendingRoute = null;
+        appRouter.push(route);
+      }
+    });
   }
 
   @override
@@ -146,10 +164,17 @@ class _PrayCalcAppState extends ConsumerState<PrayCalcApp> with WindowListener {
     // Keep the notification rescheduler alive for the full app session.
     // It watches city + hanafi + agendas + configs and reschedules on any change.
     ref.listen(notificationReschedulerProvider, (_, _) {});
+    // IOS-W-3: push widget_next_prayer, widget_next_prayer_time, widget_location_name
+    // to home screen widgets whenever city or prayer times change.
+    ref.listen(widgetUpdaterProvider, (_, _) {});
     // During Ramadan: write sahur/iftar mins-remaining to SharedPrefs for the shade.
     ref.listen(ramadanShadeWriterProvider, (_, _) {});
     // Auto-set home coordinates from the first city the user selects.
     ref.listen(travelHomeAutosetProvider, (_, _) {});
+    // WearOS: push prayer times to paired Wear OS device whenever they change.
+    if (!kIsWeb && Platform.isAndroid) {
+      ref.listen(wearOsSyncProvider, (_, _) {});
+    }
 
     // Desktop prayer alert monitoring.
     if (!kIsWeb && DesktopAlertScheduler.isDesktop) {

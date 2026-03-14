@@ -58,8 +58,9 @@ class SyncNotifier extends Notifier<SyncState> {
       }
     });
 
-    // If already authenticated at build time, start syncing.
-    Future.microtask(() {
+    // Load any pending offline mutations count from storage.
+    Future.microtask(() async {
+      await SyncService.instance.loadPendingCount();
       final auth = ref.read(authProvider);
       if (auth.isAuthenticated) {
         syncNow();

@@ -73,3 +73,50 @@ const List<PrayerNotificationConfig> defaultNotificationConfigs = [
   PrayerNotificationConfig(prayerName: 'Maghrib'),
   PrayerNotificationConfig(prayerName: 'Isha'),
 ];
+
+/// Sunnah / optional prayer notification settings.
+/// Stored separately from per-prayer fard configs.
+class SunnahNotificationConfig {
+  final bool iqamahEnabled;
+  final int iqamahOffsetMinutes; // 5/10/15/20/30
+  final bool tahajjudEnabled;
+  final bool duhaEnabled;
+
+  const SunnahNotificationConfig({
+    this.iqamahEnabled = false,
+    this.iqamahOffsetMinutes = 10,
+    this.tahajjudEnabled = false,
+    this.duhaEnabled = false,
+  });
+
+  SunnahNotificationConfig copyWith({
+    bool? iqamahEnabled,
+    int? iqamahOffsetMinutes,
+    bool? tahajjudEnabled,
+    bool? duhaEnabled,
+  }) =>
+      SunnahNotificationConfig(
+        iqamahEnabled: iqamahEnabled ?? this.iqamahEnabled,
+        iqamahOffsetMinutes: iqamahOffsetMinutes ?? this.iqamahOffsetMinutes,
+        tahajjudEnabled: tahajjudEnabled ?? this.tahajjudEnabled,
+        duhaEnabled: duhaEnabled ?? this.duhaEnabled,
+      );
+
+  Map<String, dynamic> toJson() => {
+        'iqamahEnabled': iqamahEnabled,
+        'iqamahOffsetMinutes': iqamahOffsetMinutes,
+        'tahajjudEnabled': tahajjudEnabled,
+        'duhaEnabled': duhaEnabled,
+      };
+
+  static SunnahNotificationConfig fromJson(Map<String, dynamic> j) =>
+      SunnahNotificationConfig(
+        iqamahEnabled: j['iqamahEnabled'] as bool? ?? false,
+        iqamahOffsetMinutes: j['iqamahOffsetMinutes'] as int? ?? 10,
+        tahajjudEnabled: j['tahajjudEnabled'] as bool? ?? false,
+        duhaEnabled: j['duhaEnabled'] as bool? ?? false,
+      );
+}
+
+const SunnahNotificationConfig defaultSunnahNotificationConfig =
+    SunnahNotificationConfig();

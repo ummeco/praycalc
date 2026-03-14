@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'settings_provider.dart';
@@ -21,7 +22,7 @@ class PrayerCompletionNotifier extends Notifier<Map<String, String>> {
     if (raw == null) return;
     try {
       state = Map<String, String>.from(jsonDecode(raw) as Map);
-    } catch (_) {}
+    } catch (e, st) { debugPrint('[PrayerCompletion] $e\n$st'); }
   }
 
   Future<void> _save() async {
@@ -61,7 +62,7 @@ class PrayerCompletionNotifier extends Notifier<Map<String, String>> {
             result[prayer] = (result[prayer] ?? 0) + 1;
           }
         }
-      } catch (_) {}
+      } catch (e, st) { debugPrint('[PrayerCompletion] $e\n$st'); }
     }
     return result;
   }

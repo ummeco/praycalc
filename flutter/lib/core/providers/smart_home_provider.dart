@@ -34,7 +34,7 @@ class IntegrationsState {
   SmartHomeIntegration? forPlatform(String platform) {
     try {
       return integrations.firstWhere((i) => i.platform == platform);
-    } catch (_) {
+    } catch (e, st) {
       return null;
     }
   }
@@ -57,7 +57,7 @@ class IntegrationsNotifier extends Notifier<IntegrationsState> {
       state = state.copyWith(integrations: list, isLoading: false);
     } on SmartHomeApiException catch (e) {
       state = state.copyWith(isLoading: false, error: e.message);
-    } catch (_) {
+    } catch (e, st) {
       state = state.copyWith(
         isLoading: false,
         error: 'Could not connect to the smart home service.',
@@ -72,7 +72,7 @@ class IntegrationsNotifier extends Notifier<IntegrationsState> {
         platform: platform,
       );
       await load();
-    } catch (_) {
+    } catch (e, st) {
       // Silently fail; user can retry.
     }
   }
@@ -87,7 +87,7 @@ class IntegrationsNotifier extends Notifier<IntegrationsState> {
       tests[platform] = ok;
       state = state.copyWith(testResults: tests);
       return ok;
-    } catch (_) {
+    } catch (e, st) {
       tests[platform] = false;
       state = state.copyWith(testResults: tests);
       return false;
@@ -146,7 +146,7 @@ class DevicesNotifier extends Notifier<DevicesState> {
       state = state.copyWith(devices: list, isLoading: false);
     } on SmartHomeApiException catch (e) {
       state = state.copyWith(isLoading: false, error: e.message);
-    } catch (_) {
+    } catch (e, st) {
       state = state.copyWith(
         isLoading: false,
         error: 'Could not connect to the device service.',
@@ -170,7 +170,7 @@ class DevicesNotifier extends Notifier<DevicesState> {
     } on SmartHomeApiException catch (e) {
       state = state.copyWith(error: e.message);
       return null;
-    } catch (_) {
+    } catch (e, st) {
       state = state.copyWith(error: 'Failed to add device.');
       return null;
     }
@@ -184,7 +184,7 @@ class DevicesNotifier extends Notifier<DevicesState> {
     } on SmartHomeApiException catch (e) {
       state = state.copyWith(error: e.message);
       return false;
-    } catch (_) {
+    } catch (e, st) {
       return false;
     }
   }
@@ -219,7 +219,7 @@ class DevicesNotifier extends Notifier<DevicesState> {
     } on SmartHomeApiException catch (e) {
       state = state.copyWith(error: e.message);
       return false;
-    } catch (_) {
+    } catch (e, st) {
       return false;
     }
   }

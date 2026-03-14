@@ -77,15 +77,45 @@ class SettingsScreen extends ConsumerWidget {
                 ),
               ),
               title: Text(auth.user?.displayName ?? auth.user?.email ?? ''),
-              subtitle: Row(
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(
-                    _syncIcon(sync.status),
-                    size: 14,
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  Row(
+                    children: [
+                      Icon(
+                        _syncIcon(sync.status),
+                        size: 14,
+                        color: sync.status == SyncStatus.error
+                            ? Theme.of(context).colorScheme.error
+                            : Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        _syncStatusLabel(l, sync.status),
+                        style: sync.status == SyncStatus.error
+                            ? TextStyle(color: Theme.of(context).colorScheme.error)
+                            : null,
+                      ),
+                    ],
                   ),
-                  const SizedBox(width: 4),
-                  Text(_syncStatusLabel(l, sync.status)),
+                  // ARCH-A3: Show error detail when sync fails.
+                  if (sync.status == SyncStatus.error && sync.errorMessage != null)
+                    Text(
+                      sync.errorMessage!,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Theme.of(context).colorScheme.error,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  // OFFLINE-C2: Show pending changes count when offline.
+                  if (sync.pendingChanges > 0)
+                    Text(
+                      '${sync.pendingChanges} change${sync.pendingChanges == 1 ? '' : 's'} waiting to sync',
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
+                    ),
                 ],
               ),
               trailing: const Icon(Icons.chevron_right),

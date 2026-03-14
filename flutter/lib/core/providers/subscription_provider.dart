@@ -218,7 +218,7 @@ class SubscriptionNotifier extends Notifier<SubscriptionState> {
           'productId': IAPService.productIdYearly,
         }),
       );
-    } catch (_) {
+    } catch (e, st) {
       // Backend verification failure is non-fatal; status check will catch it.
     }
   }

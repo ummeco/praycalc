@@ -62,7 +62,7 @@ Future<List<PairedTvDevice>> _loadPairedDevices() async {
         .whereType<Map<String, dynamic>>()
         .map(PairedTvDevice.fromJson)
         .toList();
-  } catch (_) {
+  } catch (e, st) {
     return [];
   }
 }

@@ -50,7 +50,7 @@ class TvStreamHealthService {
       return response.statusCode < 400
           ? StreamHealthStatus.online
           : StreamHealthStatus.offline;
-    } catch (_) {
+    } catch (e, st) {
       return StreamHealthStatus.offline;
     }
   }

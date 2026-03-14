@@ -724,5 +724,7 @@
   "tvPairingBackToMyTvs": "Back to My TVs",
   "tvPairingTimeout": "Request timed out. Is the TV on and connected?",
   "tvPairingServerError": "Could not connect to server.",
-  "tvPairingSignInRequired": "Sign in to your account before pairing a TV."
+  "tvPairingSignInRequired": "Sign in to your account before pairing a TV.",
+
+  "tvJumuahGreeting": "Jumu'ah Mubarak"
 }

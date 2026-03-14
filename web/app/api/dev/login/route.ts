@@ -18,8 +18,8 @@ const HASURA_ADMIN_URL =
   process.env.NEXT_PUBLIC_HASURA_URL ??
   'https://api.ummat.dev/v1/graphql';
 const HASURA_ADMIN_SECRET = process.env.HASURA_GRAPHQL_ADMIN_SECRET ?? '';
-// Must match HASURA_GRAPHQL_JWT_SECRET key in smart/.env.local
-const JWT_SECRET = process.env.HASURA_JWT_KEY ?? 'e103127b6e52cd5a4f167ecf2b9272e22784c989e901a14d4b60304bfbc98c84';
+// Must match HASURA_GRAPHQL_JWT_SECRET key in smart/.env.local — required, no fallback.
+const JWT_SECRET = process.env.HASURA_JWT_KEY ?? '';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -34,6 +34,13 @@ export async function OPTIONS() {
 export async function POST() {
   if (process.env.NODE_ENV !== 'development') {
     return NextResponse.json({ error: 'Not found' }, { status: 404 });
+  }
+
+  if (!JWT_SECRET) {
+    return NextResponse.json(
+      { error: 'HASURA_JWT_KEY not set in web/.env.local — cannot mint dev JWT' },
+      { status: 500, headers: corsHeaders },
+    );
   }
 
   try {

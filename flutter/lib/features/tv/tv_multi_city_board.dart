@@ -31,7 +31,7 @@ double _utcOffset(String timezone, DateTime date) {
     final loc = tz.getLocation(timezone);
     final dt = tz.TZDateTime.from(date, loc);
     return dt.timeZoneOffset.inMinutes / 60.0;
-  } catch (_) {
+  } catch (e, st) {
     return 0;
   }
 }
@@ -90,7 +90,7 @@ class TvMultiCityBoard extends StatelessWidget {
       final date = DateTime.utc(now.year, now.month, now.day, 12);
       final offset = _utcOffset(secondaryTimeZone, date);
       return getTimes(date, secondaryLat, secondaryLng, offset);
-    } catch (_) {
+    } catch (e, st) {
       return null;
     }
   }

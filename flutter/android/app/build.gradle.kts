@@ -86,6 +86,8 @@ dependencies {
     implementation("androidx.glance:glance-appwidget:1.1.0")
     implementation("com.android.billingclient:billing:7.0.0")
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
+    // WearOS DataClient — used by WearOsSyncPlugin to push prayer times to paired watch
+    implementation("com.google.android.gms:play-services-wearable:18.1.0")
 }
 
 flutter {

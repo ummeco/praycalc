@@ -318,7 +318,7 @@ class _ModalAlertState extends State<_ModalAlert>
         'Ramadan', 'Shawwal', "Dhu al-Qi'dah", 'Dhu al-Hijjah',
       ];
       return '${hj.hDay} ${months[hj.hMonth - 1]} ${hj.hYear} AH';
-    } catch (_) {
+    } catch (e, st) {
       return '';
     }
   }

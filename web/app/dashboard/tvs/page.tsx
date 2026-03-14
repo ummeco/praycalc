@@ -1,8 +1,11 @@
 'use client';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
+import Image from 'next/image';
+import { useTranslations } from 'next-intl';
 import TvSettingsPanel, { type TvDevice } from '../../../components/tv/TvSettingsPanel';
 import TvScreenshotModal from '../../../components/tv/TvScreenshotModal';
+import ShareTvModal from '../../../components/tv/ShareTvModal';
 import { useSession } from '../../../hooks/useSession';
 
 interface RawDevice {
@@ -15,6 +18,7 @@ interface RawDevice {
   location_city_slug: string | null;
   firmware_version: string | null;
   settings_json: Record<string, unknown> | null;
+  isShared?: boolean;
 }
 
 interface TvDeviceExtended extends TvDevice {
@@ -23,6 +27,7 @@ interface TvDeviceExtended extends TvDevice {
   locationLat?: number;
   locationLng?: number;
   locationTimezone?: string;
+  isShared?: boolean;
 }
 
 function rawToDevice(d: RawDevice): TvDeviceExtended {
@@ -42,6 +47,7 @@ function rawToDevice(d: RawDevice): TvDeviceExtended {
     locationLat: (settings['location_lat'] as number) ?? undefined,
     locationLng: (settings['location_lng'] as number) ?? undefined,
     locationTimezone: (settings['location_timezone'] as string) ?? undefined,
+    isShared: d.isShared ?? false,
   };
 }
 
@@ -52,6 +58,7 @@ function rawToDevice(d: RawDevice): TvDeviceExtended {
 type ModalState = 'idle' | 'loading' | 'showing' | 'activated' | 'error';
 
 function AddTvModal({ onClose, onPaired, token }: { onClose: () => void; onPaired: () => void; token: string }) {
+  const t = useTranslations('tv');
   const [state, setState] = useState<ModalState>('loading');
   const [code, setCode] = useState('');
   const [remaining, setRemaining] = useState(300);
@@ -67,7 +74,7 @@ function AddTvModal({ onClose, onPaired, token }: { onClose: () => void; onPaire
   const requestCode = useCallback(async () => {
     if (!token) {
       setState('error');
-      setErrorMsg('You must be signed in to add a TV.');
+      setErrorMsg(t('mustBeSignedIn'));
       return;
     }
 
@@ -146,7 +153,7 @@ function AddTvModal({ onClose, onPaired, token }: { onClose: () => void; onPaire
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
       <div className="bg-[#0D2F17] border border-[#79C24C]/30 rounded-2xl p-8 w-full max-w-sm shadow-2xl">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-white font-bold text-xl">Add TV</h2>
+          <h2 className="text-white font-bold text-xl">{t('addTv')}</h2>
           <button
             type="button"
             onClick={onClose}
@@ -160,24 +167,24 @@ function AddTvModal({ onClose, onPaired, token }: { onClose: () => void; onPaire
         {state === 'loading' && (
           <div className="flex flex-col items-center gap-4 py-8">
             <div className="w-8 h-8 border-2 border-[#79C24C]/40 border-t-[#79C24C] rounded-full animate-spin" />
-            <p className="text-white/50 text-sm">Generating code…</p>
+            <p className="text-white/50 text-sm">{t('generatingCode')}</p>
           </div>
         )}
 
         {state === 'showing' && (
           <div className="flex flex-col items-center gap-6">
             <div className="text-center">
-              <p className="text-white/60 text-sm mb-1">Open PrayCalc on your TV</p>
-              <p className="text-white/60 text-sm">and enter this code:</p>
+              <p className="text-white/60 text-sm mb-1">{t('openOnTv')}</p>
+              <p className="text-white/60 text-sm">{t('enterCode')}</p>
             </div>
             {/* Big code display */}
             <div className="bg-[#1E5E2F]/40 border-2 border-[#79C24C] rounded-2xl px-8 py-5 tracking-[0.5em] text-[#C9F27A] text-6xl font-bold font-mono">
               {code}
             </div>
-            <p className="text-white/40 text-xs">Expires in {mm}:{ss}</p>
+            <p className="text-white/40 text-xs">{t('expiresIn', { time: `${mm}:${ss}` })}</p>
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 rounded-full bg-[#79C24C] animate-pulse" />
-              <p className="text-white/50 text-sm">Waiting for TV…</p>
+              <p className="text-white/50 text-sm">{t('waitingForTv')}</p>
             </div>
           </div>
         )}
@@ -187,8 +194,8 @@ function AddTvModal({ onClose, onPaired, token }: { onClose: () => void; onPaire
             <div className="w-16 h-16 rounded-full bg-[#1E5E2F] flex items-center justify-center text-4xl">
               ✓
             </div>
-            <p className="text-white font-bold text-xl">TV Connected!</p>
-            <p className="text-white/50 text-sm">Your TV is now paired to this account.</p>
+            <p className="text-white font-bold text-xl">{t('tvConnected')}</p>
+            <p className="text-white/50 text-sm">{t('tvPaired')}</p>
           </div>
         )}
 
@@ -214,6 +221,7 @@ function AddTvModal({ onClose, onPaired, token }: { onClose: () => void; onPaire
 // ---------------------------------------------------------------------------
 
 export default function PairedTvsPage() {
+  const t = useTranslations('tv');
   const { session, hydrated, isLoggedIn, loginWithResult, logout } = useSession();
   const [devices, setDevices] = useState<TvDeviceExtended[]>([]);
   const [loading, setLoading] = useState(true);
@@ -224,9 +232,12 @@ export default function PairedTvsPage() {
   const [renamingId, setRenamingId] = useState<string | null>(null);
   const [newName, setNewName] = useState('');
   const [showAddTv, setShowAddTv] = useState(false);
+  const [sharingDeviceId, setSharingDeviceId] = useState<string | null>(null);
   const [devLoggingIn, setDevLoggingIn] = useState(false);
   const [devLoginError, setDevLoginError] = useState<string | null>(null);
   const [locationEditId, setLocationEditId] = useState<string | null>(null);
+  // BUG-A11: Track SSE fallback poll interval so it can be cleared before creating new one.
+  const sseFallbackRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const token = session?.tokens?.accessToken ?? '';
 
@@ -306,9 +317,11 @@ export default function PairedTvsPage() {
 
     es.onerror = () => {
       // SSE disconnected — fall back to a periodic full refresh.
+      // BUG-A11: Clear any existing fallback interval before creating a new one to prevent
+      // interval accumulation on repeated disconnects (onerror return value is ignored by browser).
       es.close();
-      const interval = setInterval(() => void fetchDevices(token), 30_000);
-      return () => clearInterval(interval);
+      if (sseFallbackRef.current) clearInterval(sseFallbackRef.current);
+      sseFallbackRef.current = setInterval(() => void fetchDevices(token), 30_000);
     };
 
     // Mark devices offline when their last_seen exceeds the 3-minute window.
@@ -322,6 +335,8 @@ export default function PairedTvsPage() {
     return () => {
       es.close();
       clearInterval(staleness);
+      // BUG-A11: Also clear the SSE fallback interval on unmount.
+      if (sseFallbackRef.current) clearInterval(sseFallbackRef.current);
     };
   }, [hydrated, token, fetchDevices]);
 
@@ -386,8 +401,8 @@ export default function PairedTvsPage() {
       <div className="p-8 max-w-6xl mx-auto">
         <div className="mb-8 flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-white mb-2">Paired TVs</h1>
-            <p className="text-white/60">Manage your connected TV displays from here.</p>
+            <h1 className="text-3xl font-bold text-white mb-2">{t('pairedTvs')}</h1>
+            <p className="text-white/60">{t('manageTvs')}</p>
           </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -403,9 +418,9 @@ export default function PairedTvsPage() {
   if (isLoggedIn && tokenRejected) {
     return (
       <div className="p-8 max-w-6xl mx-auto">
-        <h1 className="text-3xl font-bold text-white mb-8">Paired TVs</h1>
+        <h1 className="text-3xl font-bold text-white mb-8">{t('pairedTvs')}</h1>
         <div className="flex flex-col items-center py-24 gap-4 text-white/40">
-          <p className="text-lg">Your session has expired.</p>
+          <p className="text-lg">{t('sessionExpired')}</p>
           <button
             type="button"
             onClick={() => void logout().then(() => { setTokenRejected(false); })}
@@ -423,9 +438,9 @@ export default function PairedTvsPage() {
     const googleUrl = `${process.env.NEXT_PUBLIC_AUTH_URL ?? 'https://auth.ummat.dev'}/signin/provider/google?redirectTo=${encodeURIComponent(typeof window !== 'undefined' ? `${window.location.origin}/dashboard/tvs` : '/dashboard/tvs')}`;
     return (
       <div className="p-8 max-w-6xl mx-auto">
-        <h1 className="text-3xl font-bold text-white mb-8">Paired TVs</h1>
+        <h1 className="text-3xl font-bold text-white mb-8">{t('pairedTvs')}</h1>
         <div className="flex flex-col items-center py-24 gap-4 text-white/40">
-          <p className="text-lg">Sign in to manage your TVs.</p>
+          <p className="text-lg">{t('signInToManage')}</p>
           <a
             href={googleUrl}
             className="flex items-center gap-3 px-6 py-3 bg-[#1E5E2F] hover:bg-[#2a7a3d] text-[#C9F27A] rounded-xl text-sm font-medium transition-colors border border-[#79C24C]/30"
@@ -460,16 +475,16 @@ export default function PairedTvsPage() {
     <div className="p-8 max-w-6xl mx-auto">
       <div className="mb-8 flex items-start justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-white mb-2">Paired TVs</h1>
-          <p className="text-white/60">Manage your connected TV displays from here.</p>
+          <h1 className="text-3xl font-bold text-white mb-2">{t('pairedTvs')}</h1>
+          <p className="text-white/60">{t('manageTvs')}</p>
         </div>
         <div className="flex items-center gap-2">
           <button
             type="button"
             onClick={() => void fetchDevices(token)}
             className="flex items-center gap-2 px-4 py-2.5 bg-white/5 hover:bg-white/10 text-white/60 hover:text-white/90 rounded-xl font-medium text-sm transition-colors whitespace-nowrap"
-            title="Refresh device status"
-            aria-label="Refresh"
+            title={t('refreshStatus')}
+            aria-label={t('refreshStatus')}
           >
             ↻
           </button>
@@ -479,14 +494,14 @@ export default function PairedTvsPage() {
             className="flex items-center gap-2 px-5 py-2.5 bg-[#1E5E2F] hover:bg-[#2a7a3d] text-[#C9F27A] rounded-xl font-medium text-sm transition-colors whitespace-nowrap"
           >
             <span className="text-lg leading-none">+</span>
-            Add TV
+            {t('addTv')}
           </button>
         </div>
       </div>
 
       {listError && (
         <div className="mb-4 flex items-center gap-3 px-4 py-3 bg-red-500/10 border border-red-500/30 rounded-xl text-red-400 text-sm">
-          <span>Could not load devices: {listError}</span>
+          <span>{t('couldNotLoad', { error: listError ?? '' })}</span>
           <button type="button" onClick={() => void fetchDevices(token)} className="ml-auto text-red-300 hover:text-white underline">
             Retry
           </button>
@@ -499,8 +514,8 @@ export default function PairedTvsPage() {
             <rect x="2" y="3" width="20" height="14" rx="2" />
             <path d="M8 21h8M12 17v4" />
           </svg>
-          <p className="text-xl">No TVs paired yet.</p>
-          <p className="mt-2 mb-6">Open PrayCalc on your TV and enter the code shown here.</p>
+          <p className="text-xl">{t('noPairedTvs')}</p>
+          <p className="mt-2 mb-6">{t('openOnTvInstructions')}</p>
           <button
             type="button"
             onClick={() => setShowAddTv(true)}
@@ -510,26 +525,63 @@ export default function PairedTvsPage() {
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {devices.map(device => (
-            <TvCard
-              key={device.id}
-              device={device}
-              isRenaming={renamingId === device.id}
-              newName={newName}
-              onNewNameChange={setNewName}
-              onRename={() => handleRename(device)}
-              onConfirmRename={() => confirmRename(device.id)}
-              onSettings={() => setSelectedDevice(device)}
-              onScreenshot={() => setScreenshotDevice(device)}
-              onRemove={() => handleRemove(device.id)}
-              isEditingLocation={locationEditId === device.id}
-              onEditLocation={() => setLocationEditId(device.id)}
-              onCancelLocation={() => setLocationEditId(null)}
-              onSaveLocation={(loc) => void handleSaveLocation(device.id, loc)}
-            />
-          ))}
-        </div>
+        <>
+          {/* My TVs */}
+          {devices.filter(d => !d.isShared).length > 0 && (
+            <div className="mb-10">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {devices.filter(d => !d.isShared).map(device => (
+                  <TvCard
+                    key={device.id}
+                    device={device}
+                    isRenaming={renamingId === device.id}
+                    newName={newName}
+                    onNewNameChange={setNewName}
+                    onRename={() => handleRename(device)}
+                    onConfirmRename={() => confirmRename(device.id)}
+                    onSettings={() => setSelectedDevice(device)}
+                    onScreenshot={() => setScreenshotDevice(device)}
+                    onRemove={() => handleRemove(device.id)}
+                    onShare={() => setSharingDeviceId(device.id)}
+                    isEditingLocation={locationEditId === device.id}
+                    onEditLocation={() => setLocationEditId(device.id)}
+                    onCancelLocation={() => setLocationEditId(null)}
+                    onSaveLocation={(loc) => void handleSaveLocation(device.id, loc)}
+                    token={token}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Shared with me */}
+          {devices.filter(d => d.isShared).length > 0 && (
+            <div>
+              <h2 className="text-white/60 text-sm font-semibold uppercase tracking-wider mb-4">{t('sharedWithMe')}</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {devices.filter(d => d.isShared).map(device => (
+                  <TvCard
+                    key={device.id}
+                    device={device}
+                    isRenaming={renamingId === device.id}
+                    newName={newName}
+                    onNewNameChange={setNewName}
+                    onRename={() => handleRename(device)}
+                    onConfirmRename={() => confirmRename(device.id)}
+                    onSettings={() => setSelectedDevice(device)}
+                    onScreenshot={() => setScreenshotDevice(device)}
+                    onRemove={() => handleRemove(device.id)}
+                    isEditingLocation={locationEditId === device.id}
+                    onEditLocation={() => setLocationEditId(device.id)}
+                    onCancelLocation={() => setLocationEditId(null)}
+                    onSaveLocation={(loc) => void handleSaveLocation(device.id, loc)}
+                    token={token}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+        </>
       )}
 
       {selectedDevice && (
@@ -554,6 +606,18 @@ export default function PairedTvsPage() {
           token={token}
         />
       )}
+
+      {sharingDeviceId && (() => {
+        const sharingDevice = devices.find(d => d.id === sharingDeviceId);
+        return sharingDevice ? (
+          <ShareTvModal
+            deviceId={sharingDeviceId}
+            deviceName={sharingDevice.deviceName}
+            token={token}
+            onClose={() => setSharingDeviceId(null)}
+          />
+        ) : null;
+      })()}
     </div>
   );
 }
@@ -573,6 +637,7 @@ function LocationPicker({ onSave, onCancel, current }: {
   onCancel: () => void;
   current?: string;
 }) {
+  const t = useTranslations('tv');
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<LocationResult[]>([]);
   const [searching, setSearching] = useState(false);
@@ -619,7 +684,7 @@ function LocationPicker({ onSave, onCancel, current }: {
       <div className="relative">
         <input
           type="text"
-          placeholder="Type city name, e.g. Mecca, Chicago, London…"
+          placeholder={t('citySearchPlaceholder')}
           value={query}
           onChange={e => setQuery(e.target.value)}
           onKeyDown={handleKeyDown}
@@ -650,9 +715,94 @@ function LocationPicker({ onSave, onCancel, current }: {
         )}
       </div>
       {!searching && query.length >= 2 && results.length === 0 && (
-        <p className="text-white/30 text-xs">No results — try a different spelling or nearby city.</p>
+        <p className="text-white/30 text-xs">{t('noResults')}</p>
       )}
-      <button type="button" onClick={onCancel} className="text-white/35 hover:text-white/60 text-xs self-start mt-1 transition-colors">Cancel</button>
+      <button type="button" onClick={onCancel} className="text-white/35 hover:text-white/60 text-xs self-start mt-1 transition-colors">{t('cancel')}</button>
+    </div>
+  );
+}
+
+function useScreenshot(deviceId: string, token: string) {
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [capturedAt, setCapturedAt] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const tokenRef = useRef(token);
+  tokenRef.current = token;
+
+  const fetchScreenshot = useCallback(async () => {
+    try {
+      const res = await fetch(`/api/dashboard/tvs/${deviceId}/screenshot`, {
+        headers: { Authorization: `Bearer ${tokenRef.current}` },
+        cache: 'no-store',
+      });
+      if (!res.ok) return;
+      const data = await res.json() as { imageUrl?: string | null; capturedAt?: string | null };
+      setImageUrl(data.imageUrl ?? null);
+      setCapturedAt(data.capturedAt ?? null);
+    } catch { /* silent */ }
+    finally { setLoading(false); }
+  }, [deviceId]);
+
+  useEffect(() => {
+    void fetchScreenshot();
+
+    // Refresh every 30 seconds
+    const interval = setInterval(() => void fetchScreenshot(), 30_000);
+
+    // Refresh on window focus
+    const onFocus = () => void fetchScreenshot();
+    window.addEventListener('focus', onFocus);
+
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener('focus', onFocus);
+    };
+  }, [fetchScreenshot]);
+
+  return { imageUrl, capturedAt, loading, refresh: fetchScreenshot };
+}
+
+function ScreenshotPreview({ deviceId, token }: { deviceId: string; token: string }) {
+  const t = useTranslations('tv');
+  const { imageUrl, capturedAt, loading } = useScreenshot(deviceId, token);
+
+  const lastUpdatedText = capturedAt
+    ? (() => {
+        const diffMs = Date.now() - new Date(capturedAt).getTime();
+        const diffMin = Math.floor(diffMs / 60_000);
+        if (diffMin < 1) return 'Just now';
+        if (diffMin === 1) return '1 min ago';
+        if (diffMin < 60) return `${diffMin} min ago`;
+        const diffHr = Math.floor(diffMin / 60);
+        if (diffHr === 1) return '1 hr ago';
+        return `${diffHr} hr ago`;
+      })()
+    : null;
+
+  return (
+    <div className="flex flex-col gap-1">
+      <div className="bg-black/30 rounded-xl aspect-video overflow-hidden border border-white/5 relative">
+        {loading ? (
+          <div className="w-full h-full flex items-center justify-center">
+            <div className="w-6 h-6 border-2 border-[#79C24C]/30 border-t-[#79C24C] rounded-full animate-spin" />
+          </div>
+        ) : imageUrl ? (
+          <Image
+            src={imageUrl}
+            alt="TV screenshot"
+            fill
+            className="object-cover"
+            unoptimized
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center text-white/20 text-4xl">
+            📺
+          </div>
+        )}
+      </div>
+      {lastUpdatedText && (
+        <p className="text-white/25 text-xs text-right">{t('updatedAt', { time: lastUpdatedText })}</p>
+      )}
     </div>
   );
 }
@@ -667,10 +817,12 @@ function TvCard({
   onSettings,
   onScreenshot,
   onRemove,
+  onShare,
   isEditingLocation,
   onEditLocation,
   onCancelLocation,
   onSaveLocation,
+  token,
 }: {
   device: TvDeviceExtended;
   isRenaming: boolean;
@@ -681,13 +833,16 @@ function TvCard({
   onSettings: () => void;
   onScreenshot: () => void;
   onRemove: () => void;
+  onShare?: () => void;
   isEditingLocation: boolean;
   onEditLocation: () => void;
   onCancelLocation: () => void;
   onSaveLocation: (loc: { lat: number; lng: number; city: string; country: string; state?: string; timezone: string }) => void;
+  token: string;
 }) {
+  const t = useTranslations('tv');
   const displayModeLabel = { home: 'Prayer Times', masjid: 'Masjid Display', ambient: 'Ambient Mode' }[device.currentDisplay] ?? device.currentDisplay;
-  const lastSeenText = device.isOnline ? 'Online now' : `Last seen ${new Date(device.lastSeen).toLocaleString()}`;
+  const lastSeenText = device.isOnline ? t('online') : `${new Date(device.lastSeen).toLocaleString()}`;
   const locationLabel = device.locationCity
     ? `${device.locationCity}${device.locationCountry ? ', ' + device.locationCountry : ''}`
     : null;
@@ -699,7 +854,7 @@ function TvCard({
         <div className="flex-1 min-w-0">
           {isRenaming ? (
             <div className="flex gap-2">
-              <label htmlFor={`rename-${device.id}`} className="sr-only">New TV name</label>
+              <label htmlFor={`rename-${device.id}`} className="sr-only">{t('newTvName')}</label>
               <input
                 id={`rename-${device.id}`}
                 className="bg-black/30 border border-[#79C24C]/40 rounded-lg px-3 py-1 text-white text-lg flex-1 min-w-0"
@@ -715,16 +870,26 @@ function TvCard({
           ) : (
             <h3 className="text-white font-bold text-xl truncate">{device.deviceName}</h3>
           )}
-          <p className="text-white/50 text-sm mt-1 truncate">{device.deviceModel}</p>
+          <div className="flex items-center gap-2 mt-1 flex-wrap">
+            <p className="text-white/50 text-sm truncate">{device.deviceModel}</p>
+            {device.isShared && (
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-[#1E5E2F]/40 border border-[#79C24C]/20 rounded-full text-[#79C24C] text-xs font-medium whitespace-nowrap">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+                  <polyline points="16 6 12 2 8 6"/>
+                  <line x1="12" y1="2" x2="12" y2="15"/>
+                </svg>
+                Shared with you
+              </span>
+            )}
+          </div>
         </div>
         {/* Status dot */}
         <div className={`w-3 h-3 rounded-full mt-2 flex-shrink-0 ${device.isOnline ? 'bg-green-400' : 'bg-white/20'}`} title={lastSeenText} />
       </div>
 
-      {/* Screenshot placeholder */}
-      <div className="bg-black/30 rounded-xl aspect-video flex items-center justify-center text-white/20 text-4xl border border-white/5">
-        📺
-      </div>
+      {/* Screenshot */}
+      <ScreenshotPreview deviceId={device.id} token={token} />
 
       {/* Location — always visible, edit inline */}
       <div className="border border-[#79C24C]/10 rounded-xl p-3 bg-black/20">
@@ -741,7 +906,7 @@ function TvCard({
               {locationLabel ? (
                 <span className="text-white/70 text-sm truncate">{locationLabel}</span>
               ) : (
-                <span className="text-amber-400/70 text-sm">No location set</span>
+                <span className="text-amber-400/70 text-sm">{t('noLocationSet')}</span>
               )}
             </div>
             <button
@@ -780,17 +945,31 @@ function TvCard({
             type="button"
             onClick={onScreenshot}
             className="px-3 bg-white/5 hover:bg-white/10 text-white/60 rounded-xl py-2 text-sm transition-colors"
-            title="View current screen"
-            aria-label="View current screen"
+            title={t('viewCurrentScreen')}
+            aria-label={t('viewCurrentScreen')}
           >
             🖥️
+          </button>
+        )}
+        {!device.isShared && onShare && (
+          <button
+            type="button"
+            onClick={onShare}
+            className="px-3 bg-white/5 hover:bg-white/10 text-white/60 hover:text-[#C9F27A] rounded-xl py-2 text-sm transition-colors"
+            aria-label={t('shareTV')}
+            title={t('shareTV')}
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+            </svg>
           </button>
         )}
         <button
           type="button"
           onClick={onRename}
           className="px-3 bg-white/5 hover:bg-white/10 text-white/60 rounded-xl py-2 text-sm transition-colors"
-          aria-label="Rename TV"
+          aria-label={t('renameTv')}
         >
           ✏️
         </button>
@@ -798,7 +977,7 @@ function TvCard({
           type="button"
           onClick={onRemove}
           className="px-3 bg-white/5 hover:bg-red-500/10 text-white/40 hover:text-red-400 rounded-xl py-2 text-sm transition-colors"
-          aria-label="Remove TV"
+          aria-label={t('removeTv')}
         >
           ✕
         </button>

@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import type { PrayCalcSession } from "@/lib/session";
@@ -82,6 +83,36 @@ function PremiumItem({
 
 export default function AccountDashboard({ session, settings, onLogout }: Props) {
   const t = useTranslations("ui");
+  const [deleteState, setDeleteState] = useState<"idle" | "confirm" | "deleting">("idle");
+  const [deleteError, setDeleteError] = useState("");
+
+  async function handleDeleteAccount() {
+    if (deleteState === "idle") {
+      setDeleteState("confirm");
+      return;
+    }
+    if (deleteState !== "confirm") return;
+
+    setDeleteState("deleting");
+    setDeleteError("");
+    try {
+      const res = await fetch("/api/account/delete", {
+        method: "POST",
+        headers: session.tokens?.accessToken
+          ? { Authorization: `Bearer ${session.tokens.accessToken}` }
+          : {},
+      });
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        throw new Error((body as { error?: string }).error || "Failed to delete account.");
+      }
+      // Account deleted — log out and go home.
+      onLogout();
+    } catch (err) {
+      setDeleteError(err instanceof Error ? err.message : "Failed to delete account.");
+      setDeleteState("idle");
+    }
+  }
 
   const {
     lightMode,
@@ -210,7 +241,7 @@ export default function AccountDashboard({ session, settings, onLogout }: Props)
         </div>
       )}
 
-      {/* Sign out */}
+      {/* Sign out + delete */}
       <div className="dashboard-footer">
         <button type="button" className="dashboard-signout-btn" onClick={onLogout}>
           {t("signOut")}
@@ -218,6 +249,51 @@ export default function AccountDashboard({ session, settings, onLogout }: Props)
         <Link href="/" className="account-back">
           &larr; {t("backHome")}
         </Link>
+      </div>
+
+      {/* Delete account */}
+      <div className="dashboard-danger-zone">
+        {deleteError && (
+          <p className="dashboard-delete-error">{deleteError}</p>
+        )}
+        {deleteState === "confirm" ? (
+          <div className="dashboard-delete-confirm">
+            <p className="dashboard-delete-confirm-text">
+              This will permanently delete your account and all associated data. This cannot be undone.
+            </p>
+            <div className="dashboard-delete-confirm-actions">
+              <button
+                type="button"
+                className="dashboard-delete-confirm-btn"
+                onClick={handleDeleteAccount}
+                disabled={deleteState !== "confirm"}
+              >
+                Yes, delete my account
+              </button>
+              <button
+                type="button"
+                className="dashboard-delete-cancel-btn"
+                onClick={() => setDeleteState("idle")}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        ) : (
+          <button
+            type="button"
+            className="dashboard-delete-btn"
+            onClick={handleDeleteAccount}
+            disabled={deleteState === "deleting"}
+          >
+            {deleteState === "deleting" ? "Deleting\u2026" : "Delete my data"}
+          </button>
+        )}
+        <div className="dashboard-legal-links">
+          <Link href="/privacy" className="dashboard-legal-link">Privacy Policy</Link>
+          <span className="dashboard-legal-sep">&middot;</span>
+          <Link href="/terms" className="dashboard-legal-link">Terms of Service</Link>
+        </div>
       </div>
 
     </div>

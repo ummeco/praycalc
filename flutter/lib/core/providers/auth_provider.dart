@@ -89,10 +89,16 @@ class AuthNotifier extends Notifier<AuthData> {
   }) async {
     state = state.copyWith(isLoading: true, error: null);
     try {
-      await AuthService.instance.signIn(email: email, password: password);
+      // ARCH-A1: 30-second timeout so a hung auth server doesn't freeze the UI.
+      await AuthService.instance
+          .signIn(email: email, password: password)
+          .timeout(const Duration(seconds: 30));
       return true;
     } on AuthException catch (e) {
       state = state.copyWith(isLoading: false, error: e.message);
+      return false;
+    } on TimeoutException {
+      state = state.copyWith(isLoading: false, error: 'Request timed out. Try again.');
       return false;
     } catch (e) {
       state = state.copyWith(
@@ -111,14 +117,18 @@ class AuthNotifier extends Notifier<AuthData> {
   }) async {
     state = state.copyWith(isLoading: true, error: null);
     try {
+      // ARCH-A1: 30-second timeout so a hung auth server doesn't freeze the UI.
       await AuthService.instance.signUp(
         email: email,
         password: password,
         displayName: displayName,
-      );
+      ).timeout(const Duration(seconds: 30));
       return true;
     } on AuthException catch (e) {
       state = state.copyWith(isLoading: false, error: e.message);
+      return false;
+    } on TimeoutException {
+      state = state.copyWith(isLoading: false, error: 'Request timed out. Try again.');
       return false;
     } catch (e) {
       state = state.copyWith(
@@ -177,7 +187,7 @@ class AuthNotifier extends Notifier<AuthData> {
     } on AuthException catch (e) {
       state = state.copyWith(isLoading: false, error: e.message);
       return false;
-    } catch (_) {
+    } catch (e, st) {
       state = state.copyWith(isLoading: false, error: 'Apple sign in failed');
       return false;
     }
@@ -215,7 +225,7 @@ class AuthNotifier extends Notifier<AuthData> {
     } on AuthException catch (e) {
       state = state.copyWith(isLoading: false, error: e.message);
       return false;
-    } catch (_) {
+    } catch (e, st) {
       state = state.copyWith(isLoading: false, error: 'Google sign in failed');
       return false;
     }

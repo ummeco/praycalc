@@ -10,7 +10,10 @@ import '../../core/theme/app_theme.dart';
 // PIN screen for kiosk mode (TV2-11.2)
 // ---------------------------------------------------------------------------
 
-String _hashPin(String pin) => sha256.convert(utf8.encode(pin)).toString();
+/// SEC-A4: Salt the PIN hash with the device ID prefix.
+/// Format: sha256("praycalc_kiosk_${deviceId}_$pin")
+String _hashPin(String pin, {String deviceId = ''}) =>
+    sha256.convert(utf8.encode('praycalc_kiosk_${deviceId}_$pin')).toString();
 
 /// Full-screen D-pad-navigable 4-digit PIN entry.
 ///

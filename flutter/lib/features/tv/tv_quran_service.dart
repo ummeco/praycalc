@@ -184,7 +184,8 @@ class TvQuranService extends ChangeNotifier {
       _isPlaying = true;
       _verseController.add(_currentVerse);
       notifyListeners();
-    } catch (_) {
+    } catch (e, st) {
+      debugPrint('[TvQuranService] play error: $e\n$st');
       _isPlaying = false;
       notifyListeners();
     }

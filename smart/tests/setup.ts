@@ -23,6 +23,10 @@ const freeTierStore = new Map<string, number>(); // "identifier:date" => count
 const integrationStore = new Map<string, any>();
 const deviceStore = new Map<string, any>();
 const locationStore = new Map<string, any>();
+// TV device and share stores (used by SHARE-3 / SHARE-4 tests)
+export const tvDeviceStore = new Map<string, any>(); // deviceId => { id, user_id }
+export const tvShareStore = new Map<string, any>();  // `${deviceId}:${sharedUserId}` => record
+export const userProfileStore = new Map<string, any>(); // email => { id, email }
 
 // Reset stores and rate limiter between tests for isolation
 beforeEach(() => {
@@ -32,6 +36,9 @@ beforeEach(() => {
   integrationStore.clear();
   deviceStore.clear();
   locationStore.clear();
+  tvDeviceStore.clear();
+  tvShareStore.clear();
+  userProfileStore.clear();
   resetRateLimiter();
 });
 
@@ -177,6 +184,53 @@ function mockHasura(query: string, variables: Record<string, any>): any {
     const defaultLoc = { lat: 40.7128, lng: -74.006, timezone: 'America/New_York', is_home: true };
     const rows = [loc || defaultLoc];
     return { data: { pc_saved_locations: rows } };
+  }
+
+  // ─── TV devices (ownership checks for settings, share/unshare) ──────
+  if (
+    query.includes('CheckTvDeviceOwnership') ||
+    query.includes('CheckTvDeviceOwnerForShare') ||
+    query.includes('CheckTvDeviceOwnerForUnshare') ||
+    query.includes('CheckTvDeviceOwnerForComplete') ||
+    query.includes('GetTvDeviceOwner')
+  ) {
+    const { deviceId, userId } = variables;
+    const device = tvDeviceStore.get(deviceId);
+    const rows = device && device.user_id === userId
+      ? [{ id: deviceId, settings_json: device.settings_json ?? {} }]
+      : [];
+    return { data: { pc_tv_devices: rows } };
+  }
+
+  // ─── User profile lookup by email (for sharing) ───────────────────────
+  if (query.includes('LookupUserByEmail')) {
+    const profile = userProfileStore.get(variables.email);
+    const rows = profile ? [profile] : [];
+    return { data: { umm_user_profiles: rows } };
+  }
+
+  // ─── TV share upsert ──────────────────────────────────────────────────
+  if (query.includes('UpsertTvShare') || query.includes('insert_pc_tv_shares_one')) {
+    const { deviceId, sharedWithUserId, permissions } = variables;
+    const key = `${deviceId}:${sharedWithUserId}`;
+    tvShareStore.set(key, { device_id: deviceId, shared_with_user_id: sharedWithUserId, permissions });
+    return { data: { insert_pc_tv_shares_one: { device_id: deviceId, shared_with_user_id: sharedWithUserId } } };
+  }
+
+  // ─── TV share delete ──────────────────────────────────────────────────
+  if (query.includes('DeleteTvShare') || query.includes('delete_pc_tv_shares')) {
+    const { deviceId, sharedWithUserId } = variables;
+    const key = `${deviceId}:${sharedWithUserId}`;
+    const existed = tvShareStore.has(key);
+    tvShareStore.delete(key);
+    return { data: { delete_pc_tv_shares: { affected_rows: existed ? 1 : 0 } } };
+  }
+
+  // ─── TV shares list (used by GET /api/v1/tv) ─────────────────────────
+  if (query.includes('pc_tv_shares')) {
+    const userId = variables.userId;
+    const rows = [...tvShareStore.values()].filter(s => s.shared_with_user_id === userId);
+    return { data: { pc_tv_shares: rows } };
   }
 
   // ─── Fallback ────────────────────────────────────────────────────────

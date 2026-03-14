@@ -1,8 +1,10 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
@@ -41,15 +43,24 @@ class TvOnboardingScreen extends StatefulWidget {
 
 class _TvOnboardingScreenState extends State<TvOnboardingScreen>
     with SingleTickerProviderStateMixin {
+  static const _storage = FlutterSecureStorage();
+
   late final AnimationController _enterCtrl;
   late final Animation<double> _enterFade;
   late final Animation<Offset> _enterSlide;
 
-  // Code entry
+  // Code entry (manual — user types code from app/web)
   final _codeController = TextEditingController();
   final _codeFocus = FocusNode();
   bool _activating = false;
   String? _codeError;
+
+  // UX-A6: RFC 8628 device code — TV shows code, user enters it at praycalc.com/activate
+  String? _deviceCode;   // opaque polling token
+  String? _userCode;     // displayable code e.g. "A1B2-C3D4"
+  int _countdown = 0;    // seconds remaining
+  Timer? _countdownTimer;
+  Timer? _pollTimer;
 
   // Google sign-in
   bool _googleLoading = false;
@@ -75,6 +86,7 @@ class _TvOnboardingScreenState extends State<TvOnboardingScreen>
       end: Offset.zero,
     ).animate(CurvedAnimation(parent: _enterCtrl, curve: Curves.easeOut));
     _enterCtrl.forward();
+    _requestDeviceCode();
   }
 
   @override
@@ -85,7 +97,83 @@ class _TvOnboardingScreenState extends State<TvOnboardingScreen>
     _connectFocus.dispose();
     _googleFocus.dispose();
     _skipFocus.dispose();
+    _countdownTimer?.cancel();
+    _pollTimer?.cancel();
     super.dispose();
+  }
+
+  // ---------------------------------------------------------------------------
+  // UX-A6: RFC 8628 device code helpers
+  // ---------------------------------------------------------------------------
+
+  Future<void> _requestDeviceCode() async {
+    _countdownTimer?.cancel();
+    _pollTimer?.cancel();
+    try {
+      final resp = await http.post(
+        Uri.parse('${_smartBase()}/auth/device'),
+        headers: {'Content-Type': 'application/json'},
+      ).timeout(const Duration(seconds: 10));
+      if (!mounted) return;
+      if (resp.statusCode == 200) {
+        final body = jsonDecode(resp.body) as Map<String, dynamic>;
+        setState(() {
+          _deviceCode = body['device_code'] as String?;
+          _userCode = body['user_code'] as String?;
+          _countdown = (body['expires_in'] as num? ?? 300).toInt();
+        });
+        _startCountdown();
+        _startPolling();
+      }
+    } catch (e, st) {
+      debugPrint('[TvOnboarding] device code request failed: $e\n$st');
+    }
+  }
+
+  void _startCountdown() {
+    _countdownTimer?.cancel();
+    _countdownTimer = Timer.periodic(const Duration(seconds: 1), (_) {
+      if (!mounted) return;
+      setState(() => _countdown--);
+      if (_countdown <= 0) {
+        _countdownTimer?.cancel();
+        _pollTimer?.cancel();
+        // Auto-request a fresh code when this one expires.
+        _requestDeviceCode();
+      }
+    });
+  }
+
+  void _startPolling() {
+    _pollTimer?.cancel();
+    final dc = _deviceCode;
+    if (dc == null) return;
+    _pollTimer = Timer.periodic(const Duration(seconds: 5), (_) async {
+      if (!mounted || _deviceCode != dc) return;
+      try {
+        final resp = await http.get(
+          Uri.parse('${_smartBase()}/auth/poll?device_code=$dc'),
+        ).timeout(const Duration(seconds: 8));
+        if (!mounted) return;
+        final body = jsonDecode(resp.body) as Map<String, dynamic>;
+        final status = body['status'] as String?;
+        if (status == 'authorized') {
+          _pollTimer?.cancel();
+          _countdownTimer?.cancel();
+          final jwt = body['jwt'] as String?;
+          if (jwt != null && jwt.isNotEmpty) {
+            await _saveSession(jwt);
+            if (mounted) _onPaired();
+          }
+        } else if (status == 'expired') {
+          _pollTimer?.cancel();
+          _countdownTimer?.cancel();
+          _requestDeviceCode();
+        }
+      } catch (e, st) {
+        debugPrint('[TvOnboarding] poll error: $e\n$st');
+      }
+    });
   }
 
   // ---------------------------------------------------------------------------
@@ -93,8 +181,8 @@ class _TvOnboardingScreenState extends State<TvOnboardingScreen>
   // ---------------------------------------------------------------------------
 
   Future<void> _saveSession(String jwt) async {
+    await _storage.write(key: _kTvSessionJwt, value: jwt);
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_kTvSessionJwt, jwt);
     await prefs.setString(
       'tv_session_expiry',
       DateTime.now().add(const Duration(days: 30)).toIso8601String(),
@@ -148,7 +236,7 @@ class _TvOnboardingScreenState extends State<TvOnboardingScreen>
           _codeFocus.requestFocus();
         }
       }
-    } catch (_) {
+    } catch (e, st) {
       if (mounted) {
         setState(() {
           _activating = false;
@@ -451,15 +539,103 @@ class _TvOnboardingScreenState extends State<TvOnboardingScreen>
   // ── Code entry panel ──────────────────────────────────────────────────────
 
   Widget _buildCodePanel() {
+    // UX-A6: Format countdown as M:SS
+    final minutes = _countdown ~/ 60;
+    final seconds = _countdown % 60;
+    final countdownStr = '$minutes:${seconds.toString().padLeft(2, '0')}';
+    final codeExpired = _countdown <= 0;
+
     return _Panel(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
+          // UX-A6: Auto-generated device code (RFC 8628) — shown on TV for user to enter
+          // at praycalc.com/activate or in the PrayCalc mobile app.
+          if (_userCode != null) ...[
+            Text(
+              'TV Code',
+              style: TextStyle(
+                color: Colors.white.withValues(alpha: 0.9),
+                fontSize: 19,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              'Enter this code at praycalc.com/activate',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.white.withValues(alpha: 0.4),
+                fontSize: 13,
+              ),
+            ),
+            const SizedBox(height: 16),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+              decoration: BoxDecoration(
+                color: PrayCalcColors.dark,
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(
+                  color: codeExpired
+                      ? Colors.white12
+                      : PrayCalcColors.mid.withValues(alpha: 0.5),
+                  width: 1.5,
+                ),
+              ),
+              child: Text(
+                codeExpired ? '••••-••••' : _userCode!,
+                style: TextStyle(
+                  color: codeExpired
+                      ? Colors.white24
+                      : PrayCalcColors.light,
+                  fontSize: 36,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 4,
+                  fontFeatures: const [FontFeature.tabularFigures()],
+                ),
+              ),
+            ),
+            const SizedBox(height: 8),
+            // Countdown or "refreshing" state
+            if (codeExpired)
+              Text(
+                'Refreshing code…',
+                style: TextStyle(
+                  color: Colors.white38,
+                  fontSize: 13,
+                ),
+              )
+            else
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.timer_outlined,
+                      size: 14,
+                      color: _countdown < 60
+                          ? Colors.orangeAccent
+                          : Colors.white38),
+                  const SizedBox(width: 4),
+                  Text(
+                    'Expires in $countdownStr',
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: _countdown < 60
+                          ? Colors.orangeAccent
+                          : Colors.white38,
+                    ),
+                  ),
+                ],
+              ),
+            const SizedBox(height: 20),
+            const Divider(color: Colors.white10),
+            const SizedBox(height: 14),
+          ],
+
           Text(
-            'Use app code',
+            'Or enter app code',
             style: TextStyle(
-              color: Colors.white.withValues(alpha: 0.9),
-              fontSize: 19,
+              color: Colors.white.withValues(alpha: _userCode != null ? 0.5 : 0.9),
+              fontSize: _userCode != null ? 15 : 19,
               fontWeight: FontWeight.w600,
             ),
           ),

@@ -102,6 +102,16 @@ const nextConfig: NextConfig = {
         source: "/(.*)",
         headers: securityHeaders,
       },
+      {
+        // LINK-C1: iOS Universal Links — AASA must be served as application/json
+        // without redirect. Next.js public/ files serve correctly but we add an
+        // explicit Content-Type so Apple's CDN caches the right MIME type.
+        source: "/.well-known/apple-app-site-association",
+        headers: [
+          { key: "Content-Type", value: "application/json" },
+          { key: "Cache-Control", value: "public, max-age=3600" },
+        ],
+      },
     ];
   },
 };

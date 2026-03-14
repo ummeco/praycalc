@@ -630,6 +630,24 @@
   },
   "statsShareBreakdown": "Weekly breakdown:",
 
+  "statsHeatmapTitle": "Year at a Glance",
+  "statsHeatmapNoData": "No prayers logged for this day",
+  "statsHeatmapDetail": "{count} / 5 prayers completed",
+  "@statsHeatmapDetail": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "statsDailyGoalTitle": "Daily Prayer Goal",
+  "statsDailyGoalLabel": "{goal} prayers / day",
+  "@statsDailyGoalLabel": {
+    "placeholders": {
+      "goal": { "type": "int" }
+    }
+  },
+  "statsGoalStreak": "Goal Streak",
+  "statsBestStreak": "Best Streak",
+
   "aboutTitle": "About PrayCalc",
   "aboutWebsite": "Website",
   "aboutContact": "Contact",
@@ -1018,5 +1036,27 @@
   "tvPairingBackToMyTvs": "Back to My TVs",
   "tvPairingTimeout": "Request timed out. Is the TV on and connected?",
   "tvPairingServerError": "Could not connect to server.",
-  "tvPairingSignInRequired": "Sign in to your account before pairing a TV."
+  "tvPairingSignInRequired": "Sign in to your account before pairing a TV.",
+
+  "tvJumuahGreeting": "Jumu'ah Mubarak",
+
+  "tvChildFajrExplanation": "Fajr is the morning prayer. We wake up before sunrise to thank Allah for a new day!",
+  "tvChildFajrFunFact": "The Prophet \u202bﷺ\u202c said: \u201cThe best prayer in the sight of Allah is Fajr on Friday.\u201d (Bukhari)",
+  "tvChildSunriseExplanation": "After Fajr, the sun rises. This is a blessed time to make dhikr and read Quran.",
+  "tvChildSunriseFunFact": "Sitting after Fajr until sunrise and praying two rak\u2019ahs earns the reward of a full Hajj! (Tirmidhi)",
+  "tvChildDhuhrExplanation": "Dhuhr is the midday prayer. The sun is highest in the sky, and we pause to remember Allah.",
+  "tvChildDhuhrFunFact": "The Prophet \u202bﷺ\u202c loved to pray Dhuhr early when the sun begins to decline. (Muslim)",
+  "tvChildAsrExplanation": "Asr is the afternoon prayer. Allah swears by this time in Surah Al-Asr \u2014 it is very important!",
+  "tvChildAsrFunFact": "Missing Asr prayer is like losing one\u2019s family and wealth. That is how much Allah loves it! (Bukhari)",
+  "tvChildMaghribExplanation": "Maghrib is the sunset prayer. When the sun sets, we thank Allah for the beautiful day.",
+  "tvChildMaghribFunFact": "The angels of the day and night meet at Fajr and Maghrib. How special! (Bukhari)",
+  "tvChildIshaExplanation": "Isha is the night prayer. We end our day by thanking Allah before we sleep.",
+  "tvChildIshaFunFact": "Praying Isha and Fajr in congregation is like praying all night long! (Muslim)",
+
+  "desktopOpen": "Open PrayCalc",
+  "desktopQuit": "Quit PrayCalc",
+  "desktopSettings": "Settings\u2026",
+  "desktopTvDisplays": "TV Displays\u2026",
+  "desktopTrayTooltip": "PrayCalc - Prayer Times",
+  "desktopNextPrayer": "Next Prayer\u2026"
 }

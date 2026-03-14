@@ -22,6 +22,7 @@ class PrayerDataListenerService : WearableListenerService() {
                         putString("asr", dataMap.getString("asr"))
                         putString("maghrib", dataMap.getString("maghrib"))
                         putString("isha", dataMap.getString("isha"))
+                        putString("location", dataMap.getString("location") ?: "")
                         apply()
                     }
                     TileService.getUpdater(this).requestUpdate(PrayCountdownTile::class.java)

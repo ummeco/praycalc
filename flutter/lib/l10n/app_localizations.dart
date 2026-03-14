@@ -2442,6 +2442,48 @@ abstract class AppLocalizations {
   /// **'Weekly breakdown:'**
   String get statsShareBreakdown;
 
+  /// No description provided for @statsHeatmapTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Year at a Glance'**
+  String get statsHeatmapTitle;
+
+  /// No description provided for @statsHeatmapNoData.
+  ///
+  /// In en, this message translates to:
+  /// **'No prayers logged for this day'**
+  String get statsHeatmapNoData;
+
+  /// No description provided for @statsHeatmapDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} / 5 prayers completed'**
+  String statsHeatmapDetail(int count);
+
+  /// No description provided for @statsDailyGoalTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily Prayer Goal'**
+  String get statsDailyGoalTitle;
+
+  /// No description provided for @statsDailyGoalLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'{goal} prayers / day'**
+  String statsDailyGoalLabel(int goal);
+
+  /// No description provided for @statsGoalStreak.
+  ///
+  /// In en, this message translates to:
+  /// **'Goal Streak'**
+  String get statsGoalStreak;
+
+  /// No description provided for @statsBestStreak.
+  ///
+  /// In en, this message translates to:
+  /// **'Best Streak'**
+  String get statsBestStreak;
+
   /// No description provided for @aboutTitle.
   ///
   /// In en, this message translates to:
@@ -4175,6 +4217,120 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Sign in to your account before pairing a TV.'**
   String get tvPairingSignInRequired;
+
+  /// No description provided for @tvJumuahGreeting.
+  ///
+  /// In en, this message translates to:
+  /// **'Jumu\'ah Mubarak'**
+  String get tvJumuahGreeting;
+
+  /// No description provided for @tvChildFajrExplanation.
+  ///
+  /// In en, this message translates to:
+  /// **'Fajr is the morning prayer. We wake up before sunrise to thank Allah for a new day!'**
+  String get tvChildFajrExplanation;
+
+  /// No description provided for @tvChildFajrFunFact.
+  ///
+  /// In en, this message translates to:
+  /// **'The Prophet ‫ﷺ‬ said: “The best prayer in the sight of Allah is Fajr on Friday.” (Bukhari)'**
+  String get tvChildFajrFunFact;
+
+  /// No description provided for @tvChildSunriseExplanation.
+  ///
+  /// In en, this message translates to:
+  /// **'After Fajr, the sun rises. This is a blessed time to make dhikr and read Quran.'**
+  String get tvChildSunriseExplanation;
+
+  /// No description provided for @tvChildSunriseFunFact.
+  ///
+  /// In en, this message translates to:
+  /// **'Sitting after Fajr until sunrise and praying two rak’ahs earns the reward of a full Hajj! (Tirmidhi)'**
+  String get tvChildSunriseFunFact;
+
+  /// No description provided for @tvChildDhuhrExplanation.
+  ///
+  /// In en, this message translates to:
+  /// **'Dhuhr is the midday prayer. The sun is highest in the sky, and we pause to remember Allah.'**
+  String get tvChildDhuhrExplanation;
+
+  /// No description provided for @tvChildDhuhrFunFact.
+  ///
+  /// In en, this message translates to:
+  /// **'The Prophet ‫ﷺ‬ loved to pray Dhuhr early when the sun begins to decline. (Muslim)'**
+  String get tvChildDhuhrFunFact;
+
+  /// No description provided for @tvChildAsrExplanation.
+  ///
+  /// In en, this message translates to:
+  /// **'Asr is the afternoon prayer. Allah swears by this time in Surah Al-Asr — it is very important!'**
+  String get tvChildAsrExplanation;
+
+  /// No description provided for @tvChildAsrFunFact.
+  ///
+  /// In en, this message translates to:
+  /// **'Missing Asr prayer is like losing one’s family and wealth. That is how much Allah loves it! (Bukhari)'**
+  String get tvChildAsrFunFact;
+
+  /// No description provided for @tvChildMaghribExplanation.
+  ///
+  /// In en, this message translates to:
+  /// **'Maghrib is the sunset prayer. When the sun sets, we thank Allah for the beautiful day.'**
+  String get tvChildMaghribExplanation;
+
+  /// No description provided for @tvChildMaghribFunFact.
+  ///
+  /// In en, this message translates to:
+  /// **'The angels of the day and night meet at Fajr and Maghrib. How special! (Bukhari)'**
+  String get tvChildMaghribFunFact;
+
+  /// No description provided for @tvChildIshaExplanation.
+  ///
+  /// In en, this message translates to:
+  /// **'Isha is the night prayer. We end our day by thanking Allah before we sleep.'**
+  String get tvChildIshaExplanation;
+
+  /// No description provided for @tvChildIshaFunFact.
+  ///
+  /// In en, this message translates to:
+  /// **'Praying Isha and Fajr in congregation is like praying all night long! (Muslim)'**
+  String get tvChildIshaFunFact;
+
+  /// No description provided for @desktopOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open PrayCalc'**
+  String get desktopOpen;
+
+  /// No description provided for @desktopQuit.
+  ///
+  /// In en, this message translates to:
+  /// **'Quit PrayCalc'**
+  String get desktopQuit;
+
+  /// No description provided for @desktopSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings…'**
+  String get desktopSettings;
+
+  /// No description provided for @desktopTvDisplays.
+  ///
+  /// In en, this message translates to:
+  /// **'TV Displays…'**
+  String get desktopTvDisplays;
+
+  /// No description provided for @desktopTrayTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'PrayCalc - Prayer Times'**
+  String get desktopTrayTooltip;
+
+  /// No description provided for @desktopNextPrayer.
+  ///
+  /// In en, this message translates to:
+  /// **'Next Prayer…'**
+  String get desktopNextPrayer;
 }
 
 class _AppLocalizationsDelegate

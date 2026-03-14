@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -11,6 +12,7 @@ import 'package:hijri/hijri_calendar.dart';
 import 'package:pray_calc_dart/pray_calc_dart.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
+import '../../core/platform/device_tier.dart';
 import '../../core/providers/geo_provider.dart';
 import '../../core/providers/prayer_provider.dart';
 import '../../core/providers/ramadan_provider.dart';
@@ -83,6 +85,8 @@ class TvHomeScreen extends ConsumerStatefulWidget {
 }
 
 class _TvHomeScreenState extends ConsumerState<TvHomeScreen> {
+  static const _storage = FlutterSecureStorage();
+
   late Timer _ticker;
   final _focusNode = FocusNode();
   DateTime _now = DateTime.now();
@@ -144,10 +148,24 @@ class _TvHomeScreenState extends ConsumerState<TvHomeScreen> {
   StreamSubscription<TvSseEvent>? _sseSub;
   final Set<String> _completedPrayers = {};
 
+  // ── UX-A9: SSE connection indicator (debug mode only) ─────────────────────
+  bool _sseConnected = false;
+
   // ── Settings polling — picks up location + commands pushed from web dashboard
   Timer? _settingsPollTimer;
   /// Hash of the last executed quranCommand — prevents re-executing on each poll.
   String? _lastQuranCommandHash;
+
+  // ── UX-A8: Location-required state — shown after 60s of null city polls ────
+  DateTime? _firstNullCityPoll;
+  bool _showLocationRequired = false;
+
+  // ── BUG-A6: Heartbeat consecutive failure tracking ─────────────────────────
+  int _heartbeatFailures = 0;
+  bool get _showConnectionBadge => _heartbeatFailures >= 3;
+
+  // ── UX-A7: JWT near-expiry banner ──────────────────────────────────────────
+  bool _jwtNearExpiry = false;
 
   // ── Quran background mode — set by remote play command ────────────────────
   /// 'keep-video': play Quran audio over existing video background.
@@ -196,7 +214,7 @@ class _TvHomeScreenState extends ConsumerState<TvHomeScreen> {
       _hideExitHint();
       try {
         await TvLauncherService.launchStockLauncher();
-      } catch (_) {
+      } catch (e, st) {
         // Channel not available on non-TV builds — safe to ignore.
       }
     } else {
@@ -315,7 +333,7 @@ class _TvHomeScreenState extends ConsumerState<TvHomeScreen> {
             jsonDecode(utf8.decode(base64Url.decode(padded))) as Map<String, dynamic>;
         deviceId = payload['device_id'] as String?;
       }
-    } catch (_) {
+    } catch (e, st) {
       // Malformed JWT — skip SSE.
     }
     if (deviceId == null || deviceId.isEmpty) return;
@@ -332,7 +350,11 @@ class _TvHomeScreenState extends ConsumerState<TvHomeScreen> {
     );
     _sseService = svc;
     _sseSub = svc.events.listen((event) {
-      if (event is TvSseSettingsEvent && mounted) {
+      if (event is TvSseConnectedEvent && mounted) {
+        setState(() => _sseConnected = true);
+      } else if (event is TvSseDisconnectedEvent && mounted) {
+        setState(() => _sseConnected = false);
+      } else if (event is TvSseSettingsEvent && mounted) {
         // Merge incoming settings patch into current state — never replace entirely,
         // because the SSE payload may be a partial push missing layoutSettings etc.
         try {
@@ -347,7 +369,7 @@ class _TvHomeScreenState extends ConsumerState<TvHomeScreen> {
               ..remove('location_state')
               ..remove('location_timezone'));
           ref.read(tvSettingsProvider.notifier).update(TvSettings.fromJson(merged));
-        } catch (_) {
+        } catch (e, st) {
           // Malformed — keep existing settings.
         }
         // Apply city display name override without changing prayer time coordinates.
@@ -395,6 +417,9 @@ class _TvHomeScreenState extends ConsumerState<TvHomeScreen> {
   // ─── Settings polling — picks up location pushed from web dashboard ────────
 
   Future<void> _startSettingsPoll() async {
+    // BUG-A7: Always cancel existing timer before creating a new one to prevent
+    // accumulation if _startSettingsPoll() is ever called more than once.
+    _settingsPollTimer?.cancel();
     // Initial poll immediately.
     await _pollSettings();
     // 5s when no city (setup screen visible), 30s when city is set.
@@ -414,6 +439,19 @@ class _TvHomeScreenState extends ConsumerState<TvHomeScreen> {
     final jwt = prefs.getString('tv_session_jwt');
     if (jwt == null || jwt.isEmpty) return;
 
+    // UX-A7: Check if the JWT is within 24h of expiry and show a banner.
+    final expiryStr = prefs.getString('tv_session_expiry');
+    if (expiryStr != null) {
+      final expiry = DateTime.tryParse(expiryStr);
+      if (expiry != null && mounted) {
+        final hoursLeft = expiry.difference(DateTime.now()).inHours;
+        final nearExpiry = hoursLeft <= 24 && hoursLeft >= 0;
+        if (nearExpiry != _jwtNearExpiry) {
+          setState(() => _jwtNearExpiry = nearExpiry);
+        }
+      }
+    }
+
     String? deviceId;
     try {
       final parts = jwt.split('.');
@@ -423,7 +461,10 @@ class _TvHomeScreenState extends ConsumerState<TvHomeScreen> {
             jsonDecode(utf8.decode(base64Url.decode(padded))) as Map<String, dynamic>;
         deviceId = payload['device_id'] as String?;
       }
-    } catch (_) { return; }
+    } catch (e, st) {
+      debugPrint('[TvHome] JWT decode error: $e\n$st');
+      return;
+    }
     if (deviceId == null || deviceId.isEmpty) return;
 
     final isLocal = kIsWeb &&
@@ -445,11 +486,21 @@ class _TvHomeScreenState extends ConsumerState<TvHomeScreen> {
         'location_timezone': city.timezone,
       },
     };
-    http.post(
-      Uri.parse('$smartBase/api/v1/tv/heartbeat'),
-      headers: {'Authorization': 'Bearer $jwt', 'Content-Type': 'application/json'},
-      body: jsonEncode(heartbeatBody),
-    ).ignore();
+    // BUG-A6: Track heartbeat failures so UI can show a connection badge.
+    try {
+      final hbResp = await http.post(
+        Uri.parse('$smartBase/api/v1/tv/heartbeat'),
+        headers: {'Authorization': 'Bearer $jwt', 'Content-Type': 'application/json'},
+        body: jsonEncode(heartbeatBody),
+      ).timeout(const Duration(seconds: 8));
+      if (mounted && hbResp.statusCode == 200 && _heartbeatFailures > 0) {
+        setState(() => _heartbeatFailures = 0);
+      } else if (hbResp.statusCode != 200 && mounted) {
+        setState(() => _heartbeatFailures++);
+      }
+    } catch (e, st) {
+      if (mounted) setState(() => _heartbeatFailures++);
+    }
 
     try {
       final resp = await http.get(
@@ -480,6 +531,20 @@ class _TvHomeScreenState extends ConsumerState<TvHomeScreen> {
         // Persist so the city survives page refreshes (loadLastCity in main).
         await persistCity(city, ref);
         ref.read(cityProvider.notifier).state = city;
+        // UX-A8: City resolved — clear location-required state.
+        if (_showLocationRequired || _firstNullCityPoll != null) {
+          setState(() {
+            _showLocationRequired = false;
+            _firstNullCityPoll = null;
+          });
+        }
+      } else if (ref.read(cityProvider) == null && mounted) {
+        // UX-A8: No city from server and none cached — track how long we've waited.
+        _firstNullCityPoll ??= DateTime.now();
+        final waited = DateTime.now().difference(_firstNullCityPoll!);
+        if (waited.inSeconds >= 60 && !_showLocationRequired) {
+          setState(() => _showLocationRequired = true);
+        }
       }
 
       // City display name override — changes only what's shown on screen without
@@ -511,14 +576,32 @@ class _TvHomeScreenState extends ConsumerState<TvHomeScreen> {
       if (hasDisplaySettings && mounted) {
         try {
           final current = ref.read(tvSettingsProvider);
-          // Merge: start from current TV settings, overlay what the server sent.
-          final merged = Map<String, dynamic>.from(current.toJson())
-            ..addAll(settings..remove('quranCommand')..remove('location_lat')
-              ..remove('location_lng')..remove('location_city')
-              ..remove('location_country')..remove('location_state')
-              ..remove('location_timezone'));
-          ref.read(tvSettingsProvider.notifier).update(TvSettings.fromJson(merged));
-        } catch (_) {
+
+          // ARCH-A5: Conflict resolution — local wins if it was modified more
+          // recently than the server copy. This prevents a stale server
+          // snapshot from overwriting in-flight local edits.
+          final remoteTs = settings['last_modified'] as String?;
+          final remoteModified = remoteTs != null
+              ? DateTime.tryParse(remoteTs)?.toUtc()
+              : null;
+          final localModified = current.lastModified?.toUtc();
+          final localIsNewer = localModified != null &&
+              remoteModified != null &&
+              localModified.isAfter(remoteModified);
+          if (localIsNewer) {
+            // Local settings are fresher — skip this server snapshot.
+            // The next push from the web dashboard will carry the updated
+            // last_modified and will win once the user's edit is committed.
+          } else {
+            // Merge: start from current TV settings, overlay what server sent.
+            final merged = Map<String, dynamic>.from(current.toJson())
+              ..addAll(settings..remove('quranCommand')..remove('location_lat')
+                ..remove('location_lng')..remove('location_city')
+                ..remove('location_country')..remove('location_state')
+                ..remove('location_timezone'));
+            ref.read(tvSettingsProvider.notifier).update(TvSettings.fromJson(merged));
+          }
+        } catch (e, st) {
           // Malformed — keep existing settings.
         }
       }
@@ -558,7 +641,9 @@ class _TvHomeScreenState extends ConsumerState<TvHomeScreen> {
           }
         }
       }
-    } catch (_) { /* network error — try again next cycle */ }
+    } catch (e, st) {
+      debugPrint('[TvHome] settings poll error (will retry): $e\n$st');
+    }
   }
 
   // ─── Adhan alert controller (TV2-8.1, TV2-8.4, TV2-8.5, TV2-8.7) ─────────
@@ -782,10 +867,20 @@ class _TvHomeScreenState extends ConsumerState<TvHomeScreen> {
     final settings = ref.watch(settingsProvider);
     final timesAsync = ref.watch(prayerTimesProvider);
     final ramadan = ref.watch(ramadanProvider);
-    final tvSettings = ref.watch(tvSettingsProvider);
+    final rawTvSettings = ref.watch(tvSettingsProvider);
     // Always watch these providers unconditionally so Riverpod tracks them
     // consistently across builds — avoids assertion when city first becomes non-null.
     final quranSvc = ref.watch(tvQuranServiceProvider);
+
+    // PERF-C1: Disable expensive effects on low-end devices (Fire TV Stick Lite etc.)
+    final isLowEnd = ref.watch(isLowEndDeviceProvider).valueOrNull ?? false;
+    final tvSettings = isLowEnd
+        ? rawTvSettings.copyWith(
+            skyBackgroundEnabled: false,
+            geometricPatternEnabled: false,
+            slideshowTransition: 'crossfade',
+          )
+        : rawTvSettings;
 
     // Keep a single consistent widget tree regardless of city being null or not.
     // _buildBody handles the null case via timesAsync.when(loading:) which
@@ -813,6 +908,152 @@ class _TvHomeScreenState extends ConsumerState<TvHomeScreen> {
             TvModeSwitcher(
               currentPreset: tvSettings.layoutSettings.preset,
               onDismiss: () => setState(() => _modeSwitcherVisible = false),
+            ),
+          // BUG-A6: Connection issue badge — shown after 3 consecutive heartbeat failures.
+          if (_showConnectionBadge)
+            Positioned(
+              top: 16,
+              left: 16,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  color: Colors.black.withAlpha(180),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: Colors.orange.withAlpha(200), width: 1),
+                ),
+                child: const Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.wifi_off_rounded, color: Colors.orange, size: 14),
+                    SizedBox(width: 6),
+                    Text(
+                      'Connection issue',
+                      style: TextStyle(color: Colors.orange, fontSize: 12),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          // UX-A7: JWT near-expiry banner — shown 24h before expiry.
+          if (_jwtNearExpiry)
+            Positioned(
+              top: _showConnectionBadge ? 56 : 16,
+              left: 16,
+              right: 16,
+              child: Center(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withAlpha(200),
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(
+                        color: Colors.amber.withAlpha(200), width: 1),
+                  ),
+                  child: const Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.warning_amber_rounded,
+                          color: Colors.amber, size: 14),
+                      SizedBox(width: 8),
+                      Text(
+                        'Connection expiring soon — open PrayCalc to renew',
+                        style: TextStyle(color: Colors.amber, fontSize: 13),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          // UX-A8: Location required overlay — shown after 60s of continuous null city polls.
+          if (_showLocationRequired)
+            Positioned.fill(
+              child: Container(
+                color: Colors.black.withValues(alpha: 0.75),
+                child: Center(
+                  child: Container(
+                    width: 420,
+                    padding: const EdgeInsets.all(36),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF1A1A2E),
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                          color: Colors.white.withValues(alpha: 0.12), width: 1),
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.location_off_rounded,
+                            color: Colors.white54, size: 48),
+                        const SizedBox(height: 20),
+                        const Text(
+                          'No location set',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 22,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        const Text(
+                          'Visit your dashboard to set a location\nfor accurate prayer times.',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.white60,
+                            fontSize: 15,
+                            height: 1.5,
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 8),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: const Text(
+                            'praycalc.com/dashboard',
+                            style: TextStyle(
+                              color: Colors.black87,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              letterSpacing: 0.3,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          // UX-A9: SSE connection indicator dot — debug builds only.
+          if (kDebugMode)
+            Positioned(
+              left: 12,
+              bottom: 12,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: 8,
+                    height: 8,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: _sseConnected ? Colors.greenAccent : Colors.redAccent,
+                    ),
+                  ),
+                  const SizedBox(width: 5),
+                  Text(
+                    _sseConnected ? 'SSE' : 'SSE off',
+                    style: const TextStyle(
+                      color: Colors.white38,
+                      fontSize: 10,
+                      letterSpacing: 0.5,
+                    ),
+                  ),
+                ],
+              ),
             ),
           // S-3: Attribution text from platform config (bottom-right corner).
           Positioned(
@@ -879,7 +1120,7 @@ class _TvHomeScreenState extends ConsumerState<TvHomeScreen> {
                   quranSvc: quranSvc,
                   quranBackgroundMode: _quranBackgroundMode,
                 );
-              } catch (_) {
+              } catch (e) {
                 return _TvNoLocationLayout(
                   tvSettings: tvSettings,
                   streamMuted: _streamMuted,
@@ -1369,7 +1610,7 @@ class _TvFullAlertOverlayState extends State<_TvFullAlertOverlay>
         'Ramadan', 'Shawwal', "Dhu al-Qi'dah", 'Dhu al-Hijjah',
       ];
       return '${hj.hDay} ${months[hj.hMonth - 1]} ${hj.hYear} AH';
-    } catch (_) {
+    } catch (e) {
       return '';
     }
   }
@@ -1447,7 +1688,7 @@ class _TvHomeBody extends StatelessWidget {
       try {
         activeStream = kBuiltInStreams.firstWhere(
             (s) => s.id == tvSettings.selectedStreamId);
-      } catch (_) {
+      } catch (e) {
         activeStream = kBuiltInStreams.first;
       }
     }
@@ -1612,7 +1853,7 @@ class _TvHomeBody extends StatelessWidget {
         'Ramadan', 'Shawwal', "Dhu al-Qi'dah", 'Dhu al-Hijjah',
       ];
       return '${hj.hDay} ${months[hj.hMonth - 1]} ${hj.hYear} AH';
-    } catch (_) {
+    } catch (e) {
       return '';
     }
   }
@@ -1796,6 +2037,8 @@ class _TvRightPanel extends ConsumerWidget {
                 completedPrayers: completedPrayers,
                 fontScale: fs,
                 countdown: countdown,
+                showPrayerCountdown:
+                    tvSettings.infoBarConfig.showPrayerCountdown,
               ),
             ),
           ),
@@ -1846,6 +2089,7 @@ class _TvPrayerRows extends StatelessWidget {
     required this.completedPrayers,
     required this.fontScale,
     required this.countdown,
+    required this.showPrayerCountdown,
   });
 
   final PrayerTimes times;
@@ -1857,6 +2101,7 @@ class _TvPrayerRows extends StatelessWidget {
   final Set<String> completedPrayers;
   final double fontScale;
   final String countdown;
+  final bool showPrayerCountdown;
 
   @override
   Widget build(BuildContext context) {
@@ -1938,10 +2183,33 @@ class _TvPrayerRows extends StatelessWidget {
                 ],
               ),
             ),
-            // Time / check
+            // Time / check / countdown
             if (isDone)
               Icon(Icons.check_circle,
                   color: PrayCalcColors.mid, size: 14 * fs)
+            else if (i == nextIdx && showPrayerCountdown)
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    timeStr,
+                    style: TextStyle(
+                      color: timeColor,
+                      fontSize: 18 * fs,
+                      fontWeight: FontWeight.normal,
+                    ),
+                  ),
+                  Text(
+                    countdown,
+                    style: TextStyle(
+                      color: PrayCalcColors.light,
+                      fontSize: 11 * fs,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              )
             else
               Text(
                 timeStr,

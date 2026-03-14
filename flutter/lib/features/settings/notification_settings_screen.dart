@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:praycalc_app/l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../core/providers/notification_configs_provider.dart';
 import '../../core/providers/settings_provider.dart';
@@ -87,6 +88,22 @@ class NotificationSettingsScreen extends ConsumerWidget {
               onChanged: (updated) =>
                   ref.read(notificationConfigsProvider.notifier).update(i, updated),
             ),
+          const Divider(height: 24),
+
+          // ── Sunnah Prayers ─────────────────────────────────────────────────
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
+            child: Text(
+              'Sunnah Prayers',
+              style: TextStyle(
+                color: PrayCalcColors.light,
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                letterSpacing: 0.5,
+              ),
+            ),
+          ),
+          const _SunnahSettingsSection(),
           const SizedBox(height: 32),
         ],
       ),
@@ -249,6 +266,7 @@ class _PrayerNotifTile extends StatelessWidget {
             title: Text(l.notifTestAdhan),
             trailing: IconButton(
               icon: const Icon(Icons.play_arrow),
+              tooltip: l.notifTestAdhan,
               onPressed: () => AdhanService.instance
                   .play(config.adhanType, volume: config.volume),
             ),
@@ -269,5 +287,127 @@ class _PrayerNotifTile extends StatelessWidget {
       case PrayerNotificationMode.both:
         return l.notifModeBoth;
     }
+  }
+}
+
+// ── Sunnah settings section ────────────────────────────────────────────────────
+
+class _SunnahSettingsSection extends StatefulWidget {
+  const _SunnahSettingsSection();
+
+  @override
+  State<_SunnahSettingsSection> createState() => _SunnahSettingsSectionState();
+}
+
+class _SunnahSettingsSectionState extends State<_SunnahSettingsSection> {
+  bool _iqamahEnabled = false;
+  int _iqamahOffset = 15;
+  bool _tahajjudEnabled = false;
+  bool _duhaEnabled = false;
+
+  static const _iqamahOffsetOptions = [5, 10, 15, 20, 30];
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
+
+  Future<void> _load() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (!mounted) return;
+    setState(() {
+      _iqamahEnabled = prefs.getBool('notif_iqamah_enabled') ?? false;
+      _iqamahOffset = prefs.getInt('notif_iqamah_offset') ?? 15;
+      _tahajjudEnabled = prefs.getBool('notif_tahajjud_enabled') ?? false;
+      _duhaEnabled = prefs.getBool('notif_duha_enabled') ?? false;
+    });
+  }
+
+  Future<void> _setIqamahEnabled(bool v) async {
+    setState(() => _iqamahEnabled = v);
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('notif_iqamah_enabled', v);
+  }
+
+  Future<void> _setIqamahOffset(int v) async {
+    setState(() => _iqamahOffset = v);
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('notif_iqamah_offset', v);
+  }
+
+  Future<void> _setTahajjudEnabled(bool v) async {
+    setState(() => _tahajjudEnabled = v);
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('notif_tahajjud_enabled', v);
+  }
+
+  Future<void> _setDuhaEnabled(bool v) async {
+    setState(() => _duhaEnabled = v);
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('notif_duha_enabled', v);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        // ── Iqamah reminder ─────────────────────────────────────────────────
+        SwitchListTile(
+          title: const Text('Iqamah Reminder'),
+          subtitle: Text(
+            'Notify after adhan begins',
+            style: TextStyle(color: Colors.white.withAlpha(100), fontSize: 12),
+          ),
+          value: _iqamahEnabled,
+          onChanged: _setIqamahEnabled,
+        ),
+        if (_iqamahEnabled)
+          ListTile(
+            title: const Text('Iqamah delay'),
+            subtitle: Text(
+              'Notify $_iqamahOffset min after adhan',
+              style: TextStyle(color: Colors.white.withAlpha(100), fontSize: 12),
+            ),
+            trailing: DropdownButton<int>(
+              value: _iqamahOffsetOptions.contains(_iqamahOffset)
+                  ? _iqamahOffset
+                  : 15,
+              underline: const SizedBox.shrink(),
+              items: _iqamahOffsetOptions
+                  .map((m) => DropdownMenuItem(
+                        value: m,
+                        child: Text('$m min'),
+                      ))
+                  .toList(),
+              onChanged: (v) {
+                if (v != null) _setIqamahOffset(v);
+              },
+            ),
+          ),
+
+        // ── Tahajjud ────────────────────────────────────────────────────────
+        SwitchListTile(
+          title: const Text('Tahajjud'),
+          subtitle: Text(
+            'Last third of the night',
+            style: TextStyle(color: Colors.white.withAlpha(100), fontSize: 12),
+          ),
+          value: _tahajjudEnabled,
+          onChanged: _setTahajjudEnabled,
+        ),
+
+        // ── Duha ────────────────────────────────────────────────────────────
+        SwitchListTile(
+          title: const Text('Duha'),
+          subtitle: Text(
+            '20 min after sunrise',
+            style: TextStyle(color: Colors.white.withAlpha(100), fontSize: 12),
+          ),
+          value: _duhaEnabled,
+          onChanged: _setDuhaEnabled,
+        ),
+      ],
+    );
   }
 }

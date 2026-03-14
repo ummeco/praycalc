@@ -159,8 +159,8 @@ class _TvAddFromMobileScreenState extends State<TvAddFromMobileScreen> {
             _error = 'Code expired. Tap below to try again.';
           });
         }
-      } catch (_) {
-        // network hiccup — keep polling
+      } catch (e, st) {
+        debugPrint('[TvAddFromMobile] poll error (network hiccup): $e\n$st');
       }
     });
   }

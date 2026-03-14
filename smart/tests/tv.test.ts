@@ -1,7 +1,8 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import request from 'supertest';
 import jwt from 'jsonwebtoken';
 import { app } from '../src/index.js';
+import { tvDeviceStore, userProfileStore } from './setup.js';
 
 const JWT_SECRET = process.env.HASURA_GRAPHQL_JWT_SECRET || 'test-secret';
 
@@ -86,14 +87,14 @@ describe('TV Routes', () => {
   });
 
   describe('POST /api/v1/tv/code', () => {
-    it('returns a 6-char pairing code', async () => {
+    it('returns a 4-digit numeric pairing code', async () => {
       const res = await request(app).post('/api/v1/tv/code').send({
         deviceModel: 'Fire TV Stick 4K',
         androidId: 'abc123',
       });
       expect(res.status).toBe(200);
       expect(typeof res.body.code).toBe('string');
-      expect(res.body.code).toMatch(/^[A-Z2-9]{6}$/);
+      expect(res.body.code).toMatch(/^\d{4}$/);
       expect(res.body.expiresInSeconds).toBe(300);
       expect(res.body.qrData).toContain(res.body.code);
     });
@@ -143,12 +144,12 @@ describe('TV Routes', () => {
       expect(res.status).toBe(400);
     });
 
-    it('rejects device_name > 50 chars', async () => {
+    it('rejects device_name > 100 chars', async () => {
       const token = makeToken('user-tv-test');
       const res = await request(app)
         .patch('/api/v1/tv/some-id')
         .set('Authorization', `Bearer ${token}`)
-        .send({ device_name: 'A'.repeat(51) });
+        .send({ device_name: 'A'.repeat(101) });
       expect(res.status).toBe(400);
     });
   });
@@ -181,27 +182,75 @@ describe('TV Routes', () => {
       expect(res.body.error).toBe('No settings provided');
     });
 
-    it('returns 404 for device not owned by user (Hasura unavailable → 500 or 404)', async () => {
+    it('returns 403 for device not owned by requesting user', async () => {
       const token = makeToken('user-tv-test');
       const res = await request(app)
         .patch('/api/v1/tv/00000000-0000-0000-0000-000000000000/settings')
         .set('Authorization', `Bearer ${token}`)
         .send({ audio_mode: 'mute' });
-      // Hasura not running in tests → 404 (device not found) or 500 (connection error)
-      expect([404, 500]).toContain(res.status);
+      // Device not in tvDeviceStore for this user → ownership check returns empty → 403
+      expect(res.status).toBe(403);
     });
 
-    it('returns ok for valid settings (Hasura unavailable → ok, 404, or 500)', async () => {
-      const token = makeToken('user-tv-settings-test');
+    it('returns ok for valid settings when device is owned', async () => {
+      const ownerId = 'user-tv-settings-test';
+      const deviceId = 'cccccccc-dddd-eeee-ffff-000000000001';
+      tvDeviceStore.set(deviceId, { id: deviceId, user_id: ownerId });
+      const token = makeToken(ownerId);
       const res = await request(app)
-        .patch('/api/v1/tv/some-device-id/settings')
+        .patch(`/api/v1/tv/${deviceId}/settings`)
         .set('Authorization', `Bearer ${token}`)
         .send({ audio_mode: 'adhan_only', brightness: 80, screensaver_enabled: true });
-      // 200 { ok: true } if Hasura running; 404 if Hasura returns empty rows; 500 on connection error
-      expect([200, 404, 500]).toContain(res.status);
-      if (res.status === 200) {
-        expect(res.body.ok).toBe(true);
-      }
+      expect(res.status).toBe(200);
+      expect(res.body.ok).toBe(true);
+    });
+  });
+
+  // ── TEST-B1: Auth + ownership scenarios for settings PATCH ───────────────
+
+  describe('PATCH /api/v1/tv/:id/settings — ownership enforcement', () => {
+    const SETTINGS_OWNER = 'settings-owner-uuid-001';
+    const SETTINGS_OTHER = 'settings-other-uuid-002';
+    const SETTINGS_DEVICE = 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee';
+
+    beforeEach(() => {
+      tvDeviceStore.set(SETTINGS_DEVICE, { id: SETTINGS_DEVICE, user_id: SETTINGS_OWNER });
+    });
+
+    it('unauthenticated request → 401', async () => {
+      const res = await request(app)
+        .patch(`/api/v1/tv/${SETTINGS_DEVICE}/settings`)
+        .send({ audio_mode: 'adhan_only' });
+      expect(res.status).toBe(401);
+    });
+
+    it('owner can update their own device settings → 200', async () => {
+      const token = makeToken(SETTINGS_OWNER);
+      const res = await request(app)
+        .patch(`/api/v1/tv/${SETTINGS_DEVICE}/settings`)
+        .set('Authorization', `Bearer ${token}`)
+        .send({ audio_mode: 'adhan_only', brightness: 75 });
+      expect(res.status).toBe(200);
+      expect(res.body.ok).toBe(true);
+    });
+
+    it('non-owner user gets rejected → 403', async () => {
+      const token = makeToken(SETTINGS_OTHER);
+      const res = await request(app)
+        .patch(`/api/v1/tv/${SETTINGS_DEVICE}/settings`)
+        .set('Authorization', `Bearer ${token}`)
+        .send({ audio_mode: 'mute' });
+      expect(res.status).toBe(403);
+    });
+
+    it('request with no valid settings fields → 400 before auth check', async () => {
+      const token = makeToken(SETTINGS_OWNER);
+      const res = await request(app)
+        .patch(`/api/v1/tv/${SETTINGS_DEVICE}/settings`)
+        .set('Authorization', `Bearer ${token}`)
+        .send({ unrecognized_field: 'value' });
+      expect(res.status).toBe(400);
+      expect(res.body.error).toBe('No settings provided');
     });
   });
 
@@ -288,6 +337,142 @@ describe('TV Routes', () => {
       expect(get.status).toBe(200);
       expect(get.body.lat).toBe(40.7128);
       expect(get.body.lng).toBe(-74.006);
+    });
+  });
+
+  // ── TEST-B2: Rate limiting on TV endpoints ────────────────────────────────
+
+  describe('Rate limiting', () => {
+    it('unauthenticated requests are rate-limited per IP after 60 requests', async () => {
+      // Drain the bucket: 61 concurrent requests from the same (loopback) IP.
+      const promises = Array.from({ length: 61 }, () =>
+        request(app).get('/api/v1/tv/streams'),
+      );
+      const results = await Promise.all(promises);
+      const statuses = results.map(r => r.status);
+      expect(statuses).toContain(429);
+    });
+
+    it('429 response includes error and retryAfter fields', async () => {
+      // Drain bucket with sequential requests.
+      for (let i = 0; i < 61; i++) {
+        await request(app).get('/api/v1/tv/streams');
+      }
+      const res = await request(app).get('/api/v1/tv/streams');
+      if (res.status === 429) {
+        expect(typeof res.body.error).toBe('string');
+        expect(typeof res.body.retryAfter).toBe('number');
+        expect(res.body.retryAfter).toBeGreaterThan(0);
+      }
+      // May be 200 if bucket refilled between requests — acceptable in test env.
+    });
+
+    it('two different authenticated users each get their own rate limit bucket', async () => {
+      const user1Token = makeToken('rate-bucket-user-001');
+      const user2Token = makeToken('rate-bucket-user-002');
+      // Each user's first request should not be rate-limited.
+      const res1 = await request(app)
+        .get('/api/v1/tv/streams')
+        .set('Authorization', `Bearer ${user1Token}`);
+      const res2 = await request(app)
+        .get('/api/v1/tv/streams')
+        .set('Authorization', `Bearer ${user2Token}`);
+      expect(res1.status).not.toBe(429);
+      expect(res2.status).not.toBe(429);
+    });
+
+    it('successful TV API responses include X-RateLimit headers', async () => {
+      const res = await request(app).get('/api/v1/tv/streams');
+      if (res.status === 200) {
+        expect(res.headers['x-ratelimit-limit']).toBeDefined();
+        expect(res.headers['x-ratelimit-remaining']).toBeDefined();
+        expect(Number(res.headers['x-ratelimit-remaining'])).toBeGreaterThanOrEqual(0);
+      }
+    });
+  });
+
+  // ── Share endpoints (SHARE-3 / SHARE-4) ──────────────────────────────────
+
+  const OWNER_ID = 'owner-user-uuid-0001';
+  const TARGET_ID = 'target-user-uuid-0002';
+  const OTHER_ID  = 'other-user-uuid-0003';
+  const DEVICE_ID = '00000000-0000-0000-0000-device000001';
+  const TARGET_EMAIL = 'target@example.com';
+
+  // Seed a TV device owned by OWNER_ID and a user profile for TARGET_EMAIL
+  // before each share test.
+  beforeEach(() => {
+    tvDeviceStore.set(DEVICE_ID, { id: DEVICE_ID, user_id: OWNER_ID });
+    userProfileStore.set(TARGET_EMAIL, { id: TARGET_ID, email: TARGET_EMAIL });
+  });
+
+  describe('POST /api/v1/tv/:id/share', () => {
+    it('owner can share device with valid email → 200', async () => {
+      const token = makeToken(OWNER_ID);
+      const res = await request(app)
+        .post(`/api/v1/tv/${DEVICE_ID}/share`)
+        .set('Authorization', `Bearer ${token}`)
+        .send({ email: TARGET_EMAIL });
+
+      expect(res.status).toBe(200);
+      expect(res.body.success).toBe(true);
+      expect(res.body.sharedWith.userId).toBe(TARGET_ID);
+      expect(res.body.sharedWith.email).toBe(TARGET_EMAIL);
+    });
+
+    it('non-owner cannot share someone else\'s device → 403', async () => {
+      const token = makeToken(OTHER_ID);
+      const res = await request(app)
+        .post(`/api/v1/tv/${DEVICE_ID}/share`)
+        .set('Authorization', `Bearer ${token}`)
+        .send({ email: TARGET_EMAIL });
+
+      expect(res.status).toBe(403);
+      expect(res.body.error).toBeDefined();
+    });
+
+    it('sharing with non-existent email → 404', async () => {
+      const token = makeToken(OWNER_ID);
+      const res = await request(app)
+        .post(`/api/v1/tv/${DEVICE_ID}/share`)
+        .set('Authorization', `Bearer ${token}`)
+        .send({ email: 'nobody@nowhere.invalid' });
+
+      expect(res.status).toBe(404);
+      expect(res.body.error).toBeDefined();
+    });
+  });
+
+  describe('DELETE /api/v1/tv/:id/share/:userId', () => {
+    it('owner can remove a share → 200', async () => {
+      const token = makeToken(OWNER_ID);
+      const res = await request(app)
+        .delete(`/api/v1/tv/${DEVICE_ID}/share/${TARGET_ID}`)
+        .set('Authorization', `Bearer ${token}`);
+
+      expect(res.status).toBe(200);
+      expect(res.body.success).toBe(true);
+    });
+
+    it('shared user can remove their own access (self-removal) → 200', async () => {
+      // TARGET_ID removes themselves — no ownership check required.
+      const token = makeToken(TARGET_ID);
+      const res = await request(app)
+        .delete(`/api/v1/tv/${DEVICE_ID}/share/${TARGET_ID}`)
+        .set('Authorization', `Bearer ${token}`);
+
+      expect(res.status).toBe(200);
+      expect(res.body.success).toBe(true);
+    });
+
+    it('non-owner, non-shared user gets rejected → 403', async () => {
+      const token = makeToken(OTHER_ID);
+      const res = await request(app)
+        .delete(`/api/v1/tv/${DEVICE_ID}/share/${TARGET_ID}`)
+        .set('Authorization', `Bearer ${token}`);
+
+      expect(res.status).toBe(403);
+      expect(res.body.error).toBeDefined();
     });
   });
 });

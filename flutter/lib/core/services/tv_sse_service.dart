@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
 
@@ -49,6 +50,9 @@ class TvSsePrayerCompleteEvent extends TvSseEvent {
   TvSsePrayerCompleteEvent(this.prayerName);
   final String prayerName;
 }
+
+/// The SSE connection was lost and will attempt reconnect.
+class TvSseDisconnectedEvent extends TvSseEvent {}
 
 /// A keep-alive ping was received (no action needed).
 class TvSsePingEvent extends TvSseEvent {}
@@ -140,7 +144,8 @@ class TvSseService {
 
       // Stream ended — reconnect.
       if (!_disposed) _scheduleReconnect();
-    } catch (_) {
+    } catch (e, st) {
+      debugPrint('[TvSse] Stream error: $e\n$st');
       if (!_disposed) _scheduleReconnect();
     }
   }
@@ -169,7 +174,8 @@ class TvSseService {
     Map<String, dynamic> json;
     try {
       json = jsonDecode(data) as Map<String, dynamic>;
-    } catch (_) {
+    } catch (e, st) {
+      debugPrint('[TvSse] Malformed JSON in SSE message: $e');
       return;
     }
 
@@ -179,8 +185,8 @@ class TvSseService {
         if (settingsJson != null) {
           try {
             _controller.add(TvSseSettingsEvent(settingsJson));
-          } catch (_) {
-            // Malformed settings — ignore.
+          } catch (e, st) {
+            debugPrint('[TvSse] Failed to emit settings event: $e\n$st');
           }
         }
       case 'prayer_complete':
@@ -209,6 +215,7 @@ class TvSseService {
 
   void _scheduleReconnect() {
     if (_disposed) return;
+    _controller.add(TvSseDisconnectedEvent());
     _reconnectTimer = Timer(const Duration(seconds: 5), _connect);
   }
 

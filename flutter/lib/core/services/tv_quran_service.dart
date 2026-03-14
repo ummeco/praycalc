@@ -220,7 +220,7 @@ class TvQuranService extends ChangeNotifier {
       final dir = await _cacheDir();
       final file = File('${dir.path}/${reciterId}_${surah.toString().padLeft(3, '0')}.mp3');
       if (await file.exists()) return file.path;
-    } catch (_) {}
+    } catch (e, st) { debugPrint('[TvQuranService] getCachedPath error: $e\n$st'); }
     return null;
   }
 
@@ -241,7 +241,7 @@ class TvQuranService extends ChangeNotifier {
         if (response.statusCode == 200) {
           await file.writeAsBytes(response.bodyBytes);
         }
-      } catch (_) {
+      } catch (e, st) {
         // Network failure — skip this surah, will retry next call.
       }
     }
@@ -326,7 +326,7 @@ class TvQuranService extends ChangeNotifier {
       _isPlaying = true;
       _setOffline(false);
       notifyListeners();
-    } catch (_) {
+    } catch (e, st) {
       // Network error or CDN issue — mark offline and skip to next ayah.
       _setOffline(true);
       advanceAyah();
@@ -453,7 +453,7 @@ class TvQuranService extends ChangeNotifier {
 
     try {
       await _player.setAudioSources(initial);
-    } catch (_) {
+    } catch (e, st) {
       _setOffline(true);
       _gaplessActive = false;
       return;

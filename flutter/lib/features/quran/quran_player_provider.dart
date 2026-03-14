@@ -1,29 +1,67 @@
 // QuranPlayerProvider — mobile Quran audio playback state.
 //
+// QURAN-2: Now delegates to QuranAudioHandler (audio_service) on native
+// platforms so playback continues in the background and lock screen /
+// notification controls work on iOS and Android.
+//
+// On web, falls back to a bare AudioPlayer (audio_service not supported on web).
+//
 // Uses the same everyayah.com CDN as the TV panel:
 //   https://everyayah.com/data/{reciterId}/{sss}{aaa}.mp3
-// where {sss} = zero-padded surah (3 digits), {aaa} = zero-padded ayah (3 digits).
 
 import 'package:flutter/foundation.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../tv/tv_quran_service.dart';
+import 'quran_arabic_service.dart';
+import 'quran_audio_handler.dart';
 
 class QuranPlayerProvider extends ChangeNotifier {
   QuranPlayerProvider() {
-    _player.playingStream.listen((playing) {
-      _isPlaying = playing;
-      notifyListeners();
-    });
-    _player.currentIndexStream.listen((index) {
-      if (index == null) return;
-      _currentVerse = _playlistStartVerse + index;
-      notifyListeners();
-    });
+    if (kIsWeb) {
+      // Web: audio_service not available — use a plain AudioPlayer.
+      _webPlayer = AudioPlayer();
+      _webPlayer!.playingStream.listen((playing) {
+        _isPlaying = playing;
+        notifyListeners();
+      });
+      _webPlayer!.currentIndexStream.listen((index) {
+        if (index == null) return;
+        final newVerse = _playlistStartVerse + index;
+        if (newVerse != _currentVerse) {
+          _currentVerse = newVerse;
+          _loadArabicText();
+        }
+        notifyListeners();
+      });
+    } else {
+      // Native: listen to the handler's underlying player.
+      final handler = QuranAudioHandler.instance;
+      handler.player.playingStream.listen((playing) {
+        _isPlaying = playing;
+        notifyListeners();
+      });
+      handler.player.currentIndexStream.listen((index) {
+        if (index == null) return;
+        final newVerse = _playlistStartVerse + index;
+        if (newVerse != _currentVerse) {
+          _currentVerse = newVerse;
+          _loadArabicText();
+        }
+        notifyListeners();
+      });
+    }
   }
 
-  final AudioPlayer _player = AudioPlayer();
+  /// Web-only fallback player (audio_service unavailable on web).
+  AudioPlayer? _webPlayer;
+
+  /// The underlying just_audio player — web player or handler's player.
+  AudioPlayer get _player =>
+      kIsWeb ? _webPlayer! : QuranAudioHandler.instance.player;
+
+  final _arabicService = QuranArabicService.instance;
 
   // ── State ────────────────────────────────────────────────────────────────
 
@@ -44,8 +82,22 @@ class QuranPlayerProvider extends ChangeNotifier {
   bool _isMinimized = false;
   bool get isMinimized => _isMinimized;
 
+  /// Arabic text of the current verse. Null while loading or unavailable.
+  String? _currentArabicText;
+  String? get currentArabicText => _currentArabicText;
+
   /// Total verses in the current surah.
   int get totalVerses => kTvSurahVerseCounts[_currentSurah - 1];
+
+  // ── Arabic text ──────────────────────────────────────────────────────────
+
+  Future<void> _loadArabicText() async {
+    _currentArabicText = null;
+    notifyListeners();
+    final text = await _arabicService.getVerseText(_currentSurah, _currentVerse);
+    _currentArabicText = text;
+    notifyListeners();
+  }
 
   // ── Playback ─────────────────────────────────────────────────────────────
 
@@ -58,26 +110,40 @@ class QuranPlayerProvider extends ChangeNotifier {
     _currentSurah = clampedSurah;
     _currentVerse = clampedStart;
     _playlistStartVerse = clampedStart;
+    _loadArabicText(); // fire-and-forget
     notifyListeners();
 
-    final sources = List.generate(
-      maxVerse - clampedStart + 1,
-      (i) => AudioSource.uri(Uri.parse(
-        tvAyahUrl(_reciter.id, clampedSurah, clampedStart + i),
-      )),
-    );
-
     try {
-      await _player.setAudioSources(sources);
-      await _player.play();
+      if (kIsWeb) {
+        final sources = List.generate(
+          maxVerse - clampedStart + 1,
+          (i) => AudioSource.uri(Uri.parse(
+            tvAyahUrl(_reciter.id, clampedSurah, clampedStart + i),
+          )),
+        );
+        await _player.setAudioSources(sources);
+        await _player.play();
+      } else {
+        // Route through QuranAudioHandler for lock screen + background audio.
+        await QuranAudioHandler.instance.loadSurah(
+          clampedSurah,
+          startVerse: clampedStart,
+          reciter: _reciter,
+        );
+        await QuranAudioHandler.instance.play();
+      }
     } catch (_) {
       // Playback failure is non-fatal.
     }
   }
 
-  Future<void> play() async => _player.play();
+  Future<void> play() async => kIsWeb
+      ? _player.play()
+      : QuranAudioHandler.instance.play();
 
-  Future<void> pause() async => _player.pause();
+  Future<void> pause() async => kIsWeb
+      ? _player.pause()
+      : QuranAudioHandler.instance.pause();
 
   Future<void> next() async {
     if (_player.hasNext) await _player.seekToNext();
@@ -106,7 +172,8 @@ class QuranPlayerProvider extends ChangeNotifier {
 
   @override
   void dispose() {
-    _player.dispose();
+    _webPlayer?.dispose();
+    // Native handler is a singleton — do not dispose it here.
     super.dispose();
   }
 }

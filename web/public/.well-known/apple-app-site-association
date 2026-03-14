@@ -1,0 +1,16 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["P2XXXXXXXXX.com.praycalc.app"],
+        "components": [
+          { "/": "/ramadan*", "comment": "Ramadan tracker" },
+          { "/": "/qibla*", "comment": "Qibla compass" },
+          { "/": "/settings*", "comment": "Settings deep link" },
+          { "/": "/calendar*", "comment": "Prayer calendar" },
+          { "/": "/quran*", "comment": "Quran player" }
+        ]
+      }
+    ]
+  }
+}

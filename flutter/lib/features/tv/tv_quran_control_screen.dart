@@ -154,7 +154,7 @@ class _TvQuranControlScreenState extends State<TvQuranControlScreen> {
             devices.add(_TvDevice.fromJson(item));
           }
         }
-      } catch (_) {
+      } catch (e, st) {
         // Malformed JSON — treat as empty.
       }
     }
@@ -210,7 +210,7 @@ class _TvQuranControlScreenState extends State<TvQuranControlScreen> {
               settingsJson?['quranCommand'] as Map<String, dynamic>?;
         });
       }
-    } catch (_) {
+    } catch (e, st) {
       // Network failure — silently ignore; will retry on next tick.
     }
   }

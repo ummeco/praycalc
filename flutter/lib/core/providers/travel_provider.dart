@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'dart:math' as math;
 
+import 'package:flutter/foundation.dart' show debugPrint;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -162,7 +164,7 @@ final travelHomeAutosetProvider = Provider<void>((ref) {
         await notifier.setUseImperial(true);
         // 12h is already the default (use24h = false), so no change needed.
       }
-    } catch (_) {}
+    } catch (e, st) { debugPrint('[TravelProvider] $e\n$st'); }
   });
 });
 

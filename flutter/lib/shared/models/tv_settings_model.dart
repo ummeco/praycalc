@@ -24,6 +24,9 @@ class TvInfoBarConfig {
   /// Slug of a second city to show in a multi-timezone display. Null = off.
   final String? secondCitySlug;
 
+  /// When true, show a live countdown to the next prayer in the prayer list.
+  final bool showPrayerCountdown;
+
   const TvInfoBarConfig({
     this.showHijri = true,
     this.showGregorian = true,
@@ -35,6 +38,7 @@ class TvInfoBarConfig {
     this.showCalendarTicker = false,
     this.showAsmaAlHusna = false,
     this.secondCitySlug,
+    this.showPrayerCountdown = true,
   });
 
   TvInfoBarConfig copyWith({
@@ -48,6 +52,7 @@ class TvInfoBarConfig {
     bool? showCalendarTicker,
     bool? showAsmaAlHusna,
     Object? secondCitySlug = _sentinel,
+    bool? showPrayerCountdown,
   }) {
     return TvInfoBarConfig(
       showHijri: showHijri ?? this.showHijri,
@@ -62,6 +67,7 @@ class TvInfoBarConfig {
       secondCitySlug: secondCitySlug == _sentinel
           ? this.secondCitySlug
           : secondCitySlug as String?,
+      showPrayerCountdown: showPrayerCountdown ?? this.showPrayerCountdown,
     );
   }
 
@@ -76,6 +82,7 @@ class TvInfoBarConfig {
         'showCalendarTicker': showCalendarTicker,
         'showAsmaAlHusna': showAsmaAlHusna,
         'secondCitySlug': secondCitySlug,
+        'showPrayerCountdown': showPrayerCountdown,
       };
 
   factory TvInfoBarConfig.fromJson(Map<String, dynamic> json) =>
@@ -90,6 +97,7 @@ class TvInfoBarConfig {
         showCalendarTicker: json['showCalendarTicker'] as bool? ?? false,
         showAsmaAlHusna: json['showAsmaAlHusna'] as bool? ?? false,
         secondCitySlug: json['secondCitySlug'] as String?,
+        showPrayerCountdown: json['showPrayerCountdown'] as bool? ?? true,
       );
 }
 
@@ -769,6 +777,15 @@ class TvSettings {
   /// When true, Ramadan+Iftar card shows in the bottom black bar during stream mode.
   final bool showStreamRamadanOverlay;
 
+  // ---------------------------------------------------------------------------
+  // SYNC-B2 — Conflict resolution timestamp
+  // ---------------------------------------------------------------------------
+
+  /// UTC timestamp of the last local settings mutation. Used to resolve
+  /// conflicts when remote and local settings diverge: the more recent
+  /// timestamp wins. Null for settings that have never been locally edited.
+  final DateTime? lastModified;
+
   const TvSettings({
     this.isMasjidMode = false,
     this.masjidName = '',
@@ -834,6 +851,7 @@ class TvSettings {
     this.colorPalette = TvColorPaletteName.emerald,
     this.showStreamAyahBar = true,
     this.showStreamRamadanOverlay = true,
+    this.lastModified,
   });
 
   TvSettings copyWith({
@@ -894,6 +912,7 @@ class TvSettings {
     TvColorPaletteName? colorPalette,
     bool? showStreamAyahBar,
     bool? showStreamRamadanOverlay,
+    Object? lastModified = _sentinel,
   }) {
     return TvSettings(
       isMasjidMode: isMasjidMode ?? this.isMasjidMode,
@@ -976,6 +995,9 @@ class TvSettings {
       showStreamAyahBar: showStreamAyahBar ?? this.showStreamAyahBar,
       showStreamRamadanOverlay:
           showStreamRamadanOverlay ?? this.showStreamRamadanOverlay,
+      lastModified: lastModified == _sentinel
+          ? this.lastModified
+          : lastModified as DateTime?,
     );
   }
 
@@ -1039,6 +1061,8 @@ class TvSettings {
         'colorPalette': colorPalette.name,
         'showStreamAyahBar': showStreamAyahBar,
         'showStreamRamadanOverlay': showStreamRamadanOverlay,
+        if (lastModified != null)
+          'last_modified': lastModified!.toUtc().toIso8601String(),
       };
 
   factory TvSettings.fromJson(Map<String, dynamic> json) {
@@ -1169,6 +1193,9 @@ class TvSettings {
       showStreamAyahBar: json['showStreamAyahBar'] as bool? ?? true,
       showStreamRamadanOverlay:
           json['showStreamRamadanOverlay'] as bool? ?? true,
+      lastModified: json['last_modified'] != null
+          ? DateTime.tryParse(json['last_modified'] as String)?.toUtc()
+          : null,
     );
   }
 
@@ -1262,6 +1289,22 @@ class Announcement {
       expiresAt: json['expiresAt'] != null
           ? DateTime.tryParse(json['expiresAt'] as String)
           : null,
+    );
+  }
+
+  Announcement copyWith({
+    String? id,
+    String? title,
+    String? body,
+    Object? expiresAt = _sentinel,
+  }) {
+    return Announcement(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      body: body ?? this.body,
+      expiresAt: expiresAt == _sentinel
+          ? this.expiresAt
+          : expiresAt as DateTime?,
     );
   }
 

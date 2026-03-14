@@ -94,6 +94,13 @@ class AboutScreen extends StatelessWidget {
             trailing: const Icon(Icons.open_in_new, size: 16),
           ),
           ListTile(
+            leading: const Icon(Icons.description_outlined),
+            title: const Text('Terms of Service'),
+            subtitle: const Text('praycalc.com/terms'),
+            onTap: () => _tryLaunch(context, 'https://praycalc.com/terms'),
+            trailing: const Icon(Icons.open_in_new, size: 16),
+          ),
+          ListTile(
             leading: const Icon(Icons.mail_outline),
             title: Text(l.aboutContact),
             subtitle: const Text('support@praycalc.com'),

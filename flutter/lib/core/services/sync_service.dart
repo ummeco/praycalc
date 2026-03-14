@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:flutter/foundation.dart' show debugPrint;
+
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../features/auth/sync_conflict_dialog.dart';
@@ -11,27 +13,32 @@ import 'graphql_service.dart';
 /// Sync status for each data domain.
 enum SyncStatus { synced, syncing, offline, error }
 
-/// Sync state: combines status and last sync timestamp.
+/// Sync state: combines status, last sync timestamp, and pending queue size.
 class SyncState {
   final SyncStatus status;
   final DateTime? lastSyncedAt;
   final String? errorMessage;
+  /// Number of mutations queued offline, waiting to flush on reconnection.
+  final int pendingChanges;
 
   const SyncState({
     this.status = SyncStatus.offline,
     this.lastSyncedAt,
     this.errorMessage,
+    this.pendingChanges = 0,
   });
 
   SyncState copyWith({
     SyncStatus? status,
     DateTime? lastSyncedAt,
     String? errorMessage,
+    int? pendingChanges,
   }) =>
       SyncState(
         status: status ?? this.status,
         lastSyncedAt: lastSyncedAt ?? this.lastSyncedAt,
         errorMessage: errorMessage,
+        pendingChanges: pendingChanges ?? this.pendingChanges,
       );
 }
 
@@ -244,6 +251,18 @@ class SyncService {
     });
 
     await prefs.setString(_pendingQueueKey, jsonEncode(queue));
+    _updateState(_state.copyWith(pendingChanges: queue.length));
+  }
+
+  /// Load the pending queue count from storage (call on startup).
+  Future<void> loadPendingCount() async {
+    final prefs = await SharedPreferences.getInstance();
+    final raw = prefs.getString(_pendingQueueKey);
+    if (raw == null) return;
+    final queue = (jsonDecode(raw) as List).cast<Map<String, dynamic>>();
+    if (queue.isNotEmpty) {
+      _updateState(_state.copyWith(pendingChanges: queue.length));
+    }
   }
 
   /// Clear all remote data for the current user (used on account deletion).
@@ -506,15 +525,18 @@ class SyncService {
               variables: {'userId': userId, 'logs': data},
             );
         }
-      } catch (_) {
+      } catch (e, st) {
+        debugPrint('[SyncService] Mutation failed, will retry: $e\n$st');
         remaining.add(item);
       }
     }
 
     if (remaining.isEmpty) {
       await prefs.remove(_pendingQueueKey);
+      _updateState(_state.copyWith(pendingChanges: 0));
     } else {
       await prefs.setString(_pendingQueueKey, jsonEncode(remaining));
+      _updateState(_state.copyWith(pendingChanges: remaining.length));
     }
   }
 

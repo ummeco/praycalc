@@ -7,8 +7,11 @@ import '../../core/providers/tv_provider.dart';
 import '../../core/theme/app_theme.dart';
 import '../../shared/models/tv_settings_model.dart';
 
-String _hashPin(String pin) =>
-    sha256.convert(utf8.encode(pin)).toString();
+/// SEC-A4: Salt the PIN hash with the device ID so the same PIN produces different
+/// hashes on different devices, preventing cross-device hash reuse attacks.
+/// Format: sha256("praycalc_kiosk_${deviceId}_$pin")
+String _hashPin(String pin, {String deviceId = ''}) =>
+    sha256.convert(utf8.encode('praycalc_kiosk_${deviceId}_$pin')).toString();
 
 /// Returns true when kiosk mode is active and the layout preset is locked
 /// to 'masjid'. Used by TvSettingsScreen to grey out layout selection (TV2-11.3).

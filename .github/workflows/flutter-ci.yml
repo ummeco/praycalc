@@ -32,6 +32,16 @@ jobs:
       - name: Analyze (pray_calc_dart)
         working-directory: flutter/packages/pray_calc_dart
         run: dart analyze
+      - name: Validate pray_calc_dart VERSION matches pubspec
+        working-directory: flutter/packages/pray_calc_dart
+        run: |
+          VERSION_FILE=$(cat VERSION | tr -d '[:space:]')
+          PUBSPEC_VERSION=$(grep '^version:' pubspec.yaml | awk '{print $2}' | tr -d '[:space:]')
+          if [ "$VERSION_FILE" != "$PUBSPEC_VERSION" ]; then
+            echo "VERSION file ($VERSION_FILE) does not match pubspec.yaml ($PUBSPEC_VERSION)"
+            exit 1
+          fi
+          echo "VERSION check passed: $VERSION_FILE"
       - name: Unit tests — pray_calc_dart
         working-directory: flutter/packages/pray_calc_dart
         run: dart test
@@ -119,6 +129,26 @@ jobs:
         working-directory: flutter
         run: flutter build windows --release
 
+  build-macos:
+    name: Build macOS
+    runs-on: macos-latest
+    needs: test
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - name: Get dependencies
+        working-directory: flutter
+        run: flutter pub get
+      - name: Build macOS (debug)
+        working-directory: flutter
+        run: flutter build macos --debug
+
   build-linux:
     name: Build Linux
     runs-on: ubuntu-latest
@@ -173,11 +203,22 @@ jobs:
         working-directory: flutter
         run: flutter pub get
       - name: Patch Android
+        id: shorebird-android
         working-directory: flutter
         run: shorebird patch android
-        continue-on-error: true
         env:
           SHOREBIRD_TOKEN: ${{ secrets.SHOREBIRD_TOKEN }}
+      - name: Comment on PR if patch failed
+        if: failure() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '❌ Shorebird Android patch failed. Check the [CI logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) for details.'
+            })
 
   shorebird-patch-ios:
     name: Shorebird Patch iOS
@@ -202,8 +243,19 @@ jobs:
         working-directory: flutter
         run: flutter pub get
       - name: Patch iOS
+        id: shorebird-ios
         working-directory: flutter
         run: shorebird patch ios
-        continue-on-error: true
         env:
           SHOREBIRD_TOKEN: ${{ secrets.SHOREBIRD_TOKEN }}
+      - name: Comment on PR if patch failed
+        if: failure() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '❌ Shorebird iOS patch failed. Check the [CI logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) for details.'
+            })

@@ -83,7 +83,7 @@ class TvPlatformConfigService extends ChangeNotifier {
       final json = jsonDecode(raw) as Map<String, dynamic>;
       _config = TvPlatformConfig.fromJson(json);
       notifyListeners();
-    } catch (_) {
+    } catch (e, st) {
       // Corrupted cache — keep defaults.
     }
   }
@@ -106,7 +106,7 @@ class TvPlatformConfigService extends ChangeNotifier {
 
       _config = newConfig;
       notifyListeners();
-    } catch (_) {
+    } catch (e, st) {
       // Offline or parse error — silently retain last good config.
     }
   }

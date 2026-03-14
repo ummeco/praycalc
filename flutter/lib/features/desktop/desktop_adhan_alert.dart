@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:window_manager/window_manager.dart';
 
 import '../../core/models/alert_config.dart';
 import '../../core/services/adhan_service.dart';
@@ -122,6 +123,20 @@ class DesktopAdhanAlert {
         break;
     }
 
+    // BUG-A10: Bring window to front before showing the dialog.
+    // If window is minimized or hidden, the dialog would never be visible.
+    if (Platform.isMacOS || Platform.isWindows || Platform.isLinux) {
+      try {
+        final isVisible = await windowManager.isVisible();
+        if (!isVisible) await windowManager.show();
+        await windowManager.focus();
+        // macOS dock bounce — draws user attention when app is in background.
+        if (Platform.isMacOS) await windowManager.setAlwaysOnTop(true);
+      } catch (_) {
+        // window_manager not initialized (e.g. test environment) — skip.
+      }
+    }
+
     // Show overlay dialog if configured.
     if (config.overlayType == AlertOverlayType.modal && context.mounted) {
       await showDialog(
@@ -135,6 +150,10 @@ class DesktopAdhanAlert {
           autoDismiss: config.autoDismiss,
         ),
       );
+      // Restore always-on-top to false after dialog dismissal.
+      if (Platform.isMacOS) {
+        try { await windowManager.setAlwaysOnTop(false); } catch (_) {}
+      }
     }
   }
 }

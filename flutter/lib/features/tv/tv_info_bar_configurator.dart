@@ -78,8 +78,9 @@ class TvInfoBarConfigurator extends ConsumerWidget {
               icon: Icons.timer_outlined,
               title: 'Prayer Countdown',
               subtitle: 'Time remaining until the next prayer',
-              value: true, // always on — not yet a model field; placeholder
-              onChanged: null, // countdown is always shown
+              value: config.showPrayerCountdown,
+              onChanged: (v) => tvNotifier.setInfoBarConfig(
+                  config.copyWith(showPrayerCountdown: v)),
             ),
             const SizedBox(height: 8),
             _InfoBarToggle(

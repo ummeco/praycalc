@@ -33,7 +33,6 @@ jobs:
         run: pnpm install --frozen-lockfile
       - name: Audit dependencies
         run: pnpm audit --audit-level=high
-        continue-on-error: true
       - name: Type check
         run: pnpm exec tsc --noEmit
       - name: Build
