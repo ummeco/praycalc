@@ -280,14 +280,13 @@ jobs:
       - name: Get dependencies
         working-directory: flutter
         run: flutter pub get
-      - name: Patch flutter_secure_storage_linux (cmake IMPORTED_TARGET workaround)
-        # All pip-installed cmake versions join IMPORTED_TARGET and the package name
-        # into a single semicolon-joined token, breaking pkg_check_modules.
-        # Patch the plugin to use the traditional variable-based linking instead.
+      - name: Patch flutter_secure_storage_linux (cmake pkg_check_modules workaround)
+        # cmake's FindPkgConfig.cmake has a regression where pkg_check_modules fails
+        # with version specifiers (>=) due to ARGN being semicolon-joined in if().
+        # Replace the plugin's CMakeLists.txt with a find_library-based version.
         run: |
-          FILE="flutter/linux/flutter/ephemeral/.plugin_symlinks/flutter_secure_storage_linux/linux/CMakeLists.txt"
-          sed -i 's/REQUIRED IMPORTED_TARGET libsecret/REQUIRED libsecret/' "$FILE"
-          sed -i 's/PkgConfig::LIBSECRET/${LIBSECRET_LIBRARIES}/' "$FILE"
+          cp flutter/linux/patches/flutter_secure_storage_linux_CMakeLists.txt \
+            flutter/linux/flutter/ephemeral/.plugin_symlinks/flutter_secure_storage_linux/linux/CMakeLists.txt
       - name: Build Linux (release)
         working-directory: flutter
         run: flutter build linux --release
