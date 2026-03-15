@@ -276,7 +276,8 @@ jobs:
           sudo apt-get install -y \
             clang ninja-build pkg-config \
             libgtk-3-dev liblzma-dev libstdc++-12-dev \
-            libsecret-1-dev libjsoncpp-dev
+            libsecret-1-dev libjsoncpp-dev \
+            libcurl4-openssl-dev
       - name: Get dependencies
         working-directory: flutter
         run: flutter pub get
