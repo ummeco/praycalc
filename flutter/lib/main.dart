@@ -127,9 +127,15 @@ class _PrayCalcAppState extends ConsumerState<PrayCalcApp> with WindowListener {
         DesktopFullWindow.registerShowCallback(() {
           appRouter.push(Routes.desktopFullWindow);
         });
-        final l10n = AppLocalizations.of(context)!;
+        // Use the navigator's context (inside MaterialApp) so that
+        // AppLocalizations is available. The PrayCalcApp context is
+        // above MaterialApp and never has localizations.
+        final innerCtx = appRouter.routerDelegate.navigatorKey.currentContext;
+        if (innerCtx == null) return;
+        final l10n = AppLocalizations.of(innerCtx);
+        if (l10n == null) return;
         final tray = DesktopTrayApp(ref, l10n);
-        tray.init();
+        tray.init().catchError((_) {}); // No-op in headless test environments.
         _trayApp = tray;
       });
     }
