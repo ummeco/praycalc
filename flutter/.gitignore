@@ -35,7 +35,6 @@ migrate_working_dir/
 # Ephemeral generated files (flutter pub get)
 **/flutter/ephemeral/
 **/Podfile.lock
-packages/pray_calc_dart/VERSION
 /coverage/
 
 # Symbolication related
