@@ -83,11 +83,16 @@ jobs:
         working-directory: flutter
         run: flutter pub get
       - name: Shorebird release Android (Google Play)
+        # Non-fatal: requires a valid SHOREBIRD_TOKEN secret.
+        # Run `shorebird login:ci` locally, copy the token, set it as the
+        # SHOREBIRD_TOKEN secret in GitHub → Settings → Secrets and variables → Actions.
+        continue-on-error: true
         working-directory: flutter
         run: shorebird release android --flavor google -t lib/main.dart
         env:
           SHOREBIRD_TOKEN: ${{ secrets.SHOREBIRD_TOKEN }}
       - name: Build Amazon APK
+        if: always()
         working-directory: flutter
         run: |
           flutter build apk \
@@ -265,8 +270,6 @@ jobs:
         with:
           channel: stable
           cache: true
-      - name: Pin CMake 3.31
-        run: pip3 install cmake==3.31.4 && echo "$(python3 -c 'import cmake; print(cmake.CMAKE_BIN_DIR)')" >> $GITHUB_PATH
       - name: Install Linux dependencies
         run: |
           sudo apt-get update -y
@@ -358,7 +361,7 @@ jobs:
       - release-windows
       - release-linux
       - release-smart
-    if: always() && needs.release-android.result != 'failure'
+    if: always()
     permissions:
       contents: write
     steps:
