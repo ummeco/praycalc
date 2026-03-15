@@ -66,6 +66,16 @@ include(flutter/generated_plugins.cmake)
 # Run the Flutter tool portions of the build. This must not be removed.
 add_dependencies(${BINARY_NAME} flutter_assemble)
 
+# Provide fallback install destinations if not set by generated_config.cmake.
+# flutter build linux does not run cmake --install, so these are only needed
+# to satisfy cmake's validation during configuration.
+if(NOT DEFINED INSTALL_BUNDLE_DATA_DIR OR INSTALL_BUNDLE_DATA_DIR STREQUAL "")
+  set(INSTALL_BUNDLE_DATA_DIR "${CMAKE_INSTALL_PREFIX}/data")
+endif()
+if(NOT DEFINED INSTALL_BUNDLE_LIB_DIR OR INSTALL_BUNDLE_LIB_DIR STREQUAL "")
+  set(INSTALL_BUNDLE_LIB_DIR "${CMAKE_INSTALL_PREFIX}/lib")
+endif()
+
 # Only the install rules need to be in the top-level rules, since the Flutter
 # tool generates the needed files for the runner.
 install(TARGETS ${BINARY_NAME} RUNTIME DESTINATION "${CMAKE_INSTALL_PREFIX}"
