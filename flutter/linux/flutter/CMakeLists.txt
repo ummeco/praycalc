@@ -25,6 +25,13 @@ find_package(PkgConfig REQUIRED)
 pkg_check_modules(GTK REQUIRED IMPORTED_TARGET gtk+-3.0)
 pkg_check_modules(GLIB REQUIRED IMPORTED_TARGET glib-2.0)
 pkg_check_modules(GIO REQUIRED IMPORTED_TARGET gio-2.0)
+# Promote imported targets to global scope so they are visible from the
+# parent directory (linux/CMakeLists.txt) and all sibling plugin directories.
+# Required for cmake 3.28+, which enforces IMPORTED target directory scope.
+# cmake 3.23+ supports setting IMPORTED_GLOBAL after target creation.
+set_target_properties(PkgConfig::GTK PROPERTIES IMPORTED_GLOBAL TRUE)
+set_target_properties(PkgConfig::GLIB PROPERTIES IMPORTED_GLOBAL TRUE)
+set_target_properties(PkgConfig::GIO PROPERTIES IMPORTED_GLOBAL TRUE)
 
 set(FLUTTER_LIBRARY "${EPHEMERAL_DIR}/libflutter_linux_gtk.so")
 
