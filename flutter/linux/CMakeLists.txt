@@ -27,6 +27,14 @@ endif()
 # Define settings for the application build.
 set(CMAKE_INSTALL_RPATH "$ORIGIN/lib")
 
+# If the flutter tool didn't set CMAKE_INSTALL_PREFIX (leaving the cmake
+# default /usr/local), redirect the install to the expected bundle directory
+# so that cmake --install doesn't require root access.
+if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+  set(CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_BINARY_DIR}/bundle"
+    CACHE PATH "Installation directory" FORCE)
+endif()
+
 # Fully qualified name of the custom manifest dir.
 set(FLUTTER_MANAGED_DIR "${CMAKE_CURRENT_SOURCE_DIR}/flutter")
 
