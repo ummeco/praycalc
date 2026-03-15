@@ -270,13 +270,6 @@ jobs:
         with:
           channel: stable
           cache: true
-      - name: Pin CMake 3.27 (IMPORTED_TARGET regression in 3.28+)
-        # CMake 3.28+ has a regression in FindPkgConfig.cmake where IMPORTED_TARGET
-        # is not recognized as a keyword in pkg_check_modules, causing build failure.
-        # 3.27.9 is the last clean version. Pip cmake is prepended to PATH by GITHUB_PATH.
-        run: |
-          pip3 install cmake==3.27.9
-          echo "$(python3 -c 'import cmake; print(cmake.CMAKE_BIN_DIR)')" >> $GITHUB_PATH
       - name: Install Linux dependencies
         run: |
           sudo apt-get update -y
@@ -287,6 +280,14 @@ jobs:
       - name: Get dependencies
         working-directory: flutter
         run: flutter pub get
+      - name: Patch flutter_secure_storage_linux (cmake IMPORTED_TARGET workaround)
+        # All pip-installed cmake versions join IMPORTED_TARGET and the package name
+        # into a single semicolon-joined token, breaking pkg_check_modules.
+        # Patch the plugin to use the traditional variable-based linking instead.
+        run: |
+          FILE="flutter/linux/flutter/ephemeral/.plugin_symlinks/flutter_secure_storage_linux/linux/CMakeLists.txt"
+          sed -i 's/REQUIRED IMPORTED_TARGET libsecret/REQUIRED libsecret/' "$FILE"
+          sed -i 's/PkgConfig::LIBSECRET/${LIBSECRET_LIBRARIES}/' "$FILE"
       - name: Build Linux (release)
         working-directory: flutter
         run: flutter build linux --release
