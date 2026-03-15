@@ -42,11 +42,10 @@ endfunction()
 # Application build. Provides the flutter_window.h header for the runner target.
 add_subdirectory(${FLUTTER_MANAGED_DIR})
 
-# Generated plugin build rules, which manage building the plugins and adding
-# them to the application.
-include(flutter/generated_plugins.cmake)
-
-# Define the application target.
+# Define the application target BEFORE including generated_plugins.cmake.
+# cmake 3.28+ requires a target to exist before target_link_libraries() is called
+# on it. generated_plugins.cmake calls target_link_libraries(${BINARY_NAME} ...)
+# so the executable must be defined first.
 add_executable(${BINARY_NAME}
   "main.cc"
   "my_application.cc"
@@ -59,6 +58,10 @@ apply_standard_settings(${BINARY_NAME})
 # Add dependency libraries. Uses pkg-config to find GTK+-3.0.
 target_link_libraries(${BINARY_NAME} PRIVATE flutter)
 target_link_libraries(${BINARY_NAME} PRIVATE PkgConfig::GTK)
+
+# Generated plugin build rules, which manage building the plugins and adding
+# them to the application.
+include(flutter/generated_plugins.cmake)
 
 # Run the Flutter tool portions of the build. This must not be removed.
 add_dependencies(${BINARY_NAME} flutter_assemble)
