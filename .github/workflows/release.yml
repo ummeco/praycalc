@@ -1,9 +1,9 @@
 name: Release
 
-# Triggered by: git tag v1.1.0 && git push origin v1.1.0
+# Triggered by: git tag v1.2.0 && git push origin v1.2.0
 # Produces a GitHub Release with signed/packaged artifacts for every platform.
 #
-# Required GitHub Secrets (Settings → Secrets → Actions):
+# Required GitHub Secrets (Settings → Secrets and variables → Actions):
 #   GOOGLE_SERVICES_JSON          — base64-encoded google-services.json
 #   GOOGLE_SERVICE_INFO_PLIST     — base64-encoded GoogleService-Info.plist
 #   SHOREBIRD_TOKEN               — from `shorebird login`
@@ -14,10 +14,14 @@ name: Release
 #   MACOS_CERTIFICATES_P12        — base64-encoded Developer ID Application cert
 #   MACOS_CERTIFICATES_P12_PASSWORD
 #   MACOS_KEYCHAIN_PASSWORD
+#   APPLE_ID                      — your Apple ID email (for notarization)
+#   APPLE_TEAM_ID                 — 10-char team ID from developer.apple.com
+#   APPLE_APP_PASSWORD            — app-specific password from appleid.apple.com
 
 on:
   push:
-    tags: ['v*']
+    tags:
+      - 'v*'
 
 concurrency:
   group: release-${{ github.ref }}
@@ -25,7 +29,7 @@ concurrency:
 
 jobs:
   # ─────────────────────────────────────────────────────────────────
-  # Shared: test gate (must pass before any build)
+  # Gate: analyze + test before any build
   # ─────────────────────────────────────────────────────────────────
   test:
     name: Analyze & Test
@@ -33,7 +37,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
-        with: { channel: stable, cache: true }
+        with:
+          channel: stable
+          cache: true
       - name: Get dependencies
         working-directory: flutter
         run: flutter pub get
@@ -63,9 +69,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
-        with: { channel: stable, cache: true }
+        with:
+          channel: stable
+          cache: true
       - uses: actions/setup-java@v4
-        with: { distribution: temurin, java-version: '17' }
+        with:
+          distribution: temurin
+          java-version: '17'
       - name: Install Shorebird
         run: |
           curl --proto '=https' --tlsv1.2 https://raw.githubusercontent.com/shorebirdtech/install/main/install.sh -sSf | bash
@@ -89,28 +99,32 @@ jobs:
             --dart-define=FLAVOR=amazon \
             --release \
             --no-tree-shake-icons
-      - name: Upload AAB
+      - name: Upload AAB artifact
         uses: actions/upload-artifact@v4
         with:
           name: android-aab
           path: flutter/build/app/outputs/bundle/googleRelease/app-google-release.aab
-      - name: Upload Amazon APK
+      - name: Upload Amazon APK artifact
         uses: actions/upload-artifact@v4
         with:
           name: android-amazon-apk
           path: flutter/build/app/outputs/flutter-apk/app-amazon-release.apk
 
   # ─────────────────────────────────────────────────────────────────
-  # iOS — Shorebird release (with signing when certs are present)
+  # iOS — Shorebird release (signed if certs present, else unsigned)
   # ─────────────────────────────────────────────────────────────────
   release-ios:
     name: iOS (App Store)
     runs-on: macos-latest
     needs: test
+    env:
+      HAS_IOS_CERT: ${{ secrets.IOS_CERTIFICATES_P12 != '' }}
     steps:
       - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
-        with: { channel: stable, cache: true }
+        with:
+          channel: stable
+          cache: true
       - name: Install Shorebird
         run: |
           curl --proto '=https' --tlsv1.2 https://raw.githubusercontent.com/shorebirdtech/install/main/install.sh -sSf | bash
@@ -120,89 +134,74 @@ jobs:
       - name: Get dependencies
         working-directory: flutter
         run: flutter pub get
-
-      # Signing (only when cert secrets are present)
       - name: Install signing certificate
-        if: ${{ secrets.IOS_CERTIFICATES_P12 != '' }}
-        env:
-          CERTIFICATE_BASE64: ${{ secrets.IOS_CERTIFICATES_P12 }}
-          P12_PASSWORD: ${{ secrets.IOS_CERTIFICATES_P12_PASSWORD }}
-          KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
+        if: env.HAS_IOS_CERT == 'true'
         run: |
           CERT_PATH=$RUNNER_TEMP/cert.p12
           KP=$RUNNER_TEMP/signing.keychain-db
-          echo -n "$CERTIFICATE_BASE64" | base64 --decode -o "$CERT_PATH"
-          security create-keychain -p "$KEYCHAIN_PASSWORD" "$KP"
+          echo -n "${{ secrets.IOS_CERTIFICATES_P12 }}" | base64 --decode -o "$CERT_PATH"
+          security create-keychain -p "${{ secrets.KEYCHAIN_PASSWORD }}" "$KP"
           security set-keychain-settings -lut 21600 "$KP"
-          security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KP"
-          security import "$CERT_PATH" -P "$P12_PASSWORD" -A -t cert -f pkcs12 -k "$KP"
+          security unlock-keychain -p "${{ secrets.KEYCHAIN_PASSWORD }}" "$KP"
+          security import "$CERT_PATH" -P "${{ secrets.IOS_CERTIFICATES_P12_PASSWORD }}" -A -t cert -f pkcs12 -k "$KP"
           security list-keychain -d user -s "$KP"
       - name: Install provisioning profile
-        if: ${{ secrets.IOS_PROVISIONING_PROFILE != '' }}
-        env:
-          PP_BASE64: ${{ secrets.IOS_PROVISIONING_PROFILE }}
+        if: env.HAS_IOS_CERT == 'true'
         run: |
           PP=$RUNNER_TEMP/build.mobileprovision
-          echo -n "$PP_BASE64" | base64 --decode -o "$PP"
+          echo -n "${{ secrets.IOS_PROVISIONING_PROFILE }}" | base64 --decode -o "$PP"
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
           cp "$PP" ~/Library/MobileDevice/Provisioning\ Profiles/
-
-      # Build: signed release (if certs) or unsigned debug (if not)
       - name: Shorebird release iOS (signed)
-        if: ${{ secrets.IOS_CERTIFICATES_P12 != '' }}
+        if: env.HAS_IOS_CERT == 'true'
         working-directory: flutter
         run: shorebird release ios
         env:
           SHOREBIRD_TOKEN: ${{ secrets.SHOREBIRD_TOKEN }}
-      - name: Build iOS (unsigned — no certs configured)
-        if: ${{ secrets.IOS_CERTIFICATES_P12 == '' }}
+      - name: Build iOS unsigned (no cert — compile verification only)
+        if: env.HAS_IOS_CERT != 'true'
         working-directory: flutter
         run: flutter build ios --no-codesign --release
 
   # ─────────────────────────────────────────────────────────────────
-  # macOS — Release build + DMG
+  # macOS — Release build packaged as DMG
   # ─────────────────────────────────────────────────────────────────
   release-macos:
     name: macOS (DMG)
     runs-on: macos-latest
     needs: test
+    env:
+      HAS_MACOS_CERT: ${{ secrets.MACOS_CERTIFICATES_P12 != '' }}
     steps:
       - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
-        with: { channel: stable, cache: true }
+        with:
+          channel: stable
+          cache: true
       - name: Get dependencies
         working-directory: flutter
         run: flutter pub get
-
-      # Optional: Developer ID signing (only when cert present)
       - name: Install Developer ID certificate
-        if: ${{ secrets.MACOS_CERTIFICATES_P12 != '' }}
-        env:
-          CERTIFICATE_BASE64: ${{ secrets.MACOS_CERTIFICATES_P12 }}
-          P12_PASSWORD: ${{ secrets.MACOS_CERTIFICATES_P12_PASSWORD }}
-          KEYCHAIN_PASSWORD: ${{ secrets.MACOS_KEYCHAIN_PASSWORD }}
+        if: env.HAS_MACOS_CERT == 'true'
         run: |
           CERT_PATH=$RUNNER_TEMP/devid.p12
           KP=$RUNNER_TEMP/macos-signing.keychain-db
-          echo -n "$CERTIFICATE_BASE64" | base64 --decode -o "$CERT_PATH"
-          security create-keychain -p "$KEYCHAIN_PASSWORD" "$KP"
+          echo -n "${{ secrets.MACOS_CERTIFICATES_P12 }}" | base64 --decode -o "$CERT_PATH"
+          security create-keychain -p "${{ secrets.MACOS_KEYCHAIN_PASSWORD }}" "$KP"
           security set-keychain-settings -lut 21600 "$KP"
-          security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KP"
-          security import "$CERT_PATH" -P "$P12_PASSWORD" -A -t cert -f pkcs12 -k "$KP"
+          security unlock-keychain -p "${{ secrets.MACOS_KEYCHAIN_PASSWORD }}" "$KP"
+          security import "$CERT_PATH" -P "${{ secrets.MACOS_CERTIFICATES_P12_PASSWORD }}" -A -t cert -f pkcs12 -k "$KP"
           security list-keychain -d user -s "$KP"
-
       - name: Build macOS (release)
         working-directory: flutter
         run: flutter build macos --release
-
       - name: Sign app (Developer ID)
-        if: ${{ secrets.MACOS_CERTIFICATES_P12 != '' }}
+        if: env.HAS_MACOS_CERT == 'true'
         run: |
           codesign --deep --force --verify --verbose \
             --options runtime \
             --sign "Developer ID Application" \
             flutter/build/macos/Build/Products/Release/praycalc_app.app
-
       - name: Package as DMG
         run: |
           APP=flutter/build/macos/Build/Products/Release/praycalc_app.app
@@ -213,29 +212,24 @@ jobs:
             -srcfolder /tmp/dmg-stage \
             -ov -format UDZO \
             /tmp/PrayCalc.dmg
-
+          rm -rf /tmp/dmg-stage
       - name: Notarize DMG
-        if: ${{ secrets.MACOS_CERTIFICATES_P12 != '' }}
-        env:
-          APPLE_ID: ${{ secrets.APPLE_ID }}
-          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
-          APPLE_APP_PASSWORD: ${{ secrets.APPLE_APP_PASSWORD }}
+        if: env.HAS_MACOS_CERT == 'true'
         run: |
           xcrun notarytool submit /tmp/PrayCalc.dmg \
-            --apple-id "$APPLE_ID" \
-            --team-id "$APPLE_TEAM_ID" \
-            --password "$APPLE_APP_PASSWORD" \
+            --apple-id "${{ secrets.APPLE_ID }}" \
+            --team-id "${{ secrets.APPLE_TEAM_ID }}" \
+            --password "${{ secrets.APPLE_APP_PASSWORD }}" \
             --wait
           xcrun stapler staple /tmp/PrayCalc.dmg
-
-      - name: Upload DMG
+      - name: Upload DMG artifact
         uses: actions/upload-artifact@v4
         with:
           name: macos-dmg
           path: /tmp/PrayCalc.dmg
 
   # ─────────────────────────────────────────────────────────────────
-  # Windows — Release build + zip installer
+  # Windows — Release build packaged as ZIP
   # ─────────────────────────────────────────────────────────────────
   release-windows:
     name: Windows (ZIP)
@@ -244,7 +238,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
-        with: { channel: stable, cache: true }
+        with:
+          channel: stable
+          cache: true
       - name: Get dependencies
         working-directory: flutter
         run: flutter pub get
@@ -256,14 +252,14 @@ jobs:
         run: |
           $src = "flutter\build\windows\x64\runner\Release"
           Compress-Archive -Path "$src\*" -DestinationPath "$env:TEMP\PrayCalc-Windows.zip"
-      - name: Upload ZIP
+      - name: Upload ZIP artifact
         uses: actions/upload-artifact@v4
         with:
           name: windows-zip
           path: ${{ env.TEMP }}/PrayCalc-Windows.zip
 
   # ─────────────────────────────────────────────────────────────────
-  # Linux — Release build + .deb + .tar.gz
+  # Linux — Release build packaged as .deb + .tar.gz
   # ─────────────────────────────────────────────────────────────────
   release-linux:
     name: Linux (.deb + tar.gz)
@@ -272,7 +268,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
-        with: { channel: stable, cache: true }
+        with:
+          channel: stable
+          cache: true
       - name: Pin CMake 3.28
         run: pip3 install cmake==3.28.4 && echo "$(python3 -c 'import cmake; print(cmake.CMAKE_BIN_DIR)')" >> $GITHUB_PATH
       - name: Install Linux dependencies
@@ -288,69 +286,38 @@ jobs:
       - name: Build Linux (release)
         working-directory: flutter
         run: flutter build linux --release
-
       - name: Get version
         id: ver
         run: echo "version=$(grep '^version:' flutter/pubspec.yaml | awk '{print $2}' | cut -d'+' -f1)" >> $GITHUB_OUTPUT
-
       - name: Package .tar.gz
         run: |
           cd flutter/build/linux/x64/release/bundle
           tar -czf /tmp/PrayCalc-Linux.tar.gz .
-
       - name: Package .deb
         run: |
           VER=${{ steps.ver.outputs.version }}
           PKG=/tmp/praycalc_${VER}_amd64
           BUNDLE=flutter/build/linux/x64/release/bundle
 
-          mkdir -p "$PKG/DEBIAN"
-          mkdir -p "$PKG/usr/lib/praycalc"
-          mkdir -p "$PKG/usr/bin"
-          mkdir -p "$PKG/usr/share/applications"
-          mkdir -p "$PKG/usr/share/icons/hicolor/512x512/apps"
-
+          mkdir -p "$PKG/DEBIAN" "$PKG/usr/lib/praycalc" "$PKG/usr/bin" "$PKG/usr/share/applications"
           cp -r "$BUNDLE/." "$PKG/usr/lib/praycalc/"
 
-          # Launcher wrapper
-          cat > "$PKG/usr/bin/praycalc" << 'SCRIPT'
-          #!/bin/bash
-          exec /usr/lib/praycalc/praycalc_app "$@"
-          SCRIPT
+          printf '#!/bin/bash\nexec /usr/lib/praycalc/praycalc_app "$@"\n' > "$PKG/usr/bin/praycalc"
           chmod +x "$PKG/usr/bin/praycalc"
 
-          # .desktop entry
-          cat > "$PKG/usr/share/applications/praycalc.desktop" << 'DESKTOP'
-          [Desktop Entry]
-          Name=PrayCalc
-          Comment=Islamic Prayer Times
-          Exec=praycalc
-          Icon=praycalc
-          Type=Application
-          Categories=Education;Utility;
-          DESKTOP
+          printf '[Desktop Entry]\nName=PrayCalc\nComment=Islamic Prayer Times\nExec=praycalc\nIcon=praycalc\nType=Application\nCategories=Education;Utility;\n' \
+            > "$PKG/usr/share/applications/praycalc.desktop"
 
-          # Control file
-          cat > "$PKG/DEBIAN/control" << CONTROL
-          Package: praycalc
-          Version: ${VER}
-          Section: utils
-          Priority: optional
-          Architecture: amd64
-          Maintainer: Ummeco <apps@ummat.dev>
-          Description: PrayCalc - Islamic Prayer Times
-           Accurate prayer times, Qibla direction, adhan reminders,
-           and TV display mode for the global Muslim community.
-          CONTROL
+          printf 'Package: praycalc\nVersion: %s\nSection: utils\nPriority: optional\nArchitecture: amd64\nMaintainer: Ummeco <apps@ummat.dev>\nDescription: PrayCalc - Islamic Prayer Times\n Accurate prayer times, Qibla, adhan reminders, and TV display mode.\n' \
+            "$VER" > "$PKG/DEBIAN/control"
 
           dpkg-deb --build "$PKG" /tmp/praycalc_${VER}_amd64.deb
-
-      - name: Upload tar.gz
+      - name: Upload tar.gz artifact
         uses: actions/upload-artifact@v4
         with:
           name: linux-targz
           path: /tmp/PrayCalc-Linux.tar.gz
-      - name: Upload .deb
+      - name: Upload .deb artifact
         uses: actions/upload-artifact@v4
         with:
           name: linux-deb
@@ -385,41 +352,41 @@ jobs:
             ghcr.io/ummeco/praycalc-smart:${{ steps.ver.outputs.version }}
 
   # ─────────────────────────────────────────────────────────────────
-  # GitHub Release — collect all artifacts + create release
+  # GitHub Release — collect artifacts + publish
   # ─────────────────────────────────────────────────────────────────
   create-release:
     name: Create GitHub Release
     runs-on: ubuntu-latest
-    needs: [release-android, release-ios, release-macos, release-windows, release-linux, release-smart]
+    needs:
+      - release-android
+      - release-ios
+      - release-macos
+      - release-windows
+      - release-linux
+      - release-smart
     if: always() && needs.release-android.result != 'failure'
     permissions:
       contents: write
     steps:
       - uses: actions/checkout@v4
-
       - name: Download all artifacts
         uses: actions/download-artifact@v4
         with:
           path: /tmp/release-artifacts
-
       - name: Get version
         id: ver
         run: echo "version=${GITHUB_REF_NAME}" >> $GITHUB_OUTPUT
-
       - name: Extract changelog entry
         id: changelog
         run: |
           VERSION="${GITHUB_REF_NAME#v}"
-          ENTRY=$(awk "/^## $VERSION/,/^## [0-9]/" .github/docs/changelog.md | head -n -1)
-          echo "entry<<EOF" >> $GITHUB_OUTPUT
-          echo "$ENTRY" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
-
+          NOTES=$(awk "/^## ${VERSION}/,/^## [0-9]/" .github/docs/changelog.md | head -n -1 | tail -n +2)
+          printf 'notes<<ENDOFNOTES\n%s\nENDOFNOTES\n' "$NOTES" >> $GITHUB_OUTPUT
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
           name: PrayCalc ${{ steps.ver.outputs.version }}
-          body: ${{ steps.changelog.outputs.entry }}
+          body: ${{ steps.changelog.outputs.notes }}
           draft: false
           prerelease: ${{ contains(github.ref_name, '-') }}
           files: |
