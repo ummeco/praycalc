@@ -1,0 +1,433 @@
+name: Release
+
+# Triggered by: git tag v1.1.0 && git push origin v1.1.0
+# Produces a GitHub Release with signed/packaged artifacts for every platform.
+#
+# Required GitHub Secrets (Settings → Secrets → Actions):
+#   GOOGLE_SERVICES_JSON          — base64-encoded google-services.json
+#   GOOGLE_SERVICE_INFO_PLIST     — base64-encoded GoogleService-Info.plist
+#   SHOREBIRD_TOKEN               — from `shorebird login`
+#   IOS_CERTIFICATES_P12          — base64-encoded Distribution cert (.p12)
+#   IOS_CERTIFICATES_P12_PASSWORD — password for the .p12
+#   IOS_PROVISIONING_PROFILE      — base64-encoded .mobileprovision
+#   KEYCHAIN_PASSWORD             — any strong random string (temp keychain)
+#   MACOS_CERTIFICATES_P12        — base64-encoded Developer ID Application cert
+#   MACOS_CERTIFICATES_P12_PASSWORD
+#   MACOS_KEYCHAIN_PASSWORD
+
+on:
+  push:
+    tags: ['v*']
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  # ─────────────────────────────────────────────────────────────────
+  # Shared: test gate (must pass before any build)
+  # ─────────────────────────────────────────────────────────────────
+  test:
+    name: Analyze & Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with: { channel: stable, cache: true }
+      - name: Get dependencies
+        working-directory: flutter
+        run: flutter pub get
+      - name: Get pray_calc_dart dependencies
+        working-directory: flutter/packages/pray_calc_dart
+        run: dart pub get
+      - name: Analyze
+        working-directory: flutter
+        run: flutter analyze
+      - name: Validate pray_calc_dart VERSION
+        working-directory: flutter/packages/pray_calc_dart
+        run: |
+          V=$(cat VERSION | tr -d '[:space:]')
+          P=$(grep '^version:' pubspec.yaml | awk '{print $2}' | tr -d '[:space:]')
+          [ "$V" = "$P" ] || { echo "VERSION $V != pubspec $P"; exit 1; }
+      - name: Tests
+        working-directory: flutter
+        run: flutter test
+
+  # ─────────────────────────────────────────────────────────────────
+  # Android — Shorebird release + Amazon APK
+  # ─────────────────────────────────────────────────────────────────
+  release-android:
+    name: Android (Google Play + Amazon)
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with: { channel: stable, cache: true }
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: '17' }
+      - name: Install Shorebird
+        run: |
+          curl --proto '=https' --tlsv1.2 https://raw.githubusercontent.com/shorebirdtech/install/main/install.sh -sSf | bash
+          echo "$HOME/.shorebird/bin" >> $GITHUB_PATH
+      - name: Inject google-services.json
+        run: echo "${{ secrets.GOOGLE_SERVICES_JSON }}" | base64 --decode > flutter/android/app/google-services.json
+      - name: Get dependencies
+        working-directory: flutter
+        run: flutter pub get
+      - name: Shorebird release Android (Google Play)
+        working-directory: flutter
+        run: shorebird release android --flavor google -t lib/main.dart
+        env:
+          SHOREBIRD_TOKEN: ${{ secrets.SHOREBIRD_TOKEN }}
+      - name: Build Amazon APK
+        working-directory: flutter
+        run: |
+          flutter build apk \
+            --flavor amazon \
+            --target lib/main.dart \
+            --dart-define=FLAVOR=amazon \
+            --release \
+            --no-tree-shake-icons
+      - name: Upload AAB
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-aab
+          path: flutter/build/app/outputs/bundle/googleRelease/app-google-release.aab
+      - name: Upload Amazon APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-amazon-apk
+          path: flutter/build/app/outputs/flutter-apk/app-amazon-release.apk
+
+  # ─────────────────────────────────────────────────────────────────
+  # iOS — Shorebird release (with signing when certs are present)
+  # ─────────────────────────────────────────────────────────────────
+  release-ios:
+    name: iOS (App Store)
+    runs-on: macos-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with: { channel: stable, cache: true }
+      - name: Install Shorebird
+        run: |
+          curl --proto '=https' --tlsv1.2 https://raw.githubusercontent.com/shorebirdtech/install/main/install.sh -sSf | bash
+          echo "$HOME/.shorebird/bin" >> $GITHUB_PATH
+      - name: Inject GoogleService-Info.plist
+        run: echo "${{ secrets.GOOGLE_SERVICE_INFO_PLIST }}" | base64 --decode > flutter/ios/Runner/GoogleService-Info.plist
+      - name: Get dependencies
+        working-directory: flutter
+        run: flutter pub get
+
+      # Signing (only when cert secrets are present)
+      - name: Install signing certificate
+        if: ${{ secrets.IOS_CERTIFICATES_P12 != '' }}
+        env:
+          CERTIFICATE_BASE64: ${{ secrets.IOS_CERTIFICATES_P12 }}
+          P12_PASSWORD: ${{ secrets.IOS_CERTIFICATES_P12_PASSWORD }}
+          KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
+        run: |
+          CERT_PATH=$RUNNER_TEMP/cert.p12
+          KP=$RUNNER_TEMP/signing.keychain-db
+          echo -n "$CERTIFICATE_BASE64" | base64 --decode -o "$CERT_PATH"
+          security create-keychain -p "$KEYCHAIN_PASSWORD" "$KP"
+          security set-keychain-settings -lut 21600 "$KP"
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KP"
+          security import "$CERT_PATH" -P "$P12_PASSWORD" -A -t cert -f pkcs12 -k "$KP"
+          security list-keychain -d user -s "$KP"
+      - name: Install provisioning profile
+        if: ${{ secrets.IOS_PROVISIONING_PROFILE != '' }}
+        env:
+          PP_BASE64: ${{ secrets.IOS_PROVISIONING_PROFILE }}
+        run: |
+          PP=$RUNNER_TEMP/build.mobileprovision
+          echo -n "$PP_BASE64" | base64 --decode -o "$PP"
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+          cp "$PP" ~/Library/MobileDevice/Provisioning\ Profiles/
+
+      # Build: signed release (if certs) or unsigned debug (if not)
+      - name: Shorebird release iOS (signed)
+        if: ${{ secrets.IOS_CERTIFICATES_P12 != '' }}
+        working-directory: flutter
+        run: shorebird release ios
+        env:
+          SHOREBIRD_TOKEN: ${{ secrets.SHOREBIRD_TOKEN }}
+      - name: Build iOS (unsigned — no certs configured)
+        if: ${{ secrets.IOS_CERTIFICATES_P12 == '' }}
+        working-directory: flutter
+        run: flutter build ios --no-codesign --release
+
+  # ─────────────────────────────────────────────────────────────────
+  # macOS — Release build + DMG
+  # ─────────────────────────────────────────────────────────────────
+  release-macos:
+    name: macOS (DMG)
+    runs-on: macos-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with: { channel: stable, cache: true }
+      - name: Get dependencies
+        working-directory: flutter
+        run: flutter pub get
+
+      # Optional: Developer ID signing (only when cert present)
+      - name: Install Developer ID certificate
+        if: ${{ secrets.MACOS_CERTIFICATES_P12 != '' }}
+        env:
+          CERTIFICATE_BASE64: ${{ secrets.MACOS_CERTIFICATES_P12 }}
+          P12_PASSWORD: ${{ secrets.MACOS_CERTIFICATES_P12_PASSWORD }}
+          KEYCHAIN_PASSWORD: ${{ secrets.MACOS_KEYCHAIN_PASSWORD }}
+        run: |
+          CERT_PATH=$RUNNER_TEMP/devid.p12
+          KP=$RUNNER_TEMP/macos-signing.keychain-db
+          echo -n "$CERTIFICATE_BASE64" | base64 --decode -o "$CERT_PATH"
+          security create-keychain -p "$KEYCHAIN_PASSWORD" "$KP"
+          security set-keychain-settings -lut 21600 "$KP"
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KP"
+          security import "$CERT_PATH" -P "$P12_PASSWORD" -A -t cert -f pkcs12 -k "$KP"
+          security list-keychain -d user -s "$KP"
+
+      - name: Build macOS (release)
+        working-directory: flutter
+        run: flutter build macos --release
+
+      - name: Sign app (Developer ID)
+        if: ${{ secrets.MACOS_CERTIFICATES_P12 != '' }}
+        run: |
+          codesign --deep --force --verify --verbose \
+            --options runtime \
+            --sign "Developer ID Application" \
+            flutter/build/macos/Build/Products/Release/praycalc_app.app
+
+      - name: Package as DMG
+        run: |
+          APP=flutter/build/macos/Build/Products/Release/praycalc_app.app
+          mkdir -p /tmp/dmg-stage
+          cp -R "$APP" /tmp/dmg-stage/PrayCalc.app
+          ln -s /Applications /tmp/dmg-stage/Applications
+          hdiutil create -volname "PrayCalc" \
+            -srcfolder /tmp/dmg-stage \
+            -ov -format UDZO \
+            /tmp/PrayCalc.dmg
+
+      - name: Notarize DMG
+        if: ${{ secrets.MACOS_CERTIFICATES_P12 != '' }}
+        env:
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          APPLE_APP_PASSWORD: ${{ secrets.APPLE_APP_PASSWORD }}
+        run: |
+          xcrun notarytool submit /tmp/PrayCalc.dmg \
+            --apple-id "$APPLE_ID" \
+            --team-id "$APPLE_TEAM_ID" \
+            --password "$APPLE_APP_PASSWORD" \
+            --wait
+          xcrun stapler staple /tmp/PrayCalc.dmg
+
+      - name: Upload DMG
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-dmg
+          path: /tmp/PrayCalc.dmg
+
+  # ─────────────────────────────────────────────────────────────────
+  # Windows — Release build + zip installer
+  # ─────────────────────────────────────────────────────────────────
+  release-windows:
+    name: Windows (ZIP)
+    runs-on: windows-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with: { channel: stable, cache: true }
+      - name: Get dependencies
+        working-directory: flutter
+        run: flutter pub get
+      - name: Build Windows (release)
+        working-directory: flutter
+        run: flutter build windows --release
+      - name: Package as ZIP
+        shell: pwsh
+        run: |
+          $src = "flutter\build\windows\x64\runner\Release"
+          Compress-Archive -Path "$src\*" -DestinationPath "$env:TEMP\PrayCalc-Windows.zip"
+      - name: Upload ZIP
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-zip
+          path: ${{ env.TEMP }}/PrayCalc-Windows.zip
+
+  # ─────────────────────────────────────────────────────────────────
+  # Linux — Release build + .deb + .tar.gz
+  # ─────────────────────────────────────────────────────────────────
+  release-linux:
+    name: Linux (.deb + tar.gz)
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with: { channel: stable, cache: true }
+      - name: Pin CMake 3.28
+        run: pip3 install cmake==3.28.4 && echo "$(python3 -c 'import cmake; print(cmake.CMAKE_BIN_DIR)')" >> $GITHUB_PATH
+      - name: Install Linux dependencies
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y \
+            clang ninja-build pkg-config \
+            libgtk-3-dev liblzma-dev libstdc++-12-dev \
+            libsecret-1-dev libjsoncpp-dev
+      - name: Get dependencies
+        working-directory: flutter
+        run: flutter pub get
+      - name: Build Linux (release)
+        working-directory: flutter
+        run: flutter build linux --release
+
+      - name: Get version
+        id: ver
+        run: echo "version=$(grep '^version:' flutter/pubspec.yaml | awk '{print $2}' | cut -d'+' -f1)" >> $GITHUB_OUTPUT
+
+      - name: Package .tar.gz
+        run: |
+          cd flutter/build/linux/x64/release/bundle
+          tar -czf /tmp/PrayCalc-Linux.tar.gz .
+
+      - name: Package .deb
+        run: |
+          VER=${{ steps.ver.outputs.version }}
+          PKG=/tmp/praycalc_${VER}_amd64
+          BUNDLE=flutter/build/linux/x64/release/bundle
+
+          mkdir -p "$PKG/DEBIAN"
+          mkdir -p "$PKG/usr/lib/praycalc"
+          mkdir -p "$PKG/usr/bin"
+          mkdir -p "$PKG/usr/share/applications"
+          mkdir -p "$PKG/usr/share/icons/hicolor/512x512/apps"
+
+          cp -r "$BUNDLE/." "$PKG/usr/lib/praycalc/"
+
+          # Launcher wrapper
+          cat > "$PKG/usr/bin/praycalc" << 'SCRIPT'
+          #!/bin/bash
+          exec /usr/lib/praycalc/praycalc_app "$@"
+          SCRIPT
+          chmod +x "$PKG/usr/bin/praycalc"
+
+          # .desktop entry
+          cat > "$PKG/usr/share/applications/praycalc.desktop" << 'DESKTOP'
+          [Desktop Entry]
+          Name=PrayCalc
+          Comment=Islamic Prayer Times
+          Exec=praycalc
+          Icon=praycalc
+          Type=Application
+          Categories=Education;Utility;
+          DESKTOP
+
+          # Control file
+          cat > "$PKG/DEBIAN/control" << CONTROL
+          Package: praycalc
+          Version: ${VER}
+          Section: utils
+          Priority: optional
+          Architecture: amd64
+          Maintainer: Ummeco <apps@ummat.dev>
+          Description: PrayCalc - Islamic Prayer Times
+           Accurate prayer times, Qibla direction, adhan reminders,
+           and TV display mode for the global Muslim community.
+          CONTROL
+
+          dpkg-deb --build "$PKG" /tmp/praycalc_${VER}_amd64.deb
+
+      - name: Upload tar.gz
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-targz
+          path: /tmp/PrayCalc-Linux.tar.gz
+      - name: Upload .deb
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-deb
+          path: /tmp/praycalc_${{ steps.ver.outputs.version }}_amd64.deb
+
+  # ─────────────────────────────────────────────────────────────────
+  # Smart server Docker image → ghcr.io
+  # ─────────────────────────────────────────────────────────────────
+  release-smart:
+    name: Smart Server (Docker)
+    runs-on: ubuntu-latest
+    needs: test
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Get version
+        id: ver
+        run: echo "version=$(node -p "require('./smart/package.json').version")" >> $GITHUB_OUTPUT
+      - uses: docker/build-push-action@v5
+        with:
+          context: smart
+          push: true
+          tags: |
+            ghcr.io/ummeco/praycalc-smart:latest
+            ghcr.io/ummeco/praycalc-smart:${{ steps.ver.outputs.version }}
+
+  # ─────────────────────────────────────────────────────────────────
+  # GitHub Release — collect all artifacts + create release
+  # ─────────────────────────────────────────────────────────────────
+  create-release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+    needs: [release-android, release-ios, release-macos, release-windows, release-linux, release-smart]
+    if: always() && needs.release-android.result != 'failure'
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: /tmp/release-artifacts
+
+      - name: Get version
+        id: ver
+        run: echo "version=${GITHUB_REF_NAME}" >> $GITHUB_OUTPUT
+
+      - name: Extract changelog entry
+        id: changelog
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          ENTRY=$(awk "/^## $VERSION/,/^## [0-9]/" .github/docs/changelog.md | head -n -1)
+          echo "entry<<EOF" >> $GITHUB_OUTPUT
+          echo "$ENTRY" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: PrayCalc ${{ steps.ver.outputs.version }}
+          body: ${{ steps.changelog.outputs.entry }}
+          draft: false
+          prerelease: ${{ contains(github.ref_name, '-') }}
+          files: |
+            /tmp/release-artifacts/android-aab/*.aab
+            /tmp/release-artifacts/android-amazon-apk/*.apk
+            /tmp/release-artifacts/macos-dmg/*.dmg
+            /tmp/release-artifacts/windows-zip/*.zip
+            /tmp/release-artifacts/linux-deb/*.deb
+            /tmp/release-artifacts/linux-targz/*.tar.gz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

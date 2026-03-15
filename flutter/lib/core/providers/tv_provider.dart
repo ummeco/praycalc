@@ -22,7 +22,7 @@ class TvSettingsNotifier extends Notifier<TvSettings> {
     if (raw != null) {
       try {
         state = TvSettings.decode(raw);
-      } catch (e, st) {
+      } catch (e) {
         // Corrupted data: keep defaults.
       }
     }

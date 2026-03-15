@@ -107,7 +107,7 @@ Future<City?> reverseGeocodeToCity(double lat, double lng) async {
       lng: lng,
       timezone: tzStr,
     );
-  } catch (e, st) {
+  } catch (e) {
     return null;
   }
 }
@@ -201,7 +201,7 @@ Future<List<City>> loadRecentCities() async {
   try {
     final list = jsonDecode(raw) as List<dynamic>;
     return list.map((e) => _cityFromJson(e as Map<String, dynamic>)).toList();
-  } catch (e, st) {
+  } catch (e) {
     return [];
   }
 }

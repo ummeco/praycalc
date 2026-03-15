@@ -5,6 +5,42 @@ Build numbers (the `+N` suffix on Flutter) increment with every store submission
 
 ---
 
+## 1.2.0 — Dashboard Screenshots, Real-Time Push, tvOS, watchOS
+
+*March 2026*
+
+### TV Dashboard
+
+- Web dashboard can now capture a live screenshot of any paired TV — press "Capture Now" and the current screen uploads to MinIO and appears in the dashboard within seconds
+- Settings changes from the web dashboard push instantly to the TV via Hasura WebSocket subscription (no polling)
+- SSE reconnect now uses exponential backoff (2s → 4s → 8s → 60s cap)
+- Debug overlay shows both SSE and WebSocket connection status
+
+### Native Apple TV App (tvOS)
+
+- Brand new native Swift app for Apple TV — prayer times, countdown, full Quran player with Arabic text, live streams (Makkah, Madinah, Al-Aqsa, Quran Radio), adhan alert overlay, city search, children's mode
+
+### watchOS
+
+- WCSession sync implemented — prayer times push from iPhone to Apple Watch automatically
+- ClockKit complication shows next prayer + countdown
+- Source files ready; Xcode target wiring required (see `flutter/ios/PrayCalcWatch/README.md`)
+
+### Platform & CI
+
+- MinIO `praycalc-screenshots` bucket for TV screenshot storage
+- Security: screenshot register endpoint now validates device ownership and key namespace
+- Smart server Docker image published to `ghcr.io/ummeco/praycalc-smart` on every release
+- Full automated release workflow: tag `v*` → builds all platforms → GitHub Release with artifacts
+
+### Bug Fixes
+
+- MIME type mismatch in screenshot presigned URL fixed (`image/png` was signed as `image/jpeg`)
+- Authorization headers added to all web dashboard screenshot API calls
+- tvOS prayer times URL deduplicated into `Config.swift`
+
+---
+
 ## v1.1.0 — TV Command Center + Platform Expansion
 
 *March 2026*

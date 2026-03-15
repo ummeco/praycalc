@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>CFBundleIdentifier</key>
+    <string>com.praycalc.app.tv</string>
+    <key>CFBundleName</key>
+    <string>PrayCalc TV</string>
+    <key>CFBundleDisplayName</key>
+    <string>PrayCalc</string>
+    <key>CFBundleVersion</key>
+    <string>1</string>
+    <key>CFBundleShortVersionString</key>
+    <string>1.1.0</string>
+    <key>CFBundleExecutable</key>
+    <string>$(EXECUTABLE_NAME)</string>
+    <key>CFBundlePackageType</key>
+    <string>APPL</string>
+    <key>CFBundleDevelopmentRegion</key>
+    <string>en</string>
+    <key>LSRequiresIPhoneOS</key>
+    <false/>
+    <key>UIDeviceFamily</key>
+    <array>
+        <integer>3</integer>
+    </array>
+    <key>NSUserNotificationsUsageDescription</key>
+    <string>PrayCalc TV uses notifications to alert you at prayer times.</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>PrayCalc uses your location to calculate accurate prayer times.</string>
+    <key>UIBackgroundModes</key>
+    <array>
+        <string>audio</string>
+        <string>fetch</string>
+    </array>
+    <key>NSAppTransportSecurity</key>
+    <dict>
+        <key>NSAllowsArbitraryLoads</key>
+        <false/>
+        <key>NSExceptionDomains</key>
+        <dict>
+            <key>everyayah.com</key>
+            <dict>
+                <key>NSIncludesSubdomains</key>
+                <true/>
+                <key>NSExceptionAllowsInsecureHTTPLoads</key>
+                <false/>
+            </dict>
+            <key>radioislam.org.za</key>
+            <dict>
+                <key>NSIncludesSubdomains</key>
+                <true/>
+                <key>NSExceptionAllowsInsecureHTTPLoads</key>
+                <false/>
+            </dict>
+        </dict>
+    </dict>
+</dict>
+</plist>

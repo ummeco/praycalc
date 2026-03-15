@@ -2272,7 +2272,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get tvChildFajrFunFact =>
-      'The Prophet ‫ﷺ‬ said: “The best prayer in the sight of Allah is Fajr on Friday.” (Bukhari)';
+      'The Prophet ﷺ said: “The best prayer in the sight of Allah is Fajr on Friday.” (Bukhari)';
 
   @override
   String get tvChildSunriseExplanation =>
@@ -2288,7 +2288,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get tvChildDhuhrFunFact =>
-      'The Prophet ‫ﷺ‬ loved to pray Dhuhr early when the sun begins to decline. (Muslim)';
+      'The Prophet ﷺ loved to pray Dhuhr early when the sun begins to decline. (Muslim)';
 
   @override
   String get tvChildAsrExplanation =>

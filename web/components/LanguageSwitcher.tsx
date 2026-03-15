@@ -60,7 +60,7 @@ export default function LanguageSwitcher({ variant = "header" }: { variant?: "he
         type="button"
         className="lang-switcher-btn"
         onClick={() => setOpen(!open)}
-        aria-expanded={open}
+        aria-expanded={open ? "true" : "false"}
         aria-haspopup="listbox"
         aria-label="Change language"
       >
@@ -76,22 +76,24 @@ export default function LanguageSwitcher({ variant = "header" }: { variant?: "he
       </button>
 
       {open && (
-        <ul className={`lang-switcher-menu${isFooter ? " lang-switcher-menu--above" : ""}${isPanel ? " lang-switcher-menu--panel" : ""}`} role="listbox">
+        <ul className={`lang-switcher-menu${isFooter ? " lang-switcher-menu--above" : ""}${isPanel ? " lang-switcher-menu--panel" : ""}`} role="listbox" aria-label="Select language">
           {LOCALES.map((l) => (
-            <li key={l.code} role="option" aria-selected={l.code === locale}>
-              <button
-                type="button"
-                className={`lang-switcher-option ${l.code === locale ? "lang-switcher-option--active" : ""}`}
-                onClick={() => switchLocale(l.code)}
-                dir={l.dir}
-              >
-                {t(l.code as any)}
-                {l.code === locale && (
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
-                )}
-              </button>
+            <li
+              key={l.code}
+              role="option"
+              aria-selected={l.code === locale ? "true" : "false"}
+              className={`lang-switcher-option ${l.code === locale ? "lang-switcher-option--active" : ""}`}
+              onClick={() => switchLocale(l.code)}
+              onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); switchLocale(l.code); } }}
+              dir={l.dir}
+              tabIndex={0}
+            >
+              {t(l.code as any)}
+              {l.code === locale && (
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+              )}
             </li>
           ))}
         </ul>

@@ -258,7 +258,7 @@ Future<String?> _fetchArabicText(int surah, int verse) async {
         return text;
       }
     }
-  } catch (e, st) {
+  } catch (e) {
     // Network error, timeout, or parse failure — return null for graceful degradation.
   }
   return null;

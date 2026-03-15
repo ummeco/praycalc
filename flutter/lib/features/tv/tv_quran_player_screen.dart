@@ -206,7 +206,7 @@ class _TvQuranPlayerScreenState extends State<TvQuranPlayerScreen>
         'arabic': (arabicEntry?['text'] as String?) ?? '-',
         'english': (englishEntry?['text'] as String?) ?? '',
       };
-    } catch (e, st) {
+    } catch (e) {
       return _fallback();
     }
   }

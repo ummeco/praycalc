@@ -18,7 +18,7 @@ export default function WidgetPage() {
       {/* Preview */}
       <div className="border border-green-200 rounded-2xl p-6 mb-8 bg-green-50">
         <h2 className="font-semibold text-green-900 mb-4">Preview</h2>
-        <iframe src="/embed?theme=light&size=medium" width="360" height="280" className="border-0 rounded-xl shadow" />
+        <iframe src="/embed?theme=light&size=medium" width="360" height="280" title="Prayer times widget preview" className="border-0 rounded-xl shadow" />
       </div>
 
       {/* Options */}

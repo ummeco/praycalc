@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:ui' as ui;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
@@ -47,6 +49,7 @@ import 'tv_stream_overlays.dart';
 import 'tv_stream_player.dart';
 import 'tv_quran_verse_display.dart';
 import '../../core/services/tv_sse_service.dart';
+import '../../core/services/tv_settings_ws_service.dart';
 import 'tv_quran_service.dart';
 
 // ─── Prayer metadata (shared with home_screen pattern) ─────────────────────
@@ -148,8 +151,15 @@ class _TvHomeScreenState extends ConsumerState<TvHomeScreen> {
   StreamSubscription<TvSseEvent>? _sseSub;
   final Set<String> _completedPrayers = {};
 
+  // ── Screenshot capture (MINIO-2) ──────────────────────────────────────────
+  final _screenshotKey = GlobalKey();
+
   // ── UX-A9: SSE connection indicator (debug mode only) ─────────────────────
   bool _sseConnected = false;
+
+  // ── WS-2: Hasura WebSocket subscription for live settings push ──────────
+  TvSettingsWsService? _wsService;
+  bool _wsConnected = false;
 
   // ── Settings polling — picks up location + commands pushed from web dashboard
   Timer? _settingsPollTimer;
@@ -178,6 +188,7 @@ class _TvHomeScreenState extends ConsumerState<TvHomeScreen> {
     WakelockPlus.enable();
     _checkGuestMode();
     _startSseService();
+    _startWsService();
     _startSettingsPoll();
     _ticker = Timer.periodic(const Duration(seconds: 1), (_) {
       setState(() => _now = DateTime.now());
@@ -196,6 +207,7 @@ class _TvHomeScreenState extends ConsumerState<TvHomeScreen> {
     _muteButtonHideTimer?.cancel();
     _sseSub?.cancel();
     _sseService?.dispose();
+    _wsService?.dispose();
     _exitHintOverlay?.remove();
     WakelockPlus.disable();
     super.dispose();
@@ -214,7 +226,7 @@ class _TvHomeScreenState extends ConsumerState<TvHomeScreen> {
       _hideExitHint();
       try {
         await TvLauncherService.launchStockLauncher();
-      } catch (e, st) {
+      } catch (e) {
         // Channel not available on non-TV builds — safe to ignore.
       }
     } else {
@@ -333,7 +345,7 @@ class _TvHomeScreenState extends ConsumerState<TvHomeScreen> {
             jsonDecode(utf8.decode(base64Url.decode(padded))) as Map<String, dynamic>;
         deviceId = payload['device_id'] as String?;
       }
-    } catch (e, st) {
+    } catch (e) {
       // Malformed JWT — skip SSE.
     }
     if (deviceId == null || deviceId.isEmpty) return;
@@ -369,7 +381,7 @@ class _TvHomeScreenState extends ConsumerState<TvHomeScreen> {
               ..remove('location_state')
               ..remove('location_timezone'));
           ref.read(tvSettingsProvider.notifier).update(TvSettings.fromJson(merged));
-        } catch (e, st) {
+        } catch (e) {
           // Malformed — keep existing settings.
         }
         // Apply city display name override without changing prayer time coordinates.
@@ -409,9 +421,104 @@ class _TvHomeScreenState extends ConsumerState<TvHomeScreen> {
           case 'prev':
             quranSvc.prevVerse();
         }
+      } else if (event is TvSseScreenshotRequestEvent) {
+        _captureAndUploadScreenshot(event.uploadUrl, event.key);
       }
     });
     await svc.connect();
+  }
+
+  // ─── Screenshot capture + upload ──────────────────────────────────────────
+
+  Future<void> _captureAndUploadScreenshot(String uploadUrl, String key) async {
+    try {
+      final boundary = _screenshotKey.currentContext?.findRenderObject()
+          as RenderRepaintBoundary?;
+      if (boundary == null) return;
+
+      final image = await boundary.toImage(pixelRatio: 1.0);
+      final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+      if (byteData == null) return;
+      final bytes = byteData.buffer.asUint8List();
+
+      // PUT directly to presigned URL — no auth header needed for presigned S3 URLs
+      await http.put(
+        Uri.parse(uploadUrl),
+        headers: {'Content-Type': 'image/png'},
+        body: bytes,
+      );
+
+      // Register the uploaded screenshot with the smart server
+      final isLocal = kIsWeb &&
+          (Uri.base.host == 'localhost' || Uri.base.host.startsWith('127.'));
+      final smartBase =
+          isLocal ? 'http://localhost:4010' : 'https://smart.praycalc.com';
+      final jwt = await _storage.read(key: 'tv_session_jwt');
+      if (jwt == null) return;
+
+      final deviceId = _parseDeviceId(jwt);
+      if (deviceId == null) return;
+
+      await http.post(
+        Uri.parse('$smartBase/api/v1/tv/$deviceId/screenshot/register'),
+        headers: {
+          'Authorization': 'Bearer $jwt',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({'key': key}),
+      );
+    } catch (e) {
+      debugPrint('[TvHome] Screenshot capture/upload failed: $e');
+    }
+  }
+
+  String? _parseDeviceId(String jwt) {
+    try {
+      final parts = jwt.split('.');
+      if (parts.length < 2) return null;
+      final payload = jsonDecode(
+        utf8.decode(base64Url.decode(base64Url.normalize(parts[1]))),
+      ) as Map<String, dynamic>;
+      return payload['device_id'] as String?;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  // ─── WS-2: Hasura WebSocket subscription for live settings push ──────────
+
+  Future<void> _startWsService() async {
+    final prefs = await ref.read(sharedPrefsProvider.future);
+    final isLocal = kIsWeb &&
+        (Uri.base.host == 'localhost' || Uri.base.host.startsWith('127.'));
+
+    final svc = await buildTvSettingsWsService(
+      prefs: prefs,
+      isLocal: isLocal,
+      onSettingsJson: (settingsJson) {
+        if (!mounted) return;
+        try {
+          final current = ref.read(tvSettingsProvider);
+          final merged = Map<String, dynamic>.from(current.toJson())
+            ..addAll(Map<String, dynamic>.from(settingsJson)
+              ..remove('quranCommand')
+              ..remove('location_lat')
+              ..remove('location_lng')
+              ..remove('location_city')
+              ..remove('location_country')
+              ..remove('location_state')
+              ..remove('location_timezone'));
+          ref.read(tvSettingsProvider.notifier).update(TvSettings.fromJson(merged));
+        } catch (e) {
+          debugPrint('[TvHome] WS settings merge failed: $e');
+        }
+      },
+    );
+
+    if (svc == null) return;
+    _wsService = svc;
+    await svc.connect();
+    if (mounted) setState(() => _wsConnected = true);
   }
 
   // ─── Settings polling — picks up location pushed from web dashboard ────────
@@ -498,7 +605,7 @@ class _TvHomeScreenState extends ConsumerState<TvHomeScreen> {
       } else if (hbResp.statusCode != 200 && mounted) {
         setState(() => _heartbeatFailures++);
       }
-    } catch (e, st) {
+    } catch (e) {
       if (mounted) setState(() => _heartbeatFailures++);
     }
 
@@ -601,7 +708,7 @@ class _TvHomeScreenState extends ConsumerState<TvHomeScreen> {
                 ..remove('location_timezone'));
             ref.read(tvSettingsProvider.notifier).update(TvSettings.fromJson(merged));
           }
-        } catch (e, st) {
+        } catch (e) {
           // Malformed — keep existing settings.
         }
       }
@@ -893,7 +1000,9 @@ class _TvHomeScreenState extends ConsumerState<TvHomeScreen> {
       backgroundColor: tvSettings.skyBackgroundEnabled && city != null
           ? Colors.transparent
           : PrayCalcColors.deep,
-      body: Stack(
+      body: RepaintBoundary(
+        key: _screenshotKey,
+        child: Stack(
         fit: StackFit.expand,
         children: [
           tvSettings.skyBackgroundEnabled && city != null
@@ -1027,7 +1136,7 @@ class _TvHomeScreenState extends ConsumerState<TvHomeScreen> {
                 ),
               ),
             ),
-          // UX-A9: SSE connection indicator dot — debug builds only.
+          // UX-A9 + WS-3: SSE + WS connection indicator dots — debug builds only.
           if (kDebugMode)
             Positioned(
               left: 12,
@@ -1046,6 +1155,24 @@ class _TvHomeScreenState extends ConsumerState<TvHomeScreen> {
                   const SizedBox(width: 5),
                   Text(
                     _sseConnected ? 'SSE' : 'SSE off',
+                    style: const TextStyle(
+                      color: Colors.white38,
+                      fontSize: 10,
+                      letterSpacing: 0.5,
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Container(
+                    width: 8,
+                    height: 8,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: _wsConnected ? Colors.cyanAccent : Colors.orangeAccent,
+                    ),
+                  ),
+                  const SizedBox(width: 5),
+                  Text(
+                    _wsConnected ? 'WS' : 'WS off',
                     style: const TextStyle(
                       color: Colors.white38,
                       fontSize: 10,
@@ -1077,7 +1204,8 @@ class _TvHomeScreenState extends ConsumerState<TvHomeScreen> {
             ),
           ),
         ],
-      ),
+      ),  // end Stack
+      ),  // end RepaintBoundary
     ),  // end Scaffold
   );  // end PopScope
   }  // end build
@@ -1688,8 +1816,8 @@ class _TvHomeBody extends StatelessWidget {
       try {
         activeStream = kBuiltInStreams.firstWhere(
             (s) => s.id == tvSettings.selectedStreamId);
-      } catch (e) {
-        activeStream = kBuiltInStreams.first;
+      } on StateError {
+        activeStream = kBuiltInStreams.isNotEmpty ? kBuiltInStreams.first : null;
       }
     }
 

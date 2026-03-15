@@ -32,7 +32,7 @@ final ramadanProvider = Provider<RamadanState>((ref) {
   HijriCalendar hijri;
   try {
     hijri = HijriCalendar.now();
-  } catch (e, st) {
+  } catch (e) {
     return const RamadanState(
       isRamadan: false,
       hDay: 0,

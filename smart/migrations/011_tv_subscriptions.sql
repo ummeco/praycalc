@@ -1,0 +1,29 @@
+-- 011_tv_subscriptions.sql
+-- Track pc_tv_devices in Hasura with user-role permissions for WebSocket subscriptions.
+--
+-- Applied via: Hasura metadata API (bulk track_table + create_select_permission).
+-- This migration documents the Hasura metadata changes made on 2026-03-15.
+--
+-- Changes applied:
+--   1. Track table: public.pc_tv_devices
+--   2. create_select_permission: role=user, filter={user_id: X-Hasura-User-Id}
+--      columns: id, user_id, device_name, model, manufacturer, last_seen,
+--               settings_json, location_city_slug, is_online, firmware_version,
+--               group_id, created_at, updated_at
+--   3. create_update_permission: role=user, filter={user_id: X-Hasura-User-Id}
+--      columns: settings_json, device_name, location_city_slug, last_seen,
+--               is_online, firmware_version
+--
+-- The select permission enables Hasura WebSocket subscriptions for authenticated
+-- TV devices. Devices subscribe to their own row using:
+--   subscription TvDeviceLive($deviceId: uuid!) {
+--     pc_tv_devices_by_pk(id: $deviceId) { settings_json updated_at }
+--   }
+-- The user-id filter ensures a device can only read rows it owns.
+--
+-- NOTE: pc_tv_devices was previously used only via admin-secret by the smart server.
+-- This migration makes it accessible to the user role for real-time subscriptions.
+
+-- No SQL changes required — pc_tv_devices table already exists with correct schema.
+-- See smart server routes for table creation: smart/src/routes/tv.ts
+SELECT 1; -- no-op placeholder so migration runners don't reject an empty file

@@ -187,7 +187,7 @@ class AuthNotifier extends Notifier<AuthData> {
     } on AuthException catch (e) {
       state = state.copyWith(isLoading: false, error: e.message);
       return false;
-    } catch (e, st) {
+    } catch (e) {
       state = state.copyWith(isLoading: false, error: 'Apple sign in failed');
       return false;
     }
@@ -225,7 +225,7 @@ class AuthNotifier extends Notifier<AuthData> {
     } on AuthException catch (e) {
       state = state.copyWith(isLoading: false, error: e.message);
       return false;
-    } catch (e, st) {
+    } catch (e) {
       state = state.copyWith(isLoading: false, error: 'Google sign in failed');
       return false;
     }

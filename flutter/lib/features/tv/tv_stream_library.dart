@@ -87,7 +87,7 @@ class TvStreamHealthChecker {
       final res = await req.close();
       await res.drain<void>();
       return res.statusCode < 400;
-    } catch (e, st) {
+    } catch (e) {
       debugPrint('[TvStreamLibrary] Health check failed for $url: $e');
       return false;
     }

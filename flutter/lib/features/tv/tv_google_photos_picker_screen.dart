@@ -30,7 +30,7 @@ String? _extractDeviceIdFromJwt(String token) {
     final payloadJson = utf8.decode(base64Url.decode(parts[1] + padding));
     final payload = jsonDecode(payloadJson) as Map<String, dynamic>;
     return payload['device_id'] as String?;
-  } catch (e, st) {
+  } catch (e) {
     return null;
   }
 }
@@ -276,7 +276,7 @@ class _TvGooglePhotosPickerScreenState
         if (putResp.statusCode == 200 || putResp.statusCode == 204) {
           keys.add(key);
         }
-      } catch (e, st) {
+      } catch (e) {
         // Skip failed photos — partial success is fine
       }
 

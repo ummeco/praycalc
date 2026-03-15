@@ -51,6 +51,14 @@ class TvSsePrayerCompleteEvent extends TvSseEvent {
   final String prayerName;
 }
 
+/// The dashboard requested a screenshot capture.
+/// The TV should capture the current screen, PUT to [uploadUrl], then POST to /screenshot/register.
+class TvSseScreenshotRequestEvent extends TvSseEvent {
+  TvSseScreenshotRequestEvent({required this.uploadUrl, required this.key});
+  final String uploadUrl;
+  final String key;
+}
+
 /// The SSE connection was lost and will attempt reconnect.
 class TvSseDisconnectedEvent extends TvSseEvent {}
 
@@ -94,11 +102,13 @@ class TvSseService {
   http.Client? _client;
   bool _disposed = false;
   Timer? _reconnectTimer;
+  int _reconnectAttempts = 0;
 
   /// Starts the SSE connection. Reconnects automatically on disconnect.
   Future<void> connect() async {
     if (_disposed) return;
     _reconnectTimer?.cancel();
+    _reconnectAttempts = 0;
     await _connect();
   }
 
@@ -121,6 +131,7 @@ class TvSseService {
       }
 
       _controller.add(TvSseConnectedEvent());
+      _reconnectAttempts = 0; // Reset backoff counter on successful connect.
 
       final buffer = StringBuffer();
       await for (final chunk in response.stream.transform(utf8.decoder)) {
@@ -174,7 +185,7 @@ class TvSseService {
     Map<String, dynamic> json;
     try {
       json = jsonDecode(data) as Map<String, dynamic>;
-    } catch (e, st) {
+    } catch (e) {
       debugPrint('[TvSse] Malformed JSON in SSE message: $e');
       return;
     }
@@ -207,6 +218,12 @@ class TvSseService {
             restore: json['restore'] as bool? ?? false,
           ));
         }
+      case 'capture_screenshot':
+        final uploadUrl = json['uploadUrl'] as String?;
+        final screenshotKey = json['key'] as String?;
+        if (uploadUrl != null && screenshotKey != null) {
+          _controller.add(TvSseScreenshotRequestEvent(uploadUrl: uploadUrl, key: screenshotKey));
+        }
       default:
         // Unknown event type — ignore.
         break;
@@ -216,7 +233,13 @@ class TvSseService {
   void _scheduleReconnect() {
     if (_disposed) return;
     _controller.add(TvSseDisconnectedEvent());
-    _reconnectTimer = Timer(const Duration(seconds: 5), _connect);
+    _reconnectAttempts++;
+    // Exponential backoff: 2s, 4s, 8s, 16s … capped at 60s.
+    final delaySeconds = (_reconnectAttempts < 6)
+        ? (1 << _reconnectAttempts).clamp(2, 60)
+        : 60;
+    debugPrint('[TvSse] reconnect in ${delaySeconds}s (attempt $_reconnectAttempts)');
+    _reconnectTimer = Timer(Duration(seconds: delaySeconds), _connect);
   }
 
   void dispose() {

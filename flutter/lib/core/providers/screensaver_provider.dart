@@ -29,7 +29,7 @@ String? _parseDeviceId(String token) {
     final payloadJson = utf8.decode(base64Url.decode(parts[1] + padding));
     final payload = jsonDecode(payloadJson) as Map<String, dynamic>;
     return payload['device_id'] as String?;
-  } catch (e, st) {
+  } catch (e) {
     return null;
   }
 }
@@ -211,7 +211,7 @@ class ScreensaverNotifier extends Notifier<ScreensaverState> {
         currentFile: files[0],
         nextFile: files.length > 1 ? files[1] : null,
       );
-    } catch (e, st) {
+    } catch (e) {
       // Network failure — fall through to curated photos
     }
   }
@@ -239,7 +239,7 @@ class ScreensaverNotifier extends Notifier<ScreensaverState> {
           final file = File('${tmpDir.path}/wallpaper_${entry['file']}');
           await file.writeAsBytes(data.buffer.asUint8List(), flush: true);
           files.add(file);
-        } catch (e, st) {
+        } catch (e) {
           // Asset not bundled yet — skip gracefully.
         }
       }
@@ -257,7 +257,7 @@ class ScreensaverNotifier extends Notifier<ScreensaverState> {
         currentFile: files[0],
         nextFile: files.length > 1 ? files[1] : null,
       );
-    } catch (e, st) {
+    } catch (e) {
       // Manifest missing — fall through to MinIO.
       await _service.init();
     }

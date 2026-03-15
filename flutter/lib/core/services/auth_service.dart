@@ -128,7 +128,7 @@ class AuthService {
         _currentUser = AuthUser.fromJson(
           jsonDecode(userJson) as Map<String, dynamic>,
         );
-      } catch (e, st) {
+      } catch (e) {
         _currentUser = null;
       }
     }
@@ -136,7 +136,7 @@ class AuthService {
     if (_refreshToken != null) {
       try {
         await refreshSession();
-      } catch (e, st) {
+      } catch (e) {
         // Refresh failed, clear stored state.
         await _clearStored();
       }
@@ -219,7 +219,7 @@ class AuthService {
             'Authorization': 'Bearer $_accessToken',
           },
         );
-      } catch (e, st) {
+      } catch (e) {
         // Best-effort server-side signout.
       }
     }
@@ -397,7 +397,7 @@ class AuthService {
     _refreshTimer = Timer(refreshIn, () async {
       try {
         await refreshSession();
-      } catch (e, st) {
+      } catch (e) {
         // Token refresh failed. User will need to re-authenticate.
       }
     });
@@ -406,7 +406,7 @@ class AuthService {
   Map<String, dynamic> _parseBody(http.Response response) {
     try {
       return jsonDecode(response.body) as Map<String, dynamic>;
-    } catch (e, st) {
+    } catch (e) {
       return <String, dynamic>{};
     }
   }

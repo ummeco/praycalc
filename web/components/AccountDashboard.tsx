@@ -47,7 +47,7 @@ function Toggle({
     <button
       type="button"
       role="switch"
-      aria-checked={on}
+      aria-checked={on ? "true" : "false"}
       aria-label={ariaLabel}
       onClick={onToggle}
       className={`hanafi-track${on ? " hanafi-track--on" : ""}`}

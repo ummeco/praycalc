@@ -208,7 +208,7 @@ class _TvWeatherPanelState extends State<TvWeatherPanel>
       } else {
         setState(() { _offline = true; _loading = false; });
       }
-    } catch (e, st) {
+    } catch (e) {
       if (mounted) setState(() { _offline = _data == null; _loading = false; });
     }
   }

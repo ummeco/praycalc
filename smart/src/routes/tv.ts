@@ -24,7 +24,7 @@ import crypto from 'crypto';
 import { EventEmitter } from 'events';
 import { Router } from 'express';
 import { requireAuth, type AuthRequest } from '../middleware/auth.js';
-import { isMinioConfigured, createPresignedUploadUrl, photoKey } from '../lib/minio.js';
+import { isMinioConfigured, createPresignedUploadUrl, photoKey, createScreenshotUploadUrl, createScreenshotDownloadUrl } from '../lib/minio.js';
 // CFG-B2: Import all tunable constants from the centralized config module.
 import {
   HASURA_URL,
@@ -810,21 +810,133 @@ tvRouter.post('/heartbeat', requireAuth, async (req: AuthRequest, res) => {
 });
 
 // ── TV2-10.3: POST /api/v1/tv/:id/screenshot ─────────────────────────────────
+// Called by web dashboard (user JWT): generates presigned PUT URL, pushes capture_screenshot
+// SSE event to the TV device so it uploads a fresh screenshot.
+// Returns { status: 'requested', key } immediately. Dashboard polls GET to see the result.
 
 tvRouter.post('/:id/screenshot', requireAuth, async (req: AuthRequest, res) => {
-  // Check if MinIO is configured
-  const minioConfigured = !!(
-    process.env.MINIO_ENDPOINT &&
-    process.env.MINIO_ACCESS_KEY &&
-    process.env.MINIO_SECRET_KEY &&
-    process.env.MINIO_BUCKET
-  );
-  if (!minioConfigured) {
-    return res.status(503).json({ error: 'Photo upload not configured', code: 'MINIO_NOT_CONFIGURED' });
+  if (!isMinioConfigured()) {
+    return res.status(503).json({ error: 'Screenshot storage not configured', code: 'MINIO_NOT_CONFIGURED' });
   }
-  // Real presigned URL generation comes in MINIO-2.
-  // Required env vars: MINIO_ENDPOINT, MINIO_ACCESS_KEY, MINIO_SECRET_KEY, MINIO_BUCKET
-  return res.status(501).json({ error: 'Not yet implemented' });
+
+  const userId = req.userId!;
+  const deviceId = req.params.id as string;
+
+  // Ownership check
+  try {
+    const result = await hasuraQuery(
+      `query CheckTvDeviceOwnership($deviceId: uuid!, $userId: uuid!) {
+        pc_tv_devices(where: { id: { _eq: $deviceId }, user_id: { _eq: $userId } }) { id }
+      }`,
+      { deviceId, userId },
+    );
+    if ((result?.data?.pc_tv_devices ?? []).length === 0) {
+      return res.status(403).json({ error: 'Device not found or access denied' });
+    }
+  } catch {
+    return res.status(403).json({ error: 'Device not found or access denied' });
+  }
+
+  try {
+    const { uploadUrl, key } = await createScreenshotUploadUrl(deviceId);
+    // Push to TV via SSE — TV will capture and PUT to this URL, then call /screenshot/register
+    tvEventEmitter.emit(`screenshot:${deviceId}`, { uploadUrl, key });
+    return res.json({ status: 'requested', key });
+  } catch (err) {
+    console.error('[TV] Failed to generate screenshot upload URL:', err);
+    return res.status(500).json({ error: 'Failed to request screenshot' });
+  }
+});
+
+// ── GET /api/v1/tv/:id/screenshot — Latest stored screenshot URL ──────────────
+// Called by web dashboard (user JWT): returns presigned GET URL for latest screenshot.
+
+tvRouter.get('/:id/screenshot', requireAuth, async (req: AuthRequest, res) => {
+  const userId = req.userId!;
+  const deviceId = req.params.id as string;
+
+  try {
+    const result = await hasuraQuery(
+      `query GetTvScreenshot($deviceId: uuid!, $userId: uuid!) {
+        pc_tv_devices(where: { id: { _eq: $deviceId }, user_id: { _eq: $userId } }) {
+          settings_json
+        }
+      }`,
+      { deviceId, userId },
+    );
+    const devices = result?.data?.pc_tv_devices ?? [];
+    if (devices.length === 0) {
+      return res.status(404).json({ imageUrl: null, capturedAt: null });
+    }
+    const settings = devices[0].settings_json as Record<string, unknown> | null ?? {};
+    const screenshotKey = settings.screenshot_key as string | undefined;
+    const capturedAt = settings.screenshot_at as string | undefined;
+
+    if (!screenshotKey) {
+      return res.json({ imageUrl: null, capturedAt: null });
+    }
+
+    const imageUrl = await createScreenshotDownloadUrl(screenshotKey);
+    return res.json({ imageUrl, capturedAt: capturedAt ?? null });
+  } catch (err) {
+    console.error('[TV] Failed to get screenshot:', err);
+    return res.status(500).json({ error: 'Failed to fetch screenshot' });
+  }
+});
+
+// ── POST /api/v1/tv/:id/screenshot/register — TV registers uploaded screenshot ─
+// Called by TV (device JWT) after uploading to the presigned PUT URL.
+// Body: { key: string }
+// The caller must own the device (user_id on device matches JWT sub).
+// The key must belong to this device's namespace: screenshots/{deviceId}/...
+
+tvRouter.post('/:id/screenshot/register', requireAuth, async (req: AuthRequest, res) => {
+  const userId = req.userId!;
+  const deviceId = req.params.id as string;
+  const { key } = req.body as { key?: unknown };
+
+  if (!key || typeof key !== 'string' || key.length > 500) {
+    return res.status(400).json({ error: 'key is required and must be a string under 500 chars' });
+  }
+
+  // Validate key belongs to this device's namespace
+  if (!key.startsWith(`screenshots/${deviceId}/`)) {
+    return res.status(400).json({ error: 'key does not belong to this device' });
+  }
+
+  // Ownership check: verify the device belongs to the calling user
+  try {
+    const result = await hasuraQuery(
+      `query CheckTvDeviceOwnership($deviceId: uuid!, $userId: uuid!) {
+        pc_tv_devices(where: { id: { _eq: $deviceId }, user_id: { _eq: $userId } }) { id }
+      }`,
+      { deviceId, userId },
+    );
+    if ((result?.data?.pc_tv_devices ?? []).length === 0) {
+      return res.status(403).json({ error: 'Device not found or access denied' });
+    }
+  } catch {
+    return res.status(403).json({ error: 'Device not found or access denied' });
+  }
+
+  const capturedAt = new Date().toISOString();
+
+  try {
+    // Update settings_json with screenshot key + timestamp via Hasura
+    await hasuraQuery(
+      `mutation RegisterScreenshot($deviceId: uuid!, $patch: jsonb!) {
+        update_pc_tv_devices_by_pk(
+          pk_columns: { id: $deviceId }
+          _append: { settings_json: $patch }
+        ) { id }
+      }`,
+      { deviceId, patch: { screenshot_key: key, screenshot_at: capturedAt } },
+    );
+    return res.json({ status: 'registered', capturedAt });
+  } catch (err) {
+    console.error('[TV] Failed to register screenshot:', err);
+    return res.status(500).json({ error: 'Failed to register screenshot' });
+  }
 });
 
 // ── MINIO-2: POST /api/v1/tv/:id/photo/upload — Presigned user photo upload URL ──
@@ -872,7 +984,6 @@ tvRouter.post('/:id/photo/upload', requireAuth, async (req: AuthRequest, res) =>
   try {
     const key = photoKey(deviceId, filename);
     const uploadUrl = await createPresignedUploadUrl(key, contentType);
-    console.log(`[TV] Generated presigned upload URL for device ${deviceId}`);
     return res.json({ uploadUrl, key, expiresIn: 300 });
   } catch (err) {
     console.error('[TV] Failed to generate presigned upload URL:', err);
@@ -1627,13 +1738,19 @@ tvRouter.get('/:id/events', requireAuth, (req: AuthRequest, res) => {
     res.write(`event: prayer_complete\ndata: ${JSON.stringify(payload)}\n\n`);
   };
 
+  const onScreenshot = (payload: unknown) => {
+    res.write(`event: capture_screenshot\ndata: ${JSON.stringify(payload)}\n\n`);
+  };
+
   const settingsKey = `settings:${deviceId}`;
   const quranKey = `quran:${deviceId}`;
   const prayerCompleteKey = `prayer_complete:${deviceId}`;
+  const screenshotKey = `screenshot:${deviceId}`;
 
   tvEventEmitter.on(settingsKey, onSettings);
   tvEventEmitter.on(quranKey, onQuran);
   tvEventEmitter.on(prayerCompleteKey, onPrayerComplete);
+  tvEventEmitter.on(screenshotKey, onScreenshot);
 
   // Keepalive ping every 25 seconds to prevent proxy timeouts
   const keepalive = setInterval(() => {
@@ -1645,6 +1762,7 @@ tvRouter.get('/:id/events', requireAuth, (req: AuthRequest, res) => {
     tvEventEmitter.off(settingsKey, onSettings);
     tvEventEmitter.off(quranKey, onQuran);
     tvEventEmitter.off(prayerCompleteKey, onPrayerComplete);
+    tvEventEmitter.off(screenshotKey, onScreenshot);
   });
 });
 

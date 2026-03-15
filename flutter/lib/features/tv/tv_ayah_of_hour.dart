@@ -54,7 +54,7 @@ Future<List<_Ayah>> _loadAyahs() async {
 _Ayah? _forHour(List<_Ayah> ayahs, int hour) {
   try {
     return ayahs.firstWhere((a) => a.hour == hour);
-  } catch (e, st) {
+  } catch (e) {
     return ayahs.isNotEmpty ? ayahs[hour % ayahs.length] : null;
   }
 }

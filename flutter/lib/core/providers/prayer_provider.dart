@@ -137,7 +137,7 @@ double _utcOffsetHours(String timezone, DateTime date) {
     final utcNoon = DateTime.utc(date.year, date.month, date.day, 12);
     final tzTime = tz.TZDateTime.from(utcNoon, location);
     return tzTime.timeZoneOffset.inSeconds / 3600.0;
-  } catch (e, st) {
+  } catch (e) {
     // Unknown timezone — fall back to longitude-based estimate (city from GPS)
     return 0.0;
   }

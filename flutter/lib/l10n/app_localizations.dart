@@ -4233,7 +4233,7 @@ abstract class AppLocalizations {
   /// No description provided for @tvChildFajrFunFact.
   ///
   /// In en, this message translates to:
-  /// **'The Prophet ‫ﷺ‬ said: “The best prayer in the sight of Allah is Fajr on Friday.” (Bukhari)'**
+  /// **'The Prophet ﷺ said: “The best prayer in the sight of Allah is Fajr on Friday.” (Bukhari)'**
   String get tvChildFajrFunFact;
 
   /// No description provided for @tvChildSunriseExplanation.
@@ -4257,7 +4257,7 @@ abstract class AppLocalizations {
   /// No description provided for @tvChildDhuhrFunFact.
   ///
   /// In en, this message translates to:
-  /// **'The Prophet ‫ﷺ‬ loved to pray Dhuhr early when the sun begins to decline. (Muslim)'**
+  /// **'The Prophet ﷺ loved to pray Dhuhr early when the sun begins to decline. (Muslim)'**
   String get tvChildDhuhrFunFact;
 
   /// No description provided for @tvChildAsrExplanation.

@@ -236,7 +236,7 @@ class _TvOnboardingScreenState extends State<TvOnboardingScreen>
           _codeFocus.requestFocus();
         }
       }
-    } catch (e, st) {
+    } catch (e) {
       if (mounted) {
         setState(() {
           _activating = false;

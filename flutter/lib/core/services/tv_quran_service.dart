@@ -241,7 +241,7 @@ class TvQuranService extends ChangeNotifier {
         if (response.statusCode == 200) {
           await file.writeAsBytes(response.bodyBytes);
         }
-      } catch (e, st) {
+      } catch (e) {
         // Network failure — skip this surah, will retry next call.
       }
     }
@@ -326,7 +326,7 @@ class TvQuranService extends ChangeNotifier {
       _isPlaying = true;
       _setOffline(false);
       notifyListeners();
-    } catch (e, st) {
+    } catch (e) {
       // Network error or CDN issue — mark offline and skip to next ayah.
       _setOffline(true);
       advanceAyah();
@@ -453,7 +453,7 @@ class TvQuranService extends ChangeNotifier {
 
     try {
       await _player.setAudioSources(initial);
-    } catch (e, st) {
+    } catch (e) {
       _setOffline(true);
       _gaplessActive = false;
       return;

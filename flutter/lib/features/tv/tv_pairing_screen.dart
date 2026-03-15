@@ -158,7 +158,7 @@ class _TvPairingScreenState extends State<TvPairingScreen>
           _codeFocus.requestFocus();
         }
       }
-    } catch (e, st) {
+    } catch (e) {
       if (mounted) {
         setState(() {
           _activating = false;

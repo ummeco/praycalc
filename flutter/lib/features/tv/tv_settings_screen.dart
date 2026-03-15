@@ -1928,7 +1928,7 @@ class _TvSettingsScreenState extends ConsumerState<TvSettingsScreen> {
         guestUrl = body['url'] as String?;
         expiresAt = body['expiresAt'] as String?;
       }
-    } catch (e, st) {
+    } catch (e) {
       // fall through to error handling below
     }
 

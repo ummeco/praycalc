@@ -19,7 +19,7 @@ import '../../l10n/app_localizations.dart';
 
 // ─── Y-3: Prayer explanations ─────────────────────────────────────────────────
 
-class _PrayerExplanation {
+class PrayerExplanation {
   final String name;
   final String arabic;
   final String emoji;
@@ -27,7 +27,7 @@ class _PrayerExplanation {
   final String explanation;
   final String funFact;
 
-  const _PrayerExplanation({
+  const PrayerExplanation({
     required this.name,
     required this.arabic,
     required this.emoji,
@@ -37,8 +37,8 @@ class _PrayerExplanation {
   });
 }
 
-Map<String, _PrayerExplanation> buildPrayerExplanations(AppLocalizations l10n) => {
-  'Fajr': _PrayerExplanation(
+Map<String, PrayerExplanation> buildPrayerExplanations(AppLocalizations l10n) => {
+  'Fajr': PrayerExplanation(
     name: l10n.prayerFajr,
     arabic: 'الفجر',
     emoji: '🌅',
@@ -46,7 +46,7 @@ Map<String, _PrayerExplanation> buildPrayerExplanations(AppLocalizations l10n) =
     explanation: l10n.tvChildFajrExplanation,
     funFact: l10n.tvChildFajrFunFact,
   ),
-  'Sunrise': _PrayerExplanation(
+  'Sunrise': PrayerExplanation(
     name: l10n.prayerSunrise,
     arabic: 'الشروق',
     emoji: '☀️',
@@ -54,7 +54,7 @@ Map<String, _PrayerExplanation> buildPrayerExplanations(AppLocalizations l10n) =
     explanation: l10n.tvChildSunriseExplanation,
     funFact: l10n.tvChildSunriseFunFact,
   ),
-  'Dhuhr': _PrayerExplanation(
+  'Dhuhr': PrayerExplanation(
     name: l10n.prayerDhuhr,
     arabic: 'الظهر',
     emoji: '🌞',
@@ -62,7 +62,7 @@ Map<String, _PrayerExplanation> buildPrayerExplanations(AppLocalizations l10n) =
     explanation: l10n.tvChildDhuhrExplanation,
     funFact: l10n.tvChildDhuhrFunFact,
   ),
-  'Asr': _PrayerExplanation(
+  'Asr': PrayerExplanation(
     name: l10n.prayerAsr,
     arabic: 'العصر',
     emoji: '🌤️',
@@ -70,7 +70,7 @@ Map<String, _PrayerExplanation> buildPrayerExplanations(AppLocalizations l10n) =
     explanation: l10n.tvChildAsrExplanation,
     funFact: l10n.tvChildAsrFunFact,
   ),
-  'Maghrib': _PrayerExplanation(
+  'Maghrib': PrayerExplanation(
     name: l10n.prayerMaghrib,
     arabic: 'المغرب',
     emoji: '🌇',
@@ -78,7 +78,7 @@ Map<String, _PrayerExplanation> buildPrayerExplanations(AppLocalizations l10n) =
     explanation: l10n.tvChildMaghribExplanation,
     funFact: l10n.tvChildMaghribFunFact,
   ),
-  'Isha': _PrayerExplanation(
+  'Isha': PrayerExplanation(
     name: l10n.prayerIsha,
     arabic: 'العشاء',
     emoji: '🌙',
@@ -448,7 +448,7 @@ class _EducationOverlay extends StatelessWidget {
     required this.onDismiss,
   });
 
-  final _PrayerExplanation explanation;
+  final PrayerExplanation explanation;
   final VoidCallback onDismiss;
 
   @override
