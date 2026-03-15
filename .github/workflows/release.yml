@@ -270,6 +270,13 @@ jobs:
         with:
           channel: stable
           cache: true
+      - name: Pin CMake 3.27 (IMPORTED_TARGET regression in 3.28+)
+        # CMake 3.28+ has a regression in FindPkgConfig.cmake where IMPORTED_TARGET
+        # is not recognized as a keyword in pkg_check_modules, causing build failure.
+        # 3.27.9 is the last clean version. Pip cmake is prepended to PATH by GITHUB_PATH.
+        run: |
+          pip3 install cmake==3.27.9
+          echo "$(python3 -c 'import cmake; print(cmake.CMAKE_BIN_DIR)')" >> $GITHUB_PATH
       - name: Install Linux dependencies
         run: |
           sudo apt-get update -y
