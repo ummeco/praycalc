@@ -1,11 +1,13 @@
 export const metadata = {
   title: 'TV Display Mode',
   description:
-    'PrayCalc for Android TV and Fire TV. Full-screen prayer clock, masjid signage, ambient screensaver, and iqamah management for your living room or masjid.',
+    'PrayCalc for Apple TV, Android TV, and Fire TV. Full-screen prayer clock, masjid signage, ambient screensaver, and iqamah management for your living room or masjid.',
 }
 
 export const sections = [
   { title: 'Overview', id: 'overview' },
+  { title: 'Apple TV', id: 'apple-tv' },
+  { title: 'Android TV & Fire TV', id: 'android-tv' },
   { title: 'Home mode', id: 'home-mode' },
   { title: 'Masjid mode', id: 'masjid-mode' },
   { title: 'Weather display', id: 'weather-display' },
@@ -17,11 +19,50 @@ export const sections = [
 
 # TV Display Mode
 
-PrayCalc includes a dedicated TV app for Android TV and Fire TV. Display prayer times on your living room TV or use it as a full-screen masjid sign with iqamah times and announcements. {{ className: 'lead' }}
+PrayCalc has dedicated TV apps for Apple TV, Android TV, and Fire TV. Display prayer times on your living room screen or use it as a full-screen masjid sign with iqamah times and announcements. {{ className: 'lead' }}
 
 ## Overview {{ id: 'overview' }}
 
-The TV app is a separate build target that runs in landscape on Android TV devices. It uses D-pad navigation (no touch required), keeps the screen on with WakelockPlus, and automatically transitions to an ambient screensaver after a configurable idle period.
+Two TV platforms are supported:
+
+- **Apple TV** (tvOS 17+): native SwiftUI app, pairs with iPhone or web dashboard, real-time WebSocket push
+- **Android TV / Fire TV**: Flutter app, built-in to the main PrayCalc Android release, D-pad navigation
+
+Both platforms support home mode and masjid mode and are designed for landscape TV displays.
+
+## Apple TV {{ id: 'apple-tv' }}
+
+PrayCalcTV is a native SwiftUI app for Apple TV. It pairs with your iPhone or the praycalc.com web dashboard and displays prayer times full-screen.
+
+### Pairing
+
+1. Open the PrayCalc app on your iPhone or go to [praycalc.com/dashboard](https://praycalc.com/dashboard)
+2. Navigate to Smart Home > TVs > Add Device
+3. Enter the 4-digit code shown on your Apple TV
+4. Prayer times push instantly via WebSocket — no polling, no manual refresh
+
+### Display
+
+The Apple TV app shows:
+
+- Current prayer and next prayer with live countdown
+- All daily prayer times in a clear landscape layout
+- Hijri date and your location
+- Adhan notification at each prayer time
+
+Navigation uses the Siri Remote D-pad — no touch required. The display is readable from across the room.
+
+### Requirements
+
+- Apple TV HD or Apple TV 4K
+- tvOS 17 or later
+- Ummat+ subscription for real-time sync and pairing
+
+Available on the Apple TV App Store as **PrayCalc for Apple TV** (bundle ID: `com.praycalc.app.tv`).
+
+## Android TV & Fire TV {{ id: 'android-tv' }}
+
+The Android TV app is a separate build target inside the main PrayCalc app. It runs in landscape on Android TV and Fire TV devices, uses D-pad navigation, keeps the screen on with WakelockPlus, and transitions to an ambient screensaver after a configurable idle period.
 
 Two display modes:
 
@@ -112,7 +153,7 @@ TV settings are accessible from the main screen via D-pad navigation:
 
 ## Building the TV APK {{ id: 'building' }}
 
-The TV app uses a separate entry point:
+The Android TV app uses a separate entry point:
 
 ```bash
 # Debug
