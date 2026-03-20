@@ -90,10 +90,11 @@ export default function PrivacyPage() {
           <section>
             <h2 className="mb-3 text-xl font-semibold text-[#79C24C]">Contact Us</h2>
             <p>
-              If you have questions about this privacy policy, contact us at{' '}
+              If you have questions about this privacy policy or wish to request data deletion, contact us at{' '}
               <a href="mailto:privacy@praycalc.com" className="text-[#79C24C] hover:text-[#C9F27A] transition-colors">
                 privacy@praycalc.com
-              </a>.
+              </a>{' '}
+              or visit our <Link href="/contact" className="text-[#C9F27A] hover:underline transition-all">Contact page</Link>.
             </p>
           </section>
         </div>

@@ -49,6 +49,8 @@ export default function Footer() {
           <span className="text-white/15 text-xs">&middot;</span>
           <Link href="/about" className="site-footer-legal-link">About</Link>
           <span className="text-white/15 text-xs">&middot;</span>
+          <Link href="/contact" className="site-footer-legal-link">{t("contact")}</Link>
+          <span className="text-white/15 text-xs">&middot;</span>
           <Link href="/help" className="site-footer-legal-link">{t("help")}</Link>
           <span className="text-white/15 text-xs">&middot;</span>
           <Link href="/privacy" className="site-footer-legal-link">{t("privacy")}</Link>
