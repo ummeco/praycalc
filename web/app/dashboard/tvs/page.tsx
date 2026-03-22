@@ -65,6 +65,7 @@ function AddTvModal({ onClose, onPaired, token }: { onClose: () => void; onPaire
   const [errorMsg, setErrorMsg] = useState('');
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const countdownRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const retryRef = useRef<() => void>(() => {});
 
   const clearTimers = useCallback(() => {
     if (pollRef.current) clearInterval(pollRef.current);
@@ -141,6 +142,7 @@ function AddTvModal({ onClose, onPaired, token }: { onClose: () => void; onPaire
         if (!cancelled) { setState('error'); setErrorMsg('Could not reach the server. Check your connection.'); }
       }
     }
+    retryRef.current = () => { clearTimers(); void requestCode(); };
     void requestCode();
     return () => { cancelled = true; clearTimers(); };
   }, [onPaired, token, t, clearTimers]);
@@ -203,7 +205,7 @@ function AddTvModal({ onClose, onPaired, token }: { onClose: () => void; onPaire
             <p className="text-red-400 text-sm text-center">{errorMsg}</p>
             <button
               type="button"
-              onClick={() => { setState('loading'); void requestCode(); }}
+              onClick={() => { setState('loading'); retryRef.current(); }}
               className="px-6 py-2 bg-[#1E5E2F]/60 hover:bg-[#1E5E2F] text-[#C9F27A] rounded-xl text-sm font-medium transition-colors"
             >
               Try Again
