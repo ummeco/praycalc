@@ -21,6 +21,7 @@ interface NavGroup {
 }
 
 function useInitialValue<T>(value: T, condition = true) {
+  // eslint-disable-next-line react-hooks/refs -- intentional: capture initial value once
   let initialValue = useRef(value).current
   return condition ? initialValue : value
 }

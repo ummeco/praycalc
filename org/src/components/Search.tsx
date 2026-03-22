@@ -378,7 +378,7 @@ function SearchDialog({
             <form
               ref={formRef}
               {...autocomplete.getFormProps({
-                inputElement: inputRef.current,
+                inputElement: inputRef.current, // eslint-disable-line react-hooks/refs -- required by Algolia autocomplete API
               })}
             >
               <SearchInput
@@ -440,6 +440,7 @@ export function Search() {
   let { buttonProps, dialogProps } = useSearchProps()
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- client-only detection on mount
     setModifierKey(
       /(Mac|iPhone|iPod|iPad)/i.test(navigator.platform) ? '⌘' : 'Ctrl ',
     )

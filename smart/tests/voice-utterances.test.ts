@@ -95,7 +95,7 @@ describe('Google Home utterance mapping', () => {
 
       expect(res.status).toBe(200);
       const text = stripSsml(extractGoogleSsml(res.body));
-      expect(text).toMatch(/Fajr|Dhuhr|Asr|Maghrib|Isha|prayers.*passed/i);
+      expect(text).toMatch(/Fajr|Sunrise|Dhuhr|Asr|Maghrib|Isha|prayers.*passed/i);
     });
 
     it('"What prayer is coming up?" maps to next_prayer (snake_case)', async () => {
@@ -475,7 +475,7 @@ describe('Alexa utterance mapping', () => {
 
       expect(res.status).toBe(200);
       const ssml = extractAlexaSsml(res.body);
-      expect(ssml).toMatch(/Fajr|Dhuhr|Asr|Maghrib|Isha|prayers.*passed/i);
+      expect(ssml).toMatch(/Fajr|Sunrise|Dhuhr|Asr|Maghrib|Isha|prayers.*passed/i);
     });
 
     it('"What prayer is next?" maps to NextPrayerIntent and wraps in SSML', async () => {
