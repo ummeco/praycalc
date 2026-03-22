@@ -96,7 +96,7 @@ export default function CityPageClient({
 
   // ── Prayer arrival: trigger overlay + toast ─────────────────────────────
   const triggerRef = useRef(adhan.triggerArrival);
-  triggerRef.current = adhan.triggerArrival;
+  useEffect(() => { triggerRef.current = adhan.triggerArrival; }, [adhan.triggerArrival]);
 
   const handlePrayerArrival = useCallback((arrived: keyof PrayerResult) => {
     triggerRef.current(arrived);

@@ -36,29 +36,16 @@ export interface SettingsActions {
 }
 
 export function useSettings(): SettingsState & SettingsActions {
-  const [hanafi, setHanafi] = useState(false);
-  const [use24h, setUse24h] = useState(false);
-  const [lightMode, setLightMode] = useState(false);
-  const [soundMode, setSoundMode] = useState<SoundMode>("none");
-  const [adhanVoice, setAdhanVoice] = useState<AdhanVoice>("makkah");
-  const [countdown, setCountdown] = useState(false);
-  const [showQiyam, setShowQiyam] = useState(false);
-  const [homeMode, setHomeMode] = useState<HomeMode>("none");
-  const [homeCity, setHomeCity] = useState<{ slug: string; name: string } | null>(null);
-
-  // Load from localStorage on mount
-  useEffect(() => {
-    const s = getSettings();
-    setHanafi(s.hanafi);
-    setUse24h(s.use24h);
-    setLightMode(s.lightMode);
-    setSoundMode(s.soundMode);
-    setAdhanVoice(s.adhanVoice);
-    setCountdown(s.countdown);
-    setShowQiyam(s.showQiyam);
-    setHomeMode(s.homeMode);
-    setHomeCity(s.homeCity);
-  }, []);
+  const initial = typeof window !== "undefined" ? getSettings() : null;
+  const [hanafi, setHanafi] = useState(initial?.hanafi ?? false);
+  const [use24h, setUse24h] = useState(initial?.use24h ?? false);
+  const [lightMode, setLightMode] = useState(initial?.lightMode ?? false);
+  const [soundMode, setSoundMode] = useState<SoundMode>(initial?.soundMode ?? "none");
+  const [adhanVoice, setAdhanVoice] = useState<AdhanVoice>(initial?.adhanVoice ?? "makkah");
+  const [countdown, setCountdown] = useState(initial?.countdown ?? false);
+  const [showQiyam, setShowQiyam] = useState(initial?.showQiyam ?? false);
+  const [homeMode, setHomeMode] = useState<HomeMode>(initial?.homeMode ?? "none");
+  const [homeCity, setHomeCity] = useState<{ slug: string; name: string } | null>(initial?.homeCity ?? null);
 
   // Apply theme to document
   useEffect(() => {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 export const LAST_CITY_KEY = "pc_last_city";
@@ -29,19 +29,18 @@ export function recordLastCity(slug: string, name: string): void {
  */
 export default function LastVisited() {
   const router = useRouter();
-  const [lastCity, setLastCity] = useState<LastCity | null>(null);
-
-  useEffect(() => {
+  const [lastCity, setLastCity] = useState<LastCity | null>(() => {
+    if (typeof window === "undefined") return null;
     try {
       const raw = localStorage.getItem(LAST_CITY_KEY);
-      if (!raw) return;
+      if (!raw) return null;
       const parsed: LastCity = JSON.parse(raw);
-      if (!parsed?.slug || !parsed?.name) return;
-      setLastCity(parsed);
+      if (!parsed?.slug || !parsed?.name) return null;
+      return parsed;
     } catch {
-      // corrupt or missing
+      return null;
     }
-  }, []);
+  });
 
   function clearLastCity() {
     try {

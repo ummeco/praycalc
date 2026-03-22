@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 const DISMISSED_KEY = "pc_dpc_card_dismissed";
 
@@ -9,15 +9,14 @@ const DISMISSED_KEY = "pc_dpc_card_dismissed";
  * method. Shown once in the top-right tray until the user dismisses it.
  */
 export default function DPCInfoCard() {
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
+  const [visible, setVisible] = useState(() => {
+    if (typeof window === "undefined") return false;
     try {
-      if (!localStorage.getItem(DISMISSED_KEY)) setVisible(true);
+      return !localStorage.getItem(DISMISSED_KEY);
     } catch {
-      setVisible(true);
+      return true;
     }
-  }, []);
+  });
 
   function dismiss() {
     setVisible(false);

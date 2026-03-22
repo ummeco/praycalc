@@ -3,6 +3,10 @@
 import { useLocale, useTranslations } from "next-intl";
 import { useState, useRef, useEffect } from "react";
 
+function setLocaleCookie(code: string) {
+  document.cookie = `NEXT_LOCALE=${code};path=/;max-age=${60 * 60 * 24 * 365}`;
+}
+
 const LOCALES = [
   { code: "en", dir: "ltr" },
   { code: "ar", dir: "rtl" },
@@ -46,7 +50,7 @@ export default function LanguageSwitcher({ variant = "header" }: { variant?: "he
   }, [open]);
 
   function switchLocale(code: string) {
-    document.cookie = `NEXT_LOCALE=${code};path=/;max-age=${60 * 60 * 24 * 365}`;
+    setLocaleCookie(code);
     setOpen(false);
     window.location.reload();
   }

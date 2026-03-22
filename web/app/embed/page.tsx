@@ -12,10 +12,13 @@ interface PrayerTime {
 export default function EmbedPage() {
   const [prayers, setPrayers] = useState<PrayerTime[]>([]);
   const [city, setCity] = useState('');
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(() => {
+    if (typeof window !== "undefined" && !navigator.geolocation) return false;
+    return true;
+  });
 
   useEffect(() => {
-    if (!navigator.geolocation) { setLoading(false); return; }
+    if (!navigator.geolocation) return;
     navigator.geolocation.getCurrentPosition(async pos => {
       const { latitude: lat, longitude: lng } = pos.coords;
       const today = new Date().toISOString().split('T')[0];

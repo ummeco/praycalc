@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 
 const features = [
   { name: "Prayer times (web + mobile)", free: true, plus: true },
@@ -114,13 +115,13 @@ export default function UpgradePage() {
 
         {/* Footer links */}
         <div className="mt-8 text-center text-xs text-gray-500">
-          <a href="/privacy" className="underline hover:text-gray-300">
+          <Link href="/privacy" className="underline hover:text-gray-300">
             Privacy Policy
-          </a>
+          </Link>
           {" · "}
-          <a href="/terms" className="underline hover:text-gray-300">
+          <Link href="/terms" className="underline hover:text-gray-300">
             Terms of Service
-          </a>
+          </Link>
           {" · "}
           <a
             href="mailto:support@praycalc.com"

@@ -47,10 +47,10 @@ export function useClock({
   const prevDateStrRef = useRef<string>("");
   // Keep a stable ref to displayList so the tick closure always sees the live value
   const displayListRef = useRef<Array<keyof PrayerResult>>(displayList);
-  displayListRef.current = displayList;
+  useEffect(() => { displayListRef.current = displayList; }, [displayList]);
   // Keep stable ref to callback so the effect doesn't re-run when it changes
   const onPrayerArrivalRef = useRef(onPrayerArrival);
-  onPrayerArrivalRef.current = onPrayerArrival;
+  useEffect(() => { onPrayerArrivalRef.current = onPrayerArrival; }, [onPrayerArrival]);
 
   // Force date/moon refresh when returning to tab
   useEffect(() => {

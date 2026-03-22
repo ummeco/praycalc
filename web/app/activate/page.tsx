@@ -1,5 +1,6 @@
 'use client';
 import { useState, Suspense } from 'react';
+import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 
 function ActivateContent() {
@@ -78,7 +79,7 @@ function ActivateContent() {
             </button>
             <p className="text-white/40 text-xs mt-6">
               You must be signed in to your PrayCalc account for this to work.{' '}
-              <a href="/login" className="text-[#79C24C] underline">Sign in</a>
+              <Link href="/login" className="text-[#79C24C] underline">Sign in</Link>
             </p>
           </>
         )}

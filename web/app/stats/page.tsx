@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { useSession } from '@/hooks/useSession';
 
 const SMART_URL = 'https://smart.praycalc.com/api/v1/stats';
@@ -81,13 +82,24 @@ export default function StatsPage() {
 
   useEffect(() => {
     if (!token) return;
+    let cancelled = false;
+    async function load() {
+      try {
+        const r = await fetch(SMART_URL, { headers: { Authorization: `Bearer ${token}` } });
+        if (cancelled) return;
+        if (!r.ok) throw new Error(r.statusText);
+        const data = await r.json() as Stats;
+        if (!cancelled) setStats(data);
+      } catch {
+        if (!cancelled) setError('Could not load stats. Try again later.');
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    }
     setLoading(true);
     setError('');
-    fetch(SMART_URL, { headers: { Authorization: `Bearer ${token}` } })
-      .then(r => r.ok ? r.json() as Promise<Stats> : Promise.reject(r.statusText))
-      .then(data => setStats(data))
-      .catch(() => setError('Could not load stats. Try again later.'))
-      .finally(() => setLoading(false));
+    load();
+    return () => { cancelled = true; };
   }, [token]);
 
   if (!hydrated) {
@@ -105,9 +117,9 @@ export default function StatsPage() {
           <div className="text-5xl mb-5">📊</div>
           <h1 className="text-2xl font-bold text-white mb-3">Prayer Stats</h1>
           <p className="text-white/60 mb-8">Sign in to track your prayer consistency and streaks.</p>
-          <a href="/account" className="block bg-[#1E5E2F] hover:bg-[#79C24C]/20 text-[#C9F27A] font-bold rounded-2xl py-4 text-lg transition-colors border border-[#79C24C]/30">
+          <Link href="/account" className="block bg-[#1E5E2F] hover:bg-[#79C24C]/20 text-[#C9F27A] font-bold rounded-2xl py-4 text-lg transition-colors border border-[#79C24C]/30">
             Sign in
-          </a>
+          </Link>
         </div>
       </div>
     );

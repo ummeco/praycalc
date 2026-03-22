@@ -1,4 +1,5 @@
 import { TOP_CITIES, City } from '@/lib/top-cities';
+import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 
@@ -105,7 +106,7 @@ export default async function CityPrayerTimesPage({ params }: { params: Promise<
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <main className="max-w-2xl mx-auto px-4 py-8">
         <nav className="text-sm text-gray-500 mb-4">
-          <a href="/times" className="hover:text-green-700">Prayer Times</a>
+          <Link href="/times" className="hover:text-green-700">Prayer Times</Link>
           {' › '}
           <span>{city.country}</span>
           {' › '}
@@ -137,7 +138,7 @@ export default async function CityPrayerTimesPage({ params }: { params: Promise<
 
         <p className="mt-6 text-sm text-gray-500">
           Calculation method: {times.method}. Times shown in local time ({city.timezone}).
-          <a href="/" className="ml-2 text-green-700 hover:underline">Get times for your location &rarr;</a>
+          <Link href="/" className="ml-2 text-green-700 hover:underline">Get times for your location &rarr;</Link>
         </p>
       </main>
     </>

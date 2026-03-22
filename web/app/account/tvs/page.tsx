@@ -64,43 +64,46 @@ function AddTvModal({ onClose, onPaired, token }: { onClose: () => void; onPaire
     if (countdownRef.current) clearInterval(countdownRef.current);
   }, []);
 
-  const requestCode = useCallback(async () => {
-    if (!token) { setState('error'); setErrorMsg('You must be signed in to add a TV.'); return; }
-    try {
-      const res = await fetch('/api/tv/app-code', {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${token}` },
-        cache: 'no-store',
-      });
-      const json = await res.json() as { code?: string; error?: string };
-      if (!res.ok || !json.code) { setState('error'); setErrorMsg(json.error ?? 'Failed to generate code. Try again.'); return; }
-      const newCode = json.code;
-      setCode(newCode);
-      setRemaining(300);
-      setState('showing');
-      const cRef = setInterval(() => {
-        setRemaining(r => {
-          if (r <= 1) { clearInterval(cRef); pollRef.current && clearInterval(pollRef.current); setState('error'); setErrorMsg('Code expired. Click below to try again.'); return 0; }
-          return r - 1;
+  useEffect(() => {
+    let cancelled = false;
+    async function requestCode() {
+      if (!token) { if (!cancelled) { setState('error'); setErrorMsg('You must be signed in to add a TV.'); } return; }
+      try {
+        const res = await fetch('/api/tv/app-code', {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${token}` },
+          cache: 'no-store',
         });
-      }, 1000);
-      countdownRef.current = cRef;
-      const pRef = setInterval(async () => {
-        try {
-          const statusRes = await fetch(`/api/tv/app-code/${newCode}/status`, { headers: { Authorization: `Bearer ${token}` }, cache: 'no-store' });
-          const statusJson = await statusRes.json() as { status?: string };
-          if (statusJson.status === 'activated') { clearInterval(pRef); clearInterval(cRef); setState('activated'); setTimeout(onPaired, 2000); }
-          else if (statusJson.status === 'expired') { clearInterval(pRef); clearInterval(cRef); setState('error'); setErrorMsg('Code expired. Click below to try again.'); }
-        } catch { /* keep polling */ }
-      }, 3000);
-      pollRef.current = pRef;
-    } catch {
-      setState('error');
-      setErrorMsg('Could not reach the server. Check your connection.');
+        const json = await res.json() as { code?: string; error?: string };
+        if (cancelled) return;
+        if (!res.ok || !json.code) { setState('error'); setErrorMsg(json.error ?? 'Failed to generate code. Try again.'); return; }
+        const newCode = json.code;
+        setCode(newCode);
+        setRemaining(300);
+        setState('showing');
+        const cRef = setInterval(() => {
+          setRemaining(r => {
+            if (r <= 1) { clearInterval(cRef); pollRef.current && clearInterval(pollRef.current); setState('error'); setErrorMsg('Code expired. Click below to try again.'); return 0; }
+            return r - 1;
+          });
+        }, 1000);
+        countdownRef.current = cRef;
+        const pRef = setInterval(async () => {
+          try {
+            const statusRes = await fetch(`/api/tv/app-code/${newCode}/status`, { headers: { Authorization: `Bearer ${token}` }, cache: 'no-store' });
+            const statusJson = await statusRes.json() as { status?: string };
+            if (statusJson.status === 'activated') { clearInterval(pRef); clearInterval(cRef); setState('activated'); setTimeout(onPaired, 2000); }
+            else if (statusJson.status === 'expired') { clearInterval(pRef); clearInterval(cRef); setState('error'); setErrorMsg('Code expired. Click below to try again.'); }
+          } catch { /* keep polling */ }
+        }, 3000);
+        pollRef.current = pRef;
+      } catch {
+        if (!cancelled) { setState('error'); setErrorMsg('Could not reach the server. Check your connection.'); }
+      }
     }
-  }, [onPaired, token]);
-
-  useEffect(() => { void requestCode(); return clearTimers; }, [requestCode, clearTimers]);
+    void requestCode();
+    return () => { cancelled = true; clearTimers(); };
+  }, [onPaired, token, clearTimers]);
 
   const mm = String(Math.floor(remaining / 60)).padStart(2, '0');
   const ss = String(remaining % 60).padStart(2, '0');

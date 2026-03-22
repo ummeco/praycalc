@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { getSettings } from "@/lib/settings";
 
@@ -20,17 +20,12 @@ const CITIES: City[] = [
 
 export default function PopularCities() {
   const router = useRouter();
-  const [show, setShow] = useState(false);
-
-  useEffect(() => {
+  const [show, setShow] = useState(() => {
+    if (typeof window === "undefined") return false;
     // Hide if user has a home city set
     const s = getSettings();
-    if (s.homeMode === "city" && s.homeCity?.slug) {
-      setShow(false);
-    } else {
-      setShow(true);
-    }
-  }, []);
+    return !(s.homeMode === "city" && s.homeCity?.slug);
+  });
 
   if (!show) return null;
 

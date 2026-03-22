@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -272,12 +273,12 @@ export default function TravelPage() {
 
         {/* Footer nav */}
         <div className="mt-16 flex justify-center gap-6 text-sm text-white/40">
-          <a href="/help" className="transition-colors hover:text-[#C9F27A]">
+          <Link href="/help" className="transition-colors hover:text-[#C9F27A]">
             Help &amp; FAQ
-          </a>
-          <a href="/" className="transition-colors hover:text-[#C9F27A]">
+          </Link>
+          <Link href="/" className="transition-colors hover:text-[#C9F27A]">
             Back to PrayCalc
-          </a>
+          </Link>
         </div>
       </div>
     </main>

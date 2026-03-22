@@ -71,80 +71,79 @@ function AddTvModal({ onClose, onPaired, token }: { onClose: () => void; onPaire
     if (countdownRef.current) clearInterval(countdownRef.current);
   }, []);
 
-  const requestCode = useCallback(async () => {
-    if (!token) {
-      setState('error');
-      setErrorMsg(t('mustBeSignedIn'));
-      return;
-    }
-
-    try {
-      const res = await fetch('/api/tv/app-code', {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${token}` },
-        cache: 'no-store',
-      });
-      const json = await res.json() as { code?: string; error?: string };
-      if (!res.ok || !json.code) {
-        setState('error');
-        setErrorMsg(json.error ?? 'Failed to generate code. Try again.');
+  useEffect(() => {
+    let cancelled = false;
+    async function requestCode() {
+      if (!token) {
+        if (!cancelled) { setState('error'); setErrorMsg(t('mustBeSignedIn')); }
         return;
       }
 
-      const newCode = json.code;
-      setCode(newCode);
-      setRemaining(300);
-      setState('showing');
-
-      // Countdown
-      const cRef = setInterval(() => {
-        setRemaining(r => {
-          if (r <= 1) {
-            clearInterval(cRef);
-            pollRef.current && clearInterval(pollRef.current);
-            setState('error');
-            setErrorMsg('Code expired. Click below to try again.');
-            return 0;
-          }
-          return r - 1;
+      try {
+        const res = await fetch('/api/tv/app-code', {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${token}` },
+          cache: 'no-store',
         });
-      }, 1000);
-      countdownRef.current = cRef;
-
-      // Poll for TV activation
-      const pRef = setInterval(async () => {
-        try {
-          const statusRes = await fetch(`/api/tv/app-code/${newCode}/status`, {
-            headers: { Authorization: `Bearer ${token}` },
-            cache: 'no-store',
-          });
-          const statusJson = await statusRes.json() as { status?: string };
-          if (statusJson.status === 'activated') {
-            clearInterval(pRef);
-            clearInterval(cRef);
-            setState('activated');
-            setTimeout(onPaired, 2000);
-          } else if (statusJson.status === 'expired') {
-            clearInterval(pRef);
-            clearInterval(cRef);
-            setState('error');
-            setErrorMsg('Code expired. Click below to try again.');
-          }
-        } catch {
-          // network hiccup — keep polling
+        const json = await res.json() as { code?: string; error?: string };
+        if (cancelled) return;
+        if (!res.ok || !json.code) {
+          setState('error');
+          setErrorMsg(json.error ?? 'Failed to generate code. Try again.');
+          return;
         }
-      }, 3000);
-      pollRef.current = pRef;
-    } catch {
-      setState('error');
-      setErrorMsg('Could not reach the server. Check your connection.');
-    }
-  }, [onPaired]);
 
-  useEffect(() => {
+        const newCode = json.code;
+        setCode(newCode);
+        setRemaining(300);
+        setState('showing');
+
+        // Countdown
+        const cRef = setInterval(() => {
+          setRemaining(r => {
+            if (r <= 1) {
+              clearInterval(cRef);
+              pollRef.current && clearInterval(pollRef.current);
+              setState('error');
+              setErrorMsg('Code expired. Click below to try again.');
+              return 0;
+            }
+            return r - 1;
+          });
+        }, 1000);
+        countdownRef.current = cRef;
+
+        // Poll for TV activation
+        const pRef = setInterval(async () => {
+          try {
+            const statusRes = await fetch(`/api/tv/app-code/${newCode}/status`, {
+              headers: { Authorization: `Bearer ${token}` },
+              cache: 'no-store',
+            });
+            const statusJson = await statusRes.json() as { status?: string };
+            if (statusJson.status === 'activated') {
+              clearInterval(pRef);
+              clearInterval(cRef);
+              setState('activated');
+              setTimeout(onPaired, 2000);
+            } else if (statusJson.status === 'expired') {
+              clearInterval(pRef);
+              clearInterval(cRef);
+              setState('error');
+              setErrorMsg('Code expired. Click below to try again.');
+            }
+          } catch {
+            // network hiccup — keep polling
+          }
+        }, 3000);
+        pollRef.current = pRef;
+      } catch {
+        if (!cancelled) { setState('error'); setErrorMsg('Could not reach the server. Check your connection.'); }
+      }
+    }
     void requestCode();
-    return clearTimers;
-  }, [requestCode, clearTimers]);
+    return () => { cancelled = true; clearTimers(); };
+  }, [onPaired, token, t, clearTimers]);
 
   const mm = String(Math.floor(remaining / 60)).padStart(2, '0');
   const ss = String(remaining % 60).padStart(2, '0');
@@ -766,18 +765,23 @@ function ScreenshotPreview({ deviceId, token }: { deviceId: string; token: strin
   const t = useTranslations('tv');
   const { imageUrl, capturedAt, loading } = useScreenshot(deviceId, token);
 
-  const lastUpdatedText = capturedAt
-    ? (() => {
-        const diffMs = Date.now() - new Date(capturedAt).getTime();
-        const diffMin = Math.floor(diffMs / 60_000);
-        if (diffMin < 1) return 'Just now';
-        if (diffMin === 1) return '1 min ago';
-        if (diffMin < 60) return `${diffMin} min ago`;
-        const diffHr = Math.floor(diffMin / 60);
-        if (diffHr === 1) return '1 hr ago';
-        return `${diffHr} hr ago`;
-      })()
-    : null;
+  const [lastUpdatedText, setLastUpdatedText] = useState<string | null>(null);
+  useEffect(() => {
+    if (!capturedAt) return;
+    function update() {
+      const diffMs = Date.now() - new Date(capturedAt!).getTime();
+      const diffMin = Math.floor(diffMs / 60_000);
+      if (diffMin < 1) { setLastUpdatedText('Just now'); return; }
+      if (diffMin === 1) { setLastUpdatedText('1 min ago'); return; }
+      if (diffMin < 60) { setLastUpdatedText(`${diffMin} min ago`); return; }
+      const diffHr = Math.floor(diffMin / 60);
+      if (diffHr === 1) { setLastUpdatedText('1 hr ago'); return; }
+      setLastUpdatedText(`${diffHr} hr ago`);
+    }
+    update();
+    const timer = setInterval(update, 60_000);
+    return () => { clearInterval(timer); setLastUpdatedText(null); };
+  }, [capturedAt]);
 
   return (
     <div className="flex flex-col gap-1">

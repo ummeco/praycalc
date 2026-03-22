@@ -209,6 +209,7 @@ jobs:
         run: flutter pub get
       - name: Patch Android
         id: shorebird-android
+        continue-on-error: true
         working-directory: flutter
         run: shorebird patch android
         env:
@@ -249,6 +250,7 @@ jobs:
         run: flutter pub get
       - name: Patch iOS
         id: shorebird-ios
+        continue-on-error: true
         working-directory: flutter
         run: shorebird patch ios
         env:

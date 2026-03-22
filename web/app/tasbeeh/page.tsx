@@ -38,16 +38,12 @@ function saveHistory(sessions: Session[]) {
 export default function TasbeehPage() {
   const [presetIdx, setPresetIdx] = useState(0);
   const [count, setCount] = useState(0);
-  const [history, setHistory] = useState<Session[]>([]);
+  const [history, setHistory] = useState<Session[]>(loadHistory);
   const [justCompleted, setJustCompleted] = useState(false);
 
   const preset = PRESETS[presetIdx];
   const progress = Math.min(count / preset.target, 1);
   const circumference = 2 * Math.PI * 88; // r=88
-
-  useEffect(() => {
-    setHistory(loadHistory());
-  }, []);
 
   const increment = useCallback(() => {
     if (typeof window !== 'undefined' && 'vibrate' in navigator) {

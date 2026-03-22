@@ -1,5 +1,6 @@
 'use client';
 import { useState } from 'react';
+import Link from 'next/link';
 
 export default function DigestPage() {
   const [email, setEmail] = useState('');
@@ -67,7 +68,7 @@ export default function DigestPage() {
 
       <p className="text-xs text-gray-400 mt-6">
         No spam. One email per week.{' '}
-        <a href="/digest/unsubscribe" className="underline">Unsubscribe</a> anytime.
+        <Link href="/digest/unsubscribe" className="underline">Unsubscribe</Link> anytime.
       </p>
     </main>
   );

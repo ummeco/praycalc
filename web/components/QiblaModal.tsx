@@ -33,7 +33,10 @@ export default function QiblaModal({
   const t = useTranslations("ui");
   const [userLat, setUserLat] = useState<number | null>(null);
   const [userLng, setUserLng] = useState<number | null>(null);
-  const [geoStatus, setGeoStatus] = useState<GeoStatus>("pending");
+  const [geoStatus, setGeoStatus] = useState<GeoStatus>(() => {
+    if (typeof window !== "undefined" && !navigator.geolocation) return "denied";
+    return "pending";
+  });
   const needleWrapRef = useRef<HTMLDivElement>(null);
 
   // City-center bearing (used until/unless we have a user location)
@@ -52,10 +55,7 @@ export default function QiblaModal({
 
   // Request geolocation — use user position if within 50 km of city
   useEffect(() => {
-    if (!navigator.geolocation) {
-      setGeoStatus("denied");
-      return;
-    }
+    if (!navigator.geolocation) return;
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         const dist = distanceKm(

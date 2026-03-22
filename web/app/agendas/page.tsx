@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import Link from 'next/link';
 import { useSession } from '@/hooks/useSession';
 
 const SMART_URL = 'https://smart.praycalc.com/api/v1/agendas';
@@ -223,9 +224,9 @@ export default function AgendasPage() {
           <div className="text-5xl mb-5">📋</div>
           <h1 className="text-2xl font-bold text-white mb-3">Prayer Agendas</h1>
           <p className="text-white/60 mb-8">Sign in to create and manage prayer time agendas.</p>
-          <a href="/account" className="block bg-[#1E5E2F] hover:bg-[#79C24C]/20 text-[#C9F27A] font-bold rounded-2xl py-4 text-lg transition-colors border border-[#79C24C]/30">
+          <Link href="/account" className="block bg-[#1E5E2F] hover:bg-[#79C24C]/20 text-[#C9F27A] font-bold rounded-2xl py-4 text-lg transition-colors border border-[#79C24C]/30">
             Sign in
-          </a>
+          </Link>
         </div>
       </div>
     );

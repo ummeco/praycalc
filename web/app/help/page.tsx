@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import type { Metadata } from 'next';
 
 interface FAQItem {
@@ -309,15 +310,15 @@ export default function HelpPage() {
 
         {/* Footer nav */}
         <div className="mt-12 flex justify-center gap-6 text-sm text-white/40">
-          <a href="/privacy" className="hover:text-[#C9F27A] transition-colors">
+          <Link href="/privacy" className="hover:text-[#C9F27A] transition-colors">
             Privacy Policy
-          </a>
-          <a href="/terms" className="hover:text-[#C9F27A] transition-colors">
+          </Link>
+          <Link href="/terms" className="hover:text-[#C9F27A] transition-colors">
             Terms of Service
-          </a>
-          <a href="/" className="hover:text-[#C9F27A] transition-colors">
+          </Link>
+          <Link href="/" className="hover:text-[#C9F27A] transition-colors">
             Back to PrayCalc
-          </a>
+          </Link>
         </div>
       </div>
     </main>

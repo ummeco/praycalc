@@ -27,28 +27,36 @@ export function useSession() {
   const refreshTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   // Schedule a token refresh before the access token expires.
-  const scheduleRefresh = useCallback((s: PrayCalcSession) => {
-    if (refreshTimer.current) clearTimeout(refreshTimer.current);
-    if (!s.tokens?.refreshToken || !s.tokens.accessTokenExpiresAt) return;
+  const scheduleRefreshRef = useRef<(s: PrayCalcSession) => void>(() => {});
 
-    const delay = Math.max(
-      s.tokens.accessTokenExpiresAt - Date.now() - REFRESH_BUFFER_MS,
-      0,
-    );
-    refreshTimer.current = setTimeout(async () => {
-      try {
-        const result = await refreshSession(s.tokens!.refreshToken);
-        const updated = buildSessionFromAuth(result);
-        saveSession(updated);
-        setSession(updated);
-        scheduleRefresh(updated);
-      } catch {
-        // Refresh failed: session expired, clear it.
-        clearSession();
-        setSession(null);
-      }
-    }, delay);
+  const scheduleRefresh = useCallback((s: PrayCalcSession) => {
+    scheduleRefreshRef.current(s);
   }, []);
+
+  useEffect(() => {
+    scheduleRefreshRef.current = (s: PrayCalcSession) => {
+      if (refreshTimer.current) clearTimeout(refreshTimer.current);
+      if (!s.tokens?.refreshToken || !s.tokens.accessTokenExpiresAt) return;
+
+      const delay = Math.max(
+        s.tokens.accessTokenExpiresAt - Date.now() - REFRESH_BUFFER_MS,
+        0,
+      );
+      refreshTimer.current = setTimeout(async () => {
+        try {
+          const result = await refreshSession(s.tokens!.refreshToken);
+          const updated = buildSessionFromAuth(result);
+          saveSession(updated);
+          setSession(updated);
+          scheduleRefreshRef.current(updated);
+        } catch {
+          // Refresh failed: session expired, clear it.
+          clearSession();
+          setSession(null);
+        }
+      }, delay);
+    };
+  });
 
   // On mount: check for OAuth callback token, then load session.
   useEffect(() => {
