@@ -3,6 +3,8 @@ import 'dart:io' show Platform;
 
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:praycalc_app/l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
@@ -26,6 +28,11 @@ import 'features/desktop/desktop_full_window.dart';
 import 'features/desktop/desktop_tray_app.dart';
 import 'features/onboarding/onboarding_screen.dart';
 import 'features/quran/quran_audio_handler.dart';
+import 'core/platform/device_tier.dart';
+import 'tv_app.dart';
+
+// GLOBAL: set in main() once to avoid async checks in build()
+bool isTv = false;
 
 // DSN is injected at build time via --dart-define=SENTRY_DSN=https://...
 // If empty (dev / CI without secrets), Sentry initialises but sends nothing.
@@ -76,9 +83,23 @@ void main() async {
   setOnboardingDone(onboardingDone);
 
   // Silently check for a Shorebird OTA patch in the background.
-  // Never blocks startup — downloads and stages for the next cold restart.
   if (!kIsWeb) {
     unawaited(_checkShorebirdUpdate());
+  }
+
+  // DETECT TV: query native plugin for Android TV / Leanback launcher.
+  final container = ProviderContainer();
+  try {
+    isTv = await container.read(isTvDeviceProvider.future);
+  } catch (_) {
+    isTv = false;
+  }
+  
+  if (isTv) {
+    // Immersive full-screen for TV.
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+    final prefs = await SharedPreferences.getInstance();
+    kTvIsPaired = (prefs.getString('tv_session_jwt') ?? '').isNotEmpty;
   }
 
   final app = ProviderScope(
@@ -220,15 +241,15 @@ class _PrayCalcAppState extends ConsumerState<PrayCalcApp> with WindowListener {
 
     final settings = ref.watch(settingsProvider);
 
-    final ThemeMode themeMode;
-    if (settings.followSystem ?? true) {
-      themeMode = ThemeMode.system;
-    } else {
-      themeMode = settings.darkMode ? ThemeMode.dark : ThemeMode.light;
+    // ADAPTIVE: Switch to the TV-specific UI if detected.
+    if (isTv) {
+      return const PrayCalcTvApp();
     }
 
-    final locale =
-        settings.locale != null ? Locale(settings.locale!) : null;
+    final themeMode = settings.followSystem == true
+        ? ThemeMode.system
+        : (settings.darkMode ? ThemeMode.dark : ThemeMode.light);
+    final locale = settings.locale != null ? Locale(settings.locale!) : null;
 
     return MaterialApp.router(
       title: 'PrayCalc',

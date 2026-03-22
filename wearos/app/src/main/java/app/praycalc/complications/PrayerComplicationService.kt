@@ -1,4 +1,4 @@
-package com.praycalc.wear.complications
+package app.praycalc.complications
 
 import android.graphics.drawable.Icon
 import androidx.wear.watchface.complications.data.ComplicationData
@@ -9,7 +9,7 @@ import androidx.wear.watchface.complications.data.RangedValueComplicationData
 import androidx.wear.watchface.complications.data.ShortTextComplicationData
 import androidx.wear.watchface.complications.datasource.ComplicationRequest
 import androidx.wear.watchface.complications.datasource.SuspendingComplicationDataSourceService
-import com.praycalc.wear.data.PrayerRepository
+import app.praycalc.data.PrayerRepository
 import java.time.Duration
 import java.time.LocalTime
 

@@ -1,4 +1,4 @@
-package com.praycalc.wear.tile
+package app.praycalc.tile
 
 import android.content.Context
 import androidx.wear.protolayout.ActionBuilders
@@ -16,7 +16,7 @@ import androidx.wear.tiles.RequestBuilders
 import androidx.wear.tiles.TileBuilders
 import com.google.android.horologist.annotations.ExperimentalHorologistApi
 import com.google.android.horologist.tiles.SuspendingTileService
-import com.praycalc.wear.data.PrayerRepository
+import app.praycalc.data.PrayerRepository
 import java.time.Duration
 import java.time.LocalTime
 

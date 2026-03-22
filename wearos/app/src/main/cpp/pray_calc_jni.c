@@ -20,7 +20,7 @@
  * All prayer times are fractional hours since midnight (local time).
  */
 JNIEXPORT jdoubleArray JNICALL
-Java_com_praycalc_wear_data_PrayCalcNative_nativeCalculateTimes(
+Java_app_praycalc_data_PrayCalcNative_nativeCalculateTimes(
     JNIEnv *env,
     jclass clazz,
     jdouble latitude,
@@ -70,7 +70,7 @@ Java_com_praycalc_wear_data_PrayCalcNative_nativeCalculateTimes(
  * Returns degrees clockwise from north.
  */
 JNIEXPORT jdouble JNICALL
-Java_com_praycalc_wear_data_PrayCalcNative_nativeQiblaBearing(
+Java_app_praycalc_data_PrayCalcNative_nativeQiblaBearing(
     JNIEnv *env,
     jclass clazz,
     jdouble latitude,

@@ -360,14 +360,22 @@ class _HomeHeader extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: settings.hijriFirst
                         ? [
-                            _HijriDateText(date: vd, isPrimary: true),
+                            _HijriDateText(
+                              date: vd,
+                              isPrimary: true,
+                              offset: settings.hijriOffset,
+                            ),
                             const SizedBox(height: 2),
                             _GregorianDateText(date: vd, isPrimary: false),
                           ]
                         : [
                             _GregorianDateText(date: vd, isPrimary: true),
                             const SizedBox(height: 2),
-                            _HijriDateText(date: vd, isPrimary: false),
+                            _HijriDateText(
+                              date: vd,
+                              isPrimary: false,
+                              offset: settings.hijriOffset,
+                            ),
                           ],
                   ),
                 ),
@@ -394,14 +402,19 @@ class _HeaderDot extends StatelessWidget {
 }
 
 class _HijriDateText extends StatelessWidget {
-  const _HijriDateText({required this.date, required this.isPrimary});
+  const _HijriDateText({
+    required this.date,
+    required this.isPrimary,
+    required this.offset,
+  });
   final DateTime date;
   final bool isPrimary;
+  final int offset;
 
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;
-    final str = _hijriStr(date, l);
+    final str = _hijriStr(date, offset, l);
     if (str.isEmpty) return const SizedBox.shrink();
     final alpha = isPrimary ? 210 : 100;
     final suffixAlpha = isPrimary ? 110 : 55;
@@ -428,9 +441,10 @@ class _HijriDateText extends StatelessWidget {
     );
   }
 
-  static String _hijriStr(DateTime dt, AppLocalizations l) {
+  static String _hijriStr(DateTime dt, int offset, AppLocalizations l) {
     try {
-      final hj = HijriCalendar.fromDate(dt);
+      final adjusted = dt.add(Duration(days: offset));
+      final hj = HijriCalendar.fromDate(adjusted);
       final months = [
         l.hijriMuharram, l.hijriSafar, l.hijriRabiAlAwwal, l.hijriRabiAlThani,
         l.hijriJumadaAlAwwal, l.hijriJumadaAlThani, l.hijriRajab, l.hijriShaban,

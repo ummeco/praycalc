@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import '../../core/services/adhan_service.dart';
 import '../../core/theme/app_theme.dart';
 
 const _arabicNames = {
@@ -22,6 +23,7 @@ class AdhanModal extends StatefulWidget {
   /// Show the adhan modal for [prayerName] from [context].
   /// No-op if [prayerName] has no Arabic translation (i.e., non-fard prayer).
   static Future<void> show(BuildContext context, String prayerName) {
+    if (!_arabicNames.containsKey(prayerName)) return Future.value();
     return showGeneralDialog(
       context: context,
       barrierDismissible: true,
@@ -58,6 +60,8 @@ class _AdhanModalState extends State<AdhanModal> {
   @override
   void dispose() {
     _timer?.cancel();
+    // STOP ADHAN: Ensure audio terminates when user dismisses the modal.
+    AdhanService.instance.stop();
     super.dispose();
   }
 
@@ -108,6 +112,7 @@ class _AdhanModalState extends State<AdhanModal> {
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 52,
+                    fontFamily: 'Amiri',
                     color: PrayCalcColors.light,
                     height: 1.1,
                   ),

@@ -1,4 +1,4 @@
-package com.praycalc.wear
+package app.praycalc
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity

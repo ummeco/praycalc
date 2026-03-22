@@ -3,6 +3,7 @@ import 'package:hijri/hijri_calendar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'prayer_provider.dart';
+import 'settings_provider.dart';
 
 /// Lightweight Ramadan state — computed from the current Hijri date.
 class RamadanState {
@@ -27,11 +28,15 @@ class RamadanState {
 }
 
 /// Provider that returns whether today is in Ramadan and which day it is.
-/// Re-evaluated once per app session (doesn't need to watch a clock).
+/// Re-evaluated when settings (hijriOffset) change.
 final ramadanProvider = Provider<RamadanState>((ref) {
+  final settings = ref.watch(settingsProvider);
+  
   HijriCalendar hijri;
   try {
-    hijri = HijriCalendar.now();
+    // Apply manual offset to the calculation date.
+    final adjustedDate = DateTime.now().add(Duration(days: settings.hijriOffset));
+    hijri = HijriCalendar.fromDate(adjustedDate);
   } catch (e) {
     return const RamadanState(
       isRamadan: false,

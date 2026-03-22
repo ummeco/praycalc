@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hijri/hijri_calendar.dart';
 
 import '../../core/providers/prayer_provider.dart';
+import '../../core/providers/settings_provider.dart';
 import '../../core/theme/app_theme.dart';
 import '../../shared/models/moon_phase.dart';
 import '../../shared/models/settings_model.dart';
@@ -70,13 +71,15 @@ class MoonScreen extends ConsumerWidget {
     final now = DateTime.now();
     final moonResult = MoonPhase.calculate(now);
     final city = ref.watch(cityProvider);
+    final settings = ref.watch(settingsProvider);
+    final adjustedDate = now.add(Duration(days: settings.hijriOffset));
 
     HijriCalendar hijri;
     try {
-      hijri = HijriCalendar.now();
+      hijri = HijriCalendar.fromDate(adjustedDate);
     } catch (_) {
       hijri = HijriCalendar()
-        ..hYear = now.year - 579
+        ..hYear = adjustedDate.year - 579
         ..hMonth = 1
         ..hDay = 1;
     }

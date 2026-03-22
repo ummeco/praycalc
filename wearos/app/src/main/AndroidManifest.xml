@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.praycalc.wear">
+    package="app.praycalc">
 
     <uses-feature android:name="android.hardware.type.watch" />
 
@@ -61,6 +61,17 @@
             <meta-data
                 android:name="android.support.wearable.complications.UPDATE_PERIOD_SECONDS"
                 android:value="300" />
+        </service>
+
+        <!-- Wireless Sync Listener from Phone Host -->
+        <service
+            android:name=".data.PrayerDataListenerService"
+            android:exported="true"
+            android:permission="com.google.android.wearable.permission.BIND_DATA_SOURCE">
+            <intent-filter>
+                <action android:name="com.google.android.gms.wearable.DATA_CHANGED" />
+                <data android:scheme="wear" android:host="*" android:pathPrefix="/prayer_times" />
+            </intent-filter>
         </service>
 
     </application>

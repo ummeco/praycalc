@@ -1,6 +1,5 @@
 // AdhanLibraryService — manages adhan voice selection, preview, and playback.
 //
-// - Streams audio from previewUrl using just_audio AudioPlayer.
 // - Selected voice stored in SharedPreferences key 'selected_adhan_voice_id' (default: 'makkah').
 // - Custom voice path stored in SharedPreferences key 'custom_adhan_path'.
 // - ChangeNotifier — notifies listeners on selection change.
@@ -8,14 +7,13 @@
 import 'package:flutter/foundation.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import 'adhan_voices.dart';
 
 class AdhanLibraryService extends ChangeNotifier {
   AdhanLibraryService._();
   static final instance = AdhanLibraryService._();
 
-  final AudioPlayer _player = AudioPlayer();
+  final _player = AudioPlayer();
 
   AdhanVoice _selected = kBuiltInAdhanVoices.first;
   AdhanVoice get selected => _selected;

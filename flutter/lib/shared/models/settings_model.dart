@@ -22,6 +22,7 @@ class AppSettings {
   final bool skyGradientEnabled;
   final bool skyGradientWeather;
   final bool countdownAnimationEnabled;
+  final int hijriOffset; // manual adjustment (-2 to +2)
 
   // ── Date display ───────────────────────────────────────────
   final bool hijriFirst; // Hijri shown above Gregorian when true (default)
@@ -66,6 +67,7 @@ class AppSettings {
     this.prayerSounds = const {},
     this.adhanFajr = 'fajrMishari',
     this.adhanRegular = 'makkah',
+    this.hijriOffset = 0,
     Object? homeLat = _sentinel,
     Object? homeLng = _sentinel,
   })  : homeLat = homeLat == _sentinel ? null : homeLat as double?,
@@ -89,6 +91,7 @@ class AppSettings {
     Map<String, PrayerSoundMode>? prayerSounds,
     String? adhanFajr,
     String? adhanRegular,
+    int? hijriOffset,
     Object? homeLat = _sentinel,
     Object? homeLng = _sentinel,
   }) =>
@@ -112,6 +115,7 @@ class AppSettings {
         prayerSounds: prayerSounds ?? this.prayerSounds,
         adhanFajr: adhanFajr ?? this.adhanFajr,
         adhanRegular: adhanRegular ?? this.adhanRegular,
+        hijriOffset: hijriOffset ?? this.hijriOffset,
         homeLat: homeLat == _sentinel ? this.homeLat : homeLat as double?,
         homeLng: homeLng == _sentinel ? this.homeLng : homeLng as double?,
       );
@@ -136,6 +140,7 @@ class AppSettings {
         prayerSounds: _decodeSounds(prefs['prayer_sounds'] as String?),
         adhanFajr: prefs['adhan_fajr'] as String? ?? 'fajrMishari',
         adhanRegular: prefs['adhan_regular'] as String? ?? 'makkah',
+        hijriOffset: prefs['hijri_offset'] as int? ?? 0,
         homeLat: prefs['home_lat'] as double?,
         homeLng: prefs['home_lng'] as double?,
       );
@@ -176,6 +181,7 @@ class AppSettings {
             : jsonEncode(prayerSounds.map((k, v) => MapEntry(k, v.name))),
         'adhan_fajr': adhanFajr,
         'adhan_regular': adhanRegular,
+        'hijri_offset': hijriOffset,
         'home_lat': homeLat,
         'home_lng': homeLng,
       };

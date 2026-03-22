@@ -1,4 +1,4 @@
-package com.praycalc.wear.screens
+package app.praycalc.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -27,9 +27,9 @@ import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Text
 import androidx.wear.compose.material.ToggleChip
 import androidx.wear.compose.material.ToggleChipDefaults
-import com.praycalc.wear.PrayCalcColors
-import com.praycalc.wear.data.PrayerRepository
-import com.praycalc.wear.data.Settings
+import app.praycalc.PrayCalcColors
+import app.praycalc.data.PrayerRepository
+import app.praycalc.data.Settings
 import kotlinx.coroutines.launch
 
 @Composable

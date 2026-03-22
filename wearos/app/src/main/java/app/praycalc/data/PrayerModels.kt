@@ -1,4 +1,4 @@
-package com.praycalc.wear.data
+package app.praycalc.data
 
 import org.json.JSONObject
 import java.time.LocalTime

@@ -140,7 +140,7 @@ async function loadPhotoAsBase64(slug: string): Promise<string | null> {
 
 // ── PDF draw helpers (module-level, no React deps) ───────────────────────────
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+ 
 function drawCalendarPage(doc: any, dates: Date[], dayMap: Map<string, PrayerResult>, monthLabel: string, cityLabel: string, mode: CalMode, u24: boolean) {
   const PW = 297; const PH = 210;
   const ML = 8; const MR = 8; const MT = 8; const MB = 8;
@@ -224,7 +224,7 @@ function drawCalendarPage(doc: any, dates: Date[], dayMap: Map<string, PrayerRes
  * Draw a full-page landscape photo spread for the booklet.
  * Uses the provided photo (base64) if available; falls back to gradient artwork.
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+ 
 function drawPhotoPage(doc: any, photoB64: string | null, monthName: string, yearLabel: string, GStateClass?: unknown) {
   const PW = 297; const PH = 210;
 
@@ -232,7 +232,7 @@ function drawPhotoPage(doc: any, photoB64: string | null, monthName: string, yea
     doc.addImage(photoB64, "JPEG", 0, 0, PW, PH);
     // Dark overlay at bottom for text legibility
     try {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+       
       const gs = new (GStateClass as any)({ opacity: 0.72 });
       doc.saveGraphicsState();
       doc.setGState(gs);
@@ -638,7 +638,7 @@ export default function PrayerCalendarModal({
   const handleBookletPDF = useCallback(async () => {
     setBookletPdfLoading(true);
     try {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+       
       const jsPDFMod = await import("jspdf") as any;
       const jsPDF = jsPDFMod.default;
       const GState = jsPDFMod.GState;

@@ -1,4 +1,4 @@
-package com.praycalc.wear.data
+package app.praycalc.data
 
 import android.Manifest
 import android.content.Context
@@ -31,7 +31,7 @@ import java.net.URL
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "praycalc_settings")
+
 
 /**
  * WearOS uses an API-first approach for prayer times. All prayer time data is
@@ -47,6 +47,8 @@ class PrayerRepository(private val context: Context) {
         private const val BASE_URL = "https://api.praycalc.com/api/v1/times"
         private val KEY_METHOD = stringPreferencesKey("method")
         private val KEY_MADHAB = stringPreferencesKey("madhab")
+        val KEY_SYNCED_DATA = stringPreferencesKey("synced_prayer_data")
+        val KEY_SYNCED_LOCATION = stringPreferencesKey("synced_location")
     }
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
@@ -77,23 +79,28 @@ class PrayerRepository(private val context: Context) {
                 val today = LocalDate.now()
                 if (cachedDate == today && _prayerData.value.prayers.isNotEmpty()) return@launch
 
-                val location = getLocation()
-                if (location == null) {
-                    // No location available — do not fall back to hardcoded coords
-                    return@launch
-                }
-                _locationError.value = null
-
-                val (lat, lng) = location
                 val settings = getCurrentSettings()
 
-                // Use offline C core calculation (no network needed)
-                val data = calculateOffline(lat, lng, today, settings)
-                    ?: fetchFromApi(lat, lng, today, settings)
-
-                if (data != null) {
-                    _prayerData.value = data
+                // 1. Try to use synced data from phone first (for consistency)
+                val syncedData = getSyncedData()
+                if (syncedData != null) {
+                    _prayerData.value = syncedData
                     cachedDate = today
+                    return@launch
+                }
+
+                // 2. Fall back to local calculation if no sync data
+                val location = getLocation()
+                if (location != null) {
+                    _locationError.value = null
+                    val (lat, lng) = location
+                    val data = calculateOffline(lat, lng, today, settings)
+                        ?: fetchFromApi(lat, lng, today, settings)
+
+                    if (data != null) {
+                        _prayerData.value = data
+                        cachedDate = today
+                    }
                 }
             } catch (e: Exception) {
                 Log.e(TAG, "Failed to calculate prayer times", e)
@@ -192,6 +199,16 @@ class PrayerRepository(private val context: Context) {
         context.dataStore.edit { prefs -> prefs[KEY_MADHAB] = madhab }
         cachedDate = null
         refresh()
+    }
+
+    private suspend fun getSyncedData(): PrayerData? {
+        val prefs = context.dataStore.data.map { it[KEY_SYNCED_DATA] }.kotlinx.coroutines.flow.firstOrNull()
+        if (prefs == null) return null
+        return try {
+            PrayerData.fromJson(JSONObject(prefs))
+        } catch (e: Exception) {
+            null
+        }
     }
 
     private suspend fun getCurrentSettings(): Settings {

@@ -1,4 +1,4 @@
-package com.praycalc.wear
+package app.praycalc
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -11,10 +11,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.wear.compose.navigation.SwipeDismissableNavHost
 import androidx.wear.compose.navigation.composable
 import androidx.wear.compose.navigation.rememberSwipeDismissableNavController
-import com.praycalc.wear.data.PrayerRepository
-import com.praycalc.wear.screens.CountdownScreen
-import com.praycalc.wear.screens.PrayerListScreen
-import com.praycalc.wear.screens.SettingsScreen
+import app.praycalc.data.PrayerRepository
+import app.praycalc.screens.CountdownScreen
+import app.praycalc.screens.PrayerListScreen
+import app.praycalc.screens.SettingsScreen
 
 object PrayCalcColors {
     val Primary = Color(0xFF79C24C)

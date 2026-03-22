@@ -23,11 +23,14 @@ class DeviceTierPlugin(context: Context, flutterEngine: FlutterEngine) {
 
     init {
         val am = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+        val uiManager = context.getSystemService(Context.UI_MODE_SERVICE) as android.app.UiModeManager
         val memInfo = ActivityManager.MemoryInfo()
         am.getMemoryInfo(memInfo)
+        
         val totalRamMb = (memInfo.totalMem / 1_048_576L).toInt()
         val model = Build.MODEL.uppercase()
         val isLowEnd = totalRamMb < 1_500 || lowEndFireTvModels.any { model.startsWith(it) }
+        val isTv = uiManager.currentModeType == android.content.res.Configuration.UI_MODE_TYPE_TELEVISION
 
         MethodChannel(
             flutterEngine.dartExecutor.binaryMessenger,
@@ -35,6 +38,7 @@ class DeviceTierPlugin(context: Context, flutterEngine: FlutterEngine) {
         ).setMethodCallHandler { call, result ->
             when (call.method) {
                 "isLowEnd"    -> result.success(isLowEnd)
+                "isTv"        -> result.success(isTv)
                 "totalRamMb"  -> result.success(totalRamMb)
                 "model"       -> result.success(Build.MODEL)
                 else          -> result.notImplemented()
