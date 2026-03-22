@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi, beforeAll, afterAll } from 'vitest';
 import request from 'supertest';
 import jwt from 'jsonwebtoken';
 import { app } from '../src/index.js';
@@ -384,10 +384,13 @@ describe('Webhook registration lifecycle', () => {
 // ============================================================================
 
 describe('Rate limiting', () => {
+  // Freeze Date.now() so the token bucket never refills during test execution.
+  beforeAll(() => { vi.useFakeTimers(); });
+  afterAll(() => { vi.useRealTimers(); });
+
   it('returns 429 after exceeding 60 requests per minute', async () => {
-    // Use a unique path that is not /health (health is exempt from rate limiting)
-    // Send 61 requests from the same IP to trigger the rate limiter.
-    // The token bucket starts at 60 tokens, so request 61 should be blocked.
+    // The token bucket starts at 60 tokens. With fake timers, no refill
+    // occurs, so request 61 should be blocked.
     const results: number[] = [];
 
     for (let i = 0; i < 61; i++) {
@@ -404,7 +407,6 @@ describe('Rate limiting', () => {
       results.push(res.status);
     }
 
-    // The first 60 should succeed (200), the 61st should be rate limited (429)
     const successCount = results.filter(s => s === 200).length;
     const rateLimitedCount = results.filter(s => s === 429).length;
 
