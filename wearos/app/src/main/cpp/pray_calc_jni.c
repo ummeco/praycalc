@@ -6,7 +6,6 @@
  */
 
 #include <jni.h>
-#include <math.h>
 #include "pray_calc.h"
 #include "qibla.h"
 

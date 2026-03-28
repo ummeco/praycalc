@@ -61,6 +61,8 @@ wearos/.gradle/
 wearos/app/build/
 wearos/build/
 wearos/local.properties
+.clangd
+**/.clangd
 
 # Other AI editors
 .codex/
