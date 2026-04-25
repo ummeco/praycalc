@@ -73,11 +73,21 @@ export async function POST(req: NextRequest) {
   return NextResponse.json({ data: { _praycalc: null } })
 }
 
-export async function OPTIONS() {
+// Only Hasura (api.ummat.dev) and local dev call this Remote Schema endpoint.
+// Wildcard is replaced with an explicit allowlist — never open to all origins.
+const REMOTE_SCHEMA_ORIGINS = [
+  'https://api.ummat.dev',
+  'https://api.praycalc.local.nself.org:8543',
+]
+
+export async function OPTIONS(req: NextRequest) {
+  const origin = req.headers.get('Origin') ?? ''
+  const corsOrigin = REMOTE_SCHEMA_ORIGINS.includes(origin) ? origin : null
+
   return new NextResponse(null, {
     status: 204,
     headers: {
-      'Access-Control-Allow-Origin': '*',
+      ...(corsOrigin ? { 'Access-Control-Allow-Origin': corsOrigin } : {}),
       'Access-Control-Allow-Headers': 'Content-Type, x-remote-schema-secret',
       'Access-Control-Allow-Methods': 'POST, OPTIONS',
     },

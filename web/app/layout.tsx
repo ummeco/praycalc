@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import Script from "next/script";
 import { NextIntlClientProvider } from 'next-intl';
 import { getLocale, getMessages } from 'next-intl/server';
 import "./globals.css";
@@ -114,6 +115,18 @@ export default async function RootLayout({
         <Analytics />
         {/* Vercel Speed Insights — Core Web Vitals monitoring */}
         <SpeedInsights />
+        {/* Umami Analytics — privacy-first, no cookies, no PII, self-hosted.
+            NEXT_PUBLIC_UMAMI_WEBSITE_ID and NEXT_PUBLIC_UMAMI_HOST_URL are set
+            in Vercel env vars (vault keys: UMAMI_PRAYCALC_WEBSITE_ID, UMAMI_HOST_URL).
+            Script is loaded only when both vars are present (no-op in local dev). */}
+        {process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID && process.env.NEXT_PUBLIC_UMAMI_HOST_URL && (
+          <Script
+            src={`${process.env.NEXT_PUBLIC_UMAMI_HOST_URL}/script.js`}
+            data-website-id={process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID}
+            strategy="afterInteractive"
+            defer
+          />
+        )}
       </body>
     </html>
   );

@@ -7,14 +7,18 @@ plugins {
     id("dev.flutter.flutter-gradle-plugin")
 }
 
-// Load release signing credentials from local.properties (gitignored).
-// To configure: copy android/local.properties.example → android/local.properties
-// and fill in storeFile, storePassword, keyAlias, keyPassword.
-val localProps = Properties()
-val localPropsFile = rootProject.file("local.properties")
-if (localPropsFile.exists()) {
-    localPropsFile.inputStream().use { localProps.load(it) }
+// Load release signing credentials from env vars (CI) or key.properties (local dev).
+// Priority: env var > key.properties. Never put credentials in local.properties.
+// Local dev: copy android/key.properties.example → android/key.properties and fill in values.
+// CI: set SIGNING_STORE_FILE, SIGNING_STORE_PASSWORD, SIGNING_KEY_ALIAS, SIGNING_KEY_PASSWORD.
+val keyProps = Properties()
+val keyPropsFile = rootProject.file("key.properties")
+if (keyPropsFile.exists()) {
+    keyPropsFile.inputStream().use { keyProps.load(it) }
 }
+
+fun signingProp(envKey: String, fileKey: String): String? =
+    System.getenv(envKey) ?: keyProps.getProperty(fileKey)
 
 android {
     namespace = "com.praycalc.app"
@@ -33,10 +37,10 @@ android {
 
     signingConfigs {
         create("release") {
-            storeFile = localProps.getProperty("storeFile")?.let { file(it) }
-            storePassword = localProps.getProperty("storePassword")
-            keyAlias = localProps.getProperty("keyAlias")
-            keyPassword = localProps.getProperty("keyPassword")
+            storeFile = signingProp("SIGNING_STORE_FILE", "storeFile")?.let { file(it) }
+            storePassword = signingProp("SIGNING_STORE_PASSWORD", "storePassword")
+            keyAlias = signingProp("SIGNING_KEY_ALIAS", "keyAlias")
+            keyPassword = signingProp("SIGNING_KEY_PASSWORD", "keyPassword")
         }
     }
 

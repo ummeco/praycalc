@@ -2,8 +2,18 @@ import { type NextRequest, NextResponse } from "next/server";
 import { getPrayerTimes } from "@/lib/prayers";
 import { getUtcOffset } from "@/lib/geo";
 import { type PrayerResult } from "@/lib/prayer-utils";
+import { checkRateLimit, getClientIp, PRAYER_TIMES_API } from "@/lib/rate-limit";
 
 export async function GET(req: NextRequest) {
+  const ip = getClientIp(req.headers);
+  const rl = await checkRateLimit(`prayers:${ip}`, PRAYER_TIMES_API);
+  if (!rl.allowed) {
+    return NextResponse.json(
+      { error: "Too many requests. Please try again later." },
+      { status: 429, headers: { "Retry-After": String(rl.retryAfterSeconds) } }
+    );
+  }
+
   const p = req.nextUrl.searchParams;
   const lat    = parseFloat(p.get("lat") ?? "");
   const lng    = parseFloat(p.get("lng") ?? "");

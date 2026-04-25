@@ -7,7 +7,7 @@
  * Only active when NODE_ENV=development. Returns 404 in production.
  */
 
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'crypto';
 
 const DEV_OWNER_EMAIL = 'alisalaah@gmail.com';
@@ -21,17 +21,31 @@ const HASURA_ADMIN_SECRET = process.env.HASURA_GRAPHQL_ADMIN_SECRET ?? '';
 // Must match HASURA_GRAPHQL_JWT_SECRET key in smart/.env.local — required, no fallback.
 const JWT_SECRET = process.env.HASURA_JWT_KEY ?? '';
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'POST, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type',
-};
+// Dev-only endpoint — returns 404 in production (see NODE_ENV check in POST).
+// CORS is scoped to local dev origins even here for defence-in-depth.
+const DEV_CORS_ORIGINS = [
+  'https://www.praycalc.local.nself.org:8543',
+  'http://localhost:3041',
+]
 
-export async function OPTIONS() {
-  return new Response(null, { status: 204, headers: corsHeaders });
+function devCorsHeaders(origin: string | null): Record<string, string> {
+  const allowed = origin && DEV_CORS_ORIGINS.includes(origin) ? origin : DEV_CORS_ORIGINS[0]
+  return {
+    'Access-Control-Allow-Origin': allowed,
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type',
+  }
 }
 
-export async function POST() {
+export async function OPTIONS(req: NextRequest) {
+  const origin = req.headers.get('origin')
+  return new Response(null, { status: 204, headers: devCorsHeaders(origin) });
+}
+
+export async function POST(req: NextRequest) {
+  const origin = req.headers.get('origin')
+  const cors = devCorsHeaders(origin)
+
   if (process.env.NODE_ENV !== 'development') {
     return NextResponse.json({ error: 'Not found' }, { status: 404 });
   }
@@ -39,7 +53,7 @@ export async function POST() {
   if (!JWT_SECRET) {
     return NextResponse.json(
       { error: 'HASURA_JWT_KEY not set in web/.env.local — cannot mint dev JWT' },
-      { status: 500, headers: corsHeaders },
+      { status: 500, headers: cors },
     );
   }
 
@@ -64,7 +78,7 @@ export async function POST() {
         {
           error: `Dev account not found. Admin query HTTP ${gqlRes.status}. Response: ${JSON.stringify(gqlData)}. Make sure HASURA_GRAPHQL_ADMIN_SECRET is set correctly in web/.env.local.`,
         },
-        { status: 500, headers: corsHeaders },
+        { status: 500, headers: cors },
       );
     }
 
@@ -104,9 +118,9 @@ export async function POST() {
           avatarUrl: null,
         },
       },
-    }, { headers: corsHeaders });
+    }, { headers: cors });
   } catch (err) {
     console.error('[dev/login]', err);
-    return NextResponse.json({ error: String(err) }, { status: 500, headers: corsHeaders });
+    return NextResponse.json({ error: String(err) }, { status: 500, headers: cors });
   }
 }
