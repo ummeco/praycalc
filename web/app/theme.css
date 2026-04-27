@@ -1,0 +1,62 @@
+/**
+ * PrayCalc — brand theme
+ * Imports @ummat/brand base tokens + PrayCalc overrides.
+ *
+ * Add to layout.tsx: import './theme.css'
+ *
+ * Font loading (add to layout.tsx metadata or <head>):
+ *   Inter + Noto Naskh Arabic:
+ *   https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Noto+Naskh+Arabic:wght@400;700&display=swap
+ */
+
+/* If @ummat/brand is not yet a workspace dependency, these tokens are inlined here */
+:root {
+  /* === Ummeco base palette === */
+  --brand-green-light:  #C9F27A;
+  --brand-green-mid:    #79C24C;
+  --brand-green-dark:   #1E5E2F;
+  --brand-green-deep:   #0D2F17;
+
+  /* === Semantic tokens === */
+  --color-primary:            #79C24C;
+  --color-primary-hover:      #1E5E2F;
+  --color-primary-foreground: #ffffff;
+
+  --color-accent:             #C9F27A;
+  --color-accent-foreground:  #0D2F17;
+
+  --color-bg:                 #07180d;
+  --color-bg-subtle:          #0a1a0f;
+  --color-surface:            #0f2418;
+  --color-surface-hover:      #172e1f;
+  --color-elevated:           #1a3326;
+
+  --color-fg:                 #f0fce8;
+  --color-fg-secondary:       #c8f0b0;
+  --color-fg-muted:           rgba(201, 242, 122, 0.55);
+
+  --color-border:             #1f4a2e;
+  --color-border-subtle:      #162e1d;
+
+  --color-success:            #79C24C;
+  --color-warning:            #e8c84a;
+  --color-error:              #f87171;
+  --color-info:               #60a5fa;
+
+  /* === Typography === */
+  --font-latin:  'Inter', 'Helvetica Neue', Arial, sans-serif;
+  --font-arabic: 'Noto Naskh Arabic', 'Traditional Arabic', serif;
+  --font-urdu:   'Noto Nastaliq Urdu', 'Nastaliq', serif;
+  --font-mono:   'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+
+  --leading-arabic: 1.8;
+  --leading-urdu:   2.0;
+
+  /* === PWA === */
+  --pwa-theme-color: #07180d;
+  --pwa-bg-color:    #07180d;
+}
+
+/* RTL support */
+[dir="rtl"], [lang="ar"] { font-family: var(--font-arabic); line-height: 1.8; }
+[lang="ur"] { font-family: var(--font-urdu); line-height: 2.0; }

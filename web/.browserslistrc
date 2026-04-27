@@ -1,0 +1,12 @@
+# See repo root .browserslistrc — Sprint B9 baseline
+# This file shadows root for tooling that doesn't traverse upward.
+# See .github/wiki/standards/browser-support.md — DR-B9-BROWSER-01
+
+[production]
+Chrome >= 110
+Firefox >= 110
+Safari >= 16
+Edge >= 110
+iOS >= 16
+Samsung Internet >= 22
+not dead

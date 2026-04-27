@@ -1,0 +1,80 @@
+# axe-core CI — reusable workflow (local copy)
+# Sprint B9 DR-B9-A11Y-01 | Ticket TB9-17
+# Source: /Volumes/X9/Sites/ummeco/.github/workflows/axe-ci-reusable.yml
+# Keep in sync with the monorepo-root version.
+
+name: axe-core CI (reusable)
+
+on:
+  workflow_call:
+    inputs:
+      project_path:
+        description: 'Workspace-relative path to the Next.js project (e.g. praycalc/web)'
+        required: true
+        type: string
+      port:
+        description: 'Port the dev server listens on'
+        required: false
+        type: number
+        default: 3000
+      extra_urls:
+        description: 'Space-separated list of additional paths to scan (e.g. /about /donate)'
+        required: false
+        type: string
+        default: ''
+
+jobs:
+  axe:
+    name: axe-core WCAG 2.1 AA
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        working-directory: ${{ inputs.project_path }}
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        working-directory: ${{ inputs.project_path }}
+        run: pnpm build
+
+      - name: Start dev server
+        working-directory: ${{ inputs.project_path }}
+        run: pnpm start &
+
+      - name: Wait for server
+        run: npx wait-on http://localhost:${{ inputs.port }} -t 60000
+
+      - name: Run axe — root route
+        working-directory: ${{ inputs.project_path }}
+        run: |
+          npx @axe-core/cli \
+            http://localhost:${{ inputs.port }} \
+            --exit \
+            --tags wcag2a,wcag2aa,wcag21a,wcag21aa
+
+      - name: Run axe — extra routes
+        if: ${{ inputs.extra_urls != '' }}
+        working-directory: ${{ inputs.project_path }}
+        run: |
+          for path in ${{ inputs.extra_urls }}; do
+            echo "--- axe: http://localhost:${{ inputs.port }}${path} ---"
+            npx @axe-core/cli \
+              "http://localhost:${{ inputs.port }}${path}" \
+              --exit \
+              --tags wcag2a,wcag2aa,wcag21a,wcag21aa
+          done
