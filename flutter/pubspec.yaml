@@ -2,7 +2,7 @@ name: praycalc_app
 description: PrayCalc — GPS-accurate Islamic prayer times for iOS and Android.
 publish_to: 'none'
 
-version: 1.2.0+2
+version: 1.2.2+3
 
 environment:
   sdk: ^3.7.0
@@ -92,6 +92,9 @@ dependencies:
   latlong2: ^0.9.1
   webview_flutter: ^4.13.1
   web: ^1.1.1
+
+  # S6-07/S6-08 — UUID generation for StoreKit 2 appAccountToken binding
+  uuid: ^4.5.1
 
 dev_dependencies:
   flutter_test:
