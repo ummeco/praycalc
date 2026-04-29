@@ -32,6 +32,28 @@ export default defineConfig({
       name: "chromium",
       use: { ...devices["Desktop Chrome"] },
     },
+    // B7-08: Viewport matrix CI — 375×667, 768×1024, 1280×800
+    {
+      name: "mobile-375",
+      use: {
+        ...devices["iPhone SE"],
+        viewport: { width: 375, height: 667 },
+      },
+    },
+    {
+      name: "tablet-768",
+      use: {
+        viewport: { width: 768, height: 1024 },
+        isMobile: false,
+      },
+    },
+    {
+      name: "desktop-1280",
+      use: {
+        ...devices["Desktop Chrome"],
+        viewport: { width: 1280, height: 800 },
+      },
+    },
   ],
 
   // Start the server automatically.

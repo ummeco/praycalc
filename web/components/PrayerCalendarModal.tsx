@@ -1,5 +1,6 @@
 "use client";
 
+import * as Sentry from "@sentry/nextjs";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { fmtTime, type PrayerResult } from "@/lib/prayer-utils";
 import { getHijriDate } from "@/lib/hijri";
@@ -581,7 +582,7 @@ export default function PrayerCalendarModal({
 
       const slug = `${locationName}-${periodLabel}`.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
       doc.save(`prayer-times-${slug}.pdf`);
-    } catch (e) { console.error("PDF failed", e); }
+    } catch (e) { Sentry.captureException(e); console.error("PDF failed", e); }
     finally { setPdfLoading(false); }
   }, [days, calMode, use24h, locationName, periodLabel, hMonth, gMonth, hanafi]);
 
@@ -595,7 +596,7 @@ export default function PrayerCalendarModal({
       drawCalendarPage(doc, calDates ?? [], buildDayMap(days), periodLabel, locationName, calMode, use24h);
       const slug = `${locationName}-${periodLabel}`.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
       doc.save(`prayer-calendar-${slug}.pdf`);
-    } catch (e) { console.error("Month cal PDF failed", e); }
+    } catch (e) { Sentry.captureException(e); console.error("Month cal PDF failed", e); }
     finally { setMonthCalPdfLoading(false); }
   }, [days, calDates, periodLabel, locationName, calMode, use24h]);
 
@@ -629,7 +630,7 @@ export default function PrayerCalendarModal({
       }
       const slug = `${locationName}-${yearLabel}`.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
       doc.save(`prayer-calendar-${slug}.pdf`);
-    } catch (e) { console.error("Year PDF failed", e); }
+    } catch (e) { Sentry.captureException(e); console.error("Year PDF failed", e); }
     finally { setYearPdfLoading(false); }
   }, [fetchYearData, calMode, hYear, gYear, locationName, use24h]);
 
@@ -717,7 +718,7 @@ export default function PrayerCalendarModal({
 
       const slug = `${locationName}-${yearLabel}-booklet`.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
       doc.save(`prayer-calendar-${slug}.pdf`);
-    } catch (e) { console.error("Booklet PDF failed", e); }
+    } catch (e) { Sentry.captureException(e); console.error("Booklet PDF failed", e); }
     finally { setBookletPdfLoading(false); }
   }, [fetchYearData, calMode, hYear, gYear, locationName, use24h]);
 

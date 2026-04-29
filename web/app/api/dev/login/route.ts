@@ -7,6 +7,7 @@
  * Only active when NODE_ENV=development. Returns 404 in production.
  */
 
+import * as Sentry from '@sentry/nextjs';
 import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'crypto';
 
@@ -120,6 +121,7 @@ export async function POST(req: NextRequest) {
       },
     }, { headers: cors });
   } catch (err) {
+    Sentry.captureException(err);
     console.error('[dev/login]', err);
     return NextResponse.json({ error: String(err) }, { status: 500, headers: cors });
   }

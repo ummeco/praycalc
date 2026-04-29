@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/nextjs';
 import { NextRequest, NextResponse } from 'next/server';
 
 const SMART_BASE = `${process.env.NEXT_PUBLIC_SMART_SERVICE_URL ?? 'https://smart.praycalc.com'}/api/v1/tv`;
@@ -22,6 +23,7 @@ export async function GET(req: NextRequest) {
     }
     return NextResponse.json(await upstream.json());
   } catch (err) {
+    Sentry.captureException(err);
     console.error('[groups] GET error:', err);
     return NextResponse.json({ error: 'Failed to fetch groups' }, { status: 500 });
   }
@@ -48,6 +50,7 @@ export async function POST(req: NextRequest) {
     }
     return NextResponse.json(await upstream.json());
   } catch (err) {
+    Sentry.captureException(err);
     console.error('[groups] POST error:', err);
     return NextResponse.json({ error: 'Failed to create group' }, { status: 500 });
   }

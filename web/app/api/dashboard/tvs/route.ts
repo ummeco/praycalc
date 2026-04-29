@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/nextjs';
 import { NextRequest, NextResponse } from 'next/server';
 
 const SMART_BASE = `${process.env.NEXT_PUBLIC_SMART_SERVICE_URL ?? 'https://smart.praycalc.com'}/api/v1/tv`;
@@ -32,6 +33,7 @@ export async function GET(req: NextRequest) {
     const data = await upstream.json();
     return NextResponse.json(data);
   } catch (err: unknown) {
+    Sentry.captureException(err);
     console.error('[dashboard/tvs] GET error:', err);
     return NextResponse.json({ error: 'Failed to fetch TV devices' }, { status: 500 });
   }

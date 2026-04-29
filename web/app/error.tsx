@@ -1,5 +1,6 @@
 "use client";
 
+import * as Sentry from "@sentry/nextjs";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect } from "react";
@@ -11,7 +12,7 @@ interface ErrorPageProps {
 
 export default function GlobalError({ error, reset }: ErrorPageProps) {
   useEffect(() => {
-    // Log to console in dev; replace with a real error reporting service in prod
+    Sentry.captureException(error);
     console.error("[PrayCalc] Unhandled error:", error);
   }, [error]);
 

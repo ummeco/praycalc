@@ -589,7 +589,7 @@ export default function TvSettingsPanel({ device, token, onClose }: TvSettingsPa
                         id={`geo-style-${device.id}`}
                         value={geometricStyle}
                         onChange={e => setGeometricStyle(e.target.value)}
-                        className="w-full bg-black/30 border border-white/10 rounded-xl px-3 py-2.5 text-white text-sm focus:border-[#79C24C]/50 outline-none"
+                        className="w-full bg-black/30 border border-white/10 rounded-xl px-3 py-2.5 text-white text-sm focus:border-[#79C24C]/50 outline-none focus-visible:ring-2 focus-visible:ring-[#79C24C]/60"
                       >
                         {GEOMETRIC_STYLES.map(s => (
                           <option key={s.id} value={s.id}>{s.label}</option>
@@ -610,7 +610,7 @@ export default function TvSettingsPanel({ device, token, onClose }: TvSettingsPa
                         id={`gn-delay-${device.id}`}
                         value={goodNightDelay}
                         onChange={e => setGoodNightDelay(Number(e.target.value))}
-                        className="w-full bg-black/30 border border-white/10 rounded-xl px-3 py-2.5 text-white text-sm focus:border-[#79C24C]/50 outline-none"
+                        className="w-full bg-black/30 border border-white/10 rounded-xl px-3 py-2.5 text-white text-sm focus:border-[#79C24C]/50 outline-none focus-visible:ring-2 focus-visible:ring-[#79C24C]/60"
                       >
                         {GOOD_NIGHT_DELAYS.map(d => (
                           <option key={d.id} value={d.id}>{d.label}</option>
@@ -681,7 +681,7 @@ export default function TvSettingsPanel({ device, token, onClose }: TvSettingsPa
                         id={`ss-idle-${device.id}`}
                         value={screensaverIdleSeconds}
                         onChange={e => setScreensaverIdleSeconds(Number(e.target.value))}
-                        className="w-full bg-black/30 border border-white/10 rounded-xl px-3 py-2.5 text-white text-sm focus:border-[#79C24C]/50 outline-none"
+                        className="w-full bg-black/30 border border-white/10 rounded-xl px-3 py-2.5 text-white text-sm focus:border-[#79C24C]/50 outline-none focus-visible:ring-2 focus-visible:ring-[#79C24C]/60"
                       >
                         {SCREENSAVER_IDLE_TIMES.map(i => (
                           <option key={i.id} value={i.id}>{i.label}</option>
@@ -694,7 +694,7 @@ export default function TvSettingsPanel({ device, token, onClose }: TvSettingsPa
                         id={`ss-source-${device.id}`}
                         value={photoSource}
                         onChange={e => setPhotoSource(e.target.value)}
-                        className="w-full bg-black/30 border border-white/10 rounded-xl px-3 py-2.5 text-white text-sm focus:border-[#79C24C]/50 outline-none"
+                        className="w-full bg-black/30 border border-white/10 rounded-xl px-3 py-2.5 text-white text-sm focus:border-[#79C24C]/50 outline-none focus-visible:ring-2 focus-visible:ring-[#79C24C]/60"
                       >
                         {PHOTO_SOURCES.map(s => (
                           <option key={s.id} value={s.id}>{s.label}</option>
@@ -707,7 +707,7 @@ export default function TvSettingsPanel({ device, token, onClose }: TvSettingsPa
                         id={`ss-duration-${device.id}`}
                         value={slideshowDuration}
                         onChange={e => setSlideshowDuration(Number(e.target.value))}
-                        className="w-full bg-black/30 border border-white/10 rounded-xl px-3 py-2.5 text-white text-sm focus:border-[#79C24C]/50 outline-none"
+                        className="w-full bg-black/30 border border-white/10 rounded-xl px-3 py-2.5 text-white text-sm focus:border-[#79C24C]/50 outline-none focus-visible:ring-2 focus-visible:ring-[#79C24C]/60"
                       >
                         {SLIDESHOW_DURATIONS.map(d => (
                           <option key={d.id} value={d.id}>{d.label}</option>
@@ -742,7 +742,7 @@ export default function TvSettingsPanel({ device, token, onClose }: TvSettingsPa
                   value={cityOverride}
                   onChange={e => setCityOverride(e.target.value)}
                   placeholder="e.g. new-york-ny-us"
-                  className="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-white text-sm placeholder-white/25 focus:border-[#79C24C]/50 outline-none"
+                  className="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-white text-sm placeholder-white/25 focus:border-[#79C24C]/50 outline-none focus-visible:ring-2 focus-visible:ring-[#79C24C]/60"
                 />
                 <p className="text-white/30 text-xs mt-1.5">Leave blank to use your account location</p>
               </section>

@@ -9,6 +9,7 @@
  *   tz    — IANA timezone string, e.g. "America/New_York" (default: "UTC")
  *   date  — YYYY-MM-DD (default: today)
  */
+import * as Sentry from '@sentry/nextjs';
 import { type NextRequest, NextResponse } from 'next/server';
 import { getPrayerTimes } from '@/lib/prayers';
 import { getUtcOffset } from '@/lib/geo';
@@ -41,6 +42,7 @@ export async function GET(req: NextRequest) {
       { headers: { 'Cache-Control': 'public, max-age=3600, stale-while-revalidate=86400' } },
     );
   } catch (err) {
+    Sentry.captureException(err);
     console.error('[ramadan/times] Calculation error:', err);
     return NextResponse.json({ error: 'Failed to calculate prayer times' }, { status: 500 });
   }

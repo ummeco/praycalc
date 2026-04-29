@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/nextjs';
 import { NextRequest, NextResponse } from 'next/server';
 import { TOP_CITIES } from '@/lib/top-cities';
 
@@ -33,6 +34,7 @@ export async function GET(
     const data = await upstream.json();
     return NextResponse.json(data);
   } catch (err: unknown) {
+    Sentry.captureException(err);
     console.error('[tvs/settings] GET error:', err);
     return NextResponse.json(
       { error: 'Failed to fetch TV settings' },
@@ -128,6 +130,7 @@ export async function PATCH(
 
     if (!upstream.ok) {
       const errText = await upstream.text().catch(() => '');
+      Sentry.captureException(new Error(`[tvs/settings] PATCH upstream error: ${upstream.status} ${errText}`));
       console.error('[tvs/settings] PATCH upstream error:', upstream.status, errText);
       return NextResponse.json(
         { error: `Upstream error ${upstream.status}` },
@@ -138,6 +141,7 @@ export async function PATCH(
     const data = await upstream.json();
     return NextResponse.json(data);
   } catch (err: unknown) {
+    Sentry.captureException(err);
     console.error('[tvs/settings] PATCH error:', err);
     return NextResponse.json(
       { error: 'Failed to update TV settings' },

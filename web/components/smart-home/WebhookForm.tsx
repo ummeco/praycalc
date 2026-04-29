@@ -138,7 +138,7 @@ export default function WebhookForm({
           onChange={(e) => setCallbackUrl(e.target.value)}
           placeholder="https://example.com/webhook"
           required
-          className="w-full rounded-lg border border-[#1E5E2F] bg-[#0D2F17] px-3 py-2 text-sm text-white placeholder-gray-600 focus:border-[#79C24C] focus:outline-none"
+          className="w-full rounded-lg border border-[#1E5E2F] bg-[#0D2F17] px-3 py-2 text-sm text-white placeholder-gray-600 focus:border-[#79C24C] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#79C24C]/60"
         />
       </div>
 
@@ -188,7 +188,7 @@ export default function WebhookForm({
               onChange={(e) => setLat(e.target.value)}
               placeholder="Latitude"
               required
-              className="w-full rounded-lg border border-[#1E5E2F] bg-[#0D2F17] px-3 py-2 text-sm text-white placeholder-gray-600 focus:border-[#79C24C] focus:outline-none"
+              className="w-full rounded-lg border border-[#1E5E2F] bg-[#0D2F17] px-3 py-2 text-sm text-white placeholder-gray-600 focus:border-[#79C24C] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#79C24C]/60"
             />
           </div>
           <div className="flex-1">
@@ -201,7 +201,7 @@ export default function WebhookForm({
               onChange={(e) => setLng(e.target.value)}
               placeholder="Longitude"
               required
-              className="w-full rounded-lg border border-[#1E5E2F] bg-[#0D2F17] px-3 py-2 text-sm text-white placeholder-gray-600 focus:border-[#79C24C] focus:outline-none"
+              className="w-full rounded-lg border border-[#1E5E2F] bg-[#0D2F17] px-3 py-2 text-sm text-white placeholder-gray-600 focus:border-[#79C24C] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#79C24C]/60"
             />
           </div>
         </div>

@@ -2,6 +2,7 @@
 // Sends weekly prayer times digest to all confirmed subscribers
 // Vercel cron config in vercel.json
 
+import * as Sentry from '@sentry/nextjs';
 import { NextRequest, NextResponse } from 'next/server';
 
 export const dynamic = 'force-dynamic';
@@ -26,6 +27,7 @@ export async function GET(req: NextRequest) {
     const data = await res.json();
     return NextResponse.json({ sent: data.count, status: 'ok' });
   } catch (err) {
+    Sentry.captureException(err);
     console.error('Digest cron failed:', err);
     return NextResponse.json({ error: 'Failed to trigger digest' }, { status: 500 });
   }

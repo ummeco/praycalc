@@ -1,0 +1,225 @@
+name: Dependency Security Audit
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'web/package.json'
+      - 'web/pnpm-lock.yaml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'web/package.json'
+      - 'web/pnpm-lock.yaml'
+  schedule:
+    # Daily at 6:00 AM UTC — catches new CVE disclosures against pinned deps
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+defaults:
+  run:
+    working-directory: web
+
+jobs:
+  audit:
+    name: pnpm Audit (HIGH/CRITICAL gate)
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write  # needed to post PR comments
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: latest
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'pnpm'
+          cache-dependency-path: web/pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run pnpm audit (JSON output)
+        id: audit
+        # Always continue so we can parse results; we fail explicitly below
+        continue-on-error: true
+        run: |
+          pnpm audit --audit-level=high --json > audit-report.json 2>&1 || true
+
+      - name: Filter allowlist and check for violations
+        id: check
+        run: |
+          node - <<'JS'
+          const fs = require('fs');
+
+          // Load audit report
+          let report;
+          try {
+            report = JSON.parse(fs.readFileSync('audit-report.json', 'utf8'));
+          } catch (e) {
+            console.log('No audit report found or parse error:', e.message);
+            process.exit(0);
+          }
+
+          // Load allowlist (optional — absent = no exceptions)
+          let allowlist = {};
+          if (fs.existsSync('.audit-allowlist.json')) {
+            try {
+              allowlist = JSON.parse(fs.readFileSync('.audit-allowlist.json', 'utf8'));
+              console.log('Loaded allowlist with', Object.keys(allowlist).length, 'entries');
+            } catch (e) {
+              console.warn('Failed to parse .audit-allowlist.json — ignoring:', e.message);
+            }
+          }
+
+          // Normalise: pnpm audit JSON structure varies between versions
+          // Shape 1 (pnpm ≥8): { advisories: { [id]: { severity, ... } }, metadata: { ... } }
+          // Shape 2 (pnpm <8): { advisories: [...] }
+          const advisoriesRaw = report.advisories ?? {};
+          const advisories = Array.isArray(advisoriesRaw)
+            ? advisoriesRaw
+            : Object.values(advisoriesRaw);
+
+          const HIGH_SEVERITIES = new Set(['high', 'critical']);
+          const violations = [];
+          const allowed = [];
+
+          for (const adv of advisories) {
+            if (!HIGH_SEVERITIES.has((adv.severity || '').toLowerCase())) continue;
+
+            const id = String(adv.id ?? adv.ghsa_id ?? adv.cve ?? 'unknown');
+            const entry = allowlist[id] ?? allowlist[adv.title] ?? null;
+
+            if (entry) {
+              const expiry = entry.expires ? new Date(entry.expires) : null;
+              if (!expiry || expiry > new Date()) {
+                allowed.push({ id, title: adv.title, severity: adv.severity, reason: entry.reason });
+                continue;
+              }
+              // Expired allowlist entry — treat as violation
+              console.warn(`Allowlist entry for ${id} expired on ${entry.expires}`);
+            }
+
+            violations.push({
+              id,
+              severity: adv.severity,
+              title: adv.title ?? 'Unknown',
+              module: adv.module_name ?? adv.name ?? 'unknown',
+              recommendation: adv.recommendation ?? 'Update to patched version',
+              url: adv.url ?? adv.references?.[0] ?? '',
+            });
+          }
+
+          // Write summary for GitHub Actions
+          const summary = {
+            violations: violations.length,
+            allowed: allowed.length,
+            total: advisories.filter(a => HIGH_SEVERITIES.has((a.severity || '').toLowerCase())).length,
+          };
+
+          // Emit to GITHUB_OUTPUT
+          const outputPath = process.env.GITHUB_OUTPUT;
+          if (outputPath) {
+            const lines = [
+              `violation_count=${violations.length}`,
+              `allowed_count=${allowed.length}`,
+              `has_violations=${violations.length > 0}`,
+            ];
+            // Encode multiline JSON for GITHUB_OUTPUT
+            const violationsJson = JSON.stringify(violations).replace(/%/g, '%25').replace(/\r/g, '%0D').replace(/\n/g, '%0A');
+            lines.push(`violations_json=${violationsJson}`);
+            fs.appendFileSync(outputPath, lines.join('\n') + '\n');
+          }
+
+          // Print results
+          if (allowed.length > 0) {
+            console.log('\n✅ Allowlisted (skipped):');
+            for (const a of allowed) {
+              console.log(`  [${a.severity.toUpperCase()}] ${a.id} — ${a.title} (${a.reason})`);
+            }
+          }
+
+          if (violations.length === 0) {
+            console.log('\n✅ No HIGH or CRITICAL vulnerabilities found (after allowlist filter).');
+            process.exit(0);
+          }
+
+          console.error(`\n❌ ${violations.length} unpatched HIGH/CRITICAL vulnerability(s) found:\n`);
+          for (const v of violations) {
+            console.error(`  [${v.severity.toUpperCase()}] ${v.id} — ${v.title}`);
+            console.error(`    Package: ${v.module}`);
+            console.error(`    Fix:     ${v.recommendation}`);
+            if (v.url) console.error(`    URL:     ${v.url}`);
+            console.error('');
+          }
+          console.error('To acknowledge a known/accepted vulnerability, add it to web/.audit-allowlist.json.');
+          process.exit(1);
+          JS
+
+      - name: Post PR comment on failure
+        if: failure() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const violationsJson = `${{ steps.check.outputs.violations_json }}`;
+            let violations = [];
+            try { violations = JSON.parse(decodeURIComponent(violationsJson)); } catch {}
+
+            const count = violations.length;
+            const rows = violations.map(v =>
+              `| \`${v.module}\` | ${v.severity.toUpperCase()} | ${v.id} | ${v.recommendation} |`
+            ).join('\n');
+
+            const table = count > 0
+              ? `| Package | Severity | Advisory | Fix |\n|---|---|---|---|\n${rows}`
+              : '_No structured data available — see workflow logs._';
+
+            const body = [
+              `## 🔒 Dependency Audit Failed — ${count} HIGH/CRITICAL vulnerability(s)`,
+              '',
+              table,
+              '',
+              '**To resolve:** upgrade the affected packages or add an accepted-risk entry to `web/.audit-allowlist.json`.',
+              '',
+              '<details><summary>Allowlist format</summary>',
+              '',
+              '```json',
+              '{',
+              '  "GHSA-xxxx-xxxx-xxxx": {',
+              '    "reason": "No fix available; mitigated by WAF rule #123",',
+              '    "expires": "2026-12-31"',
+              '  }',
+              '}',
+              '```',
+              '</details>',
+            ].join('\n');
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body,
+            });
+
+      - name: Fail job on violations
+        if: steps.check.outputs.has_violations == 'true'
+        run: |
+          echo "::error::Dependency audit found ${{ steps.check.outputs.violation_count }} HIGH/CRITICAL vulnerability(s). See step output above."
+          exit 1
+
+      - name: Upload audit report on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: audit-report
+          path: web/audit-report.json
+          retention-days: 14

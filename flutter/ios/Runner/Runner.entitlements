@@ -16,5 +16,8 @@
 		<string>applinks:praycalc.com</string>
 		<string>applinks:www.praycalc.com</string>
 	</array>
+	<!-- S6-07: StoreKit 2 — required for Transaction.updates listener (iOS 15+) -->
+	<key>com.apple.developer.storekit.transaction-updates</key>
+	<true/>
 </dict>
 </plist>

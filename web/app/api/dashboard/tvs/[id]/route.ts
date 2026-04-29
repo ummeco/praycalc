@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/nextjs';
 import { NextRequest, NextResponse } from 'next/server';
 
 const SMART_BASE = `${process.env.NEXT_PUBLIC_SMART_SERVICE_URL ?? 'https://smart.praycalc.com'}/api/v1/tv`;
@@ -25,6 +26,7 @@ export async function GET(
     if (!device) return NextResponse.json({ error: 'Not found' }, { status: 404 });
     return NextResponse.json({ device });
   } catch (err) {
+    Sentry.captureException(err);
     console.error('[GET /api/dashboard/tvs/[id]]', err);
     return NextResponse.json({ error: 'Service unavailable' }, { status: 503 });
   }
@@ -61,6 +63,7 @@ export async function PATCH(
     }
     return NextResponse.json({ ok: true });
   } catch (err) {
+    Sentry.captureException(err);
     console.error('[PATCH /api/dashboard/tvs/[id]]', err);
     return NextResponse.json({ error: 'Service unavailable' }, { status: 503 });
   }
@@ -91,6 +94,7 @@ export async function DELETE(
     }
     return NextResponse.json({ ok: true });
   } catch (err) {
+    Sentry.captureException(err);
     console.error('[DELETE /api/dashboard/tvs/[id]]', err);
     return NextResponse.json({ error: 'Service unavailable' }, { status: 503 });
   }

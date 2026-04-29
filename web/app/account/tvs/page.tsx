@@ -278,7 +278,7 @@ function ShareModal({ device, token, onClose }: { device: TvDeviceExtended; toke
               onChange={e => setInviteEmail(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && void handleInvite()}
               placeholder="name@example.com"
-              className="flex-1 bg-black/30 border border-white/10 rounded-xl px-3 py-2.5 text-white text-sm placeholder-white/25 focus:border-[#79C24C]/50 outline-none"
+              className="flex-1 bg-black/30 border border-white/10 rounded-xl px-3 py-2.5 text-white text-sm placeholder-white/25 focus:border-[#79C24C]/50 outline-none focus-visible:ring-2 focus-visible:ring-[#79C24C]/60"
             />
             <button
               type="button"

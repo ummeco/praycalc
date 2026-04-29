@@ -222,42 +222,52 @@ router.post('/send', async (req: Request, res: Response) => {
     return;
   }
 
-  let sent = 0;
   const errors: string[] = [];
 
-  for (const sub of subscribers) {
-    try {
-      await fetch('https://api.elasticemail.com/v4/emails/transactional', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-ElasticEmail-ApiKey': ELASTIC_EMAIL_API_KEY,
-        },
-        body: JSON.stringify({
-          Recipients: { To: [sub.email] },
-          Content: {
-            From: 'noreply@praycalc.com',
-            ReplyTo: 'hello@praycalc.com',
-            Subject: 'Your weekly PrayCalc prayer times digest',
-            Body: [
-              {
-                ContentType: 'HTML',
-                Content: `<p>Assalamu Alaikum,</p>
+  // Send in parallel with concurrency cap of 10 to avoid OOM on large subscriber lists
+  // and stay within Elastic Email rate limits.
+  const CONCURRENCY = 10;
+  for (let i = 0; i < subscribers.length; i += CONCURRENCY) {
+    const batch = subscribers.slice(i, i + CONCURRENCY);
+    const results = await Promise.allSettled(
+      batch.map((sub) =>
+        fetch('https://api.elasticemail.com/v4/emails/transactional', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-ElasticEmail-ApiKey': ELASTIC_EMAIL_API_KEY,
+          },
+          body: JSON.stringify({
+            Recipients: { To: [sub.email] },
+            Content: {
+              From: 'noreply@praycalc.com',
+              ReplyTo: 'hello@praycalc.com',
+              Subject: 'Your weekly PrayCalc prayer times digest',
+              Body: [
+                {
+                  ContentType: 'HTML',
+                  Content: `<p>Assalamu Alaikum,</p>
 <p>Your weekly prayer times digest from PrayCalc is ready.</p>
 <p>Visit <a href="https://praycalc.com">praycalc.com</a> to view accurate prayer times for your location.</p>
 <p style="font-size:12px;color:#666;">To unsubscribe, visit https://praycalc.com/digest/unsubscribe?token=[unsub_token]</p>`,
-              },
-            ],
-          },
-        }),
-      });
-      sent++;
-    } catch (err) {
-      errors.push(sub.email);
-      console.error(`[digest] Failed to send to ${sub.email}:`, err);
+                },
+              ],
+            },
+          }),
+        }).then((r) => ({ sub, ok: r.ok })),
+      ),
+    );
+    for (let j = 0; j < results.length; j++) {
+      const result = results[j];
+      const sub = batch[j];
+      if (result.status === 'rejected' || (result.status === 'fulfilled' && !result.value.ok)) {
+        errors.push(sub.email);
+        console.error(`[digest] Failed to send to ${sub.email}`);
+      }
     }
   }
 
+  const sent = subscribers.length - errors.length;
   res.json({ count: sent, errors: errors.length > 0 ? errors : undefined, message: 'Digest send complete' });
 });
 

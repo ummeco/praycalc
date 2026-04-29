@@ -1,23 +1,34 @@
-// axe-core accessibility config — Sprint B9 DR-B9-A11Y-01
-// Ticket TB9-08 | Project: praycalc/web (praycalc.com)
-// Used by jest-axe and @axe-core/playwright in unit and integration tests.
-// See also: TB9-09 (Pa11y nightly cross-domain smoke test — separate config).
+// axe-core accessibility config — Sprint B2 (B2-01 + WCAG 2.2 AA)
+// Updated: 2026-04-27 — added WCAG 2.2 tags per D-P3-11
+// Used by @axe-core/playwright in E2E tests.
+// CI gate: CRITICAL + SERIOUS violations fail the build.
 
 /** @type {import('@axe-core/playwright').AxeOptions} */
 module.exports = {
-  // Enforce WCAG 2.1 AA and all lower levels
+  // D-P3-11: WCAG 2.2 AA — includes 2.4.11, 2.5.7, 2.5.8 new criteria
   runOnly: {
     type: 'tag',
-    values: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'],
+    values: [
+      'wcag2a', 'wcag2aa',
+      'wcag21a', 'wcag21aa',
+      'wcag22aa',   // WCAG 2.2 AA (axe-core 4.9+)
+      'best-practice',
+    ],
   },
 
   rules: {
-    // color-contrast is enabled; all interactive elements must meet 4.5:1 ratio
+    // B2-05: All text on light bg must meet 4.5:1 contrast (uses green-600 per D-P3-15)
     'color-contrast': { enabled: true },
+    // B2-07: Focus visible ring must never be hidden
+    'focus-trap': { enabled: true },
+    // 2.4.11 Focus Not Obscured — axe-core experimental rule
+    'scrollable-region-focusable': { enabled: true },
+    // 2.5.8 Target Size — minimum 24×24 CSS px
+    'target-size': { enabled: true },
   },
 
   // Narrow exclusions — document every entry
   exclude: [
-    // No Stripe Elements on this project; no iframe exclusions needed
+    // No third-party iframes on praycalc (Turnstile is checked separately)
   ],
 };

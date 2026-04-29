@@ -343,7 +343,7 @@ export default function LocationSearch({
             onFocus={handleFocus}
             onKeyDown={handleKeyDown}
             autoFocus={autoFocus}
-            className={`flex-1 bg-transparent text-white placeholder:text-white/40 outline-none ${compact ? "text-sm" : "text-base"}`}
+            className={`flex-1 bg-transparent text-white placeholder:text-white/40 outline-none focus-visible:ring-2 focus-visible:ring-[#79C24C]/60 rounded ${compact ? "text-sm" : "text-base"}`}
           />
           {loading && (
             <div className="search-spinner w-4 h-4 rounded-full border-2 animate-spin shrink-0" />

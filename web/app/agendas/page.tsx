@@ -98,14 +98,14 @@ function AgendaEditor({ agenda, token, onSave, onCancel }: {
         <label className="block mb-4">
           <span className="text-white/60 text-sm">Title</span>
           <input value={title} onChange={e => setTitle(e.target.value)}
-            className="mt-1 w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white text-sm focus:outline-none focus:border-[#79C24C]/40"
+            className="mt-1 w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white text-sm focus:outline-none focus:border-[#79C24C]/40 focus-visible:ring-2 focus-visible:ring-[#79C24C]/60"
             placeholder="e.g. Ramadan Program" />
         </label>
 
         <label className="block mb-4">
           <span className="text-white/60 text-sm">Description (optional)</span>
           <textarea value={description} onChange={e => setDescription(e.target.value)}
-            className="mt-1 w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white text-sm focus:outline-none focus:border-[#79C24C]/40 resize-none"
+            className="mt-1 w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white text-sm focus:outline-none focus:border-[#79C24C]/40 focus-visible:ring-2 focus-visible:ring-[#79C24C]/60 resize-none"
             rows={2} placeholder="Brief description..." />
         </label>
 
@@ -124,21 +124,21 @@ function AgendaEditor({ agenda, token, onSave, onCancel }: {
               <div key={item.id} className="bg-white/5 border border-white/10 rounded-xl p-3">
                 <div className="flex gap-2 mb-2">
                   <input value={item.label} onChange={e => updateItem(item.id, { label: e.target.value })}
-                    className="flex-1 bg-transparent text-white text-sm border-b border-white/20 focus:outline-none focus:border-[#79C24C]/50 pb-0.5"
+                    className="flex-1 bg-transparent text-white text-sm border-b border-white/20 focus:outline-none focus:border-[#79C24C]/50 focus-visible:ring-1 focus-visible:ring-[#79C24C]/60 pb-0.5"
                     placeholder="Item name" />
                   <button type="button" onClick={() => removeItem(item.id)} className="text-white/20 hover:text-red-400 text-xs transition-colors">✕</button>
                 </div>
                 <div className="flex gap-2">
                   <select value={item.anchor} onChange={e => updateItem(item.id, { anchor: e.target.value as Anchor })}
                     aria-label="Prayer anchor"
-                    className="flex-1 bg-[#0D2F17] border border-white/10 rounded-lg px-2 py-1 text-white/70 text-xs focus:outline-none">
+                    className="flex-1 bg-[#0D2F17] border border-white/10 rounded-lg px-2 py-1 text-white/70 text-xs focus:outline-none focus-visible:ring-1 focus-visible:ring-[#79C24C]/60">
                     {Object.entries(ANCHOR_LABELS).map(([v, l]) => <option key={v} value={v}>{l}</option>)}
                   </select>
                   <input type="number" value={item.offsetMinutes} onChange={e => updateItem(item.id, { offsetMinutes: parseInt(e.target.value) || 0 })}
-                    className="w-16 bg-[#0D2F17] border border-white/10 rounded-lg px-2 py-1 text-white/70 text-xs focus:outline-none text-center"
+                    className="w-16 bg-[#0D2F17] border border-white/10 rounded-lg px-2 py-1 text-white/70 text-xs focus:outline-none focus-visible:ring-1 focus-visible:ring-[#79C24C]/60 text-center"
                     title="Offset in minutes" placeholder="0m" />
                   <input type="number" min={0} value={item.durationMinutes} onChange={e => updateItem(item.id, { durationMinutes: parseInt(e.target.value) || 0 })}
-                    className="w-16 bg-[#0D2F17] border border-white/10 rounded-lg px-2 py-1 text-white/70 text-xs focus:outline-none text-center"
+                    className="w-16 bg-[#0D2F17] border border-white/10 rounded-lg px-2 py-1 text-white/70 text-xs focus:outline-none focus-visible:ring-1 focus-visible:ring-[#79C24C]/60 text-center"
                     title="Duration in minutes" placeholder="30m" />
                 </div>
               </div>

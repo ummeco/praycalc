@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/nextjs';
 import { NextRequest, NextResponse } from 'next/server';
 
 const SMART_BASE = `${process.env.NEXT_PUBLIC_SMART_SERVICE_URL ?? 'https://smart.praycalc.com'}/api/v1/tv`;
@@ -26,6 +27,7 @@ export async function POST(
     const data = await upstream.json() as Record<string, unknown>;
     return NextResponse.json(data, { status: upstream.status });
   } catch (err: unknown) {
+    Sentry.captureException(err);
     console.error('[tvs/screenshot] POST error:', err);
     return NextResponse.json({ error: 'Failed to request screenshot' }, { status: 500 });
   }
@@ -69,6 +71,7 @@ export async function GET(
       capturedAt: data.capturedAt ?? null,
     });
   } catch (err: unknown) {
+    Sentry.captureException(err);
     console.error('[tvs/screenshot] GET error:', err);
     return NextResponse.json(
       { error: 'Failed to fetch screenshot' },

@@ -7,6 +7,7 @@
  * timestamp, and anonymous session hash. No PII.
  */
 
+import * as Sentry from '@sentry/nextjs'
 import { NextRequest, NextResponse } from 'next/server'
 
 const HASURA_URL =
@@ -91,18 +92,21 @@ export async function POST(req: NextRequest) {
     })
 
     if (!res.ok) {
+      Sentry.captureException(new Error(`Analytics Hasura error: ${res.status}`))
       console.error('Analytics Hasura error:', res.status)
       return NextResponse.json({ ok: false }, { status: 502 })
     }
 
     const data = await res.json()
     if (data.errors) {
+      Sentry.captureException(new Error('Analytics GraphQL errors'))
       console.error('Analytics GraphQL errors:', data.errors)
       return NextResponse.json({ ok: false }, { status: 502 })
     }
 
     return NextResponse.json({ ok: true })
   } catch (err) {
+    Sentry.captureException(err)
     console.error('Analytics insert failed:', err)
     return NextResponse.json({ ok: false }, { status: 500 })
   }

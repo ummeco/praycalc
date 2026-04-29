@@ -141,7 +141,7 @@ export default function ShareTvModal({ deviceId, deviceName, token, onClose }: S
                 value={email}
                 onChange={e => { setEmail(e.target.value); if (state === 'error') setState('idle'); }}
                 placeholder="user@example.com"
-                className="bg-black/30 border border-[#79C24C]/30 focus:border-[#79C24C] rounded-xl px-4 py-2.5 text-white text-sm placeholder-white/25 focus:outline-none transition-colors"
+                className="bg-black/30 border border-[#79C24C]/30 focus:border-[#79C24C] rounded-xl px-4 py-2.5 text-white text-sm placeholder-white/25 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#79C24C]/60 transition-colors"
                 autoFocus
                 disabled={state === 'loading'}
                 autoComplete="email"

@@ -1,19 +1,90 @@
+/// S6-13 — Riverpod subscription state provider with Hasura GraphQL subscription.
+///
+/// Replaces the old smart-service HTTP polling approach with:
+/// 1. Initial HTTP check against the Hasura admin endpoint.
+/// 2. Live Hasura GraphQL subscription on umm_subscriptions (WebSocket).
+/// 3. Foreground refresh on app lifecycle resume.
+///
+/// Exposes [isUmmatPlus] bool to gate premium feature widgets.
+library;
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io' show Platform;
 
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:graphql/client.dart';
 import 'package:http/http.dart' as http;
 
 import '../services/auth_service.dart';
-import '../services/iap_service.dart';
+import '../services/iap/apple_iap_service.dart';
+import '../services/iap/google_iap_service.dart';
+import '../services/iap/products.dart';
 
-/// Smart service URL for billing endpoints.
-/// Billing runs on praycalc-smart (port 4010), NOT the Hasura Auth service.
-const _kSmartUrl = String.fromEnvironment(
-  'SMART_SERVICE_URL',
-  defaultValue: 'http://127.0.0.1:4010',
+// ── Constants ─────────────────────────────────────────────────────────────────
+
+/// Hasura GraphQL HTTP URL — used for one-shot status query.
+const _kHasuraUrl = String.fromEnvironment(
+  'HASURA_GRAPHQL_URL',
+  defaultValue: 'https://api.praycalc.com/v1/graphql',
 );
+
+/// Hasura GraphQL WebSocket URL — used for live subscription.
+/// Converts http(s) → ws(s) automatically.
+String get _kHasuraWsUrl => _kHasuraUrl
+    .replaceFirst('https://', 'wss://')
+    .replaceFirst('http://', 'ws://');
+
+/// Server-side IAP validation routes on praycalc.com.
+const _kAppleValidateUrl = String.fromEnvironment(
+  'IAP_APPLE_VALIDATE_URL',
+  defaultValue: 'https://praycalc.com/api/iap/apple/validate',
+);
+const _kGoogleValidateUrl = String.fromEnvironment(
+  'IAP_GOOGLE_VALIDATE_URL',
+  defaultValue: 'https://praycalc.com/api/iap/google/validate',
+);
+
+// ── Query / Subscription documents ───────────────────────────────────────────
+
+const _kSubscriptionStatusQuery = '''
+  query GetSubscriptionStatus(\$userId: uuid!) {
+    umm_subscriptions(
+      where: {
+        user_id: { _eq: \$userId }
+        expires_at: { _gt: "now()" }
+        is_active: { _eq: true }
+      }
+      limit: 1
+    ) {
+      product_id
+      expires_at
+      store
+      is_active
+    }
+  }
+''';
+
+const _kSubscriptionStatusSubscription = '''
+  subscription WatchSubscriptionStatus(\$userId: uuid!) {
+    umm_subscriptions(
+      where: {
+        user_id: { _eq: \$userId }
+        expires_at: { _gt: "now()" }
+        is_active: { _eq: true }
+      }
+      limit: 1
+    ) {
+      product_id
+      expires_at
+      store
+      is_active
+    }
+  }
+''';
+
+// ── State models ──────────────────────────────────────────────────────────────
 
 /// Subscription plan tiers.
 enum SubscriptionPlan { free, plus }
@@ -23,6 +94,7 @@ class SubscriptionState {
   final SubscriptionPlan plan;
   final bool isActive;
   final DateTime? expiresAt;
+  final String? store; // 'apple' | 'google' | null
   final bool isLoading;
   final String? error;
 
@@ -30,16 +102,19 @@ class SubscriptionState {
     this.plan = SubscriptionPlan.free,
     this.isActive = false,
     this.expiresAt,
+    this.store,
     this.isLoading = false,
     this.error,
   });
 
+  /// True when the user has an active Ummat+ subscription.
   bool get isPlus => plan == SubscriptionPlan.plus && isActive;
 
   SubscriptionState copyWith({
     SubscriptionPlan? plan,
     bool? isActive,
     DateTime? expiresAt,
+    String? store,
     bool? isLoading,
     String? error,
   }) =>
@@ -47,30 +122,99 @@ class SubscriptionState {
         plan: plan ?? this.plan,
         isActive: isActive ?? this.isActive,
         expiresAt: expiresAt ?? this.expiresAt,
+        store: store ?? this.store,
         isLoading: isLoading ?? this.isLoading,
         error: error,
       );
 }
 
-/// Manages subscription status and purchase flow.
+// ── Notifier ──────────────────────────────────────────────────────────────────
+
+/// Manages subscription status via Hasura GraphQL subscription (WebSocket).
 ///
-/// Fetches billing status from the shared Ummat backend and delegates
-/// purchases to StoreKit 2 (iOS) and Play Billing (Android) via
-/// [IAPService].
+/// Architecture:
+/// 1. On build: one-shot HTTP query to get initial state quickly.
+/// 2. Then: opens a Hasura WebSocket subscription for live updates.
+/// 3. On foreground resume (AppLifecycleListener): re-queries to catch
+///    any updates that occurred while the app was in background.
+///
+/// Purchase flow delegates to [AppleIAPService] or [GoogleIAPService]
+/// depending on the current platform, then validates server-side via
+/// the IAP validate routes.
 class SubscriptionNotifier extends Notifier<SubscriptionState> {
+  StreamSubscription<QueryResult>? _wsSub;
+  AppLifecycleListener? _lifecycleListener;
+
   @override
   SubscriptionState build() {
-    // Auto-check status if the user is authenticated.
+    // Register lifecycle observer for foreground refresh.
+    _lifecycleListener = AppLifecycleListener(
+      onResume: _onAppResumed,
+    );
+
+    // Auto-load if authenticated.
     if (AuthService.instance.isAuthenticated) {
-      Future.microtask(checkStatus);
+      Future.microtask(() async {
+        await checkStatus();
+        _startWebSocketSubscription();
+      });
     }
+
+    ref.onDispose(() {
+      _wsSub?.cancel();
+      _lifecycleListener?.dispose();
+    });
+
     return const SubscriptionState();
   }
 
-  /// Fetch the current subscription status from the backend.
-  Future<void> checkStatus() async {
+  void _onAppResumed() {
+    if (AuthService.instance.isAuthenticated) {
+      checkStatus();
+    }
+  }
+
+  // ── WebSocket subscription ──────────────────────────────────────────────────
+
+  void _startWebSocketSubscription() {
+    final userId = AuthService.instance.currentUser?.id;
     final token = AuthService.instance.accessToken;
-    if (token == null) {
+    if (userId == null || token == null) return;
+
+    _wsSub?.cancel();
+
+    final wsLink = WebSocketLink(
+      _kHasuraWsUrl,
+      config: SocketClientConfig(
+        initialPayload: () => {
+          'headers': {'Authorization': 'Bearer $token'},
+        },
+      ),
+    );
+
+    final client = GraphQLClient(
+      link: wsLink,
+      cache: GraphQLCache(store: InMemoryStore()),
+    );
+
+    final options = SubscriptionOptions(
+      document: gql(_kSubscriptionStatusSubscription),
+      variables: {'userId': userId},
+    );
+
+    _wsSub = client.subscribe(options).listen((result) {
+      if (result.hasException) return; // Keep last known state on WS error.
+      _applyQueryResult(result.data);
+    });
+  }
+
+  // ── HTTP query ──────────────────────────────────────────────────────────────
+
+  /// Fetch subscription status via HTTP (one-shot, no WebSocket).
+  Future<void> checkStatus() async {
+    final userId = AuthService.instance.currentUser?.id;
+    final token = AuthService.instance.accessToken;
+    if (userId == null || token == null) {
       state = const SubscriptionState();
       return;
     }
@@ -78,148 +222,210 @@ class SubscriptionNotifier extends Notifier<SubscriptionState> {
     state = state.copyWith(isLoading: true, error: null);
 
     try {
-      final response = await http.get(
-        Uri.parse('$_kSmartUrl/billing/status'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token',
-        },
-      );
-
-      if (response.statusCode != 200) {
-        // Backend may not have billing endpoint yet. Default to free.
-        state = const SubscriptionState();
-        return;
-      }
-
-      final body = jsonDecode(response.body) as Map<String, dynamic>;
-      final planStr = body['plan'] as String? ?? 'free';
-      // Server returns 'status' (string) and 'currentPeriodEnd', not 'isActive'/'expiresAt'.
-      final statusStr = body['status'] as String? ?? 'none';
-      final active = statusStr == 'active' || statusStr == 'trialing';
-      final expiresStr = (body['currentPeriodEnd'] ?? body['expiresAt']) as String?;
-
-      state = SubscriptionState(
-        plan: planStr == 'plus' ? SubscriptionPlan.plus : SubscriptionPlan.free,
-        isActive: active,
-        expiresAt:
-            expiresStr != null ? DateTime.tryParse(expiresStr) : null,
-      );
-    } catch (e) {
-      // Network error or backend unavailable. Keep current state.
-      state = state.copyWith(isLoading: false, error: e.toString());
-    }
-  }
-
-  StreamSubscription<PurchaseResult>? _purchaseSub;
-
-  /// Initiate an in-app purchase for Ummat+.
-  ///
-  /// Flow:
-  /// 1. Show native purchase sheet (StoreKit 2 / Play Billing)
-  /// 2. On success, send receipt to backend for server-side validation
-  /// 3. Backend validates with Apple/Google and activates subscription
-  /// 4. Refresh local state from backend
-  Future<bool> purchase() async {
-    state = state.copyWith(isLoading: true, error: null);
-
-    try {
-      final iap = IAPService.instance;
-      await iap.init();
-
-      // Listen for purchase result from native platform.
-      final completer = Completer<bool>();
-      _purchaseSub?.cancel();
-      _purchaseSub = iap.purchaseStream.listen((result) async {
-        switch (result.status) {
-          case PurchaseStatus.success:
-          case PurchaseStatus.restored:
-            if (result.receipt != null) {
-              await _verifyReceipt(result.receipt!);
-            }
-            await checkStatus();
-            completer.complete(state.isPlus);
-          case PurchaseStatus.cancelled:
-            state = state.copyWith(isLoading: false);
-            completer.complete(false);
-          case PurchaseStatus.error:
-            state = state.copyWith(isLoading: false, error: result.error);
-            completer.complete(false);
-        }
-        _purchaseSub?.cancel();
-      });
-
-      final started = await iap.purchase(IAPService.productIdYearly);
-      if (!started) {
-        _purchaseSub?.cancel();
-        state = state.copyWith(
-          isLoading: false,
-          error: 'Could not start purchase. Check your device settings.',
-        );
-        return false;
-      }
-
-      return await completer.future;
-    } catch (e) {
-      state = state.copyWith(isLoading: false, error: e.toString());
-      return false;
-    }
-  }
-
-  /// Restore a previous purchase (e.g., after reinstall or new device).
-  Future<bool> restore() async {
-    state = state.copyWith(isLoading: true, error: null);
-
-    try {
-      final iap = IAPService.instance;
-      await iap.init();
-
-      final completer = Completer<bool>();
-      _purchaseSub?.cancel();
-      _purchaseSub = iap.purchaseStream.listen((result) async {
-        if (result.status == PurchaseStatus.restored && result.receipt != null) {
-          await _verifyReceipt(result.receipt!);
-        }
-        await checkStatus();
-        completer.complete(state.isPlus);
-        _purchaseSub?.cancel();
-      });
-
-      final started = await iap.restorePurchases();
-      if (!started) {
-        _purchaseSub?.cancel();
-        // Fallback: just re-check backend status.
-        await checkStatus();
-        return state.isPlus;
-      }
-
-      return await completer.future;
-    } catch (e) {
-      state = state.copyWith(isLoading: false, error: e.toString());
-      return false;
-    }
-  }
-
-  /// Send receipt to backend for server-side validation.
-  Future<void> _verifyReceipt(String receipt) async {
-    final token = AuthService.instance.accessToken;
-    if (token == null) return;
-
-    try {
-      await http.post(
-        Uri.parse('$_kSmartUrl/billing/verify-receipt'),
+      final response = await http.post(
+        Uri.parse(_kHasuraUrl),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',
         },
         body: jsonEncode({
-          'platform': Platform.isIOS ? 'ios' : 'android',
-          'receipt': receipt,
-          'productId': IAPService.productIdYearly,
+          'query': _kSubscriptionStatusQuery,
+          'variables': {'userId': userId},
         }),
       );
+
+      if (response.statusCode != 200) {
+        state = const SubscriptionState();
+        return;
+      }
+
+      final body = jsonDecode(response.body) as Map<String, dynamic>;
+      _applyQueryResult(body['data'] as Map<String, dynamic>?);
     } catch (e) {
-      // Backend verification failure is non-fatal; status check will catch it.
+      state = state.copyWith(isLoading: false, error: e.toString());
+    }
+  }
+
+  void _applyQueryResult(Map<String, dynamic>? data) {
+    if (data == null) {
+      state = const SubscriptionState();
+      return;
+    }
+
+    final subs = data['umm_subscriptions'] as List<dynamic>? ?? [];
+    if (subs.isEmpty) {
+      state = const SubscriptionState();
+      return;
+    }
+
+    final sub = subs.first as Map<String, dynamic>;
+    final productId = sub['product_id'] as String? ?? '';
+    final expiresStr = sub['expires_at'] as String?;
+    final store = sub['store'] as String?;
+    final isActive = sub['is_active'] as bool? ?? false;
+
+    final isPlus = productId == kUmmatPlusYearlyProductId && isActive;
+
+    state = SubscriptionState(
+      plan: isPlus ? SubscriptionPlan.plus : SubscriptionPlan.free,
+      isActive: isActive,
+      expiresAt: expiresStr != null ? DateTime.tryParse(expiresStr) : null,
+      store: store,
+    );
+  }
+
+  // ── Purchase flow ───────────────────────────────────────────────────────────
+
+  /// Initiate an in-app purchase for Ummat+.
+  ///
+  /// Dispatches to [AppleIAPService] on iOS and [GoogleIAPService] on Android,
+  /// then sends the receipt to the server-side validate route, and finally
+  /// refreshes subscription state from Hasura.
+  Future<bool> purchase() async {
+    state = state.copyWith(isLoading: true, error: null);
+
+    try {
+      if (Platform.isIOS) {
+        return await _purchaseApple();
+      } else if (Platform.isAndroid) {
+        return await _purchaseGoogle();
+      } else {
+        state = state.copyWith(
+          isLoading: false,
+          error: 'In-app purchases are not supported on this platform.',
+        );
+        return false;
+      }
+    } catch (e) {
+      state = state.copyWith(isLoading: false, error: e.toString());
+      return false;
+    }
+  }
+
+  Future<bool> _purchaseApple() async {
+    final result = await AppleIAPService.instance.purchase();
+    if (result.cancelled) {
+      state = state.copyWith(isLoading: false);
+      return false;
+    }
+    if (!result.success || result.jwsTransaction == null) {
+      state = state.copyWith(isLoading: false, error: result.error);
+      return false;
+    }
+
+    final userId = AuthService.instance.currentUser?.id;
+    final token = AuthService.instance.accessToken;
+    if (userId == null || token == null) {
+      state = state.copyWith(isLoading: false, error: 'Not authenticated');
+      return false;
+    }
+
+    final validated = await _callValidateRoute(_kAppleValidateUrl, {
+      'jwsTransaction': result.jwsTransaction,
+      'userId': userId,
+      'appAccountToken': null,
+    }, token);
+
+    await checkStatus();
+    return validated;
+  }
+
+  Future<bool> _purchaseGoogle() async {
+    final result = await GoogleIAPService.instance.purchase();
+    if (result.cancelled) {
+      state = state.copyWith(isLoading: false);
+      return false;
+    }
+    if (!result.success || result.purchaseToken == null) {
+      state = state.copyWith(isLoading: false, error: result.error);
+      return false;
+    }
+
+    final userId = AuthService.instance.currentUser?.id;
+    final token = AuthService.instance.accessToken;
+    if (userId == null || token == null) {
+      state = state.copyWith(isLoading: false, error: 'Not authenticated');
+      return false;
+    }
+
+    final validated = await _callValidateRoute(_kGoogleValidateUrl, {
+      'purchaseToken': result.purchaseToken,
+      'productId': kUmmatPlusYearlyProductId,
+      'userId': userId,
+    }, token);
+
+    await checkStatus();
+    return validated;
+  }
+
+  Future<bool> _callValidateRoute(
+    String url,
+    Map<String, dynamic> body,
+    String token,
+  ) async {
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: jsonEncode(body),
+      );
+
+      if (response.statusCode != 200) return false;
+      final responseBody = jsonDecode(response.body) as Map<String, dynamic>;
+      return responseBody['valid'] == true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  // ── Restore flow ────────────────────────────────────────────────────────────
+
+  /// Restore previous purchases (after reinstall or new device).
+  Future<bool> restore() async {
+    state = state.copyWith(isLoading: true, error: null);
+
+    try {
+      if (Platform.isIOS) {
+        final restored = await AppleIAPService.instance.restorePurchases();
+        // If there are restored transactions, validate the most recent one.
+        if (restored.isNotEmpty) {
+          final recent = restored.first;
+          final receipt = recent['receipt'] as String? ?? '';
+          final userId = AuthService.instance.currentUser?.id;
+          final token = AuthService.instance.accessToken;
+          if (userId != null && token != null && receipt.isNotEmpty) {
+            await _callValidateRoute(_kAppleValidateUrl, {
+              'jwsTransaction': receipt,
+              'userId': userId,
+              'appAccountToken': null,
+            }, token);
+          }
+        }
+      } else if (Platform.isAndroid) {
+        final restored = await GoogleIAPService.instance.restorePurchases();
+        if (restored.isNotEmpty) {
+          final recent = restored.first;
+          final token_str = recent['purchaseToken'] as String? ?? '';
+          final userId = AuthService.instance.currentUser?.id;
+          final token = AuthService.instance.accessToken;
+          if (userId != null && token != null && token_str.isNotEmpty) {
+            await _callValidateRoute(_kGoogleValidateUrl, {
+              'purchaseToken': token_str,
+              'productId': kUmmatPlusYearlyProductId,
+              'userId': userId,
+            }, token);
+          }
+        }
+      }
+
+      await checkStatus();
+      return state.isPlus;
+    } catch (e) {
+      state = state.copyWith(isLoading: false, error: e.toString());
+      return false;
     }
   }
 
@@ -229,9 +435,13 @@ class SubscriptionNotifier extends Notifier<SubscriptionState> {
       state = state.copyWith(error: null);
     }
   }
+
 }
 
 /// Provider for subscription state.
+///
+/// Watch [subscriptionProvider] in any widget to react to Ummat+ status changes.
+/// Use [subscriptionProvider.notifier] to call [purchase], [restore], or [checkStatus].
 final subscriptionProvider =
     NotifierProvider<SubscriptionNotifier, SubscriptionState>(
   SubscriptionNotifier.new,

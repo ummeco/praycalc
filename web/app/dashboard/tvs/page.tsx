@@ -689,7 +689,7 @@ function LocationPicker({ onSave, onCancel, current }: {
           value={query}
           onChange={e => setQuery(e.target.value)}
           onKeyDown={handleKeyDown}
-          className="w-full bg-[#060e06] border border-[#79C24C]/50 rounded-lg px-3 py-2.5 text-white text-sm placeholder-white/25 focus:outline-none focus:border-[#79C24C] transition-colors"
+          className="w-full bg-[#060e06] border border-[#79C24C]/50 rounded-lg px-3 py-2.5 text-white text-sm placeholder-white/25 focus:outline-none focus:border-[#79C24C] focus-visible:ring-2 focus-visible:ring-[#79C24C]/60 transition-colors"
           autoFocus
           autoComplete="off"
         />

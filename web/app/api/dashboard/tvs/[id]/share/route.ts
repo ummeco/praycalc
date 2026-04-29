@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/nextjs';
 import { NextRequest, NextResponse } from 'next/server';
 
 const SMART_BASE = `${process.env.NEXT_PUBLIC_SMART_SERVICE_URL ?? 'https://smart.praycalc.com'}/api/v1/tv`;
@@ -44,6 +45,7 @@ export async function POST(
 
     return NextResponse.json(data);
   } catch (err: unknown) {
+    Sentry.captureException(err);
     console.error('[tvs/share] POST error:', err);
     return NextResponse.json({ error: 'Failed to share TV' }, { status: 500 });
   }
@@ -95,6 +97,7 @@ export async function DELETE(
 
     return NextResponse.json(data);
   } catch (err: unknown) {
+    Sentry.captureException(err);
     console.error('[tvs/share] DELETE error:', err);
     return NextResponse.json({ error: 'Failed to remove share' }, { status: 500 });
   }

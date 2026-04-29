@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { requireAuth, type AuthRequest } from '../middleware/auth.js';
+import { assertSafeFetchUrl, SsrfBlockedError } from '../lib/ssrf-guard.js';
 
 export const webhookRouter = Router();
 
@@ -43,10 +44,15 @@ webhookRouter.post('/', requireAuth, async (req: AuthRequest, res) => {
     return;
   }
 
+  // SSRF guard — rejects private/internal IPs, non-http(s) schemes, cloud metadata endpoints
   try {
-    new URL(callbackUrl);
-  } catch {
-    res.status(400).json({ error: 'callbackUrl must be a valid URL' });
+    await assertSafeFetchUrl(callbackUrl);
+  } catch (err) {
+    if (err instanceof SsrfBlockedError) {
+      res.status(422).json({ error: 'callbackUrl resolves to a disallowed destination' });
+    } else {
+      res.status(400).json({ error: 'callbackUrl must be a valid URL' });
+    }
     return;
   }
 

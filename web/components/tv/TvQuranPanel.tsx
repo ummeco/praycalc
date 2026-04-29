@@ -282,7 +282,7 @@ export default function TvQuranPanel({ deviceId, isOnline, quranVideoMode }: TvQ
         <select
           value={reciterId}
           onChange={e => setReciterId(e.target.value)}
-          className="w-full bg-black/30 border border-white/10 rounded-xl px-3 py-2.5 text-white text-sm focus:border-[#79C24C]/50 outline-none"
+          className="w-full bg-black/30 border border-white/10 rounded-xl px-3 py-2.5 text-white text-sm focus:border-[#79C24C]/50 outline-none focus-visible:ring-2 focus-visible:ring-[#79C24C]/60"
         >
           {RECITERS.map(r => (
             <option key={r.id} value={r.id}>{r.flag} {r.name}</option>
@@ -296,7 +296,7 @@ export default function TvQuranPanel({ deviceId, isOnline, quranVideoMode }: TvQ
         <select
           value={surahNumber}
           onChange={e => { setSurahNumber(Number(e.target.value)); setAyahNumber(1); }}
-          className="w-full bg-black/30 border border-white/10 rounded-xl px-3 py-2.5 text-white text-sm focus:border-[#79C24C]/50 outline-none"
+          className="w-full bg-black/30 border border-white/10 rounded-xl px-3 py-2.5 text-white text-sm focus:border-[#79C24C]/50 outline-none focus-visible:ring-2 focus-visible:ring-[#79C24C]/60"
         >
           {SURAHS.map(s => (
             <option key={s.number} value={s.number}>
@@ -317,7 +317,7 @@ export default function TvQuranPanel({ deviceId, isOnline, quranVideoMode }: TvQ
           max={maxAyah}
           value={ayahNumber}
           onChange={e => setAyahNumber(Math.min(maxAyah, Math.max(1, Number(e.target.value))))}
-          className="w-full bg-black/30 border border-white/10 rounded-xl px-3 py-2.5 text-white text-sm focus:border-[#79C24C]/50 outline-none"
+          className="w-full bg-black/30 border border-white/10 rounded-xl px-3 py-2.5 text-white text-sm focus:border-[#79C24C]/50 outline-none focus-visible:ring-2 focus-visible:ring-[#79C24C]/60"
         />
       </div>
 

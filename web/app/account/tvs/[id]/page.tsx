@@ -228,7 +228,7 @@ function LocationPicker({
           value={query}
           onChange={e => setQuery(e.target.value)}
           onKeyDown={handleKeyDown}
-          className="w-full bg-[#060e06] border border-[#79C24C]/50 rounded-lg px-3 py-2.5 text-white text-sm placeholder-white/25 focus:outline-none focus:border-[#79C24C] transition-colors"
+          className="w-full bg-[#060e06] border border-[#79C24C]/50 rounded-lg px-3 py-2.5 text-white text-sm placeholder-white/25 focus:outline-none focus:border-[#79C24C] focus-visible:ring-2 focus-visible:ring-[#79C24C]/60 transition-colors"
           autoFocus
           autoComplete="off"
         />
@@ -273,7 +273,7 @@ function ToggleRow({ label, checked, onChange }: { label: string; checked: boole
       <button
         type="button" role="switch" aria-checked={checked ? 'true' : 'false'} title={label}
         onClick={() => onChange(!checked)}
-        className={`relative inline-flex h-6 w-11 flex-shrink-0 rounded-full border-2 border-transparent transition-colors focus:outline-none ${checked ? 'bg-[#79C24C]' : 'bg-white/20'}`}
+        className={`relative inline-flex h-6 w-11 flex-shrink-0 rounded-full border-2 border-transparent transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#79C24C]/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black/50 ${checked ? 'bg-[#79C24C]' : 'bg-white/20'}`}
       >
         <span className={`inline-block h-5 w-5 transform rounded-full bg-white shadow transition-transform ${checked ? 'translate-x-5' : 'translate-x-0'}`} />
       </button>
@@ -630,7 +630,7 @@ export default function TvDetailPage() {
                   <input type="email" placeholder="Email address…"
                     value={shareEmail} onChange={e => setShareEmail(e.target.value)}
                     onKeyDown={e => e.key === 'Enter' && void handleShare()}
-                    className="flex-1 min-w-0 bg-black/30 border border-white/10 rounded-lg px-3 py-2 text-white text-xs placeholder-white/25 focus:outline-none focus:border-[#79C24C]/50 transition-colors"
+                    className="flex-1 min-w-0 bg-black/30 border border-white/10 rounded-lg px-3 py-2 text-white text-xs placeholder-white/25 focus:outline-none focus:border-[#79C24C]/50 focus-visible:ring-2 focus-visible:ring-[#79C24C]/60 transition-colors"
                   />
                   <button type="button" onClick={() => void handleShare()}
                     disabled={shareSending || !shareEmail.trim()}
@@ -768,7 +768,7 @@ export default function TvDetailPage() {
                       <div>
                         <label className="text-white/60 text-xs block mb-1.5">Stream</label>
                         <select title="Stream" value={selectedStreamId} onChange={e => setSelectedStreamId(e.target.value)}
-                          className="w-full bg-black/30 border border-white/10 rounded-xl px-3 py-2.5 text-white text-sm focus:border-[#79C24C]/50 outline-none">
+                          className="w-full bg-black/30 border border-white/10 rounded-xl px-3 py-2.5 text-white text-sm focus:border-[#79C24C]/50 outline-none focus-visible:ring-2 focus-visible:ring-[#79C24C]/60">
                           {STREAMS.map(s => (
                             <option key={s.id} value={s.id}>{s.emoji} {s.name}</option>
                           ))}
@@ -784,7 +784,7 @@ export default function TvDetailPage() {
                       <div>
                         <label className="text-white/60 text-xs block mb-1.5">Change photo every</label>
                         <select title="Change photo every" value={changeInterval} onChange={e => setChangeInterval(e.target.value)}
-                          className="w-full bg-black/30 border border-white/10 rounded-xl px-3 py-2.5 text-white text-sm focus:border-[#79C24C]/50 outline-none">
+                          className="w-full bg-black/30 border border-white/10 rounded-xl px-3 py-2.5 text-white text-sm focus:border-[#79C24C]/50 outline-none focus-visible:ring-2 focus-visible:ring-[#79C24C]/60">
                           <option value="15">15 seconds</option>
                           <option value="30">30 seconds</option>
                           <option value="60">1 minute</option>
@@ -803,7 +803,7 @@ export default function TvDetailPage() {
                       <div>
                         <label className="text-white/60 text-xs block mb-1.5">Change photo every</label>
                         <select title="Change photo every" value={changeInterval} onChange={e => setChangeInterval(e.target.value)}
-                          className="w-full bg-black/30 border border-white/10 rounded-xl px-3 py-2.5 text-white text-sm focus:border-[#79C24C]/50 outline-none">
+                          className="w-full bg-black/30 border border-white/10 rounded-xl px-3 py-2.5 text-white text-sm focus:border-[#79C24C]/50 outline-none focus-visible:ring-2 focus-visible:ring-[#79C24C]/60">
                           <option value="15">15 seconds</option>
                           <option value="30">30 seconds</option>
                           <option value="60">1 minute</option>
@@ -823,7 +823,7 @@ export default function TvDetailPage() {
                       <div>
                         <label className="text-white/60 text-xs block mb-1.5">Photo Source</label>
                         <select value={photoSource} onChange={e => setPhotoSource(e.target.value)}
-                          className="w-full bg-black/30 border border-white/10 rounded-xl px-3 py-2.5 text-white text-sm focus:border-[#79C24C]/50 outline-none">
+                          className="w-full bg-black/30 border border-white/10 rounded-xl px-3 py-2.5 text-white text-sm focus:border-[#79C24C]/50 outline-none focus-visible:ring-2 focus-visible:ring-[#79C24C]/60">
                           <option value="built-in">Built-in Islamic Art</option>
                           <option value="google-photos">Google Photos</option>
                           <option value="nasa">NASA APOD</option>
@@ -832,7 +832,7 @@ export default function TvDetailPage() {
                       <div>
                         <label className="text-white/60 text-xs block mb-1.5">Change Interval</label>
                         <select value={changeInterval} onChange={e => setChangeInterval(e.target.value)}
-                          className="w-full bg-black/30 border border-white/10 rounded-xl px-3 py-2.5 text-white text-sm focus:border-[#79C24C]/50 outline-none">
+                          className="w-full bg-black/30 border border-white/10 rounded-xl px-3 py-2.5 text-white text-sm focus:border-[#79C24C]/50 outline-none focus-visible:ring-2 focus-visible:ring-[#79C24C]/60">
                           <option value="15">Every 15 seconds</option>
                           <option value="30">Every 30 seconds</option>
                           <option value="60">Every minute</option>
@@ -861,7 +861,7 @@ export default function TvDetailPage() {
                   <p className="text-white/40 text-xs mb-3">Override the city name shown on screen. Leave blank to use the detected location.</p>
                   <input type="text" placeholder="e.g. East Side Masjid"
                     value={cityOverride} onChange={e => setCityOverride(e.target.value)}
-                    className="w-full bg-black/30 border border-white/10 rounded-xl px-3 py-2.5 text-white text-sm placeholder-white/25 focus:outline-none focus:border-[#79C24C]/50 transition-colors"
+                    className="w-full bg-black/30 border border-white/10 rounded-xl px-3 py-2.5 text-white text-sm placeholder-white/25 focus:outline-none focus:border-[#79C24C]/50 focus-visible:ring-2 focus-visible:ring-[#79C24C]/60 transition-colors"
                   />
                 </div>
 

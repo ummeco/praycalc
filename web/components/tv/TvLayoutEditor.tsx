@@ -47,7 +47,7 @@ function ZoneSelect({ label, value, onChange }: ZoneSelectProps) {
       <select
         value={value}
         onChange={e => onChange(e.target.value as PanelType)}
-        className="bg-black/30 border border-white/10 rounded-lg px-2 py-1.5 text-white text-xs focus:border-[#79C24C]/50 outline-none"
+        className="bg-black/30 border border-white/10 rounded-lg px-2 py-1.5 text-white text-xs focus:border-[#79C24C]/50 outline-none focus-visible:ring-2 focus-visible:ring-[#79C24C]/60"
       >
         {PANEL_OPTIONS.map(o => (
           <option key={o.value} value={o.value}>{o.label}</option>

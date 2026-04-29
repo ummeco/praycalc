@@ -1,0 +1,91 @@
+# Brand Token Guard — B1-07 / B1-01
+#
+# CI grep guard: fails the build if hardcoded brand hex values (#C9F27A, #79C24C, #1E5E2F,
+# #0D2F17) appear in JSX/TSX source files outside of the canonical token source files.
+#
+# These values must only appear via CSS custom properties or Tailwind token classes.
+# Inline hex in JSX/TSX bypasses the design-token layer and breaks theming / dark-mode.
+#
+# Escape hatch: append '# token-ok' comment on the same line for intentional overrides.
+# E.g.: style={{ color: '#1E5E2F' }} // token-ok — temporary until migration is complete
+
+name: Brand Token Guard
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - '**/*.tsx'
+      - '**/*.jsx'
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - '**/*.tsx'
+      - '**/*.jsx'
+
+jobs:
+  brand-token-guard:
+    name: No hardcoded brand hex in JSX/TSX
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check for hardcoded brand hex values
+        run: |
+          echo "Scanning for hardcoded brand hex: #C9F27A #79C24C #1E5E2F #0D2F17"
+          echo "These must use CSS custom properties or Tailwind tokens instead."
+          echo ""
+
+          # Pattern: any of the 4 brand hex values (case-insensitive)
+          HEX_PATTERN='#(C9F27A|79C24C|1E5E2F|0D2F17|c9f27a|79c24c|1e5e2f|0d2f17)'
+          ESCAPE_HATCH='token-ok'
+
+          FOUND=0
+          VIOLATIONS=""
+
+          while IFS= read -r file; do
+            # Skip token source files
+            [[ "$file" == *"tokens.css"* ]] && continue
+            [[ "$file" == *"tokens.ts"* ]] && continue
+            [[ "$file" == *".test.tsx"* ]] && continue
+            [[ "$file" == *".spec.tsx"* ]] && continue
+            [[ "$file" == *".stories.tsx"* ]] && continue
+
+            while IFS= read -r match; do
+              lineno="${match%%:*}"
+              content="${match#*:}"
+
+              if echo "$content" | grep -q "$ESCAPE_HATCH"; then
+                continue
+              fi
+
+              FOUND=$((FOUND + 1))
+              VIOLATIONS="${VIOLATIONS}\n  ${file}:${lineno} — ${content}"
+            done < <(grep -n -iE "$HEX_PATTERN" "$file" 2>/dev/null || true)
+
+          done < <(find . \
+            -type f \
+            \( -name "*.tsx" -o -name "*.jsx" \) \
+            -not -path "*/.next/*" \
+            -not -path "*/node_modules/*" \
+            -not -path "*/.git/*" \
+            -not -path "*/dist/*" \
+            -not -path "*/build/*" \
+          )
+
+          if [ "$FOUND" -gt 0 ]; then
+            echo "FAIL: $FOUND hardcoded brand hex value(s) found in JSX/TSX."
+            echo ""
+            echo "Violations:"
+            printf "%b\n" "$VIOLATIONS"
+            echo ""
+            echo "Fix: use Tailwind tokens (bg-brand-light, text-brand-dark, etc.)"
+            echo "     or CSS custom properties (var(--brand-green-mid))."
+            echo ""
+            echo "Intentional override: append '# token-ok' comment on the same line."
+            exit 1
+          else
+            echo "PASS: No hardcoded brand hex values found in JSX/TSX."
+          fi

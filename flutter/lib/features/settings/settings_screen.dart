@@ -10,6 +10,9 @@ import '../../core/providers/sync_provider.dart';
 import '../../core/router/app_router.dart';
 import '../../core/services/sync_service.dart';
 import '../../core/utils/locale_calc_method.dart';
+// S6-15 — SubscriptionGate for premium feature tiles
+import '../../shared/widgets/subscription_gate.dart';
+import '../../shared/widgets/upgrade_sheet.dart';
 
 /// Supported locales: (display name, language code or null for system default).
 const _supportedLocales = [
@@ -277,13 +280,17 @@ class SettingsScreen extends ConsumerWidget {
           ),
 
           // ── Smart Home ──────────────────────────────────────────────────
+          // S6-15: SubscriptionGate wraps the tile — tap intercepts for non-Plus users.
           _SectionHeader(l.settingsSmartHome),
-          ListTile(
-            leading: const Icon(Icons.home_max_outlined),
-            title: Text(l.settingsSmartHomeIntegrations),
-            subtitle: Text(l.settingsSmartHomeIntegrationsSubtitle),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: () => context.push(Routes.smartHome),
+          SubscriptionGate(
+            featureName: 'smart_home',
+            child: ListTile(
+              leading: const Icon(Icons.home_max_outlined),
+              title: Text(l.settingsSmartHomeIntegrations),
+              subtitle: Text(l.settingsSmartHomeIntegrationsSubtitle),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => context.push(Routes.smartHome),
+            ),
           ),
 
           // ── TV Display ──────────────────────────────────────────────────

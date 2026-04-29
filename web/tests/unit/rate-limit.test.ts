@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest'
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import {
   MemoryRateLimitAdapter,
   checkRateLimit,
@@ -8,6 +8,7 @@ import {
   PRAYER_TIMES_API,
   ACCOUNT_API,
 } from '@/lib/rate-limit'
+import { RedisRateLimitAdapter } from '@/lib/rate-limit-redis'
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -145,6 +146,60 @@ describe('Rate limit config constants', () => {
   it('ACCOUNT_API: 30 req/min', () => {
     expect(ACCOUNT_API.limit).toBe(30)
     expect(ACCOUNT_API.windowMs).toBe(60_000)
+  })
+})
+
+// ---------------------------------------------------------------------------
+// RedisRateLimitAdapter — fail-CLOSED behavior (T0-15-01)
+// ---------------------------------------------------------------------------
+describe('RedisRateLimitAdapter — fail-CLOSED on Redis error', () => {
+  it('returns allowed=false when pipeline exec throws (ECONNREFUSED / unreachable)', async () => {
+    // Build a mock Redis whose pipeline().exec() rejects — simulates unreachable Redis
+    const mockPipeline = {
+      zremrangebyscore: vi.fn().mockReturnThis(),
+      zcard:            vi.fn().mockReturnThis(),
+      zrange:           vi.fn().mockReturnThis(),
+      zadd:             vi.fn().mockReturnThis(),
+      pexpire:          vi.fn().mockReturnThis(),
+      exec:             vi.fn().mockRejectedValue(new Error('ECONNREFUSED')),
+    }
+    const mockRedis = { pipeline: vi.fn().mockReturnValue(mockPipeline) }
+
+    // Bypass the constructor's require('ioredis') by directly assigning the mock
+    const adapter = Object.create(RedisRateLimitAdapter.prototype) as RedisRateLimitAdapter
+    ;(adapter as unknown as { redis: unknown }).redis = mockRedis
+
+    const result = await adapter.check('pc:rl:test', { limit: 10, windowMs: 60_000 })
+
+    // fail-CLOSED on Redis err — prevents bypass via Redis attack
+    expect(result.allowed).toBe(false)
+    expect(result.remaining).toBe(0)
+    expect(result.retryAfterSeconds).toBeGreaterThan(0)
+  })
+
+  it('returns allowed=false when a pipeline command returns an error tuple', async () => {
+    // Simulates a Redis command-level error ([Error, null] in the exec result)
+    const mockPipeline = {
+      zremrangebyscore: vi.fn().mockReturnThis(),
+      zcard:            vi.fn().mockReturnThis(),
+      zrange:           vi.fn().mockReturnThis(),
+      zadd:             vi.fn().mockReturnThis(),
+      pexpire:          vi.fn().mockReturnThis(),
+      exec: vi.fn().mockResolvedValue([
+        [new Error('READONLY'), null],  // zremrangebyscore failed
+        [null, 0],
+        [null, []],
+      ]),
+    }
+    const mockRedis = { pipeline: vi.fn().mockReturnValue(mockPipeline) }
+
+    const adapter = Object.create(RedisRateLimitAdapter.prototype) as RedisRateLimitAdapter
+    ;(adapter as unknown as { redis: unknown }).redis = mockRedis
+
+    const result = await adapter.check('pc:rl:test', { limit: 10, windowMs: 60_000 })
+
+    expect(result.allowed).toBe(false)
+    expect(result.remaining).toBe(0)
   })
 })
 

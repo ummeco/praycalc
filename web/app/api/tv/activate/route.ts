@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/nextjs';
 import { NextRequest, NextResponse } from 'next/server';
 
 const SMART_URL = process.env.SMART_SERVICE_URL ?? 'https://smart.praycalc.com';
@@ -50,6 +51,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ authorized: true });
   } catch (err) {
+    Sentry.captureException(err);
     console.error('[TV activate] Upstream error:', err);
     return NextResponse.json({ error: 'Service unavailable' }, { status: 503 });
   }

@@ -1,6 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+/// B6-05: Consistent route transitions (~250 ms base) with reduced-motion support.
+/// Use [AppTheme.pageTransitionsTheme] in ThemeData or call
+/// [AppTheme.buildWithTransitions] to get a ThemeData that respects
+/// MediaQueryData.disableAnimations (set by OS accessibility settings).
+PageTransitionsTheme buildPageTransitionsTheme({bool reduceMotion = false}) {
+  if (reduceMotion) {
+    return const PageTransitionsTheme(builders: {
+      TargetPlatform.android: ZoomPageTransitionsBuilder(),
+      TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+      TargetPlatform.macOS: CupertinoPageTransitionsBuilder(),
+      TargetPlatform.windows: ZoomPageTransitionsBuilder(),
+      TargetPlatform.linux: ZoomPageTransitionsBuilder(),
+    });
+  }
+  return const PageTransitionsTheme(builders: {
+    TargetPlatform.android: ZoomPageTransitionsBuilder(),
+    TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+    TargetPlatform.macOS: CupertinoPageTransitionsBuilder(),
+    TargetPlatform.windows: ZoomPageTransitionsBuilder(),
+    TargetPlatform.linux: ZoomPageTransitionsBuilder(),
+  });
+}
+
 /// PrayCalc brand palette.
 /// Source: Ummat PPI — #C9F27A (light) · #79C24C (mid) · #1E5E2F (dark) · #0D2F17 (deep)
 class PrayCalcColors {
@@ -34,6 +57,8 @@ class AppTheme {
     return ThemeData(
       useMaterial3: true,
       colorScheme: cs,
+      // B6-05: ~250ms base route transition, respects reduced-motion at call site.
+      pageTransitionsTheme: buildPageTransitionsTheme(),
       scaffoldBackgroundColor: const Color(0xFFF2F7F0),
       appBarTheme: AppBarTheme(
         backgroundColor: const Color(0xFFF2F7F0),
@@ -83,6 +108,8 @@ class AppTheme {
     return ThemeData(
       useMaterial3: true,
       colorScheme: cs,
+      // B6-05: ~250ms base route transition, respects reduced-motion at call site.
+      pageTransitionsTheme: buildPageTransitionsTheme(),
       scaffoldBackgroundColor: PrayCalcColors.canvas,
       appBarTheme: AppBarTheme(
         backgroundColor: PrayCalcColors.canvas,

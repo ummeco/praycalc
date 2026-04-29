@@ -24,7 +24,8 @@ const securityHeaders = [
     key: "Content-Security-Policy",
     value: [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline'",
+      // challenges.cloudflare.com — Cloudflare Turnstile bot protection (D-P3-20, S6-04)
+      "script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com",
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' https://fonts.gstatic.com",
       [
@@ -44,7 +45,8 @@ const securityHeaders = [
         "https://*.sentry.io",
         "https://*.ingest.sentry.io",
       ].join(" "),
-      "frame-src 'none'",
+      // challenges.cloudflare.com — Cloudflare Turnstile widget runs inside an iframe
+      "frame-src https://challenges.cloudflare.com",
       "frame-ancestors 'none'",
       "object-src 'none'",
       "base-uri 'self'",

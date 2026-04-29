@@ -157,7 +157,7 @@ export default function DuasPage() {
                 value={search}
                 onChange={e => setSearch(e.target.value)}
                 placeholder="Search duas..."
-                className="flex-1 bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white placeholder-white/30 focus:outline-none focus:border-[#79C24C]/40"
+                className="flex-1 bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white placeholder-white/30 focus:outline-none focus:border-[#79C24C]/40 focus-visible:ring-2 focus-visible:ring-[#79C24C]/60"
               />
               <label htmlFor="dua-category-filter" className="sr-only">Filter by category</label>
               <select
@@ -165,7 +165,7 @@ export default function DuasPage() {
                 aria-label="Filter duas by category"
                 value={category}
                 onChange={e => setCategory(e.target.value as DuaCategory | 'All' | 'Favorites')}
-                className="bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white/70 focus:outline-none focus:border-[#79C24C]/40"
+                className="bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white/70 focus:outline-none focus:border-[#79C24C]/40 focus-visible:ring-2 focus-visible:ring-[#79C24C]/60"
               >
                 <option value="All">All</option>
                 <option value="Favorites">★ Favorites</option>

@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/nextjs';
 import { NextRequest, NextResponse } from 'next/server';
 
 const SMART_URL =
@@ -42,6 +43,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json(data);
   } catch (err) {
+    Sentry.captureException(err);
     console.error('[TV app-code] Upstream error:', err);
     return NextResponse.json({ error: 'Service unavailable' }, { status: 503 });
   }

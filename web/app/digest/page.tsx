@@ -52,7 +52,7 @@ export default function DigestPage() {
             onChange={e => setEmail(e.target.value)}
             placeholder="your@email.com"
             required
-            className="border border-green-200 rounded-xl px-4 py-3 text-center text-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+            className="border border-green-200 rounded-xl px-4 py-3 text-center text-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus-visible:ring-2 focus-visible:ring-green-600"
           />
           <button
             type="submit"

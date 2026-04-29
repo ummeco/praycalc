@@ -34,6 +34,10 @@ export default function PlusUpgradeBanner({
   const [visible, setVisible] = useState(false);
 
   // Read dismiss state from sessionStorage after mount (avoids SSR mismatch).
+  // The initial setVisible call is intentional: we are reading one-time client
+  // state (sessionStorage) that is unavailable on the server. This is equivalent
+  // to lazy useState initialisation deferred past SSR — not a cascading render.
+  /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     try {
       const dismissed = sessionStorage.getItem(dismissKey);
@@ -43,6 +47,7 @@ export default function PlusUpgradeBanner({
       setVisible(true);
     }
   }, [dismissKey]);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   function handleDismiss() {
     try {

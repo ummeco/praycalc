@@ -162,7 +162,7 @@ export default function IqamahTimesEditor({ deviceId, onSave }: Props) {
                             Math.max(0, Math.min(120, Number(e.target.value))),
                           )
                         }
-                        className="w-16 bg-black/30 border border-white/10 rounded-xl px-2 py-1.5 text-white text-sm text-center focus:border-[#79C24C]/50 outline-none"
+                        className="w-16 bg-black/30 border border-white/10 rounded-xl px-2 py-1.5 text-white text-sm text-center focus:border-[#79C24C]/50 outline-none focus-visible:ring-2 focus-visible:ring-[#79C24C]/60"
                       />
                       <span className="text-white/40 text-xs shrink-0">min</span>
                     </>
@@ -171,7 +171,7 @@ export default function IqamahTimesEditor({ deviceId, onSave }: Props) {
                       type="time"
                       value={val.fixedTime}
                       onChange={e => update(p.key, 'fixedTime', e.target.value)}
-                      className="bg-black/30 border border-white/10 rounded-xl px-2 py-1.5 text-white text-sm focus:border-[#79C24C]/50 outline-none"
+                      className="bg-black/30 border border-white/10 rounded-xl px-2 py-1.5 text-white text-sm focus:border-[#79C24C]/50 outline-none focus-visible:ring-2 focus-visible:ring-[#79C24C]/60"
                     />
                   )}
                 </div>

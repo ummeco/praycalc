@@ -63,7 +63,7 @@ function ActivateContent() {
               value={formatCode(code)}
               onChange={e => setCode(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 8))}
               placeholder="ABCD-1234"
-              className="w-full bg-black/30 border border-white/20 rounded-2xl px-6 py-4 text-white text-3xl font-mono tracking-widest text-center placeholder-white/20 focus:border-[#79C24C]/50 outline-none mb-4"
+              className="w-full bg-black/30 border border-white/20 rounded-2xl px-6 py-4 text-white text-3xl font-mono tracking-widest text-center placeholder-white/20 focus:border-[#79C24C]/50 outline-none focus-visible:ring-2 focus-visible:ring-[#79C24C]/60 mb-4"
               maxLength={9}
               onKeyDown={e => e.key === 'Enter' && handleActivate()}
               autoCapitalize="characters"

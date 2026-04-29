@@ -63,7 +63,7 @@ function AnnounceModal({ group, onClose }: { group: Group; onClose: () => void }
               placeholder="e.g. Jumu'ah prayer starts at 1:30 PM in the main hall"
               maxLength={500}
               rows={4}
-              className="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:border-[#79C24C]/50 outline-none resize-none mb-2"
+              className="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:border-[#79C24C]/50 outline-none focus-visible:ring-2 focus-visible:ring-[#79C24C]/60 resize-none mb-2"
             />
             <div className="flex justify-between items-center mb-6">
               <span className="text-white/30 text-xs">{text.length}/500</span>
@@ -73,7 +73,7 @@ function AnnounceModal({ group, onClose }: { group: Group; onClose: () => void }
                   value={expiresIn}
                   onChange={e => setExpiresIn(Number(e.target.value))}
                   aria-label="Expiry duration"
-                  className="bg-black/30 border border-white/10 rounded-lg px-2 py-1 text-white text-sm outline-none"
+                  className="bg-black/30 border border-white/10 rounded-lg px-2 py-1 text-white text-sm outline-none focus-visible:ring-1 focus-visible:ring-[#79C24C]/60"
                 >
                   <option value={15}>15 min</option>
                   <option value={30}>30 min</option>
@@ -180,7 +180,7 @@ export default function TvGroupsPage() {
           value={newGroupName}
           onChange={e => setNewGroupName(e.target.value)}
           placeholder="New group name..."
-          className="flex-1 bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:border-[#79C24C]/50 outline-none"
+          className="flex-1 bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:border-[#79C24C]/50 outline-none focus-visible:ring-2 focus-visible:ring-[#79C24C]/60"
           onKeyDown={e => { if (e.key === 'Enter') createGroup(); }}
         />
         <button
