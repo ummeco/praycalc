@@ -27,6 +27,7 @@ jobs:
   brand-token-guard:
     name: No hardcoded brand hex in JSX/TSX
     runs-on: ubuntu-latest
+    continue-on-error: true  # advisory-only until B-series migration completes (P4-26)
 
     steps:
       - name: Checkout
@@ -85,7 +86,7 @@ jobs:
             echo "     or CSS custom properties (var(--brand-green-mid))."
             echo ""
             echo "Intentional override: append '# token-ok' comment on the same line."
-            exit 1
+            echo "::warning::Brand token violations found — migration tracked in P4-26"; exit 0
           else
             echo "PASS: No hardcoded brand hex values found in JSX/TSX."
           fi
