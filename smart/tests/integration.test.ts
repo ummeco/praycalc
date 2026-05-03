@@ -3,6 +3,32 @@ import request from 'supertest';
 import jwt from 'jsonwebtoken';
 import { app } from '../src/index.js';
 
+// Mock the SSRF guard's DNS lookup so integration tests don't require live DNS resolution.
+// Uses fictional subdomains (my-home.example.com, home.example.com) that won't resolve in CI.
+// Keeps scheme/localhost checks intact. ssrf-guard.test.ts tests the real implementation.
+vi.mock('../src/lib/ssrf-guard.js', async (importOriginal) => {
+  const mod = await importOriginal<typeof import('../src/lib/ssrf-guard.js')>();
+  return {
+    ...mod,
+    assertSafeFetchUrl: async (rawUrl: string) => {
+      let url: URL;
+      try {
+        url = new URL(rawUrl);
+      } catch {
+        throw new Error('Invalid URL');
+      }
+      if (url.protocol !== 'http:' && url.protocol !== 'https:') {
+        throw new mod.SsrfBlockedError(`scheme "${url.protocol}" is not allowed`);
+      }
+      const h = url.hostname.toLowerCase();
+      if (h === 'localhost' || h === '127.0.0.1' || h === '::1') {
+        throw new mod.SsrfBlockedError(`hostname "${h}" is not allowed`);
+      }
+      return url;
+    },
+  };
+});
+
 /**
  * Integration tests for PrayCalc Smart service.
  *
