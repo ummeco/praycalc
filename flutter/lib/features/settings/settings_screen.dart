@@ -12,7 +12,6 @@ import '../../core/services/sync_service.dart';
 import '../../core/utils/locale_calc_method.dart';
 // S6-15 — SubscriptionGate for premium feature tiles
 import '../../shared/widgets/subscription_gate.dart';
-import '../../shared/widgets/upgrade_sheet.dart';
 
 /// Supported locales: (display name, language code or null for system default).
 const _supportedLocales = [

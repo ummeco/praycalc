@@ -408,12 +408,12 @@ class SubscriptionNotifier extends Notifier<SubscriptionState> {
         final restored = await GoogleIAPService.instance.restorePurchases();
         if (restored.isNotEmpty) {
           final recent = restored.first;
-          final token_str = recent['purchaseToken'] as String? ?? '';
+          final tokenStr = recent['purchaseToken'] as String? ?? '';
           final userId = AuthService.instance.currentUser?.id;
           final token = AuthService.instance.accessToken;
-          if (userId != null && token != null && token_str.isNotEmpty) {
+          if (userId != null && token != null && tokenStr.isNotEmpty) {
             await _callValidateRoute(_kGoogleValidateUrl, {
-              'purchaseToken': token_str,
+              'purchaseToken': tokenStr,
               'productId': kUmmatPlusYearlyProductId,
               'userId': userId,
             }, token);

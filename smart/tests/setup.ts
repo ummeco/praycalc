@@ -10,6 +10,34 @@
 import { vi, beforeEach } from 'vitest';
 import { resetRateLimiter } from '../src/middleware/rate-limit.js';
 
+// Mock the SSRF guard's DNS lookup so integration tests don't require live DNS resolution.
+// The ssrf-guard.test.ts unit tests cover the real DNS-rebinding guard behaviour.
+// Integration tests use fictional subdomains (my-home.example.com, etc.) that won't resolve
+// in CI, causing 422s. We allow all valid http/https URLs here while keeping the scheme/IP
+// literal checks intact (those don't use DNS).
+vi.mock('../src/lib/ssrf-guard.js', async (importOriginal) => {
+  const mod = await importOriginal<typeof import('../src/lib/ssrf-guard.js')>();
+  return {
+    ...mod,
+    assertSafeFetchUrl: async (rawUrl: string) => {
+      let url: URL;
+      try {
+        url = new URL(rawUrl);
+      } catch {
+        throw new Error('Invalid URL');
+      }
+      if (url.protocol !== 'http:' && url.protocol !== 'https:') {
+        throw new mod.SsrfBlockedError(`scheme "${url.protocol}" is not allowed`);
+      }
+      const h = url.hostname.toLowerCase();
+      if (h === 'localhost' || h === '127.0.0.1' || h === '::1') {
+        throw new mod.SsrfBlockedError(`hostname "${h}" is not allowed`);
+      }
+      return url;
+    },
+  };
+});
+
 // Set env vars before app modules are loaded — the auth middleware reads these at module init
 process.env.HASURA_GRAPHQL_JWT_SECRET = 'test-secret';
 process.env.HASURA_GRAPHQL_URL = 'http://hasura:8080/v1/graphql';
