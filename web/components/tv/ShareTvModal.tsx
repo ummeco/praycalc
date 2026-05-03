@@ -113,6 +113,7 @@ export default function ShareTvModal({ deviceId, deviceName, token, onClose }: S
             </p>
             <div className="flex gap-2 w-full mt-2">
               <button
+                aria-label="Try again"
                 type="button"
                 onClick={reset}
                 className="flex-1 px-4 py-2 bg-[#1E5E2F]/40 hover:bg-[#1E5E2F]/60 text-[#C9F27A] rounded-xl text-sm font-medium transition-colors"
@@ -120,6 +121,7 @@ export default function ShareTvModal({ deviceId, deviceName, token, onClose }: S
                 Share with another
               </button>
               <button
+                aria-label="Close"
                 type="button"
                 onClick={onClose}
                 className="flex-1 px-4 py-2 bg-white/5 hover:bg-white/10 text-white/60 rounded-xl text-sm font-medium transition-colors"
@@ -236,6 +238,7 @@ export default function ShareTvModal({ deviceId, deviceName, token, onClose }: S
 
             {/* Submit */}
             <button
+              aria-label="Submit"
               type="submit"
               disabled={state === 'loading'}
               className="w-full py-2.5 bg-[#1E5E2F] hover:bg-[#2a7a3d] disabled:opacity-50 disabled:cursor-not-allowed text-[#C9F27A] rounded-xl font-medium text-sm transition-colors flex items-center justify-center gap-2"

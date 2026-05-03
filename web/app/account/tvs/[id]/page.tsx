@@ -256,6 +256,7 @@ function LocationPicker({
         <p className="text-white/30 text-xs">No results — try a different spelling or nearby city.</p>
       )}
       <button type="button" onClick={onCancel} className="text-white/35 hover:text-white/60 text-xs self-start mt-1 transition-colors">
+        aria-label="Cancel"
         Cancel
       </button>
     </div>
@@ -600,6 +601,7 @@ export default function TvDetailPage() {
                       : <span className="text-amber-400/70 text-sm">No location set</span>}
                   </div>
                   <button type="button" onClick={() => setEditingLocation(true)}
+                    aria-label="Edit"
                     className="text-[#C9F27A]/60 hover:text-[#C9F27A] text-xs px-2 py-1 rounded-lg border border-[#79C24C]/20 hover:border-[#79C24C]/50 transition-colors whitespace-nowrap flex-shrink-0">
                     {locationLabel ? 'Change' : 'Set location'}
                   </button>
@@ -633,6 +635,7 @@ export default function TvDetailPage() {
                     className="flex-1 min-w-0 bg-black/30 border border-white/10 rounded-lg px-3 py-2 text-white text-xs placeholder-white/25 focus:outline-none focus:border-[#79C24C]/50 focus-visible:ring-2 focus-visible:ring-[#79C24C]/60 transition-colors"
                   />
                   <button type="button" onClick={() => void handleShare()}
+                    aria-label="Share"
                     disabled={shareSending || !shareEmail.trim()}
                     className="px-3 py-2 bg-[#1E5E2F]/60 hover:bg-[#1E5E2F] text-[#C9F27A] rounded-lg text-xs font-medium transition-colors disabled:opacity-40 whitespace-nowrap">
                     {shareSending ? '…' : 'Send'}
@@ -662,6 +665,7 @@ export default function TvDetailPage() {
                   </p>
                   <div className="flex gap-2">
                     <button type="button" onClick={() => setShowRemoveConfirm(false)}
+                      aria-label="Close"
                       className="flex-1 py-2 text-sm text-white/50 hover:text-white/80 border border-white/10 hover:border-white/20 rounded-xl transition-colors">
                       Cancel
                     </button>

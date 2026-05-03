@@ -86,6 +86,7 @@ export default function OnboardingTooltip({
         >
           <p className="onboarding-tooltip-text">{text}</p>
           <button
+            aria-label="Close"
             type="button"
             className="onboarding-tooltip-btn"
             onClick={dismiss}

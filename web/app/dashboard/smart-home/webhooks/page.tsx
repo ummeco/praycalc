@@ -335,6 +335,7 @@ export default function WebhooksPage() {
                           {testing === wh.id ? "Sending..." : "Test"}
                         </button>
                         <button
+                          aria-label="Delete"
                           type="button"
                           onClick={() => handleDelete(wh.id)}
                           className="rounded px-3 py-1 text-xs text-red-400 transition hover:bg-red-900/20"

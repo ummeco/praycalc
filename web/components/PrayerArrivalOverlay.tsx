@@ -33,6 +33,7 @@ export default function PrayerArrivalOverlay({
         <div className="prayer-arrival-actions">
           {adhanPlaying && (
             <button
+              aria-label="Stop audio"
               type="button"
               className="prayer-arrival-stop-btn"
               onClick={onStop}
@@ -41,6 +42,7 @@ export default function PrayerArrivalOverlay({
             </button>
           )}
           <button
+            aria-label="Close"
             type="button"
             className="prayer-arrival-close-btn"
             onClick={onClose}

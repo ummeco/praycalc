@@ -244,6 +244,7 @@ export default function AccountPage() {
         {/* Dev-only login bypass */}
         {IS_DEV && showTabs && (
           <button
+            aria-label="Sign in"
             type="button"
             className="account-dev-login"
             onClick={handleDevLogin}
@@ -278,6 +279,7 @@ export default function AccountPage() {
           <div className="account-error">
             {error}{" "}
             <button
+              aria-label="Sign in"
               type="button"
               className="account-mode-toggle"
               onClick={() => switchMode("magic-link")}
@@ -304,6 +306,7 @@ export default function AccountPage() {
               autoFocus
             />
             <button
+              aria-label="Submit"
               type="submit"
               className="account-submit-btn"
               disabled={loading || !email.trim()}
@@ -336,6 +339,7 @@ export default function AccountPage() {
               autoComplete="current-password"
             />
             <button
+              aria-label="Submit"
               type="submit"
               className="account-submit-btn"
               disabled={loading || !email.trim() || !password}
@@ -401,6 +405,7 @@ export default function AccountPage() {
               autoComplete="new-password"
             />
             <button
+              aria-label="Submit"
               type="submit"
               className="account-submit-btn"
               disabled={loading || !email.trim() || !password || !confirmPassword}
@@ -434,6 +439,7 @@ export default function AccountPage() {
               autoFocus
             />
             <button
+              aria-label="Submit"
               type="submit"
               className="account-submit-btn"
               disabled={loading || !email.trim()}
@@ -441,6 +447,7 @@ export default function AccountPage() {
               {loading ? "Sending\u2026" : "Send Reset Link"}
             </button>
             <button
+              aria-label="Sign in"
               type="button"
               className="account-mode-toggle"
               onClick={() => switchMode("password")}
@@ -485,6 +492,7 @@ export default function AccountPage() {
               Check <strong>{email}</strong> for a password reset link.
             </p>
             <button
+              aria-label="Sign in"
               type="button"
               className="account-mode-toggle"
               onClick={() => switchMode("password")}

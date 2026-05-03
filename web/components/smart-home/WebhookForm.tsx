@@ -210,6 +210,7 @@ export default function WebhookForm({
       {/* Actions */}
       <div className="flex gap-3">
         <button
+          aria-label="Submit"
           type="submit"
           disabled={submitting}
           className="rounded-lg bg-[#79C24C] px-5 py-2 text-sm font-medium text-[#0D2F17] transition hover:bg-[#C9F27A] disabled:opacity-50"
@@ -217,6 +218,7 @@ export default function WebhookForm({
           {submitting ? "Saving..." : initialData ? "Update" : "Add webhook"}
         </button>
         <button
+          aria-label="Cancel"
           type="button"
           onClick={onCancel}
           className="rounded-lg border border-[#1E5E2F] px-5 py-2 text-sm text-gray-400 transition hover:bg-[#1E5E2F]/50"

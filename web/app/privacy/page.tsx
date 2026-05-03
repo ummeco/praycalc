@@ -157,6 +157,20 @@ export default function PrivacyPage() {
             </p>
           </section>
 
+          {/* C-07b: Recent Updates — appended 2026-04-30 */}
+          <section className="rounded-lg border border-[#79C24C]/20 bg-[#1E5E2F]/20 px-5 py-4">
+            <h2 className="mb-3 text-xl font-semibold text-[#79C24C]">Recent Updates (2026-04-25)</h2>
+            <p className="mb-2 text-sm text-white/50">The following changes reflect P3 platform decisions that took effect April 2026:</p>
+            <ul className="list-disc space-y-2 pl-6 text-sm">
+              <li>
+                <strong className="text-white/90">Analytics — PostHog removed:</strong> PostHog is no longer used on any Ummeco product (decision D-P3-21). PrayCalc uses only self-hosted <strong className="text-white/90">Umami</strong> for privacy-preserving, cookieless analytics. Umami does not fingerprint users or share data with third parties.
+              </li>
+              <li>
+                <strong className="text-white/90">AI features:</strong> PrayCalc does not currently use AI processing that sends personal data to external providers. This policy will be updated if AI features are added.
+              </li>
+            </ul>
+          </section>
+
           <div className="mt-8 border-t border-white/10 pt-6 text-sm text-white/40">
             <Link href="/terms" className="mr-4 hover:text-[#C9F27A] transition-colors">Terms of Service</Link>
             <Link href="/cookies" className="mr-4 hover:text-[#C9F27A] transition-colors">Cookie Policy</Link>

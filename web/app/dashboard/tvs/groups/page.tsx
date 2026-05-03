@@ -88,6 +88,7 @@ function AnnounceModal({ group, onClose }: { group: Group; onClose: () => void }
 
             <div className="flex gap-3">
               <button
+                aria-label="Close"
                 type="button"
                 onClick={onClose}
                 className="flex-1 py-3 rounded-xl border border-white/10 text-white/60 hover:text-white hover:border-white/20 transition-colors"

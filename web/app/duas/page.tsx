@@ -18,6 +18,7 @@ function CopyButton({ text }: { text: string }) {
   }, [text]);
   return (
     <button
+      aria-label="Copy to clipboard"
       type="button"
       onClick={copy}
       className="text-xs px-2 py-1 rounded-lg border border-white/10 text-white/40 hover:text-white/70 hover:border-white/20 transition-colors"

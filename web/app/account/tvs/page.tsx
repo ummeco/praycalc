@@ -177,6 +177,7 @@ function RemoveConfirmModal({ device, onConfirm, onCancel }: { device: TvDeviceE
           </div>
           <div className="flex gap-3 w-full mt-2">
             <button
+              aria-label="Cancel"
               type="button"
               onClick={onCancel}
               className="flex-1 px-4 py-3 bg-white/5 hover:bg-white/10 text-white/70 hover:text-white rounded-xl text-sm font-medium transition-colors"
@@ -589,6 +590,7 @@ export default function AccountTvsPage() {
           <div className="flex flex-col items-center py-24 gap-4 text-white/40">
             <p className="text-lg">Your session has expired.</p>
             <button type="button" onClick={() => void logout().then(() => setTokenRejected(false))} className="px-6 py-3 bg-[#1E5E2F] hover:bg-[#2a7a3d] text-[#C9F27A] rounded-xl text-sm font-medium transition-colors border border-[#79C24C]/30">
+              aria-label="Sign out"
               Sign out and sign in again
             </button>
           </div>
@@ -619,6 +621,7 @@ export default function AccountTvsPage() {
             {devLoginError && <p className="text-red-400 text-sm max-w-sm text-center">{devLoginError}</p>}
             {process.env.NODE_ENV === 'development' && (
               <button type="button" onClick={() => void devLogin()} disabled={devLoggingIn} className="px-6 py-2 bg-amber-900/40 hover:bg-amber-900/60 text-amber-300 rounded-xl text-sm font-medium">
+                aria-label="Sign in"
                 {devLoggingIn ? 'Signing in…' : '⚡ Dev Login (alisalaah@gmail.com)'}
               </button>
             )}
@@ -639,6 +642,7 @@ export default function AccountTvsPage() {
           <div className="flex items-center gap-2">
             <button type="button" onClick={() => void fetchDevices(token)} className="flex items-center gap-2 px-4 py-2.5 bg-white/5 hover:bg-white/10 text-white/60 hover:text-white/90 rounded-xl font-medium text-sm transition-colors" title="Refresh" aria-label="Refresh">↻</button>
             <button type="button" onClick={() => setShowAddTv(true)} className="flex items-center gap-2 px-5 py-2.5 bg-[#1E5E2F] hover:bg-[#2a7a3d] text-[#C9F27A] rounded-xl font-medium text-sm transition-colors whitespace-nowrap border border-[#79C24C]/30">
+              aria-label="Add TV"
               <span className="text-lg leading-none">+</span> Add TV
             </button>
           </div>
@@ -659,6 +663,7 @@ export default function AccountTvsPage() {
             <p className="text-xl">No TVs paired yet.</p>
             <p className="mt-2 mb-6">Open PrayCalc on your TV and enter the code shown here.</p>
             <button type="button" onClick={() => setShowAddTv(true)} className="px-6 py-3 bg-[#1E5E2F] hover:bg-[#2a7a3d] text-[#C9F27A] rounded-xl font-medium transition-colors border border-[#79C24C]/30">
+              aria-label="Add TV"
               + Add Your First TV
             </button>
           </div>

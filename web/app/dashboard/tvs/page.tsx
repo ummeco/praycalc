@@ -423,6 +423,7 @@ export default function PairedTvsPage() {
         <div className="flex flex-col items-center py-24 gap-4 text-white/40">
           <p className="text-lg">{t('sessionExpired')}</p>
           <button
+            aria-label="Sign out"
             type="button"
             onClick={() => void logout().then(() => { setTokenRejected(false); })}
             className="px-6 py-3 bg-[#1E5E2F] hover:bg-[#2a7a3d] text-[#C9F27A] rounded-xl text-sm font-medium transition-colors border border-[#79C24C]/30"
@@ -459,6 +460,7 @@ export default function PairedTvsPage() {
           )}
           {process.env.NODE_ENV === 'development' && (
             <button
+              aria-label="Sign in"
               type="button"
               onClick={() => void devLogin()}
               disabled={devLoggingIn}
@@ -490,6 +492,7 @@ export default function PairedTvsPage() {
             ↻
           </button>
           <button
+            aria-label="Add TV"
             type="button"
             onClick={() => setShowAddTv(true)}
             className="flex items-center gap-2 px-5 py-2.5 bg-[#1E5E2F] hover:bg-[#2a7a3d] text-[#C9F27A] rounded-xl font-medium text-sm transition-colors whitespace-nowrap"
@@ -518,6 +521,7 @@ export default function PairedTvsPage() {
           <p className="text-xl">{t('noPairedTvs')}</p>
           <p className="mt-2 mb-6">{t('openOnTvInstructions')}</p>
           <button
+            aria-label="Add TV"
             type="button"
             onClick={() => setShowAddTv(true)}
             className="px-6 py-3 bg-[#1E5E2F] hover:bg-[#2a7a3d] text-[#C9F27A] rounded-xl font-medium transition-colors"
@@ -719,6 +723,7 @@ function LocationPicker({ onSave, onCancel, current }: {
         <p className="text-white/30 text-xs">{t('noResults')}</p>
       )}
       <button type="button" onClick={onCancel} className="text-white/35 hover:text-white/60 text-xs self-start mt-1 transition-colors">{t('cancel')}</button>
+        aria-label="Cancel"
     </div>
   );
 }

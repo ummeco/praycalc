@@ -465,6 +465,7 @@ export default function AccountDeletePage() {
 
               {/* Submit */}
               <button
+                aria-label="Submit"
                 type="submit"
                 disabled={state.phase === "submitting"}
                 aria-busy={state.phase === "submitting"}

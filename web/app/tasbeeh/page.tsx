@@ -155,6 +155,7 @@ export default function TasbeehPage() {
         {/* Controls */}
         <div className="flex gap-3">
           <button
+            aria-label="Try again"
             type="button"
             onClick={reset}
             className="px-5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white/50 hover:text-white/70 text-sm transition-colors"
@@ -162,6 +163,7 @@ export default function TasbeehPage() {
             Reset
           </button>
           <button
+            aria-label="Count dhikr"
             type="button"
             onClick={increment}
             className="px-8 py-2.5 rounded-xl bg-[#1E5E2F] border border-[#79C24C]/30 text-[#C9F27A] font-semibold text-sm hover:bg-[#79C24C]/20 transition-colors"

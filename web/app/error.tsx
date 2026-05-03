@@ -76,6 +76,7 @@ export default function GlobalError({ error, reset }: ErrorPageProps) {
         }}
       >
         <button
+          aria-label="Try again"
           onClick={reset}
           style={{
             padding: "0.625rem 1.25rem",

@@ -293,6 +293,7 @@ export default function MasjidScheduleBuilder() {
           <label className="masjid-label">Language</label>
           <div className="masjid-toggle-group">
             <button
+              aria-label="Change language"
               type="button"
               className={`masjid-toggle ${language === "en" ? "masjid-toggle--active" : ""}`}
               onClick={() => setLanguage("en")}
@@ -300,6 +301,7 @@ export default function MasjidScheduleBuilder() {
               English
             </button>
             <button
+              aria-label="Change language"
               type="button"
               className={`masjid-toggle ${language === "ar" ? "masjid-toggle--active" : ""}`}
               onClick={() => setLanguage("ar")}
@@ -307,6 +309,7 @@ export default function MasjidScheduleBuilder() {
               العربية
             </button>
             <button
+              aria-label="Change language"
               type="button"
               className={`masjid-toggle ${language === "both" ? "masjid-toggle--active" : ""}`}
               onClick={() => setLanguage("both")}

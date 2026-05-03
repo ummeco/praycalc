@@ -244,6 +244,7 @@ export default function AccountDashboard({ session, settings, onLogout }: Props)
       {/* Sign out + delete */}
       <div className="dashboard-footer">
         <button type="button" className="dashboard-signout-btn" onClick={onLogout}>
+          aria-label="Sign out"
           {t("signOut")}
         </button>
         <Link href="/" className="account-back">

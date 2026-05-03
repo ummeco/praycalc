@@ -247,6 +247,7 @@ export default function TvQuranPanel({ deviceId, isOnline, quranVideoMode }: TvQ
           <div className="flex gap-2 mt-3">
             {nowPlaying.isPlaying ? (
               <button
+                aria-label="Pause audio"
                 type="button"
                 onClick={handlePause}
                 disabled={sending || !isOnline}
@@ -265,6 +266,7 @@ export default function TvQuranPanel({ deviceId, isOnline, quranVideoMode }: TvQ
               </button>
             )}
             <button
+              aria-label="Stop audio"
               type="button"
               onClick={handleStop}
               disabled={sending || !isOnline}
@@ -346,6 +348,7 @@ export default function TvQuranPanel({ deviceId, isOnline, quranVideoMode }: TvQ
 
       {/* Play button */}
       <button
+        aria-label="Play audio"
         type="button"
         onClick={handlePlay}
         disabled={sending || !isOnline}

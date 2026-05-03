@@ -92,6 +92,7 @@ export default function NotFound() {
           }}
         />
         <button
+          aria-label="Submit"
           type="submit"
           style={{
             padding: "0.625rem 1rem",

@@ -84,6 +84,7 @@ export default function LocationPermissionModal({ state, onAllow, onDismiss }: P
           </button>
         ) : (
           <button
+            aria-label="Close"
             type="button"
             onClick={onDismiss}
             className="location-modal-allow-btn"
@@ -93,6 +94,7 @@ export default function LocationPermissionModal({ state, onAllow, onDismiss }: P
         )}
 
         <button
+          aria-label="Close"
           type="button"
           onClick={onDismiss}
           className="location-modal-dismiss-btn"

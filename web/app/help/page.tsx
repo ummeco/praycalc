@@ -228,6 +228,7 @@ function AccordionItem({ item }: { item: FAQItem }) {
   return (
     <div className="border-b border-white/10 last:border-b-0">
       <button
+        aria-label="Toggle navigation menu"
         className="flex w-full items-center justify-between py-4 text-left text-white hover:text-[#C9F27A] transition-colors"
         onClick={() => setIsOpen(!isOpen)}
         aria-expanded={isOpen}

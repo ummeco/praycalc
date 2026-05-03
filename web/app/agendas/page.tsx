@@ -157,6 +157,7 @@ function AgendaEditor({ agenda, token, onSave, onCancel }: {
 
         <div className="flex gap-3">
           <button type="button" onClick={onCancel}
+            aria-label="Cancel"
             className="flex-1 py-3 rounded-2xl border border-white/10 text-white/50 text-sm hover:text-white/70 transition-colors">
             Cancel
           </button>
@@ -250,6 +251,7 @@ export default function AgendasPage() {
             <p className="text-white/40 text-sm mt-1">Schedule events anchored to prayer times</p>
           </div>
           <button type="button" onClick={() => setEditing({})}
+            aria-label="Edit"
             className="bg-[#1E5E2F] border border-[#79C24C]/30 text-[#C9F27A] font-semibold rounded-xl px-4 py-2 text-sm hover:bg-[#79C24C]/20 transition-colors">
             + New
           </button>
@@ -262,6 +264,7 @@ export default function AgendasPage() {
             <div className="text-5xl mb-4">📋</div>
             <p className="text-white/40 mb-2">No agendas yet</p>
             <button type="button" onClick={() => setEditing({})}
+              aria-label="Edit"
               className="text-[#C9F27A] text-sm hover:underline">
               Create your first agenda
             </button>
@@ -296,10 +299,12 @@ export default function AgendasPage() {
                 </div>
                 <div className="flex items-center gap-1 flex-shrink-0">
                   <button type="button" onClick={() => setEditing(agenda)}
+                    aria-label="Edit"
                     className="text-white/30 hover:text-white/60 p-1.5 rounded-lg hover:bg-white/5 transition-colors text-sm" title="Edit">
                     ✏️
                   </button>
                   <button type="button" onClick={() => handleDelete(agenda.id)} disabled={deleting === agenda.id}
+                    aria-label="Delete"
                     className="text-white/30 hover:text-red-400 p-1.5 rounded-lg hover:bg-white/5 transition-colors text-sm disabled:opacity-30" title="Delete">
                     🗑️
                   </button>

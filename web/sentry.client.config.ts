@@ -1,21 +1,33 @@
 import * as Sentry from "@sentry/nextjs";
 
-// Client-side Sentry initialization.
-// DSN is read from the NEXT_PUBLIC_SENTRY_DSN env var.
-// If the var is not set, Sentry is a no-op (no error is thrown).
+// Client-side Sentry initialization for PrayCalc.
+// DSN is read from NEXT_PUBLIC_SENTRY_DSN (set in Vercel project: ummat-praycalc).
+// No DSN → Sentry is a no-op; no error is thrown. Safe to ship without a DSN in dev.
 Sentry.init({
   dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
 
-  // Capture 10% of transactions for performance monitoring.
-  // Increase toward 1.0 in development for easier debugging.
+  // Only active in production — avoids noise in local dev.
+  enabled: !!process.env.NEXT_PUBLIC_SENTRY_DSN && process.env.NODE_ENV === 'production',
+
+  // 10% of transactions for performance monitoring.
   tracesSampleRate: 0.1,
 
-  // Capture 10% of sessions for session replay.
-  // Replay records user interactions at the time of an error.
+  // C-08a-FIX-P0: Session replay — no general sampling until consent-gated replay ships.
+  // Errors always captured (1.0). General sampling disabled (0.0).
   replaysOnErrorSampleRate: 1.0,
-  replaysSessionSampleRate: 0.1,
+  replaysSessionSampleRate: 0.0,
 
-  // Sentry is fully disabled when no DSN is provided.
-  // This allows the app to run locally without a Sentry project.
-  enabled: !!process.env.NEXT_PUBLIC_SENTRY_DSN,
+  integrations: [
+    // C-08a-FIX-P0: maskAllText + blockAllMedia for privacy compliance.
+    Sentry.replayIntegration({ maskAllText: true, blockAllMedia: true }),
+  ],
+
+  // PII scrubbing — strip sensitive fields before sending to Sentry.
+  beforeSend(event) {
+    if (event.user) {
+      delete event.user.email;
+      delete event.user.ip_address;
+    }
+    return event;
+  },
 });

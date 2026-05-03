@@ -103,6 +103,7 @@ export default function SettingsPanel({
       {isLoggedIn ? (
         <div className="settings-auth-signed-in">
           <button type="button" className="settings-auth-btn settings-auth-btn--account" onClick={onLogin}>
+            aria-label="Sign in"
             <div className="settings-auth-avatar">
               {userPhotoUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
@@ -114,11 +115,13 @@ export default function SettingsPanel({
             {userName ?? t("myAccount")}
           </button>
           <button type="button" className="settings-signout-link" onClick={onLogout}>
+            aria-label="Sign out"
             {t("signOut")}
           </button>
         </div>
       ) : (
         <button type="button" className="settings-auth-btn" onClick={onLogin}>
+          aria-label="Sign in"
           <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75}
               d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />

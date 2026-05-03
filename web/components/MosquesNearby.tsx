@@ -133,6 +133,7 @@ export default function MosquesNearby() {
             </ul>
           )}
           <button
+            aria-label="Refresh"
             type="button"
             onClick={find}
             className="text-white/30 text-xs mt-3 hover:text-white/50 transition-colors"

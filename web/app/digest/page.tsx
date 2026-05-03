@@ -55,6 +55,7 @@ export default function DigestPage() {
             className="border border-green-200 rounded-xl px-4 py-3 text-center text-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus-visible:ring-2 focus-visible:ring-green-600"
           />
           <button
+            aria-label="Submit"
             type="submit"
             disabled={status === 'loading'}
             className="bg-green-800 text-white py-3 rounded-xl font-semibold hover:bg-green-900 disabled:opacity-50 transition-colors">
