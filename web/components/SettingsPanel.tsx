@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useTranslations } from "next-intl";
 import type { AdhanVoice, HomeMode } from "@/lib/settings";
 import type { SoundMode } from "@/hooks/useSettings";
@@ -114,6 +115,12 @@ export default function SettingsPanel({
             </div>
             {userName ?? t("myAccount")}
           </button>
+          <div className="settings-row">
+            <span className="settings-label">{t("accountSettings")}</span>
+            <Link href="/account" className="settings-manage-link">
+              {t("manageInAccount")}
+            </Link>
+          </div>
           <button type="button" className="settings-signout-link" onClick={onLogout}>
             aria-label="Sign out"
             {t("signOut")}

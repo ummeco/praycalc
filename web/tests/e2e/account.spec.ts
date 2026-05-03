@@ -359,6 +359,12 @@ test.describe("Settings gear — signed-in state on city page", () => {
     await expect(panel.locator(".settings-signout-link")).toBeVisible();
   });
 
+  test("shows Account Settings row with Manage link", async ({ page }) => {
+    const panel = page.locator(".settings-panel");
+    await expect(panel.locator(".settings-manage-link")).toBeVisible();
+    await expect(panel.locator(".settings-manage-link")).toContainText("Manage");
+  });
+
   test("notification and Home City sections are still visible", async ({
     page,
   }) => {
