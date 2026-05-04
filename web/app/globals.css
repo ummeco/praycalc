@@ -6,8 +6,9 @@
   --color-ummat-dark: #1E5E2F;
   --color-ummat-deep: #0A2010;
 
-  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  /* B1-03: Inter self-hosted via next/font/google (downloaded at build time, no CDN) */
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, monospace;
 }
 
 html,

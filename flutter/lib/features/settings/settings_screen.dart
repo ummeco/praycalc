@@ -4,14 +4,24 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../core/models/user_prefs.dart';
 import '../../core/providers/auth_provider.dart';
 import '../../core/providers/settings_provider.dart';
 import '../../core/providers/sync_provider.dart';
 import '../../core/router/app_router.dart';
+import '../../core/services/graphql_service.dart';
 import '../../core/services/sync_service.dart';
 import '../../core/utils/locale_calc_method.dart';
 // S6-15 — SubscriptionGate for premium feature tiles
 import '../../shared/widgets/subscription_gate.dart';
+
+// ── S19-H T37: Settings-level sync toggle + conflict resolution notice ─────────────────
+
+/// Provider that exposes the last conflict message, if any.
+final _syncConflictProvider = Provider<String?>((ref) {
+  final log = SyncService.instance.conflictLog;
+  return log.isNotEmpty ? log.first.summary : null;
+});
 
 /// Supported locales: (display name, language code or null for system default).
 const _supportedLocales = [
@@ -59,6 +69,25 @@ class SettingsScreen extends ConsumerWidget {
           orElse: () => _supportedLocales.first,
         )
         .$1;
+
+    // S19-H T37: Push prefs to backend whenever settings change and user is logged in.
+    ref.listen(settingsProvider, (prev, next) {
+      if (!auth.isAuthenticated) return;
+      final prefs = UserPrefs(
+        id: '',
+        userId: auth.user?.id ?? '',
+        calcMethod: next.calcMethod ?? 'isna',
+        hanafiAsr: next.hanafi,
+        timeFormat: next.use24h ? '24h' : 'auto',
+        hijriOffset: 0,
+        showMoonPhase: true,
+        homeLat: next.homeLat,
+        homeLng: next.homeLng,
+        locale: next.locale,
+        updatedAt: DateTime.now(),
+      );
+      UserPrefsSyncService(GraphQLService.instance).pushPrefsToBackend(prefs).catchError((_) {});
+    });
 
     return Scaffold(
       appBar: AppBar(title: Text(l.settingsTitle)),
@@ -132,6 +161,38 @@ class SettingsScreen extends ConsumerWidget {
               onTap: () => context.push(Routes.login),
             ),
           ],
+
+          // ── S19-H T37: Device Sync ──────────────────────────────────────
+          _SectionHeader('Device Sync'),
+          if (auth.isAuthenticated) ...[
+            // Last sync timestamp + manual sync button.
+            ListTile(
+              leading: const Icon(Icons.sync_outlined),
+              title: const Text('Sync now'),
+              subtitle: sync.lastSyncedAt != null
+                  ? Text('Last synced ${_formatRelative(sync.lastSyncedAt!)}')
+                  : const Text('Not synced yet'),
+              trailing: sync.status == SyncStatus.syncing
+                  ? const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Icon(Icons.chevron_right),
+              onTap: sync.status == SyncStatus.syncing
+                  ? null
+                  : () => ref.read(syncProvider.notifier).syncNow(),
+            ),
+            // Conflict resolution notice (shown when remote overwrote local).
+            _SyncConflictBanner(),
+          ] else
+            ListTile(
+              leading: const Icon(Icons.sync_disabled_outlined),
+              title: const Text('Sign in to enable sync'),
+              subtitle: const Text('Sync settings and prayer times across all your devices'),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => context.push(Routes.login),
+            ),
 
           // ── Prayer calculation ───────────────────────────────────────────
           _SectionHeader(l.settingsSectionPrayerCalc),
@@ -541,4 +602,61 @@ class _SectionHeader extends StatelessWidget {
       ),
     );
   }
+}
+
+// S19-H T37: Conflict resolution banner ──────────────────────────────────────
+
+/// Shows a dismissible info banner when a remote-wins conflict was resolved.
+/// Informs the user: "Local changes saved; remote preferences applied on login".
+class _SyncConflictBanner extends ConsumerStatefulWidget {
+  @override
+  ConsumerState<_SyncConflictBanner> createState() => _SyncConflictBannerState();
+}
+
+class _SyncConflictBannerState extends ConsumerState<_SyncConflictBanner> {
+  bool _dismissed = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final conflictMsg = ref.watch(_syncConflictProvider);
+    if (_dismissed || conflictMsg == null) return const SizedBox.shrink();
+
+    return MaterialBanner(
+      backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
+      padding: const EdgeInsets.fromLTRB(16, 8, 8, 8),
+      leading: Icon(
+        Icons.info_outline,
+        color: Theme.of(context).colorScheme.onSecondaryContainer,
+      ),
+      content: Text(
+        'Local changes saved; remote preferences applied on login.',
+        style: TextStyle(
+          color: Theme.of(context).colorScheme.onSecondaryContainer,
+          fontSize: 13,
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () async {
+            await SyncService.instance.clearConflictLog();
+            if (mounted) setState(() => _dismissed = true);
+          },
+          child: const Text('Dismiss'),
+        ),
+      ],
+    );
+  }
+}
+
+/// Formats a [DateTime] as a human-readable relative string (e.g. "2 min ago").
+String _formatRelative(DateTime dt) {
+  final diff = DateTime.now().difference(dt);
+  if (diff.inSeconds < 60) return 'just now';
+  if (diff.inMinutes < 60) {
+    return '${diff.inMinutes} min ago';
+  }
+  if (diff.inHours < 24) {
+    return '${diff.inHours}h ago';
+  }
+  return '${diff.inDays}d ago';
 }

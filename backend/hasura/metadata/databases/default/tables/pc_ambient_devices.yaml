@@ -1,0 +1,67 @@
+table:
+  name: pc_ambient_devices
+  schema: public
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - id
+        - device_id
+        - platform
+        - pairing_code
+        - paired_at
+        - home_lat
+        - home_lng
+        - home_label
+        - last_seen_at
+      filter:
+        user_id:
+          _eq: X-Hasura-User-Id
+  - role: admin
+    permission:
+      columns: "*"
+      filter: {}
+insert_permissions:
+  - role: user
+    permission:
+      columns:
+        - user_id
+        - device_id
+        - platform
+        - pairing_code
+        - home_lat
+        - home_lng
+        - home_label
+      check:
+        user_id:
+          _eq: X-Hasura-User-Id
+  - role: admin
+    permission:
+      columns: "*"
+      check: {}
+update_permissions:
+  - role: user
+    permission:
+      columns:
+        - pairing_code
+        - paired_at
+        - home_lat
+        - home_lng
+        - home_label
+        - last_seen_at
+      filter:
+        user_id:
+          _eq: X-Hasura-User-Id
+  - role: admin
+    permission:
+      columns: "*"
+      filter: {}
+delete_permissions:
+  - role: user
+    permission:
+      filter:
+        user_id:
+          _eq: X-Hasura-User-Id
+  - role: admin
+    permission:
+      filter: {}

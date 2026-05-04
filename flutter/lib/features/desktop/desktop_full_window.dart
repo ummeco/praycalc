@@ -10,6 +10,7 @@ import '../../core/providers/prayer_provider.dart';
 import '../../core/providers/ramadan_provider.dart';
 import '../../core/providers/settings_provider.dart';
 import '../../core/providers/weather_provider.dart';
+import '../../core/services/locale_service.dart';
 import '../../core/theme/app_theme.dart';
 import '../../shared/models/moon_phase.dart';
 import '../tv/tv_device_list_screen.dart';
@@ -392,11 +393,13 @@ class _DesktopCurrentTime extends StatelessWidget {
     );
   }
 
+  // T38: delegate to LocaleService (seconds added manually)
   String _formatCurrentTime() {
+    final fmt = LocaleService.instance.timeFormat;
     final hh = now.hour;
     final mm = now.minute.toString().padLeft(2, '0');
     final ss = now.second.toString().padLeft(2, '0');
-    if (use24h) {
+    if (fmt == TimeFormat.h24) {
       return '${hh.toString().padLeft(2, '0')}:$mm:$ss';
     }
     final period = hh >= 12 ? 'PM' : 'AM';
@@ -566,16 +569,14 @@ class _DesktopPrayerGrid extends StatelessWidget {
     );
   }
 
+  // T38: delegate to LocaleService.formatPrayerTime
   String _formatH(double h) {
     final totalMin = (h * 60).round();
     final hh = (totalMin ~/ 60) % 24;
     final mm = totalMin % 60;
-    if (use24h) {
-      return '${hh.toString().padLeft(2, '0')}:${mm.toString().padLeft(2, '0')}';
-    }
-    final period = hh >= 12 ? 'PM' : 'AM';
-    final h12 = hh % 12 == 0 ? 12 : hh % 12;
-    return '$h12:${mm.toString().padLeft(2, '0')} $period';
+    final now = DateTime.now();
+    final t = DateTime(now.year, now.month, now.day, hh, mm);
+    return LocaleService.instance.formatPrayerTime(t);
   }
 }
 

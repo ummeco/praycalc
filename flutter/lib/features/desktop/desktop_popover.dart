@@ -6,6 +6,7 @@ import 'package:pray_calc_dart/pray_calc_dart.dart';
 
 import '../../core/providers/prayer_provider.dart';
 import '../../core/providers/settings_provider.dart';
+import '../../core/services/locale_service.dart';
 import '../../core/theme/app_theme.dart';
 
 /// Compact dark popover card shown when clicking the system tray icon.
@@ -243,17 +244,15 @@ class _PopoverPrayerList extends StatelessWidget {
     );
   }
 
+  // T38: delegate to LocaleService.formatPrayerTime
   String _formatH(double h) {
     if (!h.isFinite) return 'N/A';
     final totalMin = (h * 60).round();
     final hh = (totalMin ~/ 60) % 24;
     final mm = totalMin % 60;
-    if (use24h) {
-      return '${hh.toString().padLeft(2, '0')}:${mm.toString().padLeft(2, '0')}';
-    }
-    final period = hh >= 12 ? 'PM' : 'AM';
-    final h12 = hh % 12 == 0 ? 12 : hh % 12;
-    return '$h12:${mm.toString().padLeft(2, '0')} $period';
+    final now = DateTime.now();
+    final t = DateTime(now.year, now.month, now.day, hh, mm);
+    return LocaleService.instance.formatPrayerTime(t);
   }
 }
 

@@ -22,6 +22,7 @@ import '../../core/providers/settings_provider.dart';
 import '../../core/providers/tv_provider.dart';
 import '../../core/providers/weather_provider.dart';
 import '../../core/router/app_router.dart';
+import '../../core/services/locale_service.dart';
 import '../../core/services/media_pause_service.dart';
 import '../../core/services/tv_launcher_service.dart';
 import '../../core/theme/app_theme.dart';
@@ -51,6 +52,16 @@ import 'tv_quran_verse_display.dart';
 import '../../core/services/tv_sse_service.dart';
 import '../../core/services/tv_settings_ws_service.dart';
 import 'tv_quran_service.dart';
+import 'tv_prayer_arrival_overlay.dart';
+import '../../core/providers/feature_flags_provider.dart';
+
+// ─── TV display scaling ─────────────────────────────────────────────────────
+
+/// Returns 1.3 on 4K displays (devicePixelRatio >= 3.0), 1.0 otherwise.
+/// Used to scale typography for readability at 4K distance.
+double tvTextScale(BuildContext context) {
+  return MediaQuery.of(context).devicePixelRatio >= 3.0 ? 1.3 : 1.0;
+}
 
 // ─── Prayer metadata (shared with home_screen pattern) ─────────────────────
 
@@ -308,16 +319,14 @@ class _TvHomeScreenState extends ConsumerState<TvHomeScreen> {
         '${ss.toString().padLeft(2, '0')}';
   }
 
+  // T38: delegate to LocaleService.formatPrayerTime
   String _formatH(double h, bool use24h) {
     final totalMin = (h * 60).round();
     final hh = (totalMin ~/ 60) % 24;
     final mm = totalMin % 60;
-    if (use24h) {
-      return '${hh.toString().padLeft(2, '0')}:${mm.toString().padLeft(2, '0')}';
-    }
-    final period = hh >= 12 ? 'PM' : 'AM';
-    final h12 = hh % 12 == 0 ? 12 : hh % 12;
-    return '$h12:${mm.toString().padLeft(2, '0')} $period';
+    final now = DateTime.now();
+    final t = DateTime(now.year, now.month, now.day, hh, mm);
+    return LocaleService.instance.formatPrayerTime(t);
   }
 
   // ─── Guest mode detection (L-4) ────────────────────────────────────────────
@@ -970,6 +979,23 @@ class _TvHomeScreenState extends ConsumerState<TvHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // FF_TV gate — default true. If disabled, show locked screen.
+    final ff = ref.watch(featureFlagsProvider);
+    if (!ff.tv) {
+      return const Scaffold(
+        backgroundColor: Color(0xFF0D2F17),
+        body: Center(
+          child: Text(
+            'PrayCalc TV is not available on this device.',
+            style: TextStyle(color: Colors.white54, fontSize: 24),
+          ),
+        ),
+      );
+    }
+
+    // 4K scaling: tvTextScale() returns 1.3 when devicePixelRatio >= 3.0
+    // Individual widgets that need scaling should call tvTextScale(context).
+
     final city = ref.watch(cityProvider);
     final settings = ref.watch(settingsProvider);
     final timesAsync = ref.watch(prayerTimesProvider);
@@ -2461,19 +2487,22 @@ class _TvCurrentTime extends StatelessWidget {
     );
   }
 
+  // T38: delegate to LocaleService (include seconds, no AM/PM merged)
   String _formatCurrentTime() {
+    final fmt = LocaleService.instance.timeFormat;
     final hh = now.hour;
     final mm = now.minute.toString().padLeft(2, '0');
     final ss = now.second.toString().padLeft(2, '0');
-    if (use24h) {
+    if (fmt == TimeFormat.h24) {
       return '${hh.toString().padLeft(2, '0')}:$mm:$ss';
     }
     final h12 = hh % 12 == 0 ? 12 : hh % 12;
     return '$h12:$mm:$ss';
   }
 
+  // T38: period still shown as separate widget on TV display
   String? _periodStr() {
-    if (use24h) return null;
+    if (LocaleService.instance.timeFormat == TimeFormat.h24) return null;
     return now.hour >= 12 ? 'PM' : 'AM';
   }
 }

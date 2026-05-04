@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+// B1-03: Self-hosted via next/font/google — Next.js downloads Inter at build
+// time and serves it from the same origin. No Google CDN calls at runtime.
+import { Inter } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import Script from "next/script";
@@ -7,14 +9,10 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getLocale, getMessages } from 'next-intl/server';
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+const inter = Inter({
+  variable: "--font-inter",
+  subsets: ["latin", "latin-ext"],
+  display: "swap",
 });
 
 const BASE_URL = "https://praycalc.com";
@@ -99,7 +97,7 @@ export default async function RootLayout({
   return (
     <html lang={locale} dir={['ar', 'ur', 'fa', 'ps', 'ku'].includes(locale) ? 'rtl' : 'ltr'}>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${inter.variable} antialiased`}
       >
         {/* Skip-to-content link — keyboard/screen reader users jump past nav */}
         <a

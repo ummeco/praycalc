@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:pray_calc_dart/pray_calc_dart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../core/services/locale_service.dart';
 import '../../core/theme/app_theme.dart';
 
 // ── Prayer card data ──────────────────────────────────────────────────────────
@@ -115,74 +116,89 @@ class _PrayerCardFanState extends State<PrayerCardFan>
     _scheduleAutoCollapse();
   }
 
+  // T38: delegate to LocaleService.formatPrayerTime
   String _formatH(double h) {
     if (!h.isFinite) return '—';
     final totalMin = (h * 60).round();
     final hh = (totalMin ~/ 60) % 24;
     final mm = totalMin % 60;
-    if (widget.use24h) {
-      return '${hh.toString().padLeft(2, '0')}:${mm.toString().padLeft(2, '0')}';
-    }
-    final period = hh >= 12 ? 'PM' : 'AM';
-    final h12 = hh % 12 == 0 ? 12 : hh % 12;
-    return '$h12:${mm.toString().padLeft(2, '0')} $period';
+    final now = DateTime.now();
+    final t = DateTime(now.year, now.month, now.day, hh, mm);
+    return LocaleService.instance.formatPrayerTime(t);
   }
 
   @override
   Widget build(BuildContext context) {
     final cards = _cards;
 
-    return GestureDetector(
+    // T41 accessibility: announce all prayer times when collapsed; each card
+    // gets its own label when spread so screen readers can navigate them.
+    final collapsedLabel = cards
+        .map((c) => '${c.label}: ${_formatH(c.hours)}${c.isNext ? " (next)" : ""}')
+        .join(', ');
+
+    return Semantics(
+      label: _isSpread ? null : 'Prayer times. $collapsedLabel. Double tap to expand.',
+      button: !_isSpread,
       onTap: _isSpread ? null : _toggleSpread,
-      child: SizedBox(
-        height: 140,
-        child: AnimatedBuilder(
-          animation: _spreadAnim,
-          builder: (context, _) {
-            final spread = _spreadAnim.value;
-            return Stack(
-              alignment: Alignment.center,
-              clipBehavior: Clip.none,
-              children: List.generate(cards.length, (i) {
-                final card = cards[i];
-                final isSelected = _selectedCard == i;
+      child: GestureDetector(
+        onTap: _isSpread ? null : _toggleSpread,
+        child: SizedBox(
+          height: 140,
+          child: AnimatedBuilder(
+            animation: _spreadAnim,
+            builder: (context, _) {
+              final spread = _spreadAnim.value;
+              return Stack(
+                alignment: Alignment.center,
+                clipBehavior: Clip.none,
+                children: List.generate(cards.length, (i) {
+                  final card = cards[i];
+                  final isSelected = _selectedCard == i;
 
-                // Stacked angles: [-3°, -1°, 0°, +1°, +3°]
-                final stackedAngles = [-3.0, -1.0, 0.0, 1.0, 3.0];
-                // Spread angles: [-20°, -10°, 0°, +10°, +20°]
-                final spreadAngles = [-20.0, -10.0, 0.0, 10.0, 20.0];
+                  // Stacked angles: [-3°, -1°, 0°, +1°, +3°]
+                  final stackedAngles = [-3.0, -1.0, 0.0, 1.0, 3.0];
+                  // Spread angles: [-20°, -10°, 0°, +10°, +20°]
+                  final spreadAngles = [-20.0, -10.0, 0.0, 10.0, 20.0];
 
-                final stackAngle = stackedAngles[i] * math.pi / 180;
-                final spreadAngle = spreadAngles[i] * math.pi / 180;
-                final angle = stackAngle + (spreadAngle - stackAngle) * spread;
+                  final stackAngle = stackedAngles[i] * math.pi / 180;
+                  final spreadAngle = spreadAngles[i] * math.pi / 180;
+                  final angle = stackAngle + (spreadAngle - stackAngle) * spread;
 
-                // Horizontal offset when spread
-                final spreadOffsetX = (i - 2) * 70.0;
-                final offsetX = spreadOffsetX * spread;
+                  // Horizontal offset when spread
+                  final spreadOffsetX = (i - 2) * 70.0;
+                  final offsetX = spreadOffsetX * spread;
 
-                // Elevation: selected card pops up slightly
-                final offsetY = isSelected ? -8.0 : 0.0;
+                  // Elevation: selected card pops up slightly
+                  final offsetY = isSelected ? -8.0 : 0.0;
 
-                return Positioned(
-                  child: GestureDetector(
-                    onTap: _isSpread ? () => _onCardTap(i) : null,
-                    child: Transform.translate(
-                      offset: Offset(offsetX, offsetY),
-                      child: Transform.rotate(
-                        angle: angle,
-                        child: _PrayerCard(
-                          label: card.label,
-                          timeStr: _formatH(card.hours),
-                          isNext: card.isNext,
-                          isSelected: isSelected,
+                  return Positioned(
+                    child: Semantics(
+                      label: '${card.label}: ${_formatH(card.hours)}${card.isNext ? ", next prayer" : ""}',
+                      button: _isSpread,
+                      selected: isSelected,
+                      onTap: _isSpread ? () => _onCardTap(i) : null,
+                      child: GestureDetector(
+                        onTap: _isSpread ? () => _onCardTap(i) : null,
+                        child: Transform.translate(
+                          offset: Offset(offsetX, offsetY),
+                          child: Transform.rotate(
+                            angle: angle,
+                            child: _PrayerCard(
+                              label: card.label,
+                              timeStr: _formatH(card.hours),
+                              isNext: card.isNext,
+                              isSelected: isSelected,
+                            ),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                );
-              }),
-            );
-          },
+                  );
+                }),
+              );
+            },
+          ),
         ),
       ),
     );
@@ -215,7 +231,9 @@ class _PrayerCard extends StatelessWidget {
     final nameColor = isNext ? PrayCalcColors.dark : Colors.white.withAlpha(200);
     final timeColor = isNext ? PrayCalcColors.dark : Colors.white;
 
-    return Container(
+    // T41: parent Semantics provides the accessible label — exclude inner text.
+    return ExcludeSemantics(
+      child: Container(
       width: 120,
       height: 80,
       decoration: BoxDecoration(
@@ -253,7 +271,8 @@ class _PrayerCard extends StatelessWidget {
           ),
         ],
       ),
-    );
+    ), // Container
+    ); // ExcludeSemantics
   }
 }
 

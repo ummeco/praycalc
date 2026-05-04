@@ -40,6 +40,24 @@ class PrayCalcColors {
   // Tile highlight tints
   static const activeTile = Color(0xFF1A3D20); // active prayer row bg (dark mode)
   static const nextTile   = Color(0xFF0F2414); // next prayer row bg (dark mode)
+
+  // T41 accessibility: high-contrast accent color.
+  // Use [accentFor] instead of [light] directly in widgets that render text
+  // on the dark green background so screen readers and vision-impaired users
+  // see sufficient contrast (WCAG AA 4.5:1 minimum).
+  static const highContrastAccent = Colors.white;
+
+  /// Returns [light] (#C9F27A) in normal mode, or [white] in high-contrast mode.
+  ///
+  /// Usage:
+  /// ```dart
+  /// color: PrayCalcColors.accentFor(context),
+  /// ```
+  static Color accentFor(BuildContext context) {
+    return MediaQuery.of(context).highContrast
+        ? highContrastAccent
+        : light;
+  }
 }
 
 class AppTheme {

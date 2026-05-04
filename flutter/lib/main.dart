@@ -29,6 +29,7 @@ import 'features/desktop/desktop_tray_app.dart';
 import 'features/onboarding/onboarding_screen.dart';
 import 'features/quran/quran_audio_handler.dart';
 import 'core/platform/device_tier.dart';
+import 'core/services/permission_service.dart';
 import 'tv_app.dart';
 
 // GLOBAL: set in main() once to avoid async checks in build()
@@ -81,6 +82,13 @@ void main() async {
   final lastCity = await loadLastCity();
   final onboardingDone = await isOnboardingDone();
   setOnboardingDone(onboardingDone);
+
+  // S19-H T36: Request notification + location permissions during onboarding.
+  // On first launch (onboarding not done) we request immediately.
+  // On subsequent launches, PermissionService checks if we should re-prompt.
+  if (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) {
+    unawaited(PermissionService().requestAll());
+  }
 
   // Silently check for a Shorebird OTA patch in the background.
   if (!kIsWeb) {

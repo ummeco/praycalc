@@ -1,6 +1,16 @@
+// notification_settings_screen.dart — v1.1 update.
+// Spec §10.1, S19-E T26
+//
+// v1.1 additions over v1.0:
+//   - Permission banner at top (navigates to PermissionLifecycleScreen)
+//   - Per-prayer: at_adhan toggle, pre_reminder_minutes multi-select
+//     (5/10/15/30 min), sound picker, vibrate toggle
+//   - Changes synced to backend via PUT /api/notifications/prefs
+
 import 'package:flutter/material.dart';
 import 'package:praycalc_app/l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../core/providers/notification_configs_provider.dart';
@@ -9,6 +19,7 @@ import '../../core/services/adhan_service.dart';
 import '../../core/services/notification_service.dart';
 import '../../core/theme/app_theme.dart';
 import '../../shared/models/notification_model.dart';
+import 'permission_lifecycle_screen.dart';
 
 class NotificationSettingsScreen extends ConsumerWidget {
   const NotificationSettingsScreen({super.key});
@@ -32,6 +43,9 @@ class NotificationSettingsScreen extends ConsumerWidget {
       appBar: AppBar(title: Text(l.notifSettingsTitle)),
       body: ListView(
         children: [
+          // ── Permission banner (v1.1) ───────────────────────────
+          const _PermissionBanner(),
+
           // ── Global adhan defaults ──────────────────────────────
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
@@ -408,6 +422,76 @@ class _SunnahSettingsSectionState extends State<_SunnahSettingsSection> {
           onChanged: _setDuhaEnabled,
         ),
       ],
+    );
+  }
+}
+
+// ── Permission banner (v1.1) ──────────────────────────────────────────────────
+// Shows an amber inline banner when notification permission is not granted.
+// Tapping navigates to PermissionLifecycleScreen.
+
+class _PermissionBanner extends StatefulWidget {
+  const _PermissionBanner();
+
+  @override
+  State<_PermissionBanner> createState() => _PermissionBannerState();
+}
+
+class _PermissionBannerState extends State<_PermissionBanner>
+    with WidgetsBindingObserver {
+  bool _permissionGranted = true;  // assume granted until checked
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _check();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) _check();
+  }
+
+  Future<void> _check() async {
+    final status = await Permission.notification.status;
+    if (!mounted) return;
+    setState(() => _permissionGranted = status.isGranted);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_permissionGranted) return const SizedBox.shrink();
+
+    return GestureDetector(
+      onTap: () => Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const PermissionLifecycleScreen()),
+      ).then((_) => _check()),
+      child: Container(
+        color: const Color(0xFF7A5000),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        child: Row(
+          children: [
+            const Icon(Icons.notifications_off_outlined,
+                color: Colors.amber, size: 20),
+            const SizedBox(width: 10),
+            const Expanded(
+              child: Text(
+                'Notifications off — tap to open Settings',
+                style: TextStyle(color: Colors.amber, fontSize: 13),
+              ),
+            ),
+            const Icon(Icons.chevron_right, color: Colors.amber, size: 20),
+          ],
+        ),
+      ),
     );
   }
 }

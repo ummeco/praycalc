@@ -1,0 +1,67 @@
+table:
+  name: pc_user_prefs
+  schema: public
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - id
+        - calc_method
+        - hanafi_asr
+        - time_format
+        - hijri_offset
+        - show_moon_phase
+        - home_lat
+        - home_lng
+        - home_label
+        - locale
+        - updated_at
+      filter:
+        user_id:
+          _eq: X-Hasura-User-Id
+  - role: admin
+    permission:
+      columns: "*"
+      filter: {}
+insert_permissions:
+  - role: user
+    permission:
+      columns:
+        - user_id
+        - calc_method
+        - hanafi_asr
+        - time_format
+        - hijri_offset
+        - show_moon_phase
+        - home_lat
+        - home_lng
+        - home_label
+        - locale
+      check:
+        user_id:
+          _eq: X-Hasura-User-Id
+  - role: admin
+    permission:
+      columns: "*"
+      check: {}
+update_permissions:
+  - role: user
+    permission:
+      columns:
+        - calc_method
+        - hanafi_asr
+        - time_format
+        - hijri_offset
+        - show_moon_phase
+        - home_lat
+        - home_lng
+        - home_label
+        - locale
+        - updated_at
+      filter:
+        user_id:
+          _eq: X-Hasura-User-Id
+  - role: admin
+    permission:
+      columns: "*"
+      filter: {}

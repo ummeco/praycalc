@@ -9,6 +9,7 @@ import 'package:pray_calc_dart/pray_calc_dart.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../../../core/services/locale_service.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../shared/models/settings_model.dart';
 
@@ -45,17 +46,15 @@ class ShareAgendaSheet extends StatelessWidget {
   final PrayerTimes times;
   final AppSettings settings;
 
+  // T38: delegate to LocaleService.formatPrayerTime
   String _fmtH(double h) {
     if (!h.isFinite) return '--:--';
     final total = h % 24;
     final hh = total.floor();
     final mm = ((total - hh) * 60).round() % 60;
-    if (settings.use24h) {
-      return '${hh.toString().padLeft(2, '0')}:${mm.toString().padLeft(2, '0')}';
-    }
-    final period = hh < 12 ? 'AM' : 'PM';
-    final h12 = hh % 12 == 0 ? 12 : hh % 12;
-    return '$h12:${mm.toString().padLeft(2, '0')} $period';
+    final now = DateTime.now();
+    final t = DateTime(now.year, now.month, now.day, hh, mm);
+    return LocaleService.instance.formatPrayerTime(t);
   }
 
   String get _previewText {

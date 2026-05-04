@@ -24,10 +24,14 @@ import '../../shared/widgets/adhan_modal.dart';
 import '../../shared/widgets/travel_banner.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:permission_handler/permission_handler.dart';
+
+import '../settings/permission_lifecycle_screen.dart';
 import 'home_moon_icon.dart';
 import 'prayer_card_fan.dart';
 import 'sky_gradient_background.dart';
 import 'widgets/share_agenda_sheet.dart';
+import '../../core/services/locale_service.dart';
 
 // ─── Prayer metadata ──────────────────────────────────────────────────────────
 
@@ -95,13 +99,17 @@ DateTime _cityLocalNow(City? city) {
   }
 }
 
-// ─── Clock formatter ──────────────────────────────────────────────────────────
+// ─── Clock formatter ─────────────────────────────────────────────────────────
+// T38: delegate to LocaleService for 12h/24h locale detection
 
 String _formatClock(DateTime dt, bool use24h) {
+  // Include seconds — LocaleService.formatPrayerTime omits them,
+  // so we format manually but honour LocaleService time format detection.
+  final fmt = LocaleService.instance.timeFormat;
   final h = dt.hour;
   final m = dt.minute;
   final s = dt.second;
-  if (use24h) {
+  if (fmt == TimeFormat.h24) {
     return '${h.toString().padLeft(2, '0')}:${m.toString().padLeft(2, '0')}:${s.toString().padLeft(2, '0')}';
   }
   final period = h >= 12 ? 'PM' : 'AM';
@@ -770,6 +778,8 @@ class _HomeBodyState extends ConsumerState<_HomeBody> {
         if (nanCount >= 3) ...[_PolarBanner(nanCount: nanCount), const SizedBox(height: 10)],
         const TravelBanner(),
         if (widget.isToday && ramadan.isRamadan) ...[const SizedBox(height: 10), _RamadanBanner(ramadan: ramadan)],
+        // S19-H T36: push permission banner — shown when notifications are not granted
+        const _PushPermissionBanner(),
         const SizedBox(height: 10),
 
         // ── Prayer list — fan or unified card ────────────────────────────
@@ -1122,16 +1132,14 @@ class _PrayerTile extends StatelessWidget {
     }
   }
 
+  // T38: delegate to LocaleService.formatPrayerTime
   String _formatH(double h) {
     final totalMin = (h * 60).round();
     final hh = (totalMin ~/ 60) % 24;
     final mm = totalMin % 60;
-    if (use24h) {
-      return '${hh.toString().padLeft(2, '0')}:${mm.toString().padLeft(2, '0')}';
-    }
-    final period = hh >= 12 ? 'PM' : 'AM';
-    final h12 = hh % 12 == 0 ? 12 : hh % 12;
-    return '$h12:${mm.toString().padLeft(2, '0')} $period';
+    final now = DateTime.now();
+    final t = DateTime(now.year, now.month, now.day, hh, mm);
+    return LocaleService.instance.formatPrayerTime(t);
   }
 }
 
@@ -1312,6 +1320,94 @@ class _RamadanBanner extends StatelessWidget {
             ),
           ],
         ],
+      ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// _PushPermissionBanner — S19-H T36
+// ---------------------------------------------------------------------------
+
+/// Shown at the top of the home screen when notification permission is not granted.
+/// Tapping navigates to [PermissionLifecycleScreen].
+/// Auto-hides once permissions are granted. Re-checks on app resume.
+class _PushPermissionBanner extends StatefulWidget {
+  const _PushPermissionBanner();
+
+  @override
+  State<_PushPermissionBanner> createState() => _PushPermissionBannerState();
+}
+
+class _PushPermissionBannerState extends State<_PushPermissionBanner>
+    with WidgetsBindingObserver {
+
+  bool _granted = true; // optimistic: hide until we know otherwise
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _check();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) _check();
+  }
+
+  Future<void> _check() async {
+    final status = await Permission.notification.status;
+    if (!mounted) return;
+    setState(() => _granted = status.isGranted);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_granted) return const SizedBox.shrink();
+
+    return Semantics(
+      label: 'Notifications are disabled. Tap to enable prayer time alerts.',
+      button: true,
+      child: GestureDetector(
+        onTap: () async {
+          await Navigator.of(context).push(
+            MaterialPageRoute<void>(
+              builder: (_) => const PermissionLifecycleScreen(),
+            ),
+          );
+          await _check();
+        },
+        child: Container(
+          margin: const EdgeInsets.only(bottom: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+          decoration: BoxDecoration(
+            color: Colors.amber.withAlpha(30),
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: Colors.amber.withAlpha(120), width: 1),
+          ),
+          child: Row(
+            children: [
+              const Icon(Icons.notifications_off_outlined,
+                  color: Colors.amber, size: 18),
+              const SizedBox(width: 10),
+              const Expanded(
+                child: Text(
+                  'Enable notifications to receive adhan reminders',
+                  style: TextStyle(color: Colors.amber, fontSize: 13),
+                ),
+              ),
+              const Icon(Icons.chevron_right,
+                  color: Colors.amber, size: 18),
+            ],
+          ),
+        ),
       ),
     );
   }

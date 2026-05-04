@@ -557,3 +557,77 @@ class SyncService {
     _stateController.close();
   }
 }
+
+// ── v1.1: UserPrefs cross-device sync ─────────────────────────────────────────
+
+import 'package:praycalc_app/core/models/user_prefs.dart';
+
+const _kUpsertUserPrefs = '''
+mutation UpsertUserPrefs(\$userId: uuid!, \$calcMethod: String, \$hanafiAsr: Boolean,
+  \$timeFormat: String, \$hijriOffset: Int, \$showMoonPhase: Boolean,
+  \$homeLat: float8, \$homeLng: float8, \$homeLabel: String, \$locale: String) {
+  upsertUserPrefs(input: {
+    calcMethod: \$calcMethod, hanafiAsr: \$hanafiAsr, timeFormat: \$timeFormat,
+    hijriOffset: \$hijriOffset, showMoonPhase: \$showMoonPhase,
+    homeLat: \$homeLat, homeLng: \$homeLng, homeLabel: \$homeLabel, locale: \$locale
+  }) { id updatedAt }
+}
+''';
+
+const _kFetchUserPrefs = '''
+query FetchUserPrefs {
+  pc_user_prefs { id user_id calc_method hanafi_asr time_format hijri_offset
+    show_moon_phase home_lat home_lng home_label locale updated_at }
+}
+''';
+
+/// Syncs UserPrefs to/from backend. Standalone from the main SyncService
+/// to keep concerns clean. Used by SyncSettingsScreen + login hook.
+class UserPrefsSyncService {
+  final GraphQLService _gql;
+  const UserPrefsSyncService(this._gql);
+
+  /// Push local prefs to backend via Remote Schema mutation.
+  /// Conflict resolution: local wins on offline changes.
+  Future<void> pushPrefsToBackend(UserPrefs prefs) async {
+    try {
+      await _gql.mutate(_kUpsertUserPrefs, variables: {
+        'calcMethod': prefs.calcMethod,
+        'hanafiAsr': prefs.hanafiAsr,
+        'timeFormat': prefs.timeFormat,
+        'hijriOffset': prefs.hijriOffset,
+        'showMoonPhase': prefs.showMoonPhase,
+        if (prefs.homeLat != null) 'homeLat': prefs.homeLat,
+        if (prefs.homeLng != null) 'homeLng': prefs.homeLng,
+        if (prefs.homeLabel != null) 'homeLabel': prefs.homeLabel,
+        if (prefs.locale != null) 'locale': prefs.locale,
+      });
+    } catch (e) {
+      debugPrint('[UserPrefsSyncService] pushPrefsToBackend error: $e');
+      rethrow;
+    }
+  }
+
+  /// Pull prefs from backend. Backend wins on login.
+  Future<UserPrefs?> pullPrefsFromBackend() async {
+    try {
+      final result = await _gql.query(_kFetchUserPrefs);
+      final rows = (result['pc_user_prefs'] as List?)?.cast<Map<String, dynamic>>();
+      if (rows == null || rows.isEmpty) return null;
+      return UserPrefs.fromJson(rows.first);
+    } catch (e) {
+      debugPrint('[UserPrefsSyncService] pullPrefsFromBackend error: $e');
+      return null;
+    }
+  }
+
+  /// Syncs on login: pull remote, merge with local (backend wins on conflict).
+  Future<UserPrefs?> syncOnLogin(String userId) async {
+    try {
+      return await pullPrefsFromBackend();
+    } catch (e) {
+      debugPrint('[UserPrefsSyncService] syncOnLogin error: $e');
+      return null;
+    }
+  }
+}

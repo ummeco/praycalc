@@ -1,0 +1,62 @@
+table:
+  name: pc_assistant_links
+  schema: public
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - id
+        - platform
+        - external_account_id
+        - home_lat
+        - home_lng
+        - home_label
+        - linked_at
+      filter:
+        user_id:
+          _eq: X-Hasura-User-Id
+  - role: admin
+    permission:
+      columns: "*"
+      filter: {}
+insert_permissions:
+  - role: user
+    permission:
+      columns:
+        - user_id
+        - platform
+        - external_account_id
+        - home_lat
+        - home_lng
+        - home_label
+      check:
+        user_id:
+          _eq: X-Hasura-User-Id
+  - role: admin
+    permission:
+      columns: "*"
+      check: {}
+update_permissions:
+  - role: user
+    permission:
+      columns:
+        - external_account_id
+        - home_lat
+        - home_lng
+        - home_label
+      filter:
+        user_id:
+          _eq: X-Hasura-User-Id
+  - role: admin
+    permission:
+      columns: "*"
+      filter: {}
+delete_permissions:
+  - role: user
+    permission:
+      filter:
+        user_id:
+          _eq: X-Hasura-User-Id
+  - role: admin
+    permission:
+      filter: {}

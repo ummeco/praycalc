@@ -1,0 +1,77 @@
+table:
+  name: pc_smart_home_routines
+  schema: public
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - id
+        - name
+        - trigger_prayer
+        - trigger_offset_minutes
+        - trigger_days
+        - platform
+        - device_ids
+        - action
+        - duration_minutes
+        - after_action
+        - enabled
+      filter:
+        user_id:
+          _eq: X-Hasura-User-Id
+  - role: admin
+    permission:
+      columns: "*"
+      filter: {}
+insert_permissions:
+  - role: user
+    permission:
+      columns:
+        - user_id
+        - name
+        - trigger_prayer
+        - trigger_offset_minutes
+        - trigger_days
+        - platform
+        - device_ids
+        - action
+        - duration_minutes
+        - after_action
+        - enabled
+      check:
+        user_id:
+          _eq: X-Hasura-User-Id
+  - role: admin
+    permission:
+      columns: "*"
+      check: {}
+update_permissions:
+  - role: user
+    permission:
+      columns:
+        - name
+        - trigger_prayer
+        - trigger_offset_minutes
+        - trigger_days
+        - platform
+        - device_ids
+        - action
+        - duration_minutes
+        - after_action
+        - enabled
+      filter:
+        user_id:
+          _eq: X-Hasura-User-Id
+  - role: admin
+    permission:
+      columns: "*"
+      filter: {}
+delete_permissions:
+  - role: user
+    permission:
+      filter:
+        user_id:
+          _eq: X-Hasura-User-Id
+  - role: admin
+    permission:
+      filter: {}

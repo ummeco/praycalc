@@ -1,6 +1,6 @@
 {
   "name": "praycalc-web",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
@@ -16,6 +16,9 @@
     "test:e2e:report": "node_modules/.bin/playwright show-report"
   },
   "dependencies": {
+    "@opentelemetry/auto-instrumentations-node": "^0.56.0",
+    "@opentelemetry/exporter-trace-otlp-http": "^0.57.0",
+    "@opentelemetry/sdk-node": "^0.57.0",
     "@sentry/nextjs": "^10.40.0",
     "@vercel/analytics": "^1.6.1",
     "@vercel/speed-insights": "^1.3.1",

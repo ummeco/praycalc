@@ -11,6 +11,7 @@ import 'package:timezone/data/latest_10y.dart' as tz_data;
 import '../../core/providers/prayer_provider.dart';
 import '../../core/providers/settings_provider.dart';
 import '../../core/router/app_router.dart';
+import '../../core/services/locale_service.dart';
 import '../../core/theme/app_theme.dart';
 import '../../shared/models/settings_model.dart';
 import 'ical_service.dart';
@@ -553,18 +554,15 @@ String _shortDate(DateTime d) =>
 String _shortHijri(HijriCalendar h) =>
     '${h.hDay.toString().padLeft(2)} ${_hijriAbbr[h.hMonth]}';
 
-/// Format fractional hours to HH:MM (24h) or H:MM AM/PM (12h).
+// T38: delegate to LocaleService.formatPrayerTime
 String _fmtT(double h, bool use24h) {
   if (!h.isFinite) return '--:--';
   final total = h % 24;
   final hh = total.floor();
   final mm = ((total - hh) * 60).round() % 60;
-  if (use24h) {
-    return '${hh.toString().padLeft(2, '0')}:${mm.toString().padLeft(2, '0')}';
-  }
-  final period = hh < 12 ? 'AM' : 'PM';
-  final h12 = hh % 12 == 0 ? 12 : hh % 12;
-  return '$h12:${mm.toString().padLeft(2, '0')} $period';
+  final now = DateTime.now();
+  final t = DateTime(now.year, now.month, now.day, hh, mm);
+  return LocaleService.instance.formatPrayerTime(t);
 }
 
 /// Returns a gold tint color for Laylatul Qadr candidate nights in Ramadan

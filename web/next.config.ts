@@ -135,20 +135,19 @@ const analyzeBundles = withBundleAnalyzer({
   enabled: process.env.ANALYZE === "true",
 });
 
-// withSentryConfig is the outermost wrapper — it observes the final webpack
-// config produced by all inner wrappers (Serwist + bundle analyzer) and injects
-// Sentry's build-time plugin for source maps and auto-instrumentation.
+// withSentryConfig wraps Next.js build to upload source maps to GlitchTip.
+// T25.07: Set SENTRY_AUTH_TOKEN (=GLITCHTIP_AUTH_TOKEN), SENTRY_ORG, SENTRY_PROJECT in Vercel env vars.
+// url points to self-hosted GlitchTip at errors.ummat.dev (not Sentry SaaS).
 export default withNextIntl(withSentryConfig(analyzeBundles(withSerwist(nextConfig)), {
-  // Suppress Sentry plugin output during builds.
+  org: process.env.SENTRY_ORG ?? 'ummeco',
+  project: process.env.SENTRY_PROJECT ?? 'praycalc-web',
+  url: 'https://errors.ummat.dev',
   silent: true,
-  // Disable Sentry's build telemetry.
   telemetry: false,
-  // Disable source map upload until SENTRY_ORG + SENTRY_PROJECT are configured.
-  // Remove this block and set SENTRY_AUTH_TOKEN / SENTRY_ORG / SENTRY_PROJECT
-  // in the Vercel project settings to enable source map uploads.
-  sourcemaps: {
-    disable: true,
-  },
-  // Only upload client files actually referenced — keeps build time lean.
+  hideSourceMaps: true,
+  // Enable source map upload when SENTRY_AUTH_TOKEN is set (Vercel/CI only).
+  sourcemaps: process.env.SENTRY_AUTH_TOKEN
+    ? { disable: false, deleteSourcemapsAfterUpload: true }
+    : { disable: true },
   widenClientFileUpload: false,
 }));

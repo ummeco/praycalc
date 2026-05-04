@@ -15,6 +15,7 @@ import 'package:share_plus/share_plus.dart';
 import '../../core/providers/prayer_provider.dart';
 import '../../core/providers/ramadan_provider.dart';
 import '../../core/providers/settings_provider.dart';
+import '../../core/services/locale_service.dart';
 import '../../core/theme/app_theme.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -125,16 +126,15 @@ final _ramadanStarts = <int, DateTime>{
 }
 
 /// Formats a fractional-hour value (e.g. 18.533) to a time string.
+// T38: delegate to LocaleService.formatPrayerTime
 String _formatH(double h, bool use24h) {
-  final totalMin = (h * 60).round();
-  final hh = (totalMin ~/ 60) % 24;
-  final mm = totalMin % 60;
-  if (use24h) {
-    return '${hh.toString().padLeft(2, '0')}:${mm.toString().padLeft(2, '0')}';
-  }
-  final period = hh >= 12 ? 'PM' : 'AM';
-  final h12 = hh % 12 == 0 ? 12 : hh % 12;
-  return '$h12:${mm.toString().padLeft(2, '0')} $period';
+  if (!h.isFinite) return '--:--';
+  final total = h % 24;
+  final hh = total.floor();
+  final mm = ((total - hh) * 60).round() % 60;
+  final now = DateTime.now();
+  final t = DateTime(now.year, now.month, now.day, hh, mm);
+  return LocaleService.instance.formatPrayerTime(t);
 }
 
 // ── Screen ────────────────────────────────────────────────────────────────────

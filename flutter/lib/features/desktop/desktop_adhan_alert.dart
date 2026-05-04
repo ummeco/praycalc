@@ -7,6 +7,7 @@ import 'package:window_manager/window_manager.dart';
 
 import '../../core/models/alert_config.dart';
 import '../../core/services/adhan_service.dart';
+import '../../core/services/locale_service.dart';
 import '../../core/services/media_pause_service.dart';
 import '../../core/theme/app_theme.dart';
 import '../../shared/models/notification_model.dart';
@@ -326,15 +327,13 @@ class DesktopAlertScheduler {
     }
   }
 
+  // T38: delegate to LocaleService.formatPrayerTime
   String _formatH(double h, bool use24h) {
     final totalMin = (h * 60).round();
     final hh = (totalMin ~/ 60) % 24;
     final mm = totalMin % 60;
-    if (use24h) {
-      return '${hh.toString().padLeft(2, '0')}:${mm.toString().padLeft(2, '0')}';
-    }
-    final period = hh >= 12 ? 'PM' : 'AM';
-    final h12 = hh % 12 == 0 ? 12 : hh % 12;
-    return '$h12:${mm.toString().padLeft(2, '0')} $period';
+    final now = DateTime.now();
+    final t = DateTime(now.year, now.month, now.day, hh, mm);
+    return LocaleService.instance.formatPrayerTime(t);
   }
 }

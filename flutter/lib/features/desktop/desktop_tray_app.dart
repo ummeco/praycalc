@@ -8,6 +8,7 @@ import 'package:tray_manager/tray_manager.dart';
 import '../../core/providers/prayer_provider.dart';
 import '../../core/providers/settings_provider.dart';
 import '../../core/router/app_router.dart';
+import '../../core/services/locale_service.dart';
 import '../../l10n/app_localizations.dart';
 import 'desktop_full_window.dart';
 import 'desktop_popover.dart';
@@ -227,16 +228,14 @@ class DesktopTrayApp with TrayListener {
     });
   }
 
+  // T38: delegate to LocaleService.formatPrayerTime
   String _formatH(double h, bool use24h) {
     final totalMin = (h * 60).round();
     final hh = (totalMin ~/ 60) % 24;
     final mm = totalMin % 60;
-    if (use24h) {
-      return '${hh.toString().padLeft(2, '0')}:${mm.toString().padLeft(2, '0')}';
-    }
-    final period = hh >= 12 ? 'PM' : 'AM';
-    final h12 = hh % 12 == 0 ? 12 : hh % 12;
-    return '$h12:${mm.toString().padLeft(2, '0')} $period';
+    final now = DateTime.now();
+    final t = DateTime(now.year, now.month, now.day, hh, mm);
+    return LocaleService.instance.formatPrayerTime(t);
   }
 
   void dispose() {

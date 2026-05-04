@@ -1,0 +1,59 @@
+table:
+  name: pc_push_tokens
+  schema: public
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - id
+        - device_id
+        - platform
+        - permission_state
+        - last_seen_at
+        - created_at
+      filter:
+        _or:
+          - user_id:
+              _eq: X-Hasura-User-Id
+          - device_id:
+              _eq: X-Hasura-Device-Id
+  - role: admin
+    permission:
+      columns: "*"
+      filter: {}
+insert_permissions:
+  - role: user
+    permission:
+      columns:
+        - device_id
+        - platform
+        - token
+        - permission_state
+        - user_id
+      check:
+        _or:
+          - user_id:
+              _eq: X-Hasura-User-Id
+          - user_id:
+              _is_null: true
+  - role: admin
+    permission:
+      columns: "*"
+      check: {}
+update_permissions:
+  - role: user
+    permission:
+      columns:
+        - token
+        - permission_state
+        - last_seen_at
+      filter:
+        _or:
+          - user_id:
+              _eq: X-Hasura-User-Id
+          - device_id:
+              _eq: X-Hasura-Device-Id
+  - role: admin
+    permission:
+      columns: "*"
+      filter: {}

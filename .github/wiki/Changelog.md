@@ -2,6 +2,27 @@
 
 All notable changes to PrayCalc are documented here.
 
+## [Unreleased — P4]
+
+### Added
+
+- Iftar countdown API (`/api/iftar`) — real-time iftar/suhoor times for Ramadan hub integration (P4-C03)
+- Nisab rates API (`/api/nisab`) — gold and silver nisab values for Zakat al-Fitr calculator (P4-C04)
+- iOS home screen widgets (WidgetKit — next prayer, Hijri date, countdown)
+- iOS lock screen widgets (WidgetKit — compact next prayer)
+- Apple Watch complication (WatchKit — next prayer + time remaining)
+- WearOS complication (Jetpack Glance — next prayer tile)
+- macOS system tray app (menu bar: prayer times + adhan alerts)
+- Windows system tray app (taskbar: prayer times + adhan alerts)
+- Apple TV ambient display (tvOS — full-screen prayer times + adhan overlay)
+- Android TV ambient display (Android TV + Fire TV — prayer times + Quran ayah rotation)
+- Alexa skill integration (AlexaSkillsKit Lambda — 12 intents: next prayer, today's times, Qibla, etc.)
+- Google Assistant action (Actions on Google — 8 intents: next prayer, today's schedule, Qibla direction)
+- Push notification lifecycle — permission flow, quiet hours, opt-out preferences
+- nSentry observability wiring (GlitchTip DSN + OTel instrumentation)
+
+---
+
 ## v0.9.4 (2026-03-09)
 
 TV Command Center — Android TV and Fire TV support.

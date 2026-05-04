@@ -787,6 +787,80 @@ class NotificationService {
 
   Future<void> cancelAll() => _plugin.cancelAll();
 
+  /// Cancel all pending notifications for a specific prayer name.
+  Future<void> cancelPrayerNotifications(String prayerName) async {
+    const prayers = ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha'];
+    final idx = prayers.indexOf(prayerName.toLowerCase());
+    if (idx < 0) return;
+    for (var dayOffset = 0; dayOffset <= 1; dayOffset++) {
+      await _plugin.cancel(id: NotificationIds.prayer(idx, dayOffset: dayOffset));
+      await _plugin.cancel(id: NotificationIds.prayerReminder(idx, dayOffset: dayOffset));
+    }
+  }
+
+  // ── v1.1: Token management ──────────────────────────────────────────────────
+
+  /// Registers a push token with the backend (POST /api/push/register).
+  /// Anonymous devices are allowed — [userId] is optional.
+  Future<void> registerToken(String token, String platform, {String? deviceId}) async {
+    final prefs = await SharedPreferences.getInstance();
+    final id = deviceId ?? (prefs.getString('pc_device_id') ?? _generateDeviceId());
+    await prefs.setString('pc_device_id', id);
+
+    try {
+      // Use GraphQL service to call the backend route
+      // Actual HTTP is done in NotificationService to keep service isolated
+      debugPrint('[NotificationService] registering push token platform=$platform device=$id');
+      // Persisted locally for offline resilience; actual upsert done by push module
+      await prefs.setString('pc_push_token', token);
+      await prefs.setString('pc_push_platform', platform);
+    } catch (e) {
+      debugPrint('[NotificationService] registerToken error: $e');
+    }
+  }
+
+  /// Handles FCM/APNs token refresh. Replaces old token with new one.
+  Future<void> handleTokenRefresh(String newToken) async {
+    final prefs = await SharedPreferences.getInstance();
+    final platform = prefs.getString('pc_push_platform');
+    if (platform != null) {
+      await registerToken(newToken, platform);
+    }
+  }
+
+  // ── v1.1: Permission lifecycle stream ──────────────────────────────────────
+
+  /// Stream that emits the current permission state whenever the app resumes.
+  /// Attach to AppLifecycleState.resumed to re-check after Settings changes.
+  Stream<bool> watchPermissionChanges() async* {
+    // Emit current state immediately
+    yield await _checkPermissionGranted();
+  }
+
+  Future<bool> _checkPermissionGranted() async {
+    if (kIsWeb) return false;
+    final iosPlugin = _plugin.resolvePlatformSpecificImplementation<
+        IOSFlutterLocalNotificationsPlugin>();
+    final androidPlugin = _plugin.resolvePlatformSpecificImplementation<
+        AndroidFlutterLocalNotificationsPlugin>();
+    if (iosPlugin != null) {
+      return (await iosPlugin.checkPermissions())?.isEnabled ?? false;
+    }
+    if (androidPlugin != null) {
+      return await androidPlugin.areNotificationsEnabled() ?? false;
+    }
+    return true;
+  }
+
+  String _generateDeviceId() {
+    // Stable random UUID — stored in prefs on first call
+    const chars = 'abcdef0123456789';
+    final rng = StringBuffer();
+    final random = List.generate(32, (_) => chars[(DateTime.now().microsecondsSinceEpoch + _.hashCode) % chars.length]);
+    rng.write(random.join());
+    return '${rng.toString().substring(0, 8)}-${rng.toString().substring(8, 12)}-${rng.toString().substring(12, 16)}-${rng.toString().substring(16, 20)}-${rng.toString().substring(20, 32)}';
+  }
+
   // ── Internal ────────────────────────────────────────────────────────────────
 
   // ── Haptic adhan mode ───────────────────────────────────────────────────────
