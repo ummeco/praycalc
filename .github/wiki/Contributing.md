@@ -1,30 +1,35 @@
-# Contributing
+# Contributing to PrayCalc
 
-We welcome contributions to PrayCalc.
+Thanks for considering a contribution.
 
-## How to Contribute
+## Dev environment
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/my-feature`)
-3. Make your changes
-4. Run tests (`pnpm test` for web, `flutter test` for mobile)
-5. Submit a pull request
+- Node 20+, pnpm 9+
+- Clone the repo
+- `cd web && pnpm install` (sub-project root)
+- See `README.md` for app-specific setup
 
-## Code Style
+## Running tests
 
-- TypeScript with strict mode
-- Tailwind CSS for styling
-- Functional React components with hooks
-- Dart follows standard Flutter conventions
+- `pnpm test` — unit tests
+- `pnpm test:e2e` — end-to-end tests
+- `pnpm lint` and `pnpm typecheck` before opening a PR
 
-## Reporting Issues
+## Submitting changes
 
-Open an issue on [GitHub](https://github.com/ummeco/praycalc/issues) with:
-- Steps to reproduce
-- Expected behavior
-- Actual behavior
-- Screenshots if applicable
+1. Fork the repo and create a feature branch (`feature/{description}`)
+2. Run lint + tests locally before opening a PR
+3. Open a PR; fill out the template at `.github/PULL_REQUEST_TEMPLATE.md`
+4. Maintainer review: best-effort, expect days to weeks (solo-maintained currently)
+
+## Code style
+
+Match existing style. TypeScript strict, ESLint passing, Prettier formatted. No AI attribution in commits.
+
+## Scope
+
+Prayer time calculation accuracy is critical. New calculation methods must include scholar attribution and a test fixture comparing against known reference times. UI changes must preserve accessibility (VoiceOver, TalkBack).
 
 ## License
 
-By contributing, you agree that your contributions will be licensed under the MIT License.
+By contributing you agree your work is licensed under the project's LICENSE.

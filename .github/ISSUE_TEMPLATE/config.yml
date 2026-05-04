@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: General questions & discussion
+    url: https://github.com/ummeco/praycalc/discussions
+    about: Ask questions and discuss PrayCalc with the community
+  - name: Security disclosures
+    url: mailto:security@ummat.dev
+    about: Report security vulnerabilities privately

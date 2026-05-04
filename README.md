@@ -1,8 +1,16 @@
 # PrayCalc
 
-GPS-accurate Islamic prayer time calculator for the web and mobile.
+Accurate prayer times for Muslims, every device, every method, free forever.
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Build](https://img.shields.io/github/actions/workflow/status/ummeco/praycalc/ci.yml?branch=main)](https://github.com/ummeco/praycalc/actions)
+[![Version](https://img.shields.io/github/package-json/v/ummeco/praycalc?filename=web%2Fpackage.json)](https://github.com/ummeco/praycalc/releases)
 
 **Live:** [praycalc.com](https://praycalc.com) | **Docs:** [praycalc.org](https://praycalc.org)
+
+## What is this
+
+PrayCalc is a free, GPS-accurate Islamic prayer time calculator for web and mobile. It supports all major calculation methods (ISNA, MWL, Egypt, Umm al-Qura, Tehran, Karachi), Qibla direction, adhan reminders, and offline mode. It also powers prayer times across the Ummat app ecosystem.
 
 ## Features
 
@@ -42,9 +50,7 @@ praycalc/
 └── flutter/    iOS + Android + macOS + Windows + Linux + TV + Watch + Smart Display
 ```
 
-## Getting Started
-
-### Prerequisites
+## Quick Start
 
 Start the shared Ummat backend first:
 
@@ -52,7 +58,7 @@ Start the shared Ummat backend first:
 cd ~/Sites/ummeco/ummat/backend && nself start
 ```
 
-### Web App
+**Web app:**
 
 ```bash
 cd web
@@ -61,7 +67,7 @@ pnpm install
 pnpm dev        # https://www.praycalc.local.nself.org:8543
 ```
 
-### Docs Site
+**Docs site:**
 
 ```bash
 cd org
@@ -69,7 +75,7 @@ pnpm install
 pnpm dev        # http://localhost:3003
 ```
 
-### Flutter App
+**Flutter app:**
 
 ```bash
 cd flutter
@@ -92,14 +98,10 @@ All data access goes through Hasura GraphQL. Never use direct SQL or install `pg
 - [Changelog](.github/docs/changelog.md)
 - [Wiki](https://github.com/ummeco/praycalc/wiki)
 
-## Contributing
+## Contribute
 
-See the [wiki](https://github.com/ummeco/praycalc/wiki) for architecture docs, contribution guidelines, and feature status.
+See [`.github/wiki/Contributing.md`](https://github.com/ummeco/praycalc/wiki/Contributing) for architecture docs, contribution guidelines, and feature status.
 
 ## License
 
 [MIT](LICENSE)
-
----
-
-*Last updated: 2026-04-28*

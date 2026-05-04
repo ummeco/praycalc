@@ -1,0 +1,50 @@
+name: Feature Request
+description: Suggest a new feature or improvement for PrayCalc
+labels: ["enhancement", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Have an idea that would make PrayCalc better? We'd love to hear it.
+
+  - type: input
+    id: title
+    attributes:
+      label: Feature title
+      description: A short name for the feature
+      placeholder: e.g. Qibla compass widget
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve?
+      description: Describe the gap or friction you're experiencing
+      placeholder: e.g. I have to leave the app to check Qibla direction
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+      description: Describe what you'd like to see built
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives you've considered
+      description: Other approaches or workarounds you've tried
+    validations:
+      required: false
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Any other details, mockups, or references that help explain the request
+    validations:
+      required: false
