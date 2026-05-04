@@ -43,7 +43,7 @@
   "pnpm": {
     "overrides": {
       "flatted": ">=3.4.2",
-      "path-to-regexp": ">=0.1.13",
+      "path-to-regexp": "0.1.13",
       "picomatch": ">=4.0.4"
     }
   }
