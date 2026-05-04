@@ -20,26 +20,33 @@ interface GraphQLResponse<T = unknown> {
 }
 
 class HasuraAdminClient {
-  private url: string
-  private adminSecret: string
+  private _url: string | null = null
+  private _adminSecret: string | null = null
 
-  constructor() {
+  /** Resolve connection config at request time (not module load time). */
+  private init(): { url: string; adminSecret: string } {
+    if (this._url && this._adminSecret) {
+      return { url: this._url, adminSecret: this._adminSecret }
+    }
     const isDev = process.env.NODE_ENV === 'development'
-    this.url = isDev
+    this._url = isDev
       ? 'https://api.dev.ummat.local.nself.org:8543/v1/graphql'
       : 'https://api.ummat.dev/v1/graphql'
-    this.adminSecret = process.env.HASURA_GRAPHQL_ADMIN_SECRET || ''
-    if (!this.adminSecret) {
+    const secret = process.env.HASURA_GRAPHQL_ADMIN_SECRET
+    if (!secret) {
       throw new Error('HASURA_GRAPHQL_ADMIN_SECRET environment variable is required')
     }
+    this._adminSecret = secret
+    return { url: this._url, adminSecret: this._adminSecret }
   }
 
   async request<T = unknown>(query: string, variables?: Record<string, unknown>): Promise<T> {
-    const res = await fetch(this.url, {
+    const { url, adminSecret } = this.init()
+    const res = await fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-hasura-admin-secret': this.adminSecret,
+        'x-hasura-admin-secret': adminSecret,
       },
       body: JSON.stringify({ query, variables }),
     })
