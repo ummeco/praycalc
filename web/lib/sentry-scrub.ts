@@ -7,7 +7,7 @@
  *            cookie, set-cookie, x-hasura-user-id
  *   Fields:  password, token, secret, email, phone (deep-scrub in extra/contexts)
  */
-import type { Event } from '@sentry/nextjs'
+import type { ErrorEvent, EventHint } from '@sentry/nextjs'
 
 /** Headers to redact entirely (value replaced with [REDACTED]). */
 const BLOCKED_HEADERS = new Set([
@@ -49,7 +49,8 @@ function scrubObject(obj: Record<string, unknown>, depth = 0): Record<string, un
  *   import { scrubPII } from './lib/sentry-scrub'
  *   Sentry.init({ ..., beforeSend: scrubPII })
  */
-export function scrubPII(event: Event): Event {
+// _hint is required by Sentry v10's beforeSend signature but unused here.
+export function scrubPII(event: ErrorEvent, _hint?: EventHint): ErrorEvent | null {
   // --- 1. Scrub request headers ---
   if (event.request?.headers) {
     const headers = event.request.headers as Record<string, unknown>

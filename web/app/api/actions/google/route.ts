@@ -8,7 +8,7 @@
 // Account linking: OAuth via Ummat Auth (auth.ummat.dev).
 
 import { NextRequest, NextResponse } from 'next/server';
-import { app } from '../../../../smarthome/google/fulfillment/index';
+import { app } from '../../../../../smarthome/google/fulfillment/index';
 
 export const runtime = 'nodejs';
 
@@ -34,7 +34,6 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
       const chunks: Buffer[] = [];
       const fakeRes = {
-        status: 200,
         statusCode: 200,
         _headers: {} as Record<string, string>,
         status(code: number) { this.statusCode = code; return this; },

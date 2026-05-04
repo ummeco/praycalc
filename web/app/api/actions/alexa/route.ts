@@ -143,7 +143,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   try {
     const { handler } = await import(
       '../../../../../smarthome/alexa/lambda/index'
-    ) as { handler: (event: unknown, context: unknown) => Promise<unknown> };
+    ) as { handler: (event: unknown, context: unknown, callback: (err: Error | null, result: unknown) => void) => void };
 
     const alexaResponse = await new Promise((resolve, reject) => {
       handler(body, {}, (err: Error | null, result: unknown) => {

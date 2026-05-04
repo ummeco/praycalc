@@ -141,7 +141,7 @@ const analyzeBundles = withBundleAnalyzer({
 export default withNextIntl(withSentryConfig(analyzeBundles(withSerwist(nextConfig)), {
   org: process.env.SENTRY_ORG ?? 'ummeco',
   project: process.env.SENTRY_PROJECT ?? 'praycalc-web',
-  url: 'https://errors.ummat.dev',
+  url: 'https://errors.ummat.dev', // GlitchTip self-hosted — valid at runtime, absent from v10 types
   silent: true,
   telemetry: false,
   hideSourceMaps: true,
@@ -150,4 +150,4 @@ export default withNextIntl(withSentryConfig(analyzeBundles(withSerwist(nextConf
     ? { disable: false, deleteSourcemapsAfterUpload: true }
     : { disable: true },
   widenClientFileUpload: false,
-}));
+} as Parameters<typeof withSentryConfig>[1]));
