@@ -8,7 +8,7 @@
 // Account linking: OAuth via Ummat Auth (auth.ummat.dev).
 
 import { NextRequest, NextResponse } from 'next/server';
-import { app } from '../../../../../smarthome/google/fulfillment/index';
+import { app } from '../../../../smarthome/google/fulfillment/index';
 
 export const runtime = 'nodejs';
 
