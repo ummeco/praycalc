@@ -89,7 +89,7 @@ export async function dispatchPushNotification(job: PushJobData): Promise<void> 
 // Hasura query helpers
 // ---------------------------------------------------------------------------
 
-interface UserPushToken {
+export interface UserPushToken {
   userId:    string;
   token:     string;
   platform:  'ios' | 'android' | 'web' | 'tvos' | 'watchos' | 'wearos';
@@ -97,7 +97,7 @@ interface UserPushToken {
   enabled:   boolean;
 }
 
-interface UserNotifPrefs {
+export interface UserNotifPrefs {
   userId:        string;
   adhanEnabled:  boolean;
   preAlertMins1: number;  // 0 = disabled
