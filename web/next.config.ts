@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import path from "path";
 import withSerwistInit from "@serwist/next";
 import withBundleAnalyzer from "@next/bundle-analyzer";
 import { withSentryConfig } from "@sentry/nextjs";
@@ -76,6 +77,10 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  // Allow Next.js to trace and bundle files from the praycalc repo root
+  // (one level above web/). Required for smarthome/alexa and smarthome/google
+  // fulfillment handlers that live outside the web/ app root.
+  outputFileTracingRoot: path.join(__dirname, ".."),
   // pray-calc → nrel-spa uses node:module (native addon via createRequire).
   // Mark as server-external so Turbopack never attempts to bundle them.
   serverExternalPackages: ["pray-calc", "nrel-spa"],

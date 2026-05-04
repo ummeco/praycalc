@@ -16,6 +16,9 @@
     "test:e2e:report": "node_modules/.bin/playwright show-report"
   },
   "dependencies": {
+    "@assistant/conversation": "^3.8.1",
+    "ask-sdk-core": "^2.14.0",
+    "ask-sdk-model": "^1.86.0",
     "@opentelemetry/auto-instrumentations-node": "^0.56.0",
     "@opentelemetry/exporter-trace-otlp-http": "^0.57.0",
     "@opentelemetry/sdk-node": "^0.57.0",
