@@ -1,13 +1,20 @@
 import clsx from 'clsx'
+import dynamic from 'next/dynamic'
 import Link from 'next/link'
 
-import { Feedback } from '@/components/Feedback'
-import { Heading } from '@/components/Heading'
+import type { Heading as HeadingType } from '@/components/Heading'
 import { Prose } from '@/components/Prose'
 
+const Feedback = dynamic(() => import('@/components/Feedback').then((m) => m.Feedback), { ssr: true })
+const Heading = dynamic(() => import('@/components/Heading').then((m) => m.Heading), { ssr: true })
+const Button = dynamic(() => import('@/components/Button').then((m) => m.Button), { ssr: true })
+const CodeGroup = dynamic(() => import('@/components/Code').then((m) => m.CodeGroup), { ssr: true })
+const Code = dynamic(() => import('@/components/Code').then((m) => m.Code), { ssr: true })
+const Pre = dynamic(() => import('@/components/Code').then((m) => m.Pre), { ssr: true })
+
 export const a = Link
-export { Button } from '@/components/Button'
-export { CodeGroup, Code as code, Pre as pre } from '@/components/Code'
+export { Button }
+export { CodeGroup, Code as code, Pre as pre }
 
 export function wrapper({ children }: { children: React.ReactNode }) {
   return (
@@ -21,9 +28,10 @@ export function wrapper({ children }: { children: React.ReactNode }) {
 }
 
 export const h2 = function H2(
-  props: Omit<React.ComponentPropsWithoutRef<typeof Heading>, 'level'>,
+  props: Omit<React.ComponentPropsWithoutRef<typeof HeadingType>, 'level'>,
 ) {
-  return <Heading level={2} {...props} />
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return <Heading level={2} {...(props as any)} />
 }
 
 function InfoIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
