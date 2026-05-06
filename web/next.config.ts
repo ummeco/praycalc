@@ -143,7 +143,12 @@ const analyzeBundles = withBundleAnalyzer({
 // withSentryConfig wraps Next.js build to upload source maps to GlitchTip.
 // T25.07: Set SENTRY_AUTH_TOKEN (=GLITCHTIP_AUTH_TOKEN), SENTRY_ORG, SENTRY_PROJECT in Vercel env vars.
 // url points to self-hosted GlitchTip at errors.ummat.dev (not Sentry SaaS).
-export default withNextIntl(withSentryConfig(analyzeBundles(withSerwist(nextConfig)), {
+// Cast intermediate results to NextConfig to prevent pnpm multi-version type conflicts.
+// @serwist/next ships source TS (no dist/), causing TypeScript to resolve 'next' from
+// the pnpm store where the workspace's other next version (org's 16.1.7) may be hoisted.
+// The runtime behavior is correct — casts only eliminate the spurious type mismatch.
+const serwistWrapped = withSerwist(nextConfig) as NextConfig;
+const sentryWrapped = withSentryConfig(analyzeBundles(serwistWrapped), {
   org: process.env.SENTRY_ORG ?? 'ummeco',
   project: process.env.SENTRY_PROJECT ?? 'praycalc-web',
   url: 'https://errors.ummat.dev', // GlitchTip self-hosted — valid at runtime, absent from v10 types
@@ -155,4 +160,5 @@ export default withNextIntl(withSentryConfig(analyzeBundles(withSerwist(nextConf
     ? { disable: false, deleteSourcemapsAfterUpload: true }
     : { disable: true },
   widenClientFileUpload: false,
-} as Parameters<typeof withSentryConfig>[1]));
+} as Parameters<typeof withSentryConfig>[1]) as NextConfig;
+export default withNextIntl(sentryWrapped);

@@ -2,7 +2,7 @@
   "name": "praycalc",
   "private": true,
   "version": "0.0.0",
-  "description": "PrayCalc monorepo — prayer time calculator at praycalc.com",
+  "description": "PrayCalc monorepo \u2014 prayer time calculator at praycalc.com",
   "scripts": {
     "build": "pnpm -F praycalc-web build",
     "dev": "pnpm -F praycalc-web dev",
