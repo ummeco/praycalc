@@ -45,7 +45,7 @@ export function validateDeleteRequest(input: {
  * Verifies a Cloudflare Turnstile token server-side.
  * Returns true if the token is valid.
  *
- * In environments without CLOUDFLARE_TURNSTILE_SECRET, verification is
+ * In environments without TURNSTILE_SECRET_KEY, verification is
  * skipped and the function returns true. This allows local development
  * without Turnstile credentials configured.
  */
@@ -53,7 +53,7 @@ export async function verifyTurnstileToken(
   token: string,
   remoteIp?: string
 ): Promise<boolean> {
-  const secret = process.env.CLOUDFLARE_TURNSTILE_SECRET;
+  const secret = process.env.TURNSTILE_SECRET_KEY;
 
   // Allow bypass in development / test environments where secret is absent.
   if (!secret) {

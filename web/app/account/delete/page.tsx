@@ -95,7 +95,7 @@ export default function AccountDeletePage() {
   const [state, setState] = useState<FormState>({ phase: "idle" });
 
   const siteKey =
-    process.env.NEXT_PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY ?? "";
+    process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "";
 
   function validateEmail(value: string): boolean {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

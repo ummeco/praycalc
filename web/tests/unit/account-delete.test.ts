@@ -78,17 +78,17 @@ describe("verifyTurnstileToken", () => {
   beforeEach(() => {
     mockFetch.mockReset();
     // Reset env override between tests
-    delete process.env.CLOUDFLARE_TURNSTILE_SECRET;
+    delete process.env.TURNSTILE_SECRET_KEY;
   });
 
-  it("returns true when CLOUDFLARE_TURNSTILE_SECRET is not set (dev bypass)", async () => {
+  it("returns true when TURNSTILE_SECRET_KEY is not set (dev bypass)", async () => {
     const result = await verifyTurnstileToken("any-token");
     expect(result).toBe(true);
     expect(mockFetch).not.toHaveBeenCalled();
   });
 
   it("returns true when Turnstile API confirms success", async () => {
-    process.env.CLOUDFLARE_TURNSTILE_SECRET = "test-secret";
+    process.env.TURNSTILE_SECRET_KEY = "test-secret";
     mockFetch.mockResolvedValueOnce({
       ok: true,
       json: async () => ({ success: true }),
@@ -102,7 +102,7 @@ describe("verifyTurnstileToken", () => {
   });
 
   it("returns false when Turnstile API reports failure", async () => {
-    process.env.CLOUDFLARE_TURNSTILE_SECRET = "test-secret";
+    process.env.TURNSTILE_SECRET_KEY = "test-secret";
     mockFetch.mockResolvedValueOnce({
       ok: true,
       json: async () => ({ success: false }),
@@ -113,7 +113,7 @@ describe("verifyTurnstileToken", () => {
   });
 
   it("returns false when Turnstile API returns non-OK HTTP status", async () => {
-    process.env.CLOUDFLARE_TURNSTILE_SECRET = "test-secret";
+    process.env.TURNSTILE_SECRET_KEY = "test-secret";
     mockFetch.mockResolvedValueOnce({ ok: false });
 
     const result = await verifyTurnstileToken("token");
@@ -121,7 +121,7 @@ describe("verifyTurnstileToken", () => {
   });
 
   it("returns false when fetch throws (network error)", async () => {
-    process.env.CLOUDFLARE_TURNSTILE_SECRET = "test-secret";
+    process.env.TURNSTILE_SECRET_KEY = "test-secret";
     mockFetch.mockRejectedValueOnce(new Error("ECONNREFUSED"));
 
     const result = await verifyTurnstileToken("token");
@@ -171,7 +171,7 @@ describe("getClientIpFromHeaders", () => {
 describe("POST /api/account/delete-request", () => {
   beforeEach(() => {
     mockFetch.mockReset();
-    delete process.env.CLOUDFLARE_TURNSTILE_SECRET;
+    delete process.env.TURNSTILE_SECRET_KEY;
     delete process.env.HASURA_GRAPHQL_ADMIN_SECRET;
   });
 
@@ -237,7 +237,7 @@ describe("POST /api/account/delete-request", () => {
   });
 
   it("returns 422 when Turnstile verification fails", async () => {
-    process.env.CLOUDFLARE_TURNSTILE_SECRET = "real-secret";
+    process.env.TURNSTILE_SECRET_KEY = "real-secret";
     mockFetch.mockResolvedValueOnce({
       ok: true,
       json: async () => ({ success: false }),
