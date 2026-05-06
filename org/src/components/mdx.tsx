@@ -1,37 +1,108 @@
+/**
+ * MDX component overrides — server-safe only.
+ * Client components (Heading, Code, Feedback) are intentionally excluded here
+ * to prevent the next-mdx-import-source-file virtual module from inheriting
+ * a "use client" directive, which would taint all MDX pages and break
+ * `export const metadata`.
+ *
+ * Pages that need interactive components must import them directly.
+ */
+
 import clsx from 'clsx'
-import dynamic from 'next/dynamic'
 import Link from 'next/link'
 
-import type { Heading as HeadingType } from '@/components/Heading'
 import { Prose } from '@/components/Prose'
 
-const Feedback = dynamic(() => import('@/components/Feedback').then((m) => m.Feedback), { ssr: true })
-const Heading = dynamic(() => import('@/components/Heading').then((m) => m.Heading), { ssr: true })
-const Button = dynamic(() => import('@/components/Button').then((m) => m.Button), { ssr: true })
-const CodeGroup = dynamic(() => import('@/components/Code').then((m) => m.CodeGroup), { ssr: true })
-const Code = dynamic(() => import('@/components/Code').then((m) => m.Code), { ssr: true })
-const Pre = dynamic(() => import('@/components/Code').then((m) => m.Pre), { ssr: true })
-
 export const a = Link
-export { Button }
-export { CodeGroup, Code as code, Pre as pre }
 
 export function wrapper({ children }: { children: React.ReactNode }) {
   return (
     <article className="flex h-full flex-col pt-16 pb-10">
       <Prose className="flex-auto">{children}</Prose>
-      <footer className="mx-auto mt-16 w-full max-w-2xl lg:max-w-5xl">
-        <Feedback />
-      </footer>
     </article>
   )
 }
 
-export const h2 = function H2(
-  props: Omit<React.ComponentPropsWithoutRef<typeof HeadingType>, 'level'>,
-) {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return <Heading level={2} {...(props as any)} />
+export const h2 = function H2({
+  children,
+  id,
+  ...props
+}: React.ComponentPropsWithoutRef<'h2'>) {
+  return (
+    <h2 id={id} {...props}>
+      {id ? (
+        <a href={`#${id}`} className="not-prose group relative">
+          {children}
+        </a>
+      ) : (
+        children
+      )}
+    </h2>
+  )
+}
+
+// Server-safe code rendering — no syntax highlighting or tabs
+export const code = function Code({
+  children,
+  className,
+  ...props
+}: React.ComponentPropsWithoutRef<'code'>) {
+  return (
+    <code className={clsx(className, 'font-mono text-sm')} {...props}>
+      {children}
+    </code>
+  )
+}
+
+export const pre = function Pre({
+  children,
+  ...props
+}: React.ComponentPropsWithoutRef<'pre'>) {
+  return (
+    <pre
+      className="overflow-x-auto rounded-2xl bg-zinc-900 p-4 text-sm text-zinc-100"
+      {...props}
+    >
+      {children}
+    </pre>
+  )
+}
+
+export function CodeGroup({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="not-prose my-6 overflow-hidden rounded-2xl bg-zinc-900 shadow-md">
+      {children}
+    </div>
+  )
+}
+
+export function Button({
+  href,
+  children,
+  variant = 'primary',
+}: {
+  href?: string
+  children: React.ReactNode
+  variant?: 'primary' | 'secondary' | 'filled' | 'outline' | 'text'
+}) {
+  if (href) {
+    return (
+      <Link
+        href={href}
+        className="inline-flex items-center gap-0.5 justify-center overflow-hidden text-sm font-medium transition rounded-full px-4 py-2 bg-emerald-400/10 text-emerald-400 ring-1 ring-inset ring-emerald-400/20 hover:bg-emerald-400/10 hover:text-emerald-300 hover:ring-emerald-300"
+      >
+        {children}
+      </Link>
+    )
+  }
+  return (
+    <button
+      type="button"
+      className="inline-flex items-center gap-0.5 justify-center overflow-hidden text-sm font-medium transition rounded-full px-4 py-2 bg-emerald-400/10 text-emerald-400 ring-1 ring-inset ring-emerald-400/20"
+    >
+      {children}
+    </button>
+  )
 }
 
 function InfoIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
