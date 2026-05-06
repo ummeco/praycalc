@@ -7,11 +7,22 @@
  */
 
 import clsx from 'clsx'
-import Link from 'next/link'
 
 import { Prose } from '@/components/Prose'
 
-export const a = Link
+// Use a plain anchor — next/link is 'use client' which taints all MDX pages that
+// import useMDXComponents. MDX docs don't need client-side prefetching.
+export function a({
+  href,
+  children,
+  ...props
+}: React.ComponentPropsWithoutRef<'a'>) {
+  return (
+    <a href={href} {...props}>
+      {children}
+    </a>
+  )
+}
 
 export function wrapper({ children }: { children: React.ReactNode }) {
   return (
