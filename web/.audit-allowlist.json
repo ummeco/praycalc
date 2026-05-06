@@ -1,0 +1,6 @@
+{
+  "1116375": {
+    "reason": "Next.js 16.1.7 CVE-2026-23869 (DoS in Server Components). Affects org/ only (not web/). org/ must remain on 16.1.7 due to webpack regression in 16.2.x (breaks MDX metadata exports). See: https://github.com/ummeco/praycalc/issues/TODO",
+    "expires": "2026-12-31"
+  }
+}
