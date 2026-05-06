@@ -96,12 +96,12 @@ export function Button({
 }) {
   if (href) {
     return (
-      <Link
+      <a
         href={href}
         className="inline-flex items-center gap-0.5 justify-center overflow-hidden text-sm font-medium transition rounded-full px-4 py-2 bg-emerald-400/10 text-emerald-400 ring-1 ring-inset ring-emerald-400/20 hover:bg-emerald-400/10 hover:text-emerald-300 hover:ring-emerald-300"
       >
         {children}
-      </Link>
+      </a>
     )
   }
   return (
