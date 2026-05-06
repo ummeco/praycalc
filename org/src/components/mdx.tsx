@@ -1,10 +1,8 @@
 /**
  * MDX component overrides — server-safe only.
  * Client components (Heading, Code, Feedback) are intentionally excluded here
- * to prevent the next-mdx-import-source-file virtual module from inheriting
- * a "use client" directive, which would taint all MDX pages and break
- * `export const metadata`.
- *
+ * to keep this module free of any client directives.
+ * Tainted MDX pages cannot export metadata (Next.js server-only).
  * Pages that need interactive components must import them directly.
  */
 
