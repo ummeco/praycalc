@@ -42,9 +42,8 @@ const securityHeaders = [
         "connect-src 'self'",
         "https://vitals.vercel-insights.com",
         "https://va.vercel-scripts.com",
-        // Sentry error and performance event ingestion.
-        "https://*.sentry.io",
-        "https://*.ingest.sentry.io",
+        // GlitchTip (self-hosted) error and performance event ingestion.
+        "https://errors.ummat.dev",
       ].join(" "),
       // challenges.cloudflare.com — Cloudflare Turnstile widget runs inside an iframe
       "frame-src https://challenges.cloudflare.com",
