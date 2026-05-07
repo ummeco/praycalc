@@ -7,6 +7,8 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import Script from "next/script";
 import { NextIntlClientProvider } from 'next-intl';
 import { getLocale, getMessages } from 'next-intl/server';
+// S05-05: @ummat/consent — explicit-opt-in per D-P3-21
+import { ConsentProvider, CookieBanner } from "@ummat/consent";
 import "./globals.css";
 
 const inter = Inter({
@@ -106,25 +108,22 @@ export default async function RootLayout({
         >
           Skip to main content
         </a>
-        <NextIntlClientProvider locale={locale} messages={messages}>
-          {children}
-        </NextIntlClientProvider>
+        {/* S05-05: ConsentProvider wraps full layout — explicit-opt-in per D-P3-21.
+            PrayCalc: prayer-time localStorage is functional tier (not analytics). */}
+        <ConsentProvider>
+          <NextIntlClientProvider locale={locale} messages={messages}>
+            {children}
+          </NextIntlClientProvider>
+          {/* S30-T03: GDPR/CCPA cookie banner — region defaults to global GDPR-baseline. */}
+          <CookieBanner
+            privacyPolicyUrl="/legal/privacy"
+            cookiePolicyUrl="/legal/cookies"
+          />
+        </ConsentProvider>
         {/* Vercel Analytics — privacy-compliant, no cookies, no PII */}
         <Analytics />
         {/* Vercel Speed Insights — Core Web Vitals monitoring */}
         <SpeedInsights />
-        {/* Umami Analytics — privacy-first, no cookies, no PII, self-hosted.
-            NEXT_PUBLIC_UMAMI_WEBSITE_ID and NEXT_PUBLIC_UMAMI_HOST_URL are set
-            in Vercel env vars (vault keys: UMAMI_PRAYCALC_WEBSITE_ID, UMAMI_HOST_URL).
-            Script is loaded only when both vars are present (no-op in local dev). */}
-        {process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID && process.env.NEXT_PUBLIC_UMAMI_HOST_URL && (
-          <Script
-            src={`${process.env.NEXT_PUBLIC_UMAMI_HOST_URL}/script.js`}
-            data-website-id={process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID}
-            strategy="afterInteractive"
-            defer
-          />
-        )}
       </body>
     </html>
   );

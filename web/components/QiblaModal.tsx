@@ -53,6 +53,13 @@ export default function QiblaModal({
   const dir = compassDir(bearing);
   const dirFull = compassName(bearing);
 
+  // Track qibla opened
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.umami) {
+      window.umami.track('praycalc.qibla.opened', { city: cityName })
+    }
+  }, [cityName])
+
   // Request geolocation — use user position if within 50 km of city
   useEffect(() => {
     if (!navigator.geolocation) return;

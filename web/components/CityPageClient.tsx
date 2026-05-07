@@ -77,6 +77,16 @@ export default function CityPageClient({
     recordLastCity(slug, locationName);
   }, [slug, locationName]);
 
+  // ── Track prayer times viewed ──────────────────────────────────────────────
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.umami) {
+      window.umami.track("praycalc.prayer.times.viewed", {
+        city: locationName,
+        method: hanafi ? "hanafi" : "shafi",
+      });
+    }
+  }, [locationName, hanafi]);
+
   // ── UI state ──────────────────────────────────────────────────────────────
   const [mutedPrayers, setMutedPrayers] = useState<Set<string>>(new Set());
   const [qiblaOpen, setQiblaOpen] = useState(false);

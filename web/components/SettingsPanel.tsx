@@ -97,6 +97,17 @@ export default function SettingsPanel({
 }: Props) {
   const t = useTranslations("ui");
 
+  // Track method (madhab) change
+  const handleToggleHanafiTracked = () => {
+    if (typeof window !== "undefined" && window.umami) {
+      window.umami.track("praycalc.settings.method_changed", {
+        from_method: hanafi ? "hanafi" : "shafi",
+        to_method: hanafi ? "shafi" : "hanafi",
+      });
+    }
+    onToggleHanafi();
+  };
+
   return (
     <div className="settings-panel">
 
@@ -155,7 +166,7 @@ export default function SettingsPanel({
             <span className="settings-label" id="toggle-hanafi-label">{t("hanafiAsr")}</span>
             <Toggle
               on={hanafi}
-              onToggle={onToggleHanafi}
+              onToggle={handleToggleHanafiTracked}
               ariaLabel={t("hanafiAsr")}
             />
           </div>
