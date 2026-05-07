@@ -1,0 +1,29 @@
+{
+    "name": "@ummat/consent",
+    "version": "0.1.0",
+    "type": "module",
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "exports": {
+        ".": {
+            "import": "./dist/index.js",
+            "types": "./dist/index.d.ts"
+        },
+        "./components": {
+            "import": "./dist/components.js",
+            "types": "./dist/components.d.ts"
+        },
+        "./hooks": {
+            "import": "./dist/hooks.js",
+            "types": "./dist/hooks.d.ts"
+        },
+        "./utils": {
+            "import": "./dist/utils.js",
+            "types": "./dist/utils.d.ts"
+        }
+    },
+    "peerDependencies": {
+        "react": "^18 || ^19",
+        "react-dom": "^18 || ^19"
+    }
+}

@@ -16,6 +16,7 @@
     "test:e2e:report": "node_modules/.bin/playwright show-report"
   },
   "dependencies": {
+    "@ummat/consent": "file:./vendor/consent",
     "@assistant/conversation": "^3.8.1",
     "ask-sdk-core": "^2.14.0",
     "ask-sdk-model": "^1.86.0",
