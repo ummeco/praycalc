@@ -4,7 +4,7 @@
   --color-ummat-light: #C9F27A;
   --color-ummat-mid: #79C24C;
   --color-ummat-dark: #1E5E2F;
-  --color-ummat-deep: #0A2010;
+  --color-ummat-deep: #0D2F17;
 
   /* B1-03: Inter self-hosted via next/font/google (downloaded at build time, no CDN) */
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
@@ -278,7 +278,7 @@ html[data-theme="light"] .about-pill:hover {
   font-size: 0.8125rem;
   font-weight: 600;
   background: #79C24C;
-  color: #0A2010;
+  color: #0D2F17;
   cursor: pointer;
   transition: background 0.15s, opacity 0.15s;
   align-self: flex-start;
@@ -4735,7 +4735,7 @@ html[data-theme="light"] .month-cal-prayer-time {
   z-index: 99999;
   padding: 0.5rem 1.125rem;
   background: #79C24C;
-  color: #0A2010;
+  color: #0D2F17;
   font-size: 0.9rem;
   font-weight: 700;
   border-radius: 0 0 0.5rem 0.5rem;

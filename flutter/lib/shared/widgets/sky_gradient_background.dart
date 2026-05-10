@@ -131,7 +131,7 @@ LinearGradient applyWeatherTint(LinearGradient g, int? weatherCode) {
 }
 
 // ── Sky segments — all dark, green-tinted, white-text-safe ───────────────────
-// Palette basis: web #0A2010 (deep), #0D2F17 (dark), #1E5E2F (mid-dark)
+// Palette basis: web #0D2F17 (deep/dark canonical), #1E5E2F (mid-dark)
 // All stops are dark enough for white text (contrast ≥ 4.5:1).
 
 /// Isha → Fajr: deepest night — near-black forest green.

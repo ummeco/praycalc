@@ -56,7 +56,7 @@ export default function DevicePairCard({ onPairComplete }: DevicePairCardProps) 
 
   if (pairingCode) {
     return (
-      <div className="rounded-xl border-2 border-dashed border-[#79C24C]/50 bg-[#0A2010] p-6 text-center">
+      <div className="rounded-xl border-2 border-dashed border-[#79C24C]/50 bg-[#0D2F17] p-6 text-center">
         <p className="mb-2 text-sm text-gray-400">
           Enter this code on your device
         </p>
@@ -90,7 +90,7 @@ export default function DevicePairCard({ onPairComplete }: DevicePairCardProps) 
   }
 
   return (
-    <div className="rounded-xl border-2 border-dashed border-[#1E5E2F] bg-[#0A2010] p-6 text-center">
+    <div className="rounded-xl border-2 border-dashed border-[#1E5E2F] bg-[#0D2F17] p-6 text-center">
       {error && (
         <p className="mb-3 text-sm text-red-400">{error}</p>
       )}

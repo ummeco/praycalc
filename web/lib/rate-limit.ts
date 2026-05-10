@@ -1,8 +1,12 @@
 /**
  * PrayCalc — Rate Limiter: Adapter Interface + Factory
  *
- * Adapter design: swap between in-memory (Phase 1) and Redis-backed (Phase 3+)
- * without touching call sites. Redis activates automatically when REDIS_URL is set.
+ * CANONICAL SOURCE: ummat/packages/shared/src/security/rate-limit.ts
+ * This file is a standalone-repo copy. Do NOT edit the logic here —
+ * update the canonical source and sync here (T-P7-W1.5-10).
+ *
+ * TRAP-M02: Fail-closed in production. REDIS_URL is required.
+ * Previous version silently fell back to MemoryRateLimitAdapter in prod.
  *
  * Limits (per spec):
  *   /api/prayer-times (prayers): 300 req/min per IP — high-volume computation endpoint
@@ -46,6 +50,7 @@ export function getRateLimitAdapter(): RateLimitAdapter {
 
   if (process.env.REDIS_URL) {
     try {
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
       const { RedisRateLimitAdapter } = require('./rate-limit-redis')
       _adapter = new RedisRateLimitAdapter(process.env.REDIS_URL)
     } catch {
@@ -53,6 +58,11 @@ export function getRateLimitAdapter(): RateLimitAdapter {
       _adapter = new MemoryRateLimitAdapter()
     }
   } else {
+    // TRAP-M02: fail closed in production — in-memory bypass on Vercel
+    // multi-instance is a security hole (state is not shared across instances).
+    if (process.env.NODE_ENV === 'production') {
+      throw new Error('[rate-limit] REDIS_URL required in production. Set REDIS_URL to enable rate limiting.')
+    }
     console.warn('[rate-limit] REDIS_URL not set — using in-memory adapter (not safe for multi-instance)')
     _adapter = new MemoryRateLimitAdapter()
   }
@@ -91,6 +101,7 @@ export const ACCOUNT_API: RateLimitOptions = { limit: 30, windowMs: 60_000 }
 
 export function getClientIp(headers: Headers): string {
   return (
+    headers.get('cf-connecting-ip') ||
     headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
     headers.get('x-real-ip') ||
     'unknown'

@@ -111,7 +111,7 @@ export default function WebhookForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className="rounded-xl border border-[#1E5E2F] bg-[#0A2010] p-5"
+      className="rounded-xl border border-[#1E5E2F] bg-[#0D2F17] p-5"
     >
       <h3 className="mb-4 text-lg font-semibold text-[#C9F27A]">
         {initialData ? "Edit webhook" : "Add webhook"}

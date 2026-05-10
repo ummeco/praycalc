@@ -280,7 +280,7 @@ export default function DevicesPage() {
                 )}
 
                 {devices.length === 0 && (
-                  <div className="mb-6 rounded-xl border border-[#1E5E2F] bg-[#0A2010] p-8 text-center">
+                  <div className="mb-6 rounded-xl border border-[#1E5E2F] bg-[#0D2F17] p-8 text-center">
                     <p className="text-gray-400">No devices paired yet.</p>
                     <p className="mt-1 text-sm text-gray-600">
                       Generate a pairing code below and enter it on your device.

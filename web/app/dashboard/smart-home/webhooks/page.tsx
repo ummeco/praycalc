@@ -281,7 +281,7 @@ export default function WebhooksPage() {
                 ))}
               </div>
             ) : webhooks.length === 0 ? (
-              <div className="rounded-xl border border-[#1E5E2F] bg-[#0A2010] p-8 text-center">
+              <div className="rounded-xl border border-[#1E5E2F] bg-[#0D2F17] p-8 text-center">
                 <p className="text-gray-400">No webhooks registered.</p>
                 <p className="mt-1 text-sm text-gray-600">
                   Add a webhook to receive HTTP callbacks at prayer times.

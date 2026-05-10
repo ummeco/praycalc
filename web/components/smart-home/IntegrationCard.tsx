@@ -171,7 +171,7 @@ export default function IntegrationCard({
 
       {/* Instructions modal */}
       {showInstructions && instructions && (
-        <div className="mt-4 rounded-lg border border-[#1E5E2F] bg-[#0A2010] p-4">
+        <div className="mt-4 rounded-lg border border-[#1E5E2F] bg-[#0D2F17] p-4">
           <h4 className="mb-3 text-sm font-medium text-[#C9F27A]">
             Setup instructions
           </h4>
