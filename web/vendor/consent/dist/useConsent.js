@@ -25,18 +25,56 @@ function detectDoNotTrack() {
         return false;
     return navigator.doNotTrack === '1' || navigator.msDoNotTrack === '1';
 }
-async function syncConsentToBackend(record) {
-    try {
-        const encoded = btoa(JSON.stringify(record));
-        await fetch('/api/consent', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ consent: encoded }),
-            credentials: 'same-origin',
-        });
+/**
+ * S05-07: Reliable consent sync to lg_consent_record.
+ *
+ * Sync is required-on-consent (not fire-and-forget): we attempt up to MAX_RETRIES
+ * times with exponential backoff. On all-retry failure the record is flagged with
+ * sync_pending=true in localStorage so a background sweep can retry later.
+ *
+ * Spec: banner marks consent stored only after HTTP 200 from /api/consent.
+ */
+const CONSENT_SYNC_KEY = 'ummat_consent_sync_pending';
+const MAX_RETRIES = 3;
+async function fetchWithRetry(url, options, retries = MAX_RETRIES) {
+    for (let attempt = 0; attempt < retries; attempt++) {
+        try {
+            const res = await fetch(url, options);
+            if (res.ok)
+                return true;
+            // Non-2xx response — treat as retryable
+        }
+        catch {
+            // Network error — retryable
+        }
+        if (attempt < retries - 1) {
+            // Exponential backoff: 500ms, 1000ms, 2000ms
+            await new Promise((resolve) => setTimeout(resolve, 500 * Math.pow(2, attempt)));
+        }
     }
-    catch {
-        // Network sync is best-effort; localStorage is the source of truth
+    return false;
+}
+async function syncConsentToBackend(record) {
+    if (typeof window === 'undefined')
+        return;
+    const encoded = btoa(JSON.stringify(record));
+    const success = await fetchWithRetry('/api/consent', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ consent: encoded }),
+        credentials: 'same-origin',
+    });
+    if (!success) {
+        // Flag for background retry sweep (S05-07 fallback)
+        try {
+            const pending = JSON.parse(window.localStorage.getItem(CONSENT_SYNC_KEY) ?? '[]');
+            pending.push({ record, queuedAt: Date.now() });
+            window.localStorage.setItem(CONSENT_SYNC_KEY, JSON.stringify(pending));
+        }
+        catch {
+            // localStorage unavailable — fail silently
+        }
+        console.warn('[consent] Backend sync failed after retries — queued for background retry');
     }
 }
 export function ConsentProvider({ children, onConsentChange }) {

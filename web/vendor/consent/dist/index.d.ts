@@ -1,5 +1,7 @@
 export { CookieBanner } from './CookieBanner.js';
 export type { CookieBannerProps } from './CookieBanner.js';
+export { ConsentGatedScript } from './ConsentGatedScript.js';
+export type { ConsentGatedScriptProps } from './ConsentGatedScript.js';
 export { PreferencesModal } from './PreferencesModal.js';
 export type { PreferencesModalProps } from './PreferencesModal.js';
 export { useConsent, ConsentProvider } from './useConsent.js';
@@ -9,4 +11,12 @@ export { COOKIES } from './cookie-inventory.js';
 export { STORAGE_KEY, CURRENT_CONSENT_VERSION, readConsent, writeConsent, clearConsent, buildConsentRecord, buildAcceptAllRecord, buildRejectNonEssentialRecord, shouldRePrompt, } from './storage.js';
 export { auditCookies, formatAuditReport } from './audit-cookies.js';
 export type { AuditResult } from './audit-cookies.js';
+export { CURRENT_POLICY_VERSION } from './version.js';
+export type { PolicyVersion } from './version.js';
+export { ConsentGated, useConsentGate } from './gating.js';
+export type { ConsentGatedProps, GatedCategory } from './gating.js';
+export { getMessages, isRtlLocale } from './i18n.js';
+export type { ConsentLocale, ConsentMessages } from './i18n.js';
+export { handleConsentRequest, parseConsentBody, isSameOrigin, makeFingerprintHash, clientIpFromHeaders, resolveLatestCookiePolicyVersion, insertConsentRecords, fetchLatestConsent, ConsentValidationError, } from './server-handler.js';
+export type { ConsentPostPayload, ConsentWriteContext, HasuraAdminConfig, ConsentHandlerInput, ConsentHandlerResult, } from './server-handler.js';
 //# sourceMappingURL=index.d.ts.map
