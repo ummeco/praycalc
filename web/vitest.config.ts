@@ -43,7 +43,6 @@ export default defineConfig({
         perFile: true,
       },
       reportOnFailure: true,
-      all: true,
     },
   },
   resolve: {
