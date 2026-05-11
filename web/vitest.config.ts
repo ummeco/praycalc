@@ -31,10 +31,19 @@ export default defineConfig({
         // Audio/Web Audio API hook — requires AudioContext not available in jsdom
         "hooks/useAdhan.ts",
       ],
-      reporter: ["text", "lcov", "html"],
+      reporter: ["text", "json", "html", "lcov"],
+      // P7 Q-TEST T01 baseline thresholds (80/80/75/80, perFile).
+      // Billing-touching files (Sprint 6 IAP scaffold) get T02 critical-path enforcement
+      // via include-narrowing + dedicated coverage:critical script when they land.
       thresholds: {
         lines: 80,
+        functions: 80,
+        branches: 75,
+        statements: 80,
+        perFile: true,
       },
+      reportOnFailure: true,
+      all: true,
     },
   },
   resolve: {
