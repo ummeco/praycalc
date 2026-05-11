@@ -1,0 +1,31 @@
+# Lefthook — canonical pre-commit chain for Ummeco repos
+# Install: brew install lefthook && lefthook install
+# Source: .claude/planning/p7-wave4-cicd-2026-05-07.md
+
+pre-commit:
+  parallel: true
+  commands:
+    gitleaks:
+      run: gitleaks protect --staged --no-banner --redact
+    typecheck-affected:
+      glob: "*.{ts,tsx}"
+      run: pnpm -r --filter "...[origin/main]" typecheck
+    lint-staged:
+      glob: "*.{ts,tsx,js,jsx,md,json,yml,yaml,css}"
+      run: pnpm exec lint-staged
+    unit-affected:
+      glob: "*.{ts,tsx,test.ts,spec.ts}"
+      run: pnpm -r --filter "...[origin/main]" test:unit -- --bail --passWithNoTests
+
+commit-msg:
+  commands:
+    commitlint:
+      run: pnpm exec commitlint --edit {1}
+
+pre-push:
+  parallel: true
+  commands:
+    typecheck-full:
+      run: pnpm -r typecheck
+    test-full:
+      run: pnpm -r test:unit

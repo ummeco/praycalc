@@ -70,3 +70,12 @@ body:
       description: Attach screenshots or screen recordings if helpful (paste or drag here)
     validations:
       required: false
+
+  - type: input
+    id: charter_section
+    attributes:
+      label: Relevant charter section (if known)
+      description: Section number from .github/wiki/ENGINEERING-CHARTER.md (e.g. "§ 11" for database). Leave blank if unsure.
+      placeholder: e.g. § 11 or § 21
+    validations:
+      required: false

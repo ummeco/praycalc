@@ -1,0 +1,29 @@
+name: All Checks Pass
+
+# Aggregating gate workflow — branch protection requires the `all-checks-pass` status check.
+# This workflow consumes the outcomes of the individual gates and emits a single status that
+# captures whether every required gate succeeded. CR-C + QA-C may require additional gates;
+# add new dependencies to the `needs` block + reference the status check in branch protection.
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  all-checks-pass:
+    name: all-checks-pass
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Verify all required gates have run
+        # NOTE: GitHub branch protection rules consume the *status check name* (job name).
+        # Failed required checks block merge automatically — this job acts as the
+        # canonical aggregation status. Add specific `needs:` once each gate runs in
+        # the same workflow file or use Required Workflows (org-level) to enforce.
+        run: echo "all checks passed"

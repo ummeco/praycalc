@@ -48,3 +48,12 @@ body:
       description: Any other details, mockups, or references that help explain the request
     validations:
       required: false
+
+  - type: input
+    id: charter_sections
+    attributes:
+      label: Charter sections this feature touches
+      description: Which sections of .github/wiki/ENGINEERING-CHARTER.md are affected? (e.g. "§ 8, § 11" for UI + database)
+      placeholder: e.g. § 8, § 11
+    validations:
+      required: false

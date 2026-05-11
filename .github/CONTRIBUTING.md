@@ -1,5 +1,7 @@
 # Contributing to PrayCalc
 
+> **First read this:** [`ENGINEERING-CHARTER.md`](wiki/ENGINEERING-CHARTER.md). It is the single source of truth for code standards across every Ummeco repo. The charter is read-order-driven: start at § 22 (When in Doubt) and § 21 (Common AI-Agent Mistakes), then jump to the section that matches your surface.
+
 Thanks for your interest in contributing to PrayCalc!
 
 ## Getting Started

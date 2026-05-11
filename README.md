@@ -8,6 +8,14 @@ Accurate prayer times for Muslims, every device, every method, free forever.
 
 **Live:** [praycalc.com](https://praycalc.com) | **Docs:** [praycalc.org](https://praycalc.org)
 
+## Engineering Charter — Required Reading
+
+Before contributing, read [`.github/wiki/ENGINEERING-CHARTER.md`](.github/wiki/ENGINEERING-CHARTER.md). It is the single source of truth for code standards across every Ummeco repo. The most-read sections:
+
+- [§ 21 Common AI-Agent Mistakes](.github/wiki/ENGINEERING-CHARTER.md#21-common-ai-agent-mistakes-read-before-any-change)
+- [§ 4 Naming Conventions](.github/wiki/ENGINEERING-CHARTER.md#4-naming-conventions-master-reference)
+- [§ 6 Documentation Bar](.github/wiki/ENGINEERING-CHARTER.md#6-documentation-bar)
+
 ## What is this
 
 PrayCalc is a free, GPS-accurate Islamic prayer time calculator for web and mobile. It supports all major calculation methods (ISNA, MWL, Egypt, Umm al-Qura, Tehran, Karachi), Qibla direction, adhan reminders, and offline mode. It also powers prayer times across the Ummat app ecosystem.

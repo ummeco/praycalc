@@ -93,6 +93,9 @@ const nextConfig: NextConfig = {
   // Catch accidental side-effects in dev — safe to enable.
   reactStrictMode: true,
   images: {
+    // T-P7-Q-PERF-06: Serve AVIF when UA supports it; WebP fallback for Safari/older browsers.
+    // Next.js auto-selects format from the Accept header. JPEG/PNG fallback is automatic.
+    formats: ["image/avif", "image/webp"],
     remotePatterns: [
       {
         protocol: "https",
