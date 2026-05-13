@@ -5,6 +5,18 @@ Build numbers (the `+N` suffix on Flutter) increment with every store submission
 
 ---
 
+## [Unreleased — P7 Engineering Excellence Foundation] — 2026-05
+
+> No version bump. P7 ships infrastructure, not a new public release.
+
+### Changed
+
+- Engineering Excellence Foundation applied: ADR standards, CI quality gates, documentation enforcement
+- Stripe TEST mode confirmed: no live charges. Live activation gated to P8 per D-P7-18
+- README updated with P7 status badge and Stripe TEST notice
+
+---
+
 ## 1.2.0 — Dashboard Screenshots, Real-Time Push, tvOS, watchOS
 
 *March 2026*

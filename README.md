@@ -8,6 +8,8 @@ Accurate prayer times for Muslims, every device, every method, free forever.
 
 **Live:** [praycalc.com](https://praycalc.com) | **Docs:** [praycalc.org](https://praycalc.org)
 
+**P7 status (2026-05):** Stripe TEST mode only. Payment-gated features (Ummat+ premium) use Stripe TEST keys. No live charges. See [Changelog](.github/docs/changelog.md) for P7 updates.
+
 ## Engineering Charter — Required Reading
 
 Before contributing, read [`.github/wiki/ENGINEERING-CHARTER.md`](.github/wiki/ENGINEERING-CHARTER.md). It is the single source of truth for code standards across every Ummeco repo. The most-read sections:

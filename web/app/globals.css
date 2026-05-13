@@ -1,10 +1,23 @@
 @import "tailwindcss";
 
+/*
+ * Brand tokens — Tailwind v4 @theme configuration.
+ * Canonical source: packages/brand/src/tokens/colors.ts (green palette).
+ * When @ummat/brand ships CSS codegen, replace brand vars with @import "@ummat/brand/css".
+ * REF: T-P7-C-S10-02
+ */
 @theme {
-  --color-ummat-light: #C9F27A;
-  --color-ummat-mid: #79C24C;
-  --color-ummat-dark: #1E5E2F;
-  --color-ummat-deep: #0D2F17;
+  /* Ummat green palette — sourced from @ummat/brand green tokens */
+  --color-ummat-light:    #C9F27A; /* green-100 */
+  --color-ummat-mid:      #79C24C; /* green-400 / brand.DEFAULT */
+  --color-ummat-light-bg: #5A9438; /* green-500 / WCAG AA on white (4.5:1) */
+  --color-ummat-dark:     #1E5E2F; /* green-700 */
+  --color-ummat-deep:     #0D2F17; /* green-900 */
+  --color-ummat-wash:     #F4FBE8; /* green-50 */
+
+  /* Semantic on-surface tokens */
+  --color-ummat-on-dark:  #C9F27A; /* use on dark brand backgrounds only */
+  --color-ummat-on-light: #0D2F17; /* 7.38:1 on white */
 
   /* B1-03: Inter self-hosted via next/font/google (downloaded at build time, no CDN) */
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;

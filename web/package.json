@@ -3,17 +3,25 @@
   "version": "1.2.3",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "next dev --turbopack --port 3040",
     "build": "next build",
     "analyze": "ANALYZE=true pnpm build",
-    "start": "next start",
+    "start": "next start --port 3040",
     "lint": "eslint .",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "test:e2e": "node_modules/.bin/playwright test",
     "test:e2e:ui": "node_modules/.bin/playwright test --ui",
-    "test:e2e:report": "node_modules/.bin/playwright show-report"
+    "test:e2e:report": "node_modules/.bin/playwright show-report",
+    "setup": "pnpx tsx ~/Sites/ummeco/scripts/setup.sh",
+    "doctor": "pnpx tsx ~/Sites/ummeco/scripts/doctor.ts",
+    "codegen": "graphql-codegen --config codegen.ts",
+    "codegen:watch": "graphql-codegen --config codegen.ts --watch",
+    "env:refresh": "bash ~/Sites/ummeco/scripts/env-refresh.sh",
+    "console:hasura": "open http://localhost:5543",
+    "console:mail": "open http://localhost:5043",
+    "console:storage": "open http://localhost:5443"
   },
   "dependencies": {
     "@ummat/consent": "file:./vendor/consent",

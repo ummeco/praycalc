@@ -5,11 +5,11 @@ export default defineConfig({
   test: {
     environment: "jsdom",
     globals: true,
-    setupFiles: ["./tests/setup.ts"],
+    setupFiles: ["./__tests__/setup.ts"],
     exclude: [
       "node_modules/**",
       ".next/**",
-      "tests/e2e/**",
+      "__tests__/e2e/**",
     ],
     coverage: {
       provider: "v8",
@@ -18,7 +18,7 @@ export default defineConfig({
         "node_modules/**",
         ".next/**",
         "data/**",
-        "tests/**",
+        "__tests__/**",
         // Server-only files that require Next.js runtime — not testable in jsdom
         "lib/geo-server.ts",
         "lib/data-lookup.ts",

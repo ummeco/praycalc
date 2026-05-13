@@ -1,0 +1,36 @@
+# Branch Name Validator — praycalc
+# Sprint Q-CHARTER T14 | charter § 18 enforcement
+# Validates branch names follow: <type>/T-PN-NN-short-slug pattern.
+# Exempts: main, master, develop, release/*, hotfix/*, and Dependabot branches.
+
+name: Branch Name
+
+on:
+  push:
+    branches-ignore:
+      - main
+      - master
+      - develop
+      - 'release/**'
+      - 'hotfix/**'
+      - 'dependabot/**'
+
+jobs:
+  validate-branch-name:
+    name: Validate branch name
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check branch name
+        run: |
+          BRANCH="${GITHUB_REF#refs/heads/}"
+          echo "Branch: $BRANCH"
+          # Allow convention-compliant branch names
+          if echo "$BRANCH" | grep -qE '^(feat|fix|docs|chore|refactor|test|perf|security|ci)/T-P[0-9]+-[A-Z0-9-]+-[a-z0-9-]+$'; then
+            echo "Branch name OK: $BRANCH"
+            exit 0
+          fi
+          echo "::error::Branch name '$BRANCH' does not match the required pattern."
+          echo "::error::Expected: <type>/T-PN-NN-short-slug"
+          echo "::error::Example: feat/T-P7-Q-CHARTER-07-eslint-plugin"
+          echo "::error::See ENGINEERING-CHARTER.md § 18 for the full naming convention."
+          exit 1
