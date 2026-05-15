@@ -26,3 +26,4 @@ jobs:
     uses: ./.github/workflows/_reusable-axe.yml
     with:
       project_path: web
+      port: 3040
