@@ -76,3 +76,30 @@ wearos/local.properties
 .vscode/*
 .vercel
 .env*.local
+
+# Secrets — defense-in-depth (P8 HYGIENE-gitignore T02)
+*.pem
+*.key
+id_rsa*
+id_ed25519*
+credentials.json
+service-account*.json
+vault.env
+*.p12
+*.pfx
+
+# AI tools (extended set) — P8 HYGIENE-gitignore T03
+.copilot/
+.claire/
+.zed/
+.ai/
+.gpt/
+.anthropic/
+.openai/
+.github/copilot/
+AGENTS.md
+
+# OS junk (extended) — P8 HYGIENE-gitignore T04
+desktop.ini
+*~
+ehthumbs.db
