@@ -358,6 +358,37 @@ jobs:
             ghcr.io/ummeco/praycalc-smart:${{ steps.ver.outputs.version }}
 
   # ─────────────────────────────────────────────────────────────────
+  # CycloneDX SBOM — web (npm)
+  # ─────────────────────────────────────────────────────────────────
+  sbom-web:
+    name: SBOM (web/npm)
+    runs-on: ubuntu-latest
+    needs: test
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'pnpm'
+          cache-dependency-path: web/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      - name: Generate CycloneDX SBOM
+        uses: CycloneDX/gh-node-npm-buildplugin@v1
+        with:
+          working-directory: web
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sbom-web
+          path: web/bom.xml
+          retention-days: 90
+
+  # ─────────────────────────────────────────────────────────────────
   # GitHub Release — collect artifacts + publish
   # ─────────────────────────────────────────────────────────────────
   create-release:
@@ -370,6 +401,7 @@ jobs:
       - release-windows
       - release-linux
       - release-smart
+      - sbom-web
     if: always()
     permissions:
       contents: write
@@ -402,5 +434,6 @@ jobs:
             /tmp/release-artifacts/windows-zip/*.zip
             /tmp/release-artifacts/linux-deb/*.deb
             /tmp/release-artifacts/linux-targz/*.tar.gz
+            /tmp/release-artifacts/sbom-web/*.xml
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

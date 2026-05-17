@@ -1,0 +1,5 @@
+# CODEOWNERS — ummeco/praycalc
+# T03 p9-sprint-CI-PROD-READY
+# All files default to @acamarata. Add sub-path overrides below if needed.
+
+* @acamarata
