@@ -1,6 +1,19 @@
 export type HomeMode = "none" | "city" | "location";
 export type AdhanVoice = "mishari" | "makkah" | "pashaii";
 
+/**
+ * Hijri calendar display method.
+ *
+ * - "astronomical": pure astronomical calculation (Kuwaiti algorithm via luxon-hijri)
+ * - "umm-al-qura": Saudi Umm al-Qura approximation (+1 day offset from astronomical)
+ * - "moonsighting": Moonsighting Committee Worldwide approximation (+1 day offset)
+ *
+ * ⚠️  FLAG FOR ISLAMIC REVIEW: the umm-al-qura and moonsighting offsets are
+ * approximations. Actual UQ and MCW dates may differ by ±1 day from this
+ * implementation depending on the year and region.
+ */
+export type HijriCalendarSetting = "astronomical" | "umm-al-qura" | "moonsighting";
+
 export interface PrayCalcSettings {
   hanafi: boolean;
   use24h: boolean;
@@ -11,6 +24,8 @@ export interface PrayCalcSettings {
   showQiyam: boolean;
   homeMode: HomeMode;
   homeCity: { slug: string; name: string } | null;
+  /** Hijri calendar display method. Default: "astronomical". */
+  hijriCalendar: HijriCalendarSetting;
 }
 
 const KEY = "praycalc-settings";
@@ -25,6 +40,7 @@ const DEFAULTS: PrayCalcSettings = {
   showQiyam: false,
   homeMode: "none",
   homeCity: null,
+  hijriCalendar: "astronomical",
 };
 
 export function getSettings(): PrayCalcSettings {

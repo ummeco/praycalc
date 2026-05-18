@@ -91,6 +91,73 @@ void main() {
     });
   });
 
+  // T02 — Hanafi fixed angle tests (18° Fajr, 17° Isha)
+  // ⚠️  ISLAMIC REVIEW FLAG: 18°/17° is the UK/Deobandi/Barelwi standard.
+  // Other Hanafi positions exist; these tests validate the fixed-override
+  // path, not the scholarly correctness of the angle values themselves.
+  group('getTimes — Hanafi fixed angles (hanafiAngles=true)', () {
+    // London winter (2024-12-15, lat=51.5°) is a good test because the
+    // dynamic algorithm produces conservative angles at high winter latitude,
+    // so fixed 18°/17° should yield an earlier Fajr than ISNA (~15°).
+    late PrayerTimes timesIsna;       // dynamic (no hanafiAngles)
+    late PrayerTimes timesHanafiFixed; // fixed 18°/17°
+    late PrayerTimes timesHanafiDynamic; // hanafi=true, hanafiAngles=false
+
+    setUpAll(() {
+      final date = DateTime(2024, 12, 15);
+      timesIsna          = getTimes(date, 51.5074, -0.1278, 0.0);
+      timesHanafiFixed   = getTimes(date, 51.5074, -0.1278, 0.0,
+          hanafi: true, hanafiAngles: true);
+      timesHanafiDynamic = getTimes(date, 51.5074, -0.1278, 0.0,
+          hanafi: true, hanafiAngles: false);
+    });
+
+    test('Hanafi fixed angles use exactly 18° Fajr', () {
+      expect(timesHanafiFixed.angles.fajrAngle, equals(18.0));
+    });
+
+    test('Hanafi fixed angles use exactly 17° Isha', () {
+      expect(timesHanafiFixed.angles.ishaAngle, equals(17.0));
+    });
+
+    test('Hanafi fixed Fajr is earlier than ISNA dynamic Fajr at London winter', () {
+      // 18° is larger depression than dynamic ~14–16°, so sun must be deeper
+      // below horizon → Fajr is earlier (smaller fractional hour value).
+      expect(timesHanafiFixed.fajr, lessThan(timesIsna.fajr));
+    });
+
+    test('Hanafi fixed Isha is later than dynamic Isha at London winter', () {
+      // 17° is larger depression → sun sets deeper → Isha is later.
+      expect(timesHanafiFixed.isha, greaterThan(timesIsna.isha));
+    });
+
+    test('Hanafi fixed Asr is later than ISNA Asr (hanafi shadow factor 2)', () {
+      expect(timesHanafiFixed.asr, greaterThan(timesIsna.asr));
+    });
+
+    test('Hanafi fixed Fajr is earlier than Hanafi dynamic Fajr at London winter', () {
+      // The dynamic algorithm for London Dec typically yields ~16–17°;
+      // forcing 18° must push Fajr even earlier.
+      expect(timesHanafiFixed.fajr, lessThanOrEqualTo(timesHanafiDynamic.fajr + 0.001));
+    });
+
+    test('hanafiAngles=false does NOT change Fajr/Isha angles from base', () {
+      // Sanity: disabling the override keeps angles matching the pure dynamic result.
+      expect(timesHanafiDynamic.angles.fajrAngle,
+          closeTo(timesIsna.angles.fajrAngle, 0.001));
+      expect(timesHanafiDynamic.angles.ishaAngle,
+          closeTo(timesIsna.angles.ishaAngle, 0.001));
+    });
+
+    test('Hanafi fixed prayer ordering is valid', () {
+      expect(timesHanafiFixed.fajr,    lessThan(timesHanafiFixed.sunrise));
+      expect(timesHanafiFixed.sunrise, lessThan(timesHanafiFixed.dhuhr));
+      expect(timesHanafiFixed.dhuhr,   lessThan(timesHanafiFixed.asr));
+      expect(timesHanafiFixed.asr,     lessThan(timesHanafiFixed.maghrib));
+      expect(timesHanafiFixed.maghrib, lessThan(timesHanafiFixed.isha));
+    });
+  });
+
   group('getTimes — Mecca 2024-06-21 (summer solstice)', () {
     late PrayerTimes times;
 

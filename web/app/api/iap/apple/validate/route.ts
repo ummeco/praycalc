@@ -24,7 +24,6 @@ import { NextRequest, NextResponse } from "next/server";
 const HASURA_URL =
   process.env.HASURA_ADMIN_URL ||
   "https://api.ummat.dev/v1/graphql";
-const HASURA_ADMIN_SECRET = process.env.HASURA_GRAPHQL_ADMIN_SECRET || "";
 const APPLE_IAP_SANDBOX = process.env.APPLE_IAP_SANDBOX !== "false"; // default true
 
 // ── JWS helpers ──────────────────────────────────────────────────────────────
@@ -83,19 +82,22 @@ const SYNC_APPLE_IAP_MUTATION = `
   }
 `;
 
-async function syncToHasura(params: {
-  userId: string;
-  productId: string;
-  originalTransactionId: string;
-  purchaseDate: string;
-  expiresDate: string | null;
-  appAccountToken: string | null;
-}): Promise<{ success: boolean; expiresAt: string | null }> {
+async function syncToHasura(
+  adminSecret: string,
+  params: {
+    userId: string;
+    productId: string;
+    originalTransactionId: string;
+    purchaseDate: string;
+    expiresDate: string | null;
+    appAccountToken: string | null;
+  }
+): Promise<{ success: boolean; expiresAt: string | null }> {
   const resp = await fetch(HASURA_URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "x-hasura-admin-secret": HASURA_ADMIN_SECRET,
+      "x-hasura-admin-secret": adminSecret,
     },
     body: JSON.stringify({
       query: SYNC_APPLE_IAP_MUTATION,
@@ -122,6 +124,16 @@ async function syncToHasura(params: {
 // ── Route handler ─────────────────────────────────────────────────────────────
 
 export async function POST(req: NextRequest) {
+  // T03: Guard — HASURA_GRAPHQL_ADMIN_SECRET must be set or the route cannot
+  // safely sync receipts to the backend. Fail fast at request time rather than
+  // leaking an empty-string admin secret to Hasura (which would succeed with
+  // the public role, silently writing nothing useful).
+  const adminSecret = process.env.HASURA_GRAPHQL_ADMIN_SECRET;
+  if (!adminSecret) {
+    console.error("[IAP/Apple] HASURA_GRAPHQL_ADMIN_SECRET is not configured");
+    return NextResponse.json({ error: "Internal configuration error" }, { status: 500 });
+  }
+
   let body: { jwsTransaction?: string; userId?: string; appAccountToken?: string };
   try {
     body = await req.json();
@@ -158,7 +170,7 @@ export async function POST(req: NextRequest) {
     : null;
 
   try {
-    const result = await syncToHasura({
+    const result = await syncToHasura(adminSecret, {
       userId,
       productId: payload.productId,
       originalTransactionId: payload.originalTransactionId,

@@ -11,6 +11,16 @@ import 'angles.dart';
 import 'asr.dart';
 import 'qiyam.dart';
 
+/// Fixed Fajr/Isha depression angles for Hanafi method (Deobandi/Barelwi standard).
+///
+/// These override the dynamic algorithm when [hanafiAngles] is true.
+/// 18° Fajr and 17° Isha are the traditional UK/South-Asian Hanafi standard.
+/// Scholarly note: other Hanafi positions exist (e.g. 15°/15° per some Egyptian
+/// scholars); these values match the dominant UK/Indo-Pakistani practice.
+/// ⚠️  FLAG FOR ISLAMIC REVIEW before production use at scale.
+const double _kHanafiFajrAngle = 18.0;
+const double _kHanafiIshaAngle = 17.0;
+
 /// Compute prayer times for a given date and location.
 ///
 /// [date] is the observer's local date (time-of-day is ignored).
@@ -22,6 +32,9 @@ import 'qiyam.dart';
 /// [pressure] is atmospheric pressure in mbar/hPa (default: 1013.25).
 /// [hanafi] selects Asr convention: false = Shafi'i/Maliki/Hanbali (default),
 /// true = Hanafi.
+/// [hanafiAngles] when true, overrides the dynamic twilight angle algorithm
+/// with fixed Hanafi Fajr=18° and Isha=17° depression angles.
+/// Has no effect unless [hanafi] is also true.
 PrayerTimes getTimes(
   DateTime date,
   double lat,
@@ -31,14 +44,23 @@ PrayerTimes getTimes(
   double temperature = 15,
   double pressure = 1013.25,
   bool hanafi = false,
+  bool hanafiAngles = false,
 }) {
-  // 1. Compute dynamic twilight angles.
-  final tw = getAngles(
-    date, lat, lng,
-    elevation: elevation,
-    temperature: temperature,
-    pressure: pressure,
-  );
+  // 1. Compute twilight angles — fixed Hanafi angles or dynamic method.
+  final TwilightAngles tw;
+  if (hanafi && hanafiAngles) {
+    tw = TwilightAngles(
+      fajrAngle: _kHanafiFajrAngle,
+      ishaAngle: _kHanafiIshaAngle,
+    );
+  } else {
+    tw = getAngles(
+      date, lat, lng,
+      elevation: elevation,
+      temperature: temperature,
+      pressure: pressure,
+    );
+  }
 
   // 2. Convert depression angles to SPA zenith angles.
   //    SPA uses zenith (90° + depression) for custom altitude events.

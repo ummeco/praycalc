@@ -36,13 +36,14 @@ export type PrayerName = typeof PRAYER_ORDER[number];
  * Returns Unix timestamps (seconds since epoch).
  */
 export function calculatePrayerTimestamps(
-  date:      Date,
-  lat:       number,
-  lng:       number,
-  tzOffset:  number,
-  hanafi:    boolean = false,
+  date:         Date,
+  lat:          number,
+  lng:          number,
+  tzOffset:     number,
+  hanafi:       boolean = false,
+  hanafiAngles: boolean = false,
 ): CalculatedPrayerTimes {
-  const times = getPrayerTimes(date, lat, lng, tzOffset, hanafi);
+  const times = getPrayerTimes(date, lat, lng, tzOffset, hanafi, hanafiAngles);
 
   // Parse "HH:MM" strings into Unix timestamps for the given date
   const dayStart = new Date(date);
@@ -70,13 +71,14 @@ export function calculatePrayerTimestamps(
  * Returns a map of prayer name → Unix timestamp for the given date.
  */
 export function prayerTimestampMap(
-  date:     Date,
-  lat:      number,
-  lng:      number,
-  tzOffset: number,
-  hanafi:   boolean = false,
+  date:         Date,
+  lat:          number,
+  lng:          number,
+  tzOffset:     number,
+  hanafi:       boolean = false,
+  hanafiAngles: boolean = false,
 ): Map<PrayerName, number> {
-  const ts = calculatePrayerTimestamps(date, lat, lng, tzOffset, hanafi);
+  const ts = calculatePrayerTimestamps(date, lat, lng, tzOffset, hanafi, hanafiAngles);
   return new Map<PrayerName, number>([
     ['Fajr',    ts.fajr],
     ['Sunrise', ts.sunrise],

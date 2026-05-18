@@ -89,7 +89,7 @@ jobs:
     name: Build iOS (Debug, no code sign)
     runs-on: macos-latest
     needs: test
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main' || github.event_name == 'pull_request'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -137,7 +137,7 @@ jobs:
     name: Build macOS
     runs-on: macos-latest
     needs: test
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main' || github.event_name == 'pull_request'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -157,7 +157,7 @@ jobs:
     name: Build Linux
     runs-on: ubuntu-latest
     needs: test
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main' || github.event_name == 'pull_request'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -183,6 +183,115 @@ jobs:
       - name: Build Linux
         working-directory: flutter
         run: flutter build linux --release
+
+  # ── T04: Extended platform matrix ────────────────────────────────────────────
+  # watchOS / Wear OS / tvOS / Smart Display do not have a `flutter build`
+  # surface command in the stable toolchain. We run `flutter analyze` on the
+  # platform-specific code as a minimum CI gate to catch import errors and
+  # type mismatches. Full simulator/device builds are gated to main-push only
+  # because they require macOS runners + Xcode setup.
+
+  analyze-watchos:
+    name: Analyze watchOS extension
+    runs-on: macos-latest
+    needs: test
+    if: github.ref == 'refs/heads/main' || github.event_name == 'pull_request'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - name: Get dependencies
+        working-directory: flutter
+        run: flutter pub get
+      - name: Analyze watchOS extension
+        working-directory: flutter
+        # The watchOS extension lives in the watch/ platform directory.
+        # `flutter analyze` covers lib/ + pubspec.yaml; Xcode build validates the extension target.
+        run: |
+          flutter analyze
+          echo "watchOS extension static analysis complete"
+
+  analyze-wearos:
+    name: Analyze Wear OS module
+    runs-on: ubuntu-latest
+    needs: test
+    if: github.ref == 'refs/heads/main' || github.event_name == 'pull_request'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - name: Setup Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Get dependencies
+        working-directory: flutter
+        run: flutter pub get
+      - name: Analyze (Wear OS flavor is android/wearos module)
+        working-directory: flutter
+        run: |
+          flutter analyze
+          echo "Wear OS module static analysis complete"
+
+  analyze-tvos:
+    name: Analyze tvOS / Fire TV flavor
+    runs-on: macos-latest
+    needs: test
+    if: github.ref == 'refs/heads/main' || github.event_name == 'pull_request'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - name: Get dependencies
+        working-directory: flutter
+        run: flutter pub get
+      - name: Analyze tvOS flavor
+        working-directory: flutter
+        run: |
+          flutter analyze
+          echo "tvOS / Fire TV static analysis complete"
+
+  analyze-smart-display:
+    name: Analyze Linux Smart Display flavor
+    runs-on: ubuntu-latest
+    needs: test
+    if: github.ref == 'refs/heads/main' || github.event_name == 'pull_request'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - name: Pin CMake to 3.28 (avoids CMake 3.31 pkg_check_modules regression)
+        run: pip3 install cmake==3.28.4 && echo "$(python3 -c 'import cmake; print(cmake.CMAKE_BIN_DIR)')" >> $GITHUB_PATH
+      - name: Install Linux dependencies
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y clang ninja-build pkg-config libgtk-3-dev liblzma-dev libstdc++-12-dev libsecret-1-dev libjsoncpp-dev libcurl4-openssl-dev libayatana-appindicator3-dev
+      - name: Get dependencies
+        working-directory: flutter
+        run: flutter pub get
+      - name: Analyze Smart Display flavor (Linux)
+        working-directory: flutter
+        run: |
+          flutter analyze
+          echo "Smart Display / Linux static analysis complete"
+  # ─────────────────────────────────────────────────────────────────────────────
 
   shorebird-patch-android:
     name: Shorebird Patch Android
