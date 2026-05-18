@@ -56,6 +56,11 @@ export default function Footer() {
           <Link href="/privacy" className="site-footer-legal-link">{t("privacy")}</Link>
           <span className="text-white/15 text-xs">&middot;</span>
           <Link href="/terms" className="site-footer-legal-link">{t("terms")}</Link>
+          <span className="text-white/15 text-xs">&middot;</span>
+          {/* T09-LEGAL-COUNSEL-PACK: Cookies + AUP links */}
+          <Link href="/cookies" className="site-footer-legal-link">Cookies</Link>
+          <span className="text-white/15 text-xs">&middot;</span>
+          <Link href="/aup" className="site-footer-legal-link">Acceptable Use</Link>
         </div>
       </div>
     </footer>

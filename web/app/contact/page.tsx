@@ -29,7 +29,7 @@ export default function ContactPage() {
         <div className="space-y-8">
           {/* Email Support */}
           <section className="rounded-2xl border border-white/10 bg-white/5 p-6">
-            <h2 className="mb-2 text-xl font-semibold text-[#79C24C]">Email Support</h2>
+            <h2 className="mb-2 text-xl font-semibold text-[#5A9438]">Email Support</h2>
             <p className="mb-4 text-white/70 leading-relaxed">
               For technical support, bug reports, feature requests, or general inquiries, email us at:
             </p>
@@ -100,7 +100,7 @@ export default function ContactPage() {
 
           {/* Open Source / GitHub */}
           <section className="rounded-2xl border border-white/10 bg-white/5 p-6">
-            <h2 className="mb-2 text-xl font-semibold text-[#79C24C]">Bug Reports &amp; Feature Requests</h2>
+            <h2 className="mb-2 text-xl font-semibold text-[#5A9438]">Bug Reports &amp; Feature Requests</h2>
             <p className="mb-4 text-white/70 leading-relaxed">
               PrayCalc is open source. You can report bugs or request features on GitHub:
             </p>
@@ -119,7 +119,7 @@ export default function ContactPage() {
 
           {/* About */}
           <section className="rounded-2xl border border-white/10 bg-white/5 p-6">
-            <h2 className="mb-2 text-xl font-semibold text-[#79C24C]">About PrayCalc</h2>
+            <h2 className="mb-2 text-xl font-semibold text-[#5A9438]">About PrayCalc</h2>
             <p className="text-white/70 leading-relaxed">
               PrayCalc is a free prayer time calculator built by{' '}
               <a

@@ -97,7 +97,7 @@ export default function IntegrationCard({
                 connected ? "bg-[#79C24C]" : "bg-gray-600"
               }`}
             />
-            <span className={connected ? "text-[#79C24C]" : "text-gray-500"}>
+            <span className={connected ? "text-[#5A9438]" : "text-gray-500"}>
               {connected ? "Connected" : "Not connected"}
             </span>
           </div>
@@ -160,7 +160,7 @@ export default function IntegrationCard({
       {testResult !== null && (
         <p
           className={`mt-3 text-xs ${
-            testResult ? "text-[#79C24C]" : "text-red-400"
+            testResult ? "text-[#5A9438]" : "text-red-400"
           }`}
         >
           {testResult
@@ -178,7 +178,7 @@ export default function IntegrationCard({
           <ol className="space-y-2 text-sm text-gray-300">
             {instructions.map((step, i) => (
               <li key={i} className="flex gap-2">
-                <span className="shrink-0 text-[#79C24C]">{i + 1}.</span>
+                <span className="shrink-0 text-[#5A9438]">{i + 1}.</span>
                 <span className="font-mono text-xs leading-relaxed">
                   {step}
                 </span>

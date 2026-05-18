@@ -330,7 +330,7 @@ export default function WebhooksPage() {
                           type="button"
                           onClick={() => handleTest(wh)}
                           disabled={testing === wh.id}
-                          className="rounded px-3 py-1 text-xs text-[#79C24C] transition hover:bg-[#1E5E2F] disabled:opacity-50"
+                          className="rounded px-3 py-1 text-xs text-[#5A9438] transition hover:bg-[#1E5E2F] disabled:opacity-50"
                         >
                           {testing === wh.id ? "Sending..." : "Test"}
                         </button>
@@ -347,7 +347,7 @@ export default function WebhooksPage() {
                     {testResult?.id === wh.id && (
                       <p
                         className={`mt-2 text-xs ${
-                          testResult.ok ? "text-[#79C24C]" : "text-red-400"
+                          testResult.ok ? "text-[#5A9438]" : "text-red-400"
                         }`}
                       >
                         {testResult.message}

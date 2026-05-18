@@ -30,17 +30,17 @@ export default function PrivacyPage() {
         <div className="space-y-8 text-white/70 leading-relaxed">
 
           <section>
-            <h2 className="mb-3 text-xl font-semibold text-[#79C24C]">1. Who We Are</h2>
+            <h2 className="mb-3 text-xl font-semibold text-[#5A9438]">1. Who We Are</h2>
             <p>
-              PrayCalc is operated by <strong className="text-white/90">Ummat</strong>, an Islamic technology organization (501(c)(3) application pending). We operate <a href="https://praycalc.com" className="text-[#79C24C] underline">praycalc.com</a> and the PrayCalc mobile app, serving the global Muslim community with accurate prayer times, Qibla direction, and Islamic calendar tools.
+              PrayCalc is operated by <strong className="text-white/90">Ummat</strong>, an Islamic technology organization (501(c)(3) application pending). We operate <a href="https://praycalc.com" className="text-[#5A9438] underline">praycalc.com</a> and the PrayCalc mobile app, serving the global Muslim community with accurate prayer times, Qibla direction, and Islamic calendar tools.
             </p>
             <p className="mt-2">
-              <strong className="text-white/90">Data controller:</strong> Ummat &mdash; <a href="mailto:privacy@ummat.dev" className="text-[#79C24C] underline">privacy@ummat.dev</a>
+              <strong className="text-white/90">Data controller:</strong> Ummat &mdash; <a href="mailto:privacy@ummat.dev" className="text-[#5A9438] underline">privacy@ummat.dev</a>
             </p>
           </section>
 
           <section>
-            <h2 className="mb-3 text-xl font-semibold text-[#79C24C]">2. What We Collect</h2>
+            <h2 className="mb-3 text-xl font-semibold text-[#5A9438]">2. What We Collect</h2>
             <p className="mb-2">Data you provide:</p>
             <ul className="list-disc space-y-1 pl-6">
               <li><strong className="text-white/90">Account information:</strong> email address and display name when you create an account.</li>
@@ -60,7 +60,7 @@ export default function PrivacyPage() {
           </section>
 
           <section>
-            <h2 className="mb-3 text-xl font-semibold text-[#79C24C]">3. How We Use It</h2>
+            <h2 className="mb-3 text-xl font-semibold text-[#5A9438]">3. How We Use It</h2>
             <ul className="list-disc space-y-1 pl-6">
               <li>Calculate accurate prayer times, Qibla direction, moon phases, and Islamic calendar events for your location.</li>
               <li>Send adhan reminders and transactional emails (account verification, password reset).</li>
@@ -74,7 +74,7 @@ export default function PrivacyPage() {
           </section>
 
           <section>
-            <h2 className="mb-3 text-xl font-semibold text-[#79C24C]">4. Who We Share With</h2>
+            <h2 className="mb-3 text-xl font-semibold text-[#5A9438]">4. Who We Share With</h2>
             <p className="mb-3">We share data only with these service providers, strictly to deliver our service:</p>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
@@ -95,12 +95,12 @@ export default function PrivacyPage() {
               </table>
             </div>
             <p className="mt-3 text-sm">
-              Full sub-processor list: <a href="https://ummat.pro/legal/sub-processors" className="text-[#79C24C] underline">ummat.pro/legal/sub-processors</a>
+              Full sub-processor list: <a href="https://ummat.pro/legal/sub-processors" className="text-[#5A9438] underline">ummat.pro/legal/sub-processors</a>
             </p>
           </section>
 
           <section>
-            <h2 className="mb-3 text-xl font-semibold text-[#79C24C]">5. Your Rights</h2>
+            <h2 className="mb-3 text-xl font-semibold text-[#5A9438]">5. Your Rights</h2>
             <ul className="list-disc space-y-1 pl-6">
               <li><strong className="text-white/90">Access</strong> — request a copy of all data we hold about you.</li>
               <li><strong className="text-white/90">Correct</strong> — ask us to fix inaccurate data.</li>
@@ -112,19 +112,19 @@ export default function PrivacyPage() {
               GDPR / UK-GDPR: all rights under Articles 15&ndash;22 apply. Response within 30 days. CCPA/CPRA: we do not sell or share your personal information.
             </p>
             <p className="mt-2">
-              To exercise any right, email <a href="mailto:privacy@ummat.dev" className="text-[#79C24C] underline">privacy@ummat.dev</a>.
+              To exercise any right, email <a href="mailto:privacy@ummat.dev" className="text-[#5A9438] underline">privacy@ummat.dev</a>.
             </p>
           </section>
 
           <section>
-            <h2 className="mb-3 text-xl font-semibold text-[#79C24C]">6. Children</h2>
+            <h2 className="mb-3 text-xl font-semibold text-[#5A9438]">6. Children</h2>
             <p>
-              PrayCalc is not directed at children under 13 (US) or under 16 (EU). We do not knowingly collect personal data from minors below the applicable minimum age without verified parental consent. If you believe a child has provided data, contact <a href="mailto:privacy@ummat.dev" className="text-[#79C24C] underline">privacy@ummat.dev</a>.
+              PrayCalc is not directed at children under 13 (US) or under 16 (EU). We do not knowingly collect personal data from minors below the applicable minimum age without verified parental consent. If you believe a child has provided data, contact <a href="mailto:privacy@ummat.dev" className="text-[#5A9438] underline">privacy@ummat.dev</a>.
             </p>
           </section>
 
           <section>
-            <h2 className="mb-3 text-xl font-semibold text-[#79C24C]">7. Retention</h2>
+            <h2 className="mb-3 text-xl font-semibold text-[#5A9438]">7. Retention</h2>
             <ul className="list-disc space-y-1 pl-6">
               <li>Account data: until deletion + 30-day grace period.</li>
               <li>Server logs (incl. IP): 30 days.</li>
@@ -134,24 +134,24 @@ export default function PrivacyPage() {
           </section>
 
           <section>
-            <h2 className="mb-3 text-xl font-semibold text-[#79C24C]">8. International Transfers</h2>
+            <h2 className="mb-3 text-xl font-semibold text-[#5A9438]">8. International Transfers</h2>
             <p>
               Our primary servers are in <strong className="text-white/90">Falkenstein, Germany (EU)</strong> via Hetzner. US users: your data is stored in the EU. Some service providers operate in the USA; transfers are covered by Standard Contractual Clauses (EU 2021/914, Module 2).
             </p>
           </section>
 
           <section>
-            <h2 className="mb-3 text-xl font-semibold text-[#79C24C]">9. Security</h2>
+            <h2 className="mb-3 text-xl font-semibold text-[#5A9438]">9. Security</h2>
             <p>
-              All data in transit is encrypted with TLS 1.3. Sensitive fields are encrypted at rest. Access is restricted by role. To report a security vulnerability, email <a href="mailto:security@ummat.dev" className="text-[#79C24C] underline">security@ummat.dev</a>.
+              All data in transit is encrypted with TLS 1.3. Sensitive fields are encrypted at rest. Access is restricted by role. To report a security vulnerability, email <a href="mailto:security@ummat.dev" className="text-[#5A9438] underline">security@ummat.dev</a>.
             </p>
           </section>
 
           <section>
-            <h2 className="mb-3 text-xl font-semibold text-[#79C24C]">10. Contact</h2>
+            <h2 className="mb-3 text-xl font-semibold text-[#5A9438]">10. Contact</h2>
             <p>
-              Privacy requests: <a href="mailto:privacy@ummat.dev" className="text-[#79C24C] underline">privacy@ummat.dev</a><br />
-              Security reports: <a href="mailto:security@ummat.dev" className="text-[#79C24C] underline">security@ummat.dev</a><br />
+              Privacy requests: <a href="mailto:privacy@ummat.dev" className="text-[#5A9438] underline">privacy@ummat.dev</a><br />
+              Security reports: <a href="mailto:security@ummat.dev" className="text-[#5A9438] underline">security@ummat.dev</a><br />
               <br />
               <strong className="text-white/90">Ummat</strong> (501(c)(3) application pending) &mdash; United States
             </p>
@@ -159,7 +159,7 @@ export default function PrivacyPage() {
 
           {/* C-07b: Recent Updates — appended 2026-04-30 */}
           <section className="rounded-lg border border-[#79C24C]/20 bg-[#1E5E2F]/20 px-5 py-4">
-            <h2 className="mb-3 text-xl font-semibold text-[#79C24C]">Recent Updates (2026-04-25)</h2>
+            <h2 className="mb-3 text-xl font-semibold text-[#5A9438]">Recent Updates (2026-04-25)</h2>
             <p className="mb-2 text-sm text-white/50">The following changes reflect P3 platform decisions that took effect April 2026:</p>
             <ul className="list-disc space-y-2 pl-6 text-sm">
               <li>

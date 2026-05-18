@@ -48,7 +48,7 @@ function Toggle({ id, label, description, checked, disabled, onChange, alwaysOnL
       </div>
       <div className="flex-shrink-0 mt-0.5">
         {disabled ? (
-          <span className="text-xs text-[#79C24C] font-medium">{alwaysOnLabel}</span>
+          <span className="text-xs text-[#5A9438] font-medium">{alwaysOnLabel}</span>
         ) : (
           <button
             type="button"

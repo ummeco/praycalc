@@ -136,7 +136,7 @@ export default function UpgradePage() {
 }
 
 function renderCell(value: boolean | string) {
-  if (value === true) return <span className="text-[#79C24C]">&#10003;</span>;
+  if (value === true) return <span className="text-[#5A9438]">&#10003;</span>;
   if (value === false) return <span className="text-gray-600">&mdash;</span>;
   return <span className="text-gray-300">{value}</span>;
 }

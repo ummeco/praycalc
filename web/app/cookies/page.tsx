@@ -30,14 +30,14 @@ export default function CookiesPage() {
         <div className="space-y-8 text-white/70 leading-relaxed">
 
           <section>
-            <h2 className="mb-3 text-xl font-semibold text-[#79C24C]">What Are Cookies</h2>
+            <h2 className="mb-3 text-xl font-semibold text-[#5A9438]">What Are Cookies</h2>
             <p>
               Cookies are small text files placed on your device when you visit a website. They help us keep you signed in, remember your preferences, and understand how the site is used.
             </p>
           </section>
 
           <section>
-            <h2 className="mb-3 text-xl font-semibold text-[#79C24C]">Cookies We Use</h2>
+            <h2 className="mb-3 text-xl font-semibold text-[#5A9438]">Cookies We Use</h2>
 
             <h3 className="mb-2 mt-4 font-semibold text-white/80">Essential cookies (always active)</h3>
             <p className="mb-3 text-sm">Required for PrayCalc to function. You cannot opt out of these.</p>
@@ -66,7 +66,7 @@ export default function CookiesPage() {
           </section>
 
           <section>
-            <h2 className="mb-3 text-xl font-semibold text-[#79C24C]">Third-Party Cookies</h2>
+            <h2 className="mb-3 text-xl font-semibold text-[#5A9438]">Third-Party Cookies</h2>
             <ul className="list-disc space-y-1 pl-6">
               <li><strong className="text-white/90">Cloudflare</strong> may set <code className="text-xs bg-white/10 px-1 rounded">__cf_bm</code> for bot detection (strictly necessary).</li>
               <li><strong className="text-white/90">Stripe</strong> sets cookies on payment pages for fraud detection (strictly necessary for payments).</li>
@@ -75,7 +75,7 @@ export default function CookiesPage() {
           </section>
 
           <section>
-            <h2 className="mb-3 text-xl font-semibold text-[#79C24C]">Your Choices</h2>
+            <h2 className="mb-3 text-xl font-semibold text-[#5A9438]">Your Choices</h2>
             <p>
               On your first visit we show a consent banner. You can choose &ldquo;Accept all&rdquo; (essential + analytics) or &ldquo;Essential only&rdquo; (analytics will not fire). You can change your preference at any time via the cookie settings link in the footer.
             </p>
@@ -85,9 +85,9 @@ export default function CookiesPage() {
           </section>
 
           <section>
-            <h2 className="mb-3 text-xl font-semibold text-[#79C24C]">Contact</h2>
+            <h2 className="mb-3 text-xl font-semibold text-[#5A9438]">Contact</h2>
             <p>
-              Questions about cookies: <a href="mailto:privacy@ummat.dev" className="text-[#79C24C] underline">privacy@ummat.dev</a>
+              Questions about cookies: <a href="mailto:privacy@ummat.dev" className="text-[#5A9438] underline">privacy@ummat.dev</a>
             </p>
           </section>
 

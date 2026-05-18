@@ -56,7 +56,7 @@ export default function CaliforniaPrivacyPage() {
         <div className="space-y-10 text-white/70 leading-relaxed text-sm">
 
           <section>
-            <h2 className="text-xl font-semibold text-[#79C24C] mb-3">Categories of Personal Information We Collect</h2>
+            <h2 className="text-xl font-semibold text-[#5A9438] mb-3">Categories of Personal Information We Collect</h2>
             {/* TODO(U-15): Verify location data categories — precise vs coarse — with counsel. */}
             <div className="overflow-x-auto">
               <table className="w-full text-sm border-collapse">
@@ -88,7 +88,7 @@ export default function CaliforniaPrivacyPage() {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold text-[#79C24C] mb-3">Sensitive Personal Information — Location Data</h2>
+            <h2 className="text-xl font-semibold text-[#5A9438] mb-3">Sensitive Personal Information — Location Data</h2>
             <p>
               {/* TODO(U-15): Confirm § 1798.121 right-to-limit language for geolocation with counsel. */}
               Under CPRA § 1798.121, precise geolocation is sensitive personal information. You have the right to
@@ -101,12 +101,12 @@ export default function CaliforniaPrivacyPage() {
             </p>
             <p className="mt-2">
               To limit use of your location data beyond prayer time calculation, email{' '}
-              <a href="mailto:privacy@ummat.dev" className="text-[#79C24C] hover:underline">privacy@ummat.dev</a>.
+              <a href="mailto:privacy@ummat.dev" className="text-[#5A9438] hover:underline">privacy@ummat.dev</a>.
             </p>
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold text-[#79C24C] mb-3">Your California Rights</h2>
+            <h2 className="text-xl font-semibold text-[#5A9438] mb-3">Your California Rights</h2>
             <h3 className="text-base font-semibold text-white mt-4">Right to Know</h3>
             <p>You may request disclosure of the categories and specific pieces of personal information we have collected about you.</p>
             <h3 className="text-base font-semibold text-white mt-4">Right to Delete</h3>
@@ -122,16 +122,16 @@ export default function CaliforniaPrivacyPage() {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold text-[#79C24C] mb-3">How to Submit a Request</h2>
-            <p>Email <a href="mailto:privacy@ummat.dev" className="text-[#79C24C] hover:underline">privacy@ummat.dev</a> with subject &quot;CPRA Request&quot;. Include your full name and account email.</p>
+            <h2 className="text-xl font-semibold text-[#5A9438] mb-3">How to Submit a Request</h2>
+            <p>Email <a href="mailto:privacy@ummat.dev" className="text-[#5A9438] hover:underline">privacy@ummat.dev</a> with subject &quot;CPRA Request&quot;. Include your full name and account email.</p>
             <p className="mt-2">We respond within 45 days (extendable to 90 days with notice).</p>
           </section>
 
           <section className="border-t border-white/10 pt-6">
             <h2 className="text-lg font-semibold text-white mb-3">Related</h2>
             <ul className="space-y-1">
-              <li><Link href="/privacy" className="text-[#79C24C] hover:underline">Privacy Policy</Link></li>
-              <li><Link href="/preferences" className="text-[#79C24C] hover:underline">Manage Cookie Preferences</Link></li>
+              <li><Link href="/privacy" className="text-[#5A9438] hover:underline">Privacy Policy</Link></li>
+              <li><Link href="/preferences" className="text-[#5A9438] hover:underline">Manage Cookie Preferences</Link></li>
             </ul>
           </section>
         </div>

@@ -884,7 +884,7 @@ function TvCard({
           <div className="flex items-center gap-2 mt-1 flex-wrap">
             <p className="text-white/50 text-sm truncate">{device.deviceModel}</p>
             {device.isShared && (
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-[#1E5E2F]/40 border border-[#79C24C]/20 rounded-full text-[#79C24C] text-xs font-medium whitespace-nowrap">
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-[#1E5E2F]/40 border border-[#79C24C]/20 rounded-full text-[#5A9438] text-xs font-medium whitespace-nowrap">
                 <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                   <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
                   <polyline points="16 6 12 2 8 6"/>

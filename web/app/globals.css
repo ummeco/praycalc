@@ -5322,3 +5322,18 @@ html[data-theme="light"] .lang-switcher-option--active {
 }
 .account-dev-login:hover { background: #1f461f; }
 .account-dev-login:disabled { opacity: 0.5; cursor: default; }
+
+
+/* A11Y-T09: prefers-reduced-motion — WCAG 2.3.3 AAA global catch-all.
+   Stops all animations/transitions for users who opt out via OS accessibility settings.
+   Per-component motion may use @media(prefers-reduced-motion: no-preference) for opt-in. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001s !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001s !important;
+    scroll-behavior: auto !important;
+  }
+}

@@ -47,14 +47,14 @@ export function CookieBanner({
               {s.body}{' '}
               <a
                 href={privacyPolicyUrl}
-                className="underline text-[#79C24C] hover:text-[#C9F27A] transition-colors"
+                className="underline text-[#5A9438] hover:text-[#C9F27A] transition-colors"
               >
                 Privacy Policy
               </a>
               {' · '}
               <a
                 href={cookiePolicyUrl}
-                className="underline text-[#79C24C] hover:text-[#C9F27A] transition-colors"
+                className="underline text-[#5A9438] hover:text-[#C9F27A] transition-colors"
               >
                 Cookie Policy
               </a>
@@ -76,7 +76,7 @@ export function CookieBanner({
             <button
               type="button"
               onClick={openPreferences}
-              className="px-4 py-2 text-sm rounded-md border border-[#79C24C] text-[#79C24C] hover:border-[#C9F27A] hover:text-[#C9F27A] transition-colors whitespace-nowrap"
+              className="px-4 py-2 text-sm rounded-md border border-[#79C24C] text-[#5A9438] hover:border-[#C9F27A] hover:text-[#C9F27A] transition-colors whitespace-nowrap"
             >
               {s.customize}
             </button>

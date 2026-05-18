@@ -34,7 +34,7 @@ function AdhkarCard({ dhikr, index }: { dhikr: Dhikr; index: number }) {
   return (
     <div className="bg-[#1E5E2F]/10 border border-[#79C24C]/10 rounded-2xl p-5 hover:border-[#79C24C]/25 transition-colors">
       <div className="flex items-start justify-between gap-3 mb-3">
-        <span className="text-[#79C24C]/50 text-sm font-mono">{String(index + 1).padStart(2, '0')}</span>
+        <span className="text-[#5A9438]/50 text-sm font-mono">{String(index + 1).padStart(2, '0')}</span>
         <div className="flex items-center gap-2">
           {dhikr.repeatCount && dhikr.repeatCount > 1 && (
             <span className="text-xs bg-[#79C24C]/10 text-[#C9F27A] px-2 py-0.5 rounded-full border border-[#79C24C]/20">

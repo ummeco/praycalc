@@ -273,7 +273,7 @@ export default function HelpPage() {
         <div className="space-y-10">
           {faqSections.map((section) => (
             <section key={section.title}>
-              <h2 className="mb-4 text-xl font-semibold text-[#79C24C]">
+              <h2 className="mb-4 text-xl font-semibold text-[#5A9438]">
                 {section.title}
               </h2>
               <div className="rounded-xl bg-white/5 px-5">

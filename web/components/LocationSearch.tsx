@@ -389,7 +389,7 @@ export default function LocationSearch({
               ) : (
                 <>
                   <svg
-                    className="w-4 h-4 shrink-0 text-[#79C24C]"
+                    className="w-4 h-4 shrink-0 text-[#5A9438]"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"

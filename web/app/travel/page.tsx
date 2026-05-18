@@ -171,7 +171,7 @@ function CitationCard({ citation }: { citation: Citation }) {
         </span>
         <span
           className={`text-sm font-semibold ${
-            isQuran ? "text-[#C9F27A]" : "text-[#79C24C]"
+            isQuran ? "text-[#C9F27A]" : "text-[#5A9438]"
           }`}
         >
           {citation.source} {citation.number}
@@ -207,7 +207,7 @@ export default function TravelPage() {
         <div className="space-y-10">
           {sections.map((section) => (
             <section key={section.title}>
-              <h2 className="mb-4 text-xl font-semibold text-[#79C24C]">
+              <h2 className="mb-4 text-xl font-semibold text-[#5A9438]">
                 {section.title}
               </h2>
 
@@ -253,7 +253,7 @@ export default function TravelPage() {
 
           {/* Scholarly References Summary */}
           <section>
-            <h2 className="mb-4 text-xl font-semibold text-[#79C24C]">
+            <h2 className="mb-4 text-xl font-semibold text-[#5A9438]">
               Scholarly References
             </h2>
             <div className="rounded-xl bg-white/5 p-5">

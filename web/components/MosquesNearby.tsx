@@ -123,7 +123,7 @@ export default function MosquesNearby() {
                       href={`https://www.google.com/maps/dir/?api=1&destination=${m.lat},${m.lon}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-[#79C24C] text-xs hover:underline flex-shrink-0 ml-4"
+                      className="text-[#5A9438] text-xs hover:underline flex-shrink-0 ml-4"
                     >
                       Directions ↗
                     </a>

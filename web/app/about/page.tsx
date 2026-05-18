@@ -122,20 +122,20 @@ export default function AboutPage() {
           <h2 className="info-h2">Built by Ummeco</h2>
           <p className="info-p">
             PrayCalc is a product of{' '}
-            <a href="https://ummat.dev" target="_blank" rel="noopener noreferrer" className="text-[#79C24C] hover:underline">
+            <a href="https://ummat.dev" target="_blank" rel="noopener noreferrer" className="text-[#5A9438] hover:underline">
               Ummat.Dev
             </a>
             , a studio focused on building technology for the global Muslim community.
             Our broader platform includes the{' '}
-            <a href="https://ummat.app" target="_blank" rel="noopener noreferrer" className="text-[#79C24C] hover:underline">
+            <a href="https://ummat.app" target="_blank" rel="noopener noreferrer" className="text-[#5A9438] hover:underline">
               Ummat App
             </a>
             {' '}super-app,{' '}
-            <a href="https://islam.wiki" target="_blank" rel="noopener noreferrer" className="text-[#79C24C] hover:underline">
+            <a href="https://islam.wiki" target="_blank" rel="noopener noreferrer" className="text-[#5A9438] hover:underline">
               Islam Wiki
             </a>
             , and{' '}
-            <a href="https://chatislam.org" target="_blank" rel="noopener noreferrer" className="text-[#79C24C] hover:underline">
+            <a href="https://chatislam.org" target="_blank" rel="noopener noreferrer" className="text-[#5A9438] hover:underline">
               ChatIslam
             </a>
             .

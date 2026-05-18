@@ -262,12 +262,12 @@ export default function AccountDeletePage() {
             className="mb-8 rounded-2xl border border-white/10 bg-white/5 p-6"
             aria-label="Data deletion details"
           >
-            <h2 className="mb-3 text-lg font-semibold text-[#79C24C]">
+            <h2 className="mb-3 text-lg font-semibold text-[#5A9438]">
               What gets deleted
             </h2>
             <ul className="space-y-2 text-sm text-white/70">
               <li className="flex items-start gap-2">
-                <span className="mt-0.5 text-[#79C24C]" aria-hidden="true">
+                <span className="mt-0.5 text-[#5A9438]" aria-hidden="true">
                   •
                 </span>
                 <span>
@@ -276,7 +276,7 @@ export default function AccountDeletePage() {
                 </span>
               </li>
               <li className="flex items-start gap-2">
-                <span className="mt-0.5 text-[#79C24C]" aria-hidden="true">
+                <span className="mt-0.5 text-[#5A9438]" aria-hidden="true">
                   •
                 </span>
                 <span>
@@ -286,7 +286,7 @@ export default function AccountDeletePage() {
                 </span>
               </li>
               <li className="flex items-start gap-2">
-                <span className="mt-0.5 text-[#79C24C]" aria-hidden="true">
+                <span className="mt-0.5 text-[#5A9438]" aria-hidden="true">
                   •
                 </span>
                 <span>
@@ -298,7 +298,7 @@ export default function AccountDeletePage() {
                 </span>
               </li>
               <li className="flex items-start gap-2">
-                <span className="mt-0.5 text-[#79C24C]" aria-hidden="true">
+                <span className="mt-0.5 text-[#5A9438]" aria-hidden="true">
                   •
                 </span>
                 <span>
@@ -325,7 +325,7 @@ export default function AccountDeletePage() {
             Email{" "}
             <a
               href="mailto:support@praycalc.com?subject=Account%20Deletion%20Request"
-              className="text-[#C9F27A] underline underline-offset-2 hover:text-[#79C24C]"
+              className="text-[#C9F27A] underline underline-offset-2 hover:text-[#5A9438]"
             >
               support@praycalc.com
             </a>{" "}

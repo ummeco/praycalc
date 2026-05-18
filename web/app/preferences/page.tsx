@@ -21,7 +21,7 @@ function ToggleRow({ id, label, description, checked, disabled = false, onChange
       </div>
       <div className="flex-shrink-0 mt-0.5">
         {disabled ? (
-          <span className="text-xs text-[#79C24C] font-medium">Always on</span>
+          <span className="text-xs text-[#5A9438] font-medium">Always on</span>
         ) : (
           <button type="button" role="switch" id={id} aria-checked={checked} aria-label={label}
             onClick={() => onChange(!checked)}
@@ -108,8 +108,8 @@ export default function PreferencesPage() {
           </button>
         </section>
         <footer className="text-sm text-white/40 space-y-1">
-          <p>Location data requests: <a href="mailto:privacy@ummat.dev" className="text-[#79C24C] hover:underline">privacy@ummat.dev</a></p>
-          <p><Link href="/legal/california" className="text-[#79C24C] hover:underline">California privacy rights</Link></p>
+          <p>Location data requests: <a href="mailto:privacy@ummat.dev" className="text-[#5A9438] hover:underline">privacy@ummat.dev</a></p>
+          <p><Link href="/legal/california" className="text-[#5A9438] hover:underline">California privacy rights</Link></p>
         </footer>
       </div>
       {toast && <Toast message={toast} onDismiss={dismissToast} />}

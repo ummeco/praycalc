@@ -79,7 +79,7 @@ function ActivateContent() {
             </button>
             <p className="text-white/40 text-xs mt-6">
               You must be signed in to your PrayCalc account for this to work.{' '}
-              <Link href="/login" className="text-[#79C24C] underline">Sign in</Link>
+              <Link href="/login" className="text-[#5A9438] underline">Sign in</Link>
             </p>
           </>
         )}

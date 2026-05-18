@@ -172,7 +172,7 @@ export default function WebhookForm({
           <button
             type="button"
             onClick={handleUseCurrentLocation}
-            className="text-xs text-[#79C24C] hover:underline"
+            className="text-xs text-[#5A9438] hover:underline"
           >
             Use current location
           </button>

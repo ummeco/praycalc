@@ -292,7 +292,7 @@ export default function AgendasPage() {
                   </p>
                   {agenda.slug && (
                     <a href={`/agenda/${agenda.slug}`} target="_blank" rel="noopener noreferrer"
-                      className="text-[#79C24C] text-xs hover:underline">
+                      className="text-[#5A9438] text-xs hover:underline">
                       praycalc.com/agenda/{agenda.slug}
                     </a>
                   )}
@@ -316,7 +316,7 @@ export default function AgendasPage() {
                 <div className="mt-3 pt-3 border-t border-white/5 space-y-1">
                   {agenda.items_json.slice(0, 3).map(item => (
                     <div key={item.id} className="flex items-center gap-2 text-xs text-white/40">
-                      <span className="text-[#79C24C]/60">·</span>
+                      <span className="text-[#5A9438]/60">·</span>
                       <span className="text-white/60">{item.label}</span>
                       <span>{itemSummary(item)}</span>
                     </div>
