@@ -1,7 +1,12 @@
 "use client";
 
+// T09 (SEC-HARDENING): Turnstile token is obtained via invisible widget and passed
+// to signInEmailPassword / signUpEmailPassword proxy routes for server-side verification.
+
 import { useState, useEffect, useCallback, useRef } from "react";
 import type { PrayCalcSession } from "@/lib/session";
+
+const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? ""
 import {
   getSession,
   buildSession,
@@ -25,6 +30,41 @@ export function useSession() {
   const [session, setSession] = useState<PrayCalcSession | null>(null);
   const [hydrated, setHydrated] = useState(false);
   const refreshTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+
+  // T09: Turnstile invisible widget for bot detection on auth actions.
+  const turnstileToken = useRef<string>("");
+  const turnstileWidgetRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (!TURNSTILE_SITE_KEY) return;
+
+    // Create the invisible widget container and append to body.
+    const container = document.createElement("div");
+    document.body.appendChild(container);
+    turnstileWidgetRef.current = container;
+
+    const script = document.createElement("script");
+    script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
+    script.async = true;
+    script.onload = () => {
+      if (typeof window.turnstile === "undefined") return;
+      window.turnstile.render(container, {
+        sitekey: TURNSTILE_SITE_KEY,
+        callback: (token: string) => { turnstileToken.current = token; },
+        "expired-callback": () => { turnstileToken.current = ""; },
+        appearance: "interaction-only",
+      });
+    };
+    document.head.appendChild(script);
+
+    return () => {
+      document.head.removeChild(script);
+      if (turnstileWidgetRef.current) {
+        document.body.removeChild(turnstileWidgetRef.current);
+        turnstileWidgetRef.current = null;
+      }
+    };
+  }, []);
 
   // Schedule a token refresh before the access token expires.
   const scheduleRefreshRef = useRef<(s: PrayCalcSession) => void>(() => {});
@@ -130,10 +170,10 @@ export function useSession() {
     };
   }, [scheduleRefresh]);
 
-  /** Sign in with email + password via Hasura Auth. */
+  /** Sign in with email + password via server-side proxy (T09: Turnstile). */
   const loginWithPassword = useCallback(
     async (email: string, password: string) => {
-      const result = await signInEmailPassword(email, password);
+      const result = await signInEmailPassword(email, password, turnstileToken.current);
       const s = buildSessionFromAuth(result);
       saveSession(s);
       setSession(s);
@@ -142,10 +182,10 @@ export function useSession() {
     [scheduleRefresh],
   );
 
-  /** Register with email + password via Hasura Auth. */
+  /** Register with email + password via server-side proxy (T09: Turnstile). */
   const register = useCallback(
     async (email: string, password: string, displayName?: string) => {
-      const result = await signUpEmailPassword(email, password, displayName);
+      const result = await signUpEmailPassword(email, password, displayName, turnstileToken.current);
       const s = buildSessionFromAuth(result);
       saveSession(s);
       setSession(s);

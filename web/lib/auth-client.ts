@@ -81,20 +81,23 @@ export async function refreshSession(
   return parseTokenResponse(data);
 }
 
-/** Sign in with email + password. */
+/** Sign in with email + password via server-side proxy (T09: Turnstile). */
 export async function signInEmailPassword(
   email: string,
   password: string,
+  turnstileToken?: string,
 ): Promise<AuthResult> {
-  const res = await fetch(`${AUTH_URL}/signin/email-password`, {
+  const res = await fetch("/api/auth/signin", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password }),
+    body: JSON.stringify({ email, password, turnstileToken: turnstileToken ?? "" }),
   });
   if (!res.ok) {
     const body = await res.json().catch(() => ({}));
     const msg =
-      (body as { message?: string }).message || "Invalid email or password.";
+      (body as { error?: string; message?: string }).error ||
+      (body as { message?: string }).message ||
+      "Invalid email or password.";
     throw new Error(msg);
   }
   const data = (await res.json()) as SignInResponse;
@@ -104,25 +107,29 @@ export async function signInEmailPassword(
   return parseTokenResponse({ session: data.session });
 }
 
-/** Register a new account with email + password. */
+/** Register a new account with email + password via server-side proxy (T09: Turnstile). */
 export async function signUpEmailPassword(
   email: string,
   password: string,
   displayName?: string,
+  turnstileToken?: string,
 ): Promise<AuthResult> {
-  const res = await fetch(`${AUTH_URL}/signup/email-password`, {
+  const res = await fetch("/api/auth/signup", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       email,
       password,
-      options: { displayName: displayName || undefined },
+      displayName: displayName || undefined,
+      turnstileToken: turnstileToken ?? "",
     }),
   });
   if (!res.ok) {
     const body = await res.json().catch(() => ({}));
     const msg =
-      (body as { message?: string }).message || "Registration failed.";
+      (body as { error?: string; message?: string }).error ||
+      (body as { message?: string }).message ||
+      "Registration failed.";
     throw new Error(msg);
   }
   const data = (await res.json()) as SignInResponse;
