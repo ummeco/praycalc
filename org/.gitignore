@@ -30,6 +30,9 @@ yarn-error.log*
 # vercel
 .vercel
 
+# AI working memory
+.claude/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
