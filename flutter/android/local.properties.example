@@ -1,9 +1,0 @@
-# Android local.properties — copy to local.properties and fill in SDK paths.
-# This file is gitignored. local.properties.example IS tracked.
-# Do NOT put signing credentials here — use key.properties instead.
-
-# Flutter SDK path (required)
-flutter.sdk=/path/to/flutter-sdk
-
-# Android SDK path (required)
-sdk.dir=/path/to/android-sdk

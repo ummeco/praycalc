@@ -1,0 +1,54 @@
+{
+  "expo": {
+    "name": "PrayCalc",
+    "slug": "praycalc",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "scheme": "praycalc",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "backgroundColor": "#1E5E2F"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.ummeco.praycalc",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "PrayCalc uses your location to calculate accurate prayer times for your city.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "PrayCalc uses your location to calculate accurate prayer times."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#1E5E2F"
+      },
+      "package": "com.ummeco.praycalc",
+      "permissions": [
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION",
+        "RECEIVE_BOOT_COMPLETED",
+        "VIBRATE"
+      ]
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-location",
+      "expo-sensors",
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/notification-icon.png",
+          "color": "#1E5E2F"
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}
