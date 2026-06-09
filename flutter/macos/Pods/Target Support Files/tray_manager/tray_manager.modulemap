@@ -1,0 +1,6 @@
+framework module tray_manager {
+  umbrella header "tray_manager-umbrella.h"
+
+  export *
+  module * { export * }
+}

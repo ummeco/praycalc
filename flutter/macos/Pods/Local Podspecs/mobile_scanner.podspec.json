@@ -1,0 +1,33 @@
+{
+  "name": "mobile_scanner",
+  "version": "6.0.2",
+  "summary": "An universal scanner for Flutter based on MLKit.",
+  "description": "An universal scanner for Flutter based on MLKit.",
+  "homepage": "https://github.com/juliansteenbakker/mobile_scanner",
+  "license": {
+    "file": "../LICENSE"
+  },
+  "authors": {
+    "Julian Steenbakker": "juliansteenbakker@outlook.com"
+  },
+  "source": {
+    "path": "."
+  },
+  "source_files": "mobile_scanner/Sources/mobile_scanner/**/*.swift",
+  "dependencies": {
+    "FlutterMacOS": []
+  },
+  "platforms": {
+    "osx": "10.14"
+  },
+  "pod_target_xcconfig": {
+    "DEFINES_MODULE": "YES"
+  },
+  "swift_versions": "5.0",
+  "resource_bundles": {
+    "mobile_scanner_macos_privacy": [
+      "mobile_scanner/Sources/mobile_scanner/Resources/PrivacyInfo.xcprivacy"
+    ]
+  },
+  "swift_version": "5.0"
+}
