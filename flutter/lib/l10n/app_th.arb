@@ -1,0 +1,1019 @@
+{
+  "@@locale": "th",
+
+  "appTitle": "PrayCalc",
+
+  "prayerFajr": "ฟัจร์",
+  "prayerSunrise": "พระอาทิตย์ขึ้น",
+  "prayerDhuhr": "ซุฮ์ริ",
+  "prayerAsr": "อัศริ",
+  "prayerMaghrib": "มัฆริบ",
+  "prayerIsha": "อิชา",
+  "prayerQiyam": "กิยาม",
+  "prayerSuhoor": "สะฮูร",
+  "prayerIftar": "อิฟตาร",
+
+  "hijriMuharram": "มุฮัรรอม",
+  "hijriSafar": "ซอฟัร",
+  "hijriRabiAlAwwal": "รอบีอุลเอาวัล",
+  "hijriRabiAlThani": "รอบีอุษษานี",
+  "hijriJumadaAlAwwal": "ญุมาดัลเอาวัล",
+  "hijriJumadaAlThani": "ญุมาดัษษานี",
+  "hijriRajab": "รอญับ",
+  "hijriShaban": "ชะอ์บาน",
+  "hijriRamadan": "รอมฎอน",
+  "hijriShawwal": "เชาวาล",
+  "hijriDhulQidah": "ซุลกิอ์ดะฮ์",
+  "hijriDhulHijjah": "ซุลฮิจญะฮ์",
+
+  "monthJan": "ม.ค.",
+  "monthFeb": "ก.พ.",
+  "monthMar": "มี.ค.",
+  "monthApr": "เม.ย.",
+  "monthMay": "พ.ค.",
+  "monthJun": "มิ.ย.",
+  "monthJul": "ก.ค.",
+  "monthAug": "ส.ค.",
+  "monthSep": "ก.ย.",
+  "monthOct": "ต.ค.",
+  "monthNov": "พ.ย.",
+  "monthDec": "ธ.ค.",
+
+  "monthJanuary": "มกราคม",
+  "monthFebruary": "กุมภาพันธ์",
+  "monthMarch": "มีนาคม",
+  "monthApril": "เมษายน",
+  "monthMayFull": "พฤษภาคม",
+  "monthJune": "มิถุนายน",
+  "monthJuly": "กรกฎาคม",
+  "monthAugust": "สิงหาคม",
+  "monthSeptember": "กันยายน",
+  "monthOctober": "ตุลาคม",
+  "monthNovember": "พฤศจิกายน",
+  "monthDecember": "ธันวาคม",
+
+  "dayMonShort": "จ.",
+  "dayTueShort": "อ.",
+  "dayWedShort": "พ.",
+  "dayThuShort": "พฤ.",
+  "dayFriShort": "ศ.",
+  "daySatShort": "ส.",
+  "daySunShort": "อา.",
+
+  "dayMonday": "วันจันทร์",
+  "dayTuesday": "วันอังคาร",
+  "dayWednesday": "วันพุธ",
+  "dayThursday": "วันพฤหัสบดี",
+  "dayFriday": "วันศุกร์",
+  "daySaturday": "วันเสาร์",
+  "daySunday": "วันอาทิตย์",
+
+  "daySuChart": "อา",
+  "dayMoChart": "จ",
+  "dayTuChart": "อ",
+  "dayWeChart": "พ",
+  "dayThChart": "พฤ",
+  "dayFrChart": "ศ",
+  "daySaChart": "ส",
+
+  "chooseCityLabel": "เลือกเมือง",
+  "setCityFab": "ตั้งเมือง",
+  "prayerTimesError": "ไม่สามารถคำนวณเวลาละหมาดได้\n{error}",
+  "@prayerTimesError": {
+    "placeholders": {
+      "error": { "type": "Object" }
+    }
+  },
+  "prayerCountdownLabel": "{prayer} ใน",
+  "@prayerCountdownLabel": {
+    "placeholders": {
+      "prayer": { "type": "String" }
+    }
+  },
+  "ramadanMubarak": "รอมฎอนมุบาร็อก",
+  "ramadanDayProgress": "วันที่ {day} / 30",
+  "@ramadanDayProgress": {
+    "placeholders": {
+      "day": { "type": "int" }
+    }
+  },
+  "lastTenNights": "10 คืนสุดท้าย",
+  "laylatulQadr": "ลัยละตุลก็อดร์",
+
+  "homeSuffixAH": "ฮ.ศ.",
+  "homeSuffixCE": "ค.ศ.",
+  "homeNoCitySelected": "ยังไม่ได้เลือกเมือง",
+  "homeNoCityHint": "แตะด้านบนเพื่อค้นหาเมืองหรือเปิดใช้ GPS",
+  "homeCouldNotCalc": "ไม่สามารถคำนวณเวลาละหมาดได้",
+  "homeQasr": "ก็อศร์",
+  "homeActionMonthlyTimes": "เวลา\nรายเดือน",
+  "homeActionDuaDhikr": "ดุอาอ์\nและซิกิร",
+  "homeActionPrayerStats": "สถิติ\nละหมาด",
+  "homePolarBanner": "ไม่สามารถคำนวณเวลาละหมาด {count} รอบสำหรับที่ตั้งของคุณในช่วงนี้ (ดวงอาทิตย์เที่ยงคืน / คืนขั้วโลก) ลองใช้การประมาณละติจูดใกล้เคียงในการตั้งค่า",
+  "@homePolarBanner": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "settingsTitle": "การตั้งค่า",
+  "settingsSectionPrayerCalc": "การคำนวณละหมาด",
+  "settingsCalcMethod": "วิธีการคำนวณ",
+  "settingsCalcMethodAuto": "อัตโนมัติ (ไดนามิก)",
+  "settingsHanafiAsr": "อัศริฮะนะฟี",
+  "settingsHanafiAsrSubtitle": "ค่าเงา 2 เท่า (เวลาอัศริช้ากว่า)",
+  "settingsSectionDisplay": "การแสดงผล",
+  "settings24hClock": "นาฬิกา 24 ชั่วโมง",
+  "settingsFollowSystemTheme": "ใช้ธีมของระบบ",
+  "settingsDarkMode": "โหมดมืด",
+  "settingsSectionNotifications": "การแจ้งเตือน",
+  "settingsPrayerNotifications": "การแจ้งเตือนละหมาด",
+  "settingsPrayerNotificationsSubtitle": "อะซาน การเตือน และการตั้งค่าแต่ละละหมาด",
+  "settingsPrayerAgendas": "วาระละหมาด",
+  "settingsPrayerAgendasSubtitle": "การเตือนกำหนดเองตามเวลาละหมาด",
+  "settingsAccount": "บัญชี",
+  "settingsSignInToSync": "ลงชื่อเข้าใช้เพื่อซิงค์",
+  "settingsSignInToSyncSubtitle": "เก็บข้อมูลของคุณข้ามอุปกรณ์",
+  "settingsHomeScreen": "หน้าจอหลัก",
+  "settingsSkyGradient": "พื้นหลังไล่สีท้องฟ้า",
+  "settingsSkyGradientSubtitle": "สีท้องฟ้าแบบเคลื่อนไหวตามเวลาของวัน",
+  "settingsWeatherGradient": "ไล่สีตามสภาพอากาศ",
+  "settingsWeatherGradientSubtitle": "ปรับสีท้องฟ้าตามสภาพอากาศท้องถิ่น",
+  "settingsCountdownAnimation": "อนิเมชันนับถอยหลัง",
+  "settingsCountdownAnimationSubtitle": "วงแหวนหายใจบนเวลาละหมาดถัดไป",
+  "settingsPrayerTracking": "การติดตามละหมาด",
+  "settingsTrackMyPrayers": "ติดตามละหมาดของฉัน",
+  "settingsTrackMyPrayersSubtitle": "บันทึกละหมาดที่คุณทำในแต่ละวัน",
+  "settingsPrayerStats": "สถิติละหมาด",
+  "settingsPrayerStatsSubtitle": "สถิติต่อเนื่อง แผนภูมิรายสัปดาห์และรายเดือน",
+  "settingsJumuahKahf": "เตือนอัลกะฮ์ฟีวันศุกร์",
+  "settingsJumuahKahfSubtitle": "เตือนทุกวันศุกร์ให้อ่านซูเราะฮ์อัลกะฮ์ฟี",
+  "settingsTravel": "การเดินทาง",
+  "settingsTravelMode": "โหมดเดินทาง",
+  "settingsTravelModeSubtitle": "ตรวจจับอัตโนมัติเมื่อคุณออกจากบ้านและปรับละหมาด",
+  "settingsHomeLocation": "ที่ตั้งบ้าน",
+  "settingsHomeLocationNotSet": "ยังไม่ได้ตั้ง — แตะเพื่อใช้ตำแหน่งปัจจุบัน",
+  "settingsClearHomeLocation": "ล้างที่ตั้งบ้าน",
+  "settingsTravelRulings": "หลักการละหมาดขณะเดินทาง",
+  "settingsTravelRulingsSubtitle": "ก็อศร์ การรวม และแนวทางผู้เดินทาง",
+  "settingsSmartHome": "สมาร์ทโฮม",
+  "settingsSmartHomeIntegrations": "การเชื่อมต่อสมาร์ทโฮม",
+  "settingsSmartHomeIntegrationsSubtitle": "HomeKit, Google Home, Alexa, Home Assistant",
+  "settingsTvDisplay": "จอทีวี",
+  "settingsTvHome": "จอทีวีหน้าหลัก",
+  "settingsTvHomeSubtitle": "นาฬิกาละหมาดเต็มจอสำหรับทีวี",
+  "settingsMasjidDisplay": "จอมัสยิด",
+  "settingsMasjidDisplaySubtitle": "ตารางอะซาน/อิกอมะฮ์สำหรับจอมัสยิด",
+  "settingsTvSettings": "การตั้งค่าทีวี",
+  "settingsTvSettingsSubtitle": "โหมดมัสยิด ออฟเซ็ตอิกอมะฮ์ แอมเบียนท์",
+  "settingsAboutPrayCalc": "เกี่ยวกับ PrayCalc",
+
+  "syncSynced": "ซิงค์แล้ว",
+  "syncSyncing": "กำลังซิงค์...",
+  "syncOffline": "ออฟไลน์",
+  "syncError": "ซิงค์ผิดพลาด",
+
+  "notifSettingsTitle": "การแจ้งเตือนและอะซาน",
+  "notifAdhanLabel": "อะซาน",
+  "notifReminderMinBefore": "เตือน: {minutes} นาทีก่อน",
+  "@notifReminderMinBefore": {
+    "placeholders": {
+      "minutes": { "type": "int" }
+    }
+  },
+  "notifVolumePct": "ระดับเสียง: {pct}%",
+  "@notifVolumePct": {
+    "placeholders": {
+      "pct": { "type": "int" }
+    }
+  },
+  "notifTestAdhan": "ทดสอบอะซาน",
+  "notifModeOff": "ปิด",
+  "notifModeReminderOnly": "เตือนเท่านั้น",
+  "notifModeArrival": "เมื่อถึงเวลาละหมาด",
+  "notifModeBoth": "เตือน + เมื่อถึงเวลา",
+
+  "citySearchHint": "ค้นหาเมือง…",
+  "citySearchDetectTooltip": "ตรวจจับตำแหน่งของฉัน",
+  "citySearchNoCityGps": "ไม่สามารถตรวจจับเมืองจาก GPS ได้",
+  "citySearchPermissionDenied": "ไม่ได้รับอนุญาตตำแหน่ง ค้นหาด้วยตนเอง",
+  "citySearchNoResults": "ไม่พบเมือง",
+  "citySearchStartTyping": "เริ่มพิมพ์เพื่อค้นหา…",
+
+  "agendasTitle": "วาระละหมาด",
+  "agendasEmpty": "ยังไม่มีวาระ\nแตะ + เพื่อเพิ่มการเตือนที่เชื่อมกับละหมาดของคุณ",
+  "agendasUndo": "เลิกทำ",
+  "agendasRemoved": "ลบ {label} แล้ว",
+  "@agendasRemoved": {
+    "placeholders": {
+      "label": { "type": "String" }
+    }
+  },
+
+  "agendaNewTitle": "วาระใหม่",
+  "agendaEditTitle": "แก้ไขวาระ",
+  "agendaSave": "บันทึก",
+  "agendaLabelEmpty": "ป้ายกำกับต้องไม่ว่าง",
+  "agendaLabelField": "ป้ายกำกับ",
+  "agendaLabelHint": "เช่น ตื่นสำหรับฟัจร์",
+  "agendaPrayerSection": "ละหมาด",
+  "agendaTimeOffsetSection": "ออฟเซ็ตเวลา",
+  "agendaOffsetAtPrayerTime": "เมื่อถึงเวลาละหมาด",
+  "agendaOffsetMinBefore": "{minutes} นาทีก่อน",
+  "@agendaOffsetMinBefore": {
+    "placeholders": {
+      "minutes": { "type": "int" }
+    }
+  },
+  "agendaOffsetMinAfter": "{minutes} นาทีหลัง",
+  "@agendaOffsetMinAfter": {
+    "placeholders": {
+      "minutes": { "type": "int" }
+    }
+  },
+  "agendaRepeatSection": "ทำซ้ำ",
+  "agendaNotifTypeSection": "ประเภทการแจ้งเตือน",
+  "agendaNotifSilent": "เงียบ",
+  "agendaNotifSound": "เสียง",
+  "agendaNotifVibrate": "สั่น",
+  "agendaDayM": "จ",
+  "agendaDayT": "อ",
+  "agendaDayW": "พ",
+  "agendaDayF": "ศ",
+  "agendaDayS": "ส",
+
+  "moonTitle": "ดวงจันทร์และปฏิทินฮิจเราะฮ์",
+  "moonIlluminated": "สว่าง {pct}%",
+  "@moonIlluminated": {
+    "placeholders": {
+      "pct": { "type": "int" }
+    }
+  },
+  "moonFullTonight": "คืนนี้จันทร์เต็มดวง!",
+  "moonNextTomorrow": "จันทร์เต็มดวงถัดไปวันพรุ่งนี้",
+  "moonNextDays": "จันทร์เต็มดวงถัดไปใน {days} วัน",
+  "@moonNextDays": {
+    "placeholders": {
+      "days": { "type": "int" }
+    }
+  },
+  "moonAge": "อายุดวงจันทร์: {age} วัน",
+  "@moonAge": {
+    "placeholders": {
+      "age": { "type": "String" }
+    }
+  },
+  "moonPhaseNewMoon": "จันทร์ดับ",
+  "moonPhaseWaxingCrescent": "จันทร์เสี้ยวข้างขึ้น",
+  "moonPhaseFirstQuarter": "จันทร์ครึ่งดวงข้างขึ้น",
+  "moonPhaseWaxingGibbous": "จันทร์ค่อนดวงข้างขึ้น",
+  "moonPhaseFullMoon": "จันทร์เต็มดวง",
+  "moonPhaseWaningGibbous": "จันทร์ค่อนดวงข้างแรม",
+  "moonPhaseLastQuarter": "จันทร์ครึ่งดวงข้างแรม",
+  "moonPhaseWaningCrescent": "จันทร์เสี้ยวข้างแรม",
+  "moonHilalVisibility": "การมองเห็นฮิลาลถัดไป",
+  "moonRegionMiddleEast": "ตะวันออกกลาง",
+  "moonRegionWestAfrica": "แอฟริกาตะวันตก",
+  "moonRegionSouthAsia": "เอเชียใต้",
+  "moonRegionEurope": "ยุโรป",
+  "moonRegionAmericas": "อเมริกา",
+  "moonVisible": "มองเห็น",
+  "moonNotVisible": "มองไม่เห็น",
+  "moonPossible": "อาจเป็นไปได้",
+  "moonUpcomingDates": "วันสำคัญอิสลามที่จะมาถึง",
+  "hijriTodayLabel": "วันนี้ในปฏิทินฮิจเราะฮ์",
+  "ramadanBeginsLabel": "รอมฎอน {year} ฮ.ศ. เริ่มต้น",
+  "@ramadanBeginsLabel": {
+    "placeholders": {
+      "year": { "type": "int" }
+    }
+  },
+  "ramadanDaysAway": "อีก {days} วัน",
+  "@ramadanDaysAway": {
+    "placeholders": {
+      "days": { "type": "int" }
+    }
+  },
+  "moonLunarCycle": "วงจรจันทรคติ",
+  "moonDayOfCycle": "วันที่ {day} จาก ~29.5",
+  "@moonDayOfCycle": {
+    "placeholders": {
+      "day": { "type": "int" }
+    }
+  },
+  "moonHilalSightingForecast": "พยากรณ์การมองเห็นฮิลาล",
+  "moonHilalVisibilityMap": "แผนที่การมองเห็นฮิลาล",
+  "moonDayN": "วันที่ {day}",
+  "@moonDayN": {
+    "placeholders": {
+      "day": { "type": "int" }
+    }
+  },
+  "moonGlobalSighting": "การมองเห็นทั่วโลก",
+  "moonZoneNakedEye": "ตาเปล่า",
+  "moonZoneBinoculars": "กล้องส่องทางไกล",
+  "moonZoneVeryDifficult": "ยากมาก",
+  "moonZoneNotVisible": "มองไม่เห็น",
+  "moonMonthPrediction29": "{month} {year} ฮ.ศ. น่าจะมี 29 วัน คาดว่าจะเห็นจันทร์เสี้ยวในวันที่ 29 อินชาอัลลอฮ์",
+  "@moonMonthPrediction29": {
+    "placeholders": {
+      "month": { "type": "String" },
+      "year": { "type": "int" }
+    }
+  },
+  "moonMonthPrediction30": "{month} {year} ฮ.ศ. น่าจะมี 30 วัน ไม่น่าจะเห็นจันทร์เสี้ยวในวันที่ 29 เดือนจะครบ 30 วัน",
+  "@moonMonthPrediction30": {
+    "placeholders": {
+      "month": { "type": "String" },
+      "year": { "type": "int" }
+    }
+  },
+  "moonUmmAlQura": "อุมมุลกุรอ",
+  "moonSaudiArabia": "ซาอุดีอาระเบีย",
+  "moonFCNACalc": "FCNA / คำนวณ",
+  "moonNorthAmerica": "อเมริกาเหนือ",
+  "moonNDays": "{days} วัน",
+  "@moonNDays": {
+    "placeholders": {
+      "days": { "type": "int" }
+    }
+  },
+  "moonStarts": "{month} เริ่ม:",
+  "@moonStarts": {
+    "placeholders": {
+      "month": { "type": "String" }
+    }
+  },
+  "moonMoonAgeAtSunset": "อายุดวงจันทร์เมื่อพระอาทิตย์ตก: {hours} ชม.",
+  "@moonMoonAgeAtSunset": {
+    "placeholders": {
+      "hours": { "type": "String" }
+    }
+  },
+  "moon7DayLunarCalendar": "ปฏิทินจันทรคติ 7 วัน",
+  "moonUpcomingIslamicEvents": "เหตุการณ์อิสลามที่จะมาถึง",
+  "moonTodayLabel": "วันนี้",
+  "moonTomorrowLabel": "พรุ่งนี้",
+
+  "calDateCol": "วันที่",
+  "calHijriCol": "ฮิจเราะฮ์",
+  "calFajrCol": "ฟัจร์",
+  "calSunriseCol": "พระอาทิตย์ขึ้น",
+  "calDhuhrCol": "ซุฮ์ริ",
+  "calAsrCol": "อัศริ",
+  "calMaghribCol": "มัฆริบ",
+  "calIshaCol": "อิชา",
+  "calNoCityText": "ตั้งเมืองก่อน\nเพื่อดูปฏิทินละหมาด",
+  "calShareTooltip": "แชร์ปฏิทิน",
+  "calPrevMonthTooltip": "เดือนก่อน",
+  "calNextMonthTooltip": "เดือนถัดไป",
+  "calExportHeader": "PrayCalc — {month}",
+  "@calExportHeader": {
+    "placeholders": {
+      "month": { "type": "String" }
+    }
+  },
+  "calExportSubject": "เวลาละหมาด — {month}",
+  "@calExportSubject": {
+    "placeholders": {
+      "month": { "type": "String" }
+    }
+  },
+
+  "qiblaTitle": "กิบลัต",
+  "qiblaSwitchToCompass": "เปลี่ยนเป็นเข็มทิศ",
+  "qiblaSwitchToAR": "เปลี่ยนเป็นกล้อง AR",
+  "qiblaNoCityText": "ตั้งเมืองก่อน\nเพื่อคำนวณทิศกิบลัต",
+  "qiblaCompassUnavailable": "เซ็นเซอร์เข็มทิศไม่พร้อมใช้งานบนอุปกรณ์นี้",
+  "qiblaCalibrate": "ปรับเทียบ: เคลื่อนโทรศัพท์เป็นรูปเลข 8",
+  "qiblaDegreesFromNorth": "{degrees}° จากทิศเหนือ",
+  "@qiblaDegreesFromNorth": {
+    "placeholders": {
+      "degrees": { "type": "int" }
+    }
+  },
+  "qiblaFrom": "จาก {city}",
+  "@qiblaFrom": {
+    "placeholders": {
+      "city": { "type": "String" }
+    }
+  },
+  "qiblaDistKm": "{dist} กม. จากกะอ์บะฮ์",
+  "@qiblaDistKm": {
+    "placeholders": {
+      "dist": { "type": "int" }
+    }
+  },
+  "qiblaDistThousandKm": "{dist}K กม. จากกะอ์บะฮ์",
+  "@qiblaDistThousandKm": {
+    "placeholders": {
+      "dist": { "type": "String" }
+    }
+  },
+  "qiblaFacingQibla": "หันหน้าไปทางกิบลัต ✓",
+
+  "tasbeehTitle": "ตัสบีห์",
+  "tasbeehResetTooltip": "รีเซ็ต",
+  "tasbeehTapToSwitch": "แตะป้ายเพื่อเปลี่ยน",
+  "tasbeehTapToCount": "แตะที่ไหนก็ได้เพื่อนับ",
+  "tasbeehResetDialogTitle": "รีเซ็ตตัวนับ?",
+  "tasbeehResetDialogContent": "จะรีเซ็ตจำนวนปัจจุบันเป็นศูนย์",
+  "tasbeehCancel": "ยกเลิก",
+  "tasbeehReset": "รีเซ็ต",
+  "tasbeehTodayDhikr": "วันนี้: {count} ซิกิร",
+  "@tasbeehTodayDhikr": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "tasbeehLast7Days": "7 วันที่ผ่านมา",
+  "tasbeehNoHistory": "ยังไม่มีประวัติ — เริ่มนับเลย!",
+  "tasbeehComplete": "ตัสบีห์เสร็จสิ้น! {count} ซิกิร",
+  "@tasbeehComplete": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "tasbeehPresetComplete": "✓ {label} × {target}",
+  "@tasbeehPresetComplete": {
+    "placeholders": {
+      "label": { "type": "String" },
+      "target": { "type": "int" }
+    }
+  },
+
+  "smartHomeTitle": "สมาร์ทโฮม",
+  "smartHomeSubtitle": "เชื่อมต่ออุปกรณ์กับเวลาละหมาด",
+  "smartHomeGoogleHome": "Google Home",
+  "smartHomeGoogleHomeDesc": "ถาม Google เกี่ยวกับเวลาละหมาดและทิศกิบลัต",
+  "smartHomeAlexa": "Amazon Alexa",
+  "smartHomeAlexaDesc": "ถาม Alexa เกี่ยวกับเวลาละหมาด ละหมาดถัดไป และอื่นๆ",
+  "smartHomeSiri": "Siri Shortcuts",
+  "smartHomeSiriDesc": "สร้างทางลัดกำหนดเองสำหรับเวลาละหมาด",
+  "smartHomeHomeAssistant": "Home Assistant",
+  "smartHomeHomeAssistantDesc": "อัตโนมัติไฟ จอ และการเตือนตามเวลาละหมาด",
+  "smartHomeLinkAccount": "เชื่อมบัญชี",
+  "smartHomeLinked": "เชื่อมแล้ว",
+  "smartHomeUnlink": "ยกเลิกเชื่อม",
+  "smartHomeSetupInstructions": "คำแนะนำการตั้งค่า",
+  "smartHomeRequiresUmmatPlus": "ต้องมี Ummat+",
+  "smartHomeTroubleshooting": "แก้ไขปัญหา",
+  "smartHomeTestConnection": "ทดสอบการเชื่อมต่อ",
+  "smartHomeConnectionSuccess": "เชื่อมต่อสำเร็จ",
+  "smartHomeConnectionFailed": "เชื่อมต่อไม่สำเร็จ ตรวจสอบการเชื่อมบัญชี",
+
+  "subscriptionTitle": "Ummat+",
+  "subscriptionSubtitle": "ฟีเจอร์เวลาละหมาดพรีเมียม",
+  "subscriptionUpgrade": "อัปเกรดเป็น Ummat+",
+  "subscriptionRestore": "กู้คืนการซื้อ",
+  "subscriptionManage": "จัดการการสมัคร",
+  "subscriptionCancel": "ยกเลิกการสมัคร",
+  "subscriptionActive": "ใช้งานอยู่",
+  "subscriptionExpired": "หมดอายุ",
+  "subscriptionFree": "ฟรี",
+  "subscriptionFreeDesc": "เวลาละหมาดพื้นฐาน กิบลัต ปฏิทิน",
+  "subscriptionPlusDesc": "สมาร์ทโฮม จอทีวี วิดเจ็ต และอื่นๆ",
+  "subscriptionFreeQueriesRemaining": "เหลือคำถามฟรี {count} ครั้ง",
+  "@subscriptionFreeQueriesRemaining": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "subscriptionPriceYearly": "{price}/ปี",
+  "@subscriptionPriceYearly": {
+    "placeholders": {
+      "price": { "type": "String" }
+    }
+  },
+  "subscriptionPriceMonthly": "{price}/เดือน",
+  "@subscriptionPriceMonthly": {
+    "placeholders": {
+      "price": { "type": "String" }
+    }
+  },
+  "subscriptionFeatureSmartHome": "เชื่อมต่อสมาร์ทโฮม",
+  "subscriptionFeatureTV": "โหมดจอทีวี",
+  "subscriptionFeatureWidgets": "วิดเจ็ตหน้าจอหลัก",
+  "subscriptionFeatureWatch": "คอมพลิเคชันนาฬิกา",
+  "subscriptionFeatureSync": "ซิงค์ข้ามอุปกรณ์",
+  "subscriptionFeatureAdFree": "ปราศจากโฆษณา",
+
+  "watchTitle": "นาฬิกา",
+  "watchNextPrayer": "ละหมาดถัดไป",
+  "watchAllPrayers": "ละหมาดทั้งหมด",
+  "watchComplication": "คอมพลิเคชัน",
+
+  "nextPrayer": "ละหมาดถัดไป",
+  "allPrayers": "ละหมาดทั้งหมด",
+  "today": "วันนี้",
+  "tomorrow": "พรุ่งนี้",
+  "thisWeek": "สัปดาห์นี้",
+  "thisMonth": "เดือนนี้",
+
+  "loginCreateAccount": "สร้างบัญชี",
+  "loginSignIn": "ลงชื่อเข้าใช้",
+  "loginWelcomeBack": "ยินดีต้อนรับกลับ",
+  "loginJoinPrayCalc": "เข้าร่วม PrayCalc",
+  "loginSyncSubtitle": "ซิงค์ข้อมูลละหมาดข้ามอุปกรณ์",
+  "loginContinueGoogle": "ดำเนินต่อด้วย Google",
+  "loginOr": "หรือ",
+  "loginSigningIn": "กำลังลงชื่อเข้าใช้…",
+  "loginNameLabel": "ชื่อแสดง (ไม่บังคับ)",
+  "loginEmailLabel": "อีเมล",
+  "loginPasswordLabel": "รหัสผ่าน",
+  "loginEmailRequired": "ต้องระบุอีเมล",
+  "loginEmailInvalid": "กรุณาใส่อีเมลที่ถูกต้อง",
+  "loginPasswordRequired": "ต้องระบุรหัสผ่าน",
+  "loginPasswordMinLength": "รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร",
+  "loginForgotPassword": "ลืมรหัสผ่าน?",
+  "loginEnterEmailFirst": "กรุณาใส่อีเมลก่อน",
+  "loginResetSent": "ส่งอีเมลรีเซ็ตรหัสผ่านแล้ว",
+  "loginResetFailed": "ไม่สามารถส่งอีเมลรีเซ็ตได้",
+  "loginNewToPrayCalc": "ใหม่กับ PrayCalc?",
+  "loginAlreadyHaveAccount": "มีบัญชีอยู่แล้ว?",
+
+  "accountTitle": "บัญชี",
+  "accountNotSignedIn": "ยังไม่ได้ลงชื่อเข้าใช้",
+  "accountSyncSection": "ซิงค์",
+  "accountSyncStatus": "สถานะซิงค์",
+  "accountSyncNow": "ซิงค์ตอนนี้",
+  "accountSyncHistory": "ประวัติซิงค์",
+  "accountNoConflicts": "ไม่พบความขัดแย้ง",
+  "accountConflictsResolved": "แก้ไขแล้ว {count} รายการ",
+  "@accountConflictsResolved": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "accountSyncedAgo": "ซิงค์เมื่อ {time}",
+  "@accountSyncedAgo": {
+    "placeholders": {
+      "time": { "type": "String" }
+    }
+  },
+  "accountOfflineStatus": "ออฟไลน์ การเปลี่ยนแปลงบันทึกไว้ในเครื่อง",
+  "accountSyncErrorStatus": "ซิงค์ผิดพลาด จะลองใหม่",
+  "accountDataSection": "ข้อมูล",
+  "accountExportData": "ส่งออกข้อมูล",
+  "accountExportSubtitle": "ดาวน์โหลดการตั้งค่าและบันทึกละหมาด",
+  "accountExportFailed": "ไม่สามารถส่งออกข้อมูลได้",
+  "accountSignOutTitle": "ออกจากระบบ",
+  "accountSignOutBody": "ข้อมูลในเครื่องจะยังคงอยู่ ลงชื่อเข้าใช้อีกครั้งเพื่อซิงค์ต่อ",
+  "accountDeleteAccount": "ลบบัญชี",
+  "accountDeleteSubtitle": "ลบบัญชีและข้อมูลอย่างถาวร",
+  "accountDeleteBody": "จะลบบัญชีและข้อมูลที่ซิงค์ทั้งหมดอย่างถาวร ข้อมูลในเครื่องบนอุปกรณ์นี้จะไม่ถูกลบ\n\nการดำเนินการนี้ไม่สามารถย้อนกลับได้",
+  "accountDeleted": "ลบบัญชีแล้ว",
+  "accountDeleteFailed": "ไม่สามารถลบบัญชีได้",
+  "accountTimeJustNow": "เมื่อกี้",
+  "accountTimeMinAgo": "{min} นาทีที่แล้ว",
+  "@accountTimeMinAgo": {
+    "placeholders": {
+      "min": { "type": "int" }
+    }
+  },
+  "accountTimeHourAgo": "{hour} ชม.ที่แล้ว",
+  "@accountTimeHourAgo": {
+    "placeholders": {
+      "hour": { "type": "int" }
+    }
+  },
+  "accountTimeDayAgo": "{day} วันที่แล้ว",
+  "@accountTimeDayAgo": {
+    "placeholders": {
+      "day": { "type": "int" }
+    }
+  },
+
+  "statsTitle": "สถิติละหมาด",
+  "statsShareTooltip": "แชร์สถิติ",
+  "statsTodayPrayers": "ละหมาดวันนี้",
+  "statsTodayCount": "{done} / 5",
+  "@statsTodayCount": {
+    "placeholders": {
+      "done": { "type": "int" }
+    }
+  },
+  "statsStreak": "สถิติต่อเนื่อง",
+  "statsDays": "วัน",
+  "statsThisWeek": "สัปดาห์นี้",
+  "statsCompletion": "เสร็จสิ้น",
+  "statsThisMonth": "เดือนนี้",
+  "statsMostMissed": "พลาดมากที่สุด",
+  "statsThisWeekLabel": "สัปดาห์นี้",
+  "statsWeeklyChart": "ความสำเร็จรายสัปดาห์แยกตามละหมาด",
+  "statsMonthlyChart": "ความสำเร็จรายเดือนแยกตามละหมาด",
+  "statsTotalLogged": "บันทึกละหมาดทั้งหมด {count} ครั้ง",
+  "@statsTotalLogged": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "statsKeepItUp": "ทำต่อไป!",
+  "statsShareTitle": "สถิติละหมาด PrayCalc",
+  "statsShareStreak": "สถิติต่อเนื่อง: {days} วัน",
+  "@statsShareStreak": {
+    "placeholders": {
+      "days": { "type": "int" }
+    }
+  },
+  "statsShareWeekly": "รายสัปดาห์: {pct}%",
+  "@statsShareWeekly": {
+    "placeholders": {
+      "pct": { "type": "int" }
+    }
+  },
+  "statsShareMonthly": "รายเดือน: {pct}%",
+  "@statsShareMonthly": {
+    "placeholders": {
+      "pct": { "type": "int" }
+    }
+  },
+  "statsShareBreakdown": "รายละเอียดรายสัปดาห์:",
+
+  "aboutTitle": "เกี่ยวกับ PrayCalc",
+  "aboutWebsite": "เว็บไซต์",
+  "aboutContact": "ติดต่อ",
+  "aboutLicenses": "สัญญาอนุญาตโอเพนซอร์ส",
+  "aboutCouldNotOpen": "ไม่สามารถเปิดลิงก์ได้",
+  "aboutCopyright": "© {year} Ummat Dev. สงวนลิขสิทธิ์\n\nเวลาละหมาดคำนวณโดยเอนจิน pray_calc_dart ความแม่นยำขึ้นอยู่กับตำแหน่ง GPS และวิธีคำนวณที่เลือก",
+  "@aboutCopyright": {
+    "placeholders": {
+      "year": { "type": "int" }
+    }
+  },
+
+  "commonCancel": "ยกเลิก",
+  "commonSave": "บันทึก",
+  "commonDelete": "ลบ",
+  "commonEdit": "แก้ไข",
+  "commonRetry": "ลองอีกครั้ง",
+  "commonClose": "ปิด",
+  "commonDone": "เสร็จ",
+  "commonBack": "กลับ",
+  "commonNext": "ถัดไป",
+  "commonSkip": "ข้าม",
+  "commonContinue": "ดำเนินต่อ",
+  "commonOk": "ตกลง",
+  "commonYes": "ใช่",
+  "commonNo": "ไม่",
+  "commonShare": "แชร์",
+  "commonCopy": "คัดลอก",
+  "commonCopied": "คัดลอกไปยังคลิปบอร์ดแล้ว",
+  "commonLoading": "กำลังโหลด...",
+  "commonError": "เกิดข้อผิดพลาด",
+  "commonErrorRetry": "เกิดข้อผิดพลาด แตะเพื่อลองอีกครั้ง",
+  "commonNoInternet": "ไม่มีการเชื่อมต่ออินเทอร์เน็ต",
+  "commonOfflineMode": "โหมดออฟไลน์",
+  "commonSignIn": "ลงชื่อเข้าใช้",
+  "commonSignOut": "ออกจากระบบ",
+  "commonSignUp": "สมัคร",
+  "commonProfile": "โปรไฟล์",
+  "commonAccount": "บัญชี",
+  "commonAbout": "เกี่ยวกับ",
+  "commonVersion": "เวอร์ชัน {version}",
+  "@commonVersion": {
+    "placeholders": {
+      "version": { "type": "String" }
+    }
+  },
+  "commonPrivacyPolicy": "นโยบายความเป็นส่วนตัว",
+  "commonTermsOfService": "ข้อกำหนดการใช้งาน",
+  "commonRateApp": "ให้คะแนนแอป",
+  "commonFeedback": "ส่งข้อเสนอแนะ",
+  "commonHelp": "ช่วยเหลือ",
+  "commonLanguage": "ภาษา",
+  "commonOpenSettings": "เปิดการตั้งค่า",
+
+  "travelNotificationTitle": "คุณกำลังเดินทาง",
+  "travelNotificationBody": "เวลาละหมาดอาจถูกย่อ แตะเพื่อเรียนรู้เกี่ยวกับหลักการเดินทาง",
+  "travelRulingsTitle": "การเดินทางและละหมาด",
+  "travelRulingsIntro": "หลักการอิสลามเกี่ยวกับละหมาดขณะเดินทาง พร้อมอ้างอิงจากอัลกุรอานและหะดีษที่ถูกต้อง",
+  "travelWhenTitle": "เมื่อไหร่ใช้หลักการเดินทาง?",
+  "travelQasrTitle": "ย่อละหมาด (ก็อศร์)",
+  "travelJamTitle": "รวมละหมาด (ญัมอ์)",
+  "travelDurationTitle": "ระยะเวลาเดินทาง",
+  "travelReferencesTitle": "อ้างอิงทางวิชาการ",
+  "travelLearnMore": "เรียนรู้เพิ่มเติม",
+  "travelHanafiDefaultTitle": "ทำไม PrayCalc ใช้ค่าเริ่มต้นฮะนะฟี",
+  "travelDeeperScholarly": "การอภิปรายทางวิชาการเชิงลึก",
+
+  "onboardingTitle1": "เวลาละหมาด ไม่ว่าคุณอยู่ที่ไหน",
+  "onboardingBody1": "เวลาละหมาดแม่นยำด้วย GPS สำหรับทุกเมืองบนโลก ตั้งแต่ฟัจร์ถึงอิชา พระอาทิตย์ขึ้นถึงกิยาม ขับเคลื่อนด้วยเอนจินคำนวณของเราเอง สร้างเพื่อความแม่นยำ",
+  "onboardingTitle2": "ตำแหน่งของคุณ เวลาของคุณ",
+  "onboardingBody2": "ค้นหาเมืองหรือให้ GPS ตรวจจับตำแหน่งของคุณ PrayCalc ค้นหาเวลาสำหรับ 5 ล้านเมืองทั่วโลก",
+  "onboardingTitle3": "ไม่พลาดละหมาดอีกเลย",
+  "onboardingBody3": "อะซานเมื่อถึงเวลาละหมาด เตือนก่อนเวลา วาระกำหนดเองสำหรับสะฮูร ชั้นเรียน และอื่นๆ",
+  "onboardingTitle4": "ทุกอย่างที่คุณต้องการ",
+  "onboardingBody4": "เข็มทิศกิบลัต ปฏิทินละหมาด เฟสจันทร์ฮิจเราะฮ์ ตัวนับตัสบีห์ ทั้งหมดในที่เดียว",
+  "onboardingSkip": "ข้าม",
+  "onboardingGetStarted": "เริ่มต้น",
+  "onboardingSignInTitle": "ลงชื่อเข้าใช้ PrayCalc",
+  "onboardingSignInSubtitle": "บันทึกประวัติละหมาดและซิงค์\nข้ามอุปกรณ์ทั้งหมดของคุณ",
+  "onboardingContinueGoogle": "ดำเนินต่อด้วย Google",
+  "onboardingContinueWithoutAccount": "ดำเนินต่อโดยไม่มีบัญชี",
+  "onboardingSigningIn": "กำลังลงชื่อเข้าใช้…",
+  "onboardingSelectLanguage": "เลือกภาษา",
+
+  "duaDhikrTitle": "ดุอาอ์และซิกิร",
+  "duaDhikrTabDua": "ดุอาอ์",
+  "duaDhikrTabDhikr": "ซิกิร",
+  "duaDhikrTabTasbeeh": "ตัสบีห์",
+  "duaDhikrTabMorning": "เช้า",
+  "duaDhikrTabEvening": "เย็น",
+  "duaDhikrMorningAdhkar": "อัซการ์ยามเช้า",
+  "duaDhikrEveningAdhkar": "อัซการ์ยามเย็น",
+
+  "calGregToggle": "สากล",
+  "calHijriToggle": "ฮิจเราะฮ์",
+  "calYearlyTooltip": "ปฏิทินรายปี",
+  "calExportIcsTooltip": "ส่งออก .ics",
+  "calMagCol": "มัฆ",
+
+  "qiblaShowOnMap": "แสดงบนแผนที่",
+  "qiblaWaitingCompass": "รอเข็มทิศ...",
+  "qiblaNoCompassSensor": "ไม่มีเซ็นเซอร์เข็มทิศ แสดงทิศกิบลัตแบบคงที่",
+  "qiblaAccuracyExcellent": "ความแม่นยำดีเยี่ยม",
+  "qiblaAccuracyGood": "ความแม่นยำดี",
+  "qiblaAccuracyFair": "ความแม่นยำพอใช้ ปรับเทียบโดยเคลื่อนโทรศัพท์เป็นรูปเลข 8",
+  "qiblaAccuracyLow": "ความแม่นยำต่ำ ปรับเทียบโดยเคลื่อนโทรศัพท์เป็นรูปเลข 8",
+  "qiblaToTheKaaba": "ไปยังกะอ์บะฮ์",
+  "qiblaYourLocation": "ตำแหน่งของคุณ",
+  "qiblaGpsAccurate": "GPS แม่นยำ",
+  "qiblaCityCenter": "ศูนย์กลางเมือง",
+
+  "moonIlluminatedLabel": "สว่าง",
+  "moonAgeLabel": "อายุ",
+  "moonFirstQtr": "ครึ่งดวงข้างขึ้น",
+  "moonLastQtr": "ครึ่งดวงข้างแรม",
+  "moonTonight": "คืนนี้",
+  "moonTomorrow": "พรุ่งนี้",
+  "moonDaysAway": "{days}ว",
+  "@moonDaysAway": {
+    "placeholders": {
+      "days": { "type": "int" }
+    }
+  },
+  "moonBeta": "เบต้า",
+
+  "setHomeTitle": "ตั้งที่ตั้งบ้าน",
+  "setHomeSearchHint": "ค้นหาเมือง ตำบล หรือรหัสไปรษณีย์…",
+  "setHomeClear": "ล้าง",
+  "setHomeUseCurrentLocation": "ใช้ตำแหน่งปัจจุบัน",
+  "setHomeDetectAndSet": "ตรวจจับตำแหน่งและตั้งเป็นบ้าน",
+  "setHomeAlreadySet": "ตั้งที่ตั้งบ้านแล้ว",
+  "setHomeSetAs": "ตั้ง {city} เป็นบ้าน",
+  "@setHomeSetAs": {
+    "placeholders": {
+      "city": { "type": "String" }
+    }
+  },
+  "setHomeCurrentLocationSet": "ตั้งตำแหน่งปัจจุบันเป็นบ้านแล้ว",
+  "setHomePermissionDenied": "ไม่ได้รับอนุญาตตำแหน่ง ค้นหาเมืองด้านล่าง",
+  "setHomeGpsUnavailable": "GPS ไม่พร้อมใช้งาน ค้นหาด้วยตนเอง",
+  "setHomeNoCitiesFound": "ไม่พบเมือง",
+  "setHomeSearchPrompt": "ค้นหาเมืองบ้านของคุณ",
+  "setHomeSearchBody": "พิมพ์ด้านบนเพื่อค้นหา หรือใช้ตำแหน่งปัจจุบัน โหมดเดินทางจะตรวจจับเมื่อคุณอยู่ห่างจากบ้าน",
+
+  "subscriptionYouHavePlus": "คุณมี Ummat+",
+  "subscriptionUpgradeTo": "อัปเกรดเป็น Ummat+",
+  "subscriptionThankYou": "ขอบคุณที่สนับสนุน PrayCalc",
+  "subscriptionUnlockPremium": "ปลดล็อกฟีเจอร์พรีเมียมในทุกอุปกรณ์",
+  "subscriptionManageSub": "จัดการการสมัคร",
+  "subscriptionWelcome": "ยินดีต้อนรับสู่ Ummat+!",
+  "subscriptionSubscribe": "สมัคร",
+  "subscriptionFreeFeatures": "ฟีเจอร์ฟรี",
+  "subscriptionPlusFeatures": "ฟีเจอร์ Ummat+",
+  "subscriptionFeaturePrayerTimes": "เวลาละหมาด",
+  "subscriptionFeatureQibla": "เข็มทิศกิบลัต",
+  "subscriptionFeatureCalendar": "ปฏิทินรายเดือน",
+  "subscriptionFeatureTasbeeh": "ตัวนับตัสบีห์",
+  "subscriptionFeatureMoon": "ดวงจันทร์และฮิจเราะฮ์",
+
+  "smartHomeAlertType": "ประเภทการแจ้งเตือน",
+  "smartHomeAlertModal": "โมดัลเต็มจอ",
+  "smartHomeAlertCorner": "แจ้งเตือนมุม",
+  "smartHomeAlertNone": "ไม่มี (เงียบ)",
+  "smartHomePauseMedia": "หยุดสื่อระหว่างอะซาน",
+  "smartHomeQuietHours": "ช่วงเงียบ",
+  "smartHomeQuietFrom": "จาก",
+  "smartHomeQuietTo": "ถึง",
+  "smartHomePrayerAudio": "เสียงแต่ละละหมาด",
+  "smartHomeAudioAdhan": "อะซาน",
+  "smartHomeAudioBeep": "เสียงบี๊ป",
+  "smartHomeAudioSilent": "เงียบ",
+
+  "aboutPrivacy": "นโยบายความเป็นส่วนตัว",
+  "aboutVersion": "เวอร์ชัน {version}",
+  "@aboutVersion": {
+    "placeholders": {
+      "version": { "type": "String" }
+    }
+  },
+
+  "notifDefaultAdhan": "อะซานเริ่มต้น",
+  "notifFajrAdhan": "อะซานฟัจร์",
+  "notifFajrAdhanSubtitle": "เล่นเมื่อถึงเวลาละหมาดฟัจร์",
+  "notifRegularAdhan": "อะซานปกติ",
+  "notifRegularAdhanSubtitle": "เล่นที่ซุฮ์ริ อัศริ มัฆริบ อิชา",
+  "notifPerPrayerSettings": "การตั้งค่าแต่ละละหมาด",
+  "notifPreview": "ดูตัวอย่าง",
+
+  "tvSettingsTitle": "การตั้งค่าทีวี",
+  "tvDisplayMode": "โหมดแสดงผล",
+  "tvMasjidMode": "โหมดมัสยิด",
+  "tvMasjidModeSubtitle": "จอขนาดใหญ่พร้อมเวลาอิกอมะฮ์",
+  "tvMasjidName": "ชื่อมัสยิด",
+  "tvMasjidNameTapToSet": "แตะเพื่อตั้งค่า",
+  "tvClock": "นาฬิกา",
+  "tv24hFormat": "รูปแบบ 24 ชั่วโมง",
+  "tvIqamahOffsets": "ออฟเซ็ตอิกอมะฮ์ (นาทีหลังอะซาน)",
+  "tvIqamahMinAfter": "{offset} นาทีหลังอะซาน",
+  "@tvIqamahMinAfter": {
+    "placeholders": {
+      "offset": { "type": "int" }
+    }
+  },
+  "tvQrCode": "QR Code",
+  "tvShowQrCode": "แสดง QR Code",
+  "tvShowQrCodeSubtitle": "แสดง QR Code บนจอมัสยิด",
+  "tvQrCodeUrl": "URL ของ QR Code",
+  "tvAmbientModeSection": "โหมดแอมเบียนท์",
+  "tvIdleTimeout": "เวลาไม่ใช้งาน",
+  "tvIdleTimeoutSubtitle": "{minutes} นาทีก่อนเปิดแอมเบียนท์",
+  "@tvIdleTimeoutSubtitle": {
+    "placeholders": {
+      "minutes": { "type": "int" }
+    }
+  },
+  "tvPhotoInterval": "ช่วงเวลาภาพ",
+  "tvPhotoIntervalSubtitle": "{seconds} วินาทีระหว่างภาพ",
+  "@tvPhotoIntervalSubtitle": {
+    "placeholders": {
+      "seconds": { "type": "int" }
+    }
+  },
+  "tvBackground": "พื้นหลัง",
+  "tvPhotoCategory": "หมวดภาพ",
+  "tvLocation": "ตำแหน่ง",
+  "tvChangeCity": "เปลี่ยนเมือง",
+  "tvChangeCitySubtitle": "ค้นหาเมืองอื่น",
+  "tvScreensaverBg": "พื้นหลังพักหน้าจอ",
+  "tvScreensaverPhotos": "ภาพ",
+  "tvScreensaverPattern": "ลายเรขาคณิต",
+  "tvScreensaverBoth": "ภาพ + ลาย",
+  "tvCategoryAll": "ทุกหมวด",
+  "tvCategoryMasjids": "มัสยิด",
+  "tvCategoryInteriors": "ภายใน",
+  "tvCategoryGeometric": "เรขาคณิต",
+  "tvCategoryCalligraphy": "อักษรวิจิตร",
+  "tvCategoryLandscapes": "ภูมิทัศน์",
+  "tvCategoryRamadan": "รอมฎอน",
+  "tvPhotoCategoryTitle": "หมวดภาพ",
+  "tvEnterHint": "ใส่ {title}",
+  "@tvEnterHint": {
+    "placeholders": {
+      "title": { "type": "String" }
+    }
+  },
+  "tvSystemDefault": "ค่าเริ่มต้นระบบ",
+
+  "smartHomeIntegrations": "การเชื่อมต่อ",
+  "smartHomeLinkedSpeakers": "ลำโพงและจอที่เชื่อมแล้ว",
+  "smartHomeAlertDisplay": "การแสดงการแจ้งเตือน",
+  "smartHomeAtAdhanShow": "เมื่อถึงเวลาอะซานแสดง",
+  "smartHomePauseMediaTitle": "หยุดสื่อเมื่อถึงอะซาน",
+  "smartHomePauseMediaSubtitle": "เล่นต่อหลังอะซานจบ",
+  "smartHomePrayerAudioSection": "เสียงละหมาด",
+  "smartHomeQuietHoursSection": "ช่วงเงียบ",
+  "smartHomeEnableQuietHours": "เปิดช่วงเงียบ",
+  "smartHomeQuietHoursSubtitle": "ปิดเสียงการแจ้งเตือนสมาร์ทโฮมทั้งหมด",
+  "smartHomeNoDevices": "ยังไม่มีอุปกรณ์เชื่อม",
+  "smartHomeNoDevicesDesc": "เชื่อม Google Home หรือ Alexa ด้านบน แล้วลำโพงและจอจะปรากฏที่นี่",
+  "smartHomeRequiresPlus": "สมาร์ทโฮมต้องมี Ummat+",
+  "smartHomeRequiresPlusDesc": "ควบคุมการประกาศอะซานบน Google Home, Alexa, Siri และ Home Assistant ตั้งค่าอุปกรณ์ที่เล่นอะซาน เวลาหยุดสื่อ และช่วงเงียบ",
+  "smartHomeBroadcastGoogle": "ออกอากาศอะซานบนลำโพงและจอ Nest",
+  "smartHomeEnableAlexa": "เปิดสกิล PrayCalc บน Alexa",
+  "smartHomeSiriAsk": "ถาม Siri เกี่ยวกับเวลาละหมาดหรือตั้งระบบอัตโนมัติ",
+  "smartHomeHassAdd": "เพิ่มผ่าน HACS สำหรับการรองรับระบบอัตโนมัติเต็มรูปแบบ",
+  "smartHomeSetupGuide": "คู่มือการตั้งค่า",
+  "smartHomeSiriSetupTitle": "การตั้งค่า Siri Shortcuts",
+  "smartHomeSiriStep1": "เปิดแอป Shortcuts บน iPhone หรือ iPad",
+  "smartHomeSiriStep2": "แตะ \"+\" เพื่อสร้างทางลัดใหม่",
+  "smartHomeSiriStep3": "ค้นหา \"PrayCalc\" ในรายการ",
+  "smartHomeSiriStep4": "เพิ่ม \"เวลาละหมาดถัดไป\" หรือ \"เวลาละหมาดวันนี้\"",
+  "smartHomeSiriStep5": "เพิ่มลงในระบบอัตโนมัติ (เช่น ทุกวันตอนฟัจร์)",
+  "smartHomeSiriStep6": "พูด \"Hey Siri, next prayer time\" เพื่อทดสอบ",
+  "smartHomeSiriFootnote": "ต้องมี iOS 16 ขึ้นไป",
+  "smartHomeHassSetupTitle": "การตั้งค่า Home Assistant",
+  "smartHomeHassStep1": "ติดตั้ง HACS (Home Assistant Community Store)",
+  "smartHomeHassStep2": "ใน HACS ค้นหา \"PrayCalc\" และติดตั้ง",
+  "smartHomeHassStep3": "ไปที่ การตั้งค่า > อุปกรณ์และบริการ > เพิ่มการเชื่อมต่อ",
+  "smartHomeHassStep4": "ค้นหา \"PrayCalc\" และเลือก",
+  "smartHomeHassStep5": "ใส่ API Key ของ PrayCalc (สร้างจากบัญชีของคุณ)",
+  "smartHomeHassStep6": "ตั้งค่าตำแหน่งและวิธีคำนวณ",
+  "smartHomeHassFootnote": "ต้องมี Home Assistant 2024.1+ พร้อม HACS",
+  "smartHomeApiKey": "API Key",
+  "smartHomeGenerateApiKey": "สร้าง API Key",
+  "smartHomeApiKeyNotReady": "การสร้าง API Key จะพร้อมใช้งานเมื่อบริการสมาร์ท PrayCalc เปิดตัว",
+  "smartHomeApiKeyDesc": "คุณต้องมี API Key เพื่อเชื่อมต่อ Home Assistant กับบัญชี PrayCalc",
+  "smartHomeLinkedStatus": "เชื่อมแล้ว",
+  "smartHomeNotLinkedStatus": "ไม่ได้เชื่อม",
+  "smartHomeCouldNotOpen": "ไม่สามารถเปิดลิงก์ได้",
+
+  "smartHomeDevices": "อุปกรณ์",
+  "smartHomeAddDevice": "เพิ่มอุปกรณ์",
+  "smartHomeDeleteDevice": "ลบ",
+  "smartHomeDeleteDeviceConfirm": "ลบอุปกรณ์นี้?",
+  "smartHomeDeviceOnline": "ออนไลน์",
+  "smartHomeDeviceOffline": "ออฟไลน์",
+  "smartHomeDeviceLastSeen": "เห็นล่าสุด: {time}",
+  "@smartHomeDeviceLastSeen": {
+    "placeholders": {
+      "time": { "type": "String" }
+    }
+  },
+  "smartHomeDeviceName": "ชื่ออุปกรณ์",
+  "smartHomeDeviceType": "ประเภทอุปกรณ์",
+  "smartHomeDeviceTypeTv": "ทีวี",
+  "smartHomeDeviceTypeSpeaker": "ลำโพง",
+  "smartHomeDeviceTypeWatch": "นาฬิกา",
+  "smartHomeDeviceTypeDesktop": "เดสก์ท็อป",
+  "smartHomeDeviceTypeOther": "อื่นๆ",
+  "smartHomeDeviceAdhan": "การแจ้งเตือนอะซาน",
+  "smartHomeDeviceAdhanDesc": "รับการแจ้งเตือนอะซานบนอุปกรณ์นี้",
+  "smartHomeDeviceVolume": "ระดับเสียง",
+  "smartHomeDeviceAudioType": "ประเภทเสียง",
+  "smartHomeDeviceEnabledPrayers": "ละหมาดที่เปิดใช้",
+  "smartHomeDeviceSettings": "การตั้งค่าอุปกรณ์",
+  "smartHomeTesting": "กำลังทดสอบ...",
+  "smartHomeTestSuccess": "ยืนยันการเชื่อมต่อแล้ว",
+  "smartHomeTestFailed": "ทดสอบการเชื่อมต่อไม่ผ่าน",
+  "smartHomePairTv": "จับคู่ทีวี",
+  "smartHomePairingTv": "กำลังลงทะเบียนทีวี...",
+  "smartHomePairTvSuccess": "จับคู่ทีวีสำเร็จ",
+  "smartHomePairTvFailed": "จับคู่ทีวีไม่สำเร็จ",
+  "smartHomeLoadingDevices": "กำลังโหลดอุปกรณ์...",
+  "smartHomeLoadingIntegrations": "กำลังโหลดการเชื่อมต่อ...",
+  "smartHomeServiceUnavailable": "บริการสมาร์ทโฮมไม่พร้อมใช้งานขณะนี้ กรุณาลองอีกครั้งภายหลัง",
+
+  "adhkarCompletedCount": "{completed} / {total} เสร็จสิ้น",
+  "@adhkarCompletedCount": {
+    "placeholders": {
+      "completed": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "adhkarReset": "รีเซ็ต",
+
+  "syncHistoryTitle": "ประวัติซิงค์",
+  "syncClearHistory": "ล้างประวัติ",
+  "syncNoConflicts": "ไม่พบความขัดแย้งในการซิงค์ อุปกรณ์ทั้งหมดซิงค์กันแล้ว",
+  "syncDomainSettings": "การตั้งค่า",
+  "syncDomainCities": "เมืองที่บันทึก",
+  "syncDomainPrayerLogs": "บันทึกละหมาด",
+  "syncTimeJustNow": "เมื่อกี้",
+  "syncTimeMinAgo": "{min} นาทีที่แล้ว",
+  "@syncTimeMinAgo": {
+    "placeholders": {
+      "min": { "type": "int" }
+    }
+  },
+  "syncTimeHourAgo": "{hour} ชม.ที่แล้ว",
+  "@syncTimeHourAgo": {
+    "placeholders": {
+      "hour": { "type": "int" }
+    }
+  },
+  "syncTimeDayAgo": "{day} วันที่แล้ว",
+  "@syncTimeDayAgo": {
+    "placeholders": {
+      "day": { "type": "int" }
+    }
+  },
+
+  "pinCity": "ปักหมุด",
+  "pinMaxReached": "ปักหมุดได้สูงสุด 5 เมือง อัปเกรดเป็น Ummat+ เพื่อเพิ่ม",
+  "pinCityUnpinned": "เลิกปักหมุด {city} แล้ว",
+  "@pinCityUnpinned": {
+    "placeholders": {
+      "city": { "type": "String" }
+    }
+  },
+  "pinUndo": "เลิกทำ",
+
+  "tvPairingScanQr": "Scan TV QR Code",
+  "tvPairingScanInstruction": "Point your camera at the QR code on your TV",
+  "tvPairingEnterManually": "Enter code manually",
+  "tvPairingEnterCode": "Enter pairing code",
+  "tvPairingCodeHint": "6-character code shown on your TV",
+  "tvPairingNameThisTv": "Name this TV",
+  "tvPairingNameHint": "e.g. Living Room TV",
+  "tvPairingSuccess": "{name} paired!",
+  "tvPairingSuccessSubtitle": "Your TV is now connected to your account.",
+  "tvPairingBackToMyTvs": "Back to My TVs",
+  "tvPairingTimeout": "Request timed out. Is the TV on and connected?",
+  "tvPairingServerError": "Could not connect to server.",
+  "tvPairingSignInRequired": "Sign in to your account before pairing a TV.",
+
+  "tvJumuahGreeting": "Jumu'ah Mubarak"
+}

@@ -1,0 +1,56 @@
+# XcodeGen spec for the PrayCalcWatch standalone project.
+# Run `xcodegen generate` from this directory to regenerate PrayCalcWatch.xcodeproj.
+#
+# NOTE: The recommended approach is to add the watch targets directly to the
+# Runner.xcworkspace via Xcode (see README.md). This file is provided as an
+# alternative for generating a standalone watch project for iteration/testing.
+
+name: PrayCalcWatch
+options:
+  bundleIdPrefix: com.praycalc.app
+  deploymentTarget:
+    watchOS: "7.0"
+  xcodeVersion: "15"
+
+settings:
+  base:
+    SWIFT_VERSION: "5.9"
+    MARKETING_VERSION: "1.1.0"
+    CURRENT_PROJECT_VERSION: "1"
+
+targets:
+  PrayCalcWatchApp:
+    type: application.watchapp2-container
+    platform: watchOS
+    deploymentTarget: "7.0"
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.praycalc.app.watchkitapp
+        WKCompanionAppBundleIdentifier: com.praycalc.app
+        INFOPLIST_FILE: PrayCalcWatch-Info.plist
+    sources: []
+    dependencies:
+      - target: PrayCalcWatchExtension
+
+  PrayCalcWatchExtension:
+    type: watchkit2-extension
+    platform: watchOS
+    deploymentTarget: "7.0"
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.praycalc.app.watchkitapp.watchkitextension
+        INFOPLIST_FILE: PrayCalcWatch-Info.plist
+        WKExtensionDelegateClassName: $(PRODUCT_MODULE_NAME).ExtensionDelegate
+        APPLICATION_EXTENSION_API_ONLY: NO
+    sources:
+      - path: .
+        excludes:
+          - "project.yml"
+          - "README.md"
+          - "*.xcodeproj"
+          - "*.xcworkspace"
+    entitlements:
+      path: PrayCalcWatch.entitlements
+      properties:
+        com.apple.security.application-groups:
+          - group.com.praycalc.app

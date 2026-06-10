@@ -34,11 +34,13 @@ Thumbs.db
 
 # Flutter
 **/flutter/.dart_tool/
+flutter/**/.dart_tool/
 **/flutter/.flutter-plugins
 **/flutter/.flutter-plugins-dependencies
 **/flutter/build/
 flutter/.packages
 flutter/.metadata
+flutter/android/.gradle/
 
 # Firebase / GCP config (contains API keys)
 **/GoogleService-Info.plist

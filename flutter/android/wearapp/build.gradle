@@ -1,0 +1,29 @@
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+}
+
+android {
+    namespace 'com.praycalc.wear'
+    compileSdk 34
+    defaultConfig {
+        applicationId 'com.praycalc.wear'
+        minSdk 26
+        targetSdk 34
+        versionCode 1
+        versionName '0.9.4'
+    }
+    buildFeatures { viewBinding true }
+}
+
+dependencies {
+    implementation 'androidx.wear:wear:1.3.0'
+    implementation 'androidx.wear.watchface:watchface-complications-data-source:1.2.1'
+    implementation 'com.google.android.gms:play-services-wearable:18.1.0'
+    implementation 'androidx.core:core-ktx:1.12.0'
+    // Wear Tiles — required by PrayCountdownTile (TileService + layout builders)
+    implementation 'androidx.wear.tiles:tiles:1.2.0'
+    implementation 'androidx.wear.tiles:tiles-material:1.2.0'
+    // Guava futures (immediateFuture used in tile callbacks)
+    implementation 'com.google.guava:guava:32.1.3-android'
+}

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Android TV banner: 320x180dp for launcher row -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Deep green background -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#0D2F17"/>
+            <corners android:radius="8dp"/>
+        </shape>
+    </item>
+    <!-- Gradient overlay -->
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:startColor="#001E5E2F"
+                android:endColor="#801E5E2F"
+                android:angle="135"/>
+            <corners android:radius="8dp"/>
+        </shape>
+    </item>
+    <!-- Brand accent bar at bottom -->
+    <item android:bottom="0dp" android:top="160dp">
+        <shape android:shape="rectangle">
+            <solid android:color="#79C24C"/>
+            <corners
+                android:bottomLeftRadius="8dp"
+                android:bottomRightRadius="8dp"/>
+        </shape>
+    </item>
+</layer-list>

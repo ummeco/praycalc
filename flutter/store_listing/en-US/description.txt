@@ -1,0 +1,31 @@
+PrayCalc — Accurate Prayer Times for Muslims Worldwide
+
+GPS-accurate prayer times for all five daily prayers. Supports every major calculation method: ISNA, MWL, Egypt, Umm al-Qura, Tehran, Karachi, and more. Works offline — your prayer times are always available, even without a connection.
+
+PRAYER TIMES & ADHAN
+• GPS location or manual city search
+• Fajr, Sunrise, Dhuhr, Asr, Maghrib, Isha with countdown to next prayer
+• Adhan reminders with multiple recitation options
+• Qibla direction compass
+• Hijri and Gregorian calendar
+
+EVERY DEVICE (v1.1)
+• iPhone Live Activity — next prayer countdown on your lock screen and Dynamic Island
+• Apple Watch — prayer times and countdown on your wrist (watchOS 9+)
+• WearOS — prayer times for Android smartwatches (WearOS 3+)
+• TV App — beautiful full-screen prayer schedule for your living room (Android TV, tvOS)
+• Desktop Tray — Windows and macOS menu bar / system tray with live countdown
+• Home Screen Widgets — at-a-glance times without opening the app
+
+SMART HOME & VOICE (v1.1)
+• Alexa Skill — ask "Alexa, when is Asr today?"
+• Google Actions — ask your Google device for prayer times
+• Smart Home Integration — trigger lights, displays, or speakers at prayer times (Ummat+ required)
+
+UMMAT+
+Premium features for Ummat+ subscribers: smart home integration, cross-device sync across unlimited devices, and early access to new features.
+
+FREE FOREVER
+PrayCalc is completely free. No ads. No tracking. All calculation happens on your device.
+
+Built by Muslims, for the global Muslim community.

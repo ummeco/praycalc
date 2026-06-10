@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Amazon flavor manifest — overrides for Fire TV / Amazon Appstore -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Remove FCM service from amazon build (Fire TV has no Google Play Services) -->
+    <application tools:targetApi="31">
+        <service
+            android:name="com.google.firebase.messaging.FirebaseMessagingService"
+            tools:node="remove" />
+
+        <!-- Declare Leanback launcher for Fire TV (merged into main activity entry) -->
+        <activity
+            android:name=".MainActivity"
+            tools:node="merge">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- Amazon-specific flavor marker (readable at runtime if needed) -->
+        <meta-data
+            android:name="amazon:flavor"
+            android:value="true" />
+    </application>
+
+    <!-- Fire TV requires leanback; touchscreen is optional (D-pad primary input) -->
+    <uses-feature android:name="android.software.leanback" android:required="false" />
+    <uses-feature android:name="android.hardware.touchscreen" android:required="false" />
+</manifest>

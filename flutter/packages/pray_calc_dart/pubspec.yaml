@@ -1,0 +1,14 @@
+name: pray_calc_dart
+description: |
+  Islamic prayer time calculation using the PrayCalc Dynamic Method.
+  Pure Dart port of the pray-calc TypeScript library.
+  Implements the NREL SPA algorithm + MSC seasonal algorithm + dynamic twilight angles.
+version: 0.2.0
+publish_to: 'none'
+
+environment:
+  sdk: ^3.7.0
+
+dev_dependencies:
+  lints: ^5.0.0
+  test: ^1.25.8
