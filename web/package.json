@@ -29,7 +29,7 @@
     "ask-sdk-core": "^2.14.0",
     "ask-sdk-model": "^1.86.0",
     "@opentelemetry/auto-instrumentations-node": "^0.76.0",
-    "@opentelemetry/exporter-trace-otlp-http": "^0.218.0",
+    "@opentelemetry/exporter-trace-otlp-http": "^0.219.0",
     "@opentelemetry/sdk-node": "^0.218.0",
     "@sentry/nextjs": "^10.40.0",
     "@vercel/analytics": "^1.6.1",
