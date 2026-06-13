@@ -1,6 +1,34 @@
 {
   "1116375": {
-    "reason": "Next.js 16.1.7 CVE-2026-23869 (DoS in Server Components). Affects org/ only (not web/). org/ must remain on 16.1.7 due to webpack regression in 16.2.x (breaks MDX metadata exports). See: https://github.com/ummeco/praycalc/issues/TODO",
+    "reason": "Next.js 16.1.7 CVE-2026-23869 (DoS in Server Components). Affects org/ only (not web/). org/ must remain on 16.1.7 due to webpack regression in 16.2.x (breaks MDX metadata exports).",
+    "expires": "2026-12-31"
+  },
+  "1117930": {
+    "reason": "Next.js 16.1.7 DoS (Server Components). Affects org/ only. org/ pinned at 16.1.7 due to webpack/MDX regression in 16.2.x — cannot upgrade. No upstream patch path.",
+    "expires": "2026-12-31"
+  },
+  "1118938": {
+    "reason": "Next.js 16.1.7 Middleware/Proxy bypass (App Router). Affects org/ only. org/ pinned at 16.1.7 due to webpack/MDX regression in 16.2.x — cannot upgrade.",
+    "expires": "2026-12-31"
+  },
+  "1118949": {
+    "reason": "Next.js 16.1.7 DoS via connection. Affects org/ only. org/ pinned at 16.1.7 due to webpack/MDX regression in 16.2.x — cannot upgrade.",
+    "expires": "2026-12-31"
+  },
+  "1118953": {
+    "reason": "Next.js 16.1.7 SSRF. Affects org/ only. org/ pinned at 16.1.7 due to webpack/MDX regression in 16.2.x — cannot upgrade.",
+    "expires": "2026-12-31"
+  },
+  "1118955": {
+    "reason": "Next.js 16.1.7 Middleware/Proxy bypass. Affects org/ only. org/ pinned at 16.1.7 due to webpack/MDX regression in 16.2.x — cannot upgrade.",
+    "expires": "2026-12-31"
+  },
+  "1118959": {
+    "reason": "Next.js 16.1.7 Middleware/Proxy bypass (App Router). Affects org/ only. org/ pinned at 16.1.7 due to webpack/MDX regression in 16.2.x — cannot upgrade.",
+    "expires": "2026-12-31"
+  },
+  "1118961": {
+    "reason": "Next.js 16.1.7 Middleware/Proxy bypass (Pages Router i18n). Affects org/ only. org/ pinned at 16.1.7 due to webpack/MDX regression in 16.2.x — cannot upgrade.",
     "expires": "2026-12-31"
   }
 }
