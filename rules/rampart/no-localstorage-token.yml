@@ -1,0 +1,29 @@
+rules:
+  - id: no-localstorage-token
+    patterns:
+      - pattern-either:
+          - pattern: localStorage.setItem($KEY, ...)
+          - pattern: localStorage[$KEY] = ...
+          - pattern: window.localStorage.setItem($KEY, ...)
+    pattern-where:
+      - pattern-regex: $KEY
+        regex: '(?i)(token|jwt|auth|session|refresh|device|pairing|secret)'
+    message: >
+      Token/auth value stored in localStorage (ADR-010: no-localstorage-token).
+      localStorage is accessible by any script on the page (XSS risk).
+      Use httpOnly cookies for auth tokens.
+      Rampart: HIGH on non-family data paths.
+    languages: [typescript, javascript]
+    severity: ERROR
+    metadata:
+      adr: ADR-010
+      rampart: "HIGH"
+      category: security
+      ticket: P2-E1-W01-S01-T02
+    paths:
+      include:
+        - "web/**"
+      exclude:
+        - "**/*.test.ts"
+        - "**/*.spec.ts"
+        - "**/__tests__/**"

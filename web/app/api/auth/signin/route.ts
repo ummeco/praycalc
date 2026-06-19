@@ -1,16 +1,40 @@
-// app/api/auth/signin/route.ts — T09 (SEC-HARDENING)
-// Server-side proxy for Hasura Auth sign-in with Cloudflare Turnstile verification.
-// Replaces the direct client→Hasura Auth call in auth-client.ts.
-//
-// Accepts:  POST { email, password, turnstileToken }
-// Returns:  proxied Hasura Auth session response | { error }
-//
-// Note: Hasura Auth (nhost) uses /signin/email-password (no /v1/auth/ prefix).
+/**
+ * app/api/auth/signin/route.ts — T09 (SEC-HARDENING) + P2-E1-W01 Track E
+ *
+ * Purpose: Server-side proxy for Hasura Auth sign-in with Cloudflare Turnstile.
+ *          Sets the JWT access token in an httpOnly cookie (never exposed to JS).
+ * Inputs:  POST { email, password, turnstileToken }
+ * Outputs: JSON session profile (no tokens) + Set-Cookie: pc-jwt (httpOnly)
+ * Constraints:
+ *   - pc-jwt cookie: HttpOnly, Secure, SameSite=Strict — not readable by JS.
+ *   - JWT token is NOT returned in the response body — only the non-sensitive profile.
+ *   - Refresh token stored separately in pc-refresh (httpOnly, SameSite=Strict).
+ *   - Turnstile verified server-side, fail-closed in production.
+ * SPORT: P2-E1-W01 Track E (praycalc session httpOnly cookie).
+ *
+ * Note: Hasura Auth (nhost) uses /signin/email-password (no /v1/auth/ prefix).
+ */
 
 import { NextRequest, NextResponse } from 'next/server'
 import { verifyTurnstileToken } from '@/lib/turnstile'
 
 const AUTH_URL = process.env.NEXT_PUBLIC_AUTH_URL ?? 'https://auth.ummat.dev'
+
+/** One year in seconds — matches the refresh token lifetime. */
+const REFRESH_COOKIE_MAX_AGE = 60 * 60 * 24 * 365
+/** 15 minutes — matches Hasura Auth default access token lifetime. */
+const ACCESS_COOKIE_MAX_AGE = 60 * 15
+
+function cookieOptions(maxAge: number, isProd: boolean): string {
+  const parts = [
+    `Max-Age=${maxAge}`,
+    'Path=/',
+    'HttpOnly',
+    'SameSite=Strict',
+  ]
+  if (isProd) parts.push('Secure')
+  return parts.join('; ')
+}
 
 export async function POST(req: NextRequest) {
   const body = await req.json().catch(() => null) as {
@@ -40,14 +64,59 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Auth service unavailable' }, { status: 503 })
   }
 
-  const data = (await authRes.json().catch(() => ({}))) as Record<string, unknown>
+  const data = (await authRes.json().catch(() => ({}))) as {
+    session?: {
+      accessToken: string
+      refreshToken: string
+      accessTokenExpiresIn: number
+      user: {
+        id: string
+        email: string
+        displayName?: string
+        avatarUrl?: string | null
+      }
+    }
+    error?: string
+  }
 
   if (!authRes.ok) {
     return NextResponse.json(
-      { error: (data.message as string) ?? 'Invalid email or password.' },
+      { error: data.error ?? 'Invalid email or password.' },
       { status: authRes.status },
     )
   }
 
-  return NextResponse.json(data, { status: 200 })
+  const session = data.session
+  if (!session?.accessToken) {
+    return NextResponse.json({ error: 'Auth service returned no token' }, { status: 502 })
+  }
+
+  // Return non-sensitive profile only — tokens go into httpOnly cookies.
+  const profile = {
+    userId: session.user.id,
+    email: session.user.email,
+    displayName: session.user.displayName ?? session.user.email.split('@')[0],
+    avatarUrl: session.user.avatarUrl ?? null,
+    accessTokenExpiresAt: Date.now() + (session.accessTokenExpiresIn ?? 900) * 1000,
+  }
+
+  const res = NextResponse.json(profile, { status: 200 })
+
+  // httpOnly JWT cookie — not readable by JavaScript.
+  res.headers.append(
+    'Set-Cookie',
+    `pc-jwt=${session.accessToken}; ${cookieOptions(ACCESS_COOKIE_MAX_AGE, isProd)}`,
+  )
+  // httpOnly refresh token cookie — not readable by JavaScript.
+  res.headers.append(
+    'Set-Cookie',
+    `pc-refresh=${session.refreshToken}; ${cookieOptions(REFRESH_COOKIE_MAX_AGE, isProd)}`,
+  )
+  // Middleware signal cookie — readable by JS, carries no sensitive data.
+  res.headers.append(
+    'Set-Cookie',
+    `pc-auth=1; Max-Age=${REFRESH_COOKIE_MAX_AGE}; Path=/; SameSite=Lax${isProd ? '; Secure' : ''}`,
+  )
+
+  return res
 }

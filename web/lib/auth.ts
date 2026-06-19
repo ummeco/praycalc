@@ -1,81 +1,95 @@
 /**
  * JWT verification utilities for server-side API routes.
  *
- * Hasura Auth uses JWT tokens with claims. These utilities verify and extract
- * user ID and other claims from JWT tokens in Authorization headers.
- *
- * JWT payload (Hasura Auth):
- * {
- *   sub: user_id,
- *   iat: issued_at_timestamp,
- *   exp: expiration_timestamp,
- *   iss: "https://auth.ummat.dev",
- *   ...other_claims
- * }
+ * Purpose: Cryptographically verify Hasura Auth JWTs using HASURA_JWT_SECRET (HS256).
+ *          Signature verification is mandatory — no decode-only paths.
+ * Inputs:  Bearer token from Authorization header, HASURA_JWT_SECRET env var.
+ * Outputs: Verified JwtPayload or throws error (never returns unverified claims).
+ * Constraints: Algorithms locked to HS256 only. Missing secret → startup-time fatal.
+ * SPORT: P2-E1-W01 Track A security fix.
  */
 
-import { NextRequest, NextResponse } from 'next/server'
+import { jwtVerify, type JWTPayload } from 'jose'
+import { NextRequest } from 'next/server'
 
-export interface JwtPayload {
+export interface JwtPayload extends JWTPayload {
   sub: string
-  iat: number
-  exp: number
-  iss: string
   'x-hasura-user-id'?: string
   'x-hasura-allowed-roles'?: string[]
+  'https://hasura.io/jwt/claims'?: {
+    'x-hasura-user-id'?: string
+    'x-hasura-default-role'?: string
+    'x-hasura-allowed-roles'?: string[]
+    [key: string]: unknown
+  }
   [key: string]: unknown
 }
 
+function getJwtSecret(): Uint8Array {
+  const secret = process.env.HASURA_JWT_SECRET
+  if (!secret) {
+    throw new Error('[auth] HASURA_JWT_SECRET is required but not set')
+  }
+  return new TextEncoder().encode(secret)
+}
+
 /**
- * Extract and verify JWT from Authorization header.
- * Returns decoded payload if valid, throws error otherwise.
- *
- * Note: Full JWT verification (signature + key rotation) requires
- * fetching Hasura Auth's public key. For now, we verify structure
- * and expiration. Hasura validates token authenticity server-side.
+ * Verify a JWT token with HS256 signature verification.
+ * Throws on invalid signature, expired token, wrong algorithm, or missing secret.
+ * Never returns claims from an unverified token.
  */
-function decodeAndVerifyJwt(token: string): JwtPayload {
+async function verifyAndDecodeJwt(token: string): Promise<JwtPayload> {
+  const secret = getJwtSecret()
   try {
-    // JWT format: header.payload.signature
-    const [, payloadB64] = token.split('.')
-    if (!payloadB64) throw new Error('Invalid JWT format')
-
-    const payload = JSON.parse(
-      Buffer.from(payloadB64, 'base64').toString('utf-8'),
-    ) as JwtPayload
-
-    // Check expiration
-    if (payload.exp && Date.now() / 1000 > payload.exp) {
-      throw new Error('JWT token has expired')
-    }
-
-    return payload
+    const { payload } = await jwtVerify(token, secret, {
+      algorithms: ['HS256'],
+    })
+    return payload as JwtPayload
   } catch (err) {
-    throw new Error(`JWT verification failed: ${err instanceof Error ? err.message : String(err)}`)
+    throw new Error(
+      `JWT verification failed: ${err instanceof Error ? err.message : String(err)}`,
+    )
   }
 }
 
 /**
  * Require valid JWT in Authorization header.
- * Returns claims payload if valid.
- * Throws error if missing or invalid.
+ * Returns cryptographically verified claims payload.
+ * Throws error if missing, invalid signature, expired, or wrong algorithm.
  */
 export async function requireJwt(req: NextRequest): Promise<JwtPayload> {
-  const auth = req.headers.get('Authorization')
+  const auth = req.headers.get('Authorization') ?? req.headers.get('authorization')
   if (!auth?.startsWith('Bearer ')) {
     throw new Error('Missing or invalid Authorization header')
   }
-
   const token = auth.slice(7)
-  return decodeAndVerifyJwt(token)
+  return verifyAndDecodeJwt(token)
 }
 
 /**
  * Verify JWT token string.
- * Returns payload if valid, null if token is falsy.
+ * Returns verified payload if valid, null if token is falsy.
  * Throws error if present but invalid.
  */
 export async function verifyJwt(token?: string): Promise<JwtPayload | null> {
   if (!token) return null
-  return decodeAndVerifyJwt(token)
+  return verifyAndDecodeJwt(token)
+}
+
+/**
+ * Extract verified userId from Bearer token in Authorization header.
+ * Returns null if header is absent; throws if token is present but invalid.
+ */
+export async function extractVerifiedUserId(req: NextRequest): Promise<string | null> {
+  const auth = req.headers.get('Authorization') ?? req.headers.get('authorization')
+  if (!auth?.startsWith('Bearer ')) return null
+  const token = auth.slice(7)
+  const payload = await verifyAndDecodeJwt(token)
+  const hasuraClaims = payload['https://hasura.io/jwt/claims']
+  return (
+    (hasuraClaims?.['x-hasura-user-id'] as string | undefined) ??
+    payload['x-hasura-user-id'] ??
+    payload.sub ??
+    null
+  )
 }

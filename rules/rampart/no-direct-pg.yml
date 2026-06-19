@@ -1,0 +1,32 @@
+rules:
+  - id: no-direct-pg-import
+    patterns:
+      - pattern-either:
+          - pattern: import $X from "pgxpool"
+          - pattern: import $X from "pg"
+          - pattern: import $X from "database/sql"
+          - pattern: require("pgxpool")
+          - pattern: require("pg")
+          - pattern: pgxpool.Connect(...)
+          - pattern: sql.Open(...)
+    message: >
+      Direct PostgreSQL access detected (ADR-006: no-direct-pg-import).
+      All runtime data access must go through Hasura GraphQL.
+      Drizzle is for migrations only. Remove pgxpool/pg/database-sql imports
+      from app code and use the GraphQL client instead.
+      Rampart: CRITICAL — blocks merge.
+    languages: [typescript, javascript]
+    severity: ERROR
+    metadata:
+      adr: ADR-006
+      rampart: "CRITICAL"
+      category: security
+      ticket: P2-E1-W01-S01-T02
+    paths:
+      include:
+        - "web/**"
+      exclude:
+        - "**/*.test.ts"
+        - "**/*.spec.ts"
+        - "**/migrations/**"
+        - "**/drizzle/**"

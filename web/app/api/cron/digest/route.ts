@@ -1,17 +1,25 @@
-// Vercel cron job: runs every Monday at 6am UTC
-// Sends weekly prayer times digest to all confirmed subscribers
-// Vercel cron config in vercel.json
+/**
+ * app/api/cron/digest/route.ts — Weekly prayer times digest cron.
+ *
+ * Vercel cron job: runs every Monday at 6am UTC.
+ * Sends weekly prayer times digest to all confirmed subscribers.
+ * Auth: timing-safe CRON_SECRET verification (P2-E1-W01 Track E).
+ */
 
 import * as Sentry from '@sentry/nextjs';
 import { NextRequest, NextResponse } from 'next/server';
+import { requireCronAuth } from '@/lib/cron-auth';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET(req: NextRequest) {
-  // Verify cron secret to prevent unauthorized calls
-  const authHeader = req.headers.get('authorization');
-  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  // Auth: timing-safe CRON_SECRET verification (P2-E1-W01 Track E)
+  const authError = requireCronAuth(req.headers.get('authorization'));
+  if (authError) {
+    return new NextResponse(authError.body, {
+      status: authError.status,
+      headers: { 'Content-Type': 'application/json' },
+    });
   }
 
   // In production: fetch confirmed subscribers and send digest via smart service

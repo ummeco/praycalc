@@ -1,0 +1,102 @@
+name: Rampart Nightly
+on:
+  schedule: [{ cron: "40 3 * * *" }]
+  workflow_dispatch: {}
+permissions:
+  contents: read
+  issues: write
+env:
+  RAMPART_ENFORCE: ${{ vars.RAMPART_ENFORCE || 'warn' }}
+  RAMPART_GITLEAKS_VERSION: "8.30.0"
+jobs:
+  full-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+
+      - name: Install gitleaks
+        run: |
+          curl -sSL "https://github.com/gitleaks/gitleaks/releases/download/v${RAMPART_GITLEAKS_VERSION}/gitleaks_${RAMPART_GITLEAKS_VERSION}_linux_x64.tar.gz" \
+            | tar -xz gitleaks && sudo mv gitleaks /usr/local/bin/
+
+      - name: Scan — secrets (gitleaks)
+        id: secrets
+        continue-on-error: true
+        run: |
+          gitleaks detect --source . --config .gitleaks.toml --redact \
+            --report-format json --report-path gitleaks-report.json
+
+      - name: Gate — secrets
+        id: gate_secrets
+        if: always()
+        continue-on-error: true
+        run: node .github/scripts/rampart-gate.js gitleaks-report.json --tool semgrep
+
+      - name: Scan — deps-osv
+        id: deps_osv
+        continue-on-error: true
+        uses: google/osv-scanner-action/osv-scanner-action@v2
+        with: { scan-args: "--recursive --format json --output osv-report.json ." }
+
+      - name: Gate — deps-osv
+        id: gate_osv
+        if: always()
+        continue-on-error: true
+        run: node .github/scripts/rampart-gate.js osv-report.json --tool osv
+
+      - name: Setup pnpm
+        if: always()
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node
+        if: always()
+        uses: actions/setup-node@v4
+        with: { node-version: 22 }
+
+      - name: Scan — deps-pnpm
+        id: deps_pnpm
+        continue-on-error: true
+        # JS lives at web/ (§3.3a item 7)
+        working-directory: web/
+        run: pnpm audit --prod --json > pnpm-audit.json || true
+
+      - name: Gate — deps-pnpm
+        id: gate_pnpm
+        if: always()
+        continue-on-error: true
+        working-directory: web/
+        run: node ../.github/scripts/rampart-gate.js pnpm-audit.json --tool pnpm --baseline ../.github/rampart-baseline.json
+
+      - name: Install semgrep
+        if: always()
+        run: pipx install semgrep==1.154.0
+
+      - name: Scan — sast (semgrep)
+        id: sast
+        continue-on-error: true
+        run: |
+          semgrep --config p/typescript --config p/react --config p/owasp-top-ten \
+                  --config p/secrets --config rules/rampart/ \
+                  --json --output semgrep-report.json --error .
+
+      - name: Gate — sast
+        id: gate_sast
+        if: always()
+        continue-on-error: true
+        run: node .github/scripts/rampart-gate.js semgrep-report.json --tool semgrep
+
+      - name: Aggregate findings
+        id: aggregate
+        if: always()
+        run: node .github/scripts/rampart-nightly-aggregate.js
+        env:
+          GITHUB_OUTPUT: ${{ env.GITHUB_OUTPUT }}
+
+      - name: File issue on new CRITICAL/HIGH
+        if: always() && steps.aggregate.outputs.blocking == 'true'
+        run: node .github/scripts/rampart-issue.js
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RAMPART_CRIT_COUNT: ${{ steps.aggregate.outputs.crit_count }}
+          RAMPART_HIGH_COUNT: ${{ steps.aggregate.outputs.high_count }}

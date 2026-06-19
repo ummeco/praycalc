@@ -1,13 +1,84 @@
 /**
  * /account/delete — helper functions
  *
- * Validates request inputs and verifies Cloudflare Turnstile tokens
- * before the deletion request is processed server-side.
+ * Validates request inputs, verifies Cloudflare Turnstile tokens, and mints/
+ * verifies the server-side HMAC confirmation token that gates the destructive
+ * delete. Turnstile alone is replayable (P2-E1-W01 Track E extended / QA-C):
+ * the destructive Hasura action MUST additionally require a valid, unexpired,
+ * email-bound HMAC token issued by this server.
  */
+
+import { createHmac, timingSafeEqual } from "crypto";
 
 /** Turnstile verification endpoint. */
 const TURNSTILE_VERIFY_URL =
   "https://challenges.cloudflare.com/turnstile/v0/siteverify";
+
+/** Confirmation-token lifetime: 30 minutes. */
+const CONFIRM_TTL_MS = 30 * 60 * 1000;
+
+/** Normalize an email for stable HMAC binding. */
+function normalizeEmail(email: string): string {
+  return email.trim().toLowerCase();
+}
+
+/**
+ * Mints a time-limited HMAC confirmation token bound to the email.
+ * Token format: base64url("<expiresAtMs>.<hex-hmac-sha256(email|expiresAtMs)>").
+ * Throws (fail-closed) if DELETE_CONFIRM_SECRET is not configured — a missing
+ * secret must never silently downgrade to an unauthenticated delete.
+ */
+export function mintDeleteConfirmToken(
+  email: string,
+  now: number = Date.now()
+): string {
+  const secret = process.env.DELETE_CONFIRM_SECRET;
+  if (!secret) {
+    throw new Error("DELETE_CONFIRM_SECRET is not configured");
+  }
+  const expiresAt = now + CONFIRM_TTL_MS;
+  const sig = createHmac("sha256", secret)
+    .update(`${normalizeEmail(email)}|${expiresAt}`)
+    .digest("hex");
+  return Buffer.from(`${expiresAt}.${sig}`).toString("base64url");
+}
+
+/**
+ * Verifies an HMAC confirmation token against the email. Fail-closed:
+ * returns false on missing secret, missing/garbled token, expiry, or any
+ * signature mismatch. Uses crypto.timingSafeEqual to avoid timing leaks.
+ */
+export function verifyDeleteConfirmToken(
+  email: string,
+  token: string | undefined | null,
+  now: number = Date.now()
+): boolean {
+  const secret = process.env.DELETE_CONFIRM_SECRET;
+  if (!secret || !token) return false;
+
+  let decoded: string;
+  try {
+    decoded = Buffer.from(token, "base64url").toString("utf8");
+  } catch {
+    return false;
+  }
+
+  const sep = decoded.indexOf(".");
+  if (sep === -1) return false;
+
+  const expiresAt = Number(decoded.slice(0, sep));
+  const providedSig = decoded.slice(sep + 1);
+  if (!Number.isFinite(expiresAt) || expiresAt < now) return false;
+
+  const expectedSig = createHmac("sha256", secret)
+    .update(`${normalizeEmail(email)}|${expiresAt}`)
+    .digest("hex");
+
+  const a = Buffer.from(providedSig);
+  const b = Buffer.from(expectedSig);
+  if (a.length !== b.length) return false;
+  return timingSafeEqual(a, b);
+}
 
 /**
  * Validates a deletion request form submission.

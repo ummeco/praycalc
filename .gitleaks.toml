@@ -1,0 +1,139 @@
+# Gitleaks configuration for ummeco/praycalc
+# Copied from ummat 14-rule base with tightened anthropic-api-key regex (spec §11)
+# and global allowlist extended to include .next/, .dart_tool/ (P2 Rampart CI).
+#
+# Scans git history and diffs for leaked secrets.
+# False positives: add to [[rules.allowlist]] or .gitleaks-ignore.toml per finding.
+
+title = "Praycalc Gitleaks Config"
+
+[extend]
+useDefault = true
+
+# ── Custom Ummat/Ummeco rules ─────────────────────────────────────────────────
+
+[[rules]]
+id = "ummat-service-key"
+description = "Ummat internal service key (umkey_ prefix)"
+regex = '''umkey_[a-zA-Z0-9_\-]{20,}'''
+tags = ["ummat", "service-key"]
+
+[[rules]]
+id = "ummat-api-key"
+description = "Ummat API key pattern"
+regex = '''ummat_[a-zA-Z0-9_\-]{32,}'''
+tags = ["ummat", "api-key"]
+
+[[rules]]
+id = "hasura-admin-secret"
+description = "Hasura admin secret in env or config"
+regex = '''(?i)(hasura[_-]?(graphql[_-]?)?admin[_-]?secret)\s*[=:]\s*["']?([a-zA-Z0-9!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]{16,})'''
+secretGroup = 3
+tags = ["hasura", "admin-secret"]
+
+[[rules]]
+id = "hasura-jwt-secret"
+description = "Hasura JWT secret key embedded in config"
+regex = '''(?i)hasura[_-]?graphql[_-]?jwt[_-]?secret.*?"key"\s*:\s*"([a-zA-Z0-9+/=]{32,})"'''
+secretGroup = 1
+tags = ["hasura", "jwt"]
+
+[[rules]]
+id = "honeycomb-api-key"
+description = "Honeycomb ingest API key"
+regex = '''(?i)(honeycomb[_-]?api[_-]?key|hnyc)\s*[=:]\s*["']?([a-f0-9]{32})'''
+secretGroup = 2
+tags = ["honeycomb", "observability"]
+
+[[rules]]
+id = "nself-plugin-license"
+description = "nSelf plugin license key"
+regex = '''(?i)nself[_-]?plugin[_-]?license[_-]?key\s*[=:]\s*["']?([a-zA-Z0-9_\-]{20,})'''
+secretGroup = 1
+tags = ["nself", "license"]
+
+[[rules]]
+id = "elastic-email-key"
+description = "Elastic Email API key"
+regex = '''(?i)elastic[_-]?email[_-]?(?:admin[_-]?)?api[_-]?key\s*[=:]\s*["']?([a-zA-Z0-9_\-]{32,})'''
+secretGroup = 1
+tags = ["elastic-email"]
+
+[[rules]]
+id = "hetzner-token"
+description = "Hetzner Cloud API token"
+regex = '''(?i)hetzner[_-]?(?:ummat[_-]?)?token\s*[=:]\s*["']?([a-zA-Z0-9]{32,})'''
+secretGroup = 1
+tags = ["hetzner", "infrastructure"]
+
+[[rules]]
+id = "remote-schema-secret"
+description = "Hasura Remote Schema validation secret"
+regex = '''(?i)(x[_-]?remote[_-]?schema[_-]?secret|ROOST[_-]?REMOTE[_-]?SCHEMA[_-]?SECRET)\s*[=:]\s*["']?([a-zA-Z0-9!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]{16,})'''
+secretGroup = 2
+tags = ["hasura", "remote-schema", "rampart-crit"]
+
+[[rules]]
+id = "roost-internal-secret"
+description = "ROOST internal service-to-service secret"
+regex = '''(?i)ROOST[_-]?INTERNAL[_-]?SECRET\s*[=:]\s*["']?([a-zA-Z0-9!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]{16,})'''
+secretGroup = 1
+tags = ["roost", "flock", "rampart-crit"]
+
+[[rules]]
+id = "minio-root-password"
+description = "MinIO root credentials"
+regex = '''(?i)(minio[_-]?root[_-]?password|MINIO_ROOT_PASSWORD)\s*[=:]\s*["']?([a-zA-Z0-9!@#$%^&*_\-]{16,})'''
+secretGroup = 2
+tags = ["minio", "storage"]
+
+[[rules]]
+id = "stripe-secret-key"
+description = "Stripe secret key"
+regex = '''(?i)(stripe[_-]?secret[_-]?key|STRIPE_SK)\s*[=:]\s*["']?(sk_(?:live|test)_[a-zA-Z0-9]{24,})'''
+secretGroup = 2
+tags = ["stripe", "payment", "rampart-crit"]
+
+[[rules]]
+id = "anthropic-api-key"
+description = "Anthropic Claude API key — full key form only (spec §11)"
+# Full-key form only: sk-ant-api##-<93 chars> — prefix-only sk-ant- matching is forbidden
+regex = '''sk-ant-api\d{2}-[A-Za-z0-9_-]{93}'''
+tags = ["anthropic", "ai", "rampart-crit"]
+
+[[rules]]
+id = "cloudflare-api-key"
+description = "Cloudflare API key or token"
+regex = '''(?i)(CLOUDFLARE_API_KEY|CLOUDFLARE_API_TOKEN|CF_API_KEY|CF_API_TOKEN)\s*[=:]\s*["']?([a-zA-Z0-9_\-]{30,})'''
+secretGroup = 2
+tags = ["cloudflare", "infrastructure", "rampart-crit"]
+
+# ── Global allowlist (spec §11) ───────────────────────────────────────────────
+
+[allowlist]
+description = "Global allowlist for known safe patterns"
+regexes = [
+  '''(?i)(example|placeholder|your[_-]?key[_-]?here|changeme|replace[_-]?me|REPLACE_WITH|test[_-]?secret)''',
+  '''(?i)#\s*(example|see|ref|link|note|todo):''',
+  '''HASURA_GRAPHQL_ADMIN_SECRET=.*\$\{''',
+]
+paths = [
+  ".env.example",
+  ".env.template",
+  ".env.sample",
+  '''\.next/''',
+  '''\.dart_tool/''',
+  '''node_modules/''',
+  '''.*\.test\.(ts|tsx)$''',
+  '''.*fixtures?/.*''',
+  "**/*.test.ts",
+  "**/*.spec.ts",
+  "**/__tests__/**",
+  ".github/docs/**",
+  ".github/wiki/**",
+  "pnpm-lock.yaml",
+  ".gitleaks.toml",
+]
+
+[allowlist.commits]
+commits = []
