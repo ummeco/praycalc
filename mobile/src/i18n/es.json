@@ -1,0 +1,67 @@
+{
+  "app": {
+    "name": "Horarios de Oración",
+    "tagline": "Horarios de oración precisos"
+  },
+  "prayer": {
+    "fajr": "Fajr",
+    "dhuhr": "Dhuhr",
+    "asr": "Asr",
+    "maghrib": "Maghrib",
+    "isha": "Isha",
+    "sunrise": "Amanecer",
+    "midnight": "Medianoche",
+    "lastThird": "Último Tercio"
+  },
+  "common": {
+    "bismillah": "En el nombre de Alá, el Compasivo, el Misericordioso",
+    "salah": "Oración",
+    "iqama": "Iqama",
+    "adhan": "Adhan",
+    "qibla": "Qibla",
+    "hijri": "Fecha Hijri",
+    "loading": "Cargando...",
+    "error": "Ocurrió un error",
+    "retry": "Reintentar",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "close": "Cerrar",
+    "settings": "Configuración",
+    "done": "Listo",
+    "next": "Siguiente",
+    "back": "Atrás"
+  },
+  "greeting": {
+    "assalamu_alaykum": "Assalamu Alaykum wa Rahmatullahi wa Barakatuh",
+    "prayer_approaching": "La oración se acerca",
+    "prayer_now": "Hora de oración"
+  },
+  "settings": {
+    "title": "Configuración",
+    "language": {
+      "title": "Idioma",
+      "select": "Seleccionar idioma",
+      "restart_required": "Reinicio requerido",
+      "restart_prompt": "La aplicación se reiniciará para aplicar la nueva dirección de diseño"
+    },
+    "calculation": {
+      "title": "Método de Cálculo",
+      "method": "Madhhab"
+    },
+    "notifications": {
+      "title": "Notificaciones",
+      "enable": "Activar Notificaciones",
+      "prayer_reminder": "Recordatorio de Oración"
+    },
+    "location": {
+      "title": "Ubicación",
+      "detect": "Detectar automáticamente",
+      "manual": "Ingresar manualmente"
+    }
+  },
+  "errors": {
+    "location_permission": "Permita el acceso a la ubicación para calcular los horarios de oración",
+    "network": "No se pudo conectar a la red",
+    "calculation": "No se pudieron calcular los horarios de oración"
+  }
+}

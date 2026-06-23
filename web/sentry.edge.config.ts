@@ -1,14 +1,12 @@
-import * as Sentry from "@sentry/nextjs";
+/**
+ * sentry.edge.config.ts — Edge runtime Sentry init for Astro (@sentry/astro).
+ * Vercel Edge functions use this config.
+ * REF: P2-E3-W02-S02-T03 · D-P2-STACK-CANON
+ */
+import * as Sentry from '@sentry/astro';
 
-// Edge runtime Sentry initialization.
-// DSN is read from the NEXT_PUBLIC_SENTRY_DSN env var.
-// If the var is not set, Sentry is a no-op (no error is thrown).
 Sentry.init({
-  dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
-
-  // Capture 10% of transactions for performance monitoring.
+  dsn: process.env.SENTRY_DSN_PRAYCALC,
+  enabled: !!process.env.SENTRY_DSN_PRAYCALC,
   tracesSampleRate: 0.1,
-
-  // Sentry is fully disabled when no DSN is provided.
-  enabled: !!process.env.NEXT_PUBLIC_SENTRY_DSN,
 });

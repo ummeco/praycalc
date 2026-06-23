@@ -1,0 +1,69 @@
+---
+/**
+ * index.astro — PrayCalc home page.
+ *
+ * PURPOSE: Home page with location search island. Static shell with client:load
+ *   LocationSearch island. No prayer times on home page — user selects city.
+ * CONSTRAINTS: No Next.js patterns. Island pattern only for interactive parts.
+ * REF: P2-E3-W02-S02-T03 · D-P2-STACK-CANON
+ */
+
+import RootLayout from '@/layouts/RootLayout.astro';
+import LocationSearch from '@/islands/LocationSearch';
+---
+
+<RootLayout
+  title="PrayCalc — Islamic Prayer Times"
+  description="Accurate Islamic prayer times for any location. GPS-based, multiple calculation methods, Qibla direction, moon phases, and Hijri calendar."
+  canonical="https://praycalc.com"
+>
+  <main id="main-content" class="home-main relative">
+    <a
+      href="https://praycalc.org"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="about-pill"
+    >
+      About PrayCalc
+    </a>
+
+    <!-- Logo -->
+    <div class="logo-sunrise-outer">
+      <div class="logo-sunrise-glow" aria-hidden="true"></div>
+      <div class="logo-sunrise">
+        <img
+          src="/logo-sunrise.svg"
+          alt="PrayCalc logo"
+          width="160"
+          height="160"
+          loading="eager"
+          fetchpriority="high"
+        />
+      </div>
+    </div>
+
+    <!-- Location search island — interactive, loads immediately -->
+    <div class="w-full max-w-[480px] mt-[-25px] px-4">
+      <LocationSearch client:load autoFocus={true} />
+      <p class="text-white/25 text-xs text-center mt-2">
+        Prayer times for any city, airport, or zip code
+      </p>
+    </div>
+
+    <div class="flex-1" />
+
+    <!-- Footer -->
+    <footer class="w-full max-w-2xl mx-auto px-4 py-6 mt-8">
+      <div class="flex flex-wrap justify-center gap-4 text-white/25 text-xs">
+        <a href="/about" class="hover:text-white/50 transition-colors">About</a>
+        <a href="/times" class="hover:text-white/50 transition-colors">All Cities</a>
+        <a href="/legal/privacy" class="hover:text-white/50 transition-colors">Privacy</a>
+        <a href="/legal/terms" class="hover:text-white/50 transition-colors">Terms</a>
+        <a href="https://praycalc.org" class="hover:text-white/50 transition-colors" target="_blank" rel="noopener">praycalc.org</a>
+      </div>
+      <p class="text-center text-white/15 text-xs mt-3">
+        Free, accurate Islamic prayer times. No ads. No tracking.
+      </p>
+    </footer>
+  </main>
+</RootLayout>

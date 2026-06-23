@@ -122,9 +122,17 @@ describe("saveSetting", () => {
   });
 
   it("saves adhanVoice correctly", () => {
-    saveSetting("adhanVoice", "pashaii");
+    // Gate B (P2-E5-W02-S02-T02): "pashaii" removed; test uses "mishari" instead.
+    saveSetting("adhanVoice", "mishari");
     const stored = JSON.parse(_settingsStore[STORAGE_KEY] ?? "{}");
-    expect(stored.adhanVoice).toBe("pashaii");
+    expect(stored.adhanVoice).toBe("mishari");
+  });
+
+  it("sanitizes persisted pashaii to makkah on load", () => {
+    // Simulates a user whose localStorage still contains the removed "pashaii" value.
+    _settingsStore[STORAGE_KEY] = JSON.stringify({ adhanVoice: "pashaii" });
+    const s = getSettings();
+    expect(s.adhanVoice).toBe("makkah");
   });
 
   it("saves homeMode correctly", () => {

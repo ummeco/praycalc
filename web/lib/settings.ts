@@ -1,5 +1,7 @@
 export type HomeMode = "none" | "city" | "location";
-export type AdhanVoice = "mishari" | "makkah" | "pashaii";
+// Gate B (P2-E5-W02-S02-T02): "pashaii" removed — reciter identity unverifiable,
+// decision-tree outcome C. Fallback in getSettings() migrates persisted value.
+export type AdhanVoice = "mishari" | "makkah";
 
 /**
  * Hijri calendar display method.
@@ -48,7 +50,12 @@ export function getSettings(): PrayCalcSettings {
   try {
     const raw = localStorage.getItem(KEY);
     if (!raw) return { ...DEFAULTS };
-    return { ...DEFAULTS, ...JSON.parse(raw) };
+    const stored = { ...DEFAULTS, ...JSON.parse(raw) } as PrayCalcSettings;
+    // Sanitize: migrate persisted "pashaii" → default "makkah" (Gate B removal, P2-E5-W02-S02-T02)
+    if ((stored.adhanVoice as string) === "pashaii") {
+      stored.adhanVoice = "makkah";
+    }
+    return stored;
   } catch {
     return { ...DEFAULTS };
   }

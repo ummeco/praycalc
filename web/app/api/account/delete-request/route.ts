@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { z } from "zod";
 import { checkRateLimit, getClientIp, ACCOUNT_API } from "@/lib/rate-limit";
 import {
   validateDeleteRequest,
@@ -7,6 +8,14 @@ import {
   mintDeleteConfirmToken,
   verifyDeleteConfirmToken,
 } from "@/app/account/delete/_lib/delete";
+
+// Zod schema — T03 AC-01/AC-05: tight schema at account delete-request boundary
+const DeleteRequestSchema = z.object({
+  email:          z.string().email('email must be a valid email address'),
+  turnstileToken: z.string().min(1, 'turnstileToken is required'),
+  reason:         z.string().max(500).optional().nullable(),
+  confirmToken:   z.string().optional(),
+});
 
 // Startup fail-fast: HASURA_ADMIN_URL must never fall back to the public endpoint
 // for admin operations — admin secret + public URL = credential exposure risk (P2-E1-W01 Track E extended).
@@ -46,19 +55,15 @@ export async function POST(req: Request) {
     );
   }
 
-  let body: unknown;
-  try {
-    body = await req.json();
-  } catch {
-    return NextResponse.json({ error: "Invalid request body." }, { status: 400 });
+  const rawBody = await req.json().catch(() => null);
+  const parsed = DeleteRequestSchema.safeParse(rawBody);
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: "invalid_input", details: parsed.error.flatten() },
+      { status: 400 },
+    );
   }
-
-  const { email, reason, turnstileToken, confirmToken } = body as {
-    email?: string;
-    reason?: string | null;
-    turnstileToken?: string;
-    confirmToken?: string;
-  };
+  const { email, reason, turnstileToken, confirmToken } = parsed.data;
 
   // Validate inputs
   const validationError = validateDeleteRequest({

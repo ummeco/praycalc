@@ -7,11 +7,22 @@
  */
 
 import { type NextRequest, NextResponse } from 'next/server'
+import { z } from 'zod'
 import { adminClient } from '@/lib/graphql'
 import { verifyJwt } from '@/lib/auth'
 
-const VALID_PRAYERS = new Set(['fajr', 'dhuhr', 'asr', 'maghrib', 'isha'])
-const VALID_SOUNDS = new Set(['default', 'adhan_makkah', 'beep', 'silent'])
+const VALID_PRAYERS = ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha'] as const
+const VALID_SOUNDS = ['default', 'adhan_makkah', 'beep', 'silent'] as const
+
+const NotificationPrefsSchema = z.object({
+  device_id:            z.string().min(1),
+  prayer:               z.enum(VALID_PRAYERS),
+  at_adhan:             z.boolean().optional(),
+  pre_reminder_minutes: z.array(z.number().int()).optional(),
+  sound:                z.enum(VALID_SOUNDS).optional(),
+  vibrate:              z.boolean().optional(),
+  enabled:              z.boolean().optional(),
+})
 
 const GET_PREFS = `
   query GetNotifPrefs($deviceId: String!) {
@@ -87,24 +98,15 @@ export async function GET(req: NextRequest) {
 export async function PUT(req: NextRequest) {
   const userId = await getUserId(req)
 
-  let body: Record<string, unknown>
-  try {
-    body = await req.json()
-  } catch {
-    return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 })
+  const rawBody = await req.json().catch(() => null)
+  const parsed = NotificationPrefsSchema.safeParse(rawBody)
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: 'invalid_input', details: parsed.error.flatten() },
+      { status: 400 },
+    )
   }
-
-  const { device_id, prayer, at_adhan, pre_reminder_minutes, sound, vibrate, enabled } = body as Record<string, unknown>
-
-  if (!device_id || typeof device_id !== 'string') {
-    return NextResponse.json({ error: 'device_id required' }, { status: 400 })
-  }
-  if (!prayer || !VALID_PRAYERS.has(prayer as string)) {
-    return NextResponse.json({ error: 'valid prayer required' }, { status: 400 })
-  }
-  if (sound !== undefined && !VALID_SOUNDS.has(sound as string)) {
-    return NextResponse.json({ error: `sound must be one of: ${[...VALID_SOUNDS].join(', ')}` }, { status: 400 })
-  }
+  const { device_id, prayer, at_adhan, pre_reminder_minutes, sound, vibrate, enabled } = parsed.data
 
   try {
     const result = await adminClient.request(UPSERT_PREFS, {

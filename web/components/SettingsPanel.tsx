@@ -220,10 +220,10 @@ export default function SettingsPanel({
       {soundMode === "adhan" && (
         <div className="settings-sound-opts" role="group" aria-label={t("adhan")}>
           {(
+            // Gate B (P2-E5-W02-S02-T02): "pashaii" removed — reciter identity unverifiable.
             [
               { id: "makkah" as AdhanVoice, key: "voiceMakkah" as const },
               { id: "mishari" as AdhanVoice, key: "voiceMishari" as const },
-              { id: "pashaii" as AdhanVoice, key: "voicePashaii" as const },
             ] as const
           ).map(({ id, key }) => (
             <button

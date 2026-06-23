@@ -1,0 +1,107 @@
+---
+layout: ../../layouts/DocPage.astro
+title: 'Internationalization'
+description: 'PrayCalc supports 8 languages with full RTL layout for Arabic and Urdu. Built on Astro i18n with locale detection and clean URLs.'
+---
+
+# Internationalization
+
+PrayCalc supports 8 languages. Switch languages via Settings — the URL stays the same, so prayer time links remain shareable across locales.
+
+## Supported languages
+
+| Code | Language | Script | Direction |
+|------|----------|--------|-----------|
+| `en` | English | Latin | LTR |
+| `ar` | العربية (Arabic) | Arabic | RTL |
+| `tr` | Türkçe (Turkish) | Latin | LTR |
+| `ur` | اردو (Urdu) | Nastaliq | RTL |
+| `id` | Bahasa Indonesia | Latin | LTR |
+| `fr` | Français (French) | Latin | LTR |
+| `bn` | বাংলা (Bengali) | Bengali | LTR |
+| `so` | Soomaali (Somali) | Latin | LTR |
+
+The default locale is English (`en`). All prayer names are fully translated including Arabic script equivalents.
+
+## RTL layout
+
+For Arabic and Urdu, PrayCalc switches to right-to-left layout automatically. The `<html>` element receives `dir="rtl"` when the active locale is `ar` or `ur`.
+
+The `@ummat/i18n` package provides `getDirection(locale)` and `getHtmlDir(locale)`:
+
+```ts
+import { getHtmlDir } from '@ummat/i18n/direction';
+
+// In Astro layout:
+const dir = getHtmlDir(locale); // 'rtl' for 'ar', 'ltr' for 'en'
+```
+
+```astro
+<html lang={locale} dir={getHtmlDir(locale)}>
+  ...
+</html>
+```
+
+Tailwind CSS provides first-class RTL support via logical properties (`ms-*`, `me-*`, `ps-*`, `pe-*`). Components that use these utilities flip correctly without extra CSS.
+
+The Arabic prayer names are sourced directly from Islamic tradition:
+
+| Prayer | Arabic | Transliteration |
+|--------|--------|-----------------|
+| Fajr | الفجر | al-Fajr |
+| Sunrise | الشروق | ash-Shurūq |
+| Dhuhr | الظهر | adh-Dhuhr |
+| Asr | العصر | al-ʿAsr |
+| Maghrib | المغرب | al-Maghrib |
+| Isha | العشاء | al-ʿIshāʾ |
+| Qiyam | قيام الليل | Qiyām al-Layl |
+
+## Locale detection
+
+PrayCalc uses Astro's built-in i18n routing. The default locale (`en`) uses no URL prefix — locale is **never** added to English URLs:
+
+```
+https://praycalc.com/us/alabama/birmingham
+                    ↑ not /en/us/alabama/birmingham
+```
+
+Arabic content lives at `/ar/*` routes. Locale detection order:
+
+1. URL path prefix (`/ar/…` → Arabic)
+2. `Accept-Language` HTTP header (browser preference)
+3. Default: `en`
+
+## Translation files
+
+Translation strings live in `messages/{locale}.json` at the root of `praycalc/web`. Each file follows the same structure:
+
+```json
+{
+  "prayers": {
+    "Fajr": "Fajr",
+    "Sunrise": "Sunrise",
+    "Dhuhr": "Dhuhr",
+    "Asr": "Asr",
+    "Maghrib": "Maghrib",
+    "Isha": "Isha",
+    "Qiyam": "Qiyam"
+  },
+  "ui": {
+    "prayerTimesIn": "Prayer Times in {city}",
+    "settings": "Settings"
+  }
+}
+```
+
+## Adding a language
+
+1. Create `messages/{locale}.json` — copy `messages/en.json` and translate all values
+2. Add the locale code to `astro.config.ts`:
+   ```ts
+   i18n: {
+     locales: ['en', 'ar', 'tr', 'ur', 'id', 'fr', 'bn', 'so', 'new-locale'],
+   }
+   ```
+3. Add the language name to each existing `messages/*.json` under the `"language"` key
+4. If RTL: the `@ummat/i18n/direction` module handles it automatically for `ar`, `ur`, `fa`, `he`, `ckb`
+5. Submit a pull request — community translations welcome

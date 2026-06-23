@@ -1,0 +1,47 @@
+/* FILE: src/styles/global.css
+ * PURPOSE: Global styles for praycalc.org Astro 5 site.
+ *   Tailwind 4 base layer + typography utilities + RTL support.
+ *   Brand tokens are injected by astroUmmatInline (astro.config.ts) into <head>.
+ * REF: T-01 (P2-E3-W01-S01) · D-P2-STACK-CANON
+ */
+
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    /* PrayCalc brand — green palette from Ummeco PPI */
+    --pc-green-light: #C9F27A;
+    --pc-green-mid: #79C24C;
+    --pc-green-dark: #1E5E2F;
+    --pc-green-deep: #0D2F17;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  /* RTL baseline — dir="rtl" is set by astroUmmatInline (astro.config.ts) per locale */
+  [dir="rtl"] {
+    text-align: right;
+  }
+
+  /* Accessible focus ring */
+  :focus-visible {
+    outline: 2px solid var(--pc-green-mid);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  /* Code block base */
+  pre {
+    overflow-x: auto;
+    border-radius: 0.5rem;
+  }
+}
+
+@layer utilities {
+  .prose-praycalc {
+    max-width: 65ch;
+  }
+}

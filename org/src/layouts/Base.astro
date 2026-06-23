@@ -1,0 +1,86 @@
+---
+// FILE: src/layouts/Base.astro
+// PURPOSE: Root HTML shell for praycalc.org.
+//   Injects Umami analytics, canonical URLs, and Open Graph tags.
+//   @ummat/astro-preset handles brand tokens + RTL dir injection.
+// INPUTS: title, description, locale (default 'en'), canonicalUrl
+// OUTPUTS: Full HTML document with proper SEO head + Umami analytics
+// CONSTRAINTS:
+//   - Sentry wired via @sentry/astro integration in astro.config.ts
+//   - Umami script injected from UMAMI_WEBSITE_ID + UMAMI_SRC env vars
+//   - No hardcoded DSNs anywhere — all from env
+// REF: T-01 (P2-E3-W01-S01)
+
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+  locale?: string;
+  canonicalUrl?: string;
+  ogImage?: string;
+}
+
+const {
+  title,
+  description = 'Scientific documentation for PrayCalc — solar physics, twilight optics, orbital mechanics, and npm packages for Islamic prayer time calculation.',
+  locale = 'en',
+  canonicalUrl = new URL(Astro.url.pathname, Astro.site).toString(),
+  ogImage = '/og/default.png',
+} = Astro.props;
+
+const umamiId = import.meta.env.UMAMI_WEBSITE_ID;
+const umamiSrc = import.meta.env.UMAMI_SRC ?? 'https://analytics.umami.is/script.js';
+
+// P2-E6-W01-S01-T01: RTL for ar/ur/fa (AC-02)
+const isRtl = ['ar', 'ur', 'fa'].includes(locale);
+---
+
+<!doctype html>
+<html lang={locale} dir={isRtl ? 'rtl' : 'ltr'} class="h-full antialiased">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title} — PrayCalc Docs</title>
+    <meta name="description" content={description} />
+
+    <!-- Canonical -->
+    <link rel="canonical" href={canonicalUrl} />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content={`${title} — PrayCalc Docs`} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content={new URL(ogImage, Astro.site).toString()} />
+    <meta property="og:locale" content={locale === 'ar' ? 'ar_SA' : 'en_US'} />
+
+    <!-- Twitter/X Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={`${title} — PrayCalc Docs`} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={new URL(ogImage, Astro.site).toString()} />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- Sitemap -->
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <!-- Umami analytics (D-P3-21) — data-website-id from vault UMAMI_WEBSITE_ID -->
+    {umamiId && (
+      <script
+        defer
+        src={umamiSrc}
+        data-website-id={umamiId}
+        is:inline
+      />
+    )}
+
+    <slot name="head" />
+  </head>
+  <body class="flex min-h-full bg-white text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100">
+    <slot />
+  </body>
+</html>

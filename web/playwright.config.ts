@@ -7,7 +7,7 @@ import { defineConfig, devices } from "@playwright/test";
  * Example: BASE_URL=https://staging.praycalc.com pnpm test:e2e
  */
 export default defineConfig({
-  testDir: "./tests/e2e",
+  testDir: "./__tests__/e2e",
   timeout: 30_000,
   expect: {
     timeout: 10_000,

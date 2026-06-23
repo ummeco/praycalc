@@ -20,6 +20,13 @@
 
 import * as Sentry from "@sentry/nextjs";
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
+
+const AppleValidateSchema = z.object({
+  jwsTransaction:  z.string().min(1),
+  userId:          z.string().uuid(),
+  appAccountToken: z.string().optional(),
+});
 
 const HASURA_URL =
   process.env.HASURA_ADMIN_URL ||
@@ -134,21 +141,15 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Internal configuration error" }, { status: 500 });
   }
 
-  let body: { jwsTransaction?: string; userId?: string; appAccountToken?: string };
-  try {
-    body = await req.json();
-  } catch {
-    return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
-  }
-
-  const { jwsTransaction, userId, appAccountToken } = body;
-
-  if (!jwsTransaction || !userId) {
+  const rawBody = await req.json().catch(() => null);
+  const parsed = AppleValidateSchema.safeParse(rawBody);
+  if (!parsed.success) {
     return NextResponse.json(
-      { error: "jwsTransaction and userId are required" },
-      { status: 400 }
+      { error: "invalid_input", details: parsed.error.flatten() },
+      { status: 400 },
     );
   }
+  const { jwsTransaction, userId, appAccountToken } = parsed.data;
 
   // Decode JWS payload (no full cert chain verification in sandbox mode).
   const payload = decodeJWSPayload(jwsTransaction);

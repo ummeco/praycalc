@@ -1,0 +1,58 @@
+---
+// FILE: src/pages/fa/index.astro
+// PURPOSE: Persian (Farsi) language homepage for praycalc.org.
+//   RTL layout — html dir="rtl" set via locale='fa' in Base layout.
+//   Stub page linking to full English documentation.
+// CONSTRAINTS:
+//   - locale='fa' triggers RTL in Base.astro (isRtl check covers ar/ur/fa)
+//   - Noto Nastaliq Urdu font active for this route via CSS variable
+// REF: P2-E6-W01-S01-T01 AC-01 / AC-02
+
+import Base from '../../layouts/Base.astro';
+
+const locale = 'fa';
+const title = 'PrayCalc — مستندات اوقات نماز';
+const description = 'مستندات علمی برای PrayCalc — محاسبه اوقات نماز اسلامی بر اساس اصول نجومی دقیق.';
+---
+
+<Base title={title} description={description} locale={locale}>
+  <main class="min-w-0 flex-1 px-4 py-10 sm:px-6 lg:px-10 xl:px-16" id="main-content" dir="rtl" lang="fa">
+    <a
+      href="#main-content"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:right-2 focus:z-[100] focus:rounded-md focus:bg-green-700 focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:text-white"
+    >
+      رفتن به محتوای اصلی
+    </a>
+
+    <div class="mb-12">
+      <div class="mb-6 inline-flex items-center gap-2 rounded-full bg-green-50 px-3 py-1 text-xs font-medium text-green-800 ring-1 ring-green-200 dark:bg-green-950 dark:text-green-300 dark:ring-green-900">
+        متن‌باز · فناوری اسلامی
+      </div>
+      <h1 class="mb-4 text-4xl font-bold tracking-tight text-zinc-900 dark:text-white sm:text-5xl">
+        علم اوقات نماز اسلامی
+      </h1>
+      <p class="max-w-2xl text-lg text-zinc-600 dark:text-zinc-400">
+        PrayCalc یک محاسبه‌گر اوقات نماز اسلامی متن‌باز است که بر پایه‌های علمی دقیق بنا شده — الگوریتم‌های موقعیت خورشید NREL، داده‌های نجومی JPL، و یادگیری ماشین.
+      </p>
+      <div class="mt-6 flex flex-wrap gap-3">
+        <a
+          href="/"
+          class="inline-flex items-center gap-2 rounded-lg bg-green-700 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-green-800"
+        >
+          مستندات انگلیسی
+        </a>
+        <a
+          href="/ar"
+          class="inline-flex items-center gap-2 rounded-lg bg-white px-4 py-2 text-sm font-medium text-zinc-700 shadow-sm ring-1 ring-zinc-200 hover:bg-zinc-50 dark:bg-zinc-900 dark:text-zinc-200 dark:ring-zinc-700"
+        >
+          مستندات عربی
+        </a>
+      </div>
+    </div>
+
+    <p class="mt-8 text-sm text-zinc-400">
+      مستندات فنی کامل در حال حاضر فقط به انگلیسی موجود است.
+      <a href="/" class="underline hover:text-zinc-600">English documentation available here</a>
+    </p>
+  </main>
+</Base>

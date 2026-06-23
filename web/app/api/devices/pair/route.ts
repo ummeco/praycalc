@@ -12,8 +12,13 @@
  */
 
 import { type NextRequest, NextResponse } from 'next/server'
+import { z } from 'zod'
 import { adminClient } from '@/lib/graphql'
 import { requireJwt } from '@/lib/auth'
+
+const DevicePairSchema = z.object({
+  pairing_code: z.string().min(4),
+})
 
 const CLAIM_PAIRING_CODE = `
   mutation ClaimPairingCode($code: String!, $userId: uuid!, $now: timestamptz!, $ttlCutoff: timestamptz!) {
@@ -45,17 +50,15 @@ export async function POST(req: NextRequest) {
   }
   const userId = claims['x-hasura-user-id'] as string
 
-  let body: { pairing_code?: string }
-  try {
-    body = await req.json()
-  } catch {
-    return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 })
+  const rawBody = await req.json().catch(() => null)
+  const parsedBody = DevicePairSchema.safeParse(rawBody)
+  if (!parsedBody.success) {
+    return NextResponse.json(
+      { error: 'invalid_input', details: parsedBody.error.flatten() },
+      { status: 400 },
+    )
   }
-
-  const { pairing_code } = body
-  if (!pairing_code || typeof pairing_code !== 'string' || pairing_code.length < 4) {
-    return NextResponse.json({ error: 'pairing_code required' }, { status: 400 })
-  }
+  const { pairing_code } = parsedBody.data
 
   const now = new Date()
   // TTL: code must have been generated within the last 15 minutes

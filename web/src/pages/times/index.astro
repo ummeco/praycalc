@@ -1,0 +1,54 @@
+---
+/**
+ * times/index.astro — Prayer times hub listing all supported cities.
+ *
+ * PURPOSE: SEO landing page listing top cities with links to prayer time pages.
+ *   Static page — fully SSR rendered, no island needed.
+ * CONSTRAINTS: No client-side interactivity needed here
+ * REF: P2-E3-W02-S02-T03
+ */
+
+import RootLayout from '@/layouts/RootLayout.astro';
+import { TOP_CITIES } from '@/lib/top-cities';
+
+// Group cities by country for display
+const byCountry: Record<string, typeof TOP_CITIES> = {};
+for (const city of TOP_CITIES) {
+  if (!byCountry[city.country]) byCountry[city.country] = [];
+  byCountry[city.country]!.push(city);
+}
+const sortedCountries = Object.keys(byCountry).sort();
+---
+
+<RootLayout
+  title="Prayer Times by City | PrayCalc"
+  description="Accurate Islamic prayer times for 500+ cities worldwide. Find Fajr, Dhuhr, Asr, Maghrib, and Isha times for your city."
+  canonical="https://praycalc.com/times"
+>
+  <main id="main-content" class="max-w-4xl mx-auto px-4 py-8">
+    <div class="mb-8">
+      <a href="/" class="text-white/40 hover:text-white text-sm transition-colors">← Home</a>
+    </div>
+
+    <h1 class="text-3xl font-bold text-white mb-2">Prayer Times by City</h1>
+    <p class="text-white/50 mb-8">
+      Accurate Fajr, Dhuhr, Asr, Maghrib &amp; Isha prayer times for cities worldwide.
+    </p>
+
+    {sortedCountries.map((country) => (
+      <div class="mb-6">
+        <h2 class="text-xl font-semibold text-ummat-light mb-2">{country}</h2>
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+          {byCountry[country]!.map((city) => (
+            <a
+              href={`/${city.slug}`}
+              class="px-3 py-2 rounded-lg border border-white/10 hover:border-ummat-mid/40 hover:bg-ummat-dark/20 text-sm text-white/70 hover:text-white transition-colors"
+            >
+              {city.name}
+            </a>
+          ))}
+        </div>
+      </div>
+    ))}
+  </main>
+</RootLayout>

@@ -1,19 +1,12 @@
-import * as Sentry from "@sentry/nextjs";
-import { scrubPII } from './lib/sentry-scrub'
+/**
+ * sentry.server.config.ts — Server-side Sentry init for Astro SSR (@sentry/astro).
+ * @sentry/astro auto-imports this file for Node.js server runtime.
+ * REF: P2-E3-W02-S02-T03 · D-P2-STACK-CANON
+ */
+import * as Sentry from '@sentry/astro';
 
-// Server-side Sentry initialization (Node.js runtime).
-// DSN is read from the NEXT_PUBLIC_SENTRY_DSN env var.
-// If the var is not set, Sentry is a no-op (no error is thrown).
 Sentry.init({
-  dsn: process.env.SENTRY_DSN ?? process.env.NEXT_PUBLIC_SENTRY_DSN,
-
-  // Capture 10% of transactions for performance monitoring.
+  dsn: process.env.SENTRY_DSN_PRAYCALC,
+  enabled: !!process.env.SENTRY_DSN_PRAYCALC && process.env.NODE_ENV === 'production',
   tracesSampleRate: 0.1,
-
-  // Sentry is fully disabled when no DSN is provided.
-  enabled: !!(process.env.SENTRY_DSN ?? process.env.NEXT_PUBLIC_SENTRY_DSN) &&
-    process.env.NODE_ENV === 'production',
-
-  // SEC-M6 / T25.15: Full PII scrub — headers, body, user fields, extras, contexts.
-  beforeSend: scrubPII,
 });

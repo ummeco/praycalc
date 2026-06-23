@@ -1,3 +1,6 @@
 packages:
   - "web"
   - "org"
+  - "mobile"
+  - "tv"
+  - "packages/*"

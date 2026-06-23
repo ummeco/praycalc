@@ -1,0 +1,67 @@
+{
+  "app": {
+    "name": "Nyakati za Sala",
+    "tagline": "Nyakati sahihi za sala"
+  },
+  "prayer": {
+    "fajr": "Alfajiri",
+    "dhuhr": "Adhuhuri",
+    "asr": "Alasiri",
+    "maghrib": "Magharibi",
+    "isha": "Isha",
+    "sunrise": "Jua Lichomoza",
+    "midnight": "Usiku wa Manane",
+    "lastThird": "Theluthi ya Mwisho"
+  },
+  "common": {
+    "bismillah": "Kwa jina la Allah Mwingi wa Rehema Mwenye Kurehemu",
+    "salah": "Sala",
+    "iqama": "Iqama",
+    "adhan": "Adhan",
+    "qibla": "Qibla",
+    "hijri": "Tarehe ya Hijri",
+    "loading": "Inapakia...",
+    "error": "Hitilafu imetokea",
+    "retry": "Jaribu Tena",
+    "save": "Hifadhi",
+    "cancel": "Ghairi",
+    "close": "Funga",
+    "settings": "Mipangilio",
+    "done": "Imekamilika",
+    "next": "Ijayo",
+    "back": "Rudi"
+  },
+  "greeting": {
+    "assalamu_alaykum": "Assalamu Alaykum wa Rahmatullahi wa Barakatuh",
+    "prayer_approaching": "Sala inakaribia",
+    "prayer_now": "Wakati wa sala"
+  },
+  "settings": {
+    "title": "Mipangilio",
+    "language": {
+      "title": "Lugha",
+      "select": "Chagua lugha",
+      "restart_required": "Inahitaji kuanzisha upya",
+      "restart_prompt": "Programu itaanzishwa upya ili kutumia mwelekeo mpya wa mpangilio"
+    },
+    "calculation": {
+      "title": "Njia ya Mahesabu",
+      "method": "Madhehebu"
+    },
+    "notifications": {
+      "title": "Arifa",
+      "enable": "Washa Arifa",
+      "prayer_reminder": "Ukumbusho wa Sala"
+    },
+    "location": {
+      "title": "Mahali",
+      "detect": "Gundua kiotomatiki",
+      "manual": "Ingiza mkono"
+    }
+  },
+  "errors": {
+    "location_permission": "Tafadhali ruhusu ufikiaji wa mahali ili kuhesabu nyakati za sala",
+    "network": "Haiwezekani kuunganisha kwenye mtandao",
+    "calculation": "Haiwezekani kuhesabu nyakati za sala"
+  }
+}

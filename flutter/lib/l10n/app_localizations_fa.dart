@@ -1273,29 +1273,29 @@ class AppLocalizationsFa extends AppLocalizations {
   String get statsShareBreakdown => 'جزئیات هفتگی:';
 
   @override
-  String get statsHeatmapTitle => 'Year at a Glance';
+  String get statsHeatmapTitle => 'نمای کلی سال';
 
   @override
-  String get statsHeatmapNoData => 'No prayers logged for this day';
+  String get statsHeatmapNoData => 'هیچ نمازی برای این روز ثبت نشده';
 
   @override
   String statsHeatmapDetail(int count) {
-    return '$count / 5 prayers completed';
+    return '$count از 5 نماز ادا شده';
   }
 
   @override
-  String get statsDailyGoalTitle => 'Daily Prayer Goal';
+  String get statsDailyGoalTitle => 'هدف روزانه نماز';
 
   @override
   String statsDailyGoalLabel(int goal) {
-    return '$goal prayers / day';
+    return '$goal نماز در روز';
   }
 
   @override
-  String get statsGoalStreak => 'Goal Streak';
+  String get statsGoalStreak => 'سلسله هدف';
 
   @override
-  String get statsBestStreak => 'Best Streak';
+  String get statsBestStreak => 'بهترین سلسله';
 
   @override
   String get aboutTitle => 'درباره PrayCalc';
@@ -2241,67 +2241,67 @@ class AppLocalizationsFa extends AppLocalizations {
 
   @override
   String get tvChildFajrExplanation =>
-      'Fajr is the morning prayer. We wake up before sunrise to thank Allah for a new day!';
+      'فجر نماز صبح است. قبل از طلوع آفتاب برمی‌خیزیم تا برای روز جدید از خدا شکر کنیم!';
 
   @override
   String get tvChildFajrFunFact =>
-      'The Prophet ﷺ said: “The best prayer in the sight of Allah is Fajr on Friday.” (Bukhari)';
+      'پیامبر ﷺ فرمودند: \"بهترین نماز نزد خداوند نماز فجر روز جمعه است.\" (بخاری)';
 
   @override
   String get tvChildSunriseExplanation =>
-      'After Fajr, the sun rises. This is a blessed time to make dhikr and read Quran.';
+      'بعد از فجر، خورشید طلوع می‌کند. این وقت مبارکی برای ذکر و تلاوت قرآن است.';
 
   @override
   String get tvChildSunriseFunFact =>
-      'Sitting after Fajr until sunrise and praying two rak’ahs earns the reward of a full Hajj! (Tirmidhi)';
+      'نشستن بعد از فجر تا طلوع آفتاب و خواندن دو رکعت نماز ثواب حج کامل دارد! (ترمذی)';
 
   @override
   String get tvChildDhuhrExplanation =>
-      'Dhuhr is the midday prayer. The sun is highest in the sky, and we pause to remember Allah.';
+      'ظهر نماز نیمروز است. خورشید در بالاترین نقطه آسمان است و ما توقف می‌کنیم تا خدا را یاد کنیم.';
 
   @override
   String get tvChildDhuhrFunFact =>
-      'The Prophet ﷺ loved to pray Dhuhr early when the sun begins to decline. (Muslim)';
+      'پیامبر ﷺ دوست داشت نماز ظهر را اول وقت بخواند. (مسلم)';
 
   @override
   String get tvChildAsrExplanation =>
-      'Asr is the afternoon prayer. Allah swears by this time in Surah Al-Asr — it is very important!';
+      'عصر نماز بعد از ظهر است. خداوند در سوره عصر به این وقت قسم خورده — بسیار مهم است!';
 
   @override
   String get tvChildAsrFunFact =>
-      'Missing Asr prayer is like losing one’s family and wealth. That is how much Allah loves it! (Bukhari)';
+      'از دست دادن نماز عصر مانند از دست دادن خانواده و دارایی است. خداوند چقدر آن را دوست دارد! (بخاری)';
 
   @override
   String get tvChildMaghribExplanation =>
-      'Maghrib is the sunset prayer. When the sun sets, we thank Allah for the beautiful day.';
+      'مغرب نماز هنگام غروب است. وقتی خورشید غروب می‌کند، برای روز زیبا از خدا شکر می‌کنیم.';
 
   @override
   String get tvChildMaghribFunFact =>
-      'The angels of the day and night meet at Fajr and Maghrib. How special! (Bukhari)';
+      'فرشتگان روز و شب در فجر و مغرب با هم ملاقات می‌کنند. چقدر خاص! (بخاری)';
 
   @override
   String get tvChildIshaExplanation =>
-      'Isha is the night prayer. We end our day by thanking Allah before we sleep.';
+      'عشاء نماز شب است. روز خود را با سپاسگزاری از خداوند قبل از خواب به پایان می‌بریم.';
 
   @override
   String get tvChildIshaFunFact =>
-      'Praying Isha and Fajr in congregation is like praying all night long! (Muslim)';
+      'کسی که عشاء و فجر را به جماعت بخواند گویی تمام شب را عبادت کرده است! (مسلم)';
 
   @override
-  String get desktopOpen => 'Open PrayCalc';
+  String get desktopOpen => 'باز کردن PrayCalc';
 
   @override
-  String get desktopQuit => 'Quit PrayCalc';
+  String get desktopQuit => 'بستن PrayCalc';
 
   @override
-  String get desktopSettings => 'Settings…';
+  String get desktopSettings => 'تنظیمات…';
 
   @override
-  String get desktopTvDisplays => 'TV Displays…';
+  String get desktopTvDisplays => 'نمایشگرهای تلویزیون…';
 
   @override
-  String get desktopTrayTooltip => 'PrayCalc - Prayer Times';
+  String get desktopTrayTooltip => 'PrayCalc - اوقات نماز';
 
   @override
-  String get desktopNextPrayer => 'Next Prayer…';
+  String get desktopNextPrayer => 'نماز بعدی…';
 }

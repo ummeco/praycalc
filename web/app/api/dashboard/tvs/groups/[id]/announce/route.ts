@@ -1,5 +1,12 @@
 import * as Sentry from '@sentry/nextjs';
 import { NextRequest, NextResponse } from 'next/server';
+import { z } from 'zod';
+
+// Zod schema — T03 AC-01: Priority 2 validation at TV group announce boundary
+const TvAnnounceSchema = z.object({
+  text:               z.string().min(1, 'text is required').max(500),
+  expires_in_minutes: z.number().int().min(1).max(1440).optional(),
+});
 
 const SMART_BASE = `${process.env.NEXT_PUBLIC_SMART_SERVICE_URL ?? 'https://smart.praycalc.com'}/api/v1/tv`;
 
@@ -17,22 +24,15 @@ export async function POST(
   const { id } = await params;
   const authHeader = req.headers.get('authorization') ?? '';
 
-  let body: Record<string, unknown>;
-  try {
-    body = (await req.json()) as Record<string, unknown>;
-  } catch {
-    return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 });
-  }
-
-  if (!body.text || typeof body.text !== 'string' || !body.text.trim()) {
-    return NextResponse.json({ error: 'text is required' }, { status: 400 });
-  }
-  if (body.text.length > 500) {
+  const rawBody = await req.json().catch(() => null);
+  const parsedAnnounce = TvAnnounceSchema.safeParse(rawBody);
+  if (!parsedAnnounce.success) {
     return NextResponse.json(
-      { error: 'text must be 500 characters or fewer' },
+      { error: 'invalid_input', details: parsedAnnounce.error.flatten() },
       { status: 400 },
     );
   }
+  const body = parsedAnnounce.data;
 
   try {
     const upstream = await fetch(`${SMART_BASE}/groups/${id}/announce`, {

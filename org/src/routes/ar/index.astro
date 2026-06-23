@@ -1,0 +1,82 @@
+---
+// FILE: src/pages/ar/index.astro
+// PURPOSE: Arabic language homepage for praycalc.org.
+//   RTL layout — html dir="rtl" set via locale='ar' in Base layout.
+//   @ummat/astro-preset handles the dir="rtl" injection.
+//   Content: Arabic introduction to PrayCalc documentation.
+// CONSTRAINTS:
+//   - locale='ar' triggers RTL in Base.astro and @ummat/astro-preset
+//   - All Arabic text rendered with Tailwind RTL utilities
+//   - Hijri via @ummat/shared/hijri — not via Intl (T-01 AC)
+// REF: T-01 (P2-E3-W01-S01) · RTL acceptance criteria
+
+import Base from '../../layouts/Base.astro';
+import SidebarNav from '../../components/SidebarNav.astro';
+import MobileNavToggle from '../../components/islands/MobileNavToggle';
+import { navigation } from '../../lib/navigation';
+
+const locale = 'ar';
+const title = 'مقدمة';
+const description = 'وثائق علمية لـ PrayCalc — حساب مواقيت الصلاة الإسلامية بناءً على علم الفلك الدقيق.';
+---
+
+<Base title={title} description={description} locale={locale}>
+  <div class="flex w-full flex-col lg:flex-row-reverse">
+    <!-- Sidebar (desktop) — mirrored to right for RTL -->
+    <aside
+      class="hidden w-72 shrink-0 border-l border-zinc-200 dark:border-zinc-800 lg:block"
+      aria-label="قائمة التوثيق"
+      dir="rtl"
+    >
+      <div class="sticky top-0 h-screen overflow-y-auto px-4 py-8">
+        <a href="/ar" class="mb-8 flex items-center gap-2 font-semibold text-zinc-900 dark:text-white">
+          <span class="text-lg">PrayCalc</span>
+          <span class="rounded bg-green-100 px-1.5 py-0.5 text-xs font-medium text-green-800 dark:bg-green-900 dark:text-green-200">توثيق</span>
+        </a>
+        <SidebarNav navigation={navigation} currentPath="/ar" />
+      </div>
+    </aside>
+
+    <!-- Mobile nav -->
+    <div class="lg:hidden">
+      <MobileNavToggle navigation={navigation} currentPath="/ar" client:load />
+    </div>
+
+    <!-- Main content -->
+    <main class="min-w-0 flex-1 px-4 py-10 sm:px-6 lg:px-10 xl:px-16" id="main-content" dir="rtl" lang="ar">
+      <div class="mb-12">
+        <div class="mb-6 inline-flex items-center gap-2 rounded-full bg-green-50 px-3 py-1 text-xs font-medium text-green-800 ring-1 ring-green-200 dark:bg-green-950 dark:text-green-300 dark:ring-green-900">
+          مفتوح المصدر · تقنية إسلامية
+        </div>
+        <h1 class="mb-4 text-4xl font-bold tracking-tight text-zinc-900 dark:text-white sm:text-5xl">
+          علم مواقيت الصلاة الإسلامية
+        </h1>
+        <p class="max-w-2xl text-lg text-zinc-600 dark:text-zinc-400">
+          PrayCalc هو حاسبة مواقيت الصلاة الإسلامية مفتوحة المصدر، مبنية على أسس علمية دقيقة — خوارزميات NREL لحساب موضع الشمس، وبيانات JPL الفلكية، وقياسات شفق مرصودة، والتعلم الآلي.
+        </p>
+
+        <div class="mt-6 flex flex-wrap gap-3">
+          <a
+            href="/science/solar-position"
+            class="inline-flex items-center gap-2 rounded-lg bg-green-700 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-green-800"
+          >
+            <svg class="h-4 w-4 rotate-180" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+              <path fill-rule="evenodd" d="M2 8a.75.75 0 01.75-.75h8.69L8.22 4.03a.75.75 0 011.06-1.06l4.5 4.5a.75.75 0 010 1.06l-4.5 4.5a.75.75 0 01-1.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" clip-rule="evenodd" />
+            </svg>
+            ابدأ بموضع الشمس
+          </a>
+          <a
+            href="/installation"
+            class="inline-flex items-center gap-2 rounded-lg bg-white px-4 py-2 text-sm font-medium text-zinc-700 shadow-sm ring-1 ring-zinc-200 hover:bg-zinc-50 dark:bg-zinc-900 dark:text-zinc-200 dark:ring-zinc-700"
+          >
+            تثبيت الحزم
+          </a>
+        </div>
+      </div>
+
+      <p class="mt-8 text-sm text-zinc-400">
+        <a href="/" class="underline hover:text-zinc-600">English documentation available here</a>
+      </p>
+    </main>
+  </div>
+</Base>

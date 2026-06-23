@@ -1,0 +1,5 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "_comment": "T02-B: ummeco/praycalc — extends shared org preset. No extra pins (Next.js stack; tailwind 4 / react 19 permitted per spec §3.3).",
+  "extends": ["github>ummeco/infra//renovate/default.json5"]
+}

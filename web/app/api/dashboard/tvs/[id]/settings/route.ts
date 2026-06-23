@@ -1,6 +1,10 @@
 import * as Sentry from '@sentry/nextjs';
 import { NextRequest, NextResponse } from 'next/server';
+import { z } from 'zod';
 import { TOP_CITIES } from '@/lib/top-cities';
+
+// Zod schema — T03 AC-01: Priority 2 validation at TV settings boundary
+const TvSettingsSchema = z.record(z.unknown());
 
 const SMART_BASE = `${process.env.NEXT_PUBLIC_SMART_SERVICE_URL ?? 'https://smart.praycalc.com'}/api/v1/tv`;
 
@@ -62,12 +66,15 @@ export async function PATCH(
   const { id } = await params;
   const authHeader = req.headers.get('authorization') ?? '';
 
-  let body: Record<string, unknown>;
-  try {
-    body = (await req.json()) as Record<string, unknown>;
-  } catch {
-    return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 });
+  const rawBody = await req.json().catch(() => null);
+  const parsedSettings = TvSettingsSchema.safeParse(rawBody);
+  if (!parsedSettings.success) {
+    return NextResponse.json(
+      { error: 'invalid_input', details: parsedSettings.error.flatten() },
+      { status: 400 },
+    );
   }
+  const body: Record<string, unknown> = parsedSettings.data;
 
   // Validate tvAudioMode if provided
   const validAudioModes = ['silent', 'live-stream', 'quran'];

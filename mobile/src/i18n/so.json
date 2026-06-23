@@ -1,0 +1,67 @@
+{
+  "app": {
+    "name": "Waqtiyada Salaadda",
+    "tagline": "Waqtiyada saxda ah ee salaadda"
+  },
+  "prayer": {
+    "fajr": "Subax",
+    "dhuhr": "Duhr",
+    "asr": "Casar",
+    "maghrib": "Marib",
+    "isha": "Cisho",
+    "sunrise": "Baxda Qorraxda",
+    "midnight": "Badh Habeenkii",
+    "lastThird": "Seddexdaad Dambe"
+  },
+  "common": {
+    "bismillah": "Bismillaahir Rahmaanir Rahiim",
+    "salah": "Salaad",
+    "iqama": "Iqaama",
+    "adhan": "Adhaan",
+    "qibla": "Qibla",
+    "hijri": "Taariikhda Hijriga",
+    "loading": "Waa la rarayo...",
+    "error": "Khalad ayaa dhacay",
+    "retry": "Isku Day Mar Kale",
+    "save": "Kaydi",
+    "cancel": "Jooji",
+    "close": "Xidh",
+    "settings": "Dejinta",
+    "done": "Dhamaaday",
+    "next": "Xiga",
+    "back": "Dib"
+  },
+  "greeting": {
+    "assalamu_alaykum": "Assalaamu Calaykum wa Rahmatullaahi wa Barakaatuh",
+    "prayer_approaching": "Waqtiga salaadda ayaa soo dhawaanaya",
+    "prayer_now": "Waqtiga salaadda"
+  },
+  "settings": {
+    "title": "Dejinta",
+    "language": {
+      "title": "Luqadda",
+      "select": "Dooro luqad",
+      "restart_required": "Dib u bilaabis ayaa loo baahan yahay",
+      "restart_prompt": "Abka ayaa dib u bilaabi doona si loo dabaqi doono jihada naqshadaha cusub"
+    },
+    "calculation": {
+      "title": "Habka Xisaabinta",
+      "method": "Madhab"
+    },
+    "notifications": {
+      "title": "Ogeysiisyada",
+      "enable": "Hawl-geli Ogeysiisyada",
+      "prayer_reminder": "Xasuus-qorka Salaadda"
+    },
+    "location": {
+      "title": "Goobta",
+      "detect": "Si toos ah u ogaado",
+      "manual": "Geli si toos ah"
+    }
+  },
+  "errors": {
+    "location_permission": "Fadlan u ogolow helitaanka goobta si loo xisaabiyo waqtiyada salaadda",
+    "network": "Laguma xidhaan karo shabakadda",
+    "calculation": "Lama xisaabin karo waqtiyada salaadda"
+  }
+}

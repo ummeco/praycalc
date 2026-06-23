@@ -16,6 +16,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
+import { z } from 'zod'
 import { verifyTurnstileToken } from '@/lib/turnstile'
 
 const AUTH_URL = process.env.NEXT_PUBLIC_AUTH_URL ?? 'https://auth.ummat.dev'
@@ -24,6 +25,12 @@ const AUTH_URL = process.env.NEXT_PUBLIC_AUTH_URL ?? 'https://auth.ummat.dev'
 const REFRESH_COOKIE_MAX_AGE = 60 * 60 * 24 * 365
 /** 15 minutes — matches Hasura Auth default access token lifetime. */
 const ACCESS_COOKIE_MAX_AGE = 60 * 15
+
+const SigninSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(1),
+  turnstileToken: z.string().optional(),
+})
 
 function cookieOptions(maxAge: number, isProd: boolean): string {
   const parts = [
@@ -37,15 +44,15 @@ function cookieOptions(maxAge: number, isProd: boolean): string {
 }
 
 export async function POST(req: NextRequest) {
-  const body = await req.json().catch(() => null) as {
-    email?: string
-    password?: string
-    turnstileToken?: string
-  } | null
-
-  if (!body?.email || !body?.password) {
-    return NextResponse.json({ error: 'Email and password required' }, { status: 400 })
+  const rawBody = await req.json().catch(() => null)
+  const parsed = SigninSchema.safeParse(rawBody)
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: 'invalid_input', details: parsed.error.flatten() },
+      { status: 400 },
+    )
   }
+  const body = parsed.data
 
   // T09: Turnstile — fail closed in production
   const isProd = process.env.NODE_ENV === 'production'

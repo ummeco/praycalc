@@ -1,5 +1,9 @@
 import * as Sentry from '@sentry/nextjs';
 import { NextRequest, NextResponse } from 'next/server';
+import { z } from 'zod';
+
+// Zod schema — T03 AC-01: Priority 2 validation at TV settings PATCH boundary
+const TvPatchSchema = z.record(z.unknown());
 
 const SMART_BASE = `${process.env.NEXT_PUBLIC_SMART_SERVICE_URL ?? 'https://smart.praycalc.com'}/api/v1/tv`;
 
@@ -42,12 +46,15 @@ export async function PATCH(
 ) {
   const { id } = await params;
   const authHeader = req.headers.get('authorization') ?? '';
-  let body: Record<string, unknown>;
-  try {
-    body = (await req.json()) as Record<string, unknown>;
-  } catch {
-    return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 });
+  const rawBody = await req.json().catch(() => null);
+  const parsedPatch = TvPatchSchema.safeParse(rawBody);
+  if (!parsedPatch.success) {
+    return NextResponse.json(
+      { error: 'invalid_input', details: parsedPatch.error.flatten() },
+      { status: 400 },
+    );
   }
+  const body: Record<string, unknown> = parsedPatch.data;
   try {
     const upstream = await fetch(`${SMART_BASE}/${id}`, {
       method: 'PATCH',

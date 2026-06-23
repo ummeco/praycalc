@@ -10,17 +10,21 @@
  */
 
 import { type NextRequest, NextResponse } from 'next/server'
+import { z } from 'zod'
 import { adminClient } from '@/lib/graphql'
 import { verifyJwt } from '@/lib/auth'
 
-const VALID_PLATFORMS = new Set([
-  'ios', 'android', 'watch_ios', 'watch_android',
-  'macos', 'windows', 'tv_android', 'tv_apple', 'alexa',
-])
+const VALID_PLATFORMS = ['ios', 'android', 'watch_ios', 'watch_android',
+  'macos', 'windows', 'tv_android', 'tv_apple', 'alexa'] as const
 
-const VALID_PERMISSION_STATES = new Set([
-  'granted', 'denied', 'provisional', 'not_determined',
-])
+const VALID_PERMISSION_STATES = ['granted', 'denied', 'provisional', 'not_determined'] as const
+
+const PushRegisterSchema = z.object({
+  device_id:        z.string().min(1),
+  platform:         z.enum(VALID_PLATFORMS),
+  token:            z.string().min(1),
+  permission_state: z.enum(VALID_PERMISSION_STATES),
+})
 
 const UPSERT_PUSH_TOKEN = `
   mutation UpsertPushToken(
@@ -59,32 +63,15 @@ export async function POST(req: NextRequest) {
     userId = claims?.['x-hasura-user-id'] ?? null
   }
 
-  let body: Record<string, unknown>
-  try {
-    body = await req.json()
-  } catch {
-    return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 })
+  const rawBody = await req.json().catch(() => null)
+  const parsed = PushRegisterSchema.safeParse(rawBody)
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: 'invalid_input', details: parsed.error.flatten() },
+      { status: 400 },
+    )
   }
-
-  const { device_id, platform, token, permission_state } = body as {
-    device_id?: string
-    platform?: string
-    token?: string
-    permission_state?: string
-  }
-
-  if (!device_id || typeof device_id !== 'string') {
-    return NextResponse.json({ error: 'device_id required' }, { status: 400 })
-  }
-  if (!platform || !VALID_PLATFORMS.has(platform)) {
-    return NextResponse.json({ error: `platform must be one of: ${[...VALID_PLATFORMS].join(', ')}` }, { status: 400 })
-  }
-  if (!token || typeof token !== 'string') {
-    return NextResponse.json({ error: 'token required' }, { status: 400 })
-  }
-  if (!permission_state || !VALID_PERMISSION_STATES.has(permission_state)) {
-    return NextResponse.json({ error: `permission_state must be one of: ${[...VALID_PERMISSION_STATES].join(', ')}` }, { status: 400 })
-  }
+  const { device_id, platform, token, permission_state } = parsed.data
 
   try {
     const result = await adminClient.request<{ insert_pc_push_tokens_one: { id: string; created_at: string } }>(

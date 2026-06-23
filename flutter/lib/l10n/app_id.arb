@@ -1,8 +1,6 @@
 {
   "@@locale": "id",
-
   "appTitle": "PrayCalc",
-
   "prayerFajr": "Subuh",
   "prayerSunrise": "Terbit",
   "prayerDhuhr": "Dzuhur",
@@ -12,7 +10,6 @@
   "prayerQiyam": "Qiyamul Lail",
   "prayerSuhoor": "Sahur",
   "prayerIftar": "Iftar",
-
   "hijriMuharram": "Muharram",
   "hijriSafar": "Safar",
   "hijriRabiAlAwwal": "Rabiul Awal",
@@ -25,7 +22,6 @@
   "hijriShawwal": "Syawal",
   "hijriDhulQidah": "Dzulqa'dah",
   "hijriDhulHijjah": "Dzulhijjah",
-
   "monthJan": "Jan",
   "monthFeb": "Feb",
   "monthMar": "Mar",
@@ -38,7 +34,6 @@
   "monthOct": "Okt",
   "monthNov": "Nov",
   "monthDec": "Des",
-
   "monthJanuary": "Januari",
   "monthFebruary": "Februari",
   "monthMarch": "Maret",
@@ -51,7 +46,6 @@
   "monthOctober": "Oktober",
   "monthNovember": "November",
   "monthDecember": "Desember",
-
   "dayMonShort": "Sen",
   "dayTueShort": "Sel",
   "dayWedShort": "Rab",
@@ -59,7 +53,6 @@
   "dayFriShort": "Jum",
   "daySatShort": "Sab",
   "daySunShort": "Min",
-
   "dayMonday": "Senin",
   "dayTuesday": "Selasa",
   "dayWednesday": "Rabu",
@@ -67,7 +60,6 @@
   "dayFriday": "Jumat",
   "daySaturday": "Sabtu",
   "daySunday": "Minggu",
-
   "daySuChart": "Mi",
   "dayMoChart": "Se",
   "dayTuChart": "Sl",
@@ -75,7 +67,6 @@
   "dayThChart": "Ka",
   "dayFrChart": "Ju",
   "daySaChart": "Sa",
-
   "chooseCityLabel": "Pilih kota",
   "setCityFab": "Atur kota",
   "prayerTimesError": "Tidak dapat menghitung waktu sholat.\n{error}",
@@ -84,7 +75,6 @@
   "ramadanDayProgress": "Hari {day} / 30",
   "lastTenNights": "10 Malam Terakhir",
   "laylatulQadr": "Lailatul Qadr",
-
   "homeSuffixAH": "H",
   "homeSuffixCE": "M",
   "homeNoCitySelected": "Belum ada kota dipilih",
@@ -95,7 +85,6 @@
   "homeActionDuaDhikr": "Doa &\nDzikir",
   "homeActionPrayerStats": "Statistik\nSholat",
   "homePolarBanner": "{count} waktu sholat tidak dapat dihitung untuk lokasi Anda selama periode ini (matahari tengah malam / malam kutub). Coba estimasi lintang terdekat di pengaturan.",
-
   "settingsTitle": "Pengaturan",
   "settingsSectionPrayerCalc": "Perhitungan Sholat",
   "settingsCalcMethod": "Metode Perhitungan",
@@ -147,12 +136,10 @@
   "settingsTvSettings": "Pengaturan TV",
   "settingsTvSettingsSubtitle": "Mode masjid, offset iqamah, ambient",
   "settingsAboutPrayCalc": "Tentang PrayCalc",
-
   "syncSynced": "Tersinkronisasi",
   "syncSyncing": "Menyinkronkan...",
   "syncOffline": "Offline",
   "syncError": "Kesalahan sinkronisasi",
-
   "notifSettingsTitle": "Notifikasi & Adzan",
   "notifAdhanLabel": "Adzan",
   "notifReminderMinBefore": "Pengingat: {minutes} menit sebelum",
@@ -162,19 +149,16 @@
   "notifModeReminderOnly": "Pengingat saja",
   "notifModeArrival": "Saat waktu sholat",
   "notifModeBoth": "Pengingat + waktu sholat",
-
   "citySearchHint": "Cari kota…",
   "citySearchDetectTooltip": "Deteksi lokasi saya",
   "citySearchNoCityGps": "Tidak dapat mendeteksi kota dari GPS.",
   "citySearchPermissionDenied": "Izin lokasi ditolak. Cari secara manual.",
   "citySearchNoResults": "Tidak ada kota ditemukan.",
   "citySearchStartTyping": "Mulai ketik untuk mencari…",
-
   "agendasTitle": "Agenda Sholat",
   "agendasEmpty": "Belum ada agenda.\nKetuk + untuk menambahkan pengingat terkait sholat Anda.",
   "agendasUndo": "Batalkan",
   "agendasRemoved": "{label} dihapus",
-
   "agendaNewTitle": "Agenda Baru",
   "agendaEditTitle": "Edit Agenda",
   "agendaSave": "Simpan",
@@ -196,7 +180,6 @@
   "agendaDayW": "R",
   "agendaDayF": "J",
   "agendaDayS": "S",
-
   "moonTitle": "Bulan & Kalender Hijriah",
   "moonIlluminated": "{pct}% terang",
   "moonFullTonight": "Bulan purnama malam ini!",
@@ -224,7 +207,6 @@
   "hijriTodayLabel": "Hari ini di Kalender Hijriah",
   "ramadanBeginsLabel": "Ramadan {year} H dimulai",
   "ramadanDaysAway": "{days} hari lagi",
-
   "calDateCol": "Tanggal",
   "calHijriCol": "Hijriah",
   "calFajrCol": "Subuh",
@@ -239,7 +221,6 @@
   "calNextMonthTooltip": "Bulan berikutnya",
   "calExportHeader": "PrayCalc — {month}",
   "calExportSubject": "Waktu Sholat — {month}",
-
   "qiblaTitle": "Kiblat",
   "qiblaSwitchToCompass": "Beralih ke kompas",
   "qiblaSwitchToAR": "Beralih ke kamera AR",
@@ -251,7 +232,6 @@
   "qiblaDistKm": "{dist} km dari Ka'bah",
   "qiblaDistThousandKm": "{dist}K km dari Ka'bah",
   "qiblaFacingQibla": "Menghadap Kiblat ✓",
-
   "tasbeehTitle": "Tasbih",
   "tasbeehResetTooltip": "Reset",
   "tasbeehTapToSwitch": "Ketuk label untuk beralih",
@@ -265,7 +245,6 @@
   "tasbeehNoHistory": "Belum ada riwayat — mulai menghitung!",
   "tasbeehComplete": "Tasbih selesai! {count} dzikir",
   "tasbeehPresetComplete": "✓ {label} × {target}",
-
   "smartHomeTitle": "Smart Home",
   "smartHomeSubtitle": "Hubungkan perangkat Anda ke waktu sholat",
   "smartHomeGoogleHome": "Google Home",
@@ -285,7 +264,6 @@
   "smartHomeTestConnection": "Tes Koneksi",
   "smartHomeConnectionSuccess": "Berhasil terhubung",
   "smartHomeConnectionFailed": "Koneksi gagal. Periksa hubungan akun Anda.",
-
   "subscriptionTitle": "Ummat+",
   "subscriptionSubtitle": "Fitur premium waktu sholat",
   "subscriptionUpgrade": "Upgrade ke Ummat+",
@@ -306,26 +284,22 @@
   "subscriptionFeatureWatch": "Komplikasi jam tangan",
   "subscriptionFeatureSync": "Sinkronisasi lintas perangkat",
   "subscriptionFeatureAdFree": "Pengalaman tanpa iklan",
-
   "tvTitle": "Tampilan TV",
   "tvMasjidMode": "Mode Masjid",
   "tvAmbientMode": "Mode Ambient",
   "tvSettingsIqamah": "Offset Iqamah",
   "tvSettingsAnnouncements": "Pengumuman",
   "tvConnectQR": "Pindai untuk menghubungkan",
-
   "watchTitle": "Jam Tangan",
   "watchNextPrayer": "Sholat Berikutnya",
   "watchAllPrayers": "Semua Sholat",
   "watchComplication": "Komplikasi",
-
   "nextPrayer": "Sholat berikutnya",
   "allPrayers": "Semua sholat",
   "today": "Hari ini",
   "tomorrow": "Besok",
   "thisWeek": "Minggu ini",
   "thisMonth": "Bulan ini",
-
   "loginCreateAccount": "Buat Akun",
   "loginSignIn": "Masuk",
   "loginWelcomeBack": "Selamat datang kembali",
@@ -347,7 +321,6 @@
   "loginResetFailed": "Tidak dapat mengirim email reset",
   "loginNewToPrayCalc": "Baru di PrayCalc?",
   "loginAlreadyHaveAccount": "Sudah punya akun?",
-
   "accountTitle": "Akun",
   "accountNotSignedIn": "Belum masuk",
   "accountSyncSection": "Sinkronisasi",
@@ -374,7 +347,6 @@
   "accountTimeMinAgo": "{min}m lalu",
   "accountTimeHourAgo": "{hour}j lalu",
   "accountTimeDayAgo": "{day}h lalu",
-
   "statsTitle": "Statistik Sholat",
   "statsShareTooltip": "Bagikan statistik",
   "statsTodayPrayers": "Sholat Hari Ini",
@@ -395,14 +367,12 @@
   "statsShareWeekly": "Mingguan: {pct}%",
   "statsShareMonthly": "Bulanan: {pct}%",
   "statsShareBreakdown": "Rincian mingguan:",
-
   "aboutTitle": "Tentang PrayCalc",
   "aboutWebsite": "Situs web",
   "aboutContact": "Kontak",
   "aboutLicenses": "Lisensi Open Source",
   "aboutCouldNotOpen": "Tidak dapat membuka tautan.",
   "aboutCopyright": "© {year} Ummat Dev. Hak cipta dilindungi.\n\nWaktu sholat dihitung menggunakan mesin pray_calc_dart. Akurasi bergantung pada lokasi GPS dan metode perhitungan yang dipilih.",
-
   "commonCancel": "Batal",
   "commonSave": "Simpan",
   "commonDelete": "Hapus",
@@ -439,7 +409,6 @@
   "commonHelp": "Bantuan",
   "commonLanguage": "Bahasa",
   "commonOpenSettings": "Buka Pengaturan",
-
   "travelNotificationTitle": "Anda sedang dalam perjalanan",
   "travelNotificationBody": "Waktu sholat mungkin dipersingkat. Ketuk untuk mempelajari hukum perjalanan.",
   "travelRulingsTitle": "Perjalanan & Sholat",
@@ -452,7 +421,6 @@
   "travelLearnMore": "Pelajari lebih lanjut",
   "travelHanafiDefaultTitle": "Mengapa PrayCalc Menggunakan Default Hanafi",
   "travelDeeperScholarly": "Diskusi Ulama Lebih Mendalam",
-
   "onboardingTitle1": "Waktu sholat, di mana pun Anda berada",
   "onboardingBody1": "Waktu sholat akurat GPS untuk setiap kota di dunia. Subuh sampai Isya, terbit sampai Qiyam. Dengan mesin perhitungan kami sendiri, dibuat untuk presisi.",
   "onboardingTitle2": "Lokasi Anda, waktu Anda",
@@ -469,7 +437,6 @@
   "onboardingContinueWithoutAccount": "Lanjutkan tanpa akun",
   "onboardingSigningIn": "Sedang masuk…",
   "onboardingSelectLanguage": "Pilih Bahasa",
-
   "duaDhikrTitle": "Doa & Dzikir",
   "duaDhikrTabDua": "Doa",
   "duaDhikrTabDhikr": "Dzikir",
@@ -478,13 +445,11 @@
   "duaDhikrTabEvening": "Petang",
   "duaDhikrMorningAdhkar": "Dzikir Pagi",
   "duaDhikrEveningAdhkar": "Dzikir Petang",
-
   "calGregToggle": "Greg",
   "calHijriToggle": "Hijriah",
   "calYearlyTooltip": "Kalender tahunan",
   "calExportIcsTooltip": "Ekspor .ics",
   "calMagCol": "Mag",
-
   "qiblaShowOnMap": "Tampilkan di peta",
   "qiblaWaitingCompass": "Menunggu kompas...",
   "qiblaNoCompassSensor": "Tidak ada sensor kompas. Menampilkan arah kiblat secara statis.",
@@ -496,7 +461,6 @@
   "qiblaYourLocation": "Lokasi Anda",
   "qiblaGpsAccurate": "GPS akurat",
   "qiblaCityCenter": "Pusat kota",
-
   "moonIlluminatedLabel": "Terang",
   "moonAgeLabel": "Usia",
   "moonFirstQtr": "Kuartal Pertama",
@@ -505,7 +469,6 @@
   "moonTomorrow": "Besok",
   "moonDaysAway": "{days}h",
   "moonBeta": "Beta",
-
   "moonLunarCycle": "Siklus Bulan",
   "moonDayOfCycle": "Hari {day} dari ~29,5",
   "moonHilalSightingForecast": "Prakiraan Pengamatan Hilal",
@@ -529,7 +492,6 @@
   "moonUpcomingIslamicEvents": "Peristiwa Islam Mendatang",
   "moonTodayLabel": "Hari ini",
   "moonTomorrowLabel": "Besok",
-
   "setHomeTitle": "Atur Lokasi Rumah",
   "setHomeSearchHint": "Cari kota, desa atau kode pos…",
   "setHomeClear": "Hapus",
@@ -543,7 +505,6 @@
   "setHomeNoCitiesFound": "Tidak ada kota ditemukan.",
   "setHomeSearchPrompt": "Cari kota rumah Anda",
   "setHomeSearchBody": "Ketik di atas untuk mencari, atau gunakan lokasi saat ini. Mode perjalanan akan mendeteksi saat Anda jauh dari rumah.",
-
   "subscriptionYouHavePlus": "Anda memiliki Ummat+",
   "subscriptionUpgradeTo": "Upgrade ke Ummat+",
   "subscriptionThankYou": "Terima kasih telah mendukung PrayCalc.",
@@ -558,7 +519,6 @@
   "subscriptionFeatureCalendar": "Kalender bulanan",
   "subscriptionFeatureTasbeeh": "Penghitung tasbih",
   "subscriptionFeatureMoon": "Bulan & Hijriah",
-
   "smartHomeAlertType": "Jenis Peringatan",
   "smartHomeAlertModal": "Modal layar penuh",
   "smartHomeAlertCorner": "Notifikasi sudut",
@@ -571,10 +531,8 @@
   "smartHomeAudioAdhan": "Adzan",
   "smartHomeAudioBeep": "Bip",
   "smartHomeAudioSilent": "Senyap",
-
   "aboutPrivacy": "Kebijakan Privasi",
   "aboutVersion": "Versi {version}",
-
   "notifDefaultAdhan": "Adzan Default",
   "notifFajrAdhan": "Adzan Subuh",
   "notifFajrAdhanSubtitle": "Diputar saat waktu Subuh",
@@ -582,7 +540,6 @@
   "notifRegularAdhanSubtitle": "Diputar saat Dzuhur, Ashar, Maghrib, Isya",
   "notifPerPrayerSettings": "Pengaturan Per Sholat",
   "notifPreview": "Pratinjau",
-
   "tvSettingsTitle": "Pengaturan TV",
   "tvDisplayMode": "Mode Tampilan",
   "tvMasjidModeSubtitle": "Tampilan papan besar dengan waktu iqamah",
@@ -620,7 +577,6 @@
   "tvPhotoCategoryTitle": "Kategori Foto",
   "tvEnterHint": "Masukkan {title}",
   "tvSystemDefault": "Default sistem",
-
   "smartHomeIntegrations": "Integrasi",
   "smartHomeLinkedSpeakers": "Speaker & Layar Terhubung",
   "smartHomeAlertDisplay": "Tampilan Peringatan",
@@ -663,10 +619,8 @@
   "smartHomeLinkedStatus": "Terhubung",
   "smartHomeNotLinkedStatus": "Tidak terhubung",
   "smartHomeCouldNotOpen": "Tidak dapat membuka tautan.",
-
   "adhkarCompletedCount": "{completed} / {total} selesai",
   "adhkarReset": "Reset",
-
   "syncHistoryTitle": "Riwayat Sinkronisasi",
   "syncClearHistory": "Hapus riwayat",
   "syncNoConflicts": "Tidak ada konflik sinkronisasi. Semua perangkat tersinkronisasi.",
@@ -677,12 +631,10 @@
   "syncTimeMinAgo": "{min}m lalu",
   "syncTimeHourAgo": "{hour}j lalu",
   "syncTimeDayAgo": "{day}h lalu",
-
   "pinCity": "Sematkan",
   "pinMaxReached": "Maksimal 5 kota disematkan. Upgrade ke Ummat+ untuk lebih banyak.",
   "pinCityUnpinned": "{city} tidak disematkan",
   "pinUndo": "Batalkan",
-
   "smartHomeDevices": "Perangkat",
   "smartHomeAddDevice": "Tambah Perangkat",
   "smartHomeDeleteDevice": "Hapus",
@@ -692,7 +644,9 @@
   "smartHomeDeviceLastSeen": "Terakhir terlihat: {time}",
   "@smartHomeDeviceLastSeen": {
     "placeholders": {
-      "time": { "type": "String" }
+      "time": {
+        "type": "String"
+      }
     }
   },
   "smartHomeDeviceName": "Nama perangkat",
@@ -718,7 +672,6 @@
   "smartHomeLoadingDevices": "Memuat perangkat...",
   "smartHomeLoadingIntegrations": "Memuat integrasi...",
   "smartHomeServiceUnavailable": "Layanan rumah pintar saat ini tidak tersedia. Silakan coba lagi nanti.",
-
   "tvPairingScanQr": "Scan TV QR Code",
   "tvPairingScanInstruction": "Point your camera at the QR code on your TV",
   "tvPairingEnterManually": "Enter code manually",
@@ -732,6 +685,30 @@
   "tvPairingTimeout": "Request timed out. Is the TV on and connected?",
   "tvPairingServerError": "Could not connect to server.",
   "tvPairingSignInRequired": "Sign in to your account before pairing a TV.",
-
-  "tvJumuahGreeting": "Jumu'ah Mubarak"
+  "tvJumuahGreeting": "Jumu'ah Mubarak",
+  "desktopNextPrayer": "Shalat Berikutnya…",
+  "desktopOpen": "Buka PrayCalc",
+  "desktopQuit": "Tutup PrayCalc",
+  "desktopSettings": "Pengaturan…",
+  "desktopTrayTooltip": "PrayCalc - Waktu Shalat",
+  "desktopTvDisplays": "Tampilan TV…",
+  "statsBestStreak": "Streak Terbaik",
+  "statsDailyGoalLabel": "{goal} shalat / hari",
+  "statsDailyGoalTitle": "Target Shalat Harian",
+  "statsGoalStreak": "Streak Target",
+  "statsHeatmapDetail": "{count} / 5 shalat selesai",
+  "statsHeatmapNoData": "Tidak ada shalat tercatat untuk hari ini",
+  "statsHeatmapTitle": "Tinjauan Tahunan",
+  "tvChildAsrExplanation": "Ashar adalah shalat sore. Allah bersumpah dengan waktu ini dalam Surah Al-Ashr — sangat penting!",
+  "tvChildAsrFunFact": "Melewatkan shalat Ashar seperti kehilangan keluarga dan harta. Begitu Allah mencintainya! (Bukhari)",
+  "tvChildDhuhrExplanation": "Dzuhur adalah shalat tengah hari. Matahari berada di puncak langit, dan kita berhenti untuk mengingat Allah.",
+  "tvChildDhuhrFunFact": "Nabi ﷺ suka shalat Dzuhur lebih awal ketika matahari mulai tergelincir. (Muslim)",
+  "tvChildFajrExplanation": "Subuh adalah shalat pagi. Kita bangun sebelum matahari terbit untuk bersyukur kepada Allah atas hari baru!",
+  "tvChildFajrFunFact": "Nabi ﷺ bersabda: \"Shalat terbaik di sisi Allah adalah shalat Subuh hari Jumat.\" (Bukhari)",
+  "tvChildIshaExplanation": "Isya adalah shalat malam. Kita mengakhiri hari dengan bersyukur kepada Allah sebelum tidur.",
+  "tvChildIshaFunFact": "Shalat Isya dan Subuh berjamaah seperti shalat sepanjang malam! (Muslim)",
+  "tvChildMaghribExplanation": "Maghrib adalah shalat saat matahari terbenam. Ketika matahari terbenam, kita bersyukur kepada Allah atas hari yang indah.",
+  "tvChildMaghribFunFact": "Malaikat siang dan malam bertemu pada waktu Subuh dan Maghrib. Betapa istimewanya! (Bukhari)",
+  "tvChildSunriseExplanation": "Setelah Subuh, matahari terbit. Ini adalah waktu yang berkah untuk berdzikir dan membaca Al-Quran.",
+  "tvChildSunriseFunFact": "Duduk setelah Subuh hingga terbit matahari dan shalat dua rakaat mendapat pahala haji yang sempurna! (Tirmidzi)"
 }

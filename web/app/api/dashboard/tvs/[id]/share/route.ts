@@ -1,5 +1,9 @@
 import * as Sentry from '@sentry/nextjs';
 import { NextRequest, NextResponse } from 'next/server';
+import { z } from 'zod';
+
+// Zod schema — T03 AC-01: Priority 2 validation at TV share boundary
+const TvShareSchema = z.record(z.unknown());
 
 const SMART_BASE = `${process.env.NEXT_PUBLIC_SMART_SERVICE_URL ?? 'https://smart.praycalc.com'}/api/v1/tv`;
 
@@ -20,12 +24,15 @@ export async function POST(
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  let body: Record<string, unknown>;
-  try {
-    body = (await req.json()) as Record<string, unknown>;
-  } catch {
-    return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 });
+  const rawBody = await req.json().catch(() => null);
+  const parsedShare = TvShareSchema.safeParse(rawBody);
+  if (!parsedShare.success) {
+    return NextResponse.json(
+      { error: 'invalid_input', details: parsedShare.error.flatten() },
+      { status: 400 },
+    );
   }
+  const body: Record<string, unknown> = parsedShare.data;
 
   try {
     const upstream = await fetch(`${SMART_BASE}/${id}/share`, {
@@ -68,12 +75,15 @@ export async function DELETE(
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  let body: Record<string, unknown>;
-  try {
-    body = (await req.json()) as Record<string, unknown>;
-  } catch {
-    return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 });
+  const rawBodyDel = await req.json().catch(() => null);
+  const parsedDel = TvShareSchema.safeParse(rawBodyDel);
+  if (!parsedDel.success) {
+    return NextResponse.json(
+      { error: 'invalid_input', details: parsedDel.error.flatten() },
+      { status: 400 },
+    );
   }
+  const body: Record<string, unknown> = parsedDel.data;
 
   const userId = body.userId as string | undefined;
   if (!userId) {

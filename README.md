@@ -41,7 +41,8 @@ PrayCalc is a free, GPS-accurate Islamic prayer time calculator for web and mobi
 | Layer | Tech |
 | --- | --- |
 | Web | Next.js 15, TypeScript, Tailwind CSS |
-| Mobile | Flutter (iOS + Android + macOS + Windows + Linux + TV + Watch + Smart Display) |
+| Mobile (Active) | React Native + Expo SDK 53 (iOS + Android) + react-native-tvos (TV platforms) |
+| Mobile (Archive) | Flutter 1.2.3 — [archived branch](https://github.com/ummeco/praycalc/tree/archive/praycalc-flutter-1.2.3) (D-P2-PRAYCALC-RN) |
 | Backend platform | nSelf (100% — self-hosted PaaS on Hetzner) |
 | API | Hasura GraphQL Engine (all data access via GraphQL, no direct SQL) |
 | Auth | Hasura Auth — shared SSO at auth.ummat.dev |

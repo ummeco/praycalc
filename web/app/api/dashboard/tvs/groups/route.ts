@@ -1,5 +1,11 @@
 import * as Sentry from '@sentry/nextjs';
 import { NextRequest, NextResponse } from 'next/server';
+import { z } from 'zod';
+
+const CreateGroupSchema = z.object({
+  name:        z.string().min(1),
+  description: z.string().optional(),
+}).passthrough();
 
 const SMART_BASE = `${process.env.NEXT_PUBLIC_SMART_SERVICE_URL ?? 'https://smart.praycalc.com'}/api/v1/tv`;
 
@@ -35,15 +41,19 @@ export async function POST(req: NextRequest) {
   if (!auth.startsWith('Bearer ')) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
-  let body: unknown;
-  try { body = await req.json(); } catch {
-    return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 });
+  const rawBody = await req.json().catch(() => null);
+  const parsed = CreateGroupSchema.safeParse(rawBody);
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: 'invalid_input', details: parsed.error.flatten() },
+      { status: 400 },
+    );
   }
   try {
     const upstream = await fetch(`${SMART_BASE}/groups`, {
       method: 'POST',
       headers: { Authorization: auth, 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
+      body: JSON.stringify(parsed.data),
     });
     if (!upstream.ok) {
       return NextResponse.json({ error: `Upstream error ${upstream.status}` }, { status: upstream.status });

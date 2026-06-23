@@ -1,4 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
+
+const CheckoutSchema = z.object({
+  email: z.string().email().optional(),
+});
 
 const SMART_SERVICE_URL =
   process.env.SMART_SERVICE_URL || "http://localhost:4010";
@@ -12,7 +17,15 @@ const SMART_SERVICE_URL =
  */
 export async function POST(req: NextRequest) {
   try {
-    const body = await req.json();
+    const rawBody = await req.json().catch(() => null);
+    const parsed = CheckoutSchema.safeParse(rawBody);
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: "invalid_input", details: parsed.error.flatten() },
+        { status: 400 },
+      );
+    }
+    const body = parsed.data;
     const authHeader = req.headers.get("authorization") || "";
 
     const response = await fetch(`${SMART_SERVICE_URL}/billing/checkout`, {

@@ -1,0 +1,104 @@
+---
+/**
+ * RootLayout.astro — Root page shell for all PrayCalc pages.
+ *
+ * PURPOSE: HTML shell with meta, fonts, Sentry, Umami analytics.
+ *   Injects brand tokens via @ummat/astro-preset inline integration (see astro.config.ts).
+ *   RTL direction set via page-level inline script (also from integration).
+ * INPUTS: title, description, ogImage, canonical, locale, dir
+ * OUTPUTS: Full HTML document with <head> and <body>
+ * CONSTRAINTS:
+ *   - Umami analytics only (D-P3-21) — no Vercel Analytics
+ *   - Sentry DSN from env var SENTRY_DSN_PRAYCALC
+ *   - WCAG 2.1 AA: skip-to-content link on every page
+ * REF: P2-E3-W02-S02-T03 · D-P2-STACK-CANON
+ */
+
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+  ogImage?: string;
+  canonical?: string;
+  locale?: string;
+  dir?: 'ltr' | 'rtl';
+  noIndex?: boolean;
+}
+
+const {
+  title = 'PrayCalc — Islamic Prayer Times',
+  description = 'Accurate Islamic prayer times for any location on Earth. GPS-based, multiple calculation methods, Qibla direction, moon phases, and Hijri calendar.',
+  ogImage = 'https://praycalc.com/og-image.png',
+  canonical,
+  locale = 'en',
+  dir,
+  noIndex = false,
+} = Astro.props;
+
+// Determine text direction: explicit prop > locale-based
+const RTL_LOCALES = new Set(['ar', 'ur', 'fa', 'he', 'ckb', 'ps']);
+const textDir = dir ?? (RTL_LOCALES.has(locale.split('-')[0] ?? '') ? 'rtl' : 'ltr');
+
+const umamiSiteId = import.meta.env.UMAMI_WEBSITE_ID;
+---
+
+<!doctype html>
+<html lang={locale} dir={textDir}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Theme color for mobile browsers -->
+    <meta name="theme-color" content="#1E5E2F" />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+
+    {noIndex && <meta name="robots" content="noindex,nofollow" />}
+    {canonical && <link rel="canonical" href={canonical} />}
+
+    <!-- OpenGraph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:site_name" content="PrayCalc" />
+    {canonical && <meta property="og:url" content={canonical} />}
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <!-- Icons -->
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="apple-touch-icon" href="/icon.png" />
+    <link rel="manifest" href="/manifest.json" />
+
+    <!-- Fonts: Inter (Latin) + Noto Naskh Arabic (self-hosted via Google Fonts proxy) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Noto+Naskh+Arabic:wght@400;700&display=swap"
+    />
+
+    <!-- Umami analytics — cookieless, GDPR-safe (D-P3-21) -->
+    {umamiSiteId && (
+      <script
+        is:inline
+        defer
+        src="https://cloud.umami.is/script.js"
+        data-website-id={umamiSiteId}
+      />
+    )}
+  </head>
+  <body>
+    <!-- Skip-to-content for keyboard/screen-reader users (WCAG 2.1 AA) -->
+    <a href="#main-content" class="skip-to-content">Skip to main content</a>
+
+    <slot />
+  </body>
+</html>

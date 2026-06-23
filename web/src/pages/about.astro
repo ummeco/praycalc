@@ -1,0 +1,74 @@
+---
+/**
+ * about.astro — About PrayCalc page.
+ *
+ * PURPOSE: Static informational page. No client-side interactivity.
+ * THEOLOGY GATE: No prayer methodology claims on this page — informational only.
+ * REF: P2-E3-W02-S02-T03
+ */
+
+import RootLayout from '@/layouts/RootLayout.astro';
+---
+
+<RootLayout
+  title="About PrayCalc"
+  description="PrayCalc is a free, accurate prayer time calculator built for the global Muslim community. GPS-accurate times, offline support, and multiple calculation methods."
+  canonical="https://praycalc.com/about"
+>
+  <main id="main-content" class="info-page">
+    <div class="info-page-inner">
+      <div class="info-page-header">
+        <a href="/" class="info-page-back">← Back</a>
+      </div>
+
+      <section class="info-section text-center">
+        <div class="text-6xl mb-4" role="img" aria-label="Mosque">🕌</div>
+        <h1 class="text-3xl font-bold text-white mb-4">About PrayCalc</h1>
+        <p class="text-white/60 text-lg leading-relaxed">
+          Free, accurate Islamic prayer times for the global Muslim community.
+          Built with care for the ummah.
+        </p>
+      </section>
+
+      <section class="info-section">
+        <h2 class="text-xl font-semibold text-ummat-light">What is PrayCalc?</h2>
+        <p class="text-white/60 leading-relaxed">
+          PrayCalc calculates prayer times using the PrayCalc Dynamic Method — a
+          physics-grounded algorithm based on the NREL Solar Position Algorithm (SPA),
+          the most accurate solar position model available for civilian use. Prayer times
+          are computed fresh for your exact coordinates.
+        </p>
+      </section>
+
+      <section class="info-section">
+        <h2 class="text-xl font-semibold text-ummat-light">Calculation Methods</h2>
+        <p class="text-white/60 leading-relaxed">
+          PrayCalc supports the Dynamic Method (default), Shafi'i/Maliki/Hanbali Asr,
+          and Hanafi Asr. Fajr and Isha use dynamic twilight angle computation.
+          Users can also choose from 14 traditional fixed-angle methods.
+        </p>
+        <p class="text-white/40 text-sm mt-2">
+          ⚠️ Specific fiqh rulings on prayer time methodology are subject to scholarly
+          review. PrayCalc follows the ahl us-sunnah wal-jama'ah consensus on the
+          obligation and timing of the five daily prayers.
+        </p>
+      </section>
+
+      <section class="info-section">
+        <h2 class="text-xl font-semibold text-ummat-light">Privacy</h2>
+        <p class="text-white/60 leading-relaxed">
+          No ads. No third-party tracking. Location data stays in your browser.
+          Umami analytics is used for anonymous usage statistics only.
+        </p>
+      </section>
+
+      <div class="flex flex-wrap gap-3 mt-4">
+        <a href="https://praycalc.org" class="text-ummat-light/60 hover:text-ummat-light text-sm" target="_blank" rel="noopener">
+          praycalc.org →
+        </a>
+        <a href="/legal/privacy" class="text-white/40 hover:text-white text-sm">Privacy Policy</a>
+        <a href="/legal/terms" class="text-white/40 hover:text-white text-sm">Terms</a>
+      </div>
+    </div>
+  </main>
+</RootLayout>

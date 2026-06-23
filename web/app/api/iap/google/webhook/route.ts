@@ -41,6 +41,18 @@
 
 import * as Sentry from "@sentry/nextjs";
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
+
+// Zod schema — T03 AC-01: Priority 2 validation at IAP Google webhook boundary
+const PubSubPushBodySchema = z.object({
+  message: z.object({
+    data:        z.string().min(1),
+    messageId:   z.string().optional(),
+    publishTime: z.string().optional(),
+    attributes:  z.record(z.string()).optional(),
+  }),
+  subscription: z.string().optional(),
+});
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
@@ -313,16 +325,12 @@ export async function POST(req: NextRequest) {
   }
 
   // Parse the Pub/Sub push body.
-  let pushBody: PubSubPushBody;
-  try {
-    pushBody = (await req.json()) as PubSubPushBody;
-  } catch {
+  const rawBody = await req.json().catch(() => null);
+  const parsedPush = PubSubPushBodySchema.safeParse(rawBody);
+  if (!parsedPush.success) {
     return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
   }
-
-  if (!pushBody?.message?.data) {
-    return NextResponse.json({ error: "Missing message.data" }, { status: 400 });
-  }
+  const pushBody: PubSubPushBody = parsedPush.data as PubSubPushBody;
 
   // Decode and parse the DeveloperNotification payload.
   let notification: PubSubData;

@@ -30,5 +30,16 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts"
   ],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules",
+    "astro.config.ts",
+    "src/routes",
+    "src/i18n",
+    "src/layouts",
+    "src/components/islands",
+    "src/components/Prose.astro",
+    "src/components/SidebarNav.astro",
+    "src/lib/navigation.ts",
+    "src/styles/global.css"
+  ]
 }

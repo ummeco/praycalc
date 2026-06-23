@@ -1,5 +1,15 @@
 import * as Sentry from '@sentry/nextjs';
 import { NextRequest, NextResponse } from 'next/server';
+import { z } from 'zod';
+
+// Zod schema — T03 AC-01: Priority 2 validation at TV quran boundary
+const TvQuranSchema = z.object({
+  action:      z.string().min(1),
+  surah:       z.number().int().min(1).max(114).optional(),
+  ayah:        z.number().int().min(1).optional(),
+  reciterId:   z.string().optional(),
+  afterSurah:  z.unknown().optional(),
+}).catchall(z.unknown());
 
 const SMART_BASE = `${process.env.NEXT_PUBLIC_SMART_SERVICE_URL ?? 'https://smart.praycalc.com'}/api/v1/tv`;
 
@@ -16,15 +26,18 @@ export async function POST(
   const { id } = await params;
   const authHeader = req.headers.get('authorization') ?? '';
 
-  let body: Record<string, unknown>;
-  try {
-    body = (await req.json()) as Record<string, unknown>;
-  } catch {
-    return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 });
+  const rawBody = await req.json().catch(() => null);
+  const parsedQuran = TvQuranSchema.safeParse(rawBody);
+  if (!parsedQuran.success) {
+    return NextResponse.json(
+      { error: 'invalid_input', details: parsedQuran.error.flatten() },
+      { status: 400 },
+    );
   }
+  const body: Record<string, unknown> = parsedQuran.data;
 
   const validActions = ['play', 'pause', 'resume', 'stop'];
-  if (!body.action || !validActions.includes(body.action as string)) {
+  if (!validActions.includes(body.action as string)) {
     return NextResponse.json(
       { error: `action must be one of: ${validActions.join(', ')}` },
       { status: 400 },

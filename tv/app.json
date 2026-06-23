@@ -1,0 +1,12 @@
+{
+  "name": "PrayCalcTV",
+  "displayName": "PrayCalc TV",
+  "version": "0.1.0",
+  "tvos": {
+    "bundleIdentifier": "com.ummeco.praycalc.tv"
+  },
+  "android": {
+    "package": "com.ummeco.praycalc.tv",
+    "versionCode": 1
+  }
+}

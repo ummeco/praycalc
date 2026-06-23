@@ -208,10 +208,11 @@ describe("useSettings", () => {
     });
 
     it("persists adhanVoice to localStorage", () => {
+      // Gate B (P2-E5-W02-S02-T02): "pashaii" removed; test uses "mishari" instead.
       const { result } = renderHook(() => useSettings());
-      act(() => result.current.setAdhanVoiceAndSave("pashaii"));
+      act(() => result.current.setAdhanVoiceAndSave("mishari"));
       const stored = JSON.parse(_store[STORAGE_KEY] ?? "{}");
-      expect(stored.adhanVoice).toBe("pashaii");
+      expect(stored.adhanVoice).toBe("mishari");
     });
   });
 

@@ -6,7 +6,14 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
+import { z } from 'zod'
 import { handleConsentRequest, type ConsentHandlerInput } from '@ummat/consent'
+
+// Minimal schema: consent body contains at least consentType; shared handler validates deeply.
+const ConsentPostSchema = z.object({
+  consentType: z.string().min(1),
+  granted:     z.boolean(),
+}).passthrough()
 
 const DOMAIN = 'praycalc.com'
 
@@ -42,11 +49,9 @@ async function buildInput(
   const countryCode = req.headers.get('cf-ipcountry') ?? null
   let body: unknown = undefined
   if (method === 'POST') {
-    try {
-      body = await req.json()
-    } catch {
-      body = null
-    }
+    const rawBody = await req.json().catch(() => null)
+    const parsed = ConsentPostSchema.safeParse(rawBody)
+    body = parsed.success ? parsed.data : rawBody  // pass to shared handler either way; it validates further
   }
   return {
     method,

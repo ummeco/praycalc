@@ -1,0 +1,109 @@
+---
+/**
+ * [...slug].astro — City prayer times page.
+ *
+ * PURPOSE: SSR prayer times page for any city slug.
+ *   Slug formats: "mecca", "us/ny/new-york", "JFK", "us/44030"
+ *   Prayer times computed server-side and passed as props to the
+ *   PrayerCalculator island (client:load).
+ * CONSTRAINTS:
+ *   - SSR (output: 'server'): prayer times computed per-request
+ *   - No Intl calendar:islamic — hijri computed in island via @ummat/shared/hijri pattern
+ *   - Theology gate: methodology content checked before publish
+ * REF: P2-E3-W02-S02-T03 · D-P2-STACK-CANON
+ */
+
+import RootLayout from '@/layouts/RootLayout.astro';
+import PrayerCalculator from '@/islands/PrayerCalculator';
+import { geocodeSlugParts } from '@/lib/geo.server';
+import { getUtcOffset } from '@/lib/geo';
+import { getPrayerTimes } from '@/lib/prayers.server';
+
+const { slug } = Astro.params;
+const slugParts = slug ? slug.split('/') : [];
+const geo = geocodeSlugParts(slugParts);
+
+if (!geo) {
+  return Astro.redirect('/404');
+}
+
+const timezone = geo.timezone ?? 'UTC';
+const now = new Date();
+const tzOffset = getUtcOffset(timezone, now);
+const shafiPrayers = getPrayerTimes(now, geo.lat, geo.lng, tzOffset, false);
+const hanafiPrayers = getPrayerTimes(now, geo.lat, geo.lng, tzOffset, true);
+
+const BASE_URL = 'https://praycalc.com';
+const pageUrl = `${BASE_URL}/${slug}`;
+const title = `Prayer Times in ${geo.displayName}`;
+const description = `Today's Fajr, Dhuhr, Asr, Maghrib, and Isha prayer times for ${geo.displayName}. GPS-accurate times with Qibla direction and Hijri calendar.`;
+
+// JSON-LD structured data
+const jsonLd = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: title,
+  description,
+  url: pageUrl,
+  about: {
+    '@type': 'City',
+    name: geo.displayName,
+    geo: {
+      '@type': 'GeoCoordinates',
+      latitude: geo.lat,
+      longitude: geo.lng,
+    },
+  },
+  provider: {
+    '@type': 'WebSite',
+    name: 'PrayCalc',
+    url: BASE_URL,
+  },
+});
+---
+
+<RootLayout
+  title={`${title} | PrayCalc`}
+  description={description}
+  canonical={pageUrl}
+>
+  <script is:inline type="application/ld+json" set:html={jsonLd} />
+
+  <main id="main-content" class="city-page-main">
+    <div class="w-full max-w-2xl">
+      <a
+        href="/"
+        class="inline-flex items-center gap-2 text-white/40 hover:text-white text-sm mb-6 transition-colors"
+      >
+        ← PrayCalc
+      </a>
+    </div>
+
+    <!-- Prayer calculator island: client:load — hydrates immediately for interactivity -->
+    <PrayerCalculator
+      client:load
+      shafiPrayers={shafiPrayers}
+      hanafiPrayers={hanafiPrayers}
+      locationName={geo.displayName}
+      timezone={timezone}
+      slug={slug ?? ''}
+      lat={geo.lat}
+      lng={geo.lng}
+    />
+
+    <!-- SEO: static prayer time table for crawlers (SSR-rendered, no JS required) -->
+    <section class="sr-only" aria-hidden="true">
+      <h2>Today's Prayer Times for {geo.displayName}</h2>
+      <table>
+        <thead>
+          <tr><th>Prayer</th><th>Time</th></tr>
+        </thead>
+        <tbody>
+          {(['Fajr', 'Sunrise', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'] as const).map((prayer) => (
+            <tr><td>{prayer}</td><td>{shafiPrayers[prayer]}</td></tr>
+          ))}
+        </tbody>
+      </table>
+    </section>
+  </main>
+</RootLayout>

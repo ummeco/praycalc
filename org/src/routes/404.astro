@@ -1,0 +1,23 @@
+---
+// FILE: src/pages/404.astro
+// PURPOSE: Custom 404 page for praycalc.org.
+// REF: T-01 (P2-E3-W01-S01)
+
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="Page Not Found" description="The page you requested could not be found.">
+  <main class="flex min-h-screen w-full flex-col items-center justify-center px-4 text-center">
+    <p class="mb-2 text-sm font-semibold uppercase tracking-widest text-green-700 dark:text-green-400">404</p>
+    <h1 class="mb-4 text-4xl font-bold text-zinc-900 dark:text-white">Page not found</h1>
+    <p class="mb-8 max-w-sm text-zinc-500 dark:text-zinc-400">
+      The page you requested could not be found. It may have been moved or deleted.
+    </p>
+    <a
+      href="/"
+      class="rounded-lg bg-green-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-green-800"
+    >
+      Back to home
+    </a>
+  </main>
+</Base>

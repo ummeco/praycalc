@@ -1,0 +1,67 @@
+{
+  "app": {
+    "name": "Namaz Vakitleri",
+    "tagline": "Doğru namaz vakitleri"
+  },
+  "prayer": {
+    "fajr": "Sabah",
+    "dhuhr": "Öğle",
+    "asr": "İkindi",
+    "maghrib": "Akşam",
+    "isha": "Yatsı",
+    "sunrise": "Güneş Doğuşu",
+    "midnight": "Gece Yarısı",
+    "lastThird": "Son Üçte Bir"
+  },
+  "common": {
+    "bismillah": "Rahman ve Rahim olan Allah'ın adıyla",
+    "salah": "Namaz",
+    "iqama": "Kamet",
+    "adhan": "Ezan",
+    "qibla": "Kıble",
+    "hijri": "Hicri Tarih",
+    "loading": "Yükleniyor...",
+    "error": "Bir hata oluştu",
+    "retry": "Tekrar Dene",
+    "save": "Kaydet",
+    "cancel": "İptal",
+    "close": "Kapat",
+    "settings": "Ayarlar",
+    "done": "Tamam",
+    "next": "İleri",
+    "back": "Geri"
+  },
+  "greeting": {
+    "assalamu_alaykum": "Esselâmü Aleyküm ve Rahmetullahi ve Berekâtüh",
+    "prayer_approaching": "Namaz vakti yaklaşıyor",
+    "prayer_now": "Namaz vakti"
+  },
+  "settings": {
+    "title": "Ayarlar",
+    "language": {
+      "title": "Dil",
+      "select": "Dil seçin",
+      "restart_required": "Yeniden başlatma gerekli",
+      "restart_prompt": "Yeni düzen yönünü uygulamak için uygulama yeniden başlayacak"
+    },
+    "calculation": {
+      "title": "Hesaplama Yöntemi",
+      "method": "Mezhep"
+    },
+    "notifications": {
+      "title": "Bildirimler",
+      "enable": "Bildirimleri Etkinleştir",
+      "prayer_reminder": "Namaz Hatırlatıcısı"
+    },
+    "location": {
+      "title": "Konum",
+      "detect": "Otomatik tespit et",
+      "manual": "Manuel gir"
+    }
+  },
+  "errors": {
+    "location_permission": "Namaz vakitlerini hesaplamak için konum erişimine izin verin",
+    "network": "Ağa bağlanılamadı",
+    "calculation": "Namaz vakitleri hesaplanamadı"
+  }
+}

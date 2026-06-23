@@ -1,0 +1,93 @@
+---
+layout: ../../layouts/DocPage.astro
+title: 'Desktop App'
+description: 'PrayCalc for macOS, Windows, and Linux. Prayer times in your menu bar or system tray with notifications, Qibla direction, and Hijri date.'
+---
+
+# Desktop App
+
+PrayCalc runs natively on macOS, Windows, and Linux. Prayer times in your menu bar or system tray, adhan notifications, Qibla direction, and Hijri calendar without opening a browser.
+
+## Overview
+
+The desktop app lives in your menu bar (macOS) or system tray (Windows and Linux). It shows the next prayer name and time at a glance, with a popover for the full daily schedule.
+
+No dock icon or separate window to manage. Just prayer times always visible.
+
+## Download
+
+Download the latest release from [github.com/ummeco/praycalc/releases](https://github.com/ummeco/praycalc/releases).
+
+| Platform | File | Requirements |
+| --- | --- | --- |
+| macOS | `PrayCalc.dmg` | macOS 14 Sonoma or later (Apple Silicon or Intel) |
+| Windows | `PrayCalc-Windows.zip` | Windows 10 or later (x64) |
+| Linux | `PrayCalc-Linux.tar.gz` | Ubuntu 22.04+ or equivalent (x64) |
+| Linux (Debian) | `praycalc_amd64.deb` | Debian-based distributions |
+
+### macOS — Homebrew
+
+```bash
+brew install --cask praycalc
+```
+
+## macOS
+
+The macOS app uses a native menu bar interface. It shows the next prayer name and time directly in the menu bar, with a popover for the full prayer schedule.
+
+### Menu bar
+
+The menu bar shows the next prayer name and time: **Asr 3:33 PM**. Click to open the popover.
+
+### Popover
+
+The popover shows:
+
+- Today's date (Gregorian and Hijri)
+- All 5 prayer times in a clean list
+- Next prayer highlighted with a countdown
+- Qibla bearing from your location
+- Settings gear icon
+
+## Windows
+
+The Windows app sits in the system tray (notification area). Right-click the tray icon for the full prayer schedule popover.
+
+Features match the macOS version: prayer times, Qibla bearing, adhan notifications, calculation method settings, and Hijri date. Notifications use the Windows notification center.
+
+Extract `PrayCalc-Windows.zip`, place the folder anywhere, and run `praycalc.exe`. Add it to Startup to launch automatically at login.
+
+## Linux
+
+The Linux app runs on Ubuntu 22.04+ and other GTK3-compatible distributions. It sits in the system tray via the AppIndicator API.
+
+Install the `.deb` package:
+
+```bash
+sudo dpkg -i praycalc_amd64.deb
+```
+
+Or extract the tarball and run the binary directly:
+
+```bash
+tar -xzf PrayCalc-Linux.tar.gz
+./praycalc/praycalc
+```
+
+The tray icon shows the next prayer time. Click to open the prayer schedule popover.
+
+## Settings
+
+Open settings from the gear icon in the popover (all platforms):
+
+- **Calculation method**: ISNA, MWL, Egypt, Umm al-Qura, Tehran, Karachi
+- **Madhab**: Shafii or Hanafi
+- **Location**: auto-detect using system location services, or enter coordinates manually
+- **Launch at login**: toggle to start PrayCalc at system startup
+- **Notifications**: choose which prayers trigger an alert
+
+## Notifications
+
+PrayCalc sends a system notification at each prayer time. Configure which prayers trigger notifications in settings.
+
+On macOS, notifications appear in Notification Center. On Windows, they use the Action Center. On Linux, they use the system notification daemon (libnotify).

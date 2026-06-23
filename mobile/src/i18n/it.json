@@ -1,0 +1,67 @@
+{
+  "app": {
+    "name": "Orari della Preghiera",
+    "tagline": "Orari di preghiera precisi"
+  },
+  "prayer": {
+    "fajr": "Fajr",
+    "dhuhr": "Dhuhr",
+    "asr": "Asr",
+    "maghrib": "Maghrib",
+    "isha": "Isha",
+    "sunrise": "Alba",
+    "midnight": "Mezzanotte",
+    "lastThird": "Ultimo Terzo"
+  },
+  "common": {
+    "bismillah": "Nel nome di Allah, il Compassionevole, il Misericordioso",
+    "salah": "Preghiera",
+    "iqama": "Iqama",
+    "adhan": "Adhan",
+    "qibla": "Qibla",
+    "hijri": "Data Hijri",
+    "loading": "Caricamento...",
+    "error": "Si è verificato un errore",
+    "retry": "Riprova",
+    "save": "Salva",
+    "cancel": "Annulla",
+    "close": "Chiudi",
+    "settings": "Impostazioni",
+    "done": "Fatto",
+    "next": "Avanti",
+    "back": "Indietro"
+  },
+  "greeting": {
+    "assalamu_alaykum": "Assalamu Alaykum wa Rahmatullahi wa Barakatuh",
+    "prayer_approaching": "La preghiera si avvicina",
+    "prayer_now": "Ora della preghiera"
+  },
+  "settings": {
+    "title": "Impostazioni",
+    "language": {
+      "title": "Lingua",
+      "select": "Seleziona lingua",
+      "restart_required": "Riavvio richiesto",
+      "restart_prompt": "L'app verrà riavviata per applicare la nuova direzione del layout"
+    },
+    "calculation": {
+      "title": "Metodo di Calcolo",
+      "method": "Madhab"
+    },
+    "notifications": {
+      "title": "Notifiche",
+      "enable": "Attiva Notifiche",
+      "prayer_reminder": "Promemoria Preghiera"
+    },
+    "location": {
+      "title": "Posizione",
+      "detect": "Rileva automaticamente",
+      "manual": "Inserisci manualmente"
+    }
+  },
+  "errors": {
+    "location_permission": "Consenti l'accesso alla posizione per calcolare gli orari di preghiera",
+    "network": "Impossibile connettersi alla rete",
+    "calculation": "Impossibile calcolare gli orari di preghiera"
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "app": {
+    "name": "Waktu Sholat",
+    "tagline": "Waktu sholat yang akurat"
+  },
+  "prayer": {
+    "fajr": "Subuh",
+    "dhuhr": "Dzuhur",
+    "asr": "Ashar",
+    "maghrib": "Maghrib",
+    "isha": "Isya",
+    "sunrise": "Matahari Terbit",
+    "midnight": "Tengah Malam",
+    "lastThird": "Sepertiga Malam Terakhir"
+  },
+  "common": {
+    "bismillah": "Bismillahirrahmanirrahim",
+    "salah": "Sholat",
+    "iqama": "Iqamah",
+    "adhan": "Adzan",
+    "qibla": "Kiblat",
+    "hijri": "Tanggal Hijriah",
+    "loading": "Memuat...",
+    "error": "Terjadi kesalahan",
+    "retry": "Coba Lagi",
+    "save": "Simpan",
+    "cancel": "Batal",
+    "close": "Tutup",
+    "settings": "Pengaturan",
+    "done": "Selesai",
+    "next": "Berikutnya",
+    "back": "Kembali"
+  },
+  "greeting": {
+    "assalamu_alaykum": "Assalamu'alaikum Warahmatullahi Wabarakatuh",
+    "prayer_approaching": "Waktu sholat hampir tiba",
+    "prayer_now": "Waktu sholat"
+  },
+  "settings": {
+    "title": "Pengaturan",
+    "language": {
+      "title": "Bahasa",
+      "select": "Pilih bahasa",
+      "restart_required": "Perlu restart",
+      "restart_prompt": "Aplikasi akan restart untuk menerapkan arah tata letak baru"
+    },
+    "calculation": {
+      "title": "Metode Perhitungan",
+      "method": "Mazhab"
+    },
+    "notifications": {
+      "title": "Notifikasi",
+      "enable": "Aktifkan Notifikasi",
+      "prayer_reminder": "Pengingat Sholat"
+    },
+    "location": {
+      "title": "Lokasi",
+      "detect": "Deteksi otomatis",
+      "manual": "Masukkan manual"
+    }
+  },
+  "errors": {
+    "location_permission": "Izinkan akses lokasi untuk menghitung waktu sholat",
+    "network": "Tidak dapat terhubung ke jaringan",
+    "calculation": "Tidak dapat menghitung waktu sholat"
+  }
+}

@@ -15,10 +15,23 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
+import { z } from 'zod'
 import { jwtVerify } from 'jose'
 
 const ACCESS_COOKIE_MAX_AGE = 60 * 15
 const REFRESH_COOKIE_MAX_AGE = 60 * 60 * 24 * 365
+
+const TokenSetSchema = z.object({
+  accessToken: z.string().min(1),
+  refreshToken: z.string().min(1),
+  accessTokenExpiresAt: z.number().optional(),
+  user: z.object({
+    id: z.string().uuid(),
+    email: z.string().email(),
+    displayName: z.string().optional(),
+    avatarUrl: z.string().url().nullable().optional(),
+  }),
+})
 
 function getJwtSecret(): Uint8Array {
   const secret = process.env.HASURA_JWT_SECRET
@@ -37,16 +50,15 @@ function cookieOptions(maxAge: number): string {
 }
 
 export async function POST(req: NextRequest) {
-  const body = await req.json().catch(() => null) as {
-    accessToken?: string
-    refreshToken?: string
-    accessTokenExpiresAt?: number
-    user?: { id: string; email: string; displayName?: string; avatarUrl?: string | null }
-  } | null
-
-  if (!body?.accessToken || !body?.refreshToken || !body?.user) {
-    return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
+  const rawBody = await req.json().catch(() => null)
+  const parsed = TokenSetSchema.safeParse(rawBody)
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: 'invalid_input', details: parsed.error.flatten() },
+      { status: 400 },
+    )
   }
+  const body = parsed.data
 
   // Verify the JWT before trusting it — prevents token forgery.
   let payload: Record<string, unknown>

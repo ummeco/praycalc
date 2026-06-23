@@ -315,9 +315,10 @@ test.describe("Notification sound mode", () => {
 
     await panel.locator(".settings-sound-opt").filter({ hasText: "Adhan" }).click();
 
-    // Voice picker should appear with Mecca, Mishary, Pashaii
+    // Voice picker should appear with Mecca and Mishary only.
+    // Gate B (P2-E5-W02-S02-T02): "Pashaii" removed — reciter identity unverifiable.
     await expect(panel.locator(".settings-sound-opt").filter({ hasText: "Mecca" })).toBeVisible();
     await expect(panel.locator(".settings-sound-opt").filter({ hasText: "Mishary" })).toBeVisible();
-    await expect(panel.locator(".settings-sound-opt").filter({ hasText: "Pashaii" })).toBeVisible();
+    await expect(panel.locator(".settings-sound-opt").filter({ hasText: "Pashaii" })).not.toBeVisible();
   });
 });

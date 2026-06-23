@@ -1,8 +1,124 @@
 {
-  "crons": [
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "pnpm build",
+  "outputDirectory": "dist",
+  "framework": "astro",
+  "redirects": [
     {
-      "path": "/api/cron/digest",
-      "schedule": "0 6 * * 1"
+      "source": "/times/:city+",
+      "destination": "/:city+",
+      "permanent": true,
+      "statusCode": 301
+    },
+    {
+      "source": "/privacy",
+      "destination": "/legal/privacy",
+      "permanent": true,
+      "statusCode": 301
+    },
+    {
+      "source": "/terms",
+      "destination": "/legal/terms",
+      "permanent": true,
+      "statusCode": 301
+    },
+    {
+      "source": "/cookies",
+      "destination": "/legal/privacy",
+      "permanent": true,
+      "statusCode": 301
+    },
+    {
+      "source": "/tv/guest/:code",
+      "destination": "/",
+      "permanent": false,
+      "statusCode": 302
+    },
+    {
+      "source": "/tv/setup",
+      "destination": "/",
+      "permanent": false,
+      "statusCode": 302
+    },
+    {
+      "source": "/account",
+      "destination": "/",
+      "permanent": false,
+      "statusCode": 302
+    },
+    {
+      "source": "/account/:path*",
+      "destination": "/",
+      "permanent": false,
+      "statusCode": 302
+    },
+    {
+      "source": "/dashboard",
+      "destination": "/",
+      "permanent": false,
+      "statusCode": 302
+    },
+    {
+      "source": "/dashboard/:path*",
+      "destination": "/",
+      "permanent": false,
+      "statusCode": 302
+    },
+    {
+      "source": "/activate",
+      "destination": "/",
+      "permanent": false,
+      "statusCode": 302
+    },
+    {
+      "source": "/upgrade",
+      "destination": "/",
+      "permanent": false,
+      "statusCode": 302
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(self), geolocation=(self)"
+        },
+        {
+          "key": "Strict-Transport-Security",
+          "value": "max-age=63072000; includeSubDomains; preload"
+        },
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' https://cloud.umami.is https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://cdn.jsdelivr.net https://*.tile.openstreetmap.org https://*.basemaps.cartocdn.com; media-src 'self'; connect-src 'self' https://cloud.umami.is https://errors.ummat.dev https://ipapi.co; frame-src https://challenges.cloudflare.com; frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'self'"
+        }
+      ]
+    },
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store"
+        }
+      ]
     }
   ]
 }

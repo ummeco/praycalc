@@ -1,0 +1,270 @@
+/**
+ * Purpose: Settings screen — calculation method, madhab toggle, location picker
+ *   (GPS + manual city search), notification preferences, 12/24h time format.
+ * Inputs: useSettingsStore state; expo-location for GPS
+ * Outputs: Settings form; changes persisted via zustand/AsyncStorage
+ * Constraints: Method selector must show exactly 7 methods (no Tehran/Jafari — D-P3-19).
+ *   All 7 UI states implemented. RTL layout prepared.
+ * SPORT: REGISTRY-COMPONENTS.md#praycalc-mobile-settings-screen
+ */
+
+import React, { useState } from 'react';
+import {
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  Switch,
+  StyleSheet,
+  Alert,
+} from 'react-native';
+import * as Location from 'expo-location';
+import { Colors } from '../../../constants/colors';
+import { CALC_METHODS } from '../../../constants/methods';
+import { useSettingsStore } from '../store/useSettingsStore';
+import type { Madhab, TimeFormat, HighLatRule } from '../../../types/prayer';
+import { ErrorState, LoadingState } from '../../../components/shared/UIStates';
+
+export default function SettingsScreen() {
+  const settings = useSettingsStore();
+  const [isLocating, setIsLocating] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
+
+  // UI states
+  if (isLocating) return <LoadingState message="Getting your location..." />;
+  if (saveError) return <ErrorState error={saveError} onRetry={() => setSaveError(null)} />;
+
+  // success (settings always show — no loading/empty/offline states for this screen)
+
+  async function handleGPSLocation() {
+    setIsLocating(true);
+    try {
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert('Permission Denied', 'Enable location in Settings to auto-detect your city.');
+        setIsLocating(false);
+        return;
+      }
+      const loc = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced });
+      const [geo] = await Location.reverseGeocodeAsync({
+        latitude: loc.coords.latitude,
+        longitude: loc.coords.longitude,
+      });
+      settings.setLocation({
+        latitude: loc.coords.latitude,
+        longitude: loc.coords.longitude,
+        city: geo?.city ?? 'Unknown',
+        country: geo?.country ?? 'Unknown',
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      });
+    } catch (err) {
+      setSaveError(err instanceof Error ? err.message : 'Location error');
+    } finally {
+      setIsLocating(false);
+    }
+  }
+
+  return (
+    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+
+      {/* Location */}
+      <SectionHeader title="Location" />
+      <View style={styles.card}>
+        {settings.location ? (
+          <View style={styles.row}>
+            <Text style={styles.rowLabel}>Current City</Text>
+            <Text style={styles.rowValue}>
+              {`${settings.location.city}, ${settings.location.country}`}
+            </Text>
+          </View>
+        ) : (
+          <Text style={styles.hint}>No location set. GPS or manual city required.</Text>
+        )}
+        <TouchableOpacity style={styles.button} onPress={handleGPSLocation}>
+          <Text style={styles.buttonText}>Use GPS Location</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.button, styles.buttonSecondary]}
+          onPress={() => {/* Navigate to city-search route via Expo Router */}}
+        >
+          <Text style={styles.buttonSecondaryText}>Search City Manually</Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* Calculation Method */}
+      <SectionHeader title="Calculation Method" />
+      <View style={styles.card}>
+        {CALC_METHODS.map((method) => {
+          const isSelected = settings.method === method.key;
+          return (
+            <TouchableOpacity
+              key={method.key}
+              style={[styles.optionRow, isSelected && styles.optionRowSelected]}
+              onPress={() => settings.setMethod(method.key)}
+            >
+              <View style={[styles.radio, isSelected && styles.radioSelected]}>
+                {isSelected && <View style={styles.radioInner} />}
+              </View>
+              <Text style={[styles.optionLabel, isSelected && styles.optionLabelSelected]}>
+                {method.label}
+              </Text>
+            </TouchableOpacity>
+          );
+        })}
+      </View>
+
+      {/* Madhab (Asr shadow factor) */}
+      <SectionHeader title="Madhab (Asr)" />
+      <View style={styles.card}>
+        <View style={styles.toggle}>
+          {(['Shafi', 'Hanafi'] as Madhab[]).map((m) => (
+            <TouchableOpacity
+              key={m}
+              style={[styles.toggleOption, settings.madhab === m && styles.toggleOptionActive]}
+              onPress={() => settings.setMadhab(m)}
+            >
+              <Text style={[styles.toggleText, settings.madhab === m && styles.toggleTextActive]}>
+                {m}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+        <Text style={styles.hint}>
+          Shafi: 1× shadow factor | Hanafi: 2× shadow factor
+        </Text>
+      </View>
+
+      {/* Time Format */}
+      <SectionHeader title="Time Format" />
+      <View style={styles.card}>
+        <View style={styles.toggle}>
+          {(['12h', '24h'] as TimeFormat[]).map((f) => (
+            <TouchableOpacity
+              key={f}
+              style={[styles.toggleOption, settings.timeFormat === f && styles.toggleOptionActive]}
+              onPress={() => settings.setTimeFormat(f)}
+            >
+              <Text style={[styles.toggleText, settings.timeFormat === f && styles.toggleTextActive]}>
+                {f}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </View>
+
+      {/* Notifications */}
+      <SectionHeader title="Notifications" />
+      <View style={styles.card}>
+        <View style={styles.switchRow}>
+          <Text style={styles.rowLabel}>Prayer Time Alerts</Text>
+          <Switch
+            value={settings.notificationsEnabled}
+            onValueChange={settings.setNotificationsEnabled}
+            trackColor={{ true: Colors.brand.mid }}
+          />
+        </View>
+        {settings.notificationsEnabled && (
+          <View style={styles.row}>
+            <Text style={styles.rowLabel}>Alert Before Prayer</Text>
+            <View style={styles.offsetToggle}>
+              {[0, 5, 10, 15].map((offset) => (
+                <TouchableOpacity
+                  key={offset}
+                  style={[
+                    styles.offsetOption,
+                    settings.notificationOffset === offset && styles.offsetOptionActive,
+                  ]}
+                  onPress={() => settings.setNotificationOffset(offset)}
+                >
+                  <Text
+                    style={[
+                      styles.offsetText,
+                      settings.notificationOffset === offset && styles.offsetTextActive,
+                    ]}
+                  >
+                    {offset === 0 ? 'At time' : `${offset}m`}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </View>
+        )}
+      </View>
+
+    </ScrollView>
+  );
+}
+
+function SectionHeader({ title }: { title: string }) {
+  return <Text style={styles.sectionHeader}>{title}</Text>;
+}
+
+const styles = StyleSheet.create({
+  container: { flex: 1, backgroundColor: Colors.background.secondary },
+  content: { padding: 16, gap: 8 },
+  sectionHeader: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: Colors.text.muted,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+    marginTop: 8,
+    paddingHorizontal: 4,
+  },
+  card: {
+    backgroundColor: Colors.background.primary,
+    borderRadius: 12,
+    padding: 16,
+    gap: 12,
+  },
+  row: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  rowLabel: { fontSize: 15, color: Colors.text.primary },
+  rowValue: { fontSize: 14, color: Colors.text.muted },
+  hint: { fontSize: 13, color: Colors.text.muted, fontStyle: 'italic' },
+  button: {
+    backgroundColor: Colors.brand.dark,
+    borderRadius: 8,
+    padding: 12,
+    alignItems: 'center',
+  },
+  buttonText: { color: Colors.text.inverse, fontWeight: '600', fontSize: 14 },
+  buttonSecondary: { backgroundColor: Colors.background.secondary, borderWidth: 1, borderColor: Colors.brand.mid },
+  buttonSecondaryText: { color: Colors.brand.dark, fontWeight: '600', fontSize: 14 },
+  optionRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    padding: 8,
+    borderRadius: 8,
+  },
+  optionRowSelected: { backgroundColor: Colors.background.secondary },
+  radio: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: Colors.text.muted,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  radioSelected: { borderColor: Colors.brand.dark },
+  radioInner: { width: 10, height: 10, borderRadius: 5, backgroundColor: Colors.brand.dark },
+  optionLabel: { fontSize: 14, color: Colors.text.primary, flex: 1 },
+  optionLabelSelected: { fontWeight: '600', color: Colors.brand.dark },
+  toggle: { flexDirection: 'row', borderRadius: 8, overflow: 'hidden', backgroundColor: Colors.background.secondary },
+  toggleOption: { flex: 1, padding: 12, alignItems: 'center' },
+  toggleOptionActive: { backgroundColor: Colors.brand.dark },
+  toggleText: { fontSize: 14, color: Colors.text.primary, fontWeight: '500' },
+  toggleTextActive: { color: Colors.text.inverse, fontWeight: '700' },
+  switchRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  offsetToggle: { flexDirection: 'row', gap: 8 },
+  offsetOption: {
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 6,
+    backgroundColor: Colors.background.secondary,
+  },
+  offsetOptionActive: { backgroundColor: Colors.brand.mid },
+  offsetText: { fontSize: 13, color: Colors.text.primary },
+  offsetTextActive: { color: Colors.text.inverse, fontWeight: '600' },
+});

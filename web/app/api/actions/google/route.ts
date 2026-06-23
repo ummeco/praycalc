@@ -8,18 +8,22 @@
 // Account linking: OAuth via Ummat Auth (auth.ummat.dev).
 
 import { NextRequest, NextResponse } from 'next/server';
+import { z } from 'zod';
 import { app } from '../../../../../smarthome/google/fulfillment/index';
+
+// Zod schema — T03 AC-01: Priority 2 validation at Google Actions webhook boundary
+const GoogleActionsBodySchema = z.record(z.unknown());
 
 export const runtime = 'nodejs';
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
   try {
-    const body = await req.json() as Record<string, unknown>;
-
-    // Basic request validation: Google Actions sends a handler name
-    if (!body || typeof body !== 'object') {
+    const rawBody = await req.json().catch(() => null);
+    const parsedBody = GoogleActionsBodySchema.safeParse(rawBody);
+    if (!parsedBody.success) {
       return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
     }
+    const body: Record<string, unknown> = parsedBody.data;
 
     // The @assistant/conversation SDK's handler converts the request body and returns
     // the response. We adapt it to the Next.js request/response model here.

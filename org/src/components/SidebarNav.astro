@@ -1,0 +1,60 @@
+---
+// FILE: src/components/SidebarNav.astro
+// PURPOSE: Static server-rendered sidebar navigation.
+//   Renders nav groups with active link highlighting.
+// INPUTS: navigation (NavGroup[]), currentPath (string)
+// OUTPUTS: <nav> element with grouped links + active state
+// REF: T-01 (P2-E3-W01-S01)
+
+import type { NavGroup } from '../lib/navigation';
+
+interface Props {
+  navigation: NavGroup[];
+  currentPath: string;
+}
+
+const { navigation, currentPath } = Astro.props;
+
+function isActive(href: string, path: string): boolean {
+  if (href === '/') return path === '/' || path === '';
+  return path === href || path.startsWith(href + '/');
+}
+---
+
+<nav aria-label="Sidebar navigation">
+  <ul role="list" class="space-y-8">
+    {navigation.map((group) => (
+      <li>
+        <h3 class="mb-3 text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+          {group.title}
+        </h3>
+        <ul role="list" class="space-y-1">
+          {group.links.map((link) => {
+            const active = isActive(link.href, currentPath);
+            return (
+              <li>
+                <a
+                  href={link.href}
+                  aria-current={active ? 'page' : undefined}
+                  class:list={[
+                    'flex items-center gap-2 rounded-md px-3 py-1.5 text-sm transition-colors',
+                    active
+                      ? 'bg-green-50 font-medium text-green-800 dark:bg-green-950 dark:text-green-300'
+                      : 'text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-900 dark:hover:text-white',
+                  ]}
+                >
+                  {link.title}
+                  {link.tag && (
+                    <span class="ml-auto rounded-full bg-zinc-100 px-1.5 py-0.5 text-xs text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400">
+                      {link.tag}
+                    </span>
+                  )}
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+      </li>
+    ))}
+  </ul>
+</nav>

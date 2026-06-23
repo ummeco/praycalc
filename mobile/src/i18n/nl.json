@@ -1,0 +1,67 @@
+{
+  "app": {
+    "name": "Gebedstijden",
+    "tagline": "Nauwkeurige gebedstijden"
+  },
+  "prayer": {
+    "fajr": "Fajr",
+    "dhuhr": "Dhuhr",
+    "asr": "Asr",
+    "maghrib": "Maghrib",
+    "isha": "Isha",
+    "sunrise": "Zonsopgang",
+    "midnight": "Middernacht",
+    "lastThird": "Laatste Derde"
+  },
+  "common": {
+    "bismillah": "In de naam van Allah, de Meest Genadige, de Meest Barmhartige",
+    "salah": "Gebed",
+    "iqama": "Iqama",
+    "adhan": "Adhan",
+    "qibla": "Qibla",
+    "hijri": "Hijri-datum",
+    "loading": "Laden...",
+    "error": "Er is een fout opgetreden",
+    "retry": "Opnieuw proberen",
+    "save": "Opslaan",
+    "cancel": "Annuleren",
+    "close": "Sluiten",
+    "settings": "Instellingen",
+    "done": "Klaar",
+    "next": "Volgende",
+    "back": "Terug"
+  },
+  "greeting": {
+    "assalamu_alaykum": "Assalamu Alaykum wa Rahmatullahi wa Barakatuh",
+    "prayer_approaching": "Gebedstijd nadert",
+    "prayer_now": "Gebedstijd"
+  },
+  "settings": {
+    "title": "Instellingen",
+    "language": {
+      "title": "Taal",
+      "select": "Selecteer taal",
+      "restart_required": "Herstart vereist",
+      "restart_prompt": "De app wordt opnieuw gestart om de nieuwe lay-outrichting toe te passen"
+    },
+    "calculation": {
+      "title": "Berekeningsmethode",
+      "method": "Rechtsschool"
+    },
+    "notifications": {
+      "title": "Meldingen",
+      "enable": "Meldingen inschakelen",
+      "prayer_reminder": "Gebedherinnering"
+    },
+    "location": {
+      "title": "Locatie",
+      "detect": "Automatisch detecteren",
+      "manual": "Handmatig invoeren"
+    }
+  },
+  "errors": {
+    "location_permission": "Sta locatietoegang toe om gebedstijden te berekenen",
+    "network": "Kan geen verbinding maken met het netwerk",
+    "calculation": "Kan de gebedstijden niet berekenen"
+  }
+}

@@ -1,4 +1,17 @@
 import { type NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
+
+const WebhookCreateSchema = z.object({
+  callbackUrl: z.string().url(),
+  events:      z.array(z.string()).min(1),
+  lat:         z.number().optional(),
+  lng:         z.number().optional(),
+}).passthrough();
+
+const WebhookUpdateSchema = z.object({
+  id:     z.string().min(1).optional(),
+  action: z.string().optional(),
+}).passthrough();
 
 const SMART_SERVICE_URL =
   process.env.SMART_SERVICE_URL || "http://localhost:4010";
@@ -73,12 +86,19 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const body = await req.json();
+    const rawBody = await req.json().catch(() => null);
+    const parsed = WebhookCreateSchema.safeParse(rawBody);
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: "invalid_input", details: parsed.error.flatten() },
+        { status: 400 },
+      );
+    }
 
     const res = await fetch(`${SMART_SERVICE_URL}/api/v1/webhooks`, {
       method: "POST",
       headers: buildHeaders(token),
-      body: JSON.stringify(body),
+      body: JSON.stringify(parsed.data),
     });
 
     if (!res.ok) {
@@ -116,7 +136,15 @@ export async function PUT(req: NextRequest) {
   }
 
   try {
-    const body = await req.json();
+    const rawPutBody = await req.json().catch(() => null);
+    const parsedPut = WebhookUpdateSchema.safeParse(rawPutBody);
+    if (!parsedPut.success) {
+      return NextResponse.json(
+        { error: "invalid_input", details: parsedPut.error.flatten() },
+        { status: 400 },
+      );
+    }
+    const body = parsedPut.data;
 
     if (body.action === "test" && body.id) {
       // Send a test payload

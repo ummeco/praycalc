@@ -1,0 +1,156 @@
+---
+layout: ../../layouts/DocPage.astro
+title: 'TV Display Mode'
+description: 'PrayCalc for Apple TV, Android TV, and Fire TV. Full-screen prayer clock, masjid signage, ambient screensaver, and iqamah management for your living room or masjid.'
+---
+
+# TV Display Mode
+
+PrayCalc has dedicated TV apps for Apple TV, Android TV, and Fire TV. Display prayer times on your living room screen or use it as a full-screen masjid sign with iqamah times and announcements.
+
+## Overview
+
+Two TV platforms are supported:
+
+- **Apple TV** (tvOS 17+): native SwiftUI app, pairs with iPhone or web dashboard, real-time WebSocket push
+- **Android TV / Fire TV**: Flutter app, built-in to the main PrayCalc Android release, D-pad navigation
+
+Both platforms support home mode and masjid mode and are designed for landscape TV displays.
+
+## Apple TV
+
+PrayCalcTV is a native SwiftUI app for Apple TV. It pairs with your iPhone or the praycalc.com web dashboard and displays prayer times full-screen.
+
+### Pairing
+
+1. Open the PrayCalc app on your iPhone or go to [praycalc.com/dashboard](https://praycalc.com/dashboard)
+2. Navigate to Smart Home > TVs > Add Device
+3. Enter the 4-digit code shown on your Apple TV
+4. Prayer times push instantly via WebSocket — no polling, no manual refresh
+
+### Display
+
+The Apple TV app shows:
+
+- Current prayer and next prayer with live countdown
+- All daily prayer times in a clear landscape layout
+- Hijri date and your location
+- Adhan notification at each prayer time
+
+Navigation uses the Siri Remote D-pad — no touch required. The display is readable from across the room.
+
+### Requirements
+
+- Apple TV HD or Apple TV 4K
+- tvOS 17 or later
+- Ummat+ subscription for real-time sync and pairing
+
+Available on the Apple TV App Store as **PrayCalc for Apple TV** (bundle ID: `com.praycalc.app.tv`).
+
+## Android TV & Fire TV
+
+The Android TV app is a separate build target inside the main PrayCalc app. It runs in landscape on Android TV and Fire TV devices, uses D-pad navigation, keeps the screen on with WakelockPlus, and transitions to an ambient screensaver after a configurable idle period.
+
+Two display modes:
+
+- **Home mode**: personal prayer clock for your living room
+- **Masjid mode**: public signage for masjids and prayer halls
+
+## Home mode
+
+The default TV display shows:
+
+- **Current time** in large text (center of screen)
+- **Next prayer countdown** with a breathing animation
+- **Prayer grid**: 6 prayer tiles (Fajr, Sunrise, Dhuhr, Asr, Maghrib, Isha) in a 2x3 layout
+- **Hijri and Gregorian dates** in the header
+- **Moon phase** indicator with phase name and illumination percentage
+- **Weather** current temperature and conditions (when configured)
+
+Navigate between prayers with the D-pad. The currently active prayer is highlighted with the PrayCalc green accent color.
+
+## Masjid mode
+
+Designed for large displays in masjids and prayer halls. Forced landscape orientation with large fonts readable from 30 feet away.
+
+Features:
+
+- **Adhan and Iqamah table**: side-by-side columns showing each prayer's adhan and iqamah times
+- **Iqamah offsets**: configurable per-prayer offset (e.g., Fajr +20 min, Dhuhr +15 min)
+- **Friday Jumu'ah label**: automatically relabels Dhuhr as Jumu'ah on Fridays with the correct iqamah
+- **Ramadan labels**: Suhoor (at Fajr) and Iftar (at Maghrib) during Ramadan
+- **Announcement bar**: scrolling carousel for masjid announcements (auto-cycles every 8 seconds)
+- **QR code overlay**: optional QR code linking to the masjid's website or donation page
+
+## Weather display
+
+The TV home screen shows current weather conditions alongside the moon phase in the bottom bar. Weather data comes from the OpenWeatherMap API and updates every 60 minutes.
+
+The weather display shows:
+
+- **Weather emoji** matching current conditions (sunny, cloudy, rain, snow, etc.)
+- **Temperature** in Celsius (based on city coordinates)
+- **Condition description** (e.g., "clear sky", "light rain")
+
+Weather requires an OpenWeatherMap API key, injected at build time:
+
+```bash
+flutter run --target=lib/main_tv.dart \
+  --dart-define=OPENWEATHERMAP_API_KEY=your_key_here
+```
+
+If no API key is configured, the weather section is hidden and only the moon phase is displayed. Weather data is cached in memory for 60 minutes to minimize API calls. If a network request fails, the last cached result is shown until the next successful refresh.
+
+## Ambient screensaver
+
+After a configurable idle period (default: 10 minutes), the TV transitions to an ambient screensaver that shows:
+
+- Islamic geometric pattern (octagonal grid with star patterns)
+- Current time, next prayer, and moon phase as overlay text
+- Qibla compass direction
+
+All overlay text drifts slowly across the screen (sinusoidal motion over a 30-minute cycle) to prevent OLED burn-in. Press any remote button to return to the main display.
+
+## System screensaver (DreamService)
+
+On Android TV and Fire TV, PrayCalc also registers as a system screensaver via Android's DreamService API. This means you can select PrayCalc in **Settings > Screen saver** and it will activate when the device is idle, even outside the PrayCalc app.
+
+The system screensaver displays:
+
+- Current time over a deep green gradient background
+- Next prayer name and countdown
+- Moon phase emoji
+- Slow text drift for OLED burn-in prevention
+
+The screensaver reads prayer data from SharedPreferences, so it stays current as long as the PrayCalc app has been opened at least once.
+
+## Settings
+
+TV settings are accessible from the main screen via D-pad navigation:
+
+| Setting | Description | Default |
+| --- | --- | --- |
+| Display mode | Home or Masjid | Home |
+| Masjid name | Displayed in masjid mode header | — |
+| Iqamah offsets | Per-prayer offset in minutes | Fajr: 20, Dhuhr: 15, Asr: 15, Maghrib: 5, Isha: 15, Jumu'ah: 30 |
+| QR code | URL shown as QR overlay in masjid mode | Off |
+| Ambient timeout | Minutes of idle before screensaver | 10 |
+| Ambient interval | Seconds between screensaver pattern changes | 60 |
+| Language | Display language | System default |
+
+## Building the TV APK
+
+The Android TV app uses a separate entry point:
+
+```bash
+# Debug
+flutter run --target=lib/main_tv.dart
+
+# Release APK
+flutter build apk --target=lib/main_tv.dart --release
+
+# Install on connected Android TV
+adb install build/app/outputs/flutter-apk/app-release.apk
+```
+
+The TV APK includes the Android TV leanback launcher intent filter, so it appears in the Android TV home screen alongside other apps. A 320x180dp banner is displayed in the TV launcher row.

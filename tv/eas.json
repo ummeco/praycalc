@@ -1,0 +1,25 @@
+{
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "tvos": {
+        "simulator": true
+      }
+    },
+    "preview": {
+      "distribution": "internal"
+    },
+    "production": {}
+  },
+  "cli": {
+    "version": ">= 5.0.0"
+  },
+  "submit": {
+    "production": {
+      "tvos": {
+        "appleId": "UD-PENDING-APPLE-ID"
+      }
+    }
+  }
+}

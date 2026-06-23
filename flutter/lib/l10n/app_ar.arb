@@ -1,8 +1,6 @@
 {
   "@@locale": "ar",
-
   "appTitle": "PrayCalc",
-
   "prayerFajr": "الفجر",
   "prayerSunrise": "الشروق",
   "prayerDhuhr": "الظهر",
@@ -12,7 +10,6 @@
   "prayerQiyam": "قيام الليل",
   "prayerSuhoor": "السحور",
   "prayerIftar": "الإفطار",
-
   "hijriMuharram": "محرم",
   "hijriSafar": "صفر",
   "hijriRabiAlAwwal": "ربيع الأول",
@@ -25,7 +22,6 @@
   "hijriShawwal": "شوال",
   "hijriDhulQidah": "ذو القعدة",
   "hijriDhulHijjah": "ذو الحجة",
-
   "monthJan": "يناير",
   "monthFeb": "فبراير",
   "monthMar": "مارس",
@@ -38,7 +34,6 @@
   "monthOct": "أكتوبر",
   "monthNov": "نوفمبر",
   "monthDec": "ديسمبر",
-
   "monthJanuary": "يناير",
   "monthFebruary": "فبراير",
   "monthMarch": "مارس",
@@ -51,7 +46,6 @@
   "monthOctober": "أكتوبر",
   "monthNovember": "نوفمبر",
   "monthDecember": "ديسمبر",
-
   "dayMonShort": "الإثنين",
   "dayTueShort": "الثلاثاء",
   "dayWedShort": "الأربعاء",
@@ -59,7 +53,6 @@
   "dayFriShort": "الجمعة",
   "daySatShort": "السبت",
   "daySunShort": "الأحد",
-
   "daySuChart": "أح",
   "dayMoChart": "إث",
   "dayTuChart": "ثل",
@@ -67,7 +60,6 @@
   "dayThChart": "خم",
   "dayFrChart": "جم",
   "daySaChart": "سب",
-
   "chooseCityLabel": "اختر مدينة",
   "setCityFab": "تحديد المدينة",
   "prayerTimesError": "تعذّر حساب أوقات الصلاة.\n{error}",
@@ -76,7 +68,6 @@
   "ramadanDayProgress": "اليوم {day} / 30",
   "lastTenNights": "العشر الأواخر ✨",
   "laylatulQadr": "ليلة القدر ✨",
-
   "settingsTitle": "الإعدادات",
   "settingsSectionPrayerCalc": "حساب أوقات الصلاة",
   "settingsCalcMethod": "طريقة الحساب",
@@ -92,7 +83,6 @@
   "settingsPrayerNotificationsSubtitle": "الأذان والتذكيرات وإعدادات كل صلاة",
   "settingsPrayerAgendas": "جداول الصلاة",
   "settingsPrayerAgendasSubtitle": "تذكيرات مخصصة بفارق عن أوقات الصلاة",
-
   "notifSettingsTitle": "الإشعارات والأذان",
   "notifAdhanLabel": "الأذان",
   "notifReminderMinBefore": "تذكير: {minutes} دقيقة قبل",
@@ -102,19 +92,16 @@
   "notifModeReminderOnly": "تذكير فقط",
   "notifModeArrival": "عند وقت الصلاة",
   "notifModeBoth": "تذكير + وصول",
-
   "citySearchHint": "البحث عن مدينة…",
   "citySearchDetectTooltip": "تحديد موقعي",
   "citySearchNoCityGps": "تعذّر تحديد المدينة من GPS.",
   "citySearchPermissionDenied": "رُفض إذن الموقع. ابحث يدوياً.",
   "citySearchNoResults": "لم يتم العثور على مدن.",
   "citySearchStartTyping": "ابدأ الكتابة للبحث…",
-
   "agendasTitle": "جداول الصلاة",
   "agendasEmpty": "لا توجد جداول بعد.\nاضغط + لإضافة تذكير مرتبط بصلواتك.",
   "agendasUndo": "تراجع",
   "agendasRemoved": "تمت إزالة {label}",
-
   "agendaNewTitle": "جدول جديد",
   "agendaEditTitle": "تعديل الجدول",
   "agendaSave": "حفظ",
@@ -136,7 +123,6 @@
   "agendaDayW": "أ",
   "agendaDayF": "ج",
   "agendaDayS": "س",
-
   "moonTitle": "القمر والتقويم الهجري",
   "moonIlluminated": "{pct}% مضيء",
   "moonFullTonight": "بدر الليلة!",
@@ -169,7 +155,6 @@
   "moonUpcomingIslamicEvents": "المناسبات الإسلامية القادمة",
   "moonTodayLabel": "اليوم",
   "moonTomorrowLabel": "غداً",
-
   "calDateCol": "التاريخ",
   "calHijriCol": "هجري",
   "calFajrCol": "الفجر",
@@ -184,7 +169,6 @@
   "calNextMonthTooltip": "الشهر التالي",
   "calExportHeader": "PrayCalc — {month}",
   "calExportSubject": "أوقات الصلاة — {month}",
-
   "qiblaTitle": "القبلة",
   "qiblaSwitchToCompass": "التبديل إلى البوصلة",
   "qiblaSwitchToAR": "التبديل إلى كاميرا الواقع المعزز",
@@ -196,7 +180,6 @@
   "qiblaDistKm": "{dist} كم من الكعبة المشرفة",
   "qiblaDistThousandKm": "{dist} ألف كم من الكعبة المشرفة",
   "qiblaFacingQibla": "في اتجاه القبلة ✓",
-
   "tasbeehTitle": "التسبيح",
   "tasbeehResetTooltip": "إعادة تعيين",
   "tasbeehTapToSwitch": "اضغط على العنوان للتبديل",
@@ -210,7 +193,6 @@
   "tasbeehNoHistory": "لا يوجد سجل بعد — ابدأ العد!",
   "tasbeehComplete": "اكتمل التسبيح! {count} ذكر",
   "tasbeehPresetComplete": "✓ {label} × {target}",
-
   "smartHomeTitle": "المنزل الذكي",
   "smartHomeSubtitle": "اربط أجهزتك بأوقات الصلاة",
   "smartHomeGoogleHome": "جوجل هوم",
@@ -230,7 +212,6 @@
   "smartHomeTestConnection": "اختبار الاتصال",
   "smartHomeConnectionSuccess": "تم الاتصال بنجاح",
   "smartHomeConnectionFailed": "فشل الاتصال. تحقق من ربط حسابك.",
-
   "subscriptionTitle": "أمة+",
   "subscriptionSubtitle": "ميزات أوقات الصلاة المتقدمة",
   "subscriptionUpgrade": "ترقية إلى أمة+",
@@ -251,26 +232,22 @@
   "subscriptionFeatureWatch": "واجهة الساعة",
   "subscriptionFeatureSync": "المزامنة عبر الأجهزة",
   "subscriptionFeatureAdFree": "تجربة بدون إعلانات",
-
   "tvTitle": "شاشة التلفاز",
   "tvMasjidMode": "وضع المسجد",
   "tvAmbientMode": "الوضع المحيطي",
   "tvSettingsIqamah": "فروق الإقامة",
   "tvSettingsAnnouncements": "الإعلانات",
   "tvConnectQR": "امسح للاتصال",
-
   "watchTitle": "الساعة",
   "watchNextPrayer": "الصلاة التالية",
   "watchAllPrayers": "جميع الصلوات",
   "watchComplication": "واجهة الساعة",
-
   "nextPrayer": "الصلاة التالية",
   "allPrayers": "جميع الصلوات",
   "today": "اليوم",
   "tomorrow": "غداً",
   "thisWeek": "هذا الأسبوع",
   "thisMonth": "هذا الشهر",
-
   "commonCancel": "إلغاء",
   "commonSave": "حفظ",
   "commonDelete": "حذف",
@@ -306,7 +283,6 @@
   "commonFeedback": "إرسال ملاحظات",
   "commonHelp": "مساعدة",
   "commonLanguage": "اللغة",
-
   "travelNotificationTitle": "أنت الآن مسافر",
   "travelNotificationBody": "قد تُقصر أوقات الصلاة. اضغط لمعرفة أحكام صلاة المسافر.",
   "travelRulingsTitle": "السفر والصلاة",
@@ -319,7 +295,6 @@
   "travelLearnMore": "اعرف المزيد",
   "travelHanafiDefaultTitle": "لماذا يستخدم PrayCalc الإعداد الحنفي",
   "travelDeeperScholarly": "نقاش علمي أعمق",
-
   "dayMonday": "الإثنين",
   "dayTuesday": "الثلاثاء",
   "dayWednesday": "الأربعاء",
@@ -327,7 +302,6 @@
   "dayFriday": "الجمعة",
   "daySaturday": "السبت",
   "daySunday": "الأحد",
-
   "homeSuffixAH": "هـ",
   "homeSuffixCE": "م",
   "homeNoCitySelected": "لم يتم اختيار مدينة",
@@ -338,7 +312,6 @@
   "homeActionDuaDhikr": "الدعاء\nوالذكر",
   "homeActionPrayerStats": "إحصائيات\nالصلاة",
   "homePolarBanner": "لا يمكن حساب {count} من أوقات الصلاة لموقعك خلال هذه الفترة (شمس منتصف الليل / ليل قطبي). جرب تقدير خط العرض الأقرب في الإعدادات.",
-
   "settingsAccount": "الحساب",
   "settingsSignInToSync": "سجّل الدخول للمزامنة",
   "settingsSignInToSyncSubtitle": "حافظ على بياناتك عبر الأجهزة",
@@ -375,12 +348,10 @@
   "settingsTvSettings": "إعدادات التلفاز",
   "settingsTvSettingsSubtitle": "وضع المسجد، فروق الإقامة، الوضع المحيطي",
   "settingsAboutPrayCalc": "حول PrayCalc",
-
   "syncSynced": "تمت المزامنة",
   "syncSyncing": "جاري المزامنة...",
   "syncOffline": "غير متصل",
   "syncError": "خطأ في المزامنة",
-
   "moonPhaseNewMoon": "محاق",
   "moonPhaseWaxingCrescent": "هلال متزايد",
   "moonPhaseFirstQuarter": "تربيع أول",
@@ -399,7 +370,6 @@
   "moonNotVisible": "غير مرئي",
   "moonPossible": "محتمل",
   "moonUpcomingDates": "مواعيد إسلامية قادمة",
-
   "loginCreateAccount": "إنشاء حساب",
   "loginSignIn": "تسجيل الدخول",
   "loginWelcomeBack": "مرحباً بعودتك",
@@ -421,7 +391,6 @@
   "loginResetFailed": "تعذّر إرسال بريد إعادة التعيين",
   "loginNewToPrayCalc": "جديد على PrayCalc؟",
   "loginAlreadyHaveAccount": "لديك حساب بالفعل؟",
-
   "accountTitle": "الحساب",
   "accountNotSignedIn": "لم يتم تسجيل الدخول",
   "accountSyncSection": "المزامنة",
@@ -448,7 +417,6 @@
   "accountTimeMinAgo": "منذ {min} دقيقة",
   "accountTimeHourAgo": "منذ {hour} ساعة",
   "accountTimeDayAgo": "منذ {day} يوم",
-
   "statsTitle": "إحصائيات الصلاة",
   "statsShareTooltip": "مشاركة الإحصائيات",
   "statsTodayPrayers": "صلوات اليوم",
@@ -469,16 +437,13 @@
   "statsShareWeekly": "أسبوعي: {pct}%",
   "statsShareMonthly": "شهري: {pct}%",
   "statsShareBreakdown": "التفصيل الأسبوعي:",
-
   "aboutTitle": "حول PrayCalc",
   "aboutWebsite": "الموقع",
   "aboutContact": "اتصل بنا",
   "aboutLicenses": "تراخيص المصادر المفتوحة",
   "aboutCouldNotOpen": "تعذّر فتح الرابط.",
   "aboutCopyright": "© {year} Ummat Dev. جميع الحقوق محفوظة.\n\nيتم حساب أوقات الصلاة باستخدام محرك pray_calc_dart. تعتمد الدقة على موقع GPS وطريقة الحساب المحددة.",
-
   "commonOpenSettings": "فتح الإعدادات",
-
   "onboardingTitle1": "أوقات الصلاة، أينما كنت",
   "onboardingBody1": "أوقات صلاة دقيقة بـ GPS لكل مدينة على وجه الأرض. من الفجر إلى العشاء، ومن الشروق إلى القيام. بمحرك حسابنا الخاص، مصمم للدقة.",
   "onboardingTitle2": "موقعك، أوقاتك",
@@ -495,7 +460,6 @@
   "onboardingContinueWithoutAccount": "المتابعة بدون حساب",
   "onboardingSigningIn": "جاري تسجيل الدخول…",
   "onboardingSelectLanguage": "اختر اللغة",
-
   "duaDhikrTitle": "الدعاء والذكر",
   "duaDhikrTabDua": "الدعاء",
   "duaDhikrTabDhikr": "الذكر",
@@ -504,13 +468,11 @@
   "duaDhikrTabEvening": "المساء",
   "duaDhikrMorningAdhkar": "أذكار الصباح",
   "duaDhikrEveningAdhkar": "أذكار المساء",
-
   "calGregToggle": "ميلادي",
   "calHijriToggle": "هجري",
   "calYearlyTooltip": "التقويم السنوي",
   "calExportIcsTooltip": "تصدير .ics",
   "calMagCol": "مغر",
-
   "qiblaShowOnMap": "عرض على الخريطة",
   "qiblaWaitingCompass": "في انتظار البوصلة...",
   "qiblaNoCompassSensor": "لا يوجد مستشعر بوصلة. عرض اتجاه القبلة بشكل ثابت.",
@@ -522,7 +484,6 @@
   "qiblaYourLocation": "موقعك",
   "qiblaGpsAccurate": "دقة GPS",
   "qiblaCityCenter": "وسط المدينة",
-
   "moonIlluminatedLabel": "مضيء",
   "moonAgeLabel": "العمر",
   "moonFirstQtr": "التربيع الأول",
@@ -531,7 +492,6 @@
   "moonTomorrow": "غداً",
   "moonDaysAway": "{days} يوم",
   "moonBeta": "تجريبي",
-
   "setHomeTitle": "تحديد موقع المنزل",
   "setHomeSearchHint": "ابحث عن مدينة أو رمز بريدي…",
   "setHomeClear": "مسح",
@@ -545,7 +505,6 @@
   "setHomeNoCitiesFound": "لم يتم العثور على مدن.",
   "setHomeSearchPrompt": "ابحث عن مدينتك",
   "setHomeSearchBody": "اكتب أعلاه للبحث، أو استخدم موقعك الحالي. وضع السفر سيكتشف عندما تكون بعيداً عن المنزل.",
-
   "subscriptionYouHavePlus": "لديك أمة+",
   "subscriptionUpgradeTo": "ترقية إلى أمة+",
   "subscriptionThankYou": "شكراً لدعمك PrayCalc.",
@@ -560,7 +519,6 @@
   "subscriptionFeatureCalendar": "التقويم الشهري",
   "subscriptionFeatureTasbeeh": "عداد التسبيح",
   "subscriptionFeatureMoon": "القمر والهجري",
-
   "smartHomeAlertType": "نوع التنبيه",
   "smartHomeAlertModal": "نافذة ملء الشاشة",
   "smartHomeAlertCorner": "إشعار جانبي",
@@ -573,10 +531,8 @@
   "smartHomeAudioAdhan": "أذان",
   "smartHomeAudioBeep": "صافرة",
   "smartHomeAudioSilent": "صامت",
-
   "aboutPrivacy": "سياسة الخصوصية",
   "aboutVersion": "الإصدار {version}",
-
   "notifDefaultAdhan": "الأذان الافتراضي",
   "notifFajrAdhan": "أذان الفجر",
   "notifFajrAdhanSubtitle": "يُشغّل عند وقت صلاة الفجر",
@@ -584,7 +540,6 @@
   "notifRegularAdhanSubtitle": "يُشغّل عند الظهر والعصر والمغرب والعشاء",
   "notifPerPrayerSettings": "إعدادات كل صلاة",
   "notifPreview": "معاينة",
-
   "tvSettingsTitle": "إعدادات التلفاز",
   "tvDisplayMode": "وضع العرض",
   "tvMasjidModeSubtitle": "عرض لافتات كبير مع أوقات الإقامة",
@@ -622,7 +577,6 @@
   "tvPhotoCategoryTitle": "فئة الصور",
   "tvEnterHint": "أدخل {title}",
   "tvSystemDefault": "الافتراضي للنظام",
-
   "smartHomeIntegrations": "التكاملات",
   "smartHomeLinkedSpeakers": "السماعات والشاشات المربوطة",
   "smartHomeAlertDisplay": "عرض التنبيه",
@@ -665,10 +619,8 @@
   "smartHomeLinkedStatus": "مربوط",
   "smartHomeNotLinkedStatus": "غير مربوط",
   "smartHomeCouldNotOpen": "تعذّر فتح الرابط.",
-
   "adhkarCompletedCount": "{completed} / {total} مكتمل",
   "adhkarReset": "إعادة تعيين",
-
   "syncHistoryTitle": "سجل المزامنة",
   "syncClearHistory": "مسح السجل",
   "syncNoConflicts": "لا توجد تعارضات مزامنة. جميع الأجهزة متزامنة.",
@@ -679,12 +631,10 @@
   "syncTimeMinAgo": "منذ {min} دقيقة",
   "syncTimeHourAgo": "منذ {hour} ساعة",
   "syncTimeDayAgo": "منذ {day} يوم",
-
   "pinCity": "تثبيت",
   "pinMaxReached": "الحد الأقصى 5 مدن مثبتة. رقِّ إلى أمة+ للمزيد.",
   "pinCityUnpinned": "تم إلغاء تثبيت {city}",
   "pinUndo": "تراجع",
-
   "smartHomeDevices": "الأجهزة",
   "smartHomeAddDevice": "إضافة جهاز",
   "smartHomeDeleteDevice": "حذف",
@@ -694,7 +644,9 @@
   "smartHomeDeviceLastSeen": "آخر ظهور: {time}",
   "@smartHomeDeviceLastSeen": {
     "placeholders": {
-      "time": { "type": "String" }
+      "time": {
+        "type": "String"
+      }
     }
   },
   "smartHomeDeviceName": "اسم الجهاز",
@@ -720,7 +672,6 @@
   "smartHomeLoadingDevices": "جاري تحميل الأجهزة...",
   "smartHomeLoadingIntegrations": "جاري تحميل التكاملات...",
   "smartHomeServiceUnavailable": "خدمة المنزل الذكي غير متوفرة حالياً. يرجى المحاولة لاحقاً.",
-
   "tvPairingScanQr": "Scan TV QR Code",
   "tvPairingScanInstruction": "Point your camera at the QR code on your TV",
   "tvPairingEnterManually": "Enter code manually",
@@ -734,6 +685,30 @@
   "tvPairingTimeout": "Request timed out. Is the TV on and connected?",
   "tvPairingServerError": "Could not connect to server.",
   "tvPairingSignInRequired": "Sign in to your account before pairing a TV.",
-
-  "tvJumuahGreeting": "جمعة مباركة"
+  "tvJumuahGreeting": "جمعة مباركة",
+  "desktopNextPrayer": "الصلاة القادمة…",
+  "desktopOpen": "فتح برنامج الصلاة",
+  "desktopQuit": "إغلاق برنامج الصلاة",
+  "desktopSettings": "الإعدادات…",
+  "desktopTrayTooltip": "برنامج الصلاة - مواقيت الصلاة",
+  "desktopTvDisplays": "شاشات التلفاز…",
+  "statsBestStreak": "أفضل تسلسل",
+  "statsDailyGoalLabel": "{goal} صلوات / يوم",
+  "statsDailyGoalTitle": "هدف الصلاة اليومي",
+  "statsGoalStreak": "تسلسل الهدف",
+  "statsHeatmapDetail": "{count} / 5 صلوات مؤداة",
+  "statsHeatmapNoData": "لا توجد صلوات مسجلة لهذا اليوم",
+  "statsHeatmapTitle": "نظرة على السنة",
+  "tvChildAsrExplanation": "صلاة العصر هي صلاة بعد الظهر. أقسم الله بهذا الوقت في سورة العصر — إنها مهمة جدًا!",
+  "tvChildAsrFunFact": "تفويت صلاة العصر كمن فُجع بأهله وماله. كذلك يحبها الله! (البخاري)",
+  "tvChildDhuhrExplanation": "صلاة الظهر هي صلاة منتصف النهار. تبلغ الشمس أعلى نقطة في السماء، ونتوقف لنذكر الله.",
+  "tvChildDhuhrFunFact": "كان النبي ﷺ يحب أن يصلي الظهر مبكرًا حين تزول الشمس. (مسلم)",
+  "tvChildFajrExplanation": "صلاة الفجر هي صلاة الصباح. نستيقظ قبل الشروق لنشكر الله على يوم جديد!",
+  "tvChildFajrFunFact": "قال النبي ﷺ: \"أفضل الصلوات عند الله صلاة الفجر يوم الجمعة.\" (البخاري)",
+  "tvChildIshaExplanation": "صلاة العشاء هي صلاة الليل. نختم يومنا بشكر الله قبل أن ننام.",
+  "tvChildIshaFunFact": "من صلى العشاء والفجر في جماعة فكأنما قام الليل كله! (مسلم)",
+  "tvChildMaghribExplanation": "صلاة المغرب هي صلاة الغروب. حين تغرب الشمس، نشكر الله على اليوم الجميل.",
+  "tvChildMaghribFunFact": "تلتقي ملائكة النهار والليل عند الفجر والمغرب. كم هذا مميز! (البخاري)",
+  "tvChildSunriseExplanation": "بعد الفجر، تشرق الشمس. هذا وقت مبارك للذكر وتلاوة القرآن.",
+  "tvChildSunriseFunFact": "الجلوس بعد الفجر حتى الشروق وصلاة ركعتين يعادل ثواب حجة كاملة! (الترمذي)"
 }

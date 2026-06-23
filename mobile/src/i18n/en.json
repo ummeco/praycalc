@@ -1,0 +1,67 @@
+{
+  "app": {
+    "name": "Prayer Times",
+    "tagline": "Accurate prayer times"
+  },
+  "prayer": {
+    "fajr": "Fajr",
+    "dhuhr": "Dhuhr",
+    "asr": "Asr",
+    "maghrib": "Maghrib",
+    "isha": "Isha",
+    "sunrise": "Sunrise",
+    "midnight": "Midnight",
+    "lastThird": "Last Third"
+  },
+  "common": {
+    "bismillah": "In the name of Allah, the Most Gracious, the Most Merciful",
+    "salah": "Prayer",
+    "iqama": "Iqama",
+    "adhan": "Adhan",
+    "qibla": "Qibla",
+    "hijri": "Hijri Date",
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "retry": "Retry",
+    "save": "Save",
+    "cancel": "Cancel",
+    "close": "Close",
+    "settings": "Settings",
+    "done": "Done",
+    "next": "Next",
+    "back": "Back"
+  },
+  "greeting": {
+    "assalamu_alaykum": "Assalamu Alaykum wa Rahmatullahi wa Barakatuh",
+    "prayer_approaching": "Prayer approaching",
+    "prayer_now": "Prayer time"
+  },
+  "settings": {
+    "title": "Settings",
+    "language": {
+      "title": "Language",
+      "select": "Select language",
+      "restart_required": "Restart required",
+      "restart_prompt": "The app will restart to apply the new layout direction"
+    },
+    "calculation": {
+      "title": "Calculation Method",
+      "method": "Madhab"
+    },
+    "notifications": {
+      "title": "Notifications",
+      "enable": "Enable Notifications",
+      "prayer_reminder": "Prayer Reminder"
+    },
+    "location": {
+      "title": "Location",
+      "detect": "Detect automatically",
+      "manual": "Enter manually"
+    }
+  },
+  "errors": {
+    "location_permission": "Please allow location access to calculate prayer times",
+    "network": "Could not connect to the network",
+    "calculation": "Could not calculate prayer times"
+  }
+}

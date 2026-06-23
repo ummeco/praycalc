@@ -20,6 +20,13 @@
 
 import * as Sentry from "@sentry/nextjs";
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
+
+const GoogleValidateSchema = z.object({
+  purchaseToken: z.string().min(1),
+  productId:     z.string().min(1),
+  userId:        z.string().uuid(),
+});
 
 const HASURA_URL =
   process.env.HASURA_ADMIN_URL ||
@@ -191,21 +198,15 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Internal configuration error" }, { status: 500 });
   }
 
-  let body: { purchaseToken?: string; productId?: string; userId?: string };
-  try {
-    body = await req.json();
-  } catch {
-    return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
-  }
-
-  const { purchaseToken, productId, userId } = body;
-
-  if (!purchaseToken || !productId || !userId) {
+  const rawBody = await req.json().catch(() => null);
+  const parsed = GoogleValidateSchema.safeParse(rawBody);
+  if (!parsed.success) {
     return NextResponse.json(
-      { error: "purchaseToken, productId, and userId are required" },
-      { status: 400 }
+      { error: "invalid_input", details: parsed.error.flatten() },
+      { status: 400 },
     );
   }
+  const { purchaseToken, productId, userId } = parsed.data;
 
   let expiresDate: string | null = null;
   let purchaseDate: string = new Date().toISOString();

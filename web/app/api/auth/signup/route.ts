@@ -8,21 +8,28 @@
 // Note: Hasura Auth (nhost) uses /signup/email-password (no /v1/auth/ prefix).
 
 import { NextRequest, NextResponse } from 'next/server'
+import { z } from 'zod'
 import { verifyTurnstileToken } from '@/lib/turnstile'
 
 const AUTH_URL = process.env.NEXT_PUBLIC_AUTH_URL ?? 'https://auth.ummat.dev'
 
-export async function POST(req: NextRequest) {
-  const body = await req.json().catch(() => null) as {
-    email?: string
-    password?: string
-    displayName?: string
-    turnstileToken?: string
-  } | null
+const SignupSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(8),
+  displayName: z.string().max(100).optional(),
+  turnstileToken: z.string().optional(),
+})
 
-  if (!body?.email || !body?.password) {
-    return NextResponse.json({ error: 'Email and password required' }, { status: 400 })
+export async function POST(req: NextRequest) {
+  const rawBody = await req.json().catch(() => null)
+  const parsed = SignupSchema.safeParse(rawBody)
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: 'invalid_input', details: parsed.error.flatten() },
+      { status: 400 },
+    )
   }
+  const body = parsed.data
 
   // T09: Turnstile — fail closed in production
   const isProd = process.env.NODE_ENV === 'production'

@@ -1,5 +1,10 @@
 import * as Sentry from '@sentry/nextjs';
 import { NextRequest, NextResponse } from 'next/server';
+import { z } from 'zod';
+
+const TvActivateSchema = z.object({
+  user_code: z.string().min(1),
+});
 
 const SMART_URL = process.env.SMART_SERVICE_URL ?? 'https://smart.praycalc.com';
 
@@ -18,17 +23,15 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Not signed in' }, { status: 401 });
   }
 
-  let body: { user_code?: string };
-  try {
-    body = await req.json();
-  } catch {
-    return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 });
+  const rawBody = await req.json().catch(() => null);
+  const parsedBody = TvActivateSchema.safeParse(rawBody);
+  if (!parsedBody.success) {
+    return NextResponse.json(
+      { error: 'invalid_input', details: parsedBody.error.flatten() },
+      { status: 400 },
+    );
   }
-
-  const { user_code } = body;
-  if (!user_code || typeof user_code !== 'string') {
-    return NextResponse.json({ error: 'user_code required' }, { status: 400 });
-  }
+  const { user_code } = parsedBody.data;
 
   try {
     const upstream = await fetch(`${SMART_URL}/api/v1/tv/auth/authorize`, {

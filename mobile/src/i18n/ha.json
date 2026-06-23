@@ -1,0 +1,67 @@
+{
+  "app": {
+    "name": "Lokutan Sallah",
+    "tagline": "Lokutan sallah daidai"
+  },
+  "prayer": {
+    "fajr": "Asuba",
+    "dhuhr": "Azahar",
+    "asr": "La'asar",
+    "maghrib": "Magariba",
+    "isha": "Isha'i",
+    "sunrise": "Fitowar Rana",
+    "midnight": "Tsakar Dare",
+    "lastThird": "Kashi na Ƙarshe"
+  },
+  "common": {
+    "bismillah": "Da sunan Allah Mai rahama Mai jinƙai",
+    "salah": "Sallah",
+    "iqama": "Iqama",
+    "adhan": "Azan",
+    "qibla": "Alkibla",
+    "hijri": "Ranar Hijra",
+    "loading": "Ana lodi...",
+    "error": "Matsala ta faru",
+    "retry": "Sake Gwadawa",
+    "save": "Ajiye",
+    "cancel": "Soke",
+    "close": "Rufe",
+    "settings": "Saiti",
+    "done": "An gama",
+    "next": "Na gaba",
+    "back": "Baya"
+  },
+  "greeting": {
+    "assalamu_alaykum": "Assalamu Alaykum wa Rahmatullahi wa Barakatuh",
+    "prayer_approaching": "Lokin sallah ya yi kusa",
+    "prayer_now": "Lokin sallah"
+  },
+  "settings": {
+    "title": "Saiti",
+    "language": {
+      "title": "Harshe",
+      "select": "Zaɓi harshe",
+      "restart_required": "Ana buƙatar sake fara",
+      "restart_prompt": "Aikace-aikacen zai sake farawa don amfani da sabon alkiblar tsari"
+    },
+    "calculation": {
+      "title": "Hanyar Lissafi",
+      "method": "Mazhabu"
+    },
+    "notifications": {
+      "title": "Sanarwa",
+      "enable": "Kunna Sanarwa",
+      "prayer_reminder": "Tunatar da Sallah"
+    },
+    "location": {
+      "title": "Wuri",
+      "detect": "Gano ta atomatik",
+      "manual": "Shigar da hannu"
+    }
+  },
+  "errors": {
+    "location_permission": "Don Allah bada izinin shiga wurin don ƙididdige lokutan sallah",
+    "network": "Ba a iya haɗawa da hanyar sadarwa",
+    "calculation": "Ba a iya ƙididdige lokutan sallah"
+  }
+}

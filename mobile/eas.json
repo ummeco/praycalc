@@ -1,0 +1,38 @@
+{
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "ios": {
+        "simulator": true
+      },
+      "android": {
+        "buildType": "debug"
+      }
+    },
+    "preview": {
+      "distribution": "internal",
+      "android": {
+        "buildType": "apk"
+      }
+    },
+    "production": {
+      "android": {
+        "buildType": "aab"
+      }
+    }
+  },
+  "cli": {
+    "version": ">= 5.0.0"
+  },
+  "submit": {
+    "production": {
+      "android": {
+        "serviceAccount": "UD-PENDING-STORE-SERVICE-ACCOUNT"
+      },
+      "ios": {
+        "appleId": "UD-PENDING-APPLE-ID"
+      }
+    }
+  }
+}

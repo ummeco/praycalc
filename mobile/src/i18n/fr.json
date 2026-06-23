@@ -1,0 +1,67 @@
+{
+  "app": {
+    "name": "Horaires de Prière",
+    "tagline": "Horaires de prière précis"
+  },
+  "prayer": {
+    "fajr": "Fajr",
+    "dhuhr": "Dhuhr",
+    "asr": "Asr",
+    "maghrib": "Maghrib",
+    "isha": "Isha",
+    "sunrise": "Lever du soleil",
+    "midnight": "Minuit",
+    "lastThird": "Dernier tiers"
+  },
+  "common": {
+    "bismillah": "Au nom d'Allah, le Tout Miséricordieux, le Très Miséricordieux",
+    "salah": "Prière",
+    "iqama": "Iqama",
+    "adhan": "Adhan",
+    "qibla": "Qibla",
+    "hijri": "Date Hijri",
+    "loading": "Chargement...",
+    "error": "Une erreur est survenue",
+    "retry": "Réessayer",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "close": "Fermer",
+    "settings": "Paramètres",
+    "done": "Terminé",
+    "next": "Suivant",
+    "back": "Retour"
+  },
+  "greeting": {
+    "assalamu_alaykum": "Assalamu Alaykum wa Rahmatullahi wa Barakatuh",
+    "prayer_approaching": "Prière imminente",
+    "prayer_now": "Heure de la prière"
+  },
+  "settings": {
+    "title": "Paramètres",
+    "language": {
+      "title": "Langue",
+      "select": "Choisir une langue",
+      "restart_required": "Redémarrage requis",
+      "restart_prompt": "L'application va redémarrer pour appliquer le nouveau sens de mise en page"
+    },
+    "calculation": {
+      "title": "Méthode de calcul",
+      "method": "Madhab"
+    },
+    "notifications": {
+      "title": "Notifications",
+      "enable": "Activer les notifications",
+      "prayer_reminder": "Rappel de prière"
+    },
+    "location": {
+      "title": "Localisation",
+      "detect": "Détecter automatiquement",
+      "manual": "Saisir manuellement"
+    }
+  },
+  "errors": {
+    "location_permission": "Veuillez autoriser l'accès à la localisation pour calculer les horaires de prière",
+    "network": "Impossible de se connecter au réseau",
+    "calculation": "Impossible de calculer les horaires de prière"
+  }
+}

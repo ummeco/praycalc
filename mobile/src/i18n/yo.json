@@ -1,0 +1,67 @@
+{
+  "app": {
+    "name": "Àkókò Ìjọsìn",
+    "tagline": "Àkókò ìjọsìn tó péye"
+  },
+  "prayer": {
+    "fajr": "Fajr",
+    "dhuhr": "Dhuhr",
+    "asr": "Asr",
+    "maghrib": "Maghrib",
+    "isha": "Isha",
+    "sunrise": "Ìmọ́lẹ̀ Ọjọ́",
+    "midnight": "Ọgànjọ́",
+    "lastThird": "Ìdá Mẹta Ẹhin"
+  },
+  "common": {
+    "bismillah": "Ní orúkọ Allāhu Rahmāni Rahīm",
+    "salah": "Ìjọsìn",
+    "iqama": "Iqama",
+    "adhan": "Azan",
+    "qibla": "Qibla",
+    "hijri": "Ọjọ́ Hijri",
+    "loading": "Ń gba...",
+    "error": "Àṣìṣe ṣẹlẹ̀",
+    "retry": "Gbìyànjú Lẹ́ẹ̀kan Sí",
+    "save": "Pamọ́",
+    "cancel": "Fagilé",
+    "close": "Pa",
+    "settings": "Ìṣètò",
+    "done": "Parí",
+    "next": "Tẹ̀lé",
+    "back": "Padà"
+  },
+  "greeting": {
+    "assalamu_alaykum": "Assalamu Alaykum wa Rahmatullahi wa Barakatuh",
+    "prayer_approaching": "Àkókò ìjọsìn ń sún mọ́",
+    "prayer_now": "Àkókò ìjọsìn"
+  },
+  "settings": {
+    "title": "Ìṣètò",
+    "language": {
+      "title": "Èdè",
+      "select": "Yan èdè",
+      "restart_required": "Ìtúnbọ̀ nílò",
+      "restart_prompt": "Àpèsè náà yóò tún bẹ̀rẹ̀ láti lo ìtọ́sọ̀nà ètò tuntun"
+    },
+    "calculation": {
+      "title": "Ọ̀nà Ìṣirò",
+      "method": "Madhab"
+    },
+    "notifications": {
+      "title": "Ìwífún",
+      "enable": "Mú Ìwífún Ṣiṣẹ́",
+      "prayer_reminder": "Ìrántí Ìjọsìn"
+    },
+    "location": {
+      "title": "Ibi",
+      "detect": "Wá fúnrarẹ̀",
+      "manual": "Tẹ̀ sílẹ̀ fúnrarẹ̀"
+    }
+  },
+  "errors": {
+    "location_permission": "Jọ̀wọ́ gbà ìráàyèsí ibi láti ṣírò àkókò ìjọsìn",
+    "network": "Kò lè so mọ́ nẹ́tíwọ̀ọ̀kì",
+    "calculation": "Kò lè ṣírò àkókò ìjọsìn"
+  }
+}

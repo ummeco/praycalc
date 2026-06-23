@@ -1,0 +1,63 @@
+---
+// FILE: src/layouts/Docs.astro
+// PURPOSE: Documentation page layout with sidebar navigation.
+//   Wraps all .mdx doc pages. Provides sidebar nav, mobile nav toggle,
+//   breadcrumb, and content prose area.
+// INPUTS: title, description, locale, section (for breadcrumb)
+// OUTPUTS: Full docs shell with Base layout + sidebar + content slot
+// CONSTRAINTS:
+//   - Sidebar nav is static — rendered server-side (Astro island only for mobile toggle)
+//   - RTL layout mirrors sidebar to the right on /ar/* routes
+// REF: T-01 (P2-E3-W01-S01)
+
+import Base from './Base.astro';
+import SidebarNav from '../components/SidebarNav.astro';
+import MobileNavToggle from '../components/islands/MobileNavToggle';
+import { navigation } from '../lib/navigation';
+
+interface Props {
+  title: string;
+  description?: string;
+  locale?: string;
+}
+
+const { title, description, locale = 'en' } = Astro.props;
+---
+
+<Base title={title} description={description} locale={locale}>
+  <div class="flex w-full flex-col lg:flex-row">
+    <!-- Sidebar (desktop) -->
+    <aside
+      class="hidden w-72 shrink-0 border-r border-zinc-200 dark:border-zinc-800 lg:block"
+      aria-label="Documentation navigation"
+    >
+      <div class="sticky top-0 h-screen overflow-y-auto px-4 py-8">
+        <a href="/" class="mb-8 flex items-center gap-2 font-semibold text-zinc-900 dark:text-white">
+          <span class="text-lg">PrayCalc</span>
+          <span class="rounded bg-green-100 px-1.5 py-0.5 text-xs font-medium text-green-800 dark:bg-green-900 dark:text-green-200">docs</span>
+        </a>
+        <SidebarNav navigation={navigation} currentPath={Astro.url.pathname} />
+      </div>
+    </aside>
+
+    <!-- Mobile nav toggle (island — client:load) -->
+    <div class="lg:hidden">
+      <MobileNavToggle navigation={navigation} currentPath={Astro.url.pathname} client:load />
+    </div>
+
+    <!-- Main content -->
+    <main class="min-w-0 flex-1 px-4 py-10 sm:px-6 lg:px-10 xl:px-16" id="main-content">
+      <article class="prose prose-zinc max-w-3xl dark:prose-invert prose-a:text-green-700 dark:prose-a:text-green-400 prose-headings:scroll-mt-20">
+        <slot />
+      </article>
+
+      <!-- Page footer nav -->
+      <slot name="page-nav" />
+    </main>
+
+    <!-- On-page TOC (desktop) -->
+    <div class="hidden xl:block xl:w-56 xl:shrink-0">
+      <slot name="toc" />
+    </div>
+  </div>
+</Base>

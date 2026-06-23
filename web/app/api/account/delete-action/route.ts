@@ -22,6 +22,13 @@
 
 import * as Sentry from "@sentry/nextjs";
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
+
+const DeleteActionSchema = z.object({
+  action:            z.object({ name: z.string().optional() }).optional(),
+  input:             z.object({ userId: z.string().uuid() }),
+  session_variables: z.record(z.string()).optional(),
+});
 
 const HASURA_ADMIN_URL =
   process.env.HASURA_ADMIN_URL || "https://api.ummat.dev/v1/graphql";
@@ -94,23 +101,16 @@ export async function POST(req: NextRequest) {
 
   // Hasura action request body format:
   // { action: { name }, input: { userId }, session_variables: { "x-hasura-user-id": ... } }
-  let body: {
-    action?: { name?: string };
-    input?: { userId?: string };
-    session_variables?: Record<string, string>;
-  };
-  try {
-    body = await req.json();
-  } catch {
-    return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
+  const rawBody = await req.json().catch(() => null);
+  const parsed = DeleteActionSchema.safeParse(rawBody);
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: "invalid_input", details: parsed.error.flatten() },
+      { status: 400 },
+    );
   }
-
-  const userId = body.input?.userId;
-  const sessionUserId = body.session_variables?.["x-hasura-user-id"];
-
-  if (!userId) {
-    return NextResponse.json({ error: "userId is required" }, { status: 400 });
-  }
+  const userId = parsed.data.input.userId;
+  const sessionUserId = parsed.data.session_variables?.["x-hasura-user-id"];
 
   // Security: the user may only delete their own account.
   // Hasura enforces user-role permission; we double-check here.

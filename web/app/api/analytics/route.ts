@@ -9,6 +9,7 @@
 
 import * as Sentry from '@sentry/nextjs'
 import { NextRequest, NextResponse } from 'next/server'
+import { z } from 'zod'
 
 const HASURA_URL =
   process.env.HASURA_ADMIN_URL ?? process.env.NEXT_PUBLIC_HASURA_URL!
@@ -36,35 +37,27 @@ const INSERT_EVENT_MUTATION = `
   }
 `
 
-interface AnalyticsPayload {
-  page_path: string
-  event_name: string
-  locale?: string
-  session_hash?: string
-  timestamp?: string
-  props?: Record<string, unknown>
-}
+const AnalyticsSchema = z.object({
+  page_path:    z.string().min(1),
+  event_name:   z.string().min(1),
+  locale:       z.string().optional(),
+  session_hash: z.string().optional(),
+  timestamp:    z.string().optional(),
+  props:        z.record(z.unknown()).optional(),
+})
 
-function isValid(body: unknown): body is AnalyticsPayload {
-  if (typeof body !== 'object' || body === null) return false
-  const b = body as Record<string, unknown>
-  return typeof b.page_path === 'string' && typeof b.event_name === 'string'
-}
+type AnalyticsPayload = z.infer<typeof AnalyticsSchema>
 
 export async function POST(req: NextRequest) {
-  let body: unknown
-  try {
-    body = await req.json()
-  } catch {
-    return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 })
-  }
-
-  if (!isValid(body)) {
+  const rawBody = await req.json().catch(() => null)
+  const parsed = AnalyticsSchema.safeParse(rawBody)
+  if (!parsed.success) {
     return NextResponse.json(
-      { error: 'Missing required fields: page_path, event_name' },
-      { status: 400 }
+      { error: 'invalid_input', details: parsed.error.flatten() },
+      { status: 400 },
     )
   }
+  const body: AnalyticsPayload = parsed.data
 
   if (!ADMIN_SECRET) {
     // Silently accept in dev when Hasura is not configured

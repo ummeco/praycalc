@@ -1,0 +1,67 @@
+{
+  "app": {
+    "name": "Gebetszeiten",
+    "tagline": "Genaue Gebetszeiten"
+  },
+  "prayer": {
+    "fajr": "Fadschr",
+    "dhuhr": "Zuhr",
+    "asr": "Asr",
+    "maghrib": "Maghrib",
+    "isha": "Ischa",
+    "sunrise": "Sonnenaufgang",
+    "midnight": "Mitternacht",
+    "lastThird": "Letztes Drittel"
+  },
+  "common": {
+    "bismillah": "Im Namen Allahs, des Allerbarmers, des Barmherzigen",
+    "salah": "Gebet",
+    "iqama": "Iqama",
+    "adhan": "Adhan",
+    "qibla": "Qibla",
+    "hijri": "Hidschra-Datum",
+    "loading": "Wird geladen...",
+    "error": "Ein Fehler ist aufgetreten",
+    "retry": "Erneut versuchen",
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "close": "Schließen",
+    "settings": "Einstellungen",
+    "done": "Fertig",
+    "next": "Weiter",
+    "back": "Zurück"
+  },
+  "greeting": {
+    "assalamu_alaykum": "Assalamu Alaykum wa Rahmatullahi wa Barakatuh",
+    "prayer_approaching": "Gebetszeit steht bevor",
+    "prayer_now": "Gebetszeit"
+  },
+  "settings": {
+    "title": "Einstellungen",
+    "language": {
+      "title": "Sprache",
+      "select": "Sprache wählen",
+      "restart_required": "Neustart erforderlich",
+      "restart_prompt": "Die App wird neu gestartet, um die neue Layoutrichtung anzuwenden"
+    },
+    "calculation": {
+      "title": "Berechnungsmethode",
+      "method": "Rechtsschule"
+    },
+    "notifications": {
+      "title": "Benachrichtigungen",
+      "enable": "Benachrichtigungen aktivieren",
+      "prayer_reminder": "Gebetserinnerung"
+    },
+    "location": {
+      "title": "Standort",
+      "detect": "Automatisch erkennen",
+      "manual": "Manuell eingeben"
+    }
+  },
+  "errors": {
+    "location_permission": "Bitte erlauben Sie den Standortzugriff, um Gebetszeiten zu berechnen",
+    "network": "Verbindung zum Netzwerk nicht möglich",
+    "calculation": "Gebetszeiten konnten nicht berechnet werden"
+  }
+}

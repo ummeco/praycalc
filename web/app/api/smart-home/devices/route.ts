@@ -1,4 +1,9 @@
 import { type NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
+
+const SmartHomeDeviceSchema = z.object({
+  action: z.string().optional(),
+}).passthrough();
 
 const SMART_SERVICE_URL =
   process.env.SMART_SERVICE_URL || "http://localhost:4010";
@@ -73,7 +78,15 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const body = await req.json();
+    const rawBody = await req.json().catch(() => null);
+    const parsed = SmartHomeDeviceSchema.safeParse(rawBody);
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: "invalid_input", details: parsed.error.flatten() },
+        { status: 400 },
+      );
+    }
+    const body = parsed.data;
 
     if (body.action === "generate-code") {
       const res = await fetch(
