@@ -1,0 +1,32 @@
+/**
+ * @ummat/brand — Islam.wiki theme override
+ * Extends base tokens. Dark encyclopedia tone — neutral blacks with green accent.
+ *
+ * Usage: import '@ummat/brand/tokens/islamwiki' in islamwiki/web/app/theme.css
+ */
+@import '../tokens.css';
+
+:root {
+  /* Islam.wiki uses near-black backgrounds for long-form reading comfort */
+  --color-bg:           #0a0a0a;
+  --color-bg-subtle:    #0c110d;
+  --color-surface:      #141414;
+  --color-surface-hover:#1a1a1a;
+  --color-elevated:     #1e1e1e;
+
+  --color-fg:           #f7f7f7;
+  --color-fg-secondary: #d8d8d8;
+  --color-fg-muted:     #b3b3b3;
+
+  --color-border:       #262626;
+  --color-border-subtle:#1f1f1f;
+
+  /* Green accent only — used sparingly on headings and links */
+  --iw-accent:          var(--brand-green-mid);
+  --iw-accent-light:    var(--brand-green-light);
+  --iw-accent-dark:     var(--brand-green-dark);
+
+  /* PWA manifest colors */
+  --pwa-theme-color:    #0a0a0a;
+  --pwa-bg-color:       #0a0a0a;
+}

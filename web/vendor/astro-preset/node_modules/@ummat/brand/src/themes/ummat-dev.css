@@ -1,0 +1,23 @@
+/**
+ * @ummat/brand — Ummat Dev theme override
+ * Extends base tokens. Standard Ummeco green — dev studio / admin.
+ *
+ * Usage: import '@ummat/brand/tokens/ummat-dev' in ummat/dev/*/app/theme.css
+ */
+@import '../tokens.css';
+
+:root {
+  /* Ummat Dev uses standard Ummeco green */
+  --ud-primary:       var(--color-primary);
+  --ud-accent:        var(--color-accent);
+  --ud-bg:            var(--color-bg);
+  --ud-surface:       var(--color-surface);
+
+  /* Developer portal code surface */
+  --ud-code-bg:       #040d06;
+  --ud-code-border:   var(--color-border);
+
+  /* PWA manifest colors */
+  --pwa-theme-color:  #07180d;
+  --pwa-bg-color:     #07180d;
+}

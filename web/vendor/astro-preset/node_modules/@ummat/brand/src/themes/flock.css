@@ -1,0 +1,52 @@
+/**
+ * @ummat/brand — Flock theme override
+ * Extends base tokens. Warmer, family-friendly green variant.
+ *
+ * Primary: #8FCC5E (softer warm green vs. Ummeco's #79C24C)
+ * Accent:  #B8E68C (warmer, lower contrast vs. Ummeco's #C9F27A)
+ *
+ * Still within the Ummeco green family — clearly related,
+ * but distinct enough to feel approachable / family-safe.
+ *
+ * Usage: import '@ummat/brand/tokens/flock' in flock/apps/web/src/styles/theme.css
+ */
+@import '../tokens.css';
+
+:root {
+  /* Flock warm-green palette overrides */
+  --brand-flock-primary:          #8FCC5E;
+  --brand-flock-primary-hover:    #74B04B;
+  --brand-flock-accent:           #B8E68C;
+  --brand-flock-accent-foreground:#1a3d10;
+
+  --color-primary:                var(--brand-flock-primary);
+  --color-primary-hover:          var(--brand-flock-primary-hover);
+  --color-primary-foreground:     #ffffff;
+
+  --color-accent:                 var(--brand-flock-accent);
+  --color-accent-foreground:      var(--brand-flock-accent-foreground);
+
+  /* Warmer, slightly lighter backgrounds than Ummeco base */
+  --color-bg:                     #091a06;
+  --color-bg-subtle:              #0d2109;
+  --color-surface:                #122710;
+  --color-surface-hover:          #183312;
+  --color-elevated:               #1e4019;
+
+  --color-fg:                     #edfce4;
+  --color-fg-secondary:           #c5f0a8;
+  --color-fg-muted:               rgba(184, 230, 140, 0.55);
+
+  --color-border:                 #1e4419;
+  --color-border-subtle:          #162e12;
+
+  /* Flock-specific tokens */
+  --flock-family-teal:            #4ecdc4;   /* secondary accent for family warmth */
+  --flock-family-teal-light:      #80e8e0;
+  --flock-safe:                   #4ade80;   /* COPPA-safe indicator */
+  --flock-safe-bg:                #0a1e10;
+
+  /* PWA manifest colors */
+  --pwa-theme-color:              #091a06;
+  --pwa-bg-color:                 #091a06;
+}

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- PURPOSE: Islam.wiki logo master. Open book mark. REF: T-P7-C-S10-T01c -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Islam.wiki">
+  <title>Islam.wiki</title>
+  <rect width="512" height="512" rx="96" fill="#F4FBE8"/>
+  <path d="M96 144h144a48 48 0 0 1 48 48v176a48 48 0 0 0-48-48H96V144z" fill="#5A9438"/>
+  <path d="M416 144H272a48 48 0 0 0-48 48v176a48 48 0 0 1 48-48h144V144z" fill="#1E5E2F"/>
+  <path d="M256 192v176" stroke="#0D2F17" stroke-width="6" stroke-linecap="round"/>
+</svg>

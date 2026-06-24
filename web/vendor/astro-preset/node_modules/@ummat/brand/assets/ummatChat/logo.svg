@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- PURPOSE: Ummat Chat logo master. Speech bubble + crescent. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Ummat Chat">
+  <title>Ummat Chat</title>
+  <rect width="512" height="512" rx="96" fill="#0D2F17"/>
+  <path d="M104 160a56 56 0 0 1 56-56h192a56 56 0 0 1 56 56v144a56 56 0 0 1-56 56H232l-72 56v-56h-0a56 56 0 0 1-56-56V160z" fill="#79C24C"/>
+  <path d="M324 232a72 72 0 1 1-52-69 56 56 0 1 0 0 138 72 72 0 0 0 52-69z" fill="#0D2F17"/>
+</svg>

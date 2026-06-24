@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- PURPOSE: Ummat App logo master. Crescent inside concentric community ring. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Ummat">
+  <title>Ummat</title>
+  <rect width="512" height="512" rx="96" fill="#0D2F17"/>
+  <circle cx="256" cy="256" r="176" fill="none" stroke="#1E5E2F" stroke-width="12"/>
+  <circle cx="256" cy="256" r="144" fill="none" stroke="#5A9438" stroke-width="10"/>
+  <path d="M352 256a96 96 0 1 1-68.7-92 72 72 0 1 0 0 184A96 96 0 0 0 352 256z" fill="#79C24C"/>
+</svg>

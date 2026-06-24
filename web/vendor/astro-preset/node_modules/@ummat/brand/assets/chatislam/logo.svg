@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- PURPOSE: ChatIslam logo master. Crescent + chat bubble. REF: T-P7-C-S10-T01c -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="ChatIslam">
+  <title>ChatIslam</title>
+  <rect width="512" height="512" rx="96" fill="#0D2F17"/>
+  <path d="M128 152a48 48 0 0 1 48-48h160a48 48 0 0 1 48 48v144a48 48 0 0 1-48 48H240l-72 56v-56h-40a48 48 0 0 1-48-48V152z" fill="#79C24C"/>
+  <path d="M328 224a48 48 0 1 1-34.4-46 36 36 0 1 0 0 92 48 48 0 0 0 34.4-46z" fill="#0D2F17"/>
+</svg>

@@ -1,0 +1,20 @@
+/**
+ * @ummat/brand — Ummat App theme override
+ * Extends base tokens. Standard Ummeco green — consumer super-app.
+ *
+ * Usage: import '@ummat/brand/tokens/ummat-app' in ummat/app/web/app/theme.css
+ */
+@import '../tokens.css';
+
+:root {
+  /* Ummat App uses standard Ummeco green */
+  --ua-primary:       var(--color-primary);
+  --ua-accent:        var(--color-accent);
+  --ua-bg:            var(--color-bg);
+  --ua-surface:       var(--color-surface);
+  --ua-fg:            var(--color-fg);
+
+  /* PWA manifest colors */
+  --pwa-theme-color:  #07180d;
+  --pwa-bg-color:     #07180d;
+}

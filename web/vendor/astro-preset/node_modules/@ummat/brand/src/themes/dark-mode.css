@@ -1,0 +1,84 @@
+/**
+ * @ummat/brand — Dark mode theme (B4-01)
+ *
+ * Default: dark (Ummeco standard)
+ * This file provides explicit dark + light mode overrides.
+ *
+ * Usage: import '@ummat/brand/themes/dark-mode' (after '@ummat/brand/css')
+ * In Next.js: use next-themes with storageKey="ummat-theme"
+ */
+
+/* Default (dark) — already set in tokens.css :root */
+[data-theme="dark"],
+.dark {
+  --color-surface-page:       #07180d;
+  --color-surface-raised:     #1a3326;
+  --color-surface-overlay:    rgba(0, 0, 0, 0.6);
+  --color-text-primary:       #f0fce8;
+  --color-text-secondary:     #c8f0b0;
+  --color-text-muted:         rgba(201, 242, 122, 0.55);
+  --color-text-on-light:      var(--brand-green-600);
+  --color-border-default:     #1f4a2e;
+  --color-border-strong:      #2a5a3e;
+  --skeleton-base:             rgba(255, 255, 255, 0.06);
+  --skeleton-highlight:        rgba(255, 255, 255, 0.12);
+
+  /* App backgrounds */
+  --color-bg:                 #07180d;
+  --color-bg-subtle:          #0a1a0f;
+  --color-surface:            #0f2418;
+  --color-surface-hover:      #172e1f;
+  --color-elevated:           #1a3326;
+
+  /* Text */
+  --color-fg:                 #f0fce8;
+  --color-fg-secondary:       #c8f0b0;
+  --color-fg-muted:           rgba(201, 242, 122, 0.55);
+
+  /* Borders */
+  --color-border:             #1f4a2e;
+  --color-border-subtle:      #162e1d;
+}
+
+/* Light mode overrides */
+[data-theme="light"],
+.light {
+  --color-surface-page:       #f5faf2;
+  --color-surface-raised:     #ffffff;
+  --color-surface-overlay:    rgba(0, 0, 0, 0.4);
+  --color-text-primary:       #0d2f17;
+  --color-text-secondary:     #1e5e2f;
+  --color-text-muted:         rgba(30, 94, 47, 0.6);
+  --color-text-on-light:      var(--brand-green-600);
+  --color-border-default:     rgba(30, 94, 47, 0.2);
+  --color-border-strong:      rgba(30, 94, 47, 0.4);
+  --skeleton-base:             rgba(0, 0, 0, 0.06);
+  --skeleton-highlight:        rgba(0, 0, 0, 0.12);
+
+  /* App backgrounds */
+  --color-bg:                 #f5faf2;
+  --color-bg-subtle:          #edf5e8;
+  --color-surface:            #ffffff;
+  --color-surface-hover:      #f0f8ec;
+  --color-elevated:           #ffffff;
+
+  /* Text */
+  --color-fg:                 #0d2f17;
+  --color-fg-secondary:       #1e5e2f;
+  --color-fg-muted:           rgba(30, 94, 47, 0.6);
+
+  /* Borders */
+  --color-border:             rgba(30, 94, 47, 0.2);
+  --color-border-subtle:      rgba(30, 94, 47, 0.1);
+
+  /* B2-05: On light surfaces, text must use green-600 or darker for WCAG AA */
+  --color-primary:            var(--brand-green-600);
+  --color-primary-hover:      var(--brand-green-dark);
+
+  /* Status colors adjusted for light bg */
+  --color-success:            var(--brand-green-dark);
+  --color-success-bg:         #e8f5e0;
+  --color-warning-bg:         #fff9e0;
+  --color-error-bg:           #fff0f0;
+  --color-info-bg:            #e8f0ff;
+}
