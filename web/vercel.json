@@ -7,73 +7,61 @@
     {
       "source": "/times/:city+",
       "destination": "/:city+",
-      "permanent": true,
       "statusCode": 301
     },
     {
       "source": "/privacy",
       "destination": "/legal/privacy",
-      "permanent": true,
       "statusCode": 301
     },
     {
       "source": "/terms",
       "destination": "/legal/terms",
-      "permanent": true,
       "statusCode": 301
     },
     {
       "source": "/cookies",
       "destination": "/legal/privacy",
-      "permanent": true,
       "statusCode": 301
     },
     {
       "source": "/tv/guest/:code",
       "destination": "/",
-      "permanent": false,
       "statusCode": 302
     },
     {
       "source": "/tv/setup",
       "destination": "/",
-      "permanent": false,
       "statusCode": 302
     },
     {
       "source": "/account",
       "destination": "/",
-      "permanent": false,
       "statusCode": 302
     },
     {
       "source": "/account/:path*",
       "destination": "/",
-      "permanent": false,
       "statusCode": 302
     },
     {
       "source": "/dashboard",
       "destination": "/",
-      "permanent": false,
       "statusCode": 302
     },
     {
       "source": "/dashboard/:path*",
       "destination": "/",
-      "permanent": false,
       "statusCode": 302
     },
     {
       "source": "/activate",
       "destination": "/",
-      "permanent": false,
       "statusCode": 302
     },
     {
       "source": "/upgrade",
       "destination": "/",
-      "permanent": false,
       "statusCode": 302
     }
   ],
