@@ -16,7 +16,7 @@
  *   - Astro island: client:load directive
  *   - No next/navigation, no useRouter — use window.location for navigation
  *   - No Intl calendar:islamic — uses @ummat/shared/hijri pattern (src/lib/hijri.ts)
- *   - RTL via dir attribute set by astroUmmatInline integration
+ *   - RTL via dir attribute set by astroUmmat() integration (vendored @ummat/astro-preset)
  * REF: P2-E3-W02-S02-T03 · D-P2-STACK-CANON · D-P2-REACT19
  */
 
@@ -184,7 +184,7 @@ export default function PrayerCalculator({
             Continue without GPS
           </button>
         </div>
-        <LocationSearch autoFocus />
+        <LocationSearch />
       </div>
     );
   }
@@ -198,7 +198,7 @@ export default function PrayerCalculator({
             Could not load prayer times. Please try again or search for your city.
           </p>
         </div>
-        <LocationSearch autoFocus />
+        <LocationSearch />
       </div>
     );
   }
@@ -272,6 +272,7 @@ export default function PrayerCalculator({
               type="checkbox"
               checked={hanafi}
               onChange={toggleHanafi}
+              aria-label="Hanafi Asr"
               className="w-4 h-4 accent-ummat-mid"
             />
           </label>
@@ -285,6 +286,7 @@ export default function PrayerCalculator({
               type="checkbox"
               checked={use24h}
               onChange={toggleUse24h}
+              aria-label="24-hour time"
               className="w-4 h-4 accent-ummat-mid"
             />
           </label>
@@ -298,6 +300,7 @@ export default function PrayerCalculator({
               type="checkbox"
               checked={showQiyam}
               onChange={toggleShowQiyam}
+              aria-label="Show Qiyam"
               className="w-4 h-4 accent-ummat-mid"
             />
           </label>

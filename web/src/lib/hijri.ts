@@ -60,8 +60,13 @@ export function gregorianToHijri(date: Date): HijriDateResult {
 /** Alias for compatibility with @ummat/shared/hijri pattern */
 export const toHijri = gregorianToHijri;
 
-/** Alias for callers expecting a getHijriDate(date) signature (returns full HijriDateResult). */
-export const getHijriDate = gregorianToHijri;
+/**
+ * Alias for callers expecting a getHijriDate(date?) signature.
+ * Date defaults to today if omitted — enables no-arg call pattern in tests and islands.
+ */
+export function getHijriDate(date?: Date): HijriDateResult {
+  return gregorianToHijri(date ?? new Date());
+}
 
 /**
  * Format a Gregorian date as a Hijri string.

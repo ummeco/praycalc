@@ -11,7 +11,10 @@
     "build": "astro build",
     "preview": "astro preview --port 3040",
     "typecheck": "astro check && tsc --noEmit",
-    "lint": "eslint src --max-warnings 0",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "lint": "eslint . --max-warnings 0",
     "axe": "axe http://localhost:4321 --exit",
     "lighthouse": "lhci autorun",
     "env:refresh": "bash ~/Sites/ummeco/scripts/env-refresh.sh"

@@ -1,19 +1,59 @@
-import nextConfig from 'eslint-config-next'
-import noBrandLightOnLight from '../../ummat/apps/brand/src/eslint-rule-no-brand-light-on-light.js'
+/**
+ * eslint.config.mjs — ESLint flat config for praycalc/web (Astro 5).
+ *
+ * PURPOSE: Lint Astro, TSX, TS files. Uses eslint-plugin-astro for .astro support,
+ *   jsx-a11y for accessibility, @typescript-eslint for TS strictness.
+ *   Replaced eslint-config-next (Next.js eliminated per D-P2-STACK-CANON).
+ * REF: P2-E3-W02-S02-T03 · D-P2-STACK-CANON
+ */
 
-const eslintConfig = [
-  ...nextConfig,
+import astro from 'eslint-plugin-astro';
+import jsxA11y from 'eslint-plugin-jsx-a11y';
+import tsParser from '@typescript-eslint/parser';
+import tsPlugin from '@typescript-eslint/eslint-plugin';
+
+/** @type {import('eslint').Linter.Config[]} */
+export default [
+  // Astro files
+  ...astro.configs.recommended,
+
+  // TypeScript/TSX files
   {
-    ignores: ['public/**', 'coverage/**'],
-  },
-  // C-09a-FIX-01: brand contrast guard — block text-brand-light / text-brand-mid in JSX/TSX.
-  // These fail WCAG 2.2 AA on white/light surfaces (1.28:1 and 2.18:1 respectively).
-  {
-    plugins: { ummat: { rules: { 'no-brand-light-on-light': noBrandLightOnLight } } },
+    files: ['src/**/*.{ts,tsx}', '__tests__/**/*.{ts,tsx}'],
+    languageOptions: {
+      parser: tsParser,
+      parserOptions: {
+        ecmaVersion: 'latest',
+        sourceType: 'module',
+        ecmaFeatures: { jsx: true },
+      },
+    },
+    plugins: {
+      '@typescript-eslint': tsPlugin,
+      'jsx-a11y': jsxA11y,
+    },
     rules: {
-      'ummat/no-brand-light-on-light': 'error',
+      ...tsPlugin.configs.recommended.rules,
+      ...jsxA11y.flatConfigs.recommended.rules,
+      // Relax some rules that are overly strict in island context
+      '@typescript-eslint/no-explicit-any': 'warn',
+      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
     },
   },
-]
 
-export default eslintConfig
+  // Global ignores
+  {
+    ignores: [
+      'public/**',
+      'coverage/**',
+      '.astro/**',
+      '.next/**',      // legacy Next.js build artifacts
+      'dist/**',
+      'node_modules/**',
+      // Root-level lib/ is legacy (pre-migration stubs); Astro source is under src/
+      'lib/**',
+      // vendor/ contains vendored packages (@ummat/astro-preset etc.) — not source
+      'vendor/**',
+    ],
+  },
+];

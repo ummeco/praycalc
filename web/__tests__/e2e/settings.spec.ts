@@ -30,13 +30,6 @@ test.describe("Settings panel", () => {
     await expect(page.locator(".prayer-grid")).toBeVisible({ timeout: 15_000 });
   });
 
-  async function openSettings(page: Parameters<typeof test>[1] extends (args: { page: import("@playwright/test").Page }) => unknown ? import("@playwright/test").Page : import("@playwright/test").Page) {
-    const gearBtn = page.locator('.settings-gear-btn');
-    await expect(gearBtn).toBeVisible();
-    await gearBtn.click();
-    await expect(page.locator('.settings-panel')).toBeVisible();
-  }
-
   test("gear button is visible on city page", async ({ page }) => {
     const gearBtn = page.locator(".settings-gear-btn");
     await expect(gearBtn).toBeVisible();

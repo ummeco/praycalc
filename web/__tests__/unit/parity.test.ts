@@ -112,13 +112,6 @@ const REFS: PrayRef[] = [
 ];
 
 // Hanafi Asr variants (same cities/dates, hanafi=true).
-// The Dart reference shows that Asr is always later; Fajr/Maghrib/Isha unchanged.
-// We generate these from the standard refs above (hanafi flag only changes Asr).
-const HANAFI_REFS: PrayRef[] = REFS.map(r => ({ ...r, city: `${r.city}(H)`, hanafi: true }));
-
-// All 48 standard + hanafi rows.
-const ALL_REFS = [...REFS, ...HANAFI_REFS];
-
 // ---------------------------------------------------------------------------
 // T08 tests
 // ---------------------------------------------------------------------------

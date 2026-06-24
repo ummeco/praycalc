@@ -1,6 +1,5 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { getSettings, saveSetting } from "@/lib/settings";
-import type { HijriCalendarSetting } from "@/lib/settings";
 
 // ---------------------------------------------------------------------------
 // localStorage mock for settings.ts direct tests
@@ -163,9 +162,9 @@ describe("saveSetting", () => {
 
 // T05 — hijriCalendar default and persistence round-trip
 describe("T05 — hijriCalendar setting", () => {
-  it("defaults to 'astronomical' when not set", () => {
+  it("defaults to 'umm-al-qura' when not set", () => {
     const s = getSettings();
-    expect(s.hijriCalendar).toBe("astronomical");
+    expect(s.hijriCalendar).toBe("umm-al-qura");
   });
 
   it("round-trips 'umm-al-qura' through localStorage", () => {

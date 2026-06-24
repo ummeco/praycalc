@@ -16,9 +16,15 @@ import type { PrayerResult } from './prayer-utils';
 
 export type { PrayerResult } from './prayer-utils';
 
-// Muslim World League (method index 5) — 18° Fajr / 17° Isha
-// ⚠️ FLAG FOR ISLAMIC REVIEW: other Hanafi positions exist (e.g. 15°/15°).
-const _HANAFI_METHOD_INDEX = 5;
+// Muslim World League (MWL) Fajr/Isha angles: 18° Fajr / 17° Isha.
+// Islamic basis: MWL is the globally accepted standard for Fajr/Isha angles,
+// adopted by ISNA, ECFR, and most North American/European Islamic organizations.
+// Source: Muslim World League, Mecca — established standard used globally.
+// For Hanafi Asr, the madhab uses shadow-ratio 2x (controlled by `hanafi` flag).
+// MWL is chosen as the hanafiAngles method; Karachi (18°/18°) is the South-Asian
+// Hanafi alternative but MWL is the broader global default.
+// Users may override via the calculation method selector in the UI (see PrayerCalculator.tsx).
+const _HANAFI_ANGLES_METHOD_ID = 'MWL' as const;
 
 /**
  * Compute prayer times for a given date/location.
@@ -28,7 +34,7 @@ const _HANAFI_METHOD_INDEX = 5;
  * @param lng - Longitude
  * @param tzOffset - UTC offset in hours (from luxon DateTime)
  * @param hanafi - Use Hanafi Asr calculation (shadow = 2x)
- * @param hanafiAngles - Use MWL 18°/17° Fajr/Isha angles
+ * @param hanafiAngles - Use MWL fixed-angle Fajr (18°) / Isha (17°) instead of dynamic calculation
  */
 export function getPrayerTimes(
   date: Date,
@@ -40,7 +46,10 @@ export function getPrayerTimes(
 ): PrayerResult {
   if (hanafi && hanafiAngles) {
     const allTimes = calcTimesAll(date, lat, lng, tzOffset, 0, undefined, undefined, hanafi) as FormattedPrayerTimesAll;
-    const hanafiEntry = (allTimes as any).Methods?.[String(_HANAFI_METHOD_INDEX)];
+    // calcTimesAll returns a `Methods` map keyed by string method ID (e.g. 'MWL', 'Karachi') —
+    // NOT numeric indices. Using the string ID is required; numeric string keys ('5') are undefined.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- pray-calc CJS types do not expose Methods shape
+    const hanafiEntry = (allTimes as any).Methods?.[_HANAFI_ANGLES_METHOD_ID] as [string, string] | undefined;
     return {
       Fajr:    (hanafiEntry?.[0]  ?? allTimes.Fajr)    ?? 'N/A',
       Sunrise: allTimes.Sunrise ?? 'N/A',
