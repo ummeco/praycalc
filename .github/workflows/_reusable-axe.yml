@@ -55,7 +55,8 @@ jobs:
 
       - name: Start dev server
         working-directory: ${{ inputs.project_path }}
-        run: pnpm start &
+        # Astro + @astrojs/vercel adapter has no `astro preview`; serve via dev (port 3040).
+        run: pnpm dev &
 
       - name: Wait for server
         run: npx wait-on http://localhost:${{ inputs.port }} -t 60000

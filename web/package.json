@@ -14,6 +14,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
+    "test:e2e": "playwright test",
     "lint": "eslint . --max-warnings 0",
     "axe": "axe http://localhost:4321 --exit",
     "lighthouse": "lhci autorun",
@@ -36,6 +37,7 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.4",
+    "@playwright/test": "^1.59.1",
     "@sentry/astro": "^10.59.0",
     "@tailwindcss/vite": "^4.1.7",
     "@types/luxon": "^3.7.2",

@@ -19,7 +19,7 @@ export default defineConfig({
   reporter: [["list"], ["html", { open: "never" }]],
 
   use: {
-    baseURL: process.env.BASE_URL ?? "http://localhost:3000",
+    baseURL: process.env.BASE_URL ?? "http://localhost:3040",
     trace: "on-first-retry",
     screenshot: "only-on-failure",
     // Mock geolocation for all tests to prevent browser GPS prompts
@@ -57,11 +57,11 @@ export default defineConfig({
   ],
 
   // Start the server automatically.
-  // In CI: use `pnpm start` (production build, already compiled by the build step).
-  // Locally: use `pnpm dev` and reuse an already-running server.
+  // The app uses the @astrojs/vercel adapter, which has no `astro preview`
+  // server, so both CI and local serve via the Astro dev server on port 3040.
   webServer: {
-    command: process.env.CI ? "pnpm start" : "pnpm dev",
-    url: "http://localhost:3000",
+    command: "pnpm dev",
+    url: "http://localhost:3040",
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
   },
