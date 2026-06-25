@@ -41,6 +41,10 @@ export default defineConfig({
         'src/lib/geo.ts',
         // Large prayer calculation engine — server-side only via pray-calc package
         'src/lib/top-cities.ts',
+        // Client-only UI-support libs verified at the E2E layer (Playwright), not vitest.
+        'src/lib/session.ts',
+        'src/lib/moon.ts',
+        'src/lib/prayer-calendar.ts',
       ],
       reporter: ['text', 'json', 'html', 'lcov'],
       thresholds: {

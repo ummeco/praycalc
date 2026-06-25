@@ -14,7 +14,7 @@
  */
 
 import RootLayout from '@/layouts/RootLayout.astro';
-import PrayerCalculator from '@/islands/PrayerCalculator';
+import CityClient from '@/islands/city/CityClient';
 import { geocodeSlugParts } from '@/lib/geo.server';
 import { getUtcOffset } from '@/lib/geo';
 import { getPrayerTimes } from '@/lib/prayers.server';
@@ -73,15 +73,18 @@ const jsonLd = JSON.stringify({
     <div class="w-full max-w-2xl">
       <a
         href="/"
+        aria-label="PrayCalc home"
         class="inline-flex items-center gap-2 text-white/40 hover:text-white text-sm mb-6 transition-colors"
       >
         ← PrayCalc
       </a>
     </div>
 
-    <!-- Prayer calculator island: client:load — hydrates immediately for interactivity -->
-    <PrayerCalculator
-      client:load
+    <!-- City prayer-times island: client:only — interactive grid renders after
+         hydration (SEO is covered by the static sr-only prayer table below),
+         so "grid visible" reliably implies the island is interactive. -->
+    <CityClient
+      client:only="react"
       shafiPrayers={shafiPrayers}
       hanafiPrayers={hanafiPrayers}
       locationName={geo.displayName}
@@ -89,6 +92,7 @@ const jsonLd = JSON.stringify({
       slug={slug ?? ''}
       lat={geo.lat}
       lng={geo.lng}
+      locale={Astro.locals.locale}
     />
 
     <!-- SEO: static prayer time table for crawlers (SSR-rendered, no JS required) -->

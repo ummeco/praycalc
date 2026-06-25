@@ -1,0 +1,19 @@
+---
+/**
+ * account.astro — PrayCalc account page.
+ *
+ * PURPOSE: Hosts the AccountClient island (sign-in card when signed out,
+ *   dashboard when a client session exists in localStorage).
+ * CONSTRAINTS: noindex (private surface). Island pattern only.
+ * REF: P2-PRAYCALC-E2E-REBUILD · account.spec.ts
+ */
+
+import RootLayout from '@/layouts/RootLayout.astro';
+import AccountClient from '@/islands/account/AccountClient';
+---
+
+<RootLayout title="Account | PrayCalc" description="Your PrayCalc account" noIndex={true}>
+  <main id="main-content" class="account-main">
+    <AccountClient client:load />
+  </main>
+</RootLayout>

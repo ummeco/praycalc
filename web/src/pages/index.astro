@@ -2,14 +2,28 @@
 /**
  * index.astro — PrayCalc home page.
  *
- * PURPOSE: Home page with location search island. Static shell with client:load
- *   LocationSearch island. No prayer times on home page — user selects city.
- * CONSTRAINTS: No Next.js patterns. Island pattern only for interactive parts.
- * REF: P2-E3-W02-S02-T03 · D-P2-STACK-CANON
+ * PURPOSE: Home shell — logo, location search island, moon-phase card, and a
+ *   delayed geolocation prompt island. No prayer times here; the user picks a city.
+ * CONSTRAINTS: No Next.js patterns. Island pattern for interactive parts.
+ * REF: P2-PRAYCALC-E2E-REBUILD · homepage.spec.ts
  */
 
 import RootLayout from '@/layouts/RootLayout.astro';
 import LocationSearch from '@/islands/LocationSearch';
+import GeoPrompt from '@/islands/home/GeoPrompt';
+import { getMoonPhase } from '@/lib/moon';
+
+const moon = getMoonPhase();
+
+// Localized tagline (NEXT_LOCALE cookie via middleware). Arabic/Urdu render in
+// their own script so RTL locales have visible localized copy.
+const locale = Astro.locals?.locale ?? 'en';
+const TAGLINES: Record<string, string> = {
+  en: 'Prayer times for any city, airport, or zip code',
+  ar: 'مواقيت الصلاة لأي مدينة أو مطار أو رمز بريدي',
+  ur: 'کسی بھی شہر، ہوائی اڈے یا زپ کوڈ کے لیے نماز کے اوقات',
+};
+const tagline = TAGLINES[locale] ?? TAGLINES.en;
 ---
 
 <RootLayout
@@ -33,7 +47,7 @@ import LocationSearch from '@/islands/LocationSearch';
       <div class="logo-sunrise">
         <img
           src="/logo-sunrise.svg"
-          alt="PrayCalc logo"
+          alt="PrayCalc"
           width="160"
           height="160"
           loading="eager"
@@ -42,15 +56,24 @@ import LocationSearch from '@/islands/LocationSearch';
       </div>
     </div>
 
-    <!-- Location search island — interactive, loads immediately -->
+    <!-- Location search island -->
     <div class="w-full max-w-[480px] mt-[-25px] px-4">
       <LocationSearch client:load autoFocus={true} />
-      <p class="text-white/25 text-xs text-center mt-2">
-        Prayer times for any city, airport, or zip code
+      <p class="home-tagline text-white/25 text-xs text-center mt-2">
+        {tagline}
       </p>
     </div>
 
-    <div class="flex-1" />
+    <!-- Moon phase card -->
+    <div class="home-moon-card" aria-label="Current moon phase">
+      <span class="home-moon-emoji" aria-hidden="true">{moon.emoji}</span>
+      <div class="home-moon-info">
+        <span class="home-moon-name">{moon.phaseName}</span>
+        <span class="home-moon-illum">{moon.illumination}% illuminated</span>
+      </div>
+    </div>
+
+    <div class="flex-1"></div>
 
     <!-- Footer -->
     <footer class="w-full max-w-2xl mx-auto px-4 py-6 mt-8">
@@ -65,5 +88,8 @@ import LocationSearch from '@/islands/LocationSearch';
         Free, accurate Islamic prayer times. No ads. No tracking.
       </p>
     </footer>
+
+    <!-- Delayed geolocation prompt island -->
+    <GeoPrompt client:load />
   </main>
 </RootLayout>

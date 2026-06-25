@@ -36,15 +36,16 @@ const {
   noIndex = false,
 } = Astro.props;
 
-// Determine text direction: explicit prop > locale-based
+// Active locale: NEXT_LOCALE cookie (via middleware) wins over the prop default.
 const RTL_LOCALES = new Set(['ar', 'ur', 'fa', 'he', 'ckb', 'ps']);
-const textDir = dir ?? (RTL_LOCALES.has(locale.split('-')[0] ?? '') ? 'rtl' : 'ltr');
+const effectiveLocale = Astro.locals?.locale ?? locale;
+const textDir = dir ?? (RTL_LOCALES.has(effectiveLocale.split('-')[0] ?? '') ? 'rtl' : 'ltr');
 
 const umamiSiteId = import.meta.env.UMAMI_WEBSITE_ID;
 ---
 
 <!doctype html>
-<html lang={locale} dir={textDir}>
+<html lang={effectiveLocale} dir={textDir}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />

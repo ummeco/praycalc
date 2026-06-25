@@ -1,24 +1,21 @@
 /**
- * LocationSearch.tsx — City/location search React island.
+ * LocationSearch.tsx — City/location search island (home + city compact).
  *
- * PURPOSE: Autocomplete location search used on home page and calculator.
- *   Navigates to prayer times page on city selection.
- *   Supports GPS geolocation with permission-denied fallback.
- *   WCAG 2.1 AA compliant ARIA combobox pattern (role=combobox, listbox, option).
+ * PURPOSE: Autocomplete location search. Debounced query → /api/search (via
+ *   searchLocation). Renders a results dropdown; selecting a result navigates to
+ *   the city prayer-times page. Non-compact mode also shows a GPS "use my
+ *   location" pill and popular-city shortcuts.
  * INPUTS: compact (bool), autoFocus (bool)
- * OUTPUTS: Input with dropdown, navigates to /times/<slug> or /<slug>
- * CONSTRAINTS:
- *   - No next/router — uses window.location.href for navigation
- *   - No server-only imports — safe in client islands
- *   - Geolocation: always show permission-denied state if refused
- *   - ARIA: full combobox pattern per WCAG 2.1 AA (1.3.1, 4.1.2)
- *     aria-controls, aria-activedescendant, arrow-key navigation, role=option with aria-selected
- * REF: P2-E3-W02-S02-T03 · D-P2-STACK-CANON
+ * OUTPUTS: search input + dropdown; navigates to /<slug> on selection.
+ * CONSTRAINTS: Astro island. No next/router — window.location for navigation.
+ *   DOM contract (homepage.spec / city-page.spec):
+ *     input[data-testid="city-search-input"], compact placeholder "Search city…",
+ *     .gps-location-btn, .search-dropdown, .search-dropdown-item,
+ *     .search-result-name, .search-result-slug
+ * REF: P2-PRAYCALC-E2E-REBUILD
  */
 
-'use client';
-
-import { useState, useEffect, useRef, useCallback, useId } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { searchLocation, reverseGeocode, type GeoResult } from '@/lib/geo';
 
 interface Props {
@@ -42,18 +39,11 @@ function navigateToCity(slug: string) {
 export default function LocationSearch({ compact = false, autoFocus = false }: Props) {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<GeoResult[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [open, setOpen] = useState(false);
   const [geoLoading, setGeoLoading] = useState(false);
   const [geoError, setGeoError] = useState('');
-  const [open, setOpen] = useState(false);
-  const [activeIndex, setActiveIndex] = useState(-1);
   const inputRef = useRef<HTMLInputElement>(null);
-  const listboxRef = useRef<HTMLDivElement>(null);
-
-  // Stable IDs for ARIA relationships
-  const uid = useId();
-  const listboxId = `location-listbox-${uid}`;
-  const getOptionId = (i: number) => `location-option-${uid}-${i}`;
+  const rootRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (autoFocus) inputRef.current?.focus();
@@ -61,33 +51,44 @@ export default function LocationSearch({ compact = false, autoFocus = false }: P
 
   // Debounced search
   useEffect(() => {
-    if (query.length < 2) { setResults([]); setOpen(false); setActiveIndex(-1); return; }
-    setLoading(true);
+    if (query.trim().length < 2) {
+      setResults([]);
+      setOpen(false);
+      return;
+    }
     const timer = setTimeout(async () => {
-      const r = await searchLocation(query);
+      const r = await searchLocation(query.trim());
       setResults(r);
-      setLoading(false);
       setOpen(r.length > 0);
-      setActiveIndex(-1);
-    }, 300);
+    }, 250);
     return () => clearTimeout(timer);
   }, [query]);
 
-  // Close dropdown on outside click
+  // Close on outside click
   useEffect(() => {
-    function handleClick(e: MouseEvent) {
-      if (
-        listboxRef.current &&
-        !listboxRef.current.contains(e.target as Node) &&
-        !inputRef.current?.contains(e.target as Node)
-      ) {
-        setOpen(false);
-        setActiveIndex(-1);
-      }
+    function onClick(e: MouseEvent) {
+      if (rootRef.current && !rootRef.current.contains(e.target as Node)) setOpen(false);
     }
-    document.addEventListener('mousedown', handleClick);
-    return () => document.removeEventListener('mousedown', handleClick);
+    document.addEventListener('mousedown', onClick);
+    return () => document.removeEventListener('mousedown', onClick);
   }, []);
+
+  const handleSelect = useCallback((r: GeoResult) => {
+    setOpen(false);
+    navigateToCity(r.slug);
+  }, []);
+
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === 'Escape') {
+        setOpen(false);
+      } else if (e.key === 'Enter' && results[0]) {
+        e.preventDefault();
+        handleSelect(results[0]);
+      }
+    },
+    [results, handleSelect],
+  );
 
   const handleGeoLocate = useCallback(() => {
     if (!navigator.geolocation) {
@@ -100,157 +101,86 @@ export default function LocationSearch({ compact = false, autoFocus = false }: P
       async (pos) => {
         const geo = await reverseGeocode(pos.coords.latitude, pos.coords.longitude);
         setGeoLoading(false);
-        if (geo) {
-          navigateToCity(geo.slug);
-        } else {
-          setGeoError('Could not determine your city. Try searching by name.');
-        }
+        if (geo) navigateToCity(geo.slug);
+        else setGeoError('Could not determine your city. Try searching by name.');
       },
-      (err) => {
+      () => {
         setGeoLoading(false);
-        if (err.code === 1) {
-          setGeoError('Location access denied. Allow location access or search by city name.');
-        } else {
-          setGeoError('Could not get your location. Please search by city name.');
-        }
+        setGeoError('Location access denied. Search by city name instead.');
       },
       { timeout: 10_000, maximumAge: 60_000 },
     );
   }, []);
 
-  const handleSelect = useCallback((result: GeoResult) => {
-    setOpen(false);
-    setActiveIndex(-1);
-    setQuery('');
-    navigateToCity(result.slug);
-  }, []);
-
-  const visibleResults = results.slice(0, 8);
-
-  const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (!open) return;
-
-      if (e.key === 'ArrowDown') {
-        e.preventDefault();
-        setActiveIndex((prev) => {
-          const next = prev < visibleResults.length - 1 ? prev + 1 : 0;
-          return next;
-        });
-      } else if (e.key === 'ArrowUp') {
-        e.preventDefault();
-        setActiveIndex((prev) => {
-          const next = prev > 0 ? prev - 1 : visibleResults.length - 1;
-          return next;
-        });
-      } else if (e.key === 'Enter') {
-        e.preventDefault();
-        if (activeIndex >= 0 && visibleResults[activeIndex]) {
-          handleSelect(visibleResults[activeIndex]!);
-        } else if (visibleResults.length > 0 && visibleResults[0]) {
-          handleSelect(visibleResults[0]!);
-        }
-      } else if (e.key === 'Escape') {
-        setOpen(false);
-        setActiveIndex(-1);
-      } else if (e.key === 'Home') {
-        e.preventDefault();
-        setActiveIndex(0);
-      } else if (e.key === 'End') {
-        e.preventDefault();
-        setActiveIndex(visibleResults.length - 1);
-      }
-    },
-    [open, visibleResults, activeIndex, handleSelect],
-  );
-
-  const activeOptionId = activeIndex >= 0 ? getOptionId(activeIndex) : undefined;
+  const visible = results.slice(0, 8);
 
   return (
-    <div className={`location-search ${compact ? '' : 'w-full max-w-[480px]'}`}>
-      <div className="relative">
+    <div className={`location-search${compact ? ' location-search--compact' : ''}`} ref={rootRef}>
+      <div className="location-search-field">
         <input
           ref={inputRef}
-          id={`location-input-${uid}`}
+          data-testid="city-search-input"
           type="search"
           role="combobox"
+          aria-expanded={open}
+          aria-label="Search for a city or location"
+          autoComplete="off"
+          className="location-search-input"
+          placeholder={compact ? 'Search city…' : 'Search cities, airports, zip codes…'}
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={handleKeyDown}
-          onFocus={() => query.length >= 2 && results.length > 0 && setOpen(true)}
-          placeholder="Search cities, airports, zip codes…"
-          className="location-search-input"
-          aria-label="Search for a city or location"
-          aria-autocomplete="list"
-          aria-expanded={open}
-          aria-controls={listboxId}
-          aria-activedescendant={activeOptionId}
-          aria-haspopup="listbox"
-          autoComplete="off"
+          onFocus={() => results.length > 0 && setOpen(true)}
         />
-        {loading && (
-          <span className="absolute right-4 top-1/2 -translate-y-1/2 text-white/30 text-xs" aria-hidden="true">
-            …
-          </span>
-        )}
       </div>
 
-      {/* Dropdown results — always rendered so aria-controls target exists in DOM */}
-      <div
-        id={listboxId}
-        ref={listboxRef}
-        role="listbox"
-        aria-label="Search results"
-        className={open && visibleResults.length > 0 ? 'location-search-dropdown' : 'sr-only'}
-        aria-hidden={!open || visibleResults.length === 0}
-      >
-        {visibleResults.map((r, i) => (
-          <button
-            key={`${r.slug}-${i}`}
-            id={getOptionId(i)}
-            className={`location-search-item w-full text-left ${i === activeIndex ? 'location-search-item--active' : ''}`}
-            role="option"
-            onClick={() => handleSelect(r)}
-            aria-selected={i === activeIndex}
-            tabIndex={-1}
-          >
-            {r.displayName}
-          </button>
-        ))}
-      </div>
+      {open && visible.length > 0 && (
+        <div className="search-dropdown" role="listbox" aria-label="Search results">
+          {visible.map((r, i) => (
+            <button
+              key={`${r.slug}-${i}`}
+              type="button"
+              role="option"
+              aria-selected={false}
+              className="search-dropdown-item"
+              onClick={() => handleSelect(r)}
+            >
+              <span className="search-result-name">{r.displayName}</span>
+              <span className="search-result-slug">/{r.slug}</span>
+            </button>
+          ))}
+        </div>
+      )}
 
-      {/* GPS locate button + error */}
       {!compact && (
-        <div className="mt-2 space-y-1">
+        <div className="location-search-extras">
           <button
+            type="button"
+            className="gps-location-btn location-gps-pill"
             onClick={handleGeoLocate}
             disabled={geoLoading}
-            className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white/60 hover:text-white text-xs transition-colors disabled:opacity-50"
             aria-label="Use my GPS location"
           >
             <span aria-hidden="true">📍</span>
             {geoLoading ? 'Finding location…' : 'Use my location'}
           </button>
           {geoError && (
-            <p className="text-red-400 text-xs px-1" role="alert">
-              {geoError}
-            </p>
+            <p className="location-search-error" role="alert">{geoError}</p>
           )}
-        </div>
-      )}
-
-      {/* Popular cities (homepage only) */}
-      {!compact && query.length === 0 && (
-        <div className="mt-3 flex flex-wrap gap-2" aria-label="Popular cities">
-          {POPULAR.map((city) => (
-            <button
-              key={city.slug}
-              onClick={() => navigateToCity(city.slug)}
-              className="px-3 py-1.5 rounded-xl border border-white/10 text-white/50 hover:text-white hover:border-white/20 text-xs transition-colors"
-            >
-              {city.name}
-            </button>
-          ))}
+          {query.trim().length === 0 && (
+            <div className="location-popular" aria-label="Popular cities">
+              {POPULAR.map((c) => (
+                <button
+                  key={c.slug}
+                  type="button"
+                  className="location-popular-pill"
+                  onClick={() => navigateToCity(c.slug)}
+                >
+                  {c.name}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
       )}
     </div>

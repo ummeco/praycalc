@@ -70,9 +70,17 @@ html, body {
 
 /* --- Skip to content (accessibility) --- */
 .skip-to-content {
+  /* Visually hidden but focusable. Uses the clip technique (not left:-9999px,
+     which flips to the far side in RTL and creates horizontal overflow). */
   position: absolute;
-  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
   top: 0;
+  inset-inline-start: 0;
   z-index: 9999;
   padding: 8px 16px;
   background: var(--color-primary);
@@ -82,7 +90,12 @@ html, body {
   text-decoration: none;
 }
 .skip-to-content:focus {
-  left: 16px;
+  width: auto;
+  height: auto;
+  overflow: visible;
+  clip: auto;
+  clip-path: none;
+  inset-inline-start: 16px;
 }
 
 /* --- Logo sunrise --- */
