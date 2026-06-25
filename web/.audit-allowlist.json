@@ -30,5 +30,13 @@
   "1118961": {
     "reason": "Next.js 16.1.7 Middleware/Proxy bypass (Pages Router i18n). Affects org/ only. org/ pinned at 16.1.7 due to webpack/MDX regression in 16.2.x — cannot upgrade.",
     "expires": "2026-12-31"
+  },
+  "1120912": {
+    "reason": "Astro <6.3.3 reflected XSS via unescaped slot name. web/ is on Astro 5.18.2; patch requires Astro 6.x (major version, breaking). Accepted-risk pending tracked Astro 6 migration. praycalc.com routes are largely prerendered, reducing exposure.",
+    "expires": "2026-09-30"
+  },
+  "1120917": {
+    "reason": "Astro <6.4.6 host-header SSRF in prerendered error page. web/ is on Astro 5.18.2; patch requires Astro 6.x (major version, breaking). Accepted-risk pending tracked Astro 6 migration; error pages prerendered on Vercel with fixed host.",
+    "expires": "2026-09-30"
   }
 }

@@ -3,7 +3,13 @@
 module.exports = {
   ci: {
     collect: {
-      startServerCommand: 'pnpm start',
+      // SSR app uses the @astrojs/vercel adapter, which has no `astro preview`
+      // server. Serve via the Astro dev server (port 3040) for LHCI collection.
+      // Perf metrics are `warn`-only below to absorb dev-mode overhead; the
+      // blocking gates (a11y, CLS) are unaffected by dev vs prod serving.
+      startServerCommand: 'pnpm dev',
+      startServerReadyPattern: 'ready in',
+      startServerReadyTimeout: 60000,
       url: ['http://localhost:3040/'],
       numberOfRuns: 3,
     },

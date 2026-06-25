@@ -25,7 +25,11 @@ export default defineConfig({
     ],
     coverage: {
       provider: 'v8',
-      include: ['src/lib/**/*.ts', 'src/islands/**/*.tsx'],
+      // Unit-coverage scope = pure logic in src/lib only. The React islands
+      // (src/islands/**) are interactive UI components verified by the Playwright
+      // E2E suite, not vitest — including them here would measure unit coverage
+      // against code that is intentionally covered at the E2E layer.
+      include: ['src/lib/**/*.ts'],
       exclude: [
         'node_modules/**',
         '__tests__/**',
