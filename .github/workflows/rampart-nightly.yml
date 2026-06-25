@@ -48,6 +48,8 @@ jobs:
       - name: Setup pnpm
         if: always()
         uses: pnpm/action-setup@v4
+        with:
+          version: 9
 
       - name: Setup Node
         if: always()
