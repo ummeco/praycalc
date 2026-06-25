@@ -58,7 +58,10 @@ jobs:
         # can gate again. Tracked as follow-up; unit tests (372) + build + a11y
         # remain blocking. Do not remove this flag without re-aligning the specs.
         continue-on-error: true
-        run: pnpm test:e2e
+        # Fail fast while the suite is stale so the (non-blocking) step does not
+        # burn the full browser matrix on 30s-per-test timeouts. Drop --max-failures
+        # when the specs are realigned to the Astro markup.
+        run: pnpm test:e2e -- --max-failures=1
       - name: Upload Playwright report
         uses: actions/upload-artifact@v4
         if: failure()
