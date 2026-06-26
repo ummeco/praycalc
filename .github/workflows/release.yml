@@ -349,7 +349,7 @@ jobs:
       - name: Get version
         id: ver
         run: echo "version=$(node -p "require('./smart/package.json').version")" >> $GITHUB_OUTPUT
-      - uses: docker/build-push-action@v5
+      - uses: docker/build-push-action@v7
         with:
           context: smart
           push: true
