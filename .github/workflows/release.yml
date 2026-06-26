@@ -421,7 +421,7 @@ jobs:
           NOTES=$(awk "/^## ${VERSION}/,/^## [0-9]/" .github/docs/changelog.md | head -n -1 | tail -n +2)
           printf 'notes<<ENDOFNOTES\n%s\nENDOFNOTES\n' "$NOTES" >> $GITHUB_OUTPUT
       - name: Create Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           name: PrayCalc ${{ steps.ver.outputs.version }}
           body: ${{ steps.changelog.outputs.notes }}
