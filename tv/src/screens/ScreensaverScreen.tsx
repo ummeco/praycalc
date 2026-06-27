@@ -65,9 +65,13 @@ export default function ScreensaverScreen(): React.JSX.Element {
   }, [timeoutMs]);
 
   // Any remote button press exits screensaver
+  // Use a ref so the handler always sees the latest resetDimTimer without stale closure
+  const resetDimTimerRef = useRef(resetDimTimer);
+  resetDimTimerRef.current = resetDimTimer;
+
   useTVEventHandler(() => {
     if (isDimmedRef.current) {
-      resetDimTimer();
+      resetDimTimerRef.current();
     } else {
       navigation.navigate('Home');
     }

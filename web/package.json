@@ -8,7 +8,7 @@
   },
   "scripts": {
     "dev": "astro dev --port 3040",
-    "build": "astro build",
+    "build": "astro build && node scripts/postbuild.mjs",
     "preview": "astro preview --port 3040",
     "typecheck": "astro check && tsc --noEmit",
     "test": "vitest run",

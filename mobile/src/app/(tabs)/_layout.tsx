@@ -1,13 +1,25 @@
 /**
  * Purpose: Tab navigator layout — home (prayer times), qibla, calendar, more (settings entry)
  * Inputs: Expo Router tabs
- * Outputs: Bottom tab bar with 4 tabs
+ * Outputs: Bottom tab bar with 4 tabs and Ionicons icons
  * Constraints: Expo Router v4; no react-navigation explicit navigator needed (Expo Router wraps it).
  * SPORT: REGISTRY-ROUTES.md#praycalc-mobile-tabs
  */
 
 import { Tabs } from 'expo-router';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { Colors } from '../../constants/colors';
+
+type IoniconsName = React.ComponentProps<typeof Ionicons>['name'];
+
+function tabIcon(
+  name: IoniconsName,
+  focusedName: IoniconsName,
+): (props: { focused: boolean; color: string; size: number }) => React.ReactElement {
+  return ({ focused, color, size }) => (
+    <Ionicons name={focused ? focusedName : name} size={size} color={color} />
+  );
+}
 
 export default function TabLayout() {
   return (
@@ -26,28 +38,28 @@ export default function TabLayout() {
         options={{
           title: 'Prayer Times',
           tabBarLabel: 'Prayers',
-          tabBarIcon: () => null, // Icon wired in T-03 with @expo/vector-icons
+          tabBarIcon: tabIcon('time-outline', 'time'),
         }}
       />
       <Tabs.Screen
         name="qibla"
         options={{
           title: 'Qibla',
-          tabBarIcon: () => null,
+          tabBarIcon: tabIcon('compass-outline', 'compass'),
         }}
       />
       <Tabs.Screen
         name="calendar"
         options={{
           title: 'Calendar',
-          tabBarIcon: () => null,
+          tabBarIcon: tabIcon('calendar-outline', 'calendar'),
         }}
       />
       <Tabs.Screen
         name="more"
         options={{
           title: 'More',
-          tabBarIcon: () => null,
+          tabBarIcon: tabIcon('menu-outline', 'menu'),
         }}
       />
     </Tabs>

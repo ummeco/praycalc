@@ -19,6 +19,29 @@ import {
   type PrayCalcSession,
 } from '@/lib/session';
 
+// ── Saved-cities localStorage helpers ──────────────────────────────────────
+const CITIES_KEY = 'praycalc-saved-cities';
+
+interface SavedCity {
+  slug: string;
+  displayName: string;
+  savedAt: number;
+}
+
+function getSavedCities(): SavedCity[] {
+  try {
+    return JSON.parse(localStorage.getItem(CITIES_KEY) ?? '[]') as SavedCity[];
+  } catch {
+    return [];
+  }
+}
+
+function removeSavedCity(slug: string): SavedCity[] {
+  const updated = getSavedCities().filter((c) => c.slug !== slug);
+  localStorage.setItem(CITIES_KEY, JSON.stringify(updated));
+  return updated;
+}
+
 type Mode = 'magic' | 'password';
 
 const SOCIAL_PROVIDERS = ['Google', 'Apple', 'Facebook', 'X'] as const;
@@ -157,6 +180,16 @@ function Dashboard({
   session: PrayCalcSession;
   onSignOut: () => void;
 }) {
+  const [cities, setCities] = useState<SavedCity[]>([]);
+
+  useEffect(() => {
+    setCities(getSavedCities());
+  }, []);
+
+  function handleRemoveCity(slug: string) {
+    setCities(removeSavedCity(slug));
+  }
+
   return (
     <div className="dashboard-page">
       <a href="/" className="account-back" aria-label="Back to PrayCalc">
@@ -172,6 +205,31 @@ function Dashboard({
           </div>
           <div className="dashboard-email">{session.email}</div>
         </div>
+      </div>
+
+      <div className="dashboard-card">
+        <h2 className="dashboard-card-title">Saved Cities</h2>
+        {cities.length === 0 ? (
+          <p className="dashboard-settings-row">No saved cities yet. Visit a city page to save it.</p>
+        ) : (
+          <ul className="dashboard-cities-list" aria-label="Saved cities">
+            {cities.map((city) => (
+              <li key={city.slug} className="dashboard-city-row">
+                <a href={`/${city.slug}`} className="dashboard-city-link">
+                  {city.displayName}
+                </a>
+                <button
+                  type="button"
+                  className="dashboard-city-remove"
+                  aria-label={`Remove ${city.displayName}`}
+                  onClick={() => handleRemoveCity(city.slug)}
+                >
+                  ✕
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
 
       <div className="dashboard-card">

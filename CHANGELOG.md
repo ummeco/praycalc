@@ -1,3 +1,28 @@
+## [3.0.0] — 2026-06-27 — P3: PrayCalc Full Platform Excellence
+
+### Added
+- City pages fully restored and enhanced: live clock, countdown to next prayer, next-prayer highlight, adhan audio
+- QiblaModal with distance display and animated compass
+- SettingsPanel with madhab/method/notification prefs
+- CalendarModal with month/year views, Hijri mode, fetches from /api/prayers
+- `/embed` SSR page for third-party iframe embeds (theme/size/city params)
+- `/api/calendar.ics` — RFC 5545 ICS export with DST-correct UTC timestamps
+- Vanilla service worker (NetworkFirst for city pages, CacheFirst for assets)
+- PWA manifest + SW registration
+- Account island with saved cities management
+- praycalc.org migrated to Astro 5 (PR #28) with full 33-route parity
+- TV app (Apple TV, Android TV): all 15 screens verified, stale-closure bug fixed
+- CI: ci-org.yml, generated-file-gate.yml, all-checks-pass.yml
+
+### Fixed
+- Production city pages were returning 500 — root cause: data/geo.json + data/auto.json not included in Vercel Lambda bundle. Fixed via postbuild.mjs cpSync.
+- Mobile app tab icons were all null; app name was "Prayer Times" — fixed to PrayCalc + Ionicons
+- embed.astro CSS interpolation error (Tailwind v4 incompatible with {variable} in style blocks — fixed with define:vars)
+- Broken service worker (sw.ts imported @serwist/next which is Next.js-only) — replaced with vanilla sw.js
+
+### Tests
+- 372 unit tests passing (vitest)
+
 # Changelog — PrayCalc
 
 All notable changes to the PrayCalc monorepo will be documented in this file.

@@ -73,3 +73,26 @@ export function getNextPrayer(
   }
   return list[0] ?? 'Fajr';
 }
+
+/** Seconds remaining until a prayer given current time. Both are "HH:MM:SS". */
+export function secondsUntilPrayer(prayerHHMMSS: string, nowHHMMSS: string): number {
+  const toSec = (t: string) => {
+    const [h = '0', m = '0', s = '0'] = t.split(':');
+    return parseInt(h, 10) * 3600 + parseInt(m, 10) * 60 + parseInt(s, 10);
+  };
+  const target = toSec(prayerHHMMSS);
+  const now = toSec(nowHHMMSS);
+  return target > now ? target - now : 0;
+}
+
+/** Format a seconds count as "Xh MMm SSs" or "Mm SSs". */
+export function fmtCountdown(totalSec: number): string {
+  if (totalSec <= 0) return '';
+  const h = Math.floor(totalSec / 3600);
+  const m = Math.floor((totalSec % 3600) / 60);
+  const s = totalSec % 60;
+  if (h > 0) {
+    return `${h}h ${m.toString().padStart(2, '0')}m ${s.toString().padStart(2, '0')}s`;
+  }
+  return `${m}m ${s.toString().padStart(2, '0')}s`;
+}

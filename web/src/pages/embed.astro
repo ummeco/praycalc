@@ -1,0 +1,126 @@
+---
+/**
+ * embed.astro — Standalone embed page for third-party iframes.
+ *
+ * PURPOSE: Minimal prayer times page embedded via praycalc.js iframes.
+ *   No nav, no footer — self-contained, single prayer-time panel.
+ *   Accepts ?theme=light|dark, ?size=small|medium|large, ?city=<slug>
+ *   Falls back to Mecca if the city slug is unresolvable.
+ * CONSTRAINTS: No RootLayout — standalone HTML doc. SSR per-request.
+ * REF: public/embed/praycalc.js
+ */
+
+import { geocodeSlugParts } from '@/lib/geo.server';
+import { getUtcOffset } from '@/lib/geo';
+import { getPrayerTimes } from '@/lib/prayers.server';
+
+const p = Astro.url.searchParams;
+const theme = p.get('theme') === 'light' ? 'light' : 'dark';
+const size = ['small', 'medium', 'large'].includes(p.get('size') ?? '') ? p.get('size') : 'medium';
+const cityParam = p.get('city') ?? '';
+
+// Resolve requested city; fall back to Mecca
+const slugParts = cityParam ? cityParam.split('/') : [];
+let geo = slugParts.length ? geocodeSlugParts(slugParts) : null;
+if (!geo) {
+  geo = geocodeSlugParts(['mecca']);
+}
+// Hard fallback if Mecca slug somehow fails (should never happen)
+if (!geo) {
+  geo = { lat: 21.3891, lng: 39.8579, displayName: 'Mecca', city: 'Mecca', state: 'sa', country: 'sa', slug: 'mecca', timezone: 'Asia/Riyadh' };
+}
+
+const timezone = geo.timezone ?? 'UTC';
+const now = new Date();
+const tzOffset = getUtcOffset(timezone, now);
+const prayers = getPrayerTimes(now, geo.lat, geo.lng, tzOffset, false);
+
+const PRAYERS = ['Fajr', 'Sunrise', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'] as const;
+
+// Size → max-width mapping
+const maxW = size === 'small' ? '280px' : size === 'large' ? '480px' : '360px';
+const fontSize = size === 'small' ? '13px' : size === 'large' ? '16px' : '14px';
+
+const isDark = theme === 'dark';
+const bg = isDark ? '#060806' : '#f8faf8';
+const cardBg = isDark ? '#0D2F17' : '#ffffff';
+const textPrimary = isDark ? '#C9F27A' : '#1E5E2F';
+const textSecondary = isDark ? '#ffffff' : '#0D2F17';
+const textMuted = isDark ? '#79C24C' : '#79C24C';
+const border = isDark ? '#1E5E2F' : '#d1f0b8';
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex,nofollow" />
+    <title>Prayer Times — {geo.displayName}</title>
+    <style define:vars={{ fontSize, bg, cardBg, textPrimary, textSecondary, textMuted, border, maxW }}>
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+      html, body {
+        width: 100%;
+        height: 100%;
+        font-family: system-ui, -apple-system, sans-serif;
+        font-size: var(--fontSize);
+        background: var(--bg);
+        color: var(--textSecondary);
+      }
+      .embed-wrap {
+        max-width: var(--maxW);
+        margin: 0 auto;
+        padding: 12px;
+      }
+      .embed-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 10px;
+      }
+      .embed-city {
+        font-weight: 700;
+        font-size: 1.05em;
+        color: var(--textPrimary);
+      }
+      .embed-brand {
+        font-size: 0.75em;
+        color: var(--textMuted);
+        text-decoration: none;
+      }
+      .embed-brand:hover { text-decoration: underline; }
+      .embed-card {
+        background: var(--cardBg);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        overflow: hidden;
+      }
+      .embed-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 14px;
+        border-bottom: 1px solid var(--border);
+      }
+      .embed-row:last-child { border-bottom: none; }
+      .embed-prayer { font-size: 0.9em; color: var(--textMuted); }
+      .embed-time { font-weight: 600; font-size: 0.95em; color: var(--textSecondary); font-variant-numeric: tabular-nums; }
+    </style>
+  </head>
+  <body>
+    <div class="embed-wrap">
+      <div class="embed-header">
+        <span class="embed-city">{geo.displayName}</span>
+        <a class="embed-brand" href="https://praycalc.com" target="_blank" rel="noopener">PrayCalc</a>
+      </div>
+      <div class="embed-card">
+        {PRAYERS.map((name) => (
+          <div class="embed-row">
+            <span class="embed-prayer">{name}</span>
+            <span class="embed-time">{prayers[name]}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </body>
+</html>

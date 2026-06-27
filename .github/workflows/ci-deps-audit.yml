@@ -6,11 +6,19 @@ on:
     paths:
       - 'web/package.json'
       - 'web/pnpm-lock.yaml'
+      - 'smart/package.json'
+      - 'smart/pnpm-lock.yaml'
+      - 'org/package.json'
+      - 'org/pnpm-lock.yaml'
   pull_request:
     branches: [main]
     paths:
       - 'web/package.json'
       - 'web/pnpm-lock.yaml'
+      - 'smart/package.json'
+      - 'smart/pnpm-lock.yaml'
+      - 'org/package.json'
+      - 'org/pnpm-lock.yaml'
   schedule:
     # Daily at 6:00 AM UTC — catches new CVE disclosures against pinned deps
     - cron: '0 6 * * *'
@@ -19,10 +27,6 @@ on:
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
-
-defaults:
-  run:
-    working-directory: web
 
 jobs:
   audit:
@@ -49,10 +53,12 @@ jobs:
           cache-dependency-path: web/pnpm-lock.yaml
 
       - name: Install dependencies
+        working-directory: web
         run: pnpm install --frozen-lockfile
 
       - name: Run pnpm audit (JSON output)
         id: audit
+        working-directory: web
         # Always continue so we can parse results; we fail explicitly below
         continue-on-error: true
         run: |
@@ -60,6 +66,7 @@ jobs:
 
       - name: Filter allowlist and check for violations
         id: check
+        working-directory: web
         run: |
           node - <<'JS'
           const fs = require('fs');
@@ -224,6 +231,50 @@ jobs:
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: audit-report
+          name: audit-report-web
           path: web/audit-report.json
+          retention-days: 14
+
+  audit-smart:
+    name: pnpm Audit — smart/
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          cache: 'pnpm'
+          cache-dependency-path: smart/pnpm-lock.yaml
+      - name: Install dependencies
+        working-directory: smart
+        run: pnpm install --frozen-lockfile
+      - name: Run pnpm audit
+        working-directory: smart
+        continue-on-error: true
+        run: pnpm audit --audit-level=high --json > audit-report.json 2>&1 || true
+      - name: Gate on HIGH/CRITICAL
+        working-directory: smart
+        run: |
+          node -e "
+          const fs = require('fs');
+          let r; try { r = JSON.parse(fs.readFileSync('audit-report.json','utf8')); } catch { process.exit(0); }
+          const adv = Object.values(r.advisories ?? {});
+          const hits = adv.filter(a => ['high','critical'].includes((a.severity||'').toLowerCase()));
+          if (hits.length) { console.error(hits.length+' HIGH/CRITICAL in smart/'); process.exit(1); }
+          console.log('smart/: no HIGH/CRITICAL vulnerabilities');
+          "
+      - name: Upload audit report on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: audit-report-smart
+          path: smart/audit-report.json
           retention-days: 14

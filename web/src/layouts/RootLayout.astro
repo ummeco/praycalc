@@ -76,7 +76,7 @@ const umamiSiteId = import.meta.env.UMAMI_WEBSITE_ID;
     <!-- Icons -->
     <link rel="icon" href="/favicon.ico" sizes="any" />
     <link rel="apple-touch-icon" href="/icon.png" />
-    <link rel="manifest" href="/manifest.json" />
+    <link rel="manifest" href="/site.webmanifest" />
 
     <!-- Fonts: Inter (Latin) + Noto Naskh Arabic (self-hosted via Google Fonts proxy) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -95,6 +95,15 @@ const umamiSiteId = import.meta.env.UMAMI_WEBSITE_ID;
         data-website-id={umamiSiteId}
       />
     )}
+
+    <!-- PWA service worker (sw.js — vanilla, no build step) -->
+    <script is:inline>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js').catch(() => {});
+        });
+      }
+    </script>
   </head>
   <body>
     <!-- Skip-to-content for keyboard/screen-reader users (WCAG 2.1 AA) -->
