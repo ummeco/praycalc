@@ -12,6 +12,7 @@
 // REF: T-01 (P2-E3-W01-S01)
 
 import '../styles/global.css';
+import Search from '../components/islands/Search';
 
 interface Props {
   title: string;
@@ -68,6 +69,17 @@ const isRtl = ['ar', 'ur', 'fa'].includes(locale);
     <!-- Sitemap -->
     <link rel="sitemap" href="/sitemap-index.xml" />
 
+    <!-- No-flash theme init: runs before first paint to prevent FOUC -->
+    <script is:inline>
+      (function () {
+        var stored = localStorage.getItem('theme');
+        var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (stored === 'dark' || (!stored && prefersDark)) {
+          document.documentElement.classList.add('dark');
+        }
+      })();
+    </script>
+
     <!-- Umami analytics (D-P3-21) — data-website-id from vault UMAMI_WEBSITE_ID -->
     {umamiId && (
       <script
@@ -82,5 +94,7 @@ const isRtl = ['ar', 'ur', 'fa'].includes(locale);
   </head>
   <body class="flex min-h-full bg-white text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100">
     <slot />
+    <!-- Search modal island — listens for 'open-search' CustomEvent from Header.astro -->
+    <Search client:only="react" />
   </body>
 </html>

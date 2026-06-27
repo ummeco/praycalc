@@ -1,0 +1,155 @@
+---
+// FILE: src/pages/index.astro
+// PURPOSE: PrayCalc.org homepage — introduction page with hero,
+//   interactive prayer time preview island, and navigation cards.
+// REF: T-01 (P2-E3-W01-S01)
+
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import DocsSidebar from '../components/islands/DocsSidebar';
+import { navigation } from '../lib/navigation';
+
+const title = 'Introduction';
+const description = 'Scientific documentation for PrayCalc — solar physics, twilight optics, orbital mechanics, and npm packages for Islamic prayer time calculation.';
+---
+
+<Base title={title} description={description}>
+  <div class="flex min-h-screen w-full flex-col">
+    <!-- Sticky header (Epic B-1) -->
+    <Header navigation={navigation} currentPath="/" />
+
+    <div class="flex flex-1 flex-col lg:flex-row">
+      <!-- Sidebar (desktop) -->
+      <aside
+        class="hidden w-72 shrink-0 border-r border-zinc-200 dark:border-zinc-800 lg:block"
+        aria-label="Documentation navigation"
+      >
+        <div class="sticky top-14 h-[calc(100vh-3.5rem)] overflow-y-auto px-4 py-8">
+          <DocsSidebar
+            client:load
+            navigation={navigation}
+            currentPath="/"
+          />
+        </div>
+      </aside>
+
+    <!-- Main -->
+    <main class="min-w-0 flex-1 px-4 py-10 sm:px-6 lg:px-10 xl:px-16" id="main-content">
+      <!-- Hero -->
+      <div class="mb-12">
+        <div class="mb-6 inline-flex items-center gap-2 rounded-full bg-green-50 px-3 py-1 text-xs font-medium text-green-800 ring-1 ring-green-200 dark:bg-green-950 dark:text-green-300 dark:ring-green-900">
+          Open Source · Islamic Technology
+        </div>
+        <h1 class="mb-4 text-4xl font-bold tracking-tight text-zinc-900 dark:text-white sm:text-5xl">
+          The Science of Islamic<br />Prayer Times
+        </h1>
+        <p class="max-w-2xl text-lg text-zinc-600 dark:text-zinc-400">
+          PrayCalc is an open-source Islamic prayer time calculator built on rigorous astronomical science — NREL solar position algorithms, JPL ephemeris data, empirical twilight observations, and machine learning.
+        </p>
+
+        <div class="mt-6 flex flex-wrap gap-3">
+          <a
+            href="/science/solar-position"
+            class="inline-flex items-center gap-2 rounded-lg bg-green-700 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-green-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-700"
+          >
+            Start with Solar Position
+            <svg class="h-4 w-4" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+              <path fill-rule="evenodd" d="M2 8a.75.75 0 01.75-.75h8.69L8.22 4.03a.75.75 0 011.06-1.06l4.5 4.5a.75.75 0 010 1.06l-4.5 4.5a.75.75 0 01-1.06-1.06l3.22-3.22H2.75A.75.75 0 012 8z" clip-rule="evenodd" />
+            </svg>
+          </a>
+          <a
+            href="/installation"
+            class="inline-flex items-center gap-2 rounded-lg bg-white px-4 py-2 text-sm font-medium text-zinc-700 shadow-sm ring-1 ring-zinc-200 hover:bg-zinc-50 dark:bg-zinc-900 dark:text-zinc-200 dark:ring-zinc-700 dark:hover:bg-zinc-800"
+          >
+            Install the packages
+          </a>
+        </div>
+      </div>
+
+      <!-- Live calculator CTA — the interactive prayer-time calculator lives at
+           praycalc.com; this is the documentation site. (The pray-calc engine
+           depends on nrel-spa, which is not browser-safe, so live computation
+           runs on praycalc.com, not in these docs.) -->
+      <div class="mb-16 flex flex-col gap-4 rounded-2xl border border-green-200 bg-gradient-to-br from-green-50 to-white p-6 sm:flex-row sm:items-center sm:justify-between dark:border-green-900 dark:from-green-950 dark:to-zinc-900">
+        <div>
+          <h2 class="text-lg font-semibold text-zinc-900 dark:text-white">Try the live calculator</h2>
+          <p class="mt-1 max-w-xl text-sm text-zinc-600 dark:text-zinc-400">
+            Compute prayer times for any location and date — all 14 methods, dynamic angles, and the Hijri calendar — in your browser.
+          </p>
+        </div>
+        <a
+          href="https://praycalc.com"
+          class="inline-flex shrink-0 items-center gap-2 self-start rounded-lg bg-green-700 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-green-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-700 sm:self-auto"
+        >
+          Open praycalc.com
+          <svg class="h-4 w-4" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+            <path fill-rule="evenodd" d="M2 8a.75.75 0 01.75-.75h8.69L8.22 4.03a.75.75 0 011.06-1.06l4.5 4.5a.75.75 0 010 1.06l-4.5 4.5a.75.75 0 01-1.06-1.06l3.22-3.22H2.75A.75.75 0 012 8z" clip-rule="evenodd" />
+          </svg>
+        </a>
+      </div>
+
+      <!-- Section cards -->
+      <section id="science" aria-labelledby="science-heading">
+        <h2 id="science-heading" class="mb-6 text-2xl font-bold text-zinc-900 dark:text-white">The Science</h2>
+        <div class="grid gap-4 sm:grid-cols-2">
+          {[
+            { href: '/science/solar-position', title: 'Solar Position & NREL SPA', desc: 'Sub-arcsecond solar position using NREL SPA — the foundation of all prayer time calculations.' },
+            { href: '/science/twilight-angles', title: 'Twilight & Depression Angles', desc: 'How depression angles determine Fajr and Isha — the physics of astronomical twilight.' },
+            { href: '/science/calculation-methods', title: 'Calculation Methods', desc: 'The 14 standard Islamic calculation methods — Fajr/Isha angles, organizations, and regions.' },
+            { href: '/science/qibla-calculation', title: 'Qibla Direction', desc: 'Great-circle bearing to the Kaaba using spherical trigonometry.' },
+          ].map((card) => (
+            <a
+              href={card.href}
+              class="group rounded-xl border border-zinc-200 bg-white p-5 shadow-sm transition-shadow hover:shadow-md dark:border-zinc-800 dark:bg-zinc-900"
+            >
+              <h3 class="mb-1 font-semibold text-zinc-900 group-hover:text-green-700 dark:text-white dark:group-hover:text-green-400">
+                {card.title}
+              </h3>
+              <p class="text-sm text-zinc-500 dark:text-zinc-400">{card.desc}</p>
+            </a>
+          ))}
+        </div>
+      </section>
+
+      <section id="packages" class="mt-12" aria-labelledby="packages-heading">
+        <h2 id="packages-heading" class="mb-6 text-2xl font-bold text-zinc-900 dark:text-white">Packages</h2>
+        <div class="grid gap-4 sm:grid-cols-2">
+          {[
+            { href: '/packages/pray-calc', title: 'pray-calc', desc: 'Main prayer times engine. 14 methods, dynamic angles, TypeScript-first.' },
+            { href: '/packages/nrel-spa', title: 'nrel-spa', desc: 'Pure JS port of the NREL Solar Position Algorithm — sub-arcsecond precision.' },
+            { href: '/packages/hijri-core', title: 'hijri-core', desc: 'Hijri ↔ Gregorian conversion. Umm al-Qura and civil algorithms.' },
+            { href: '/packages/moon-sighting', title: 'moon-sighting', desc: 'Lunar crescent visibility calculation for Hilal determination.' },
+          ].map((card) => (
+            <a
+              href={card.href}
+              class="group rounded-xl border border-zinc-200 bg-white p-5 shadow-sm transition-shadow hover:shadow-md dark:border-zinc-800 dark:bg-zinc-900"
+            >
+              <h3 class="mb-1 font-mono text-sm font-semibold text-green-700 group-hover:text-green-600 dark:text-green-400 dark:group-hover:text-green-300">
+                {card.title}
+              </h3>
+              <p class="text-sm text-zinc-500 dark:text-zinc-400">{card.desc}</p>
+            </a>
+          ))}
+        </div>
+      </section>
+
+      <!-- Attribution -->
+      <p class="mt-16 text-sm text-zinc-400 dark:text-zinc-500">
+        PrayCalc was built by{' '}
+        <a href="https://alicamarata.com" class="text-zinc-600 underline decoration-zinc-300 hover:text-zinc-900 dark:text-zinc-400 dark:decoration-zinc-600 dark:hover:text-white">
+          Ali Camarata
+        </a>{' '}
+        — an independent developer focused on Islamic technology. The underlying packages are open source and used to power{' '}
+        <a href="https://praycalc.com" class="text-zinc-600 underline decoration-zinc-300 hover:text-zinc-900 dark:text-zinc-400 dark:decoration-zinc-600 dark:hover:text-white">
+          praycalc.com
+        </a>{' '}
+        and the{' '}
+        <a href="https://ummat.app" class="text-zinc-600 underline decoration-zinc-300 hover:text-zinc-900 dark:text-zinc-400 dark:decoration-zinc-600 dark:hover:text-white">
+          Ummat
+        </a>{' '}
+        super-app.
+      </p>
+    </main>
+    </div>
+  </div>
+</Base>

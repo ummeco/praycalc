@@ -1,16 +1,21 @@
 ---
 // FILE: src/layouts/DocPage.astro
 // PURPOSE: Layout wrapper for all .mdx documentation pages.
-//   Provides sidebar nav + prose content area for MDX content.
+//   Provides sidebar nav + prose content area + TOC right-rail for MDX content.
 // INPUTS: frontmatter (title, description, locale from MDX)
 // CONSTRAINTS:
 //   - All MDX pages set layout: '../../../layouts/DocPage.astro' in frontmatter
 //   - Prose area uses Tailwind Typography for content rendering
-// REF: T-01 (P2-E3-W01-S01)
+//   - DocsSidebar replaces static SidebarNav (Epic B-2)
+//   - 3-column grid on xl: [sidebar | main | TOC]
+// REF: T-01 (P2-E3-W01-S01) · Epic B-2
 
 import Base from './Base.astro';
-import SidebarNav from '../components/SidebarNav.astro';
-import MobileNavToggle from '../components/islands/MobileNavToggle';
+import Header from '../components/Header.astro';
+import DocsSidebar from '../components/islands/DocsSidebar';
+import TableOfContents from '../components/islands/TableOfContents';
+import Feedback from '../components/islands/Feedback';
+import PrevNext from '../components/PrevNext.astro';
 import { navigation } from '../lib/navigation';
 
 interface Props {
@@ -26,34 +31,45 @@ const { title, description, locale = 'en' } = frontmatter;
 ---
 
 <Base title={title} description={description} locale={locale}>
-  <div class="flex w-full flex-col lg:flex-row">
-    <!-- Sidebar (desktop) -->
-    <aside
-      class="hidden w-72 shrink-0 border-r border-zinc-200 dark:border-zinc-800 lg:block"
-      aria-label="Documentation navigation"
-    >
-      <div class="sticky top-0 h-screen overflow-y-auto px-4 py-8">
-        <a href="/" class="mb-8 flex items-center gap-2 font-semibold text-zinc-900 dark:text-white">
-          <span class="text-lg">PrayCalc</span>
-          <span class="rounded bg-green-100 px-1.5 py-0.5 text-xs font-medium text-green-800 dark:bg-green-900 dark:text-green-200">docs</span>
-        </a>
-        <SidebarNav navigation={navigation} currentPath={Astro.url.pathname} />
-      </div>
-    </aside>
+  <div class="flex min-h-screen w-full flex-col">
+    <!-- Sticky header (Epic B-1) -->
+    <Header navigation={navigation} currentPath={Astro.url.pathname} />
 
-    <!-- Mobile nav -->
-    <div class="lg:hidden">
-      <MobileNavToggle navigation={navigation} currentPath={Astro.url.pathname} client:load />
-    </div>
-
-    <!-- Main content -->
-    <main class="min-w-0 flex-1 px-4 py-10 sm:px-6 lg:px-10 xl:px-16" id="main-content">
-      <article
-        class="prose prose-zinc max-w-3xl dark:prose-invert prose-a:text-green-700 dark:prose-a:text-green-400 prose-headings:scroll-mt-20 prose-code:before:content-none prose-code:after:content-none prose-table:overflow-x-auto"
-        lang={locale}
+    <div class="flex flex-1 flex-col lg:flex-row">
+      <!-- Sidebar (desktop) — Epic B-2: DocsSidebar island replaces static SidebarNav -->
+      <aside
+        class="hidden w-72 shrink-0 border-r border-zinc-200 dark:border-zinc-800 lg:block"
+        aria-label="Documentation navigation"
       >
-        <slot />
-      </article>
-    </main>
+        <div class="sticky top-14 h-[calc(100vh-3.5rem)] overflow-y-auto px-4 py-8">
+          <DocsSidebar
+            client:load
+            navigation={navigation}
+            currentPath={Astro.url.pathname}
+          />
+        </div>
+      </aside>
+
+      <!-- Main content -->
+      <main class="min-w-0 flex-1 px-4 py-10 sm:px-6 lg:px-10 xl:px-16" id="main-content">
+        <article
+          class="prose prose-zinc max-w-3xl dark:prose-invert prose-a:text-green-700 dark:prose-a:text-green-400 prose-headings:scroll-mt-20 prose-code:before:content-none prose-code:after:content-none prose-table:overflow-x-auto"
+          lang={locale}
+        >
+          <slot />
+        </article>
+
+        <!-- Feedback widget (Epic B-2) -->
+        <Feedback client:visible />
+
+        <!-- Prev/Next pager (Epic B-2) -->
+        <PrevNext currentPath={Astro.url.pathname} />
+      </main>
+
+      <!-- On-page TOC right rail (Epic B-2, xl only) -->
+      <div class="hidden xl:block xl:w-56 xl:shrink-0">
+        <TableOfContents client:load />
+      </div>
+    </div>
   </div>
 </Base>

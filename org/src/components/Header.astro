@@ -1,0 +1,103 @@
+---
+// FILE: src/components/Header.astro
+// PURPOSE: Sticky top-bar parity with original Header.tsx.
+//   Left: PrayCalc docs logo/wordmark (link to /).
+//   Right: search trigger (dispatches 'open-search' custom event + Cmd/Ctrl+K),
+//          ThemeToggle island, MobileNavToggle trigger slot.
+// INPUTS: navigation (NavGroup[]), currentPath (string)
+// OUTPUTS: <header> element with sticky positioning and scroll-driven blur
+// CONSTRAINTS:
+//   - No next.js / next-themes imports
+//   - Search modal is a later epic — only wire the trigger here
+//   - Scroll bg/blur via tiny inline script + .header-scrolled CSS class
+// REF: Epic B-1
+
+import ThemeToggle from './islands/ThemeToggle';
+import MobileNavToggle from './islands/MobileNavToggle';
+import type { NavGroup } from '../lib/navigation';
+
+interface Props {
+  navigation: NavGroup[];
+  currentPath: string;
+}
+
+const { navigation, currentPath } = Astro.props;
+---
+
+<header
+  id="site-header"
+  class="sticky top-0 z-40 flex h-14 w-full items-center justify-between gap-4 border-b border-transparent bg-white/80 px-4 backdrop-blur-sm transition-all dark:bg-zinc-950/80 sm:px-6"
+>
+  <!-- Left: logo wordmark -->
+  <a
+    href="/"
+    class="flex shrink-0 items-center gap-2 font-semibold text-zinc-900 dark:text-white"
+    aria-label="PrayCalc docs home"
+  >
+    <span class="text-base leading-none">PrayCalc</span>
+    <span class="rounded bg-green-100 px-1.5 py-0.5 text-xs font-medium text-green-800 dark:bg-green-900 dark:text-green-200">
+      docs
+    </span>
+  </a>
+
+  <!-- Right controls -->
+  <div class="flex items-center gap-1">
+    <!-- Search trigger — actual modal wired by a later epic via 'open-search' event -->
+    <button
+      id="search-trigger"
+      type="button"
+      aria-label="Search docs"
+      class="hidden items-center gap-2 rounded-lg border border-zinc-200 bg-white px-3 py-1.5 text-sm text-zinc-500 shadow-sm transition hover:border-zinc-300 hover:text-zinc-700 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-400 dark:hover:border-zinc-600 dark:hover:text-zinc-200 sm:flex"
+    >
+      <svg class="h-4 w-4 shrink-0" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6.5 11a4.5 4.5 0 100-9 4.5 4.5 0 000 9zM14 14l-3-3" />
+      </svg>
+      <span>Search</span>
+      <kbd class="ml-1 hidden rounded border border-zinc-200 bg-zinc-100 px-1 py-0.5 font-mono text-xs text-zinc-400 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-500 lg:inline">
+        ⌘K
+      </kbd>
+    </button>
+
+    <!-- Mobile search icon-only button -->
+    <button
+      id="search-trigger-mobile"
+      type="button"
+      aria-label="Search docs"
+      class="flex items-center justify-center rounded-md p-1.5 text-zinc-600 transition hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800 sm:hidden"
+    >
+      <svg class="h-5 w-5" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6.5 11a4.5 4.5 0 100-9 4.5 4.5 0 000 9zM14 14l-3-3" />
+      </svg>
+    </button>
+
+    <!-- Theme toggle island -->
+    <ThemeToggle client:load />
+
+    <!-- Mobile nav toggle (hidden on desktop — desktop uses sidebar) -->
+    <div class="lg:hidden">
+      <MobileNavToggle navigation={navigation} currentPath={currentPath} client:load />
+    </div>
+  </div>
+</header>
+
+<!-- Search trigger wiring: click + Cmd/Ctrl+K dispatches 'open-search' custom event -->
+<script is:inline>
+  (function () {
+    function openSearch() {
+      window.dispatchEvent(new CustomEvent('open-search'));
+    }
+
+    var btns = ['search-trigger', 'search-trigger-mobile'];
+    btns.forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el) el.addEventListener('click', openSearch);
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        openSearch();
+      }
+    });
+  })();
+</script>

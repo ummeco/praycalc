@@ -19,42 +19,17 @@ import sitemap from '@astrojs/sitemap';
 import vercel from '@astrojs/vercel';
 import sentry from '@sentry/astro';
 import tailwindcss from '@tailwindcss/vite';
+import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 
-// ─── Inlined brand tokens + RTL (mirrors @ummat/astro-preset — no cross-workspace dep) ────────
-const BRAND_TOKENS_CSS = `
-/* @ummat/brand design tokens — injected by astroUmmatInline */
-:root {
-  /* --- Green scale --- */
-  --brand-green-light: #C9F27A;
-  --brand-green-mid:   #79C24C;
-  --brand-green-dark:  #1E5E2F;
-  --brand-green-deep:  #0D2F17;
-
-  /* --- Semantic aliases --- */
-  --brand-primary:        var(--brand-green-mid);
-  --brand-primary-hover:  var(--brand-green-dark);
-  --brand-accent:         var(--brand-green-light);
-  --brand-background:     #FFFFFF;
-  --brand-surface:        #F9FAFB;
-  --brand-text-primary:   #111827;
-  --brand-text-secondary: #6B7280;
-  --brand-border:         #E5E7EB;
-
-  /* --- Focus ring --- */
-  --brand-focus-ring: 0 0 0 3px rgba(121, 194, 76, 0.45);
-}
-`;
-
-const RTL_LOCALES = new Set(['ar', 'ur', 'fa', 'he', 'ckb']);
+// ─── Inlined RTL direction + docs enhancements (mirrors @ummat/astro-preset) ──────────────────
+// Brand design tokens live in src/styles/global.css (@theme / :root) — NOT injected here.
+// injectScript() injects JavaScript, not HTML, so a `<style>` string would throw at runtime.
 
 function astroUmmatInline(): AstroIntegration {
   return {
     name: 'astro-ummat-inline',
     hooks: {
       'astro:config:setup'({ injectScript }) {
-        // Inject brand CSS tokens into every page head
-        injectScript('head-inline', `<style>${BRAND_TOKENS_CSS}</style>`);
-
         // Per-page RTL direction script — sets dir="rtl" for Arabic/RTL locales
         injectScript(
           'page',
@@ -63,6 +38,61 @@ function astroUmmatInline(): AstroIntegration {
   var primary = lang.split('-')[0].toLowerCase();
   var rtl = ['ar','ur','fa','he','ckb'];
   document.documentElement.setAttribute('dir', rtl.indexOf(primary) !== -1 ? 'rtl' : 'ltr');
+})();`,
+        );
+
+        // Copy-to-clipboard + heading anchor links (idempotent, no framework deps)
+        injectScript(
+          'page',
+          `(function(){
+  function initEnhancements(){
+    var main = document.getElementById('main-content');
+    if(!main) return;
+
+    /* ── Code copy buttons ─────────────────────────────────────────────── */
+    var blocks = main.querySelectorAll('pre.astro-code');
+    blocks.forEach(function(pre){
+      if(pre.dataset.copyInit) return;
+      pre.dataset.copyInit = '1';
+      var btn = document.createElement('button');
+      btn.className = 'code-copy-btn';
+      btn.setAttribute('aria-label','Copy code');
+      btn.textContent = 'Copy';
+      btn.addEventListener('click', function(){
+        var text = pre.innerText || pre.textContent || '';
+        navigator.clipboard.writeText(text).then(function(){
+          btn.textContent = 'Copied!';
+          btn.classList.add('code-copy-btn--copied');
+          setTimeout(function(){
+            btn.textContent = 'Copy';
+            btn.classList.remove('code-copy-btn--copied');
+          }, 1500);
+        }).catch(function(){
+          btn.textContent = 'Error';
+          setTimeout(function(){ btn.textContent = 'Copy'; }, 1500);
+        });
+      });
+      pre.appendChild(btn);
+    });
+
+    /* ── Heading anchor links (prose content only — not page-level h2s) ──── */
+    var headings = main.querySelectorAll('.prose h2[id], .prose h3[id]');
+    headings.forEach(function(h){
+      if(h.querySelector('.heading-anchor')) return;
+      var a = document.createElement('a');
+      a.href = '#' + h.id;
+      a.className = 'heading-anchor';
+      a.setAttribute('aria-hidden', 'true');
+      a.setAttribute('tabindex', '-1');
+      a.textContent = '#';
+      h.appendChild(a);
+    });
+  }
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', initEnhancements);
+  } else {
+    initEnhancements();
+  }
 })();`,
         );
       },
@@ -102,9 +132,29 @@ export default defineConfig({
   },
   markdown: {
     shikiConfig: {
-      theme: 'github-dark',
+      themes: {
+        light: 'github-light',
+        dark: 'github-dark',
+      },
       wrap: true,
     },
+    rehypePlugins: [
+      [
+        rehypeAutolinkHeadings,
+        {
+          behavior: 'append',
+          properties: {
+            ariaHidden: 'true',
+            tabIndex: -1,
+            class: 'heading-anchor',
+          },
+          content: {
+            type: 'text',
+            value: '#',
+          },
+        },
+      ],
+    ],
   },
   vite: {
     plugins: [tailwindcss()],
