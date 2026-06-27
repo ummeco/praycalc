@@ -1,3 +1,21 @@
+## [3.2.0] — 2026-06-27 — E-05: Tauri 2 Desktop App
+
+### Added
+- Desktop app (`praycalc/desktop/`): Tauri 2 + Vite + React 19 + Tailwind 4
+- System tray icon showing next prayer name + time
+- Left-click tray toggles 360px prayer times popover
+- Countdown timer to next prayer (live 1s updates)
+- All 6 prayer times with next prayer highlighted in green
+- Settings: 10 preset cities, calculation method, Hanafi school toggle, notification toggle, auto-start at login
+- OS notifications at prayer time via tauri-plugin-notification
+- Auto-start at login via tauri-plugin-autostart
+- Settings persisted via tauri-plugin-store
+- Fetches from praycalc.com API; refreshes at midnight
+- CI: ci-desktop.yml (macOS-15, cargo check + tsc + Vite build)
+- Supports Windows, Linux, macOS (arm64 + x64)
+
+---
+
 ## [3.1.0] — 2026-06-27 — E-05/E-06/E-07: Native Surfaces Complete
 
 ### Added
