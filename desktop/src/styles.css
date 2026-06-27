@@ -1,0 +1,22 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-bg: #060806;
+  --color-brand-light: #C9F27A;
+  --color-brand-mid: #79C24C;
+  --color-brand-dark: #1E5E2F;
+  --color-brand-deep: #0D2F17;
+}
+
+body {
+  margin: 0;
+  background: var(--color-brand-bg);
+  color: #e8f5d6;
+  font-family: system-ui, -apple-system, sans-serif;
+  overflow: hidden;
+  user-select: none;
+}
+
+* {
+  box-sizing: border-box;
+}
