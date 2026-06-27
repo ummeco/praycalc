@@ -24,6 +24,9 @@ export default defineConfig({
   output: 'server',
   adapter: vercel({
     webAnalytics: { enabled: false }, // Umami handles analytics (D-P3-21)
+    // data-lookup.server.ts reads path.join(process.cwd(), 'data', ...) at Lambda runtime.
+    // includeFiles ensures geo.json + auto.json are bundled at the function root.
+    includeFiles: ['./data/geo.json', './data/auto.json'],
   }),
   integrations: [
     astroUmmat({
