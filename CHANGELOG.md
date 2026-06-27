@@ -1,3 +1,19 @@
+## [3.1.0] — 2026-06-27 — E-05/E-06/E-07: Native Surfaces Complete
+
+### Added
+- macOS: countdown now live-updates every second; adhan sound picker (None/Default/Makkah/Madinah); audio files bundled
+- watchOS: @main conflict resolved; PrayCalcWatchWidgets.swift owns widget bundle entry point; adhan audio added
+- Wear OS: QiblaScreen added (canvas compass + degree display); wired into nav; Qibla chip in prayer list; tile LaunchAction package fixed; adhan audio in raw resources
+- Smart home: README.md documenting all integrations; shortcuts use public API; all 259 tests pass
+- CI: ci-macos.yml, ci-watchos.yml, ci-wearos.yml, ci-smart.yml
+
+### Fixed
+- Vercel source builds no longer override prebuilt deploys for non-web/ pushes (ignoredBuildStep set)
+- Lambda data/ bundle: `includeFiles` in astro.config.ts ensures geo.json + auto.json survive source builds
+- Node.js engine bumped from 20.x to 22.x (20.x deprecated in Vercel 2026-10-01)
+
+---
+
 ## [3.0.0] — 2026-06-27 — P3: PrayCalc Full Platform Excellence
 
 ### Added
