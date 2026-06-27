@@ -239,11 +239,3 @@ struct PrayerComplicationEntryView: View {
     }
 }
 
-// MARK: - Widget Bundle
-
-@main
-struct PrayCalcWidgetBundle: WidgetBundle {
-    var body: some Widget {
-        PrayerComplicationWidget()
-    }
-}

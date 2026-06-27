@@ -86,7 +86,7 @@
                 "OutputUUID": "longitude-step"
               }
             },
-            "string": "https://api.praycalc.com/api/v1/qibla?latitude=\uFFFC&longitude=\uFFFC"
+            "string": "https://api.praycalc.com/api/v1/public/times?lat=\uFFFC&lng=\uFFFC"
           },
           "WFSerializationType": "WFTextTokenString"
         },

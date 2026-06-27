@@ -56,6 +56,7 @@ fun PrayerListScreen(
     locationError: String? = null,
     onCountdownClick: () -> Unit,
     onSettingsClick: () -> Unit,
+    onQiblaClick: () -> Unit = {},
     onRefresh: () -> Unit
 ) {
     val listState = rememberScalingLazyListState()
@@ -148,6 +149,11 @@ fun PrayerListScreen(
                             modifier = Modifier.size(16.dp)
                         )
                     },
+                    colors = ChipDefaults.secondaryChipColors()
+                )
+                CompactChip(
+                    onClick = onQiblaClick,
+                    label = { Text("Qibla") },
                     colors = ChipDefaults.secondaryChipColors()
                 )
             }

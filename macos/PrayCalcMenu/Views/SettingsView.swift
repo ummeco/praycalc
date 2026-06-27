@@ -14,6 +14,14 @@ struct SettingsView: View {
     @AppStorage("notifyAsr") private var notifyAsr = true
     @AppStorage("notifyMaghrib") private var notifyMaghrib = true
     @AppStorage("notifyIsha") private var notifyIsha = true
+    @AppStorage("adhanSound") private var adhanSound = "default"
+
+    private let adhanSounds: [(key: String, label: String)] = [
+        ("none", "None"),
+        ("default", "Default (System Sound)"),
+        ("makkah", "Adhan Makkah"),
+        ("madinah", "Adhan Madinah")
+    ]
 
     private let methods: [(key: String, label: String)] = [
         ("isna", "ISNA"),
@@ -121,6 +129,22 @@ struct SettingsView: View {
                 Toggle("Asr", isOn: $notifyAsr)
                 Toggle("Maghrib", isOn: $notifyMaghrib)
                 Toggle("Isha", isOn: $notifyIsha)
+            }
+
+            Section("Adhan Sound") {
+                Picker("Adhan Sound", selection: $adhanSound) {
+                    ForEach(adhanSounds, id: \.key) { s in
+                        Text(s.label).tag(s.key)
+                    }
+                }
+                .pickerStyle(.menu)
+                .onChange(of: adhanSound) { _ in prayerService.scheduleNotifications() }
+
+                if adhanSound == "makkah" || adhanSound == "madinah" {
+                    Text("Audio file must be added to the Xcode project bundle: adhan-\(adhanSound == "makkah" ? "makkah" : "madinah").mp3")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
             }
 
             Button("Request Notification Permission") {

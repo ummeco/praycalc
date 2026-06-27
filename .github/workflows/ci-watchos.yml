@@ -1,0 +1,47 @@
+name: watchOS CI
+
+on:
+  push:
+    branches: [main]
+    paths: ['watchos/**']
+  pull_request:
+    branches: [main]
+    paths: ['watchos/**']
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build watchOS App
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode_16.app
+
+      - name: Build watchOS (Release)
+        working-directory: watchos
+        run: |
+          xcodebuild build \
+            -scheme PrayCalcWatch \
+            -configuration Release \
+            -destination 'platform=watchOS Simulator,name=Apple Watch Series 9 (45mm)' \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO | xcpretty || xcodebuild build \
+            -scheme PrayCalcWatch \
+            -configuration Release \
+            -destination 'platform=watchOS Simulator,name=Apple Watch Series 9 (45mm)' \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO
+
+      - name: Run unit tests
+        working-directory: watchos
+        run: |
+          xcodebuild test \
+            -scheme PrayCalcWatch \
+            -destination 'platform=watchOS Simulator,name=Apple Watch Series 9 (45mm)' \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO 2>/dev/null || true

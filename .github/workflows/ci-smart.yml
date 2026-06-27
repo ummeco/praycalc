@@ -1,0 +1,63 @@
+name: Smart Home CI
+
+on:
+  push:
+    branches: [main]
+    paths: ['smart/**', 'homebridge/**', 'smarthome/**']
+  pull_request:
+    branches: [main]
+    paths: ['smart/**', 'homebridge/**', 'smarthome/**']
+  workflow_dispatch:
+
+jobs:
+  smart-backend:
+    name: Smart Home Backend
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: smart
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+          cache-dependency-path: smart/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec tsc --noEmit
+      - run: pnpm test
+
+  homebridge-plugin:
+    name: Homebridge Plugin
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: homebridge
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+          cache-dependency-path: homebridge/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec tsc --noEmit
+
+  ha-component:
+    name: Home Assistant Component (Python lint)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install ruff
+        run: pip install ruff
+      - name: Lint HA component
+        run: ruff check smart/homeassistant/custom_components/praycalc/

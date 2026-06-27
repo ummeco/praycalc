@@ -97,7 +97,7 @@ class PrayerTileService : SuspendingTileService() {
                     .setAndroidActivity(
                         ActionBuilders.AndroidActivity.Builder()
                             .setPackageName(context.packageName)
-                            .setClassName("com.praycalc.wear.MainActivity")
+                            .setClassName("app.praycalc.MainActivity")
                             .build()
                     )
                     .build()

@@ -63,7 +63,17 @@ class PrayerService: NSObject, ObservableObject, CLLocationManagerDelegate {
             let content = UNMutableNotificationContent()
             content.title = "PrayCalc"
             content.body = "\(prayer.name) prayer time: \(prayer.displayTime)"
-            content.sound = .default
+            let adhanSound = UserDefaults.standard.string(forKey: "adhanSound") ?? "default"
+            switch adhanSound {
+            case "makkah":
+                content.sound = UNNotificationSound(named: UNNotificationSoundName("adhan-makkah.mp3"))
+            case "madinah":
+                content.sound = UNNotificationSound(named: UNNotificationSoundName("adhan-madinah.mp3"))
+            case "none":
+                content.sound = nil
+            default:
+                content.sound = .default
+            }
 
             let calendar = Calendar.current
             let components = calendar.dateComponents([.hour, .minute], from: prayer.date)
@@ -261,7 +271,7 @@ class PrayerService: NSObject, ObservableObject, CLLocationManagerDelegate {
     }
 
     private func startCountdownTimer() {
-        countdownTimer = Timer.scheduledTimer(withTimeInterval: 60, repeats: true) { [weak self] _ in
+        countdownTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
             self?.updateCountdown()
         }
     }
@@ -281,11 +291,14 @@ class PrayerService: NSObject, ObservableObject, CLLocationManagerDelegate {
         let interval = target.timeIntervalSince(now)
         let hours = Int(interval) / 3600
         let minutes = (Int(interval) % 3600) / 60
+        let seconds = Int(interval) % 60
 
         if hours > 0 {
-            countdownText = "\(hours)h \(minutes)m"
+            countdownText = "\(hours)h \(minutes)m \(seconds)s"
+        } else if minutes > 0 {
+            countdownText = "\(minutes)m \(seconds)s"
         } else {
-            countdownText = "\(minutes)m"
+            countdownText = "\(seconds)s"
         }
     }
 

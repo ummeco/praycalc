@@ -14,6 +14,7 @@ import androidx.wear.compose.navigation.rememberSwipeDismissableNavController
 import app.praycalc.data.PrayerRepository
 import app.praycalc.screens.CountdownScreen
 import app.praycalc.screens.PrayerListScreen
+import app.praycalc.screens.QiblaScreen
 import app.praycalc.screens.SettingsScreen
 
 object PrayCalcColors {
@@ -44,6 +45,7 @@ object Routes {
     const val PRAYER_LIST = "prayer_list"
     const val COUNTDOWN = "countdown"
     const val SETTINGS = "settings"
+    const val QIBLA = "qibla"
 }
 
 @Composable
@@ -69,6 +71,9 @@ fun PrayCalcWearApp() {
                     onSettingsClick = {
                         navController.navigate(Routes.SETTINGS)
                     },
+                    onQiblaClick = {
+                        navController.navigate(Routes.QIBLA)
+                    },
                     onRefresh = { repository.refresh() }
                 )
             }
@@ -80,6 +85,9 @@ fun PrayCalcWearApp() {
                     repository = repository,
                     onBack = { navController.popBackStack() }
                 )
+            }
+            composable(Routes.QIBLA) {
+                QiblaScreen(bearing = prayerData.qibla?.bearing?.toFloat() ?: 0f)
             }
         }
     }
