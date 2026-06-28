@@ -15,28 +15,26 @@
 import { copyFileSync, cpSync, mkdirSync, existsSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { createRequire } from 'node:module';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const web = resolve(__dirname, '..');
 const funcRoot = resolve(web, '.vercel/output/functions/_render.func');
+const webRequire = createRequire(resolve(web, 'package.json'));
 
 // --- 1. Copy nrel-spa/lib/spa.js ---
-const spaSrc = resolve(
-  web,
-  'node_modules/.pnpm/nrel-spa@2.0.1/node_modules/nrel-spa/lib/spa.js',
-);
-const spaDest = resolve(
-  funcRoot,
-  'node_modules/.pnpm/nrel-spa@2.0.1/node_modules/nrel-spa/lib/spa.js',
-);
+// resolve dynamically so the path works in both local pnpm store and CI virtual store
+const spaSrc = webRequire.resolve('nrel-spa/lib/spa.js');
+const spaRelative = spaSrc.replace(/.*node_modules\//, 'node_modules/');
+const spaDest = resolve(funcRoot, spaRelative);
 
 if (!existsSync(spaSrc)) {
-  console.error(`[postbuild] ERROR: source spa.js not found at:\n  ${spaSrc}`);
+  console.error(`[postbuild] ERROR: nrel-spa/lib/spa.js not found (checked: ${spaSrc})`);
   process.exit(1);
 }
 mkdirSync(dirname(spaDest), { recursive: true });
 copyFileSync(spaSrc, spaDest);
-console.log('[postbuild] Copied nrel-spa/lib/spa.js → Lambda bundle ✓');
+console.log(`[postbuild] Copied nrel-spa/lib/spa.js → Lambda bundle ✓`);
 
 // --- 2. Copy data/ directory (geo.json + auto.json) ---
 const dataSrc = resolve(web, 'data');

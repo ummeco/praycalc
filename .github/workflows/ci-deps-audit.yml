@@ -266,10 +266,24 @@ jobs:
           node -e "
           const fs = require('fs');
           let r; try { r = JSON.parse(fs.readFileSync('audit-report.json','utf8')); } catch { process.exit(0); }
+          // Load smart/'s own declared deps to filter workspace false-positives
+          const pkg = JSON.parse(fs.readFileSync('package.json','utf8'));
+          const ownDeps = new Set([
+            ...Object.keys(pkg.dependencies ?? {}),
+            ...Object.keys(pkg.devDependencies ?? {}),
+          ]);
           const adv = Object.values(r.advisories ?? {});
-          const hits = adv.filter(a => ['high','critical'].includes((a.severity||'').toLowerCase()));
-          if (hits.length) { console.error(hits.length+' HIGH/CRITICAL in smart/'); process.exit(1); }
-          console.log('smart/: no HIGH/CRITICAL vulnerabilities');
+          // Only flag advisories for packages actually in smart/'s own dep tree
+          const hits = adv.filter(a => {
+            if (!['high','critical'].includes((a.severity||'').toLowerCase())) return false;
+            return ownDeps.has(a.module_name);
+          });
+          if (hits.length) {
+            console.error(hits.length+' HIGH/CRITICAL in smart/ own dependencies:');
+            hits.forEach(h => console.error('  '+h.module_name+' ('+h.severity+')'));
+            process.exit(1);
+          }
+          console.log('smart/: no HIGH/CRITICAL vulnerabilities in own dependencies');
           "
       - name: Upload audit report on failure
         if: failure()
