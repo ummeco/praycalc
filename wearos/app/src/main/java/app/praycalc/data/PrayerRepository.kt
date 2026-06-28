@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -202,7 +203,7 @@ class PrayerRepository(private val context: Context) {
     }
 
     private suspend fun getSyncedData(): PrayerData? {
-        val prefs = context.dataStore.data.map { it[KEY_SYNCED_DATA] }.kotlinx.coroutines.flow.firstOrNull()
+        val prefs = context.dataStore.data.map { it[KEY_SYNCED_DATA] }.firstOrNull()
         if (prefs == null) return null
         return try {
             PrayerData.fromJson(JSONObject(prefs))

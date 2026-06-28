@@ -71,7 +71,7 @@ fun PrayerListScreen(
             .focusRequester(focusRequester)
             .onRotaryScrollEvent { event ->
                 coroutineScope.launch {
-                    listState.scrollBy(event.verticalScrollPixels)
+                    listState.animateScrollBy(event.verticalScrollPixels)
                 }
                 true
             },

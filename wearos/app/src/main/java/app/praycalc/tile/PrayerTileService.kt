@@ -5,6 +5,7 @@ import androidx.wear.protolayout.ActionBuilders
 import androidx.wear.protolayout.ColorBuilders.argb
 import androidx.wear.protolayout.DimensionBuilders.dp
 import androidx.wear.protolayout.DimensionBuilders.expand
+import androidx.wear.protolayout.DimensionBuilders.sp
 import androidx.wear.protolayout.LayoutElementBuilders
 import androidx.wear.protolayout.LayoutElementBuilders.Column
 import androidx.wear.protolayout.LayoutElementBuilders.Spacer
@@ -117,7 +118,7 @@ class PrayerTileService : SuspendingTileService() {
                     .setText(name)
                     .setFontStyle(
                         LayoutElementBuilders.FontStyle.Builder()
-                            .setSize(dp(18f))
+                            .setSize(sp(18f))
                             .setColor(accentColor)
                             .setWeight(LayoutElementBuilders.FONT_WEIGHT_BOLD)
                             .build()
@@ -132,7 +133,7 @@ class PrayerTileService : SuspendingTileService() {
                     .setText(time)
                     .setFontStyle(
                         LayoutElementBuilders.FontStyle.Builder()
-                            .setSize(dp(24f))
+                            .setSize(sp(24f))
                             .setColor(greenColor)
                             .setWeight(LayoutElementBuilders.FONT_WEIGHT_BOLD)
                             .build()
@@ -147,7 +148,7 @@ class PrayerTileService : SuspendingTileService() {
                     .setText(countdown)
                     .setFontStyle(
                         LayoutElementBuilders.FontStyle.Builder()
-                            .setSize(dp(12f))
+                            .setSize(sp(12f))
                             .setColor(dimColor)
                             .build()
                     )

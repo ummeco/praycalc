@@ -1,6 +1,5 @@
 package app.praycalc.data
 
-import android.content.Context
 import android.util.Log
 import com.google.android.gms.wearable.DataEvent
 import com.google.android.gms.wearable.DataEventBuffer
@@ -49,13 +48,6 @@ class PrayerDataListenerService : WearableListenerService() {
                     }
 
                     scope.launch {
-                        // Use the extension property context.dataStore (must match repository declaration)
-                        // Actually, since it's a private val in the other file, we repeat or make it internal.
-                        // I'll assume we can use the same name if we re-declare it or just define a shared location.
-                        // For now, I'll use the same preference name "praycalc_settings".
-                        baseContext.applicationContext.getSharedPreferences("praycalc_settings", Context.MODE_PRIVATE)
-                        
-                        // Wait, DataStore is preferred. Let's use it directly.
                         applicationContext.dataStore.edit { prefs ->
                             prefs[PrayerRepository.KEY_SYNCED_DATA] = json.toString()
                             prefs[PrayerRepository.KEY_SYNCED_LOCATION] = location

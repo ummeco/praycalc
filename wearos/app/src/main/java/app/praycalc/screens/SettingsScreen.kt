@@ -50,7 +50,7 @@ fun SettingsScreen(
             .focusRequester(focusRequester)
             .onRotaryScrollEvent { event ->
                 coroutineScope.launch {
-                    listState.scrollBy(event.verticalScrollPixels)
+                    listState.animateScrollBy(event.verticalScrollPixels)
                 }
                 true
             },
@@ -125,7 +125,7 @@ fun SettingsScreen(
                     )
                 },
                 toggleControl = {
-                    ToggleChipDefaults.RadioIcon(selected = isSelected)
+                    ToggleChipDefaults.radioToggleControl()
                 },
                 colors = ToggleChipDefaults.toggleChipColors(
                     checkedStartBackgroundColor = PrayCalcColors.Primary,

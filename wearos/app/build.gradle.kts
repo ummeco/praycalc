@@ -124,6 +124,9 @@ dependencies {
     // Location
     implementation("com.google.android.gms:play-services-location:21.3.0")
 
+    // Wearable Data Layer (DataMapItem, WearableListenerService)
+    implementation("com.google.android.gms:play-services-wearable:18.2.0")
+
     // Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.8.1")
