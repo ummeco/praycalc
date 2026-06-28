@@ -26,9 +26,6 @@ jobs:
           node-version: '20'
           cache: 'pnpm'
           cache-dependency-path: smart/pnpm-lock.yaml
-      - name: Build vendor/pray-calc
-        working-directory: smart/vendor/pray-calc
-        run: npm install && npm run build
       - run: pnpm install --frozen-lockfile
       - run: pnpm exec tsc --noEmit
       - run: pnpm test
