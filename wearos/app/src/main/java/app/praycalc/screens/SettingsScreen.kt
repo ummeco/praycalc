@@ -51,7 +51,7 @@ fun SettingsScreen(
             .focusRequester(focusRequester)
             .onRotaryScrollEvent { event ->
                 coroutineScope.launch {
-                    listState.lazyListState.animateScrollBy(event.verticalScrollPixels)
+                    listState.animateScrollToItem(maxOf(0, listState.centerItemIndex + if (event.verticalScrollPixels > 0) 1 else -1))
                 }
                 true
             },
