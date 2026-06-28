@@ -64,6 +64,12 @@ jobs:
             libsoup-3.0-dev \
             libjavascriptcoregtk-4.1-dev
 
+      - name: Install LLVM (Windows — needed by vswhom-sys build script)
+        if: matrix.platform == 'windows-latest'
+        uses: KyleMayes/install-llvm-action@v2
+        with:
+          version: '17'
+
       - name: Cache Rust build artifacts
         uses: actions/cache@v4
         with:
