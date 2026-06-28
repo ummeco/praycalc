@@ -13,9 +13,11 @@ class AppDelegate: FlutterAppDelegate, UNUserNotificationCenterDelegate {
     override func applicationDidFinishLaunching(_ notification: Notification) {
         UNUserNotificationCenter.current().delegate = self
 
-        // MenuBarController — set up after the Flutter engine is ready
-        if let mainWindow = NSApp.mainWindow,
-           let flutterVC  = mainWindow.contentViewController as? FlutterViewController {
+        // MenuBarController — MainFlutterWindow is an NSPanel so it won't appear
+        // in NSApp.mainWindow. Scan all windows for the FlutterViewController.
+        if let flutterVC = NSApp.windows
+            .compactMap({ $0.contentViewController as? FlutterViewController })
+            .first {
             let controller = MenuBarController(flutterController: flutterVC)
             controller.setup()
             menuBarController = controller

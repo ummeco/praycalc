@@ -26,6 +26,7 @@ import 'core/theme/app_theme.dart';
 import 'features/desktop/desktop_adhan_alert.dart';
 import 'features/desktop/desktop_full_window.dart';
 import 'features/desktop/desktop_tray_app.dart';
+import 'features/desktop/mac_menubar_service.dart';
 import 'features/onboarding/onboarding_screen.dart';
 import 'features/quran/quran_audio_handler.dart';
 import 'core/platform/device_tier.dart';
@@ -68,8 +69,14 @@ void main() async {
       titleBarStyle: TitleBarStyle.normal,
     );
     await windowManager.waitUntilReadyToShow(windowOptions, () async {
-      await windowManager.show();
-      await windowManager.focus();
+      if (Platform.isMacOS) {
+        // macOS runs as a menu bar app — main window starts hidden.
+        // User opens it via the popover or Settings button.
+        await windowManager.hide();
+      } else {
+        await windowManager.show();
+        await windowManager.focus();
+      }
     });
   }
 
@@ -143,6 +150,7 @@ class PrayCalcApp extends ConsumerStatefulWidget {
 
 class _PrayCalcAppState extends ConsumerState<PrayCalcApp> with WindowListener {
   DesktopTrayApp? _trayApp;
+  MacMenuBarService? _macMenuBar;
 
   @override
   void initState() {
@@ -156,16 +164,25 @@ class _PrayCalcAppState extends ConsumerState<PrayCalcApp> with WindowListener {
         DesktopFullWindow.registerShowCallback(() {
           appRouter.push(Routes.desktopFullWindow);
         });
-        // Use the navigator's context (inside MaterialApp) so that
-        // AppLocalizations is available. The PrayCalcApp context is
-        // above MaterialApp and never has localizations.
-        final innerCtx = appRouter.routerDelegate.navigatorKey.currentContext;
-        if (innerCtx == null) return;
-        final l10n = AppLocalizations.of(innerCtx);
-        if (l10n == null) return;
-        final tray = DesktopTrayApp(ref, l10n);
-        tray.init().catchError((_) {}); // No-op in headless test environments.
-        _trayApp = tray;
+        // On macOS the native MenuBarController (Swift NSStatusItem + NSPopover)
+        // handles the menu bar icon and popover. Only use the Dart tray_manager
+        // on Windows and Linux where we have no native equivalent.
+        if (!kIsWeb && Platform.isMacOS) {
+          final svc = MacMenuBarService(ref);
+          svc.init();
+          _macMenuBar = svc;
+        } else {
+          // Use the navigator's context (inside MaterialApp) so that
+          // AppLocalizations is available. The PrayCalcApp context is
+          // above MaterialApp and never has localizations.
+          final innerCtx = appRouter.routerDelegate.navigatorKey.currentContext;
+          if (innerCtx == null) return;
+          final l10n = AppLocalizations.of(innerCtx);
+          if (l10n == null) return;
+          final tray = DesktopTrayApp(ref, l10n);
+          tray.init().catchError((_) {}); // No-op in headless test environments.
+          _trayApp = tray;
+        }
       });
     }
 
@@ -186,6 +203,7 @@ class _PrayCalcAppState extends ConsumerState<PrayCalcApp> with WindowListener {
       windowManager.removeListener(this);
     }
     _trayApp?.dispose();
+    _macMenuBar?.dispose();
     super.dispose();
   }
 
