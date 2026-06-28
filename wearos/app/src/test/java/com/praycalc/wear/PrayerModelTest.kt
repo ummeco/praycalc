@@ -1,7 +1,7 @@
 package com.praycalc.wear
 
-import com.praycalc.wear.data.PrayerData
-import com.praycalc.wear.data.PrayerTime
+import app.praycalc.data.PrayerData
+import app.praycalc.data.PrayerTime
 import org.json.JSONObject
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
