@@ -91,8 +91,14 @@ class NotificationService {
       requestSoundPermission: false,
       notificationCategories: [prayerArrivalCategory],
     );
+    final macos = DarwinInitializationSettings(
+      requestAlertPermission: false,
+      requestBadgePermission: false,
+      requestSoundPermission: false,
+      notificationCategories: [prayerArrivalCategory],
+    );
     await _plugin.initialize(
-      settings: InitializationSettings(android: android, iOS: ios),
+      settings: InitializationSettings(android: android, iOS: ios, macOS: macos),
       onDidReceiveNotificationResponse: _onNotificationResponse,
       onDidReceiveBackgroundNotificationResponse: onBackgroundNotificationResponse,
     );
