@@ -20,3 +20,8 @@ body {
 * {
   box-sizing: border-box;
 }
+
+.font-arabic {
+  font-family: 'Geeza Pro', 'Arabic Typesetting', system-ui, sans-serif;
+  font-size: 1.05em;
+}

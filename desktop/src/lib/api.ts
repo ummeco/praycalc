@@ -15,6 +15,10 @@ export async function updateTrayTooltip(label: string): Promise<void> {
   return invoke('update_tray_tooltip', { label });
 }
 
+export async function updateTrayTitle(label: string): Promise<void> {
+  return invoke('update_tray_title', { label });
+}
+
 export async function getTodayDate(): Promise<string> {
   return invoke<string>('get_today_date');
 }

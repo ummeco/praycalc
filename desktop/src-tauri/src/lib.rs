@@ -47,6 +47,15 @@ async fn update_tray_tooltip(app: AppHandle, label: String) -> Result<(), String
 }
 
 #[tauri::command]
+async fn update_tray_title(app: AppHandle, label: String) -> Result<(), String> {
+    if let Some(tray) = app.tray_by_id("main") {
+        // set_title shows text in the menu bar next to the icon (macOS only; no-op on other platforms)
+        tray.set_title(Some(&label)).map_err(|e| e.to_string())?;
+    }
+    Ok(())
+}
+
+#[tauri::command]
 fn get_today_date() -> String {
     chrono::Local::now().format("%Y-%m-%d").to_string()
 }
@@ -82,6 +91,7 @@ pub fn run() {
         .invoke_handler(tauri::generate_handler![
             fetch_prayer_times,
             update_tray_tooltip,
+            update_tray_title,
             get_today_date,
             notify_prayer,
         ])
