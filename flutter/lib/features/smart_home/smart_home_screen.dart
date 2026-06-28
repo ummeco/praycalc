@@ -97,7 +97,7 @@ class _SmartHomeScreenState extends ConsumerState<SmartHomeScreen> {
 
   Future<void> _load() async {
     try {
-      final api  = ref.read(smartHomeApiServiceProvider);
+      final api  = SmartHomeApiService.instance;
       final list = await api.fetchRoutines();
       if (!mounted) return;
       setState(() { _routines = list; _loading = false; });
@@ -109,7 +109,7 @@ class _SmartHomeScreenState extends ConsumerState<SmartHomeScreen> {
   @override
   Widget build(BuildContext context) {
     final ff        = ref.watch(featureFlagsProvider);
-    final isPro     = ref.watch(subscriptionProvider).isUmmatPlus;
+    final isPro     = ref.watch(subscriptionProvider).isPlus;
 
     // FF gate
     if (!ff.smartHome) {
@@ -185,7 +185,7 @@ class _SmartHomeScreenState extends ConsumerState<SmartHomeScreen> {
           trailing: Switch(
             value: r.enabled,
             onChanged: (v) async {
-              final api = ref.read(smartHomeApiServiceProvider);
+              final api = SmartHomeApiService.instance;
               await api.toggleRoutine(r.id!, v);
               _load();
             },
@@ -279,7 +279,7 @@ class _SmartHomeRoutineEditorScreenState
   Future<void> _loadExisting() async {
     setState(() => _loading = true);
     try {
-      final api = ref.read(smartHomeApiServiceProvider);
+      final api = SmartHomeApiService.instance;
       final r   = await api.fetchRoutine(widget.routineId!);
       if (!mounted) return;
       setState(() { _routine = r; _loading = false; });
@@ -478,7 +478,7 @@ class _SmartHomeRoutineEditorScreenState
   Future<void> _save() async {
     setState(() => _saving = true);
     try {
-      final api = ref.read(smartHomeApiServiceProvider);
+      final api = SmartHomeApiService.instance;
       if (widget.routineId == null) {
         await api.createRoutine(_routine);
       } else {

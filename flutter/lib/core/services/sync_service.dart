@@ -9,6 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../features/auth/sync_conflict_dialog.dart';
 import 'auth_service.dart';
 import 'graphql_service.dart';
+import 'package:praycalc_app/core/models/user_prefs.dart';
 
 /// Sync status for each data domain.
 enum SyncStatus { synced, syncing, offline, error }
@@ -560,8 +561,6 @@ class SyncService {
 
 // ── v1.1: UserPrefs cross-device sync ─────────────────────────────────────────
 
-import 'package:praycalc_app/core/models/user_prefs.dart';
-
 const _kUpsertUserPrefs = '''
 mutation UpsertUserPrefs(\$userId: uuid!, \$calcMethod: String, \$hanafiAsr: Boolean,
   \$timeFormat: String, \$hijriOffset: Int, \$showMoonPhase: Boolean,
@@ -612,7 +611,7 @@ class UserPrefsSyncService {
   Future<UserPrefs?> pullPrefsFromBackend() async {
     try {
       final result = await _gql.query(_kFetchUserPrefs);
-      final rows = (result['pc_user_prefs'] as List?)?.cast<Map<String, dynamic>>();
+      final rows = (result.data?['pc_user_prefs'] as List?)?.cast<Map<String, dynamic>>();
       if (rows == null || rows.isEmpty) return null;
       return UserPrefs.fromJson(rows.first);
     } catch (e) {
