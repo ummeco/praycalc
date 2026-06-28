@@ -1,0 +1,2 @@
+# Standalone workspace root — prevents pnpm from walking up to the repo root workspace.
+packages: []
