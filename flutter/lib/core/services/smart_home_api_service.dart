@@ -12,6 +12,91 @@ const _kSmartHomeUrl = String.fromEnvironment(
 
 // ─── Data models ─────────────────────────────────────────────────────────────
 
+enum RoutinePlatform { googleHome, alexa, homekit }
+enum ActionType { lightColor, lightBrightness, speakerAudio }
+
+class SmartHomeRoutine {
+  final String? id;
+  final String triggerPrayer;
+  final int offsetMinutes;
+  final List<String> daysOfWeek;
+  final RoutinePlatform platform;
+  final List<String> deviceIds;
+  final ActionType actionType;
+  final String actionValue;
+  final int durationSeconds;
+  final bool revertAfter;
+  final bool enabled;
+
+  const SmartHomeRoutine({
+    this.id,
+    this.triggerPrayer = 'Fajr',
+    this.offsetMinutes = 0,
+    this.daysOfWeek = const [],
+    this.platform = RoutinePlatform.googleHome,
+    this.deviceIds = const [],
+    this.actionType = ActionType.lightColor,
+    this.actionValue = '#C9F27A',
+    this.durationSeconds = 300,
+    this.revertAfter = true,
+    this.enabled = true,
+  });
+
+  SmartHomeRoutine copyWith({
+    String? id, String? triggerPrayer, int? offsetMinutes,
+    List<String>? daysOfWeek, RoutinePlatform? platform,
+    List<String>? deviceIds, ActionType? actionType,
+    String? actionValue, int? durationSeconds,
+    bool? revertAfter, bool? enabled,
+  }) => SmartHomeRoutine(
+    id: id ?? this.id,
+    triggerPrayer: triggerPrayer ?? this.triggerPrayer,
+    offsetMinutes: offsetMinutes ?? this.offsetMinutes,
+    daysOfWeek: daysOfWeek ?? this.daysOfWeek,
+    platform: platform ?? this.platform,
+    deviceIds: deviceIds ?? this.deviceIds,
+    actionType: actionType ?? this.actionType,
+    actionValue: actionValue ?? this.actionValue,
+    durationSeconds: durationSeconds ?? this.durationSeconds,
+    revertAfter: revertAfter ?? this.revertAfter,
+    enabled: enabled ?? this.enabled,
+  );
+
+  factory SmartHomeRoutine.fromJson(Map<String, dynamic> j) => SmartHomeRoutine(
+    id: j['id'] as String?,
+    triggerPrayer: j['triggerPrayer'] as String? ?? 'Fajr',
+    offsetMinutes: j['offsetMinutes'] as int? ?? 0,
+    daysOfWeek: (j['daysOfWeek'] as List<dynamic>?)?.cast<String>() ?? const [],
+    platform: RoutinePlatform.values.firstWhere(
+      (e) => e.name == (j['platform'] as String? ?? ''),
+      orElse: () => RoutinePlatform.googleHome,
+    ),
+    deviceIds: (j['deviceIds'] as List<dynamic>?)?.cast<String>() ?? const [],
+    actionType: ActionType.values.firstWhere(
+      (e) => e.name == (j['actionType'] as String? ?? ''),
+      orElse: () => ActionType.lightColor,
+    ),
+    actionValue: j['actionValue'] as String? ?? '#C9F27A',
+    durationSeconds: j['durationSeconds'] as int? ?? 300,
+    revertAfter: j['revertAfter'] as bool? ?? true,
+    enabled: j['enabled'] as bool? ?? true,
+  );
+
+  Map<String, dynamic> toJson() => {
+    if (id != null) 'id': id,
+    'triggerPrayer': triggerPrayer,
+    'offsetMinutes': offsetMinutes,
+    'daysOfWeek': daysOfWeek,
+    'platform': platform.name,
+    'deviceIds': deviceIds,
+    'actionType': actionType.name,
+    'actionValue': actionValue,
+    'durationSeconds': durationSeconds,
+    'revertAfter': revertAfter,
+    'enabled': enabled,
+  };
+}
+
 /// Integration (Google Home, Alexa, etc.) returned from the API.
 class SmartHomeIntegration {
   final String platform;
@@ -384,6 +469,72 @@ class SmartHomeApiService {
         _errorMessage(res, 'Failed to delete webhook'),
         statusCode: res.statusCode,
       );
+    }
+  }
+
+  // ── Routines ─────────────────────────────────────────────────────────────
+
+  Future<List<SmartHomeRoutine>> fetchRoutines() async {
+    _requireAuth();
+    final res = await http.get(
+      Uri.parse('$_kSmartHomeUrl/api/v1/routines'),
+      headers: _headers(),
+    );
+    if (res.statusCode != 200) {
+      throw SmartHomeApiException(_errorMessage(res, 'Failed to load routines'), statusCode: res.statusCode);
+    }
+    final data = jsonDecode(res.body) as Map<String, dynamic>;
+    return ((data['routines'] as List<dynamic>?) ?? [])
+        .map((e) => SmartHomeRoutine.fromJson(e as Map<String, dynamic>))
+        .toList();
+  }
+
+  Future<SmartHomeRoutine> fetchRoutine(String id) async {
+    _requireAuth();
+    final res = await http.get(
+      Uri.parse('$_kSmartHomeUrl/api/v1/routines/$id'),
+      headers: _headers(),
+    );
+    if (res.statusCode != 200) {
+      throw SmartHomeApiException(_errorMessage(res, 'Failed to load routine'), statusCode: res.statusCode);
+    }
+    return SmartHomeRoutine.fromJson(jsonDecode(res.body) as Map<String, dynamic>);
+  }
+
+  Future<SmartHomeRoutine> createRoutine(SmartHomeRoutine routine) async {
+    _requireAuth();
+    final res = await http.post(
+      Uri.parse('$_kSmartHomeUrl/api/v1/routines'),
+      headers: _headers(),
+      body: jsonEncode(routine.toJson()),
+    );
+    if (res.statusCode != 201 && res.statusCode != 200) {
+      throw SmartHomeApiException(_errorMessage(res, 'Failed to create routine'), statusCode: res.statusCode);
+    }
+    return SmartHomeRoutine.fromJson(jsonDecode(res.body) as Map<String, dynamic>);
+  }
+
+  Future<void> updateRoutine(SmartHomeRoutine routine) async {
+    _requireAuth();
+    final res = await http.put(
+      Uri.parse('$_kSmartHomeUrl/api/v1/routines/${routine.id}'),
+      headers: _headers(),
+      body: jsonEncode(routine.toJson()),
+    );
+    if (res.statusCode != 200 && res.statusCode != 204) {
+      throw SmartHomeApiException(_errorMessage(res, 'Failed to update routine'), statusCode: res.statusCode);
+    }
+  }
+
+  Future<void> toggleRoutine(String id, bool enabled) async {
+    _requireAuth();
+    final res = await http.patch(
+      Uri.parse('$_kSmartHomeUrl/api/v1/routines/$id/toggle'),
+      headers: _headers(),
+      body: jsonEncode({'enabled': enabled}),
+    );
+    if (res.statusCode != 200 && res.statusCode != 204) {
+      throw SmartHomeApiException(_errorMessage(res, 'Failed to toggle routine'), statusCode: res.statusCode);
     }
   }
 

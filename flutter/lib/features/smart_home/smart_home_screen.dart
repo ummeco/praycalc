@@ -19,60 +19,7 @@ import '../../core/providers/subscription_provider.dart';
 import '../../core/services/smart_home_api_service.dart';
 import '../../core/theme/app_theme.dart';
 
-// ---------------------------------------------------------------------------
-// Data models
-// ---------------------------------------------------------------------------
-
-enum RoutinePlatform { googleHome, alexa, homekit }
-enum ActionType { lightColor, lightBrightness, speakerAudio }
-
-class SmartHomeRoutine {
-  final String? id;
-  final String triggerPrayer;      // "Fajr" | "Dhuhr" | "Asr" | "Maghrib" | "Isha"
-  final int    offsetMinutes;      // ±minutes relative to prayer time
-  final List<String> daysOfWeek;  // ["Mon","Tue",…] — empty = every day
-  final RoutinePlatform platform;
-  final List<String> deviceIds;
-  final ActionType   actionType;
-  final String       actionValue;  // hex color / brightness% / audio URL
-  final int          durationSeconds;
-  final bool         revertAfter;
-  final bool         enabled;
-
-  const SmartHomeRoutine({
-    this.id,
-    this.triggerPrayer    = 'Fajr',
-    this.offsetMinutes    = 0,
-    this.daysOfWeek       = const [],
-    this.platform         = RoutinePlatform.googleHome,
-    this.deviceIds        = const [],
-    this.actionType       = ActionType.lightColor,
-    this.actionValue      = '#C9F27A',
-    this.durationSeconds  = 300,
-    this.revertAfter      = true,
-    this.enabled          = true,
-  });
-
-  SmartHomeRoutine copyWith({
-    String? id, String? triggerPrayer, int? offsetMinutes,
-    List<String>? daysOfWeek, RoutinePlatform? platform,
-    List<String>? deviceIds, ActionType? actionType,
-    String? actionValue, int? durationSeconds,
-    bool? revertAfter, bool? enabled,
-  }) => SmartHomeRoutine(
-    id:              id              ?? this.id,
-    triggerPrayer:   triggerPrayer   ?? this.triggerPrayer,
-    offsetMinutes:   offsetMinutes   ?? this.offsetMinutes,
-    daysOfWeek:      daysOfWeek      ?? this.daysOfWeek,
-    platform:        platform        ?? this.platform,
-    deviceIds:       deviceIds       ?? this.deviceIds,
-    actionType:      actionType      ?? this.actionType,
-    actionValue:     actionValue     ?? this.actionValue,
-    durationSeconds: durationSeconds ?? this.durationSeconds,
-    revertAfter:     revertAfter     ?? this.revertAfter,
-    enabled:         enabled         ?? this.enabled,
-  );
-}
+// Data models (RoutinePlatform, ActionType, SmartHomeRoutine) are in smart_home_api_service.dart
 
 // ---------------------------------------------------------------------------
 // SmartHomeScreen — routine list (the /settings/smart-home root)
