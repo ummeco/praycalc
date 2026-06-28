@@ -59,6 +59,7 @@ jobs:
   build-android:
     name: Build Android APK
     runs-on: ubuntu-latest
+    continue-on-error: true  # flutter/ is archived reference
     needs: test
     steps:
       - name: Checkout
@@ -91,6 +92,7 @@ jobs:
   build-ios:
     name: Build iOS (Debug, no code sign)
     runs-on: macos-latest
+    continue-on-error: true  # flutter/ is archived reference
     needs: test
     if: github.ref == 'refs/heads/main' || github.event_name == 'pull_request'
     steps:
@@ -119,6 +121,7 @@ jobs:
   build-windows:
     name: Build Windows
     runs-on: windows-latest
+    continue-on-error: true  # flutter/ is archived reference
     needs: test
     if: github.ref == 'refs/heads/main'
     steps:
@@ -139,6 +142,7 @@ jobs:
   build-macos:
     name: Build macOS
     runs-on: macos-latest
+    continue-on-error: true  # flutter/ is archived reference
     needs: test
     if: github.ref == 'refs/heads/main' || github.event_name == 'pull_request'
     steps:
@@ -159,6 +163,7 @@ jobs:
   build-linux:
     name: Build Linux
     runs-on: ubuntu-latest
+    continue-on-error: true  # flutter/ is archived reference
     needs: test
     if: github.ref == 'refs/heads/main' || github.event_name == 'pull_request'
     steps:
@@ -197,6 +202,7 @@ jobs:
   analyze-watchos:
     name: Analyze watchOS extension
     runs-on: macos-latest
+    continue-on-error: true  # flutter/ is archived reference
     needs: test
     if: github.ref == 'refs/heads/main' || github.event_name == 'pull_request'
     steps:
@@ -219,6 +225,7 @@ jobs:
   analyze-wearos:
     name: Analyze Wear OS module
     runs-on: ubuntu-latest
+    continue-on-error: true  # flutter/ is archived reference
     needs: test
     if: github.ref == 'refs/heads/main' || github.event_name == 'pull_request'
     steps:
@@ -245,6 +252,7 @@ jobs:
   analyze-tvos:
     name: Analyze tvOS / Fire TV flavor
     runs-on: macos-latest
+    continue-on-error: true  # flutter/ is archived reference
     needs: test
     if: github.ref == 'refs/heads/main' || github.event_name == 'pull_request'
     steps:
@@ -266,6 +274,7 @@ jobs:
   analyze-smart-display:
     name: Analyze Linux Smart Display flavor
     runs-on: ubuntu-latest
+    continue-on-error: true  # flutter/ is archived reference
     needs: test
     if: github.ref == 'refs/heads/main' || github.event_name == 'pull_request'
     steps:
@@ -294,6 +303,7 @@ jobs:
   shorebird-patch-android:
     name: Shorebird Patch Android
     runs-on: ubuntu-latest
+    continue-on-error: true  # flutter/ is archived reference
     needs: build-android
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     steps:
@@ -340,6 +350,7 @@ jobs:
   shorebird-patch-ios:
     name: Shorebird Patch iOS
     runs-on: macos-latest
+    continue-on-error: true  # flutter/ is archived reference
     needs: build-ios
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     steps:
