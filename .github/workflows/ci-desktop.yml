@@ -14,8 +14,22 @@ concurrency:
 
 jobs:
   build-tauri-desktop:
-    name: Build Tauri Desktop App
-    runs-on: macos-15
+    name: Build (${{ matrix.platform }})
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: macos-15
+            targets: aarch64-apple-darwin
+            label: macOS (arm64)
+          - platform: ubuntu-22.04
+            targets: x86_64-unknown-linux-gnu
+            label: Linux (x64)
+          - platform: windows-latest
+            targets: x86_64-pc-windows-msvc
+            label: Windows (x64)
+
+    runs-on: ${{ matrix.platform }}
     defaults:
       run:
         working-directory: desktop
@@ -34,6 +48,21 @@ jobs:
 
       - name: Install Rust stable
         uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.targets }}
+
+      - name: Install Linux system dependencies
+        if: matrix.platform == 'ubuntu-22.04'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libwebkit2gtk-4.1-dev \
+            libappindicator3-dev \
+            librsvg2-dev \
+            patchelf \
+            libgtk-3-dev \
+            libsoup-3.0-dev \
+            libjavascriptcoregtk-4.1-dev
 
       - name: Cache Rust build artifacts
         uses: actions/cache@v4
@@ -55,3 +84,23 @@ jobs:
       - name: Cargo check (Rust)
         working-directory: desktop/src-tauri
         run: cargo check --all-targets
+
+      - name: Build Tauri app
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          projectPath: desktop
+          args: --target ${{ matrix.targets }}
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: praycalc-${{ runner.os }}
+          path: |
+            desktop/src-tauri/target/${{ matrix.targets }}/release/bundle/dmg/*.dmg
+            desktop/src-tauri/target/${{ matrix.targets }}/release/bundle/deb/*.deb
+            desktop/src-tauri/target/${{ matrix.targets }}/release/bundle/appimage/*.AppImage
+            desktop/src-tauri/target/${{ matrix.targets }}/release/bundle/msi/*.msi
+            desktop/src-tauri/target/${{ matrix.targets }}/release/bundle/nsis/*.exe
+          if-no-files-found: ignore
