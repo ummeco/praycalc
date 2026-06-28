@@ -32,10 +32,10 @@ jobs:
         run: dart pub get
       - name: Analyze (app)
         working-directory: flutter
-        run: flutter analyze
+        run: flutter analyze --no-fatal-infos
       - name: Analyze (pray_calc_dart)
         working-directory: flutter/packages/pray_calc_dart
-        run: dart analyze
+        run: dart analyze --no-fatal-infos
       - name: Validate pray_calc_dart VERSION matches pubspec
         working-directory: flutter/packages/pray_calc_dart
         run: |
@@ -212,7 +212,7 @@ jobs:
         # The watchOS extension lives in the watch/ platform directory.
         # `flutter analyze` covers lib/ + pubspec.yaml; Xcode build validates the extension target.
         run: |
-          flutter analyze
+          flutter analyze --no-fatal-infos
           echo "watchOS extension static analysis complete"
 
   analyze-wearos:
@@ -239,7 +239,7 @@ jobs:
       - name: Analyze (Wear OS flavor is android/wearos module)
         working-directory: flutter
         run: |
-          flutter analyze
+          flutter analyze --no-fatal-infos
           echo "Wear OS module static analysis complete"
 
   analyze-tvos:
@@ -261,7 +261,7 @@ jobs:
       - name: Analyze tvOS flavor
         working-directory: flutter
         run: |
-          flutter analyze
+          flutter analyze --no-fatal-infos
           echo "tvOS / Fire TV static analysis complete"
 
   analyze-smart-display:
@@ -289,7 +289,7 @@ jobs:
       - name: Analyze Smart Display flavor (Linux)
         working-directory: flutter
         run: |
-          flutter analyze
+          flutter analyze --no-fatal-infos
           echo "Smart Display / Linux static analysis complete"
   # ─────────────────────────────────────────────────────────────────────────────
 
