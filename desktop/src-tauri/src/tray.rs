@@ -24,6 +24,7 @@ pub fn setup_tray(app: &mut App) -> tauri::Result<()> {
             if let TrayIconEvent::Click {
                 button: MouseButton::Left,
                 button_state: MouseButtonState::Up,
+                position,
                 ..
             } = event
             {
@@ -32,6 +33,8 @@ pub fn setup_tray(app: &mut App) -> tauri::Result<()> {
                     if win.is_visible().unwrap_or(false) {
                         let _ = win.hide();
                     } else {
+                        // position is PhysicalPosition<f64> — cursor coords inside the tray icon
+                        position_window_below_tray(&win, position.x, position.y);
                         let _ = win.show();
                         let _ = win.set_focus();
                     }
@@ -59,4 +62,17 @@ pub fn setup_tray(app: &mut App) -> tauri::Result<()> {
     builder.build(app)?;
 
     Ok(())
+}
+
+fn position_window_below_tray(win: &tauri::WebviewWindow, click_x: f64, click_y: f64) {
+    use tauri::PhysicalPosition;
+
+    let Ok(size) = win.outer_size() else { return };
+
+    // Center popup horizontally on the click point; drop 8px below it
+    let win_width = size.width as f64;
+    let x = (click_x - win_width / 2.0).max(8.0);
+    let y = click_y + 8.0;
+
+    let _ = win.set_position(PhysicalPosition::new(x as i32, y as i32));
 }
