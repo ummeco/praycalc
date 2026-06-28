@@ -12,26 +12,35 @@
  *    so data/ must be at the function root. Copy it there.
  */
 
-import { copyFileSync, cpSync, mkdirSync, existsSync } from 'node:fs';
+import { copyFileSync, cpSync, mkdirSync, existsSync, readdirSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { createRequire } from 'node:module';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const web = resolve(__dirname, '..');
 const funcRoot = resolve(web, '.vercel/output/functions/_render.func');
-const webRequire = createRequire(resolve(web, 'package.json'));
 
 // --- 1. Copy nrel-spa/lib/spa.js ---
-// resolve dynamically so the path works in both local pnpm store and CI virtual store
-const spaSrc = webRequire.resolve('nrel-spa/lib/spa.js');
-const spaRelative = spaSrc.replace(/.*node_modules\//, 'node_modules/');
-const spaDest = resolve(funcRoot, spaRelative);
+// In pnpm workspaces the virtual store can be at the workspace root (parent of web/)
+// rather than inside web/node_modules/.pnpm. Search both locations, version-agnostic.
+function findNrelSpa(searchRoot) {
+  const pnpmStore = resolve(searchRoot, 'node_modules/.pnpm');
+  if (!existsSync(pnpmStore)) return null;
+  for (const entry of readdirSync(pnpmStore)) {
+    if (!entry.startsWith('nrel-spa@')) continue;
+    const candidate = resolve(pnpmStore, entry, 'node_modules/nrel-spa/lib/spa.js');
+    if (existsSync(candidate)) return candidate;
+  }
+  return null;
+}
 
-if (!existsSync(spaSrc)) {
-  console.error(`[postbuild] ERROR: nrel-spa/lib/spa.js not found (checked: ${spaSrc})`);
+const spaSrc = findNrelSpa(web) ?? findNrelSpa(resolve(web, '..'));
+if (!spaSrc) {
+  console.error('[postbuild] ERROR: nrel-spa/lib/spa.js not found in web or workspace root .pnpm store');
   process.exit(1);
 }
+const spaRelative = spaSrc.replace(/.*node_modules\//, 'node_modules/');
+const spaDest = resolve(funcRoot, spaRelative);
 mkdirSync(dirname(spaDest), { recursive: true });
 copyFileSync(spaSrc, spaDest);
 console.log(`[postbuild] Copied nrel-spa/lib/spa.js → Lambda bundle ✓`);
