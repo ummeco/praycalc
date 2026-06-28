@@ -776,6 +776,7 @@ class TvSettings {
 
   /// When true, Ramadan+Iftar card shows in the bottom black bar during stream mode.
   final bool showStreamRamadanOverlay;
+  final bool launchOnBoot;
 
   // ---------------------------------------------------------------------------
   // SYNC-B2 — Conflict resolution timestamp
@@ -851,6 +852,7 @@ class TvSettings {
     this.colorPalette = TvColorPaletteName.emerald,
     this.showStreamAyahBar = true,
     this.showStreamRamadanOverlay = true,
+    this.launchOnBoot = false,
     this.lastModified,
   });
 
@@ -912,6 +914,7 @@ class TvSettings {
     TvColorPaletteName? colorPalette,
     bool? showStreamAyahBar,
     bool? showStreamRamadanOverlay,
+    bool? launchOnBoot,
     Object? lastModified = _sentinel,
   }) {
     return TvSettings(
@@ -995,6 +998,7 @@ class TvSettings {
       showStreamAyahBar: showStreamAyahBar ?? this.showStreamAyahBar,
       showStreamRamadanOverlay:
           showStreamRamadanOverlay ?? this.showStreamRamadanOverlay,
+      launchOnBoot: launchOnBoot ?? this.launchOnBoot,
       lastModified: lastModified == _sentinel
           ? this.lastModified
           : lastModified as DateTime?,
@@ -1061,6 +1065,7 @@ class TvSettings {
         'colorPalette': colorPalette.name,
         'showStreamAyahBar': showStreamAyahBar,
         'showStreamRamadanOverlay': showStreamRamadanOverlay,
+        'launchOnBoot': launchOnBoot,
         if (lastModified != null)
           'last_modified': lastModified!.toUtc().toIso8601String(),
       };
@@ -1193,6 +1198,7 @@ class TvSettings {
       showStreamAyahBar: json['showStreamAyahBar'] as bool? ?? true,
       showStreamRamadanOverlay:
           json['showStreamRamadanOverlay'] as bool? ?? true,
+      launchOnBoot: json['launchOnBoot'] as bool? ?? false,
       lastModified: json['last_modified'] != null
           ? DateTime.tryParse(json['last_modified'] as String)?.toUtc()
           : null,

@@ -300,6 +300,9 @@ class TvSettingsNotifier extends Notifier<TvSettings> {
   Future<void> setGoodNightDelayMinutes(int v) =>
       updateLocal(state.copyWith(goodNightDelayMinutes: v.clamp(0, 120)));
 
+  Future<void> setLaunchOnBoot(bool v) =>
+      updateLocal(state.copyWith(launchOnBoot: v));
+
   // ---------------------------------------------------------------------------
   // Y-1 — Children's mode
   // ---------------------------------------------------------------------------

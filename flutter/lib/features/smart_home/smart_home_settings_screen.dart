@@ -265,6 +265,16 @@ class _SmartHomeBody extends ConsumerWidget {
           ),
           const SizedBox(height: 10),
           _IntegrationCardLive(
+            icon: Icons.home_filled,
+            iconColor: const Color(0xFF34C759),
+            name: 'Apple Home',
+            description: 'Play adhan and automate lights via HomeKit',
+            platform: 'homekit',
+            isManualSetup: true,
+            onSetup: () => _showHomeKitInstructions(context),
+          ),
+          const SizedBox(height: 10),
+          _IntegrationCardLive(
             icon: Icons.developer_board,
             iconColor: const Color(0xFF41BDF5),
             name: l.smartHomeHomeAssistant,
@@ -356,6 +366,20 @@ class _SmartHomeBody extends ConsumerWidget {
         l.smartHomeSiriStep6,
       ],
       footnote: l.smartHomeSiriFootnote,
+    );
+  }
+
+  void _showHomeKitInstructions(BuildContext context) {
+    _showInstructionsSheet(
+      context,
+      title: 'Apple Home Setup',
+      steps: const [
+        'Install the PrayCalc Homebridge plugin on your Home hub or Mac:\n'
+            'npm install -g homebridge-praycalc',
+        'Add PrayCalc to Homebridge config with your API key from Settings → Account.',
+        'Open the Home app, tap +, and scan the Homebridge QR code to add PrayCalc accessories.',
+        'Create automations in the Home app triggered by the PrayCalc prayer-time sensors.',
+      ],
     );
   }
 

@@ -574,6 +574,18 @@ class _TvSettingsScreenState extends ConsumerState<TvSettingsScreen> {
             ),
             const SizedBox(height: 8),
             _TvSettingsTile(
+              icon: Icons.power_settings_new,
+              title: 'Launch on Boot',
+              subtitle: 'Start PrayCalc automatically when the TV turns on',
+              trailing: Switch(
+                value: tvSettings.launchOnBoot,
+                activeThumbColor: PrayCalcColors.mid,
+                onChanged: tvNotifier.setLaunchOnBoot,
+              ),
+              onTap: () => tvNotifier.setLaunchOnBoot(!tvSettings.launchOnBoot),
+            ),
+            const SizedBox(height: 8),
+            _TvSettingsTile(
               icon: Icons.flash_on,
               title: 'Fast Launch Mode',
               subtitle:

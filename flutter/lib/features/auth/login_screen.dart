@@ -156,6 +156,18 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   ),
                   textAlign: TextAlign.center,
                 ),
+                const SizedBox(height: 8),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(Icons.link, size: 14, color: Color(0xFF79C24C)),
+                    const SizedBox(width: 4),
+                    const Text(
+                      'Ummat Ecosystem — one account, all apps',
+                      style: TextStyle(fontSize: 12, color: Color(0xFF79C24C)),
+                    ),
+                  ],
+                ),
                 const SizedBox(height: 28),
 
                 // ── Social sign-in ───────────────────────────────────
