@@ -117,7 +117,7 @@ class SmartHomeService {
     _assertEnabled();
     try {
       final result = await _gql.query(_kGetRoutines);
-      final rows = (result['pc_smart_home_routines'] as List?)?.cast<Map<String, dynamic>>();
+      final rows = (result.data?['pc_smart_home_routines'] as List?)?.cast<Map<String, dynamic>>();
       return rows?.map(SmartHomeRoutine.fromJson).toList() ?? [];
     } catch (e) {
       debugPrint('[SmartHomeService] getRoutines error: $e');
@@ -140,7 +140,7 @@ class SmartHomeService {
   Future<List<Map<String, dynamic>>> getAssistantLinks() async {
     _assertEnabled();
     final result = await _gql.query(_kGetAssistantLinks);
-    return (result['pc_assistant_links'] as List?)?.cast<Map<String, dynamic>>() ?? [];
+    return (result.data?['pc_assistant_links'] as List?)?.cast<Map<String, dynamic>>() ?? [];
   }
 
   /// Link an Alexa or Google account after OAuth completion.

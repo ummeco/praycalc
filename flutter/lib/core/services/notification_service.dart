@@ -856,7 +856,7 @@ class NotificationService {
     // Stable random UUID — stored in prefs on first call
     const chars = 'abcdef0123456789';
     final rng = StringBuffer();
-    final random = List.generate(32, (_) => chars[(DateTime.now().microsecondsSinceEpoch + _.hashCode) % chars.length]);
+    final random = List.generate(32, (i) => chars[(DateTime.now().microsecondsSinceEpoch + i.hashCode) % chars.length]);
     rng.write(random.join());
     return '${rng.toString().substring(0, 8)}-${rng.toString().substring(8, 12)}-${rng.toString().substring(12, 16)}-${rng.toString().substring(16, 20)}-${rng.toString().substring(20, 32)}';
   }
