@@ -6,13 +6,17 @@ use tauri::{
 };
 
 pub fn setup_tray(app: &mut App) -> tauri::Result<()> {
+    // Use @2x retina icon on macOS for crisp rendering; fall back to 1x
+    #[cfg(target_os = "macos")]
+    let icon = Image::from_bytes(include_bytes!("../icons/tray-icon@2x.png"))?;
+    #[cfg(not(target_os = "macos"))]
     let icon = Image::from_bytes(include_bytes!("../icons/tray-icon.png"))?;
 
     let quit = MenuItem::with_id(app, "quit", "Quit PrayCalc", true, None::<&str>)?;
     let settings = MenuItem::with_id(app, "settings", "Settings", true, None::<&str>)?;
     let menu = Menu::with_items(app, &[&settings, &quit])?;
 
-    TrayIconBuilder::with_id("main")
+    let mut builder = TrayIconBuilder::with_id("main")
         .icon(icon)
         .tooltip("PrayCalc")
         .menu(&menu)
@@ -44,8 +48,15 @@ pub fn setup_tray(app: &mut App) -> tauri::Result<()> {
             }
             "quit" => app.exit(0),
             _ => {}
-        })
-        .build(app)?;
+        });
+
+    // macOS: use template icon so it adapts to light/dark menu bar automatically
+    #[cfg(target_os = "macos")]
+    {
+        builder = builder.icon_as_template(true);
+    }
+
+    builder.build(app)?;
 
     Ok(())
 }
