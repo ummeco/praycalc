@@ -1,8 +1,6 @@
 {
   "@@locale": "tr",
-
   "appTitle": "PrayCalc",
-
   "prayerFajr": "Fecr",
   "prayerSunrise": "Gunes",
   "prayerDhuhr": "Ogle",
@@ -12,7 +10,6 @@
   "prayerQiyam": "Gece Namazi",
   "prayerSuhoor": "Sahur",
   "prayerIftar": "Iftar",
-
   "hijriMuharram": "Muharrem",
   "hijriSafar": "Safer",
   "hijriRabiAlAwwal": "Rebiulevvel",
@@ -25,7 +22,6 @@
   "hijriShawwal": "Sevval",
   "hijriDhulQidah": "Zilkade",
   "hijriDhulHijjah": "Zilhicce",
-
   "monthJan": "Oca",
   "monthFeb": "Sub",
   "monthMar": "Mar",
@@ -38,7 +34,6 @@
   "monthOct": "Eki",
   "monthNov": "Kas",
   "monthDec": "Ara",
-
   "monthJanuary": "Ocak",
   "monthFebruary": "Subat",
   "monthMarch": "Mart",
@@ -51,7 +46,6 @@
   "monthOctober": "Ekim",
   "monthNovember": "Kasim",
   "monthDecember": "Aralik",
-
   "dayMonShort": "Pzt",
   "dayTueShort": "Sal",
   "dayWedShort": "Car",
@@ -59,7 +53,6 @@
   "dayFriShort": "Cum",
   "daySatShort": "Cmt",
   "daySunShort": "Paz",
-
   "daySuChart": "Pa",
   "dayMoChart": "Pt",
   "dayTuChart": "Sa",
@@ -67,7 +60,6 @@
   "dayThChart": "Pe",
   "dayFrChart": "Cu",
   "daySaChart": "Ct",
-
   "chooseCityLabel": "Sehir secin",
   "setCityFab": "Sehir ayarla",
   "prayerTimesError": "Namaz vakitleri hesaplanamadi.\n{error}",
@@ -76,7 +68,6 @@
   "ramadanDayProgress": "Gun {day} / 30",
   "lastTenNights": "Son 10 Gece",
   "laylatulQadr": "Kadir Gecesi",
-
   "settingsTitle": "Ayarlar",
   "settingsSectionPrayerCalc": "Namaz Hesaplama",
   "settingsCalcMethod": "Hesaplama Yontemi",
@@ -92,7 +83,6 @@
   "settingsPrayerNotificationsSubtitle": "Ezan, hatirlatmalar ve namaz ayarlari",
   "settingsPrayerAgendas": "Namaz ajandasi",
   "settingsPrayerAgendasSubtitle": "Namaz vakitlerine gore ozel hatirlatmalar",
-
   "notifSettingsTitle": "Bildirimler ve Ezan",
   "notifAdhanLabel": "Ezan",
   "notifReminderMinBefore": "Hatirlatma: {minutes} dk once",
@@ -102,19 +92,16 @@
   "notifModeReminderOnly": "Sadece hatirlatma",
   "notifModeArrival": "Namaz vaktinde",
   "notifModeBoth": "Hatirlatma + vakit",
-
   "citySearchHint": "Sehir ara...",
   "citySearchDetectTooltip": "Konumumu bul",
   "citySearchNoCityGps": "GPS ile sehir bulunamadi.",
   "citySearchPermissionDenied": "Konum izni reddedildi. Manuel arama yapin.",
   "citySearchNoResults": "Sehir bulunamadi.",
   "citySearchStartTyping": "Aramak icin yazmaya baslayin...",
-
   "agendasTitle": "Namaz Ajandasi",
   "agendasEmpty": "Henuz ajanda yok.\nNamazlariniza bagli hatirlatma eklemek icin + tusuna basin.",
   "agendasUndo": "Geri al",
   "agendasRemoved": "{label} kaldirildi",
-
   "agendaNewTitle": "Yeni Ajanda",
   "agendaEditTitle": "Ajanda Duzenle",
   "agendaSave": "Kaydet",
@@ -136,7 +123,6 @@
   "agendaDayW": "C",
   "agendaDayF": "C",
   "agendaDayS": "C",
-
   "moonTitle": "Ay ve Hicri Takvim",
   "moonIlluminated": "%{pct} aydinlik",
   "moonFullTonight": "Bu gece dolunay!",
@@ -169,7 +155,6 @@
   "moonUpcomingIslamicEvents": "Yaklasan Islami Gunler",
   "moonTodayLabel": "Bugun",
   "moonTomorrowLabel": "Yarin",
-
   "calDateCol": "Tarih",
   "calHijriCol": "Hicri",
   "calFajrCol": "Fecr",
@@ -184,7 +169,6 @@
   "calNextMonthTooltip": "Sonraki ay",
   "calExportHeader": "PrayCalc — {month}",
   "calExportSubject": "Namaz Vakitleri — {month}",
-
   "qiblaTitle": "Kible",
   "qiblaSwitchToCompass": "Pusulaya gec",
   "qiblaSwitchToAR": "AR kameraya gec",
@@ -196,7 +180,6 @@
   "qiblaDistKm": "Kabe'ye {dist} km",
   "qiblaDistThousandKm": "Kabe'ye {dist}K km",
   "qiblaFacingQibla": "Kible yonunde ✓",
-
   "tasbeehTitle": "Tesbih",
   "tasbeehResetTooltip": "Sifirla",
   "tasbeehTapToSwitch": "Degistirmek icin etikete basin",
@@ -210,7 +193,6 @@
   "tasbeehNoHistory": "Henuz gecmis yok, saymaya baslayin!",
   "tasbeehComplete": "Tesbih tamamlandi! {count} zikir",
   "tasbeehPresetComplete": "✓ {label} × {target}",
-
   "smartHomeTitle": "Akilli Ev",
   "smartHomeSubtitle": "Cihazlarinizi namaz vakitlerine baglayun",
   "smartHomeGoogleHome": "Google Home",
@@ -230,7 +212,6 @@
   "smartHomeTestConnection": "Baglanti Testi",
   "smartHomeConnectionSuccess": "Basariyla baglandi",
   "smartHomeConnectionFailed": "Baglanti basarisiz. Hesap baglantinizi kontrol edin.",
-
   "subscriptionTitle": "Ummat+",
   "subscriptionSubtitle": "Premium namaz vakti ozellikleri",
   "subscriptionUpgrade": "Ummat+'a yukselt",
@@ -251,26 +232,22 @@
   "subscriptionFeatureWatch": "Saat komplikasyonlari",
   "subscriptionFeatureSync": "Cihazlar arasi senkronizasyon",
   "subscriptionFeatureAdFree": "Reklamsiz deneyim",
-
   "tvTitle": "TV Gorunumu",
   "tvMasjidMode": "Cami Modu",
   "tvAmbientMode": "Ortam Modu",
   "tvSettingsIqamah": "Ikamet Farklari",
   "tvSettingsAnnouncements": "Duyurular",
   "tvConnectQR": "Baglanmak icin tarayin",
-
   "watchTitle": "Saat",
   "watchNextPrayer": "Sonraki Namaz",
   "watchAllPrayers": "Tum Namazlar",
   "watchComplication": "Komplikasyon",
-
   "nextPrayer": "Sonraki namaz",
   "allPrayers": "Tum namazlar",
   "today": "Bugun",
   "tomorrow": "Yarin",
   "thisWeek": "Bu hafta",
   "thisMonth": "Bu ay",
-
   "commonCancel": "Iptal",
   "commonSave": "Kaydet",
   "commonDelete": "Sil",
@@ -307,7 +284,6 @@
   "commonHelp": "Yardim",
   "commonLanguage": "Dil",
   "commonOpenSettings": "Ayarlari Ac",
-
   "dayMonday": "Pazartesi",
   "dayTuesday": "Sali",
   "dayWednesday": "Carsamba",
@@ -315,7 +291,6 @@
   "dayFriday": "Cuma",
   "daySaturday": "Cumartesi",
   "daySunday": "Pazar",
-
   "homeSuffixAH": "H",
   "homeSuffixCE": "M",
   "homeNoCitySelected": "Sehir secilmedi",
@@ -326,7 +301,6 @@
   "homeActionDuaDhikr": "Dua &\nZikir",
   "homeActionPrayerStats": "Namaz\nIstatistikleri",
   "homePolarBanner": "Bulundugunuz konum icin bu donemde {count} namaz vakti hesaplanamaz (gece yarisi gunesi / kutup gecesi). Ayarlardan en yakin enlem tahmini deneyin.",
-
   "settingsAccount": "Hesap",
   "settingsSignInToSync": "Senkronizasyon icin giris yapin",
   "settingsSignInToSyncSubtitle": "Verilerinizi cihazlar arasinda koruyun",
@@ -363,12 +337,10 @@
   "settingsTvSettings": "TV ayarlari",
   "settingsTvSettingsSubtitle": "Cami modu, ikamet farklari, ortam",
   "settingsAboutPrayCalc": "PrayCalc Hakkinda",
-
   "syncSynced": "Senkronize",
   "syncSyncing": "Senkronize ediliyor...",
   "syncOffline": "Cevrimdisi",
   "syncError": "Senkronizasyon hatasi",
-
   "moonPhaseNewMoon": "Yeni Ay",
   "moonPhaseWaxingCrescent": "Hilal",
   "moonPhaseFirstQuarter": "Ilk Dordun",
@@ -387,7 +359,6 @@
   "moonNotVisible": "Gorunmez",
   "moonPossible": "Muhtemel",
   "moonUpcomingDates": "Yaklasan Islami Tarihler",
-
   "loginCreateAccount": "Hesap Olustur",
   "loginSignIn": "Giris Yap",
   "loginWelcomeBack": "Tekrar hosgeldiniz",
@@ -409,7 +380,6 @@
   "loginResetFailed": "Sifirlama e-postasi gonderilemedi",
   "loginNewToPrayCalc": "PrayCalc'ta yeni misiniz?",
   "loginAlreadyHaveAccount": "Zaten hesabiniz var mi?",
-
   "accountTitle": "Hesap",
   "accountNotSignedIn": "Giris yapilmadi",
   "accountSyncSection": "Senkronizasyon",
@@ -436,7 +406,6 @@
   "accountTimeMinAgo": "{min}dk once",
   "accountTimeHourAgo": "{hour}sa once",
   "accountTimeDayAgo": "{day}g once",
-
   "statsTitle": "Namaz Istatistikleri",
   "statsShareTooltip": "Istatistikleri paylas",
   "statsTodayPrayers": "Bugunun Namazlari",
@@ -457,17 +426,14 @@
   "statsShareWeekly": "Haftalik: %{pct}",
   "statsShareMonthly": "Aylik: %{pct}",
   "statsShareBreakdown": "Haftalik dagilim:",
-
   "aboutTitle": "PrayCalc Hakkinda",
   "aboutWebsite": "Web sitesi",
   "aboutContact": "Iletisim",
   "aboutLicenses": "Acik Kaynak Lisanslari",
   "aboutCouldNotOpen": "Baglanti acilamadi.",
   "aboutCopyright": "© {year} Ummat Dev. Tum haklari saklidir.\n\nNamaz vakitleri pray_calc_dart motoru kullanilarak hesaplanir. Dogruluk GPS konumunuza ve secilen hesaplama yontemine baglidir.",
-
   "travelHanafiDefaultTitle": "PrayCalc Neden Hanefi Varsayilanini Kullanir",
   "travelDeeperScholarly": "Daha Derin Ilmi Tartisma",
-
   "onboardingTitle1": "Nerede olursaniz olun namaz vakitleri",
   "onboardingBody1": "Dunyadaki her sehir icin GPS hassasiyetinde namaz vakitleri. Fecrden Yatsiya, Gunesten Kiyama. Hassasiyet icin tasarlanmis kendi hesaplama motorumuzla.",
   "onboardingTitle2": "Konumunuz, vakitleriniz",
@@ -484,7 +450,6 @@
   "onboardingContinueWithoutAccount": "Hesapsiz devam et",
   "onboardingSigningIn": "Giris yapiliyor…",
   "onboardingSelectLanguage": "Dil Secin",
-
   "duaDhikrTitle": "Dua & Zikir",
   "duaDhikrTabDua": "Dua",
   "duaDhikrTabDhikr": "Zikir",
@@ -493,13 +458,11 @@
   "duaDhikrTabEvening": "Aksam",
   "duaDhikrMorningAdhkar": "Sabah Ezkarları",
   "duaDhikrEveningAdhkar": "Aksam Ezkarları",
-
   "calGregToggle": "Miladi",
   "calHijriToggle": "Hicri",
   "calYearlyTooltip": "Yıllık takvim",
   "calExportIcsTooltip": ".ics dışa aktar",
   "calMagCol": "Akş",
-
   "qiblaShowOnMap": "Haritada göster",
   "qiblaWaitingCompass": "Pusula bekleniyor...",
   "qiblaNoCompassSensor": "Pusula sensörü yok. Kıble yönü statik gösteriliyor.",
@@ -511,7 +474,6 @@
   "qiblaYourLocation": "Konumunuz",
   "qiblaGpsAccurate": "GPS hassas",
   "qiblaCityCenter": "Şehir merkezi",
-
   "moonIlluminatedLabel": "Aydınlık",
   "moonAgeLabel": "Yaş",
   "moonFirstQtr": "İlk Dördün",
@@ -520,7 +482,6 @@
   "moonTomorrow": "Yarın",
   "moonDaysAway": "{days}g",
   "moonBeta": "Beta",
-
   "setHomeTitle": "Ev Konumunu Ayarla",
   "setHomeSearchHint": "Şehir, kasaba veya posta kodu ara…",
   "setHomeClear": "Temizle",
@@ -534,7 +495,6 @@
   "setHomeNoCitiesFound": "Şehir bulunamadı.",
   "setHomeSearchPrompt": "Ev şehrinizi arayın",
   "setHomeSearchBody": "Aramak için yukarı yazın veya mevcut konumunuzu kullanın. Seyahat modu evden uzakta olduğunuzu algılar.",
-
   "subscriptionYouHavePlus": "Ummat+ abonesiniz",
   "subscriptionUpgradeTo": "Ummat+'a yükseltin",
   "subscriptionThankYou": "PrayCalc'ı desteklediğiniz için teşekkürler.",
@@ -549,7 +509,6 @@
   "subscriptionFeatureCalendar": "Aylık takvim",
   "subscriptionFeatureTasbeeh": "Tesbih sayacı",
   "subscriptionFeatureMoon": "Ay & Hicri",
-
   "smartHomeAlertType": "Uyarı Türü",
   "smartHomeAlertModal": "Tam ekran pencere",
   "smartHomeAlertCorner": "Köşe bildirimi",
@@ -562,10 +521,8 @@
   "smartHomeAudioAdhan": "Ezan",
   "smartHomeAudioBeep": "Bip",
   "smartHomeAudioSilent": "Sessiz",
-
   "aboutPrivacy": "Gizlilik Politikası",
   "aboutVersion": "Sürüm {version}",
-
   "notifDefaultAdhan": "Varsayılan Ezan",
   "notifFajrAdhan": "Fecir Ezanı",
   "notifFajrAdhanSubtitle": "Fecir namaz vaktinde çalar",
@@ -573,7 +530,6 @@
   "notifRegularAdhanSubtitle": "Öğle, İkindi, Akşam, Yatsı'da çalar",
   "notifPerPrayerSettings": "Namaz Başına Ayarlar",
   "notifPreview": "Önizleme",
-
   "tvSettingsTitle": "TV Ayarları",
   "tvDisplayMode": "Görüntü Modu",
   "tvMasjidModeSubtitle": "İkamet vakitli büyük tabela gösterimi",
@@ -611,7 +567,6 @@
   "tvPhotoCategoryTitle": "Fotoğraf Kategorisi",
   "tvEnterHint": "{title} girin",
   "tvSystemDefault": "Sistem varsayılanı",
-
   "smartHomeIntegrations": "Entegrasyonlar",
   "smartHomeLinkedSpeakers": "Bağlı Hoparlörler ve Ekranlar",
   "smartHomeAlertDisplay": "Uyarı Gösterimi",
@@ -654,10 +609,8 @@
   "smartHomeLinkedStatus": "Bağlı",
   "smartHomeNotLinkedStatus": "Bağlı değil",
   "smartHomeCouldNotOpen": "Bağlantı açılamadı.",
-
   "adhkarCompletedCount": "{completed} / {total} tamamlandı",
   "adhkarReset": "Sıfırla",
-
   "syncHistoryTitle": "Senkronizasyon Geçmişi",
   "syncClearHistory": "Geçmişi temizle",
   "syncNoConflicts": "Senkronizasyon çatışması yok. Tüm cihazlar eşitlenmiş.",
@@ -668,12 +621,10 @@
   "syncTimeMinAgo": "{min}dk önce",
   "syncTimeHourAgo": "{hour}sa önce",
   "syncTimeDayAgo": "{day}g önce",
-
   "pinCity": "Sabitle",
   "pinMaxReached": "En fazla 5 sabitlenmiş şehir. Daha fazlası için Ummat+'a yükseltin.",
   "pinCityUnpinned": "{city} sabitlemesi kaldırıldı",
   "pinUndo": "Geri al",
-
   "travelNotificationTitle": "Şu anda seyahattesiniz",
   "travelNotificationBody": "Namaz vakitleri kısaltılabilir. Seyahat hükümleri hakkında bilgi almak için dokunun.",
   "travelRulingsTitle": "Seyahat ve Namaz",
@@ -684,7 +635,6 @@
   "travelDurationTitle": "Seyahat Süresi",
   "travelReferencesTitle": "İlmi Referanslar",
   "travelLearnMore": "Daha fazla bilgi",
-
   "smartHomeDevices": "Cihazlar",
   "smartHomeAddDevice": "Cihaz Ekle",
   "smartHomeDeleteDevice": "Sil",
@@ -694,7 +644,9 @@
   "smartHomeDeviceLastSeen": "Son görülme: {time}",
   "@smartHomeDeviceLastSeen": {
     "placeholders": {
-      "time": { "type": "String" }
+      "time": {
+        "type": "String"
+      }
     }
   },
   "smartHomeDeviceName": "Cihaz adı",
@@ -720,7 +672,6 @@
   "smartHomeLoadingDevices": "Cihazlar yükleniyor...",
   "smartHomeLoadingIntegrations": "Entegrasyonlar yükleniyor...",
   "smartHomeServiceUnavailable": "Akıllı ev hizmeti şu anda kullanılamıyor. Lütfen daha sonra tekrar deneyin.",
-
   "tvPairingScanQr": "Scan TV QR Code",
   "tvPairingScanInstruction": "Point your camera at the QR code on your TV",
   "tvPairingEnterManually": "Enter code manually",
@@ -734,6 +685,30 @@
   "tvPairingTimeout": "Request timed out. Is the TV on and connected?",
   "tvPairingServerError": "Could not connect to server.",
   "tvPairingSignInRequired": "Sign in to your account before pairing a TV.",
-
-  "tvJumuahGreeting": "Jumu'ah Mubarak"
+  "tvJumuahGreeting": "Jumu'ah Mubarak",
+  "desktopNextPrayer": "Sonraki Namaz…",
+  "desktopOpen": "PrayCalc'ı Aç",
+  "desktopQuit": "PrayCalc'tan Çık",
+  "desktopSettings": "Ayarlar…",
+  "desktopTrayTooltip": "PrayCalc – Namaz Vakitleri",
+  "desktopTvDisplays": "TV Ekranları…",
+  "statsBestStreak": "En İyi Seri",
+  "statsDailyGoalLabel": "{goal} namaz / gün",
+  "statsDailyGoalTitle": "Günlük Namaz Hedefi",
+  "statsGoalStreak": "Hedef Serisi",
+  "statsHeatmapDetail": "{count} / 5 namaz tamamlandı",
+  "statsHeatmapNoData": "Bu gün için namaz kaydı yok",
+  "statsHeatmapTitle": "Yıla Genel Bakış",
+  "tvChildFajrExplanation": "Sabah namazı, günün ilk namazıdır. Yeni bir gün için Allah'a şükretmek amacıyla güneş doğmadan önce kalkarız!",
+  "tvChildFajrFunFact": "Hz. Peygamber ﷺ şöyle buyurdu: \"Allah katında en faziletli namaz, Cuma günü kılınan sabah namazıdır.\" (Buhârî)",
+  "tvChildSunriseExplanation": "Sabah namazından sonra güneş doğar. Bu, zikir yapmak ve Kuran okumak için mübarek bir zamandır.",
+  "tvChildSunriseFunFact": "Sabah namazından sonra güneş doğuncaya kadar oturmak ve iki rekât namaz kılmak, tam bir hacc sevabı kazandırır! (Tirmizî)",
+  "tvChildDhuhrExplanation": "Öğle, gün ortasında kılınan namazdır. Güneş gökyüzünde en yüksek noktadadır ve biz Allah'ı hatırlamak için duraksarız.",
+  "tvChildDhuhrFunFact": "Hz. Peygamber ﷺ, güneş batıya kaymaya başladığında öğle namazını erken kılmayı severdi. (Müslim)",
+  "tvChildAsrExplanation": "İkindi, öğleden sonra kılınan namazdır. Allah, Asr Suresinde bu vakitle yemin eder — çok önemlidir!",
+  "tvChildAsrFunFact": "İkindi namazını kaçırmak, ailesini ve malını kaybetmek gibidir. Allah onu bu kadar sever! (Buhârî)",
+  "tvChildMaghribExplanation": "Akşam, güneş batarken kılınan namazdır. Güneş battığında, güzel bir gün için Allah'a şükrederiz.",
+  "tvChildMaghribFunFact": "Gündüz ve gece melekleri, sabah ve akşam namazı vakitlerinde bir araya gelir. Ne kadar özel! (Buhârî)",
+  "tvChildIshaExplanation": "Yatsı, gece kılınan namazdır. Uyumadan önce Allah'a şükrederek günü bitiririz.",
+  "tvChildIshaFunFact": "Yatsı ve sabah namazlarını cemaatle kılmak, bütün gece namaz kılmak gibidir! (Müslim)"
 }

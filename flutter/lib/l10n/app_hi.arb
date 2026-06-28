@@ -1,8 +1,6 @@
 {
   "@@locale": "hi",
-
   "appTitle": "PrayCalc",
-
   "prayerFajr": "फज्र",
   "prayerSunrise": "सूर्योदय",
   "prayerDhuhr": "ज़ुहर",
@@ -12,7 +10,6 @@
   "prayerQiyam": "क़ियामुल लैल",
   "prayerSuhoor": "सहरी",
   "prayerIftar": "इफ़्तार",
-
   "hijriMuharram": "मुहर्रम",
   "hijriSafar": "सफ़र",
   "hijriRabiAlAwwal": "रबीउल अव्वल",
@@ -25,7 +22,6 @@
   "hijriShawwal": "शव्वाल",
   "hijriDhulQidah": "ज़ुल-क़ादा",
   "hijriDhulHijjah": "ज़ुल-हिज्जा",
-
   "monthJan": "जन",
   "monthFeb": "फ़र",
   "monthMar": "मार्च",
@@ -38,7 +34,6 @@
   "monthOct": "अक्टू",
   "monthNov": "नव",
   "monthDec": "दिस",
-
   "monthJanuary": "जनवरी",
   "monthFebruary": "फ़रवरी",
   "monthMarch": "मार्च",
@@ -51,7 +46,6 @@
   "monthOctober": "अक्टूबर",
   "monthNovember": "नवम्बर",
   "monthDecember": "दिसम्बर",
-
   "dayMonShort": "सोम",
   "dayTueShort": "मंगल",
   "dayWedShort": "बुध",
@@ -59,7 +53,6 @@
   "dayFriShort": "शुक्र",
   "daySatShort": "शनि",
   "daySunShort": "रवि",
-
   "dayMonday": "सोमवार",
   "dayTuesday": "मंगलवार",
   "dayWednesday": "बुधवार",
@@ -67,7 +60,6 @@
   "dayFriday": "शुक्रवार",
   "daySaturday": "शनिवार",
   "daySunday": "रविवार",
-
   "daySuChart": "रवि",
   "dayMoChart": "सोम",
   "dayTuChart": "मंगल",
@@ -75,7 +67,6 @@
   "dayThChart": "गुरु",
   "dayFrChart": "शुक्र",
   "daySaChart": "शनि",
-
   "chooseCityLabel": "शहर चुनें",
   "setCityFab": "शहर सेट करें",
   "prayerTimesError": "नमाज़ के समय की गणना नहीं हो सकी।\n{error}",
@@ -84,7 +75,6 @@
   "ramadanDayProgress": "दिन {day} / 30",
   "lastTenNights": "आख़िरी 10 रातें",
   "laylatulQadr": "लैलतुल क़द्र",
-
   "homeSuffixAH": "हिजरी",
   "homeSuffixCE": "ई.",
   "homeNoCitySelected": "कोई शहर नहीं चुना गया",
@@ -95,7 +85,6 @@
   "homeActionDuaDhikr": "दुआ और\nज़िक्र",
   "homeActionPrayerStats": "नमाज़\nआँकड़े",
   "homePolarBanner": "इस अवधि में आपके स्थान के लिए {count} नमाज़ के समय की गणना नहीं हो सकती (मध्यरात्रि सूर्य / ध्रुवीय रात)। सेटिंग्स में निकटतम अक्षांश अनुमान आज़माएँ।",
-
   "settingsTitle": "सेटिंग्स",
   "settingsSectionPrayerCalc": "नमाज़ गणना",
   "settingsCalcMethod": "गणना विधि",
@@ -147,12 +136,10 @@
   "settingsTvSettings": "टीवी सेटिंग्स",
   "settingsTvSettingsSubtitle": "मस्जिद मोड, इक़ामत ऑफसेट, एम्बियंट",
   "settingsAboutPrayCalc": "PrayCalc के बारे में",
-
   "syncSynced": "सिंक हो गया",
   "syncSyncing": "सिंक हो रहा है...",
   "syncOffline": "ऑफ़लाइन",
   "syncError": "सिंक त्रुटि",
-
   "notifSettingsTitle": "सूचनाएँ और अज़ान",
   "notifAdhanLabel": "अज़ान",
   "notifReminderMinBefore": "रिमाइंडर: {minutes} मिनट पहले",
@@ -162,19 +149,16 @@
   "notifModeReminderOnly": "केवल रिमाइंडर",
   "notifModeArrival": "नमाज़ के समय",
   "notifModeBoth": "रिमाइंडर + समय",
-
   "citySearchHint": "शहर खोजें…",
   "citySearchDetectTooltip": "मेरा स्थान पता लगाएँ",
   "citySearchNoCityGps": "GPS से शहर का पता नहीं लग सका।",
   "citySearchPermissionDenied": "स्थान अनुमति अस्वीकृत। मैन्युअल खोजें।",
   "citySearchNoResults": "कोई शहर नहीं मिला।",
   "citySearchStartTyping": "खोजने के लिए टाइप करें…",
-
   "agendasTitle": "नमाज़ एजेंडा",
   "agendasEmpty": "अभी कोई एजेंडा नहीं है।\nअपनी नमाज़ से जुड़ा रिमाइंडर जोड़ने के लिए + टैप करें।",
   "agendasUndo": "पूर्ववत करें",
   "agendasRemoved": "{label} हटा दिया गया",
-
   "agendaNewTitle": "नया एजेंडा",
   "agendaEditTitle": "एजेंडा संपादित करें",
   "agendaSave": "सहेजें",
@@ -196,7 +180,6 @@
   "agendaDayW": "बुध",
   "agendaDayF": "शुक्र",
   "agendaDayS": "शनि",
-
   "moonTitle": "चाँद और हिजरी कैलेंडर",
   "moonIlluminated": "{pct}% प्रकाशित",
   "moonFullTonight": "आज रात पूर्णिमा!",
@@ -224,7 +207,6 @@
   "hijriTodayLabel": "आज हिजरी कैलेंडर में",
   "ramadanBeginsLabel": "रमज़ान {year} हिजरी शुरू",
   "ramadanDaysAway": "{days} दिन बाकी",
-
   "calDateCol": "तारीख",
   "calHijriCol": "हिजरी",
   "calFajrCol": "फज्र",
@@ -239,7 +221,6 @@
   "calNextMonthTooltip": "अगला महीना",
   "calExportHeader": "PrayCalc — {month}",
   "calExportSubject": "नमाज़ का समय — {month}",
-
   "qiblaTitle": "क़िबला",
   "qiblaSwitchToCompass": "कम्पास पर जाएँ",
   "qiblaSwitchToAR": "AR कैमरे पर जाएँ",
@@ -251,7 +232,6 @@
   "qiblaDistKm": "काबा से {dist} किमी",
   "qiblaDistThousandKm": "काबा से {dist} हज़ार किमी",
   "qiblaFacingQibla": "क़िबला की ओर ✓",
-
   "tasbeehTitle": "तस्बीह",
   "tasbeehResetTooltip": "रीसेट",
   "tasbeehTapToSwitch": "बदलने के लिए लेबल टैप करें",
@@ -265,7 +245,6 @@
   "tasbeehNoHistory": "अभी कोई इतिहास नहीं — गिनती शुरू करें!",
   "tasbeehComplete": "तस्बीह पूर्ण! {count} ज़िक्र",
   "tasbeehPresetComplete": "✓ {label} × {target}",
-
   "smartHomeTitle": "स्मार्ट होम",
   "smartHomeSubtitle": "अपने डिवाइस नमाज़ के समय से जोड़ें",
   "smartHomeGoogleHome": "Google Home",
@@ -285,7 +264,6 @@
   "smartHomeTestConnection": "कनेक्शन टेस्ट",
   "smartHomeConnectionSuccess": "सफलतापूर्वक जुड़ गया",
   "smartHomeConnectionFailed": "कनेक्शन विफल। अपना खाता लिंक जाँचें।",
-
   "subscriptionTitle": "Ummat+",
   "subscriptionSubtitle": "प्रीमियम नमाज़ सुविधाएँ",
   "subscriptionUpgrade": "Ummat+ में अपग्रेड करें",
@@ -306,26 +284,22 @@
   "subscriptionFeatureWatch": "वॉच कॉम्प्लिकेशन",
   "subscriptionFeatureSync": "क्रॉस-डिवाइस सिंक",
   "subscriptionFeatureAdFree": "विज्ञापन-मुक्त अनुभव",
-
   "tvTitle": "टीवी डिस्प्ले",
   "tvMasjidMode": "मस्जिद मोड",
   "tvAmbientMode": "एम्बियंट मोड",
   "tvSettingsIqamah": "इक़ामत ऑफसेट",
   "tvSettingsAnnouncements": "घोषणाएँ",
   "tvConnectQR": "कनेक्ट करने के लिए स्कैन करें",
-
   "watchTitle": "वॉच",
   "watchNextPrayer": "अगली नमाज़",
   "watchAllPrayers": "सभी नमाज़ें",
   "watchComplication": "कॉम्प्लिकेशन",
-
   "nextPrayer": "अगली नमाज़",
   "allPrayers": "सभी नमाज़ें",
   "today": "आज",
   "tomorrow": "कल",
   "thisWeek": "इस सप्ताह",
   "thisMonth": "इस महीने",
-
   "loginCreateAccount": "खाता बनाएँ",
   "loginSignIn": "साइन इन",
   "loginWelcomeBack": "वापसी पर स्वागत",
@@ -347,7 +321,6 @@
   "loginResetFailed": "रीसेट ईमेल नहीं भेजा जा सका",
   "loginNewToPrayCalc": "PrayCalc में नए हैं?",
   "loginAlreadyHaveAccount": "पहले से खाता है?",
-
   "accountTitle": "खाता",
   "accountNotSignedIn": "साइन इन नहीं है",
   "accountSyncSection": "सिंक",
@@ -374,7 +347,6 @@
   "accountTimeMinAgo": "{min} मिनट पहले",
   "accountTimeHourAgo": "{hour} घंटे पहले",
   "accountTimeDayAgo": "{day} दिन पहले",
-
   "statsTitle": "नमाज़ आँकड़े",
   "statsShareTooltip": "आँकड़े शेयर करें",
   "statsTodayPrayers": "आज की नमाज़ें",
@@ -395,14 +367,12 @@
   "statsShareWeekly": "साप्ताहिक: {pct}%",
   "statsShareMonthly": "मासिक: {pct}%",
   "statsShareBreakdown": "साप्ताहिक विवरण:",
-
   "aboutTitle": "PrayCalc के बारे में",
   "aboutWebsite": "वेबसाइट",
   "aboutContact": "संपर्क",
   "aboutLicenses": "ओपन सोर्स लाइसेंस",
   "aboutCouldNotOpen": "लिंक नहीं खोला जा सका।",
   "aboutCopyright": "© {year} Ummat Dev। सर्वाधिकार सुरक्षित।\n\nनमाज़ का समय pray_calc_dart इंजन से गणना किया जाता है। सटीकता आपके GPS स्थान और चुनी गई गणना विधि पर निर्भर करती है।",
-
   "commonCancel": "रद्द करें",
   "commonSave": "सहेजें",
   "commonDelete": "हटाएँ",
@@ -439,7 +409,6 @@
   "commonHelp": "सहायता",
   "commonLanguage": "भाषा",
   "commonOpenSettings": "सेटिंग्स खोलें",
-
   "travelNotificationTitle": "आप अभी यात्रा पर हैं",
   "travelNotificationBody": "नमाज़ के समय कम किए जा सकते हैं। यात्रा नियम जानने के लिए टैप करें।",
   "travelRulingsTitle": "यात्रा और नमाज़",
@@ -452,7 +421,6 @@
   "travelLearnMore": "और जानें",
   "travelHanafiDefaultTitle": "PrayCalc हनफ़ी डिफ़ॉल्ट क्यों उपयोग करता है",
   "travelDeeperScholarly": "गहन विद्वान चर्चा",
-
   "onboardingTitle1": "आप जहाँ भी हों, नमाज़ का समय",
   "onboardingBody1": "पृथ्वी के हर शहर के लिए GPS-सटीक नमाज़ का समय। फज्र से इशा, सूर्योदय से क़ियाम तक। हमारे अपने गणना इंजन से, सटीकता के लिए बनाया गया।",
   "onboardingTitle2": "आपका स्थान, आपका समय",
@@ -469,7 +437,6 @@
   "onboardingContinueWithoutAccount": "बिना खाते के जारी रखें",
   "onboardingSigningIn": "साइन इन हो रहा है…",
   "onboardingSelectLanguage": "भाषा चुनें",
-
   "duaDhikrTitle": "दुआ और ज़िक्र",
   "duaDhikrTabDua": "दुआ",
   "duaDhikrTabDhikr": "ज़िक्र",
@@ -478,7 +445,6 @@
   "duaDhikrTabEvening": "शाम",
   "duaDhikrMorningAdhkar": "सुबह के अज़कार",
   "duaDhikrEveningAdhkar": "शाम के अज़कार",
-
   "moonLunarCycle": "चंद्र चक्र",
   "moonDayOfCycle": "दिन {day} / ~29.5",
   "moonHilalSightingForecast": "हिलाल दर्शन पूर्वानुमान",
@@ -502,13 +468,11 @@
   "moonUpcomingIslamicEvents": "आगामी इस्लामी आयोजन",
   "moonTodayLabel": "आज",
   "moonTomorrowLabel": "कल",
-
   "calGregToggle": "ग्रेग",
   "calHijriToggle": "हिजरी",
   "calYearlyTooltip": "वार्षिक कैलेंडर",
   "calExportIcsTooltip": ".ics निर्यात",
   "calMagCol": "मग़",
-
   "qiblaShowOnMap": "मानचित्र पर दिखाएँ",
   "qiblaWaitingCompass": "कम्पास की प्रतीक्षा...",
   "qiblaNoCompassSensor": "कम्पास सेंसर नहीं है। क़िबला दिशा स्थिर रूप से दिखाई जा रही है।",
@@ -520,7 +484,6 @@
   "qiblaYourLocation": "आपका स्थान",
   "qiblaGpsAccurate": "GPS-सटीक",
   "qiblaCityCenter": "शहर का केंद्र",
-
   "moonIlluminatedLabel": "प्रकाशित",
   "moonAgeLabel": "आयु",
   "moonFirstQtr": "पहली तिमाही",
@@ -529,7 +492,6 @@
   "moonTomorrow": "कल",
   "moonDaysAway": "{days}दि",
   "moonBeta": "बीटा",
-
   "setHomeTitle": "घर का स्थान सेट करें",
   "setHomeSearchHint": "शहर, कस्बा या पिन कोड खोजें…",
   "setHomeClear": "साफ़ करें",
@@ -543,7 +505,6 @@
   "setHomeNoCitiesFound": "कोई शहर नहीं मिला।",
   "setHomeSearchPrompt": "अपने घर का शहर खोजें",
   "setHomeSearchBody": "ऊपर टाइप करके खोजें, या अपना वर्तमान स्थान उपयोग करें। यात्रा मोड पता लगाएगा कि आप घर से कब दूर हैं।",
-
   "subscriptionYouHavePlus": "आपके पास Ummat+ है",
   "subscriptionUpgradeTo": "Ummat+ में अपग्रेड करें",
   "subscriptionThankYou": "PrayCalc का समर्थन करने के लिए धन्यवाद।",
@@ -558,7 +519,6 @@
   "subscriptionFeatureCalendar": "मासिक कैलेंडर",
   "subscriptionFeatureTasbeeh": "तस्बीह काउंटर",
   "subscriptionFeatureMoon": "चाँद और हिजरी",
-
   "smartHomeAlertType": "अलर्ट प्रकार",
   "smartHomeAlertModal": "फुल-स्क्रीन मोडल",
   "smartHomeAlertCorner": "कोने की सूचना",
@@ -571,10 +531,8 @@
   "smartHomeAudioAdhan": "अज़ान",
   "smartHomeAudioBeep": "बीप",
   "smartHomeAudioSilent": "मूक",
-
   "aboutPrivacy": "गोपनीयता नीति",
   "aboutVersion": "संस्करण {version}",
-
   "notifDefaultAdhan": "डिफ़ॉल्ट अज़ान",
   "notifFajrAdhan": "फज्र अज़ान",
   "notifFajrAdhanSubtitle": "फज्र नमाज़ के समय बजती है",
@@ -582,7 +540,6 @@
   "notifRegularAdhanSubtitle": "ज़ुहर, अस्र, मग़रिब, इशा में बजती है",
   "notifPerPrayerSettings": "प्रत्येक नमाज़ की सेटिंग्स",
   "notifPreview": "पूर्वश्रवण",
-
   "tvSettingsTitle": "टीवी सेटिंग्स",
   "tvDisplayMode": "डिस्प्ले मोड",
   "tvMasjidModeSubtitle": "इक़ामत समय के साथ बड़ा साइनेज डिस्प्ले",
@@ -620,7 +577,6 @@
   "tvPhotoCategoryTitle": "फोटो श्रेणी",
   "tvEnterHint": "{title} दर्ज करें",
   "tvSystemDefault": "सिस्टम डिफ़ॉल्ट",
-
   "smartHomeIntegrations": "इंटीग्रेशन",
   "smartHomeLinkedSpeakers": "लिंक किए गए स्पीकर और डिस्प्ले",
   "smartHomeAlertDisplay": "अलर्ट डिस्प्ले",
@@ -663,10 +619,8 @@
   "smartHomeLinkedStatus": "लिंक किया गया",
   "smartHomeNotLinkedStatus": "लिंक नहीं किया गया",
   "smartHomeCouldNotOpen": "लिंक नहीं खोला जा सका।",
-
   "adhkarCompletedCount": "{completed} / {total} पूर्ण",
   "adhkarReset": "रीसेट",
-
   "syncHistoryTitle": "सिंक इतिहास",
   "syncClearHistory": "इतिहास साफ़ करें",
   "syncNoConflicts": "कोई सिंक विरोध नहीं। सभी डिवाइस सिंक हैं।",
@@ -677,12 +631,10 @@
   "syncTimeMinAgo": "{min} मिनट पहले",
   "syncTimeHourAgo": "{hour} घंटे पहले",
   "syncTimeDayAgo": "{day} दिन पहले",
-
   "pinCity": "पिन",
   "pinMaxReached": "अधिकतम 5 पिन किए शहर। अधिक के लिए Ummat+ में अपग्रेड करें।",
   "pinCityUnpinned": "{city} अनपिन किया गया",
   "pinUndo": "पूर्ववत करें",
-
   "smartHomeDevices": "डिवाइस",
   "smartHomeAddDevice": "डिवाइस जोड़ें",
   "smartHomeDeleteDevice": "हटाएं",
@@ -692,7 +644,9 @@
   "smartHomeDeviceLastSeen": "अंतिम बार देखा: {time}",
   "@smartHomeDeviceLastSeen": {
     "placeholders": {
-      "time": { "type": "String" }
+      "time": {
+        "type": "String"
+      }
     }
   },
   "smartHomeDeviceName": "डिवाइस का नाम",
@@ -718,7 +672,6 @@
   "smartHomeLoadingDevices": "डिवाइस लोड हो रहे हैं...",
   "smartHomeLoadingIntegrations": "इंटीग्रेशन लोड हो रहे हैं...",
   "smartHomeServiceUnavailable": "स्मार्ट होम सेवा वर्तमान में उपलब्ध नहीं है। कृपया बाद में पुनः प्रयास करें।",
-
   "tvPairingScanQr": "Scan TV QR Code",
   "tvPairingScanInstruction": "Point your camera at the QR code on your TV",
   "tvPairingEnterManually": "Enter code manually",
@@ -732,6 +685,30 @@
   "tvPairingTimeout": "Request timed out. Is the TV on and connected?",
   "tvPairingServerError": "Could not connect to server.",
   "tvPairingSignInRequired": "Sign in to your account before pairing a TV.",
-
-  "tvJumuahGreeting": "Jumu'ah Mubarak"
+  "tvJumuahGreeting": "Jumu'ah Mubarak",
+  "desktopNextPrayer": "अगली नमाज़…",
+  "desktopOpen": "PrayCalc खोलें",
+  "desktopQuit": "PrayCalc बंद करें",
+  "desktopSettings": "सेटिंग्स…",
+  "desktopTrayTooltip": "PrayCalc – नमाज़ के वक़्त",
+  "desktopTvDisplays": "TV डिस्प्ले…",
+  "statsBestStreak": "सबसे अच्छी लकीर",
+  "statsDailyGoalLabel": "{goal} नमाज़ें / दिन",
+  "statsDailyGoalTitle": "दैनिक नमाज़ का लक्ष्य",
+  "statsGoalStreak": "लक्ष्य लकीर",
+  "statsHeatmapDetail": "{count} / 5 नमाज़ें पूरी हुईं",
+  "statsHeatmapNoData": "इस दिन के लिए कोई नमाज़ दर्ज नहीं है",
+  "statsHeatmapTitle": "साल की झलक",
+  "tvChildFajrExplanation": "फ़ज्र सुबह की नमाज़ है। हम सूर्योदय से पहले उठते हैं और नए दिन के लिए अल्लाह का शुक्र अदा करते हैं!",
+  "tvChildFajrFunFact": "नबी ﷺ ने फ़रमाया: \"अल्लाह की नज़र में सबसे बेहतर नमाज़ जुमे की फ़ज्र है।\" (बुख़ारी)",
+  "tvChildSunriseExplanation": "फ़ज्र के बाद सूरज निकलता है। यह ज़िक्र करने और क़ुरआन पढ़ने का बरकतवाला वक़्त है।",
+  "tvChildSunriseFunFact": "फ़ज्र के बाद सूर्योदय तक बैठे रहना और दो रकअत पढ़ना पूरे हज का सवाब देता है! (तिर्मिज़ी)",
+  "tvChildDhuhrExplanation": "ज़ुहर दोपहर की नमाज़ है। सूरज आसमान में सबसे ऊंचा होता है, और हम अल्लाह को याद करने के लिए रुकते हैं।",
+  "tvChildDhuhrFunFact": "नबी ﷺ ज़ुहर जल्दी पढ़ना पसंद करते थे जब सूरज ढलना शुरू होता था। (मुस्लिम)",
+  "tvChildAsrExplanation": "अस्र दोपहर बाद की नमाज़ है। अल्लाह ने सूरह अल-अस्र में इस वक़्त की क़सम खाई है — यह बहुत ज़रूरी है!",
+  "tvChildAsrFunFact": "अस्र की नमाज़ छोड़ना मानो परिवार और दौलत खोने जैसा है। अल्लाह इसे कितना पसंद करता है! (बुख़ारी)",
+  "tvChildMaghribExplanation": "मग़रिब सूर्यास्त की नमाज़ है। जब सूरज ढलता है, तो हम ख़ूबसूरत दिन के लिए अल्लाह का शुक्र अदा करते हैं।",
+  "tvChildMaghribFunFact": "दिन और रात के फ़रिश्ते फ़ज्र और मग़रिब के वक़्त मिलते हैं। कितनी ख़ास बात है! (बुख़ारी)",
+  "tvChildIshaExplanation": "इशा रात की नमाज़ है। हम सोने से पहले अल्लाह का शुक्र अदा करके अपना दिन ख़त्म करते हैं।",
+  "tvChildIshaFunFact": "इशा और फ़ज्र जमाअत के साथ पढ़ना पूरी रात नमाज़ पढ़ने जैसा है! (मुस्लिम)"
 }

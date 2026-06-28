@@ -1,8 +1,6 @@
 {
   "@@locale": "fr",
-
   "appTitle": "PrayCalc",
-
   "prayerFajr": "Fajr",
   "prayerSunrise": "Sunrise",
   "prayerDhuhr": "Dhuhr",
@@ -12,7 +10,6 @@
   "prayerQiyam": "Qiyam",
   "prayerSuhoor": "Suhoor",
   "prayerIftar": "Iftar",
-
   "hijriMuharram": "Muharram",
   "hijriSafar": "Safar",
   "hijriRabiAlAwwal": "Rabi' al-Awwal",
@@ -25,7 +22,6 @@
   "hijriShawwal": "Shawwal",
   "hijriDhulQidah": "Dhu al-Qi'dah",
   "hijriDhulHijjah": "Dhu al-Hijjah",
-
   "monthJan": "Jan",
   "monthFeb": "Fev",
   "monthMar": "Mar",
@@ -38,7 +34,6 @@
   "monthOct": "Oct",
   "monthNov": "Nov",
   "monthDec": "Dec",
-
   "monthJanuary": "Janvier",
   "monthFebruary": "Fevrier",
   "monthMarch": "Mars",
@@ -51,7 +46,6 @@
   "monthOctober": "Octobre",
   "monthNovember": "Novembre",
   "monthDecember": "Decembre",
-
   "dayMonShort": "Lun",
   "dayTueShort": "Mar",
   "dayWedShort": "Mer",
@@ -59,7 +53,6 @@
   "dayFriShort": "Ven",
   "daySatShort": "Sam",
   "daySunShort": "Dim",
-
   "dayMonday": "Lundi",
   "dayTuesday": "Mardi",
   "dayWednesday": "Mercredi",
@@ -67,7 +60,6 @@
   "dayFriday": "Vendredi",
   "daySaturday": "Samedi",
   "daySunday": "Dimanche",
-
   "daySuChart": "Di",
   "dayMoChart": "Lu",
   "dayTuChart": "Ma",
@@ -75,7 +67,6 @@
   "dayThChart": "Je",
   "dayFrChart": "Ve",
   "daySaChart": "Sa",
-
   "chooseCityLabel": "Choisir une ville",
   "setCityFab": "Definir la ville",
   "prayerTimesError": "Impossible de calculer les horaires de priere.\n{error}",
@@ -84,7 +75,6 @@
   "ramadanDayProgress": "Jour {day} / 30",
   "lastTenNights": "10 dernieres nuits",
   "laylatulQadr": "Laylatul Qadr",
-
   "homeSuffixAH": "H",
   "homeSuffixCE": "EC",
   "homeNoCitySelected": "Aucune ville selectionnee",
@@ -95,7 +85,6 @@
   "homeActionDuaDhikr": "Dua &\nDhikr",
   "homeActionPrayerStats": "Statistiques\nde priere",
   "homePolarBanner": "{count} horaires de priere ne peuvent pas etre calcules pour votre emplacement pendant cette periode (soleil de minuit / nuit polaire). Essayez l'estimation par latitude la plus proche dans les parametres.",
-
   "settingsTitle": "Parametres",
   "settingsSectionPrayerCalc": "Calcul de priere",
   "settingsCalcMethod": "Methode de calcul",
@@ -147,12 +136,10 @@
   "settingsTvSettings": "Parametres TV",
   "settingsTvSettingsSubtitle": "Mode mosquee, decalages iqamah, ambiance",
   "settingsAboutPrayCalc": "A propos de PrayCalc",
-
   "syncSynced": "Synchronise",
   "syncSyncing": "Synchronisation...",
   "syncOffline": "Hors ligne",
   "syncError": "Erreur de synchronisation",
-
   "notifSettingsTitle": "Notifications & Adhan",
   "notifAdhanLabel": "Adhan",
   "notifReminderMinBefore": "Rappel : {minutes} min avant",
@@ -162,19 +149,16 @@
   "notifModeReminderOnly": "Rappel uniquement",
   "notifModeArrival": "A l'heure de priere",
   "notifModeBoth": "Rappel + heure de priere",
-
   "citySearchHint": "Rechercher une ville…",
   "citySearchDetectTooltip": "Detecter ma position",
   "citySearchNoCityGps": "Impossible de detecter la ville par GPS.",
   "citySearchPermissionDenied": "Autorisation de localisation refusee. Recherchez manuellement.",
   "citySearchNoResults": "Aucune ville trouvee.",
   "citySearchStartTyping": "Commencez a taper pour chercher…",
-
   "agendasTitle": "Agendas de priere",
   "agendasEmpty": "Pas encore d'agenda.\nAppuyez sur + pour ajouter un rappel lie a vos prieres.",
   "agendasUndo": "Annuler",
   "agendasRemoved": "{label} supprime",
-
   "agendaNewTitle": "Nouvel agenda",
   "agendaEditTitle": "Modifier l'agenda",
   "agendaSave": "Enregistrer",
@@ -196,7 +180,6 @@
   "agendaDayW": "M",
   "agendaDayF": "V",
   "agendaDayS": "S",
-
   "moonTitle": "Lune & Calendrier Hijri",
   "moonIlluminated": "{pct}% illuminee",
   "moonFullTonight": "Pleine lune ce soir !",
@@ -224,7 +207,6 @@
   "hijriTodayLabel": "Aujourd'hui dans le calendrier Hijri",
   "ramadanBeginsLabel": "Ramadan {year} H commence",
   "ramadanDaysAway": "dans {days} jours",
-
   "calDateCol": "Date",
   "calHijriCol": "Hijri",
   "calFajrCol": "Fajr",
@@ -239,7 +221,6 @@
   "calNextMonthTooltip": "Mois suivant",
   "calExportHeader": "PrayCalc — {month}",
   "calExportSubject": "Horaires de priere — {month}",
-
   "qiblaTitle": "Qibla",
   "qiblaSwitchToCompass": "Passer a la boussole",
   "qiblaSwitchToAR": "Passer a la camera AR",
@@ -251,7 +232,6 @@
   "qiblaDistKm": "{dist} km de la Kaaba",
   "qiblaDistThousandKm": "{dist}K km de la Kaaba",
   "qiblaFacingQibla": "Face a la Qibla ✓",
-
   "tasbeehTitle": "Tasbeeh",
   "tasbeehResetTooltip": "Reinitialiser",
   "tasbeehTapToSwitch": "Appuyez sur le libelle pour changer",
@@ -265,7 +245,6 @@
   "tasbeehNoHistory": "Pas encore d'historique — commencez a compter !",
   "tasbeehComplete": "Tasbih termine ! {count} dhikr",
   "tasbeehPresetComplete": "✓ {label} × {target}",
-
   "smartHomeTitle": "Maison connectee",
   "smartHomeSubtitle": "Connectez vos appareils aux horaires de priere",
   "smartHomeGoogleHome": "Google Home",
@@ -285,7 +264,6 @@
   "smartHomeTestConnection": "Tester la connexion",
   "smartHomeConnectionSuccess": "Connecte avec succes",
   "smartHomeConnectionFailed": "Connexion echouee. Verifiez votre liaison de compte.",
-
   "subscriptionTitle": "Ummat+",
   "subscriptionSubtitle": "Fonctionnalites premium de priere",
   "subscriptionUpgrade": "Passer a Ummat+",
@@ -306,26 +284,22 @@
   "subscriptionFeatureWatch": "Complications de montre",
   "subscriptionFeatureSync": "Synchronisation multi-appareils",
   "subscriptionFeatureAdFree": "Experience sans publicite",
-
   "tvTitle": "Affichage TV",
   "tvMasjidMode": "Mode mosquee",
   "tvAmbientMode": "Mode ambiance",
   "tvSettingsIqamah": "Decalages Iqamah",
   "tvSettingsAnnouncements": "Annonces",
   "tvConnectQR": "Scanner pour connecter",
-
   "watchTitle": "Montre",
   "watchNextPrayer": "Prochaine priere",
   "watchAllPrayers": "Toutes les prieres",
   "watchComplication": "Complication",
-
   "nextPrayer": "Prochaine priere",
   "allPrayers": "Toutes les prieres",
   "today": "Aujourd'hui",
   "tomorrow": "Demain",
   "thisWeek": "Cette semaine",
   "thisMonth": "Ce mois",
-
   "loginCreateAccount": "Creer un compte",
   "loginSignIn": "Se connecter",
   "loginWelcomeBack": "Bon retour",
@@ -347,7 +321,6 @@
   "loginResetFailed": "Impossible d'envoyer l'e-mail de reinitialisation",
   "loginNewToPrayCalc": "Nouveau sur PrayCalc ?",
   "loginAlreadyHaveAccount": "Vous avez deja un compte ?",
-
   "accountTitle": "Compte",
   "accountNotSignedIn": "Non connecte",
   "accountSyncSection": "Synchronisation",
@@ -374,7 +347,6 @@
   "accountTimeMinAgo": "il y a {min}min",
   "accountTimeHourAgo": "il y a {hour}h",
   "accountTimeDayAgo": "il y a {day}j",
-
   "statsTitle": "Statistiques de priere",
   "statsShareTooltip": "Partager les stats",
   "statsTodayPrayers": "Prieres d'aujourd'hui",
@@ -395,14 +367,12 @@
   "statsShareWeekly": "Hebdomadaire : {pct}%",
   "statsShareMonthly": "Mensuel : {pct}%",
   "statsShareBreakdown": "Repartition hebdomadaire :",
-
   "aboutTitle": "A propos de PrayCalc",
   "aboutWebsite": "Site web",
   "aboutContact": "Contact",
   "aboutLicenses": "Licences open source",
   "aboutCouldNotOpen": "Impossible d'ouvrir le lien.",
   "aboutCopyright": "© {year} Ummat Dev. Tous droits reserves.\n\nLes horaires de priere sont calcules avec le moteur pray_calc_dart. La precision depend de votre position GPS et de la methode de calcul selectionnee.",
-
   "commonCancel": "Annuler",
   "commonSave": "Enregistrer",
   "commonDelete": "Supprimer",
@@ -439,7 +409,6 @@
   "commonHelp": "Aide",
   "commonLanguage": "Langue",
   "commonOpenSettings": "Ouvrir les parametres",
-
   "travelNotificationTitle": "Vous etes en voyage",
   "travelNotificationBody": "Les horaires de priere peuvent etre raccourcis. Appuyez pour decouvrir les regles de voyage.",
   "travelRulingsTitle": "Voyage & Priere",
@@ -452,7 +421,6 @@
   "travelLearnMore": "En savoir plus",
   "travelHanafiDefaultTitle": "Pourquoi PrayCalc utilise le Hanafi par defaut",
   "travelDeeperScholarly": "Discussion savante approfondie",
-
   "onboardingTitle1": "Les horaires de priere, ou que vous soyez",
   "onboardingBody1": "Horaires de salah precis par GPS pour chaque ville sur terre. Du Fajr a l'Isha, du lever du soleil au Qiyam. Avec notre propre moteur de calcul, concu pour la precision.",
   "onboardingTitle2": "Votre emplacement, vos horaires",
@@ -469,7 +437,6 @@
   "onboardingContinueWithoutAccount": "Continuer sans compte",
   "onboardingSigningIn": "Connexion en cours…",
   "onboardingSelectLanguage": "Choisir la langue",
-
   "duaDhikrTitle": "Dua & Dhikr",
   "duaDhikrTabDua": "Dua",
   "duaDhikrTabDhikr": "Dhikr",
@@ -478,7 +445,6 @@
   "duaDhikrTabEvening": "Soir",
   "duaDhikrMorningAdhkar": "Adhkar du matin",
   "duaDhikrEveningAdhkar": "Adhkar du soir",
-
   "moonLunarCycle": "Cycle lunaire",
   "moonDayOfCycle": "Jour {day} / ~29,5",
   "moonHilalSightingForecast": "Prévision d'observation du Hilal",
@@ -502,13 +468,11 @@
   "moonUpcomingIslamicEvents": "Prochains événements islamiques",
   "moonTodayLabel": "Aujourd'hui",
   "moonTomorrowLabel": "Demain",
-
   "calGregToggle": "Grég",
   "calHijriToggle": "Hijri",
   "calYearlyTooltip": "Calendrier annuel",
   "calExportIcsTooltip": "Exporter .ics",
   "calMagCol": "Mag",
-
   "qiblaShowOnMap": "Afficher sur la carte",
   "qiblaWaitingCompass": "En attente de la boussole...",
   "qiblaNoCompassSensor": "Pas de capteur de boussole. Direction de la Qibla affichée de manière statique.",
@@ -520,7 +484,6 @@
   "qiblaYourLocation": "Votre position",
   "qiblaGpsAccurate": "Précis par GPS",
   "qiblaCityCenter": "Centre-ville",
-
   "moonIlluminatedLabel": "Illuminée",
   "moonAgeLabel": "Âge",
   "moonFirstQtr": "Premier Qrt",
@@ -529,7 +492,6 @@
   "moonTomorrow": "Demain",
   "moonDaysAway": "{days}j",
   "moonBeta": "Bêta",
-
   "setHomeTitle": "Définir le lieu de résidence",
   "setHomeSearchHint": "Chercher ville, commune ou code postal…",
   "setHomeClear": "Effacer",
@@ -543,7 +505,6 @@
   "setHomeNoCitiesFound": "Aucune ville trouvée.",
   "setHomeSearchPrompt": "Recherchez votre ville de résidence",
   "setHomeSearchBody": "Tapez ci-dessus pour rechercher, ou utilisez votre position actuelle. Le mode voyage détectera quand vous êtes loin de chez vous.",
-
   "subscriptionYouHavePlus": "Vous avez Ummat+",
   "subscriptionUpgradeTo": "Passer à Ummat+",
   "subscriptionThankYou": "Merci de soutenir PrayCalc.",
@@ -558,7 +519,6 @@
   "subscriptionFeatureCalendar": "Calendrier mensuel",
   "subscriptionFeatureTasbeeh": "Compteur Tasbeeh",
   "subscriptionFeatureMoon": "Lune & Hijri",
-
   "smartHomeAlertType": "Type d'alerte",
   "smartHomeAlertModal": "Modale plein écran",
   "smartHomeAlertCorner": "Notification en coin",
@@ -571,10 +531,8 @@
   "smartHomeAudioAdhan": "Adhan",
   "smartHomeAudioBeep": "Bip",
   "smartHomeAudioSilent": "Silencieux",
-
   "aboutPrivacy": "Politique de confidentialité",
   "aboutVersion": "Version {version}",
-
   "notifDefaultAdhan": "Adhan par défaut",
   "notifFajrAdhan": "Adhan du Fajr",
   "notifFajrAdhanSubtitle": "Joué à l'heure de la prière du Fajr",
@@ -582,7 +540,6 @@
   "notifRegularAdhanSubtitle": "Joué à Dhuhr, Asr, Maghrib, Isha",
   "notifPerPrayerSettings": "Paramètres par prière",
   "notifPreview": "Aperçu",
-
   "tvSettingsTitle": "Paramètres TV",
   "tvDisplayMode": "Mode d'affichage",
   "tvMasjidModeSubtitle": "Grand affichage signalétique avec horaires d'iqamah",
@@ -620,7 +577,6 @@
   "tvPhotoCategoryTitle": "Catégorie photo",
   "tvEnterHint": "Entrer {title}",
   "tvSystemDefault": "Par défaut du système",
-
   "smartHomeIntegrations": "Intégrations",
   "smartHomeLinkedSpeakers": "Enceintes et écrans liés",
   "smartHomeAlertDisplay": "Affichage d'alerte",
@@ -663,10 +619,8 @@
   "smartHomeLinkedStatus": "Lié",
   "smartHomeNotLinkedStatus": "Non lié",
   "smartHomeCouldNotOpen": "Impossible d'ouvrir le lien.",
-
   "adhkarCompletedCount": "{completed} / {total} terminés",
   "adhkarReset": "Réinitialiser",
-
   "syncHistoryTitle": "Historique de synchronisation",
   "syncClearHistory": "Effacer l'historique",
   "syncNoConflicts": "Aucun conflit de synchronisation. Tous les appareils sont synchronisés.",
@@ -677,12 +631,10 @@
   "syncTimeMinAgo": "il y a {min}min",
   "syncTimeHourAgo": "il y a {hour}h",
   "syncTimeDayAgo": "il y a {day}j",
-
   "pinCity": "Épingler",
   "pinMaxReached": "Maximum 5 villes épinglées. Passez à Ummat+ pour en ajouter.",
   "pinCityUnpinned": "{city} désépinglée",
   "pinUndo": "Annuler",
-
   "smartHomeDevices": "Appareils",
   "smartHomeAddDevice": "Ajouter un appareil",
   "smartHomeDeleteDevice": "Supprimer",
@@ -692,7 +644,9 @@
   "smartHomeDeviceLastSeen": "Vu pour la dernière fois : {time}",
   "@smartHomeDeviceLastSeen": {
     "placeholders": {
-      "time": { "type": "String" }
+      "time": {
+        "type": "String"
+      }
     }
   },
   "smartHomeDeviceName": "Nom de l'appareil",
@@ -718,7 +672,6 @@
   "smartHomeLoadingDevices": "Chargement des appareils...",
   "smartHomeLoadingIntegrations": "Chargement des intégrations...",
   "smartHomeServiceUnavailable": "Le service maison connectée est actuellement indisponible. Veuillez réessayer plus tard.",
-
   "tvPairingScanQr": "Scan TV QR Code",
   "tvPairingScanInstruction": "Point your camera at the QR code on your TV",
   "tvPairingEnterManually": "Enter code manually",
@@ -732,6 +685,30 @@
   "tvPairingTimeout": "Request timed out. Is the TV on and connected?",
   "tvPairingServerError": "Could not connect to server.",
   "tvPairingSignInRequired": "Sign in to your account before pairing a TV.",
-
-  "tvJumuahGreeting": "Jumu'ah Mubarak"
+  "tvJumuahGreeting": "Jumu'ah Mubarak",
+  "desktopNextPrayer": "Prochaine prière…",
+  "desktopOpen": "Ouvrir PrayCalc",
+  "desktopQuit": "Quitter PrayCalc",
+  "desktopSettings": "Paramètres…",
+  "desktopTrayTooltip": "PrayCalc – Horaires de prière",
+  "desktopTvDisplays": "Écrans TV…",
+  "statsBestStreak": "Meilleure série",
+  "statsDailyGoalLabel": "{goal} prières / jour",
+  "statsDailyGoalTitle": "Objectif quotidien de prière",
+  "statsGoalStreak": "Série d'objectif",
+  "statsHeatmapDetail": "{count} / 5 prières accomplies",
+  "statsHeatmapNoData": "Aucune prière enregistrée pour ce jour",
+  "statsHeatmapTitle": "L'année en un coup d'œil",
+  "tvChildFajrExplanation": "Fajr est la prière du matin. Nous nous levons avant le lever du soleil pour remercier Allah pour un nouveau jour !",
+  "tvChildFajrFunFact": "Le Prophète ﷺ a dit : « La meilleure prière aux yeux d'Allah est Fajr du vendredi. » (Bukhari)",
+  "tvChildSunriseExplanation": "Après Fajr, le soleil se lève. C'est un moment béni pour faire le dhikr et lire le Coran.",
+  "tvChildSunriseFunFact": "Rester assis après Fajr jusqu'au lever du soleil et prier deux rak'ahs mérite la récompense d'un Hajj complet ! (Tirmidhi)",
+  "tvChildDhuhrExplanation": "Dhuhr est la prière de midi. Le soleil est au plus haut dans le ciel, et nous nous arrêtons pour nous souvenir d'Allah.",
+  "tvChildDhuhrFunFact": "Le Prophète ﷺ aimait prier Dhuhr tôt quand le soleil commence à décliner. (Muslim)",
+  "tvChildAsrExplanation": "Asr est la prière de l'après-midi. Allah jure par ce temps dans la Sourate Al-Asr — c'est très important !",
+  "tvChildAsrFunFact": "Rater la prière de Asr, c'est comme perdre sa famille et sa richesse. C'est à quel point Allah l'aime ! (Bukhari)",
+  "tvChildMaghribExplanation": "Maghrib est la prière du coucher du soleil. Quand le soleil se couche, nous remercions Allah pour cette belle journée.",
+  "tvChildMaghribFunFact": "Les anges du jour et de la nuit se rencontrent à Fajr et à Maghrib. Comme c'est spécial ! (Bukhari)",
+  "tvChildIshaExplanation": "Isha est la prière de la nuit. Nous terminons notre journée en remerciant Allah avant de dormir.",
+  "tvChildIshaFunFact": "Prier Isha et Fajr en congrégation, c'est comme prier toute la nuit ! (Muslim)"
 }

@@ -1,8 +1,6 @@
 {
   "@@locale": "th",
-
   "appTitle": "PrayCalc",
-
   "prayerFajr": "ฟัจร์",
   "prayerSunrise": "พระอาทิตย์ขึ้น",
   "prayerDhuhr": "ซุฮ์ริ",
@@ -12,7 +10,6 @@
   "prayerQiyam": "กิยาม",
   "prayerSuhoor": "สะฮูร",
   "prayerIftar": "อิฟตาร",
-
   "hijriMuharram": "มุฮัรรอม",
   "hijriSafar": "ซอฟัร",
   "hijriRabiAlAwwal": "รอบีอุลเอาวัล",
@@ -25,7 +22,6 @@
   "hijriShawwal": "เชาวาล",
   "hijriDhulQidah": "ซุลกิอ์ดะฮ์",
   "hijriDhulHijjah": "ซุลฮิจญะฮ์",
-
   "monthJan": "ม.ค.",
   "monthFeb": "ก.พ.",
   "monthMar": "มี.ค.",
@@ -38,7 +34,6 @@
   "monthOct": "ต.ค.",
   "monthNov": "พ.ย.",
   "monthDec": "ธ.ค.",
-
   "monthJanuary": "มกราคม",
   "monthFebruary": "กุมภาพันธ์",
   "monthMarch": "มีนาคม",
@@ -51,7 +46,6 @@
   "monthOctober": "ตุลาคม",
   "monthNovember": "พฤศจิกายน",
   "monthDecember": "ธันวาคม",
-
   "dayMonShort": "จ.",
   "dayTueShort": "อ.",
   "dayWedShort": "พ.",
@@ -59,7 +53,6 @@
   "dayFriShort": "ศ.",
   "daySatShort": "ส.",
   "daySunShort": "อา.",
-
   "dayMonday": "วันจันทร์",
   "dayTuesday": "วันอังคาร",
   "dayWednesday": "วันพุธ",
@@ -67,7 +60,6 @@
   "dayFriday": "วันศุกร์",
   "daySaturday": "วันเสาร์",
   "daySunday": "วันอาทิตย์",
-
   "daySuChart": "อา",
   "dayMoChart": "จ",
   "dayTuChart": "อ",
@@ -75,31 +67,35 @@
   "dayThChart": "พฤ",
   "dayFrChart": "ศ",
   "daySaChart": "ส",
-
   "chooseCityLabel": "เลือกเมือง",
   "setCityFab": "ตั้งเมือง",
   "prayerTimesError": "ไม่สามารถคำนวณเวลาละหมาดได้\n{error}",
   "@prayerTimesError": {
     "placeholders": {
-      "error": { "type": "Object" }
+      "error": {
+        "type": "Object"
+      }
     }
   },
   "prayerCountdownLabel": "{prayer} ใน",
   "@prayerCountdownLabel": {
     "placeholders": {
-      "prayer": { "type": "String" }
+      "prayer": {
+        "type": "String"
+      }
     }
   },
   "ramadanMubarak": "รอมฎอนมุบาร็อก",
   "ramadanDayProgress": "วันที่ {day} / 30",
   "@ramadanDayProgress": {
     "placeholders": {
-      "day": { "type": "int" }
+      "day": {
+        "type": "int"
+      }
     }
   },
   "lastTenNights": "10 คืนสุดท้าย",
   "laylatulQadr": "ลัยละตุลก็อดร์",
-
   "homeSuffixAH": "ฮ.ศ.",
   "homeSuffixCE": "ค.ศ.",
   "homeNoCitySelected": "ยังไม่ได้เลือกเมือง",
@@ -112,10 +108,11 @@
   "homePolarBanner": "ไม่สามารถคำนวณเวลาละหมาด {count} รอบสำหรับที่ตั้งของคุณในช่วงนี้ (ดวงอาทิตย์เที่ยงคืน / คืนขั้วโลก) ลองใช้การประมาณละติจูดใกล้เคียงในการตั้งค่า",
   "@homePolarBanner": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
-
   "settingsTitle": "การตั้งค่า",
   "settingsSectionPrayerCalc": "การคำนวณละหมาด",
   "settingsCalcMethod": "วิธีการคำนวณ",
@@ -167,24 +164,26 @@
   "settingsTvSettings": "การตั้งค่าทีวี",
   "settingsTvSettingsSubtitle": "โหมดมัสยิด ออฟเซ็ตอิกอมะฮ์ แอมเบียนท์",
   "settingsAboutPrayCalc": "เกี่ยวกับ PrayCalc",
-
   "syncSynced": "ซิงค์แล้ว",
   "syncSyncing": "กำลังซิงค์...",
   "syncOffline": "ออฟไลน์",
   "syncError": "ซิงค์ผิดพลาด",
-
   "notifSettingsTitle": "การแจ้งเตือนและอะซาน",
   "notifAdhanLabel": "อะซาน",
   "notifReminderMinBefore": "เตือน: {minutes} นาทีก่อน",
   "@notifReminderMinBefore": {
     "placeholders": {
-      "minutes": { "type": "int" }
+      "minutes": {
+        "type": "int"
+      }
     }
   },
   "notifVolumePct": "ระดับเสียง: {pct}%",
   "@notifVolumePct": {
     "placeholders": {
-      "pct": { "type": "int" }
+      "pct": {
+        "type": "int"
+      }
     }
   },
   "notifTestAdhan": "ทดสอบอะซาน",
@@ -192,24 +191,23 @@
   "notifModeReminderOnly": "เตือนเท่านั้น",
   "notifModeArrival": "เมื่อถึงเวลาละหมาด",
   "notifModeBoth": "เตือน + เมื่อถึงเวลา",
-
   "citySearchHint": "ค้นหาเมือง…",
   "citySearchDetectTooltip": "ตรวจจับตำแหน่งของฉัน",
   "citySearchNoCityGps": "ไม่สามารถตรวจจับเมืองจาก GPS ได้",
   "citySearchPermissionDenied": "ไม่ได้รับอนุญาตตำแหน่ง ค้นหาด้วยตนเอง",
   "citySearchNoResults": "ไม่พบเมือง",
   "citySearchStartTyping": "เริ่มพิมพ์เพื่อค้นหา…",
-
   "agendasTitle": "วาระละหมาด",
   "agendasEmpty": "ยังไม่มีวาระ\nแตะ + เพื่อเพิ่มการเตือนที่เชื่อมกับละหมาดของคุณ",
   "agendasUndo": "เลิกทำ",
   "agendasRemoved": "ลบ {label} แล้ว",
   "@agendasRemoved": {
     "placeholders": {
-      "label": { "type": "String" }
+      "label": {
+        "type": "String"
+      }
     }
   },
-
   "agendaNewTitle": "วาระใหม่",
   "agendaEditTitle": "แก้ไขวาระ",
   "agendaSave": "บันทึก",
@@ -222,13 +220,17 @@
   "agendaOffsetMinBefore": "{minutes} นาทีก่อน",
   "@agendaOffsetMinBefore": {
     "placeholders": {
-      "minutes": { "type": "int" }
+      "minutes": {
+        "type": "int"
+      }
     }
   },
   "agendaOffsetMinAfter": "{minutes} นาทีหลัง",
   "@agendaOffsetMinAfter": {
     "placeholders": {
-      "minutes": { "type": "int" }
+      "minutes": {
+        "type": "int"
+      }
     }
   },
   "agendaRepeatSection": "ทำซ้ำ",
@@ -241,12 +243,13 @@
   "agendaDayW": "พ",
   "agendaDayF": "ศ",
   "agendaDayS": "ส",
-
   "moonTitle": "ดวงจันทร์และปฏิทินฮิจเราะฮ์",
   "moonIlluminated": "สว่าง {pct}%",
   "@moonIlluminated": {
     "placeholders": {
-      "pct": { "type": "int" }
+      "pct": {
+        "type": "int"
+      }
     }
   },
   "moonFullTonight": "คืนนี้จันทร์เต็มดวง!",
@@ -254,13 +257,17 @@
   "moonNextDays": "จันทร์เต็มดวงถัดไปใน {days} วัน",
   "@moonNextDays": {
     "placeholders": {
-      "days": { "type": "int" }
+      "days": {
+        "type": "int"
+      }
     }
   },
   "moonAge": "อายุดวงจันทร์: {age} วัน",
   "@moonAge": {
     "placeholders": {
-      "age": { "type": "String" }
+      "age": {
+        "type": "String"
+      }
     }
   },
   "moonPhaseNewMoon": "จันทร์ดับ",
@@ -285,20 +292,26 @@
   "ramadanBeginsLabel": "รอมฎอน {year} ฮ.ศ. เริ่มต้น",
   "@ramadanBeginsLabel": {
     "placeholders": {
-      "year": { "type": "int" }
+      "year": {
+        "type": "int"
+      }
     }
   },
   "ramadanDaysAway": "อีก {days} วัน",
   "@ramadanDaysAway": {
     "placeholders": {
-      "days": { "type": "int" }
+      "days": {
+        "type": "int"
+      }
     }
   },
   "moonLunarCycle": "วงจรจันทรคติ",
   "moonDayOfCycle": "วันที่ {day} จาก ~29.5",
   "@moonDayOfCycle": {
     "placeholders": {
-      "day": { "type": "int" }
+      "day": {
+        "type": "int"
+      }
     }
   },
   "moonHilalSightingForecast": "พยากรณ์การมองเห็นฮิลาล",
@@ -306,7 +319,9 @@
   "moonDayN": "วันที่ {day}",
   "@moonDayN": {
     "placeholders": {
-      "day": { "type": "int" }
+      "day": {
+        "type": "int"
+      }
     }
   },
   "moonGlobalSighting": "การมองเห็นทั่วโลก",
@@ -317,15 +332,23 @@
   "moonMonthPrediction29": "{month} {year} ฮ.ศ. น่าจะมี 29 วัน คาดว่าจะเห็นจันทร์เสี้ยวในวันที่ 29 อินชาอัลลอฮ์",
   "@moonMonthPrediction29": {
     "placeholders": {
-      "month": { "type": "String" },
-      "year": { "type": "int" }
+      "month": {
+        "type": "String"
+      },
+      "year": {
+        "type": "int"
+      }
     }
   },
   "moonMonthPrediction30": "{month} {year} ฮ.ศ. น่าจะมี 30 วัน ไม่น่าจะเห็นจันทร์เสี้ยวในวันที่ 29 เดือนจะครบ 30 วัน",
   "@moonMonthPrediction30": {
     "placeholders": {
-      "month": { "type": "String" },
-      "year": { "type": "int" }
+      "month": {
+        "type": "String"
+      },
+      "year": {
+        "type": "int"
+      }
     }
   },
   "moonUmmAlQura": "อุมมุลกุรอ",
@@ -335,26 +358,31 @@
   "moonNDays": "{days} วัน",
   "@moonNDays": {
     "placeholders": {
-      "days": { "type": "int" }
+      "days": {
+        "type": "int"
+      }
     }
   },
   "moonStarts": "{month} เริ่ม:",
   "@moonStarts": {
     "placeholders": {
-      "month": { "type": "String" }
+      "month": {
+        "type": "String"
+      }
     }
   },
   "moonMoonAgeAtSunset": "อายุดวงจันทร์เมื่อพระอาทิตย์ตก: {hours} ชม.",
   "@moonMoonAgeAtSunset": {
     "placeholders": {
-      "hours": { "type": "String" }
+      "hours": {
+        "type": "String"
+      }
     }
   },
   "moon7DayLunarCalendar": "ปฏิทินจันทรคติ 7 วัน",
   "moonUpcomingIslamicEvents": "เหตุการณ์อิสลามที่จะมาถึง",
   "moonTodayLabel": "วันนี้",
   "moonTomorrowLabel": "พรุ่งนี้",
-
   "calDateCol": "วันที่",
   "calHijriCol": "ฮิจเราะฮ์",
   "calFajrCol": "ฟัจร์",
@@ -370,16 +398,19 @@
   "calExportHeader": "PrayCalc — {month}",
   "@calExportHeader": {
     "placeholders": {
-      "month": { "type": "String" }
+      "month": {
+        "type": "String"
+      }
     }
   },
   "calExportSubject": "เวลาละหมาด — {month}",
   "@calExportSubject": {
     "placeholders": {
-      "month": { "type": "String" }
+      "month": {
+        "type": "String"
+      }
     }
   },
-
   "qiblaTitle": "กิบลัต",
   "qiblaSwitchToCompass": "เปลี่ยนเป็นเข็มทิศ",
   "qiblaSwitchToAR": "เปลี่ยนเป็นกล้อง AR",
@@ -389,29 +420,36 @@
   "qiblaDegreesFromNorth": "{degrees}° จากทิศเหนือ",
   "@qiblaDegreesFromNorth": {
     "placeholders": {
-      "degrees": { "type": "int" }
+      "degrees": {
+        "type": "int"
+      }
     }
   },
   "qiblaFrom": "จาก {city}",
   "@qiblaFrom": {
     "placeholders": {
-      "city": { "type": "String" }
+      "city": {
+        "type": "String"
+      }
     }
   },
   "qiblaDistKm": "{dist} กม. จากกะอ์บะฮ์",
   "@qiblaDistKm": {
     "placeholders": {
-      "dist": { "type": "int" }
+      "dist": {
+        "type": "int"
+      }
     }
   },
   "qiblaDistThousandKm": "{dist}K กม. จากกะอ์บะฮ์",
   "@qiblaDistThousandKm": {
     "placeholders": {
-      "dist": { "type": "String" }
+      "dist": {
+        "type": "String"
+      }
     }
   },
   "qiblaFacingQibla": "หันหน้าไปทางกิบลัต ✓",
-
   "tasbeehTitle": "ตัสบีห์",
   "tasbeehResetTooltip": "รีเซ็ต",
   "tasbeehTapToSwitch": "แตะป้ายเพื่อเปลี่ยน",
@@ -423,7 +461,9 @@
   "tasbeehTodayDhikr": "วันนี้: {count} ซิกิร",
   "@tasbeehTodayDhikr": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "tasbeehLast7Days": "7 วันที่ผ่านมา",
@@ -431,17 +471,22 @@
   "tasbeehComplete": "ตัสบีห์เสร็จสิ้น! {count} ซิกิร",
   "@tasbeehComplete": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "tasbeehPresetComplete": "✓ {label} × {target}",
   "@tasbeehPresetComplete": {
     "placeholders": {
-      "label": { "type": "String" },
-      "target": { "type": "int" }
+      "label": {
+        "type": "String"
+      },
+      "target": {
+        "type": "int"
+      }
     }
   },
-
   "smartHomeTitle": "สมาร์ทโฮม",
   "smartHomeSubtitle": "เชื่อมต่ออุปกรณ์กับเวลาละหมาด",
   "smartHomeGoogleHome": "Google Home",
@@ -461,7 +506,6 @@
   "smartHomeTestConnection": "ทดสอบการเชื่อมต่อ",
   "smartHomeConnectionSuccess": "เชื่อมต่อสำเร็จ",
   "smartHomeConnectionFailed": "เชื่อมต่อไม่สำเร็จ ตรวจสอบการเชื่อมบัญชี",
-
   "subscriptionTitle": "Ummat+",
   "subscriptionSubtitle": "ฟีเจอร์เวลาละหมาดพรีเมียม",
   "subscriptionUpgrade": "อัปเกรดเป็น Ummat+",
@@ -476,19 +520,25 @@
   "subscriptionFreeQueriesRemaining": "เหลือคำถามฟรี {count} ครั้ง",
   "@subscriptionFreeQueriesRemaining": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "subscriptionPriceYearly": "{price}/ปี",
   "@subscriptionPriceYearly": {
     "placeholders": {
-      "price": { "type": "String" }
+      "price": {
+        "type": "String"
+      }
     }
   },
   "subscriptionPriceMonthly": "{price}/เดือน",
   "@subscriptionPriceMonthly": {
     "placeholders": {
-      "price": { "type": "String" }
+      "price": {
+        "type": "String"
+      }
     }
   },
   "subscriptionFeatureSmartHome": "เชื่อมต่อสมาร์ทโฮม",
@@ -497,19 +547,16 @@
   "subscriptionFeatureWatch": "คอมพลิเคชันนาฬิกา",
   "subscriptionFeatureSync": "ซิงค์ข้ามอุปกรณ์",
   "subscriptionFeatureAdFree": "ปราศจากโฆษณา",
-
   "watchTitle": "นาฬิกา",
   "watchNextPrayer": "ละหมาดถัดไป",
   "watchAllPrayers": "ละหมาดทั้งหมด",
   "watchComplication": "คอมพลิเคชัน",
-
   "nextPrayer": "ละหมาดถัดไป",
   "allPrayers": "ละหมาดทั้งหมด",
   "today": "วันนี้",
   "tomorrow": "พรุ่งนี้",
   "thisWeek": "สัปดาห์นี้",
   "thisMonth": "เดือนนี้",
-
   "loginCreateAccount": "สร้างบัญชี",
   "loginSignIn": "ลงชื่อเข้าใช้",
   "loginWelcomeBack": "ยินดีต้อนรับกลับ",
@@ -531,7 +578,6 @@
   "loginResetFailed": "ไม่สามารถส่งอีเมลรีเซ็ตได้",
   "loginNewToPrayCalc": "ใหม่กับ PrayCalc?",
   "loginAlreadyHaveAccount": "มีบัญชีอยู่แล้ว?",
-
   "accountTitle": "บัญชี",
   "accountNotSignedIn": "ยังไม่ได้ลงชื่อเข้าใช้",
   "accountSyncSection": "ซิงค์",
@@ -542,13 +588,17 @@
   "accountConflictsResolved": "แก้ไขแล้ว {count} รายการ",
   "@accountConflictsResolved": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "accountSyncedAgo": "ซิงค์เมื่อ {time}",
   "@accountSyncedAgo": {
     "placeholders": {
-      "time": { "type": "String" }
+      "time": {
+        "type": "String"
+      }
     }
   },
   "accountOfflineStatus": "ออฟไลน์ การเปลี่ยนแปลงบันทึกไว้ในเครื่อง",
@@ -568,29 +618,36 @@
   "accountTimeMinAgo": "{min} นาทีที่แล้ว",
   "@accountTimeMinAgo": {
     "placeholders": {
-      "min": { "type": "int" }
+      "min": {
+        "type": "int"
+      }
     }
   },
   "accountTimeHourAgo": "{hour} ชม.ที่แล้ว",
   "@accountTimeHourAgo": {
     "placeholders": {
-      "hour": { "type": "int" }
+      "hour": {
+        "type": "int"
+      }
     }
   },
   "accountTimeDayAgo": "{day} วันที่แล้ว",
   "@accountTimeDayAgo": {
     "placeholders": {
-      "day": { "type": "int" }
+      "day": {
+        "type": "int"
+      }
     }
   },
-
   "statsTitle": "สถิติละหมาด",
   "statsShareTooltip": "แชร์สถิติ",
   "statsTodayPrayers": "ละหมาดวันนี้",
   "statsTodayCount": "{done} / 5",
   "@statsTodayCount": {
     "placeholders": {
-      "done": { "type": "int" }
+      "done": {
+        "type": "int"
+      }
     }
   },
   "statsStreak": "สถิติต่อเนื่อง",
@@ -605,7 +662,9 @@
   "statsTotalLogged": "บันทึกละหมาดทั้งหมด {count} ครั้ง",
   "@statsTotalLogged": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "statsKeepItUp": "ทำต่อไป!",
@@ -613,23 +672,28 @@
   "statsShareStreak": "สถิติต่อเนื่อง: {days} วัน",
   "@statsShareStreak": {
     "placeholders": {
-      "days": { "type": "int" }
+      "days": {
+        "type": "int"
+      }
     }
   },
   "statsShareWeekly": "รายสัปดาห์: {pct}%",
   "@statsShareWeekly": {
     "placeholders": {
-      "pct": { "type": "int" }
+      "pct": {
+        "type": "int"
+      }
     }
   },
   "statsShareMonthly": "รายเดือน: {pct}%",
   "@statsShareMonthly": {
     "placeholders": {
-      "pct": { "type": "int" }
+      "pct": {
+        "type": "int"
+      }
     }
   },
   "statsShareBreakdown": "รายละเอียดรายสัปดาห์:",
-
   "aboutTitle": "เกี่ยวกับ PrayCalc",
   "aboutWebsite": "เว็บไซต์",
   "aboutContact": "ติดต่อ",
@@ -638,10 +702,11 @@
   "aboutCopyright": "© {year} Ummat Dev. สงวนลิขสิทธิ์\n\nเวลาละหมาดคำนวณโดยเอนจิน pray_calc_dart ความแม่นยำขึ้นอยู่กับตำแหน่ง GPS และวิธีคำนวณที่เลือก",
   "@aboutCopyright": {
     "placeholders": {
-      "year": { "type": "int" }
+      "year": {
+        "type": "int"
+      }
     }
   },
-
   "commonCancel": "ยกเลิก",
   "commonSave": "บันทึก",
   "commonDelete": "ลบ",
@@ -673,7 +738,9 @@
   "commonVersion": "เวอร์ชัน {version}",
   "@commonVersion": {
     "placeholders": {
-      "version": { "type": "String" }
+      "version": {
+        "type": "String"
+      }
     }
   },
   "commonPrivacyPolicy": "นโยบายความเป็นส่วนตัว",
@@ -683,7 +750,6 @@
   "commonHelp": "ช่วยเหลือ",
   "commonLanguage": "ภาษา",
   "commonOpenSettings": "เปิดการตั้งค่า",
-
   "travelNotificationTitle": "คุณกำลังเดินทาง",
   "travelNotificationBody": "เวลาละหมาดอาจถูกย่อ แตะเพื่อเรียนรู้เกี่ยวกับหลักการเดินทาง",
   "travelRulingsTitle": "การเดินทางและละหมาด",
@@ -696,7 +762,6 @@
   "travelLearnMore": "เรียนรู้เพิ่มเติม",
   "travelHanafiDefaultTitle": "ทำไม PrayCalc ใช้ค่าเริ่มต้นฮะนะฟี",
   "travelDeeperScholarly": "การอภิปรายทางวิชาการเชิงลึก",
-
   "onboardingTitle1": "เวลาละหมาด ไม่ว่าคุณอยู่ที่ไหน",
   "onboardingBody1": "เวลาละหมาดแม่นยำด้วย GPS สำหรับทุกเมืองบนโลก ตั้งแต่ฟัจร์ถึงอิชา พระอาทิตย์ขึ้นถึงกิยาม ขับเคลื่อนด้วยเอนจินคำนวณของเราเอง สร้างเพื่อความแม่นยำ",
   "onboardingTitle2": "ตำแหน่งของคุณ เวลาของคุณ",
@@ -713,7 +778,6 @@
   "onboardingContinueWithoutAccount": "ดำเนินต่อโดยไม่มีบัญชี",
   "onboardingSigningIn": "กำลังลงชื่อเข้าใช้…",
   "onboardingSelectLanguage": "เลือกภาษา",
-
   "duaDhikrTitle": "ดุอาอ์และซิกิร",
   "duaDhikrTabDua": "ดุอาอ์",
   "duaDhikrTabDhikr": "ซิกิร",
@@ -722,13 +786,11 @@
   "duaDhikrTabEvening": "เย็น",
   "duaDhikrMorningAdhkar": "อัซการ์ยามเช้า",
   "duaDhikrEveningAdhkar": "อัซการ์ยามเย็น",
-
   "calGregToggle": "สากล",
   "calHijriToggle": "ฮิจเราะฮ์",
   "calYearlyTooltip": "ปฏิทินรายปี",
   "calExportIcsTooltip": "ส่งออก .ics",
   "calMagCol": "มัฆ",
-
   "qiblaShowOnMap": "แสดงบนแผนที่",
   "qiblaWaitingCompass": "รอเข็มทิศ...",
   "qiblaNoCompassSensor": "ไม่มีเซ็นเซอร์เข็มทิศ แสดงทิศกิบลัตแบบคงที่",
@@ -740,7 +802,6 @@
   "qiblaYourLocation": "ตำแหน่งของคุณ",
   "qiblaGpsAccurate": "GPS แม่นยำ",
   "qiblaCityCenter": "ศูนย์กลางเมือง",
-
   "moonIlluminatedLabel": "สว่าง",
   "moonAgeLabel": "อายุ",
   "moonFirstQtr": "ครึ่งดวงข้างขึ้น",
@@ -750,11 +811,12 @@
   "moonDaysAway": "{days}ว",
   "@moonDaysAway": {
     "placeholders": {
-      "days": { "type": "int" }
+      "days": {
+        "type": "int"
+      }
     }
   },
   "moonBeta": "เบต้า",
-
   "setHomeTitle": "ตั้งที่ตั้งบ้าน",
   "setHomeSearchHint": "ค้นหาเมือง ตำบล หรือรหัสไปรษณีย์…",
   "setHomeClear": "ล้าง",
@@ -764,7 +826,9 @@
   "setHomeSetAs": "ตั้ง {city} เป็นบ้าน",
   "@setHomeSetAs": {
     "placeholders": {
-      "city": { "type": "String" }
+      "city": {
+        "type": "String"
+      }
     }
   },
   "setHomeCurrentLocationSet": "ตั้งตำแหน่งปัจจุบันเป็นบ้านแล้ว",
@@ -773,7 +837,6 @@
   "setHomeNoCitiesFound": "ไม่พบเมือง",
   "setHomeSearchPrompt": "ค้นหาเมืองบ้านของคุณ",
   "setHomeSearchBody": "พิมพ์ด้านบนเพื่อค้นหา หรือใช้ตำแหน่งปัจจุบัน โหมดเดินทางจะตรวจจับเมื่อคุณอยู่ห่างจากบ้าน",
-
   "subscriptionYouHavePlus": "คุณมี Ummat+",
   "subscriptionUpgradeTo": "อัปเกรดเป็น Ummat+",
   "subscriptionThankYou": "ขอบคุณที่สนับสนุน PrayCalc",
@@ -788,7 +851,6 @@
   "subscriptionFeatureCalendar": "ปฏิทินรายเดือน",
   "subscriptionFeatureTasbeeh": "ตัวนับตัสบีห์",
   "subscriptionFeatureMoon": "ดวงจันทร์และฮิจเราะฮ์",
-
   "smartHomeAlertType": "ประเภทการแจ้งเตือน",
   "smartHomeAlertModal": "โมดัลเต็มจอ",
   "smartHomeAlertCorner": "แจ้งเตือนมุม",
@@ -801,15 +863,15 @@
   "smartHomeAudioAdhan": "อะซาน",
   "smartHomeAudioBeep": "เสียงบี๊ป",
   "smartHomeAudioSilent": "เงียบ",
-
   "aboutPrivacy": "นโยบายความเป็นส่วนตัว",
   "aboutVersion": "เวอร์ชัน {version}",
   "@aboutVersion": {
     "placeholders": {
-      "version": { "type": "String" }
+      "version": {
+        "type": "String"
+      }
     }
   },
-
   "notifDefaultAdhan": "อะซานเริ่มต้น",
   "notifFajrAdhan": "อะซานฟัจร์",
   "notifFajrAdhanSubtitle": "เล่นเมื่อถึงเวลาละหมาดฟัจร์",
@@ -817,7 +879,6 @@
   "notifRegularAdhanSubtitle": "เล่นที่ซุฮ์ริ อัศริ มัฆริบ อิชา",
   "notifPerPrayerSettings": "การตั้งค่าแต่ละละหมาด",
   "notifPreview": "ดูตัวอย่าง",
-
   "tvSettingsTitle": "การตั้งค่าทีวี",
   "tvDisplayMode": "โหมดแสดงผล",
   "tvMasjidMode": "โหมดมัสยิด",
@@ -830,7 +891,9 @@
   "tvIqamahMinAfter": "{offset} นาทีหลังอะซาน",
   "@tvIqamahMinAfter": {
     "placeholders": {
-      "offset": { "type": "int" }
+      "offset": {
+        "type": "int"
+      }
     }
   },
   "tvQrCode": "QR Code",
@@ -842,14 +905,18 @@
   "tvIdleTimeoutSubtitle": "{minutes} นาทีก่อนเปิดแอมเบียนท์",
   "@tvIdleTimeoutSubtitle": {
     "placeholders": {
-      "minutes": { "type": "int" }
+      "minutes": {
+        "type": "int"
+      }
     }
   },
   "tvPhotoInterval": "ช่วงเวลาภาพ",
   "tvPhotoIntervalSubtitle": "{seconds} วินาทีระหว่างภาพ",
   "@tvPhotoIntervalSubtitle": {
     "placeholders": {
-      "seconds": { "type": "int" }
+      "seconds": {
+        "type": "int"
+      }
     }
   },
   "tvBackground": "พื้นหลัง",
@@ -872,11 +939,12 @@
   "tvEnterHint": "ใส่ {title}",
   "@tvEnterHint": {
     "placeholders": {
-      "title": { "type": "String" }
+      "title": {
+        "type": "String"
+      }
     }
   },
   "tvSystemDefault": "ค่าเริ่มต้นระบบ",
-
   "smartHomeIntegrations": "การเชื่อมต่อ",
   "smartHomeLinkedSpeakers": "ลำโพงและจอที่เชื่อมแล้ว",
   "smartHomeAlertDisplay": "การแสดงการแจ้งเตือน",
@@ -919,7 +987,6 @@
   "smartHomeLinkedStatus": "เชื่อมแล้ว",
   "smartHomeNotLinkedStatus": "ไม่ได้เชื่อม",
   "smartHomeCouldNotOpen": "ไม่สามารถเปิดลิงก์ได้",
-
   "smartHomeDevices": "อุปกรณ์",
   "smartHomeAddDevice": "เพิ่มอุปกรณ์",
   "smartHomeDeleteDevice": "ลบ",
@@ -929,7 +996,9 @@
   "smartHomeDeviceLastSeen": "เห็นล่าสุด: {time}",
   "@smartHomeDeviceLastSeen": {
     "placeholders": {
-      "time": { "type": "String" }
+      "time": {
+        "type": "String"
+      }
     }
   },
   "smartHomeDeviceName": "ชื่ออุปกรณ์",
@@ -955,16 +1024,18 @@
   "smartHomeLoadingDevices": "กำลังโหลดอุปกรณ์...",
   "smartHomeLoadingIntegrations": "กำลังโหลดการเชื่อมต่อ...",
   "smartHomeServiceUnavailable": "บริการสมาร์ทโฮมไม่พร้อมใช้งานขณะนี้ กรุณาลองอีกครั้งภายหลัง",
-
   "adhkarCompletedCount": "{completed} / {total} เสร็จสิ้น",
   "@adhkarCompletedCount": {
     "placeholders": {
-      "completed": { "type": "int" },
-      "total": { "type": "int" }
+      "completed": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
     }
   },
   "adhkarReset": "รีเซ็ต",
-
   "syncHistoryTitle": "ประวัติซิงค์",
   "syncClearHistory": "ล้างประวัติ",
   "syncNoConflicts": "ไม่พบความขัดแย้งในการซิงค์ อุปกรณ์ทั้งหมดซิงค์กันแล้ว",
@@ -975,32 +1046,38 @@
   "syncTimeMinAgo": "{min} นาทีที่แล้ว",
   "@syncTimeMinAgo": {
     "placeholders": {
-      "min": { "type": "int" }
+      "min": {
+        "type": "int"
+      }
     }
   },
   "syncTimeHourAgo": "{hour} ชม.ที่แล้ว",
   "@syncTimeHourAgo": {
     "placeholders": {
-      "hour": { "type": "int" }
+      "hour": {
+        "type": "int"
+      }
     }
   },
   "syncTimeDayAgo": "{day} วันที่แล้ว",
   "@syncTimeDayAgo": {
     "placeholders": {
-      "day": { "type": "int" }
+      "day": {
+        "type": "int"
+      }
     }
   },
-
   "pinCity": "ปักหมุด",
   "pinMaxReached": "ปักหมุดได้สูงสุด 5 เมือง อัปเกรดเป็น Ummat+ เพื่อเพิ่ม",
   "pinCityUnpinned": "เลิกปักหมุด {city} แล้ว",
   "@pinCityUnpinned": {
     "placeholders": {
-      "city": { "type": "String" }
+      "city": {
+        "type": "String"
+      }
     }
   },
   "pinUndo": "เลิกทำ",
-
   "tvPairingScanQr": "Scan TV QR Code",
   "tvPairingScanInstruction": "Point your camera at the QR code on your TV",
   "tvPairingEnterManually": "Enter code manually",
@@ -1014,6 +1091,30 @@
   "tvPairingTimeout": "Request timed out. Is the TV on and connected?",
   "tvPairingServerError": "Could not connect to server.",
   "tvPairingSignInRequired": "Sign in to your account before pairing a TV.",
-
-  "tvJumuahGreeting": "Jumu'ah Mubarak"
+  "tvJumuahGreeting": "Jumu'ah Mubarak",
+  "desktopNextPrayer": "ละหมาดถัดไป…",
+  "desktopOpen": "เปิด PrayCalc",
+  "desktopQuit": "ออกจาก PrayCalc",
+  "desktopSettings": "การตั้งค่า…",
+  "desktopTrayTooltip": "PrayCalc – เวลาละหมาด",
+  "desktopTvDisplays": "จอแสดงผล TV…",
+  "statsBestStreak": "สถิติต่อเนื่องดีที่สุด",
+  "statsDailyGoalLabel": "{goal} เวลาละหมาด / วัน",
+  "statsDailyGoalTitle": "เป้าหมายละหมาดประจำวัน",
+  "statsGoalStreak": "สถิติต่อเนื่องตามเป้าหมาย",
+  "statsHeatmapDetail": "{count} / 5 เวลาละหมาดเสร็จสิ้น",
+  "statsHeatmapNoData": "ไม่มีบันทึกละหมาดสำหรับวันนี้",
+  "statsHeatmapTitle": "ภาพรวมทั้งปี",
+  "tvChildFajrExplanation": "ฟัจรฺคือละหมาดยามเช้า เราตื่นนอนก่อนพระอาทิตย์ขึ้นเพื่อขอบคุณอัลลอฮฺสำหรับวันใหม่!",
+  "tvChildFajrFunFact": "ท่านนบี ﷺ กล่าวว่า \"ละหมาดที่ดีที่สุดในสายตาของอัลลอฮฺคือฟัจรฺวันศุกร์\" (บุคอรี)",
+  "tvChildSunriseExplanation": "หลังฟัจรฺ พระอาทิตย์ขึ้น นี่คือเวลาอันศิริมงคลสำหรับการซิกรฺและอ่านอัล-กุรอาน",
+  "tvChildSunriseFunFact": "การนั่งหลังฟัจรฺจนพระอาทิตย์ขึ้นแล้วละหมาดสองร็อกอัตจะได้รับผลบุญเท่ากับฮัจญ์ที่สมบูรณ์! (ติรมิซีย์)",
+  "tvChildDhuhrExplanation": "ดุฮรฺคือละหมาดกลางวัน ดวงอาทิตย์อยู่สูงที่สุดบนท้องฟ้า เราหยุดพักเพื่อรำลึกถึงอัลลอฮฺ",
+  "tvChildDhuhrFunFact": "ท่านนบี ﷺ ชอบละหมาดดุฮรฺแต่เนิ่นๆ เมื่อดวงอาทิตย์เริ่มเคลื่อนลง (มุสลิม)",
+  "tvChildAsrExplanation": "อัสรฺคือละหมาดยามบ่าย อัลลอฮฺทรงสาบานด้วยเวลานี้ในสูเราะฮฺอัล-อัสรฺ — สำคัญมาก!",
+  "tvChildAsrFunFact": "การละทิ้งละหมาดอัสรฺเหมือนการสูญเสียครอบครัวและทรัพย์สิน นั่นคือวิธีที่อัลลอฮฺทรงรักมัน! (บุคอรี)",
+  "tvChildMaghribExplanation": "มัฆริบคือละหมาดยามพระอาทิตย์ตก เมื่อพระอาทิตย์ลับขอบฟ้า เราขอบคุณอัลลอฮฺสำหรับวันที่สวยงาม",
+  "tvChildMaghribFunFact": "มลาอิกะฮฺกลางวันและกลางคืนพบกันในเวลาฟัจรฺและมัฆริบ ช่างพิเศษจริงๆ! (บุคอรี)",
+  "tvChildIshaExplanation": "อิชาอฺคือละหมาดยามค่ำคืน เราสิ้นสุดวันด้วยการขอบคุณอัลลอฮฺก่อนนอน",
+  "tvChildIshaFunFact": "การละหมาดอิชาอฺและฟัจรฺพร้อมญะมาอะฮฺเหมือนกับการละหมาดตลอดทั้งคืน! (มุสลิม)"
 }

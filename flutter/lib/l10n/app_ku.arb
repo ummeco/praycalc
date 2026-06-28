@@ -1,8 +1,6 @@
 {
   "@@locale": "ku",
-
   "appTitle": "PrayCalc",
-
   "prayerFajr": "بەرەبان",
   "prayerSunrise": "خۆرهەڵاتن",
   "prayerDhuhr": "نیوەڕۆ",
@@ -12,7 +10,6 @@
   "prayerQiyam": "قیام",
   "prayerSuhoor": "سحور",
   "prayerIftar": "ئیفتار",
-
   "hijriMuharram": "موحەڕەم",
   "hijriSafar": "سەفەر",
   "hijriRabiAlAwwal": "ڕەبیعی یەکەم",
@@ -25,7 +22,6 @@
   "hijriShawwal": "شەوواڵ",
   "hijriDhulQidah": "زولقەعدە",
   "hijriDhulHijjah": "زولحیججە",
-
   "monthJan": "کانوونی دووەم",
   "monthFeb": "شوبات",
   "monthMar": "ئازار",
@@ -38,7 +34,6 @@
   "monthOct": "تشرینی یەکەم",
   "monthNov": "تشرینی دووەم",
   "monthDec": "کانوونی یەکەم",
-
   "monthJanuary": "کانوونی دووەم",
   "monthFebruary": "شوبات",
   "monthMarch": "ئازار",
@@ -51,7 +46,6 @@
   "monthOctober": "تشرینی یەکەم",
   "monthNovember": "تشرینی دووەم",
   "monthDecember": "کانوونی یەکەم",
-
   "dayMonShort": "دوو",
   "dayTueShort": "سێ",
   "dayWedShort": "چوا",
@@ -59,7 +53,6 @@
   "dayFriShort": "هەی",
   "daySatShort": "شەم",
   "daySunShort": "یەک",
-
   "dayMonday": "دووشەممە",
   "dayTuesday": "سێشەممە",
   "dayWednesday": "چوارشەممە",
@@ -67,7 +60,6 @@
   "dayFriday": "هەینی",
   "daySaturday": "شەممە",
   "daySunday": "یەکشەممە",
-
   "daySuChart": "یەک",
   "dayMoChart": "دوو",
   "dayTuChart": "سێ",
@@ -75,31 +67,35 @@
   "dayThChart": "پێن",
   "dayFrChart": "هەی",
   "daySaChart": "شەم",
-
   "chooseCityLabel": "شارێک هەڵبژێرە",
   "setCityFab": "شار دابنێ",
   "prayerTimesError": "کاتی نوێژەکان نەبوو بژمێردرێت.\n{error}",
   "@prayerTimesError": {
     "placeholders": {
-      "error": { "type": "Object" }
+      "error": {
+        "type": "Object"
+      }
     }
   },
   "prayerCountdownLabel": "{prayer} لە",
   "@prayerCountdownLabel": {
     "placeholders": {
-      "prayer": { "type": "String" }
+      "prayer": {
+        "type": "String"
+      }
     }
   },
   "ramadanMubarak": "ڕەمەزان مبارەک",
   "ramadanDayProgress": "ڕۆژی {day} / ٣٠",
   "@ramadanDayProgress": {
     "placeholders": {
-      "day": { "type": "int" }
+      "day": {
+        "type": "int"
+      }
     }
   },
   "lastTenNights": "١٠ شەوی کۆتایی",
   "laylatulQadr": "شەوی قەدر",
-
   "homeSuffixAH": "کۆچی",
   "homeSuffixCE": "ز",
   "homeNoCitySelected": "هیچ شارێک هەڵنەبژێردراوە",
@@ -112,10 +108,11 @@
   "homePolarBanner": "{count} کاتی نوێژ ناتوانرێت بۆ شوێنەکەت بژمێردرێت لەم ماوەیەدا (خۆری نیوە شەو / شەوی قوتابی). لە ڕێکخستنەکاندا تەخمینی نزیکترین هێڵی پانی تاقی بکەرەوە.",
   "@homePolarBanner": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
-
   "settingsTitle": "ڕێکخستنەکان",
   "settingsSectionPrayerCalc": "ژمارەکردنی نوێژ",
   "settingsCalcMethod": "شێوازی ژمارەکردن",
@@ -167,24 +164,26 @@
   "settingsTvSettings": "ڕێکخستنەکانی تەلەفزیۆن",
   "settingsTvSettingsSubtitle": "دۆخی مزگەوت، ئۆفسێتەکانی ئیقامە، ئەمبیەنت",
   "settingsAboutPrayCalc": "دەربارەی PrayCalc",
-
   "syncSynced": "هاوکاتکراو",
   "syncSyncing": "هاوکاتکردن...",
   "syncOffline": "ئۆفلاین",
   "syncError": "هەڵەی هاوکاتکردن",
-
   "notifSettingsTitle": "ئاگادارکردنەوەکان و بانگ",
   "notifAdhanLabel": "بانگ",
   "notifReminderMinBefore": "بیرکردنەوە: {minutes} خولەک پێش",
   "@notifReminderMinBefore": {
     "placeholders": {
-      "minutes": { "type": "int" }
+      "minutes": {
+        "type": "int"
+      }
     }
   },
   "notifVolumePct": "دەنگ: {pct}%",
   "@notifVolumePct": {
     "placeholders": {
-      "pct": { "type": "int" }
+      "pct": {
+        "type": "int"
+      }
     }
   },
   "notifTestAdhan": "تاقیکردنەوەی بانگ",
@@ -192,24 +191,23 @@
   "notifModeReminderOnly": "تەنها بیرکردنەوە",
   "notifModeArrival": "لە کاتی نوێژدا",
   "notifModeBoth": "بیرکردنەوە + هاتن",
-
   "citySearchHint": "گەڕان بۆ شار…",
   "citySearchDetectTooltip": "شوێنەکەم بدۆزەرەوە",
   "citySearchNoCityGps": "نەتوانرا شار لە GPS بدۆزرێتەوە.",
   "citySearchPermissionDenied": "ڕێگەپێدانی شوێن ڕەتکرایەوە. بە دەستی بگەڕێ.",
   "citySearchNoResults": "هیچ شارێک نەدۆزرایەوە.",
   "citySearchStartTyping": "دەست بە تایپکردن بکە بۆ گەڕان…",
-
   "agendasTitle": "بەرنامەکانی نوێژ",
   "agendasEmpty": "هێشتا هیچ بەرنامەیەک نییە.\n+ بپەنجە بکە بۆ زیادکردنی بیرکردنەوە بە نوێژەکانت.",
   "agendasUndo": "گەڕانەوە",
   "agendasRemoved": "{label} لابرا",
   "@agendasRemoved": {
     "placeholders": {
-      "label": { "type": "String" }
+      "label": {
+        "type": "String"
+      }
     }
   },
-
   "agendaNewTitle": "بەرنامەی نوێ",
   "agendaEditTitle": "دەستکاریکردنی بەرنامە",
   "agendaSave": "پاشەکەوتکردن",
@@ -222,13 +220,17 @@
   "agendaOffsetMinBefore": "{minutes} خولەک پێش",
   "@agendaOffsetMinBefore": {
     "placeholders": {
-      "minutes": { "type": "int" }
+      "minutes": {
+        "type": "int"
+      }
     }
   },
   "agendaOffsetMinAfter": "{minutes} خولەک دوا",
   "@agendaOffsetMinAfter": {
     "placeholders": {
-      "minutes": { "type": "int" }
+      "minutes": {
+        "type": "int"
+      }
     }
   },
   "agendaRepeatSection": "دووبارەکردنەوە",
@@ -241,12 +243,13 @@
   "agendaDayW": "چوا",
   "agendaDayF": "هەی",
   "agendaDayS": "شەم",
-
   "moonTitle": "مانگ و ڕۆژژمێری کۆچی",
   "moonIlluminated": "{pct}% ڕووناکراوە",
   "@moonIlluminated": {
     "placeholders": {
-      "pct": { "type": "int" }
+      "pct": {
+        "type": "int"
+      }
     }
   },
   "moonFullTonight": "مانگی تەواو ئەمشەو!",
@@ -254,13 +257,17 @@
   "moonNextDays": "مانگی تەواوی داهاتوو لە {days} ڕۆژدا",
   "@moonNextDays": {
     "placeholders": {
-      "days": { "type": "int" }
+      "days": {
+        "type": "int"
+      }
     }
   },
   "moonAge": "تەمەنی مانگ: {age} ڕۆژ",
   "@moonAge": {
     "placeholders": {
-      "age": { "type": "String" }
+      "age": {
+        "type": "String"
+      }
     }
   },
   "moonPhaseNewMoon": "مانگی نوێ",
@@ -285,20 +292,26 @@
   "ramadanBeginsLabel": "ڕەمەزانی {year} کۆچی دەست پێدەکات",
   "@ramadanBeginsLabel": {
     "placeholders": {
-      "year": { "type": "int" }
+      "year": {
+        "type": "int"
+      }
     }
   },
   "ramadanDaysAway": "{days} ڕۆژ ماوە",
   "@ramadanDaysAway": {
     "placeholders": {
-      "days": { "type": "int" }
+      "days": {
+        "type": "int"
+      }
     }
   },
   "moonLunarCycle": "خولی مانگ",
   "moonDayOfCycle": "ڕۆژی {day} لە ~٢٩.٥",
   "@moonDayOfCycle": {
     "placeholders": {
-      "day": { "type": "int" }
+      "day": {
+        "type": "int"
+      }
     }
   },
   "moonHilalSightingForecast": "پێشبینی بینینی هیلال",
@@ -306,7 +319,9 @@
   "moonDayN": "ڕۆژی {day}",
   "@moonDayN": {
     "placeholders": {
-      "day": { "type": "int" }
+      "day": {
+        "type": "int"
+      }
     }
   },
   "moonGlobalSighting": "بینینی جیهانی",
@@ -317,15 +332,23 @@
   "moonMonthPrediction29": "{month} {year} کۆچی بە گومانەوە ٢٩ ڕۆژ دەبێت. چاوەڕوان دەکرێت هیلال لە ڕۆژی ٢٩ بینرێت، ئینشاءاڵڵاه.",
   "@moonMonthPrediction29": {
     "placeholders": {
-      "month": { "type": "String" },
-      "year": { "type": "int" }
+      "month": {
+        "type": "String"
+      },
+      "year": {
+        "type": "int"
+      }
     }
   },
   "moonMonthPrediction30": "{month} {year} کۆچی بە گومانەوە ٣٠ ڕۆژ دەبێت. هیلال لە ڕۆژی ٢٩ بەگومان نابینرێت — مانگ ٣٠ ڕۆژ تەواو دەبێت.",
   "@moonMonthPrediction30": {
     "placeholders": {
-      "month": { "type": "String" },
-      "year": { "type": "int" }
+      "month": {
+        "type": "String"
+      },
+      "year": {
+        "type": "int"
+      }
     }
   },
   "moonUmmAlQura": "ئوم القرا",
@@ -335,26 +358,31 @@
   "moonNDays": "{days} ڕۆژ",
   "@moonNDays": {
     "placeholders": {
-      "days": { "type": "int" }
+      "days": {
+        "type": "int"
+      }
     }
   },
   "moonStarts": "{month} دەست پێدەکات:",
   "@moonStarts": {
     "placeholders": {
-      "month": { "type": "String" }
+      "month": {
+        "type": "String"
+      }
     }
   },
   "moonMoonAgeAtSunset": "تەمەنی مانگ لە ئاوابوون: {hours} ک",
   "@moonMoonAgeAtSunset": {
     "placeholders": {
-      "hours": { "type": "String" }
+      "hours": {
+        "type": "String"
+      }
     }
   },
   "moon7DayLunarCalendar": "ڕۆژژمێری مانگی ٧ ڕۆژە",
   "moonUpcomingIslamicEvents": "بۆنە ئیسلامییەکانی داهاتوو",
   "moonTodayLabel": "ئەمڕۆ",
   "moonTomorrowLabel": "سبەی",
-
   "calDateCol": "بەروار",
   "calHijriCol": "کۆچی",
   "calFajrCol": "بەرەبان",
@@ -370,16 +398,19 @@
   "calExportHeader": "PrayCalc — {month}",
   "@calExportHeader": {
     "placeholders": {
-      "month": { "type": "String" }
+      "month": {
+        "type": "String"
+      }
     }
   },
   "calExportSubject": "کاتی نوێژ — {month}",
   "@calExportSubject": {
     "placeholders": {
-      "month": { "type": "String" }
+      "month": {
+        "type": "String"
+      }
     }
   },
-
   "qiblaTitle": "قیبلە",
   "qiblaSwitchToCompass": "گۆڕین بۆ قیبلەنامە",
   "qiblaSwitchToAR": "گۆڕین بۆ کامێرای AR",
@@ -389,29 +420,36 @@
   "qiblaDegreesFromNorth": "{degrees}° لە باکوورەوە",
   "@qiblaDegreesFromNorth": {
     "placeholders": {
-      "degrees": { "type": "int" }
+      "degrees": {
+        "type": "int"
+      }
     }
   },
   "qiblaFrom": "لە {city}",
   "@qiblaFrom": {
     "placeholders": {
-      "city": { "type": "String" }
+      "city": {
+        "type": "String"
+      }
     }
   },
   "qiblaDistKm": "{dist} کم لە کەعبە",
   "@qiblaDistKm": {
     "placeholders": {
-      "dist": { "type": "int" }
+      "dist": {
+        "type": "int"
+      }
     }
   },
   "qiblaDistThousandKm": "{dist}K کم لە کەعبە",
   "@qiblaDistThousandKm": {
     "placeholders": {
-      "dist": { "type": "String" }
+      "dist": {
+        "type": "String"
+      }
     }
   },
   "qiblaFacingQibla": "بەرەو قیبلە ✓",
-
   "tasbeehTitle": "تەسبیح",
   "tasbeehResetTooltip": "ڕیسێتکردن",
   "tasbeehTapToSwitch": "ناونیشان بپەنجە بکە بۆ گۆڕین",
@@ -423,7 +461,9 @@
   "tasbeehTodayDhikr": "ئەمڕۆ: {count} ذکر",
   "@tasbeehTodayDhikr": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "tasbeehLast7Days": "٧ ڕۆژی ڕابردوو",
@@ -431,17 +471,22 @@
   "tasbeehComplete": "تەسبیح تەواو بوو! {count} ذکر",
   "@tasbeehComplete": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "tasbeehPresetComplete": "✓ {label} × {target}",
   "@tasbeehPresetComplete": {
     "placeholders": {
-      "label": { "type": "String" },
-      "target": { "type": "int" }
+      "label": {
+        "type": "String"
+      },
+      "target": {
+        "type": "int"
+      }
     }
   },
-
   "smartHomeTitle": "ماڵی زیرەک",
   "smartHomeSubtitle": "ئامێرەکانت بە کاتی نوێژەوە بەستە",
   "smartHomeGoogleHome": "گووگڵ هۆم",
@@ -461,7 +506,6 @@
   "smartHomeTestConnection": "تاقیکردنەوەی پەیوەندی",
   "smartHomeConnectionSuccess": "بە سەرکەوتوویی پەیوەست بوو",
   "smartHomeConnectionFailed": "پەیوەندی سەرنەکەوت. بەستنی هەژمارەکەت بپشکنە.",
-
   "subscriptionTitle": "Ummat+",
   "subscriptionSubtitle": "تایبەتمەندییە پرێمیەمەکانی کاتی نوێژ",
   "subscriptionUpgrade": "نوێکردنەوە بۆ Ummat+",
@@ -476,19 +520,25 @@
   "subscriptionFreeQueriesRemaining": "{count} داواکاری بەخۆڕایی ماوە",
   "@subscriptionFreeQueriesRemaining": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "subscriptionPriceYearly": "{price}/ساڵانە",
   "@subscriptionPriceYearly": {
     "placeholders": {
-      "price": { "type": "String" }
+      "price": {
+        "type": "String"
+      }
     }
   },
   "subscriptionPriceMonthly": "{price}/مانگانە",
   "@subscriptionPriceMonthly": {
     "placeholders": {
-      "price": { "type": "String" }
+      "price": {
+        "type": "String"
+      }
     }
   },
   "subscriptionFeatureSmartHome": "یەکگرتنی ماڵی زیرەک",
@@ -497,19 +547,16 @@
   "subscriptionFeatureWatch": "کۆمپلیکەیشنەکانی کاتژمێر",
   "subscriptionFeatureSync": "هاوکاتکردنی نێوان ئامێرەکان",
   "subscriptionFeatureAdFree": "بێ ڕیکلام",
-
   "watchTitle": "کاتژمێر",
   "watchNextPrayer": "نوێژی داهاتوو",
   "watchAllPrayers": "هەموو نوێژەکان",
   "watchComplication": "کۆمپلیکەیشن",
-
   "nextPrayer": "نوێژی داهاتوو",
   "allPrayers": "هەموو نوێژەکان",
   "today": "ئەمڕۆ",
   "tomorrow": "سبەی",
   "thisWeek": "ئەم هەفتەیە",
   "thisMonth": "ئەم مانگە",
-
   "loginCreateAccount": "هەژمار دروست بکە",
   "loginSignIn": "چوونەژوورەوە",
   "loginWelcomeBack": "بەخێربێیتەوە",
@@ -531,7 +578,6 @@
   "loginResetFailed": "نەتوانرا ئیمەیلی ڕیسێت بنێردرێت",
   "loginNewToPrayCalc": "تازەیت لە PrayCalc؟",
   "loginAlreadyHaveAccount": "پێشتر هەژمارت هەیە؟",
-
   "accountTitle": "هەژمار",
   "accountNotSignedIn": "چوونەژوورەوە نەکراوە",
   "accountSyncSection": "هاوکاتکردن",
@@ -542,13 +588,17 @@
   "accountConflictsResolved": "{count} چارەسەرکرا",
   "@accountConflictsResolved": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "accountSyncedAgo": "هاوکاتکرا {time}",
   "@accountSyncedAgo": {
     "placeholders": {
-      "time": { "type": "String" }
+      "time": {
+        "type": "String"
+      }
     }
   },
   "accountOfflineStatus": "ئۆفلاین. گۆڕانکارییەکان بە ناوخۆیی پاشەکەوتکراون.",
@@ -568,29 +618,36 @@
   "accountTimeMinAgo": "{min}خ پێش",
   "@accountTimeMinAgo": {
     "placeholders": {
-      "min": { "type": "int" }
+      "min": {
+        "type": "int"
+      }
     }
   },
   "accountTimeHourAgo": "{hour}ک پێش",
   "@accountTimeHourAgo": {
     "placeholders": {
-      "hour": { "type": "int" }
+      "hour": {
+        "type": "int"
+      }
     }
   },
   "accountTimeDayAgo": "{day}ڕ پێش",
   "@accountTimeDayAgo": {
     "placeholders": {
-      "day": { "type": "int" }
+      "day": {
+        "type": "int"
+      }
     }
   },
-
   "statsTitle": "ئامارەکانی نوێژ",
   "statsShareTooltip": "هاوبەشکردنی ئامارەکان",
   "statsTodayPrayers": "نوێژەکانی ئەمڕۆ",
   "statsTodayCount": "{done} / ٥",
   "@statsTodayCount": {
     "placeholders": {
-      "done": { "type": "int" }
+      "done": {
+        "type": "int"
+      }
     }
   },
   "statsStreak": "زنجیرە",
@@ -605,7 +662,9 @@
   "statsTotalLogged": "{count} کۆی نوێژی تۆمارکراو",
   "@statsTotalLogged": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "statsKeepItUp": "بەردەوام بە!",
@@ -613,23 +672,28 @@
   "statsShareStreak": "زنجیرە: {days} ڕۆژ",
   "@statsShareStreak": {
     "placeholders": {
-      "days": { "type": "int" }
+      "days": {
+        "type": "int"
+      }
     }
   },
   "statsShareWeekly": "هەفتانە: {pct}%",
   "@statsShareWeekly": {
     "placeholders": {
-      "pct": { "type": "int" }
+      "pct": {
+        "type": "int"
+      }
     }
   },
   "statsShareMonthly": "مانگانە: {pct}%",
   "@statsShareMonthly": {
     "placeholders": {
-      "pct": { "type": "int" }
+      "pct": {
+        "type": "int"
+      }
     }
   },
   "statsShareBreakdown": "وردبینی هەفتانە:",
-
   "aboutTitle": "دەربارەی PrayCalc",
   "aboutWebsite": "ماڵپەڕ",
   "aboutContact": "پەیوەندی",
@@ -638,10 +702,11 @@
   "aboutCopyright": "© {year} Ummat Dev. هەموو مافەکان پارێزراون.\n\nکاتی نوێژ بە مۆتۆری pray_calc_dart ژمێردراوە. وردی بەپێی شوێنی GPS و شێوازی ژمارەکردنی هەڵبژاردراوە.",
   "@aboutCopyright": {
     "placeholders": {
-      "year": { "type": "int" }
+      "year": {
+        "type": "int"
+      }
     }
   },
-
   "commonCancel": "پاشگەزبوونەوە",
   "commonSave": "پاشەکەوتکردن",
   "commonDelete": "سڕینەوە",
@@ -673,7 +738,9 @@
   "commonVersion": "وەشان {version}",
   "@commonVersion": {
     "placeholders": {
-      "version": { "type": "String" }
+      "version": {
+        "type": "String"
+      }
     }
   },
   "commonPrivacyPolicy": "سیاسەتی تایبەتمەندی",
@@ -683,7 +750,6 @@
   "commonHelp": "یارمەتی",
   "commonLanguage": "زمان",
   "commonOpenSettings": "کردنەوەی ڕێکخستنەکان",
-
   "travelNotificationTitle": "ئێستا گەشت دەکەیت",
   "travelNotificationBody": "نوێژەکان بکوتردراو بن. بپەنجە بکە بۆ زانینی حوکمەکانی گەشتکردن.",
   "travelRulingsTitle": "گەشتکردن و نوێژ",
@@ -696,7 +762,6 @@
   "travelLearnMore": "زیاتر بزانە",
   "travelHanafiDefaultTitle": "بۆچی PrayCalc ڕای حەنەفی وەک بنەڕەت بەکاردەهێنێت",
   "travelDeeperScholarly": "گفتوگۆی ژەناتری زانایان",
-
   "onboardingTitle1": "کاتی نوێژ، لە هەر شوێنێک بیت",
   "onboardingBody1": "کاتی نوێژی وورد بە GPS بۆ هەر شارێکی زەوی. لە بەرەبانەوە تا عیشا، لە خۆرهەڵاتنەوە تا قیام. بە مۆتۆری ژمارەکردنی تایبەتی ئێمە، دروستکراو بۆ وردی.",
   "onboardingBody2": "گەڕان بکە بۆ هەر شارێک یان ڕێگە بدە GPS شوێنەکەت بدۆزێتەوە. PrayCalc کاتی نوێژ بۆ ٥ میلیۆن شار لە جیهاندا دەدۆزێتەوە.",
@@ -713,7 +778,6 @@
   "onboardingContinueWithoutAccount": "بەردەوامبوون بێ هەژمار",
   "onboardingSigningIn": "چوونەژوورەوە…",
   "onboardingSelectLanguage": "زمان هەڵبژێرە",
-
   "duaDhikrTitle": "دعا و ذکر",
   "duaDhikrTabDua": "دعاکان",
   "duaDhikrTabDhikr": "ذکر",
@@ -722,13 +786,11 @@
   "duaDhikrTabEvening": "ئێوارە",
   "duaDhikrMorningAdhkar": "ئەزکاری بەیانی",
   "duaDhikrEveningAdhkar": "ئەزکاری ئێوارە",
-
   "calGregToggle": "زایینی",
   "calHijriToggle": "کۆچی",
   "calYearlyTooltip": "ڕۆژژمێری ساڵانە",
   "calExportIcsTooltip": "هەناردەکردنی .ics",
   "calMagCol": "مەغ",
-
   "qiblaShowOnMap": "پیشاندان لەسەر نەخشە",
   "qiblaWaitingCompass": "چاوەڕوانی قیبلەنامە...",
   "qiblaNoCompassSensor": "هەستەوەری قیبلەنامە نییە. ئاراستەی قیبلە بە شێوازی جێگیر پیشاندەدرێت.",
@@ -740,7 +802,6 @@
   "qiblaYourLocation": "شوێنەکەت",
   "qiblaGpsAccurate": "GPS وورد",
   "qiblaCityCenter": "ناوەندی شار",
-
   "moonIlluminatedLabel": "ڕووناکراو",
   "moonAgeLabel": "تەمەن",
   "moonFirstQtr": "چارەکی یەکەم",
@@ -750,11 +811,12 @@
   "moonDaysAway": "{days}ڕ",
   "@moonDaysAway": {
     "placeholders": {
-      "days": { "type": "int" }
+      "days": {
+        "type": "int"
+      }
     }
   },
   "moonBeta": "بێتا",
-
   "setHomeTitle": "دانانی شوێنی ماڵ",
   "setHomeSearchHint": "گەڕان بۆ شار، شارۆچکە یان کۆدی پۆستا…",
   "setHomeClear": "پاککردنەوە",
@@ -764,7 +826,9 @@
   "setHomeSetAs": "{city} وەک ماڵ دانرا",
   "@setHomeSetAs": {
     "placeholders": {
-      "city": { "type": "String" }
+      "city": {
+        "type": "String"
+      }
     }
   },
   "setHomeCurrentLocationSet": "شوێنی ئێستا وەک ماڵ دانرا",
@@ -773,7 +837,6 @@
   "setHomeNoCitiesFound": "هیچ شارێک نەدۆزرایەوە.",
   "setHomeSearchPrompt": "بگەڕێ بۆ شاری ماڵەکەت",
   "setHomeSearchBody": "لە سەرەوە تایپ بکە بۆ گەڕان، یان شوێنی ئێستات بەکاربهێنە. دۆخی گەشتکردن دەزانێت کەی لە ماڵەوە دوورەیت.",
-
   "subscriptionYouHavePlus": "تۆ Ummat+ ت هەیە",
   "subscriptionUpgradeTo": "نوێکردنەوە بۆ Ummat+",
   "subscriptionThankYou": "سوپاس بۆ پشتیوانیکردنی PrayCalc.",
@@ -788,7 +851,6 @@
   "subscriptionFeatureCalendar": "ڕۆژژمێری مانگانە",
   "subscriptionFeatureTasbeeh": "ژمێری تەسبیح",
   "subscriptionFeatureMoon": "مانگ و کۆچی",
-
   "smartHomeAlertType": "جۆری ئاگادارکردنەوە",
   "smartHomeAlertModal": "مۆداڵی تەواوی شاشە",
   "smartHomeAlertCorner": "ئاگادارکردنەوەی گۆشە",
@@ -801,15 +863,15 @@
   "smartHomeAudioAdhan": "بانگ",
   "smartHomeAudioBeep": "بیپ",
   "smartHomeAudioSilent": "بێدەنگ",
-
   "aboutPrivacy": "سیاسەتی تایبەتمەندی",
   "aboutVersion": "وەشان {version}",
   "@aboutVersion": {
     "placeholders": {
-      "version": { "type": "String" }
+      "version": {
+        "type": "String"
+      }
     }
   },
-
   "notifDefaultAdhan": "بانگی بنەڕەت",
   "notifFajrAdhan": "بانگی بەرەبان",
   "notifFajrAdhanSubtitle": "لە کاتی نوێژی بەرەباندا دەنوسرێت",
@@ -817,7 +879,6 @@
   "notifRegularAdhanSubtitle": "لە نیوەڕۆ، عەسر، مەغریب، عیشا دەنوسرێت",
   "notifPerPrayerSettings": "ڕێکخستنەکانی هەر نوێژێک",
   "notifPreview": "پێشبینین",
-
   "tvSettingsTitle": "ڕێکخستنەکانی تەلەفزیۆن",
   "tvDisplayMode": "دۆخی پیشاندان",
   "tvMasjidMode": "دۆخی مزگەوت",
@@ -830,7 +891,9 @@
   "tvIqamahMinAfter": "{offset} خولەک دوای بانگ",
   "@tvIqamahMinAfter": {
     "placeholders": {
-      "offset": { "type": "int" }
+      "offset": {
+        "type": "int"
+      }
     }
   },
   "tvQrCode": "کۆدی QR",
@@ -842,14 +905,18 @@
   "tvIdleTimeoutSubtitle": "{minutes} خولەک پێش چالاکبوونی ئەمبیەنت",
   "@tvIdleTimeoutSubtitle": {
     "placeholders": {
-      "minutes": { "type": "int" }
+      "minutes": {
+        "type": "int"
+      }
     }
   },
   "tvPhotoInterval": "نێوانی وێنەکان",
   "tvPhotoIntervalSubtitle": "{seconds} چرکە نێوان وێنەکان",
   "@tvPhotoIntervalSubtitle": {
     "placeholders": {
-      "seconds": { "type": "int" }
+      "seconds": {
+        "type": "int"
+      }
     }
   },
   "tvBackground": "پاشبنەما",
@@ -872,11 +939,12 @@
   "tvEnterHint": "بنووسە {title}",
   "@tvEnterHint": {
     "placeholders": {
-      "title": { "type": "String" }
+      "title": {
+        "type": "String"
+      }
     }
   },
   "tvSystemDefault": "بنەڕەتی سیستەم",
-
   "smartHomeIntegrations": "یەکگرتنەکان",
   "smartHomeLinkedSpeakers": "بەرزەدەنگ و پیشاندانی بەسترا",
   "smartHomeAlertDisplay": "پیشاندانی ئاگادارکردنەوە",
@@ -919,7 +987,6 @@
   "smartHomeLinkedStatus": "بەسترا",
   "smartHomeNotLinkedStatus": "نەبەستراو",
   "smartHomeCouldNotOpen": "نەتوانرا بەستەرەکە بکرێتەوە.",
-
   "smartHomeDevices": "ئامێرەکان",
   "smartHomeAddDevice": "زیادکردنی ئامێر",
   "smartHomeDeleteDevice": "سڕینەوە",
@@ -929,7 +996,9 @@
   "smartHomeDeviceLastSeen": "کۆتا جار بینرا: {time}",
   "@smartHomeDeviceLastSeen": {
     "placeholders": {
-      "time": { "type": "String" }
+      "time": {
+        "type": "String"
+      }
     }
   },
   "smartHomeDeviceName": "ناوی ئامێر",
@@ -955,16 +1024,18 @@
   "smartHomeLoadingDevices": "بارکردنی ئامێرەکان...",
   "smartHomeLoadingIntegrations": "بارکردنی یەکگرتنەکان...",
   "smartHomeServiceUnavailable": "خزمەتگوزاری ماڵی زیرەک لە ئێستادا بەردەست نییە. دواتر دووبارە هەوڵ بدەرەوە.",
-
   "adhkarCompletedCount": "{completed} / {total} تەواوکرا",
   "@adhkarCompletedCount": {
     "placeholders": {
-      "completed": { "type": "int" },
-      "total": { "type": "int" }
+      "completed": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
     }
   },
   "adhkarReset": "ڕیسێتکردن",
-
   "syncHistoryTitle": "مێژووی هاوکاتکردن",
   "syncClearHistory": "پاککردنەوەی مێژوو",
   "syncNoConflicts": "هیچ ناکۆکییەکی هاوکاتکردن نەدۆزرایەوە. هەموو ئامێرەکان هاوکاتن.",
@@ -975,32 +1046,38 @@
   "syncTimeMinAgo": "{min}خ پێش",
   "@syncTimeMinAgo": {
     "placeholders": {
-      "min": { "type": "int" }
+      "min": {
+        "type": "int"
+      }
     }
   },
   "syncTimeHourAgo": "{hour}ک پێش",
   "@syncTimeHourAgo": {
     "placeholders": {
-      "hour": { "type": "int" }
+      "hour": {
+        "type": "int"
+      }
     }
   },
   "syncTimeDayAgo": "{day}ڕ پێش",
   "@syncTimeDayAgo": {
     "placeholders": {
-      "day": { "type": "int" }
+      "day": {
+        "type": "int"
+      }
     }
   },
-
   "pinCity": "سنجاق",
   "pinMaxReached": "زۆرینەی ٥ شاری سنجاقکراو. نوێکردنەوە بۆ Ummat+ بۆ زیاتر.",
   "pinCityUnpinned": "{city} سنجاقی لێکرایەوە",
   "@pinCityUnpinned": {
     "placeholders": {
-      "city": { "type": "String" }
+      "city": {
+        "type": "String"
+      }
     }
   },
   "pinUndo": "گەڕانەوە",
-
   "tvPairingScanQr": "Scan TV QR Code",
   "tvPairingScanInstruction": "Point your camera at the QR code on your TV",
   "tvPairingEnterManually": "Enter code manually",
@@ -1014,6 +1091,30 @@
   "tvPairingTimeout": "Request timed out. Is the TV on and connected?",
   "tvPairingServerError": "Could not connect to server.",
   "tvPairingSignInRequired": "Sign in to your account before pairing a TV.",
-
-  "tvJumuahGreeting": "Jumu'ah Mubarak"
+  "tvJumuahGreeting": "Jumu'ah Mubarak",
+  "desktopNextPrayer": "Nimêja pêş de…",
+  "desktopOpen": "PrayCalc veke",
+  "desktopQuit": "PrayCalc bigire",
+  "desktopSettings": "Mîheng…",
+  "desktopTrayTooltip": "PrayCalc – Dema Nimêjan",
+  "desktopTvDisplays": "Dîmenên TV…",
+  "statsBestStreak": "Zincîra herî baş",
+  "statsDailyGoalLabel": "{goal} nimêj / roj",
+  "statsDailyGoalTitle": "Armanca Nimêja Rojane",
+  "statsGoalStreak": "Zincîra Armancê",
+  "statsHeatmapDetail": "{count} / 5 nimêj hatine kirin",
+  "statsHeatmapNoData": "Ji bo vê rojê nimêj tomar nebûye",
+  "statsHeatmapTitle": "Salek di nihekê de",
+  "tvChildFajrExplanation": "Fecir nimêja sibehê ye. Em berî berbanga rojê rabûn da spasiya Allahî ji bo rojeke nû bikin!",
+  "tvChildFajrFunFact": "Pêxember ﷺ got: \"Nimêja herî baş li ba Allahî nimêja Fecira Înê ye.\" (Buxarî)",
+  "tvChildSunriseExplanation": "Piştî Fecirê, roj derdikeve. Ev demek bereket e ji bo zikrê û xwendina Quranê.",
+  "tvChildSunriseFunFact": "Rûniştina piştî Fecirê heta derketina rojê û xwendina du rek'etan xelata Hecceke temam distîne! (Tirmizî)",
+  "tvChildDhuhrExplanation": "Zuhr nimêja nîvroyê ye. Roj herî bilind e li ezman, û em radiwestin da ku Allahê bîr bixin.",
+  "tvChildDhuhrFunFact": "Pêxember ﷺ hez dikir Zuhrê zû bixwîne dema roj dest bi kêmbûnê dike. (Muslim)",
+  "tvChildAsrExplanation": "Esr nimêja piştî nîvro ye. Allah di Sûreta El-Esr de bi vê demê sond dixwe — pir girîng e!",
+  "tvChildAsrFunFact": "Terkkirina nimêja Esrê mîna windakirina malbat û dewlemendiyê ye. Allah çiqas ji wê hez dike! (Buxarî)",
+  "tvChildMaghribExplanation": "Muxrib nimêja rojavabûnê ye. Dema roj diçe bin, em spasiya Allahî ji bo rojeke xweşik dikin.",
+  "tvChildMaghribFunFact": "Milyaketên rojê û şevê li Fecir û Muxribê dicivin. Çiqas taybet e! (Buxarî)",
+  "tvChildIshaExplanation": "Îşa nimêja şevê ye. Em rojê xwe bi spaskirina Allahî beriya razanê bi dawî tînin.",
+  "tvChildIshaFunFact": "Xwendina Îşa û Fecirê bi cemaetê mîna xwendina nimêjê li tevaya şevê ye! (Muslim)"
 }

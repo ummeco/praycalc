@@ -630,7 +630,6 @@
   "pinMaxReached": "Maksimal 5 ta qadalgan shahar. Ko'proq uchun Ummat+ ga yangilang.",
   "pinCityUnpinned": "{city} qadashdan olindi",
   "pinUndo": "Qaytarish",
-
   "smartHomeDevices": "Qurilmalar",
   "smartHomeAddDevice": "Qurilma qo'shish",
   "smartHomeDeleteDevice": "O'chirish",
@@ -640,7 +639,9 @@
   "smartHomeDeviceLastSeen": "Oxirgi ko'rinish: {time}",
   "@smartHomeDeviceLastSeen": {
     "placeholders": {
-      "time": { "type": "String" }
+      "time": {
+        "type": "String"
+      }
     }
   },
   "smartHomeDeviceName": "Qurilma nomi",
@@ -666,7 +667,6 @@
   "smartHomeLoadingDevices": "Qurilmalar yuklanmoqda...",
   "smartHomeLoadingIntegrations": "Integratsiyalar yuklanmoqda...",
   "smartHomeServiceUnavailable": "Aqlli uy xizmati hozirda mavjud emas. Iltimos, keyinroq qayta urinib ko'ring.",
-
   "tvPairingScanQr": "Scan TV QR Code",
   "tvPairingScanInstruction": "Point your camera at the QR code on your TV",
   "tvPairingEnterManually": "Enter code manually",
@@ -680,6 +680,30 @@
   "tvPairingTimeout": "Request timed out. Is the TV on and connected?",
   "tvPairingServerError": "Could not connect to server.",
   "tvPairingSignInRequired": "Sign in to your account before pairing a TV.",
-
-  "tvJumuahGreeting": "Jumu'ah Mubarak"
+  "tvJumuahGreeting": "Jumu'ah Mubarak",
+  "desktopNextPrayer": "Keyingi namoz…",
+  "desktopOpen": "PrayCalc'ni ochish",
+  "desktopQuit": "PrayCalc'dan chiqish",
+  "desktopSettings": "Sozlamalar…",
+  "desktopTrayTooltip": "PrayCalc – Namoz vaqtlari",
+  "desktopTvDisplays": "TV ekranlari…",
+  "statsBestStreak": "Eng yaxshi ketma-ketlik",
+  "statsDailyGoalLabel": "{goal} namoz / kun",
+  "statsDailyGoalTitle": "Kunlik namoz maqsadi",
+  "statsGoalStreak": "Maqsad ketma-ketligi",
+  "statsHeatmapDetail": "{count} / 5 namoz bajarildi",
+  "statsHeatmapNoData": "Bu kun uchun namoz yozilmagan",
+  "statsHeatmapTitle": "Yil panoramasi",
+  "tvChildFajrExplanation": "Bomdod — ertalabki namozdir. Yangi kun uchun Allohga shukr qilish uchun quyosh chiqmadan oldin turamiz!",
+  "tvChildFajrFunFact": "Payg'ambar ﷺ: \"Alloh nazdida eng afzal namoz — juma kuni bomdod namozidir\", — dedilar. (Buxoriy)",
+  "tvChildSunriseExplanation": "Bomdoddan keyin quyosh chiqadi. Bu zikr qilish va Qur'on o'qish uchun muborak vaqtdir.",
+  "tvChildSunriseFunFact": "Bomdoddan keyin quyosh chiqqunicha o'tirib, ikki rakat namoz o'qish to'liq Haj savobiga teng! (Termiziy)",
+  "tvChildDhuhrExplanation": "Peshin — kun o'rtasidagi namozdir. Quyosh osmonda eng baland joyda turadi va biz Allohni eslab to'xtaymiz.",
+  "tvChildDhuhrFunFact": "Payg'ambar ﷺ quyosh qiya boshlaganda peshin namozini erta o'qishni yaxshi ko'rardi. (Muslim)",
+  "tvChildAsrExplanation": "Asr — peshin namozidan keyingi namozdir. Alloh \"Asr\" surasida bu vaqt bilan qasam ichgan — bu juda muhim!",
+  "tvChildAsrFunFact": "Asr namozini qoldirish oila va mol-mulkni yo'qotish kabidir. Alloh uni shunchalik yaxshi ko'radi! (Buxoriy)",
+  "tvChildMaghribExplanation": "Shom — quyosh botish vaqtidagi namozdir. Quyosh botganda, go'zal kun uchun Allohga shukr qilamiz.",
+  "tvChildMaghribFunFact": "Kunduz va tun farishtalari bomdod va shom vaqtida uchrashadilar. Qanchalik ajoyib! (Buxoriy)",
+  "tvChildIshaExplanation": "Xufton — tungi namozdir. Uxlashdan oldin Allohga shukr qilib kunimizni yakunlaymiz.",
+  "tvChildIshaFunFact": "Xufton va bomdod namozlarini jamoat bilan o'qish butun kechani namozda o'tkazishga teng! (Muslim)"
 }

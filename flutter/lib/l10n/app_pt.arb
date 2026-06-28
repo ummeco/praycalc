@@ -1,8 +1,6 @@
 {
   "@@locale": "pt",
-
   "appTitle": "PrayCalc",
-
   "prayerFajr": "Fajr",
   "prayerSunrise": "Nascer do sol",
   "prayerDhuhr": "Dhuhr",
@@ -12,7 +10,6 @@
   "prayerQiyam": "Qiyam",
   "prayerSuhoor": "Suhoor",
   "prayerIftar": "Iftar",
-
   "hijriMuharram": "Muharram",
   "hijriSafar": "Safar",
   "hijriRabiAlAwwal": "Rabi al-Awwal",
@@ -25,7 +22,6 @@
   "hijriShawwal": "Shawwal",
   "hijriDhulQidah": "Dhu al-Qi'dah",
   "hijriDhulHijjah": "Dhu al-Hijjah",
-
   "monthJan": "Jan",
   "monthFeb": "Fev",
   "monthMar": "Mar",
@@ -38,7 +34,6 @@
   "monthOct": "Out",
   "monthNov": "Nov",
   "monthDec": "Dez",
-
   "monthJanuary": "Janeiro",
   "monthFebruary": "Fevereiro",
   "monthMarch": "Março",
@@ -51,7 +46,6 @@
   "monthOctober": "Outubro",
   "monthNovember": "Novembro",
   "monthDecember": "Dezembro",
-
   "dayMonShort": "Seg",
   "dayTueShort": "Ter",
   "dayWedShort": "Qua",
@@ -59,7 +53,6 @@
   "dayFriShort": "Sex",
   "daySatShort": "Sáb",
   "daySunShort": "Dom",
-
   "dayMonday": "Segunda-feira",
   "dayTuesday": "Terça-feira",
   "dayWednesday": "Quarta-feira",
@@ -67,7 +60,6 @@
   "dayFriday": "Sexta-feira",
   "daySaturday": "Sábado",
   "daySunday": "Domingo",
-
   "daySuChart": "Do",
   "dayMoChart": "Se",
   "dayTuChart": "Te",
@@ -75,31 +67,35 @@
   "dayThChart": "Qi",
   "dayFrChart": "Sx",
   "daySaChart": "Sá",
-
   "chooseCityLabel": "Escolha uma cidade",
   "setCityFab": "Definir cidade",
   "prayerTimesError": "Não foi possível calcular os horários de oração.\n{error}",
   "@prayerTimesError": {
     "placeholders": {
-      "error": { "type": "Object" }
+      "error": {
+        "type": "Object"
+      }
     }
   },
   "prayerCountdownLabel": "{prayer} em",
   "@prayerCountdownLabel": {
     "placeholders": {
-      "prayer": { "type": "String" }
+      "prayer": {
+        "type": "String"
+      }
     }
   },
   "ramadanMubarak": "Ramadã Mubarak",
   "ramadanDayProgress": "Dia {day} / 30",
   "@ramadanDayProgress": {
     "placeholders": {
-      "day": { "type": "int" }
+      "day": {
+        "type": "int"
+      }
     }
   },
   "lastTenNights": "Últimas 10 noites",
   "laylatulQadr": "Laylatul Qadr",
-
   "homeSuffixAH": "H",
   "homeSuffixCE": "d.C.",
   "homeNoCitySelected": "Nenhuma cidade selecionada",
@@ -112,10 +108,11 @@
   "homePolarBanner": "{count} horários de oração não podem ser calculados para sua localização durante este período (sol da meia-noite / noite polar). Tente a estimativa por latitude mais próxima nas configurações.",
   "@homePolarBanner": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
-
   "settingsTitle": "Configurações",
   "settingsSectionPrayerCalc": "Cálculo de oração",
   "settingsCalcMethod": "Metodo de calculo",
@@ -167,24 +164,26 @@
   "settingsTvSettings": "Configurações de TV",
   "settingsTvSettingsSubtitle": "Modo mesquita, offsets de iqamah, ambiente",
   "settingsAboutPrayCalc": "Sobre o PrayCalc",
-
   "syncSynced": "Sincronizado",
   "syncSyncing": "Sincronizando...",
   "syncOffline": "Offline",
   "syncError": "Erro de sincronização",
-
   "notifSettingsTitle": "Notificações e Adhan",
   "notifAdhanLabel": "Adhan",
   "notifReminderMinBefore": "Lembrete: {minutes} min antes",
   "@notifReminderMinBefore": {
     "placeholders": {
-      "minutes": { "type": "int" }
+      "minutes": {
+        "type": "int"
+      }
     }
   },
   "notifVolumePct": "Volume: {pct}%",
   "@notifVolumePct": {
     "placeholders": {
-      "pct": { "type": "int" }
+      "pct": {
+        "type": "int"
+      }
     }
   },
   "notifTestAdhan": "Testar adhan",
@@ -192,24 +191,23 @@
   "notifModeReminderOnly": "Apenas lembrete",
   "notifModeArrival": "No horário da oração",
   "notifModeBoth": "Lembrete + horário",
-
   "citySearchHint": "Pesquisar cidade…",
   "citySearchDetectTooltip": "Detectar minha localização",
   "citySearchNoCityGps": "Não foi possível detectar a cidade pelo GPS.",
   "citySearchPermissionDenied": "Permissão de localização negada. Pesquise manualmente.",
   "citySearchNoResults": "Nenhuma cidade encontrada.",
   "citySearchStartTyping": "Comece a digitar para pesquisar…",
-
   "agendasTitle": "Agendas de oração",
   "agendasEmpty": "Nenhuma agenda ainda.\nToque + para adicionar um lembrete vinculado às suas orações.",
   "agendasUndo": "Desfazer",
   "agendasRemoved": "{label} removido",
   "@agendasRemoved": {
     "placeholders": {
-      "label": { "type": "String" }
+      "label": {
+        "type": "String"
+      }
     }
   },
-
   "agendaNewTitle": "Nova agenda",
   "agendaEditTitle": "Editar agenda",
   "agendaSave": "Salvar",
@@ -222,13 +220,17 @@
   "agendaOffsetMinBefore": "{minutes} min antes",
   "@agendaOffsetMinBefore": {
     "placeholders": {
-      "minutes": { "type": "int" }
+      "minutes": {
+        "type": "int"
+      }
     }
   },
   "agendaOffsetMinAfter": "{minutes} min depois",
   "@agendaOffsetMinAfter": {
     "placeholders": {
-      "minutes": { "type": "int" }
+      "minutes": {
+        "type": "int"
+      }
     }
   },
   "agendaRepeatSection": "Repetir",
@@ -241,12 +243,13 @@
   "agendaDayW": "Q",
   "agendaDayF": "S",
   "agendaDayS": "S",
-
   "moonTitle": "Lua e calendário Hijri",
   "moonIlluminated": "{pct}% iluminada",
   "@moonIlluminated": {
     "placeholders": {
-      "pct": { "type": "int" }
+      "pct": {
+        "type": "int"
+      }
     }
   },
   "moonFullTonight": "Lua cheia esta noite!",
@@ -254,13 +257,17 @@
   "moonNextDays": "Próxima lua cheia em {days} dias",
   "@moonNextDays": {
     "placeholders": {
-      "days": { "type": "int" }
+      "days": {
+        "type": "int"
+      }
     }
   },
   "moonAge": "Idade da lua: {age} dias",
   "@moonAge": {
     "placeholders": {
-      "age": { "type": "String" }
+      "age": {
+        "type": "String"
+      }
     }
   },
   "moonPhaseNewMoon": "Lua nova",
@@ -285,20 +292,26 @@
   "ramadanBeginsLabel": "Ramadã {year} H começa",
   "@ramadanBeginsLabel": {
     "placeholders": {
-      "year": { "type": "int" }
+      "year": {
+        "type": "int"
+      }
     }
   },
   "ramadanDaysAway": "em {days} dias",
   "@ramadanDaysAway": {
     "placeholders": {
-      "days": { "type": "int" }
+      "days": {
+        "type": "int"
+      }
     }
   },
   "moonLunarCycle": "Ciclo lunar",
   "moonDayOfCycle": "Dia {day} de ~29,5",
   "@moonDayOfCycle": {
     "placeholders": {
-      "day": { "type": "int" }
+      "day": {
+        "type": "int"
+      }
     }
   },
   "moonHilalSightingForecast": "Previsão de avistamento do Hilal",
@@ -306,7 +319,9 @@
   "moonDayN": "Dia {day}",
   "@moonDayN": {
     "placeholders": {
-      "day": { "type": "int" }
+      "day": {
+        "type": "int"
+      }
     }
   },
   "moonGlobalSighting": "Avistamento global",
@@ -317,15 +332,23 @@
   "moonMonthPrediction29": "{month} {year} H provavelmente terá 29 dias. Espera-se que o crescente seja visto no 29º dia, in sha Allah.",
   "@moonMonthPrediction29": {
     "placeholders": {
-      "month": { "type": "String" },
-      "year": { "type": "int" }
+      "month": {
+        "type": "String"
+      },
+      "year": {
+        "type": "int"
+      }
     }
   },
   "moonMonthPrediction30": "{month} {year} H provavelmente terá 30 dias. O crescente provavelmente não será visto no 29º dia — o mês completará 30 dias.",
   "@moonMonthPrediction30": {
     "placeholders": {
-      "month": { "type": "String" },
-      "year": { "type": "int" }
+      "month": {
+        "type": "String"
+      },
+      "year": {
+        "type": "int"
+      }
     }
   },
   "moonUmmAlQura": "Umm al-Qura",
@@ -335,26 +358,31 @@
   "moonNDays": "{days} dias",
   "@moonNDays": {
     "placeholders": {
-      "days": { "type": "int" }
+      "days": {
+        "type": "int"
+      }
     }
   },
   "moonStarts": "{month} começa:",
   "@moonStarts": {
     "placeholders": {
-      "month": { "type": "String" }
+      "month": {
+        "type": "String"
+      }
     }
   },
   "moonMoonAgeAtSunset": "Idade da lua ao pôr do sol: {hours} h",
   "@moonMoonAgeAtSunset": {
     "placeholders": {
-      "hours": { "type": "String" }
+      "hours": {
+        "type": "String"
+      }
     }
   },
   "moon7DayLunarCalendar": "Calendário lunar de 7 dias",
   "moonUpcomingIslamicEvents": "Próximos eventos islâmicos",
   "moonTodayLabel": "Hoje",
   "moonTomorrowLabel": "Amanhã",
-
   "calDateCol": "Data",
   "calHijriCol": "Hijri",
   "calFajrCol": "Fajr",
@@ -370,16 +398,19 @@
   "calExportHeader": "PrayCalc — {month}",
   "@calExportHeader": {
     "placeholders": {
-      "month": { "type": "String" }
+      "month": {
+        "type": "String"
+      }
     }
   },
   "calExportSubject": "Horários de oração — {month}",
   "@calExportSubject": {
     "placeholders": {
-      "month": { "type": "String" }
+      "month": {
+        "type": "String"
+      }
     }
   },
-
   "qiblaTitle": "Qibla",
   "qiblaSwitchToCompass": "Mudar para bússola",
   "qiblaSwitchToAR": "Mudar para câmera AR",
@@ -389,29 +420,36 @@
   "qiblaDegreesFromNorth": "{degrees}° do norte",
   "@qiblaDegreesFromNorth": {
     "placeholders": {
-      "degrees": { "type": "int" }
+      "degrees": {
+        "type": "int"
+      }
     }
   },
   "qiblaFrom": "De {city}",
   "@qiblaFrom": {
     "placeholders": {
-      "city": { "type": "String" }
+      "city": {
+        "type": "String"
+      }
     }
   },
   "qiblaDistKm": "{dist} km da Kaaba",
   "@qiblaDistKm": {
     "placeholders": {
-      "dist": { "type": "int" }
+      "dist": {
+        "type": "int"
+      }
     }
   },
   "qiblaDistThousandKm": "{dist}K km da Kaaba",
   "@qiblaDistThousandKm": {
     "placeholders": {
-      "dist": { "type": "String" }
+      "dist": {
+        "type": "String"
+      }
     }
   },
   "qiblaFacingQibla": "Voltado para a Qibla ✓",
-
   "tasbeehTitle": "Tasbih",
   "tasbeehResetTooltip": "Redefinir",
   "tasbeehTapToSwitch": "Toque no rótulo para mudar",
@@ -423,7 +461,9 @@
   "tasbeehTodayDhikr": "Hoje: {count} dhikr",
   "@tasbeehTodayDhikr": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "tasbeehLast7Days": "Últimos 7 dias",
@@ -431,17 +471,22 @@
   "tasbeehComplete": "Tasbih completo! {count} dhikr",
   "@tasbeehComplete": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "tasbeehPresetComplete": "✓ {label} × {target}",
   "@tasbeehPresetComplete": {
     "placeholders": {
-      "label": { "type": "String" },
-      "target": { "type": "int" }
+      "label": {
+        "type": "String"
+      },
+      "target": {
+        "type": "int"
+      }
     }
   },
-
   "smartHomeTitle": "Casa inteligente",
   "smartHomeSubtitle": "Conecte seus dispositivos aos horários de oração",
   "smartHomeGoogleHome": "Google Home",
@@ -461,7 +506,6 @@
   "smartHomeTestConnection": "Testar conexão",
   "smartHomeConnectionSuccess": "Conectado com sucesso",
   "smartHomeConnectionFailed": "Conexão falhou. Verifique a vinculação da conta.",
-
   "subscriptionTitle": "Ummat+",
   "subscriptionSubtitle": "Recursos premium de horários de oração",
   "subscriptionUpgrade": "Atualizar para Ummat+",
@@ -476,19 +520,25 @@
   "subscriptionFreeQueriesRemaining": "{count} consultas gratuitas restantes",
   "@subscriptionFreeQueriesRemaining": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "subscriptionPriceYearly": "{price}/ano",
   "@subscriptionPriceYearly": {
     "placeholders": {
-      "price": { "type": "String" }
+      "price": {
+        "type": "String"
+      }
     }
   },
   "subscriptionPriceMonthly": "{price}/mês",
   "@subscriptionPriceMonthly": {
     "placeholders": {
-      "price": { "type": "String" }
+      "price": {
+        "type": "String"
+      }
     }
   },
   "subscriptionFeatureSmartHome": "Integração com casa inteligente",
@@ -497,19 +547,16 @@
   "subscriptionFeatureWatch": "Complicações do relógio",
   "subscriptionFeatureSync": "Sincronização entre dispositivos",
   "subscriptionFeatureAdFree": "Sem anúncios",
-
   "watchTitle": "Relógio",
   "watchNextPrayer": "Próxima oração",
   "watchAllPrayers": "Todas as orações",
   "watchComplication": "Complicação",
-
   "nextPrayer": "Próxima oração",
   "allPrayers": "Todas as orações",
   "today": "Hoje",
   "tomorrow": "Amanhã",
   "thisWeek": "Esta semana",
   "thisMonth": "Este mês",
-
   "loginCreateAccount": "Criar conta",
   "loginSignIn": "Entrar",
   "loginWelcomeBack": "Bem-vindo de volta",
@@ -531,7 +578,6 @@
   "loginResetFailed": "Não foi possível enviar o e-mail de redefinição",
   "loginNewToPrayCalc": "Novo no PrayCalc?",
   "loginAlreadyHaveAccount": "Já tem uma conta?",
-
   "accountTitle": "Conta",
   "accountNotSignedIn": "Não conectado",
   "accountSyncSection": "Sincronização",
@@ -542,13 +588,17 @@
   "accountConflictsResolved": "{count} resolvidos",
   "@accountConflictsResolved": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "accountSyncedAgo": "Sincronizado {time}",
   "@accountSyncedAgo": {
     "placeholders": {
-      "time": { "type": "String" }
+      "time": {
+        "type": "String"
+      }
     }
   },
   "accountOfflineStatus": "Offline. Alterações salvas localmente.",
@@ -568,29 +618,36 @@
   "accountTimeMinAgo": "{min}min atrás",
   "@accountTimeMinAgo": {
     "placeholders": {
-      "min": { "type": "int" }
+      "min": {
+        "type": "int"
+      }
     }
   },
   "accountTimeHourAgo": "{hour}h atrás",
   "@accountTimeHourAgo": {
     "placeholders": {
-      "hour": { "type": "int" }
+      "hour": {
+        "type": "int"
+      }
     }
   },
   "accountTimeDayAgo": "{day}d atrás",
   "@accountTimeDayAgo": {
     "placeholders": {
-      "day": { "type": "int" }
+      "day": {
+        "type": "int"
+      }
     }
   },
-
   "statsTitle": "Estatísticas de oração",
   "statsShareTooltip": "Compartilhar estatísticas",
   "statsTodayPrayers": "Orações de hoje",
   "statsTodayCount": "{done} / 5",
   "@statsTodayCount": {
     "placeholders": {
-      "done": { "type": "int" }
+      "done": {
+        "type": "int"
+      }
     }
   },
   "statsStreak": "Sequência",
@@ -605,7 +662,9 @@
   "statsTotalLogged": "{count} orações registradas no total",
   "@statsTotalLogged": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "statsKeepItUp": "Continue assim!",
@@ -613,23 +672,28 @@
   "statsShareStreak": "Sequência: {days} dias",
   "@statsShareStreak": {
     "placeholders": {
-      "days": { "type": "int" }
+      "days": {
+        "type": "int"
+      }
     }
   },
   "statsShareWeekly": "Semanal: {pct}%",
   "@statsShareWeekly": {
     "placeholders": {
-      "pct": { "type": "int" }
+      "pct": {
+        "type": "int"
+      }
     }
   },
   "statsShareMonthly": "Mensal: {pct}%",
   "@statsShareMonthly": {
     "placeholders": {
-      "pct": { "type": "int" }
+      "pct": {
+        "type": "int"
+      }
     }
   },
   "statsShareBreakdown": "Detalhes semanais:",
-
   "aboutTitle": "Sobre o PrayCalc",
   "aboutWebsite": "Site",
   "aboutContact": "Contato",
@@ -638,10 +702,11 @@
   "aboutCopyright": "© {year} Ummat Dev. Todos os direitos reservados.\n\nHorários de oração calculados pelo motor pray_calc_dart. A precisão depende da localização GPS e do método de cálculo selecionado.",
   "@aboutCopyright": {
     "placeholders": {
-      "year": { "type": "int" }
+      "year": {
+        "type": "int"
+      }
     }
   },
-
   "commonCancel": "Cancelar",
   "commonSave": "Salvar",
   "commonDelete": "Excluir",
@@ -673,7 +738,9 @@
   "commonVersion": "Versão {version}",
   "@commonVersion": {
     "placeholders": {
-      "version": { "type": "String" }
+      "version": {
+        "type": "String"
+      }
     }
   },
   "commonPrivacyPolicy": "Política de privacidade",
@@ -683,7 +750,6 @@
   "commonHelp": "Ajuda",
   "commonLanguage": "Idioma",
   "commonOpenSettings": "Abrir configurações",
-
   "travelNotificationTitle": "Você está viajando",
   "travelNotificationBody": "Os horários de oração podem ser encurtados. Toque para saber sobre as regras de viagem.",
   "travelRulingsTitle": "Viagem e oração",
@@ -696,7 +762,6 @@
   "travelLearnMore": "Saiba mais",
   "travelHanafiDefaultTitle": "Por que o PrayCalc usa o padrão Hanafi",
   "travelDeeperScholarly": "Discussão acadêmica aprofundada",
-
   "onboardingTitle1": "Horários de oração, onde quer que esteja",
   "onboardingBody1": "Horários precisos de oração por GPS para cada cidade do planeta. De Fajr a Isha, do nascer do sol ao Qiyam. Com nosso próprio motor de cálculo, feito para precisão.",
   "onboardingTitle2": "Sua localização, seus horários",
@@ -713,7 +778,6 @@
   "onboardingContinueWithoutAccount": "Continuar sem conta",
   "onboardingSigningIn": "Entrando…",
   "onboardingSelectLanguage": "Selecione o idioma",
-
   "duaDhikrTitle": "Dua e Dhikr",
   "duaDhikrTabDua": "Duas",
   "duaDhikrTabDhikr": "Dhikr",
@@ -722,13 +786,11 @@
   "duaDhikrTabEvening": "Noite",
   "duaDhikrMorningAdhkar": "Adhkar da manhã",
   "duaDhikrEveningAdhkar": "Adhkar da noite",
-
   "calGregToggle": "Greg.",
   "calHijriToggle": "Hijri",
   "calYearlyTooltip": "Calendário anual",
   "calExportIcsTooltip": "Exportar .ics",
   "calMagCol": "Mag",
-
   "qiblaShowOnMap": "Mostrar no mapa",
   "qiblaWaitingCompass": "Aguardando bússola...",
   "qiblaNoCompassSensor": "Sem sensor de bússola. Mostrando direção da Qibla estaticamente.",
@@ -740,7 +802,6 @@
   "qiblaYourLocation": "Sua localização",
   "qiblaGpsAccurate": "GPS preciso",
   "qiblaCityCenter": "Centro da cidade",
-
   "moonIlluminatedLabel": "Iluminada",
   "moonAgeLabel": "Idade",
   "moonFirstQtr": "1º quarto",
@@ -750,11 +811,12 @@
   "moonDaysAway": "{days}d",
   "@moonDaysAway": {
     "placeholders": {
-      "days": { "type": "int" }
+      "days": {
+        "type": "int"
+      }
     }
   },
   "moonBeta": "Beta",
-
   "setHomeTitle": "Definir localização residencial",
   "setHomeSearchHint": "Pesquisar cidade, vila ou CEP…",
   "setHomeClear": "Limpar",
@@ -764,7 +826,9 @@
   "setHomeSetAs": "{city} definida como casa",
   "@setHomeSetAs": {
     "placeholders": {
-      "city": { "type": "String" }
+      "city": {
+        "type": "String"
+      }
     }
   },
   "setHomeCurrentLocationSet": "Localização atual definida como casa",
@@ -773,7 +837,6 @@
   "setHomeNoCitiesFound": "Nenhuma cidade encontrada.",
   "setHomeSearchPrompt": "Pesquise sua cidade natal",
   "setHomeSearchBody": "Digite acima para pesquisar ou use sua localização atual. O modo viagem detectará quando você estiver longe de casa.",
-
   "subscriptionYouHavePlus": "Você tem Ummat+",
   "subscriptionUpgradeTo": "Atualizar para Ummat+",
   "subscriptionThankYou": "Obrigado por apoiar o PrayCalc.",
@@ -788,7 +851,6 @@
   "subscriptionFeatureCalendar": "Calendário mensal",
   "subscriptionFeatureTasbeeh": "Contador de Tasbih",
   "subscriptionFeatureMoon": "Lua e Hijri",
-
   "smartHomeAlertType": "Tipo de alerta",
   "smartHomeAlertModal": "Modal em tela cheia",
   "smartHomeAlertCorner": "Notificação no canto",
@@ -801,15 +863,15 @@
   "smartHomeAudioAdhan": "Adhan",
   "smartHomeAudioBeep": "Bipe",
   "smartHomeAudioSilent": "Silencioso",
-
   "aboutPrivacy": "Política de privacidade",
   "aboutVersion": "Versão {version}",
   "@aboutVersion": {
     "placeholders": {
-      "version": { "type": "String" }
+      "version": {
+        "type": "String"
+      }
     }
   },
-
   "notifDefaultAdhan": "Adhan padrão",
   "notifFajrAdhan": "Adhan do Fajr",
   "notifFajrAdhanSubtitle": "Tocado no horário do Fajr",
@@ -817,7 +879,6 @@
   "notifRegularAdhanSubtitle": "Tocado no Dhuhr, Asr, Maghrib, Isha",
   "notifPerPrayerSettings": "Configurações por oração",
   "notifPreview": "Visualizar",
-
   "tvSettingsTitle": "Configurações de TV",
   "tvDisplayMode": "Modo de exibição",
   "tvMasjidMode": "Modo mesquita",
@@ -830,7 +891,9 @@
   "tvIqamahMinAfter": "{offset} min após adhan",
   "@tvIqamahMinAfter": {
     "placeholders": {
-      "offset": { "type": "int" }
+      "offset": {
+        "type": "int"
+      }
     }
   },
   "tvQrCode": "QR Code",
@@ -842,14 +905,18 @@
   "tvIdleTimeoutSubtitle": "{minutes} minutos antes do modo ambiente",
   "@tvIdleTimeoutSubtitle": {
     "placeholders": {
-      "minutes": { "type": "int" }
+      "minutes": {
+        "type": "int"
+      }
     }
   },
   "tvPhotoInterval": "Intervalo de fotos",
   "tvPhotoIntervalSubtitle": "{seconds} segundos entre fotos",
   "@tvPhotoIntervalSubtitle": {
     "placeholders": {
-      "seconds": { "type": "int" }
+      "seconds": {
+        "type": "int"
+      }
     }
   },
   "tvBackground": "Fundo",
@@ -872,11 +939,12 @@
   "tvEnterHint": "Inserir {title}",
   "@tvEnterHint": {
     "placeholders": {
-      "title": { "type": "String" }
+      "title": {
+        "type": "String"
+      }
     }
   },
   "tvSystemDefault": "Padrão do sistema",
-
   "smartHomeIntegrations": "Integrações",
   "smartHomeLinkedSpeakers": "Caixas de som e displays vinculados",
   "smartHomeAlertDisplay": "Exibição de alerta",
@@ -919,7 +987,6 @@
   "smartHomeLinkedStatus": "Vinculado",
   "smartHomeNotLinkedStatus": "Não vinculado",
   "smartHomeCouldNotOpen": "Não foi possível abrir o link.",
-
   "smartHomeDevices": "Dispositivos",
   "smartHomeAddDevice": "Adicionar dispositivo",
   "smartHomeDeleteDevice": "Excluir",
@@ -929,7 +996,9 @@
   "smartHomeDeviceLastSeen": "Visto por último: {time}",
   "@smartHomeDeviceLastSeen": {
     "placeholders": {
-      "time": { "type": "String" }
+      "time": {
+        "type": "String"
+      }
     }
   },
   "smartHomeDeviceName": "Nome do dispositivo",
@@ -955,16 +1024,18 @@
   "smartHomeLoadingDevices": "Carregando dispositivos...",
   "smartHomeLoadingIntegrations": "Carregando integrações...",
   "smartHomeServiceUnavailable": "O serviço de casa inteligente está temporariamente indisponível. Tente novamente mais tarde.",
-
   "adhkarCompletedCount": "{completed} / {total} concluídos",
   "@adhkarCompletedCount": {
     "placeholders": {
-      "completed": { "type": "int" },
-      "total": { "type": "int" }
+      "completed": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
     }
   },
   "adhkarReset": "Redefinir",
-
   "syncHistoryTitle": "Histórico de sincronização",
   "syncClearHistory": "Limpar histórico",
   "syncNoConflicts": "Nenhum conflito de sincronização detectado. Todos os dispositivos estão sincronizados.",
@@ -975,32 +1046,38 @@
   "syncTimeMinAgo": "{min}min atrás",
   "@syncTimeMinAgo": {
     "placeholders": {
-      "min": { "type": "int" }
+      "min": {
+        "type": "int"
+      }
     }
   },
   "syncTimeHourAgo": "{hour}h atrás",
   "@syncTimeHourAgo": {
     "placeholders": {
-      "hour": { "type": "int" }
+      "hour": {
+        "type": "int"
+      }
     }
   },
   "syncTimeDayAgo": "{day}d atrás",
   "@syncTimeDayAgo": {
     "placeholders": {
-      "day": { "type": "int" }
+      "day": {
+        "type": "int"
+      }
     }
   },
-
   "pinCity": "Fixar",
   "pinMaxReached": "Máximo de 5 cidades fixadas. Atualize para Ummat+ para mais.",
   "pinCityUnpinned": "{city} desfixada",
   "@pinCityUnpinned": {
     "placeholders": {
-      "city": { "type": "String" }
+      "city": {
+        "type": "String"
+      }
     }
   },
   "pinUndo": "Desfazer",
-
   "tvPairingScanQr": "Scan TV QR Code",
   "tvPairingScanInstruction": "Point your camera at the QR code on your TV",
   "tvPairingEnterManually": "Enter code manually",
@@ -1014,6 +1091,30 @@
   "tvPairingTimeout": "Request timed out. Is the TV on and connected?",
   "tvPairingServerError": "Could not connect to server.",
   "tvPairingSignInRequired": "Sign in to your account before pairing a TV.",
-
-  "tvJumuahGreeting": "Jumu'ah Mubarak"
+  "tvJumuahGreeting": "Jumu'ah Mubarak",
+  "desktopNextPrayer": "Próxima Oração…",
+  "desktopOpen": "Abrir PrayCalc",
+  "desktopQuit": "Sair do PrayCalc",
+  "desktopSettings": "Configurações…",
+  "desktopTrayTooltip": "PrayCalc – Horários de Oração",
+  "desktopTvDisplays": "Telas de TV…",
+  "statsBestStreak": "Melhor Sequência",
+  "statsDailyGoalLabel": "{goal} orações / dia",
+  "statsDailyGoalTitle": "Meta Diária de Oração",
+  "statsGoalStreak": "Sequência da Meta",
+  "statsHeatmapDetail": "{count} / 5 orações concluídas",
+  "statsHeatmapNoData": "Nenhuma oração registada para este dia",
+  "statsHeatmapTitle": "Ano em Resumo",
+  "tvChildFajrExplanation": "Fajr é a oração da manhã. Acordamos antes do nascer do sol para agradecer a Allah por um novo dia!",
+  "tvChildFajrFunFact": "O Profeta ﷺ disse: «A melhor oração aos olhos de Allah é Fajr na sexta-feira.» (Bukhari)",
+  "tvChildSunriseExplanation": "Após Fajr, o sol nasce. Este é um tempo abençoado para fazer dhikr e ler o Alcorão.",
+  "tvChildSunriseFunFact": "Ficar sentado após Fajr até o nascer do sol e rezar duas rak'ahs vale a recompensa de um Hajj completo! (Tirmidhi)",
+  "tvChildDhuhrExplanation": "Dhuhr é a oração do meio-dia. O sol está no ponto mais alto do céu, e fazemos uma pausa para lembrar Allah.",
+  "tvChildDhuhrFunFact": "O Profeta ﷺ gostava de rezar Dhuhr cedo quando o sol começa a declinar. (Muslim)",
+  "tvChildAsrExplanation": "Asr é a oração da tarde. Allah jura por este tempo na Surah Al-Asr — é muito importante!",
+  "tvChildAsrFunFact": "Perder a oração de Asr é como perder a família e a riqueza. É assim que Allah a ama! (Bukhari)",
+  "tvChildMaghribExplanation": "Maghrib é a oração do pôr do sol. Quando o sol se põe, agradecemos a Allah pelo lindo dia.",
+  "tvChildMaghribFunFact": "Os anjos do dia e da noite encontram-se no Fajr e no Maghrib. Que especial! (Bukhari)",
+  "tvChildIshaExplanation": "Isha é a oração da noite. Terminamos o nosso dia agradecendo a Allah antes de dormir.",
+  "tvChildIshaFunFact": "Rezar Isha e Fajr em congregação é como rezar a noite toda! (Muslim)"
 }

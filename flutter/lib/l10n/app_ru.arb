@@ -1,8 +1,6 @@
 {
   "@@locale": "ru",
-
   "appTitle": "PrayCalc",
-
   "prayerFajr": "Фаджр",
   "prayerSunrise": "Восход",
   "prayerDhuhr": "Зухр",
@@ -12,7 +10,6 @@
   "prayerQiyam": "Кийям",
   "prayerSuhoor": "Сухур",
   "prayerIftar": "Ифтар",
-
   "hijriMuharram": "Мухаррам",
   "hijriSafar": "Сафар",
   "hijriRabiAlAwwal": "Раби аль-Авваль",
@@ -25,7 +22,6 @@
   "hijriShawwal": "Шавваль",
   "hijriDhulQidah": "Зу-ль-Каада",
   "hijriDhulHijjah": "Зу-ль-Хиджа",
-
   "monthJan": "Янв",
   "monthFeb": "Фев",
   "monthMar": "Мар",
@@ -38,7 +34,6 @@
   "monthOct": "Окт",
   "monthNov": "Ноя",
   "monthDec": "Дек",
-
   "monthJanuary": "Январь",
   "monthFebruary": "Февраль",
   "monthMarch": "Март",
@@ -51,7 +46,6 @@
   "monthOctober": "Октябрь",
   "monthNovember": "Ноябрь",
   "monthDecember": "Декабрь",
-
   "dayMonShort": "Пн",
   "dayTueShort": "Вт",
   "dayWedShort": "Ср",
@@ -59,7 +53,6 @@
   "dayFriShort": "Пт",
   "daySatShort": "Сб",
   "daySunShort": "Вс",
-
   "dayMonday": "Понедельник",
   "dayTuesday": "Вторник",
   "dayWednesday": "Среда",
@@ -67,7 +60,6 @@
   "dayFriday": "Пятница",
   "daySaturday": "Суббота",
   "daySunday": "Воскресенье",
-
   "daySuChart": "Вс",
   "dayMoChart": "Пн",
   "dayTuChart": "Вт",
@@ -75,31 +67,35 @@
   "dayThChart": "Чт",
   "dayFrChart": "Пт",
   "daySaChart": "Сб",
-
   "chooseCityLabel": "Выберите город",
   "setCityFab": "Установить город",
   "prayerTimesError": "Не удалось рассчитать время намаза.\n{error}",
   "@prayerTimesError": {
     "placeholders": {
-      "error": { "type": "Object" }
+      "error": {
+        "type": "Object"
+      }
     }
   },
   "prayerCountdownLabel": "{prayer} через",
   "@prayerCountdownLabel": {
     "placeholders": {
-      "prayer": { "type": "String" }
+      "prayer": {
+        "type": "String"
+      }
     }
   },
   "ramadanMubarak": "Рамадан Мубарак",
   "ramadanDayProgress": "День {day} / 30",
   "@ramadanDayProgress": {
     "placeholders": {
-      "day": { "type": "int" }
+      "day": {
+        "type": "int"
+      }
     }
   },
   "lastTenNights": "Последние 10 ночей",
   "laylatulQadr": "Ляйлятуль-Кадр",
-
   "homeSuffixAH": "х.",
   "homeSuffixCE": "н.э.",
   "homeNoCitySelected": "Город не выбран",
@@ -112,10 +108,11 @@
   "homePolarBanner": "Невозможно рассчитать {count} времён намаза для вашей локации в этот период (полярный день/ночь). Попробуйте оценку по ближайшей широте в настройках.",
   "@homePolarBanner": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
-
   "settingsTitle": "Настройки",
   "settingsSectionPrayerCalc": "Расчёт намаза",
   "settingsCalcMethod": "Метод расчёта",
@@ -167,24 +164,26 @@
   "settingsTvSettings": "Настройки ТВ",
   "settingsTvSettingsSubtitle": "Режим мечети, смещения икамата, эмбиент",
   "settingsAboutPrayCalc": "О PrayCalc",
-
   "syncSynced": "Синхронизировано",
   "syncSyncing": "Синхронизация...",
   "syncOffline": "Офлайн",
   "syncError": "Ошибка синхронизации",
-
   "notifSettingsTitle": "Уведомления и азан",
   "notifAdhanLabel": "Азан",
   "notifReminderMinBefore": "Напоминание: за {minutes} мин",
   "@notifReminderMinBefore": {
     "placeholders": {
-      "minutes": { "type": "int" }
+      "minutes": {
+        "type": "int"
+      }
     }
   },
   "notifVolumePct": "Громкость: {pct}%",
   "@notifVolumePct": {
     "placeholders": {
-      "pct": { "type": "int" }
+      "pct": {
+        "type": "int"
+      }
     }
   },
   "notifTestAdhan": "Тест азана",
@@ -192,24 +191,23 @@
   "notifModeReminderOnly": "Только напоминание",
   "notifModeArrival": "При наступлении намаза",
   "notifModeBoth": "Напоминание + наступление",
-
   "citySearchHint": "Поиск города…",
   "citySearchDetectTooltip": "Определить моё местоположение",
   "citySearchNoCityGps": "Не удалось определить город по GPS.",
   "citySearchPermissionDenied": "Доступ к местоположению отклонён. Ищите вручную.",
   "citySearchNoResults": "Города не найдены.",
   "citySearchStartTyping": "Начните вводить для поиска…",
-
   "agendasTitle": "Расписания намаза",
   "agendasEmpty": "Расписаний пока нет.\nНажмите +, чтобы добавить напоминание к намазу.",
   "agendasUndo": "Отменить",
   "agendasRemoved": "{label} удалено",
   "@agendasRemoved": {
     "placeholders": {
-      "label": { "type": "String" }
+      "label": {
+        "type": "String"
+      }
     }
   },
-
   "agendaNewTitle": "Новое расписание",
   "agendaEditTitle": "Редактировать расписание",
   "agendaSave": "Сохранить",
@@ -222,13 +220,17 @@
   "agendaOffsetMinBefore": "За {minutes} мин до",
   "@agendaOffsetMinBefore": {
     "placeholders": {
-      "minutes": { "type": "int" }
+      "minutes": {
+        "type": "int"
+      }
     }
   },
   "agendaOffsetMinAfter": "Через {minutes} мин после",
   "@agendaOffsetMinAfter": {
     "placeholders": {
-      "minutes": { "type": "int" }
+      "minutes": {
+        "type": "int"
+      }
     }
   },
   "agendaRepeatSection": "Повтор",
@@ -241,12 +243,13 @@
   "agendaDayW": "Ср",
   "agendaDayF": "Пт",
   "agendaDayS": "Сб",
-
   "moonTitle": "Луна и хиджри",
   "moonIlluminated": "Освещённость {pct}%",
   "@moonIlluminated": {
     "placeholders": {
-      "pct": { "type": "int" }
+      "pct": {
+        "type": "int"
+      }
     }
   },
   "moonFullTonight": "Полнолуние сегодня!",
@@ -254,13 +257,17 @@
   "moonNextDays": "Следующее полнолуние через {days} дн.",
   "@moonNextDays": {
     "placeholders": {
-      "days": { "type": "int" }
+      "days": {
+        "type": "int"
+      }
     }
   },
   "moonAge": "Возраст луны: {age} дн.",
   "@moonAge": {
     "placeholders": {
-      "age": { "type": "String" }
+      "age": {
+        "type": "String"
+      }
     }
   },
   "moonPhaseNewMoon": "Новолуние",
@@ -285,20 +292,26 @@
   "ramadanBeginsLabel": "Рамадан {year} г.х. начинается",
   "@ramadanBeginsLabel": {
     "placeholders": {
-      "year": { "type": "int" }
+      "year": {
+        "type": "int"
+      }
     }
   },
   "ramadanDaysAway": "через {days} дн.",
   "@ramadanDaysAway": {
     "placeholders": {
-      "days": { "type": "int" }
+      "days": {
+        "type": "int"
+      }
     }
   },
   "moonLunarCycle": "Лунный цикл",
   "moonDayOfCycle": "День {day} из ~29,5",
   "@moonDayOfCycle": {
     "placeholders": {
-      "day": { "type": "int" }
+      "day": {
+        "type": "int"
+      }
     }
   },
   "moonHilalSightingForecast": "Прогноз видимости хиляля",
@@ -306,7 +319,9 @@
   "moonDayN": "День {day}",
   "@moonDayN": {
     "placeholders": {
-      "day": { "type": "int" }
+      "day": {
+        "type": "int"
+      }
     }
   },
   "moonGlobalSighting": "Глобальное наблюдение",
@@ -317,15 +332,23 @@
   "moonMonthPrediction29": "{month} {year} г.х. вероятно будет 29 дней. Ожидается, что полумесяц будет виден 29-го, ин ша Аллах.",
   "@moonMonthPrediction29": {
     "placeholders": {
-      "month": { "type": "String" },
-      "year": { "type": "int" }
+      "month": {
+        "type": "String"
+      },
+      "year": {
+        "type": "int"
+      }
     }
   },
   "moonMonthPrediction30": "{month} {year} г.х. вероятно будет 30 дней. Полумесяц вряд ли будет виден 29-го — месяц завершится через 30 дней.",
   "@moonMonthPrediction30": {
     "placeholders": {
-      "month": { "type": "String" },
-      "year": { "type": "int" }
+      "month": {
+        "type": "String"
+      },
+      "year": {
+        "type": "int"
+      }
     }
   },
   "moonUmmAlQura": "Умм аль-Кура",
@@ -335,26 +358,31 @@
   "moonNDays": "{days} дн.",
   "@moonNDays": {
     "placeholders": {
-      "days": { "type": "int" }
+      "days": {
+        "type": "int"
+      }
     }
   },
   "moonStarts": "{month} начинается:",
   "@moonStarts": {
     "placeholders": {
-      "month": { "type": "String" }
+      "month": {
+        "type": "String"
+      }
     }
   },
   "moonMoonAgeAtSunset": "Возраст луны на закате: {hours} ч",
   "@moonMoonAgeAtSunset": {
     "placeholders": {
-      "hours": { "type": "String" }
+      "hours": {
+        "type": "String"
+      }
     }
   },
   "moon7DayLunarCalendar": "Лунный календарь на 7 дней",
   "moonUpcomingIslamicEvents": "Предстоящие исламские события",
   "moonTodayLabel": "Сегодня",
   "moonTomorrowLabel": "Завтра",
-
   "calDateCol": "Дата",
   "calHijriCol": "Хиджра",
   "calFajrCol": "Фаджр",
@@ -370,16 +398,19 @@
   "calExportHeader": "PrayCalc — {month}",
   "@calExportHeader": {
     "placeholders": {
-      "month": { "type": "String" }
+      "month": {
+        "type": "String"
+      }
     }
   },
   "calExportSubject": "Время намаза — {month}",
   "@calExportSubject": {
     "placeholders": {
-      "month": { "type": "String" }
+      "month": {
+        "type": "String"
+      }
     }
   },
-
   "qiblaTitle": "Кибла",
   "qiblaSwitchToCompass": "Переключить на компас",
   "qiblaSwitchToAR": "Переключить на AR-камеру",
@@ -389,29 +420,36 @@
   "qiblaDegreesFromNorth": "{degrees}° от севера",
   "@qiblaDegreesFromNorth": {
     "placeholders": {
-      "degrees": { "type": "int" }
+      "degrees": {
+        "type": "int"
+      }
     }
   },
   "qiblaFrom": "Из {city}",
   "@qiblaFrom": {
     "placeholders": {
-      "city": { "type": "String" }
+      "city": {
+        "type": "String"
+      }
     }
   },
   "qiblaDistKm": "{dist} км от Каабы",
   "@qiblaDistKm": {
     "placeholders": {
-      "dist": { "type": "int" }
+      "dist": {
+        "type": "int"
+      }
     }
   },
   "qiblaDistThousandKm": "{dist}K км от Каабы",
   "@qiblaDistThousandKm": {
     "placeholders": {
-      "dist": { "type": "String" }
+      "dist": {
+        "type": "String"
+      }
     }
   },
   "qiblaFacingQibla": "Направлено на киблу ✓",
-
   "tasbeehTitle": "Тасбих",
   "tasbeehResetTooltip": "Сброс",
   "tasbeehTapToSwitch": "Нажмите на ярлык для переключения",
@@ -423,7 +461,9 @@
   "tasbeehTodayDhikr": "Сегодня: {count} зикров",
   "@tasbeehTodayDhikr": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "tasbeehLast7Days": "За 7 дней",
@@ -431,17 +471,22 @@
   "tasbeehComplete": "Тасбих завершён! {count} зикров",
   "@tasbeehComplete": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "tasbeehPresetComplete": "✓ {label} × {target}",
   "@tasbeehPresetComplete": {
     "placeholders": {
-      "label": { "type": "String" },
-      "target": { "type": "int" }
+      "label": {
+        "type": "String"
+      },
+      "target": {
+        "type": "int"
+      }
     }
   },
-
   "smartHomeTitle": "Умный дом",
   "smartHomeSubtitle": "Подключите устройства к времени намаза",
   "smartHomeGoogleHome": "Google Home",
@@ -461,7 +506,6 @@
   "smartHomeTestConnection": "Тест подключения",
   "smartHomeConnectionSuccess": "Подключение успешно",
   "smartHomeConnectionFailed": "Подключение не удалось. Проверьте привязку аккаунта.",
-
   "subscriptionTitle": "Ummat+",
   "subscriptionSubtitle": "Премиум-функции намаза",
   "subscriptionUpgrade": "Перейти на Ummat+",
@@ -476,19 +520,25 @@
   "subscriptionFreeQueriesRemaining": "Осталось {count} бесплатных запросов",
   "@subscriptionFreeQueriesRemaining": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "subscriptionPriceYearly": "{price}/год",
   "@subscriptionPriceYearly": {
     "placeholders": {
-      "price": { "type": "String" }
+      "price": {
+        "type": "String"
+      }
     }
   },
   "subscriptionPriceMonthly": "{price}/мес",
   "@subscriptionPriceMonthly": {
     "placeholders": {
-      "price": { "type": "String" }
+      "price": {
+        "type": "String"
+      }
     }
   },
   "subscriptionFeatureSmartHome": "Интеграция умного дома",
@@ -497,19 +547,16 @@
   "subscriptionFeatureWatch": "Циферблат часов",
   "subscriptionFeatureSync": "Синхронизация между устройствами",
   "subscriptionFeatureAdFree": "Без рекламы",
-
   "watchTitle": "Часы",
   "watchNextPrayer": "Следующий намаз",
   "watchAllPrayers": "Все намазы",
   "watchComplication": "Циферблат",
-
   "nextPrayer": "Следующий намаз",
   "allPrayers": "Все намазы",
   "today": "Сегодня",
   "tomorrow": "Завтра",
   "thisWeek": "На этой неделе",
   "thisMonth": "В этом месяце",
-
   "loginCreateAccount": "Создать аккаунт",
   "loginSignIn": "Войти",
   "loginWelcomeBack": "С возвращением",
@@ -531,7 +578,6 @@
   "loginResetFailed": "Не удалось отправить письмо для сброса",
   "loginNewToPrayCalc": "Новичок в PrayCalc?",
   "loginAlreadyHaveAccount": "Уже есть аккаунт?",
-
   "accountTitle": "Аккаунт",
   "accountNotSignedIn": "Вы не вошли",
   "accountSyncSection": "Синхронизация",
@@ -542,13 +588,17 @@
   "accountConflictsResolved": "Разрешено {count}",
   "@accountConflictsResolved": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "accountSyncedAgo": "Синхронизировано {time}",
   "@accountSyncedAgo": {
     "placeholders": {
-      "time": { "type": "String" }
+      "time": {
+        "type": "String"
+      }
     }
   },
   "accountOfflineStatus": "Офлайн. Изменения сохранены локально.",
@@ -568,29 +618,36 @@
   "accountTimeMinAgo": "{min} мин. назад",
   "@accountTimeMinAgo": {
     "placeholders": {
-      "min": { "type": "int" }
+      "min": {
+        "type": "int"
+      }
     }
   },
   "accountTimeHourAgo": "{hour} ч. назад",
   "@accountTimeHourAgo": {
     "placeholders": {
-      "hour": { "type": "int" }
+      "hour": {
+        "type": "int"
+      }
     }
   },
   "accountTimeDayAgo": "{day} дн. назад",
   "@accountTimeDayAgo": {
     "placeholders": {
-      "day": { "type": "int" }
+      "day": {
+        "type": "int"
+      }
     }
   },
-
   "statsTitle": "Статистика намаза",
   "statsShareTooltip": "Поделиться статистикой",
   "statsTodayPrayers": "Намазы сегодня",
   "statsTodayCount": "{done} / 5",
   "@statsTodayCount": {
     "placeholders": {
-      "done": { "type": "int" }
+      "done": {
+        "type": "int"
+      }
     }
   },
   "statsStreak": "Серия",
@@ -605,7 +662,9 @@
   "statsTotalLogged": "Всего записано {count} намазов",
   "@statsTotalLogged": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "statsKeepItUp": "Так держать!",
@@ -613,23 +672,28 @@
   "statsShareStreak": "Серия: {days} дн.",
   "@statsShareStreak": {
     "placeholders": {
-      "days": { "type": "int" }
+      "days": {
+        "type": "int"
+      }
     }
   },
   "statsShareWeekly": "За неделю: {pct}%",
   "@statsShareWeekly": {
     "placeholders": {
-      "pct": { "type": "int" }
+      "pct": {
+        "type": "int"
+      }
     }
   },
   "statsShareMonthly": "За месяц: {pct}%",
   "@statsShareMonthly": {
     "placeholders": {
-      "pct": { "type": "int" }
+      "pct": {
+        "type": "int"
+      }
     }
   },
   "statsShareBreakdown": "Недельная разбивка:",
-
   "aboutTitle": "О PrayCalc",
   "aboutWebsite": "Сайт",
   "aboutContact": "Связаться",
@@ -638,10 +702,11 @@
   "aboutCopyright": "© {year} Ummat Dev. Все права защищены.\n\nВремя намаза рассчитывается движком pray_calc_dart. Точность зависит от GPS-координат и выбранного метода расчёта.",
   "@aboutCopyright": {
     "placeholders": {
-      "year": { "type": "int" }
+      "year": {
+        "type": "int"
+      }
     }
   },
-
   "commonCancel": "Отмена",
   "commonSave": "Сохранить",
   "commonDelete": "Удалить",
@@ -673,7 +738,9 @@
   "commonVersion": "Версия {version}",
   "@commonVersion": {
     "placeholders": {
-      "version": { "type": "String" }
+      "version": {
+        "type": "String"
+      }
     }
   },
   "commonPrivacyPolicy": "Политика конфиденциальности",
@@ -683,7 +750,6 @@
   "commonHelp": "Помощь",
   "commonLanguage": "Язык",
   "commonOpenSettings": "Открыть настройки",
-
   "travelNotificationTitle": "Вы в путешествии",
   "travelNotificationBody": "Время намаза может быть сокращено. Нажмите, чтобы узнать правила путешествия.",
   "travelRulingsTitle": "Путешествие и намаз",
@@ -696,7 +762,6 @@
   "travelLearnMore": "Подробнее",
   "travelHanafiDefaultTitle": "Почему PrayCalc использует ханафитские значения по умолчанию",
   "travelDeeperScholarly": "Углублённое научное обсуждение",
-
   "onboardingTitle1": "Время намаза, где бы вы ни были",
   "onboardingBody1": "Точное время намаза по GPS для каждого города на Земле. От Фаджра до Иши, от восхода до Кийяма. На основе собственного расчётного движка, созданного для точности.",
   "onboardingTitle2": "Ваше местоположение, ваше время",
@@ -713,7 +778,6 @@
   "onboardingContinueWithoutAccount": "Продолжить без аккаунта",
   "onboardingSigningIn": "Вход…",
   "onboardingSelectLanguage": "Выберите язык",
-
   "duaDhikrTitle": "Дуа и зикр",
   "duaDhikrTabDua": "Дуа",
   "duaDhikrTabDhikr": "Зикр",
@@ -722,13 +786,11 @@
   "duaDhikrTabEvening": "Вечер",
   "duaDhikrMorningAdhkar": "Утренние азкары",
   "duaDhikrEveningAdhkar": "Вечерние азкары",
-
   "calGregToggle": "Григ.",
   "calHijriToggle": "Хиджра",
   "calYearlyTooltip": "Годовой календарь",
   "calExportIcsTooltip": "Экспорт .ics",
   "calMagCol": "Маг",
-
   "qiblaShowOnMap": "Показать на карте",
   "qiblaWaitingCompass": "Ожидание компаса...",
   "qiblaNoCompassSensor": "Нет датчика компаса. Направление киблы показано статически.",
@@ -740,7 +802,6 @@
   "qiblaYourLocation": "Ваше местоположение",
   "qiblaGpsAccurate": "Точность GPS",
   "qiblaCityCenter": "Центр города",
-
   "moonIlluminatedLabel": "Освещённость",
   "moonAgeLabel": "Возраст",
   "moonFirstQtr": "1-я четв.",
@@ -750,11 +811,12 @@
   "moonDaysAway": "{days}д",
   "@moonDaysAway": {
     "placeholders": {
-      "days": { "type": "int" }
+      "days": {
+        "type": "int"
+      }
     }
   },
   "moonBeta": "Бета",
-
   "setHomeTitle": "Установить домашнее местоположение",
   "setHomeSearchHint": "Поиск города, посёлка или индекса…",
   "setHomeClear": "Очистить",
@@ -764,7 +826,9 @@
   "setHomeSetAs": "{city} установлен как дом",
   "@setHomeSetAs": {
     "placeholders": {
-      "city": { "type": "String" }
+      "city": {
+        "type": "String"
+      }
     }
   },
   "setHomeCurrentLocationSet": "Текущее местоположение установлено как дом",
@@ -773,7 +837,6 @@
   "setHomeNoCitiesFound": "Города не найдены.",
   "setHomeSearchPrompt": "Найдите свой домашний город",
   "setHomeSearchBody": "Начните вводить текст для поиска или используйте текущее местоположение. Режим путешествия определит, когда вы не дома.",
-
   "subscriptionYouHavePlus": "У вас есть Ummat+",
   "subscriptionUpgradeTo": "Перейти на Ummat+",
   "subscriptionThankYou": "Спасибо за поддержку PrayCalc.",
@@ -788,7 +851,6 @@
   "subscriptionFeatureCalendar": "Месячный календарь",
   "subscriptionFeatureTasbeeh": "Счётчик тасбиха",
   "subscriptionFeatureMoon": "Луна и хиджра",
-
   "smartHomeAlertType": "Тип оповещения",
   "smartHomeAlertModal": "Полноэкранное окно",
   "smartHomeAlertCorner": "Угловое уведомление",
@@ -801,15 +863,15 @@
   "smartHomeAudioAdhan": "Азан",
   "smartHomeAudioBeep": "Звуковой сигнал",
   "smartHomeAudioSilent": "Без звука",
-
   "aboutPrivacy": "Политика конфиденциальности",
   "aboutVersion": "Версия {version}",
   "@aboutVersion": {
     "placeholders": {
-      "version": { "type": "String" }
+      "version": {
+        "type": "String"
+      }
     }
   },
-
   "notifDefaultAdhan": "Азан по умолчанию",
   "notifFajrAdhan": "Азан Фаджр",
   "notifFajrAdhanSubtitle": "Воспроизводится в время Фаджра",
@@ -817,7 +879,6 @@
   "notifRegularAdhanSubtitle": "Воспроизводится для Зухр, Аср, Магриб, Иша",
   "notifPerPrayerSettings": "Настройки по намазам",
   "notifPreview": "Предпросмотр",
-
   "tvSettingsTitle": "Настройки ТВ",
   "tvDisplayMode": "Режим отображения",
   "tvMasjidMode": "Режим мечети",
@@ -830,7 +891,9 @@
   "tvIqamahMinAfter": "{offset} мин после азана",
   "@tvIqamahMinAfter": {
     "placeholders": {
-      "offset": { "type": "int" }
+      "offset": {
+        "type": "int"
+      }
     }
   },
   "tvQrCode": "QR-код",
@@ -842,14 +905,18 @@
   "tvIdleTimeoutSubtitle": "{minutes} мин до активации эмбиента",
   "@tvIdleTimeoutSubtitle": {
     "placeholders": {
-      "minutes": { "type": "int" }
+      "minutes": {
+        "type": "int"
+      }
     }
   },
   "tvPhotoInterval": "Интервал фотографий",
   "tvPhotoIntervalSubtitle": "{seconds} секунд между фото",
   "@tvPhotoIntervalSubtitle": {
     "placeholders": {
-      "seconds": { "type": "int" }
+      "seconds": {
+        "type": "int"
+      }
     }
   },
   "tvBackground": "Фон",
@@ -872,11 +939,12 @@
   "tvEnterHint": "Введите {title}",
   "@tvEnterHint": {
     "placeholders": {
-      "title": { "type": "String" }
+      "title": {
+        "type": "String"
+      }
     }
   },
   "tvSystemDefault": "По умолчанию",
-
   "smartHomeIntegrations": "Интеграции",
   "smartHomeLinkedSpeakers": "Подключённые колонки и дисплеи",
   "smartHomeAlertDisplay": "Отображение оповещений",
@@ -919,7 +987,6 @@
   "smartHomeLinkedStatus": "Подключено",
   "smartHomeNotLinkedStatus": "Не подключено",
   "smartHomeCouldNotOpen": "Не удалось открыть ссылку.",
-
   "smartHomeDevices": "Устройства",
   "smartHomeAddDevice": "Добавить устройство",
   "smartHomeDeleteDevice": "Удалить",
@@ -929,7 +996,9 @@
   "smartHomeDeviceLastSeen": "Последний раз: {time}",
   "@smartHomeDeviceLastSeen": {
     "placeholders": {
-      "time": { "type": "String" }
+      "time": {
+        "type": "String"
+      }
     }
   },
   "smartHomeDeviceName": "Имя устройства",
@@ -955,16 +1024,18 @@
   "smartHomeLoadingDevices": "Загрузка устройств...",
   "smartHomeLoadingIntegrations": "Загрузка интеграций...",
   "smartHomeServiceUnavailable": "Сервис умного дома временно недоступен. Попробуйте позже.",
-
   "adhkarCompletedCount": "{completed} / {total} выполнено",
   "@adhkarCompletedCount": {
     "placeholders": {
-      "completed": { "type": "int" },
-      "total": { "type": "int" }
+      "completed": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
     }
   },
   "adhkarReset": "Сброс",
-
   "syncHistoryTitle": "История синхронизации",
   "syncClearHistory": "Очистить историю",
   "syncNoConflicts": "Конфликтов синхронизации не обнаружено. Все устройства синхронизированы.",
@@ -975,32 +1046,38 @@
   "syncTimeMinAgo": "{min} мин. назад",
   "@syncTimeMinAgo": {
     "placeholders": {
-      "min": { "type": "int" }
+      "min": {
+        "type": "int"
+      }
     }
   },
   "syncTimeHourAgo": "{hour} ч. назад",
   "@syncTimeHourAgo": {
     "placeholders": {
-      "hour": { "type": "int" }
+      "hour": {
+        "type": "int"
+      }
     }
   },
   "syncTimeDayAgo": "{day} дн. назад",
   "@syncTimeDayAgo": {
     "placeholders": {
-      "day": { "type": "int" }
+      "day": {
+        "type": "int"
+      }
     }
   },
-
   "pinCity": "Закрепить",
   "pinMaxReached": "Максимум 5 закреплённых городов. Перейдите на Ummat+ для увеличения.",
   "pinCityUnpinned": "{city} откреплён",
   "@pinCityUnpinned": {
     "placeholders": {
-      "city": { "type": "String" }
+      "city": {
+        "type": "String"
+      }
     }
   },
   "pinUndo": "Отменить",
-
   "tvPairingScanQr": "Scan TV QR Code",
   "tvPairingScanInstruction": "Point your camera at the QR code on your TV",
   "tvPairingEnterManually": "Enter code manually",
@@ -1014,6 +1091,30 @@
   "tvPairingTimeout": "Request timed out. Is the TV on and connected?",
   "tvPairingServerError": "Could not connect to server.",
   "tvPairingSignInRequired": "Sign in to your account before pairing a TV.",
-
-  "tvJumuahGreeting": "Jumu'ah Mubarak"
+  "tvJumuahGreeting": "Jumu'ah Mubarak",
+  "desktopNextPrayer": "Следующий намаз…",
+  "desktopOpen": "Открыть PrayCalc",
+  "desktopQuit": "Закрыть PrayCalc",
+  "desktopSettings": "Настройки…",
+  "desktopTrayTooltip": "PrayCalc – Время намаза",
+  "desktopTvDisplays": "Экраны ТВ…",
+  "statsBestStreak": "Лучшая серия",
+  "statsDailyGoalLabel": "{goal} намазов / день",
+  "statsDailyGoalTitle": "Ежедневная цель намаза",
+  "statsGoalStreak": "Серия цели",
+  "statsHeatmapDetail": "{count} / 5 намазов выполнено",
+  "statsHeatmapNoData": "Намазы за этот день не записаны",
+  "statsHeatmapTitle": "Год с высоты птичьего полёта",
+  "tvChildFajrExplanation": "Фаджр — это утренний намаз. Мы встаём до рассвета, чтобы поблагодарить Аллаха за новый день!",
+  "tvChildFajrFunFact": "Пророк ﷺ сказал: «Лучший намаз пред Аллахом — Фаджр в пятницу.» (Бухари)",
+  "tvChildSunriseExplanation": "После Фаджра восходит солнце. Это благодатное время для зикра и чтения Корана.",
+  "tvChildSunriseFunFact": "Сидеть после Фаджра до восхода солнца и совершить два ракаата — это награда, равная полному Хаджу! (Тирмизи)",
+  "tvChildDhuhrExplanation": "Зухр — это полуденный намаз. Солнце стоит высоко в небе, и мы делаем паузу, чтобы вспомнить об Аллахе.",
+  "tvChildDhuhrFunFact": "Пророк ﷺ любил совершать Зухр рано, когда солнце начинает клониться к закату. (Муслим)",
+  "tvChildAsrExplanation": "Аср — это послеполуденный намаз. Аллах клянётся этим временем в суре Аль-Аср — это очень важно!",
+  "tvChildAsrFunFact": "Пропустить намаз Аср — всё равно что потерять семью и имущество. Вот как Аллах его любит! (Бухари)",
+  "tvChildMaghribExplanation": "Магриб — это намаз на закате солнца. Когда солнце садится, мы благодарим Аллаха за прекрасный день.",
+  "tvChildMaghribFunFact": "Ангелы дня и ночи встречаются на Фаджре и Магрибе. Как это удивительно! (Бухари)",
+  "tvChildIshaExplanation": "Иша — это ночной намаз. Мы заканчиваем день, благодаря Аллаха перед сном.",
+  "tvChildIshaFunFact": "Совершать Ишу и Фаджр в мечети — это как молиться всю ночь! (Муслим)"
 }

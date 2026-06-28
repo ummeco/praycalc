@@ -1,8 +1,6 @@
 {
   "@@locale": "ha",
-
   "appTitle": "PrayCalc",
-
   "prayerFajr": "Asuba",
   "prayerSunrise": "Fitowar Rana",
   "prayerDhuhr": "Azahar",
@@ -12,7 +10,6 @@
   "prayerQiyam": "Qiyamu",
   "prayerSuhoor": "Sahur",
   "prayerIftar": "Bude Baki",
-
   "hijriMuharram": "Muharram",
   "hijriSafar": "Safar",
   "hijriRabiAlAwwal": "Rabi'ul Awwal",
@@ -25,7 +22,6 @@
   "hijriShawwal": "Shawwal",
   "hijriDhulQidah": "Dhul Qa'ada",
   "hijriDhulHijjah": "Dhul Hijja",
-
   "monthJan": "Jan",
   "monthFeb": "Fab",
   "monthMar": "Mar",
@@ -38,7 +34,6 @@
   "monthOct": "Okt",
   "monthNov": "Nuw",
   "monthDec": "Dis",
-
   "monthJanuary": "Janairu",
   "monthFebruary": "Fabrairu",
   "monthMarch": "Maris",
@@ -51,7 +46,6 @@
   "monthOctober": "Oktoba",
   "monthNovember": "Nuwamba",
   "monthDecember": "Disamba",
-
   "dayMonShort": "Lit",
   "dayTueShort": "Tal",
   "dayWedShort": "Lar",
@@ -59,7 +53,6 @@
   "dayFriShort": "Jum",
   "daySatShort": "Asb",
   "daySunShort": "Lah",
-
   "dayMonday": "Litinin",
   "dayTuesday": "Talata",
   "dayWednesday": "Laraba",
@@ -67,7 +60,6 @@
   "dayFriday": "Jumma'a",
   "daySaturday": "Asabar",
   "daySunday": "Lahadi",
-
   "daySuChart": "Lh",
   "dayMoChart": "Lt",
   "dayTuChart": "Tl",
@@ -75,7 +67,6 @@
   "dayThChart": "Al",
   "dayFrChart": "Jm",
   "daySaChart": "As",
-
   "chooseCityLabel": "Zaɓi birni",
   "setCityFab": "Saita birni",
   "prayerTimesError": "Ba a iya lissafin lokutan salla ba.\n{error}",
@@ -84,7 +75,6 @@
   "ramadanDayProgress": "Rana {day} / 30",
   "lastTenNights": "Darewan Ƙarshe 10",
   "laylatulQadr": "Lailatul Qadr",
-
   "homeSuffixAH": "H",
   "homeSuffixCE": "M",
   "homeNoCitySelected": "Ba a zaɓi birni ba",
@@ -95,7 +85,6 @@
   "homeActionDuaDhikr": "Addu'a &\nZikiri",
   "homeActionPrayerStats": "Ƙididdigan\nSalla",
   "homePolarBanner": "Ba a iya lissafin lokutan salla {count} don wurinku a wannan lokacin ba. Gwada kimantawar latitude mafi kusa a cikin saituna.",
-
   "settingsTitle": "Saituna",
   "settingsSectionPrayerCalc": "Lissafin Salla",
   "settingsCalcMethod": "Hanyar Lissafi",
@@ -147,12 +136,10 @@
   "settingsTvSettings": "Saitunan TV",
   "settingsTvSettingsSubtitle": "Yanayin masallaci, gyaran iqama, yanayi",
   "settingsAboutPrayCalc": "Game da PrayCalc",
-
   "syncSynced": "An daidaita",
   "syncSyncing": "Ana daidaitawa...",
   "syncOffline": "Ba a layi ba",
   "syncError": "Kuskuren daidaitawa",
-
   "notifSettingsTitle": "Sanarwa da Azumi",
   "notifAdhanLabel": "Azumi",
   "notifReminderMinBefore": "Tunatarwa: minti {minutes} kafin",
@@ -162,19 +149,16 @@
   "notifModeReminderOnly": "Tunatarwa kawai",
   "notifModeArrival": "A lokacin salla",
   "notifModeBoth": "Tunatarwa + lokacin salla",
-
   "citySearchHint": "Nemo birni…",
   "citySearchDetectTooltip": "Gano wurina",
   "citySearchNoCityGps": "Ba a iya gano birni daga GPS ba.",
   "citySearchPermissionDenied": "An ƙi izinin wuri. Nema da hannu.",
   "citySearchNoResults": "Ba a sami birni ba.",
   "citySearchStartTyping": "Fara rubuta don nema…",
-
   "agendasTitle": "Tsare-tsaren Salla",
   "agendasEmpty": "Babu tsare-tsare tukuna.\nDanna + don ƙara tunatarwa da ke da alaƙa da sallolinka.",
   "agendasUndo": "Komawa",
   "agendasRemoved": "An cire {label}",
-
   "agendaNewTitle": "Sabon Tsari",
   "agendaEditTitle": "Gyara Tsari",
   "agendaSave": "Ajiye",
@@ -196,7 +180,6 @@
   "agendaDayW": "Lr",
   "agendaDayF": "Jm",
   "agendaDayS": "As",
-
   "moonTitle": "Wata da Kalandar Hijiriya",
   "moonIlluminated": "{pct}% mai haske",
   "moonFullTonight": "Cikakken wata a daren yau!",
@@ -247,7 +230,6 @@
   "moonUpcomingIslamicEvents": "Abubuwan Musulunci Masu Zuwa",
   "moonTodayLabel": "Yau",
   "moonTomorrowLabel": "Gobe",
-
   "calDateCol": "Kwanan",
   "calHijriCol": "Hijiriya",
   "calFajrCol": "Asuba",
@@ -262,7 +244,6 @@
   "calNextMonthTooltip": "Wata mai zuwa",
   "calExportHeader": "PrayCalc — {month}",
   "calExportSubject": "Lokutan Salla — {month}",
-
   "qiblaTitle": "Alƙibla",
   "qiblaSwitchToCompass": "Canja zuwa kamfas",
   "qiblaSwitchToAR": "Canja zuwa kyamarar AR",
@@ -274,7 +255,6 @@
   "qiblaDistKm": "{dist} km daga Ka'aba",
   "qiblaDistThousandKm": "{dist}K km daga Ka'aba",
   "qiblaFacingQibla": "Fuskantar Alƙibla ✓",
-
   "tasbeehTitle": "Tasbihi",
   "tasbeehResetTooltip": "Sake saita",
   "tasbeehTapToSwitch": "Danna lakkabi don canzawa",
@@ -288,7 +268,6 @@
   "tasbeehNoHistory": "Babu tarihi tukuna — fara ƙidayar!",
   "tasbeehComplete": "Tasbihi ta cika! zikiri {count}",
   "tasbeehPresetComplete": "✓ {label} × {target}",
-
   "smartHomeTitle": "Gida Mai Hankali",
   "smartHomeSubtitle": "Haɗa na'urorinku da lokutan salla",
   "smartHomeGoogleHome": "Google Home",
@@ -308,7 +287,6 @@
   "smartHomeTestConnection": "Gwada Haɗi",
   "smartHomeConnectionSuccess": "An haɗa cikin nasara",
   "smartHomeConnectionFailed": "Haɗin ya kasa. Duba haɗin asusunku.",
-
   "subscriptionTitle": "Ummat+",
   "subscriptionSubtitle": "Fasalolin lokutan salla na musamman",
   "subscriptionUpgrade": "Haɓaka zuwa Ummat+",
@@ -329,19 +307,16 @@
   "subscriptionFeatureWatch": "Fasalolin agogo",
   "subscriptionFeatureSync": "Daidaitawa tsakanin na'urori",
   "subscriptionFeatureAdFree": "Ba tare da talla ba",
-
   "watchTitle": "Agogo",
   "watchNextPrayer": "Sallar Gaba",
   "watchAllPrayers": "Dukkan Salloli",
   "watchComplication": "Fasali",
-
   "nextPrayer": "Sallar gaba",
   "allPrayers": "Dukkan salloli",
   "today": "Yau",
   "tomorrow": "Gobe",
   "thisWeek": "Wannan makon",
   "thisMonth": "Wannan watan",
-
   "loginCreateAccount": "Ƙirƙiri Asusu",
   "loginSignIn": "Shiga",
   "loginWelcomeBack": "Barka da dawowa",
@@ -363,7 +338,6 @@
   "loginResetFailed": "Ba a iya aika imel ɗin sake saita ba",
   "loginNewToPrayCalc": "Sabo ne ga PrayCalc?",
   "loginAlreadyHaveAccount": "Kuna da asusu?",
-
   "accountTitle": "Asusu",
   "accountNotSignedIn": "Ba a shiga ba",
   "accountSyncSection": "Daidaitawa",
@@ -390,7 +364,6 @@
   "accountTimeMinAgo": "minti {min} da suka gabata",
   "accountTimeHourAgo": "sa'o'i {hour} da suka gabata",
   "accountTimeDayAgo": "kwanaki {day} da suka gabata",
-
   "statsTitle": "Ƙididdigan Salla",
   "statsShareTooltip": "Raba ƙididdiga",
   "statsTodayPrayers": "Sallolin Yau",
@@ -411,14 +384,12 @@
   "statsShareWeekly": "Mako: {pct}%",
   "statsShareMonthly": "Wata: {pct}%",
   "statsShareBreakdown": "Bayani na mako:",
-
   "aboutTitle": "Game da PrayCalc",
   "aboutWebsite": "Yanar gizo",
   "aboutContact": "Tuntuɓi",
   "aboutLicenses": "Lasisi na Buɗe Tushe",
   "aboutCouldNotOpen": "Ba a iya buɗe hanyar haɗin ba.",
   "aboutCopyright": "© {year} Ummat Dev. An kiyaye dukkan haƙƙoƙi.\n\nAna lissafin lokutan salla ta amfani da injin pray_calc_dart. Daidaito ya dogara da wurin GPS ɗinku da hanyar lissafin da aka zaɓa.",
-
   "commonCancel": "Soke",
   "commonSave": "Ajiye",
   "commonDelete": "Share",
@@ -455,7 +426,6 @@
   "commonHelp": "Taimako",
   "commonLanguage": "Harshe",
   "commonOpenSettings": "Buɗe Saituna",
-
   "travelNotificationTitle": "Kuna tafiya yanzu",
   "travelNotificationBody": "Za a iya rage lokutan salla. Danna don sanin hukunce-hukuncen sallar musafiri.",
   "travelRulingsTitle": "Tafiya da Salla",
@@ -468,7 +438,6 @@
   "travelLearnMore": "Ƙarin bayani",
   "travelHanafiDefaultTitle": "Me Ya Sa PrayCalc Ke Amfani da Saita na Hanafi",
   "travelDeeperScholarly": "Tattaunawa ta Ilimi Mai Zurfi",
-
   "onboardingTitle1": "Lokutan salla, ko ina kuke",
   "onboardingBody1": "Lokutan salla masu daidaito na GPS don kowace birni a duniya. Asuba zuwa Isha'i, fitowar rana zuwa Qiyamu. Ana gudanar da shi ta injinmu na lissafi.",
   "onboardingTitle2": "Wurinku, lokutanku",
@@ -485,7 +454,6 @@
   "onboardingContinueWithoutAccount": "Ci gaba ba tare da asusu ba",
   "onboardingSigningIn": "Ana shiga…",
   "onboardingSelectLanguage": "Zaɓi Harshe",
-
   "duaDhikrTitle": "Addu'a da Zikiri",
   "duaDhikrTabDua": "Addu'o'i",
   "duaDhikrTabDhikr": "Zikiri",
@@ -494,13 +462,11 @@
   "duaDhikrTabEvening": "Yamma",
   "duaDhikrMorningAdhkar": "Azkar na Safiya",
   "duaDhikrEveningAdhkar": "Azkar na Yamma",
-
   "calGregToggle": "Greg",
   "calHijriToggle": "Hijiriya",
   "calYearlyTooltip": "Kalandar shekara",
   "calExportIcsTooltip": "Fitar da .ics",
   "calMagCol": "Mag",
-
   "qiblaShowOnMap": "Nuna a taswirar",
   "qiblaWaitingCompass": "Ana jiran kamfas...",
   "qiblaNoCompassSensor": "Babu na'urar kamfas. Ana nuna fuskantar Alƙibla a tsaye.",
@@ -512,7 +478,6 @@
   "qiblaYourLocation": "Wurinku",
   "qiblaGpsAccurate": "Daidai da GPS",
   "qiblaCityCenter": "Tsakiyar birni",
-
   "moonIlluminatedLabel": "Mai Haske",
   "moonAgeLabel": "Shekaru",
   "moonFirstQtr": "Kashi na Farko",
@@ -521,7 +486,6 @@
   "moonTomorrow": "Gobe",
   "moonDaysAway": "kwanaki {days}",
   "moonBeta": "Beta",
-
   "setHomeTitle": "Saita Wurin Gida",
   "setHomeSearchHint": "Nemo birni, ƙauye ko lambar gida…",
   "setHomeClear": "Share",
@@ -535,7 +499,6 @@
   "setHomeNoCitiesFound": "Ba a sami birane ba.",
   "setHomeSearchPrompt": "Nemo birnin gidanku",
   "setHomeSearchBody": "Rubuta sama don nema, ko yi amfani da wurinku na yanzu. Yanayin tafiya zai gano lokacin da kuke nesa da gida.",
-
   "subscriptionYouHavePlus": "Kuna da Ummat+",
   "subscriptionUpgradeTo": "Haɓaka zuwa Ummat+",
   "subscriptionThankYou": "Na gode da tallafin PrayCalc.",
@@ -550,7 +513,6 @@
   "subscriptionFeatureCalendar": "Kalandar wata",
   "subscriptionFeatureTasbeeh": "Ƙidayar tasbihi",
   "subscriptionFeatureMoon": "Wata da Hijiriya",
-
   "smartHomeAlertType": "Nau'in Faɗakarwa",
   "smartHomeAlertModal": "Cikakken allo",
   "smartHomeAlertCorner": "Sanarwa a kusurwa",
@@ -563,10 +525,8 @@
   "smartHomeAudioAdhan": "Azumi",
   "smartHomeAudioBeep": "Kara",
   "smartHomeAudioSilent": "Shiru",
-
   "aboutPrivacy": "Manufar Sirri",
   "aboutVersion": "Siga {version}",
-
   "notifDefaultAdhan": "Azumi na Asali",
   "notifFajrAdhan": "Azumin Asuba",
   "notifFajrAdhanSubtitle": "Ana buga shi a lokacin sallar Asuba",
@@ -574,7 +534,6 @@
   "notifRegularAdhanSubtitle": "Ana buga shi a Azahar, La'asar, Magariba, Isha'i",
   "notifPerPrayerSettings": "Saitunan Kowane Salla",
   "notifPreview": "Duba",
-
   "tvSettingsTitle": "Saitunan TV",
   "tvDisplayMode": "Yanayin Nuni",
   "tvMasjidMode": "Yanayin Masallaci",
@@ -613,7 +572,6 @@
   "tvPhotoCategoryTitle": "Nau'in Hoto",
   "tvEnterHint": "Shigar da {title}",
   "tvSystemDefault": "Saita na tsarin",
-
   "smartHomeIntegrations": "Haɗe-haɗe",
   "smartHomeLinkedSpeakers": "Na'urorin Sauti da Nuni da Aka Haɗa",
   "smartHomeAlertDisplay": "Nunin Faɗakarwa",
@@ -656,10 +614,8 @@
   "smartHomeLinkedStatus": "An Haɗa",
   "smartHomeNotLinkedStatus": "Ba a haɗa ba",
   "smartHomeCouldNotOpen": "Ba a iya buɗe hanyar haɗin ba.",
-
   "adhkarCompletedCount": "{completed} / {total} an kammala",
   "adhkarReset": "Sake Saita",
-
   "syncHistoryTitle": "Tarihin Daidaitawa",
   "syncClearHistory": "Share tarihi",
   "syncNoConflicts": "Ba a gano rikicin daidaitawa ba. Duk na'urori sun daidaita.",
@@ -670,12 +626,10 @@
   "syncTimeMinAgo": "minti {min} da suka gabata",
   "syncTimeHourAgo": "sa'o'i {hour} da suka gabata",
   "syncTimeDayAgo": "kwanaki {day} da suka gabata",
-
   "pinCity": "Maƙala",
   "pinMaxReached": "Iyakar birane 5 da aka maƙala. Haɓaka zuwa Ummat+ don ƙari.",
   "pinCityUnpinned": "An cire maƙalar {city}",
   "pinUndo": "Komawa",
-
   "smartHomeDevices": "Na'urori",
   "smartHomeAddDevice": "Ƙara Na'ura",
   "smartHomeDeleteDevice": "Share",
@@ -685,7 +639,9 @@
   "smartHomeDeviceLastSeen": "An gani a ƙarshe: {time}",
   "@smartHomeDeviceLastSeen": {
     "placeholders": {
-      "time": { "type": "String" }
+      "time": {
+        "type": "String"
+      }
     }
   },
   "smartHomeDeviceName": "Sunan na'ura",
@@ -711,7 +667,6 @@
   "smartHomeLoadingDevices": "Ana loda na'urori...",
   "smartHomeLoadingIntegrations": "Ana loda haɗin gwiwa...",
   "smartHomeServiceUnavailable": "Sabis na gida mai wayo ba ya samuwa a yanzu. Da fatan za a sake gwadawa daga baya.",
-
   "tvPairingScanQr": "Scan TV QR Code",
   "tvPairingScanInstruction": "Point your camera at the QR code on your TV",
   "tvPairingEnterManually": "Enter code manually",
@@ -725,6 +680,30 @@
   "tvPairingTimeout": "Request timed out. Is the TV on and connected?",
   "tvPairingServerError": "Could not connect to server.",
   "tvPairingSignInRequired": "Sign in to your account before pairing a TV.",
-
-  "tvJumuahGreeting": "Jumu'ah Mubarak"
+  "tvJumuahGreeting": "Jumu'ah Mubarak",
+  "desktopNextPrayer": "Sallah ta gaba…",
+  "desktopOpen": "Buɗe PrayCalc",
+  "desktopQuit": "Rufe PrayCalc",
+  "desktopSettings": "Saitunan…",
+  "desktopTrayTooltip": "PrayCalc – Lokutan Sallah",
+  "desktopTvDisplays": "Nuna TV…",
+  "statsBestStreak": "Mafi kyawun jerin",
+  "statsDailyGoalLabel": "{goal} sallah / rana",
+  "statsDailyGoalTitle": "Burin Sallah na Yau da kullum",
+  "statsGoalStreak": "Jerin Burin",
+  "statsHeatmapDetail": "{count} / 5 sallah an kammala",
+  "statsHeatmapNoData": "Babu sallah da aka rubuta a wannan rana",
+  "statsHeatmapTitle": "Shekara a Taƙaitace",
+  "tvChildFajrExplanation": "Fajr ita ce sallah ta safe. Muna tashi kafin fitowar rana don godiya ga Allah saboda sabon yini!",
+  "tvChildFajrFunFact": "Annabi ﷺ ya ce: \"Mafi kyawun sallah a wurin Allah ita ce Fajr ta Juma'a.\" (Bukhari)",
+  "tvChildSunriseExplanation": "Bayan Fajr, rana na fita. Wannan lokaci ne mai albarkar yin zikiri da karanta Alƙur'ani.",
+  "tvChildSunriseFunFact": "Zaune bayan Fajr har fitowar rana sannan ka yi raka'a biyu yana kawo lada cikakken Hajji! (Tirmidhi)",
+  "tvChildDhuhrExplanation": "Dhuhr ita ce sallah ta tsakar rana. Rana tana sama sosai, muna tsayawa don tunawa da Allah.",
+  "tvChildDhuhrFunFact": "Annabi ﷺ yana son ya yi sallah ta Dhuhr da wuri rana ta fara gangara. (Muslim)",
+  "tvChildAsrExplanation": "Asr ita ce sallah ta yamma. Allah ya rantse da wannan lokaci a Surah Al-Asr — yana da matukar muhimmanci!",
+  "tvChildAsrFunFact": "Barin sallah ta Asr kamar rasa iyali da dukiya. Haka Allah yake son ta! (Bukhari)",
+  "tvChildMaghribExplanation": "Maghrib ita ce sallah ta faɗuwar rana. Rana ta faɗi, muna godiya ga Allah saboda kyakkyawan yini.",
+  "tvChildMaghribFunFact": "Mala'ikun rana da dare suna haɗuwa a Fajr da Maghrib. Yana da matukar ban mamaki! (Bukhari)",
+  "tvChildIshaExplanation": "Isha ita ce sallah ta dare. Muna ƙare rana mu ta hanyar godiya ga Allah kafin mu yi barci.",
+  "tvChildIshaFunFact": "Yin Isha da Fajr a jama'a kamar yin sallah dukan dare ne! (Muslim)"
 }

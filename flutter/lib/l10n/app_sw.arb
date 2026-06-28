@@ -1,8 +1,6 @@
 {
   "@@locale": "sw",
-
   "appTitle": "PrayCalc",
-
   "prayerFajr": "Alfajiri",
   "prayerSunrise": "Macheo",
   "prayerDhuhr": "Adhuhuri",
@@ -12,7 +10,6 @@
   "prayerQiyam": "Qiyamu",
   "prayerSuhoor": "Daku",
   "prayerIftar": "Futari",
-
   "hijriMuharram": "Muharram",
   "hijriSafar": "Safar",
   "hijriRabiAlAwwal": "Rabiul-Awwal",
@@ -25,7 +22,6 @@
   "hijriShawwal": "Shawwal",
   "hijriDhulQidah": "Dhul-Qaada",
   "hijriDhulHijjah": "Dhul-Hijja",
-
   "monthJan": "Jan",
   "monthFeb": "Feb",
   "monthMar": "Mac",
@@ -38,7 +34,6 @@
   "monthOct": "Okt",
   "monthNov": "Nov",
   "monthDec": "Des",
-
   "monthJanuary": "Januari",
   "monthFebruary": "Februari",
   "monthMarch": "Machi",
@@ -51,7 +46,6 @@
   "monthOctober": "Oktoba",
   "monthNovember": "Novemba",
   "monthDecember": "Desemba",
-
   "dayMonShort": "Jtt",
   "dayTueShort": "Jnn",
   "dayWedShort": "Jtn",
@@ -59,7 +53,6 @@
   "dayFriShort": "Iju",
   "daySatShort": "Jms",
   "daySunShort": "Jpi",
-
   "dayMonday": "Jumatatu",
   "dayTuesday": "Jumanne",
   "dayWednesday": "Jumatano",
@@ -67,7 +60,6 @@
   "dayFriday": "Ijumaa",
   "daySaturday": "Jumamosi",
   "daySunday": "Jumapili",
-
   "daySuChart": "Jp",
   "dayMoChart": "Jt",
   "dayTuChart": "Jn",
@@ -75,7 +67,6 @@
   "dayThChart": "Al",
   "dayFrChart": "Ij",
   "daySaChart": "Jm",
-
   "chooseCityLabel": "Chagua jiji",
   "setCityFab": "Weka jiji",
   "prayerTimesError": "Haiwezi kukokotoa nyakati za sala.\n{error}",
@@ -84,7 +75,6 @@
   "ramadanDayProgress": "Siku {day} / 30",
   "lastTenNights": "Usiku 10 wa Mwisho",
   "laylatulQadr": "Laylatul Qadr",
-
   "homeSuffixAH": "H",
   "homeSuffixCE": "BK",
   "homeNoCitySelected": "Hakuna jiji lililochaguliwa",
@@ -95,7 +85,6 @@
   "homeActionDuaDhikr": "Dua &\nDhikri",
   "homeActionPrayerStats": "Takwimu\nza Sala",
   "homePolarBanner": "Nyakati {count} za sala haziwezi kukokotolewa kwa eneo lako katika kipindi hiki (jua la usiku wa manane / usiku wa polar). Jaribu makadirio ya latitudo ya karibu katika mipangilio.",
-
   "settingsTitle": "Mipangilio",
   "settingsSectionPrayerCalc": "Ukokotoaji wa Sala",
   "settingsCalcMethod": "Njia ya Ukokotoaji",
@@ -147,12 +136,10 @@
   "settingsTvSettings": "Mipangilio ya TV",
   "settingsTvSettingsSubtitle": "Hali ya msikiti, uambatanisho wa iqama, mazingira",
   "settingsAboutPrayCalc": "Kuhusu PrayCalc",
-
   "syncSynced": "Imesawazishwa",
   "syncSyncing": "Inasawazisha...",
   "syncOffline": "Nje ya mtandao",
   "syncError": "Hitilafu ya usawazishaji",
-
   "notifSettingsTitle": "Arifa na Adhana",
   "notifAdhanLabel": "Adhana",
   "notifReminderMinBefore": "Kikumbusho: dakika {minutes} kabla",
@@ -162,19 +149,16 @@
   "notifModeReminderOnly": "Kikumbusho tu",
   "notifModeArrival": "Wakati wa sala",
   "notifModeBoth": "Kikumbusho + wakati wa sala",
-
   "citySearchHint": "Tafuta jiji…",
   "citySearchDetectTooltip": "Tambua eneo langu",
   "citySearchNoCityGps": "Haiwezi kutambua jiji kutoka GPS.",
   "citySearchPermissionDenied": "Ruhusa ya eneo imekataliwa. Tafuta kwa mkono.",
   "citySearchNoResults": "Hakuna miji iliyopatikana.",
   "citySearchStartTyping": "Anza kuandika kutafuta…",
-
   "agendasTitle": "Ratiba za Sala",
   "agendasEmpty": "Hakuna ratiba bado.\nGusa + kuongeza kikumbusho kilichounganishwa na sala zako.",
   "agendasUndo": "Tendua",
   "agendasRemoved": "{label} imeondolewa",
-
   "agendaNewTitle": "Ratiba Mpya",
   "agendaEditTitle": "Hariri Ratiba",
   "agendaSave": "Hifadhi",
@@ -196,7 +180,6 @@
   "agendaDayW": "Jt",
   "agendaDayF": "Ij",
   "agendaDayS": "Jm",
-
   "moonTitle": "Mwezi na Kalenda ya Hijri",
   "moonIlluminated": "{pct}% iliyoangazwa",
   "moonFullTonight": "Mwezi mpevu usiku huu!",
@@ -247,7 +230,6 @@
   "moonUpcomingIslamicEvents": "Matukio ya Kiislamu Yanayokuja",
   "moonTodayLabel": "Leo",
   "moonTomorrowLabel": "Kesho",
-
   "calDateCol": "Tarehe",
   "calHijriCol": "Hijri",
   "calFajrCol": "Alfajiri",
@@ -262,7 +244,6 @@
   "calNextMonthTooltip": "Mwezi ujao",
   "calExportHeader": "PrayCalc — {month}",
   "calExportSubject": "Nyakati za Sala — {month}",
-
   "qiblaTitle": "Qibla",
   "qiblaSwitchToCompass": "Badili kwa dira",
   "qiblaSwitchToAR": "Badili kwa kamera ya AR",
@@ -274,7 +255,6 @@
   "qiblaDistKm": "km {dist} kutoka Kaaba",
   "qiblaDistThousandKm": "{dist}K km kutoka Kaaba",
   "qiblaFacingQibla": "Unakabili Qibla ✓",
-
   "tasbeehTitle": "Tasbihi",
   "tasbeehResetTooltip": "Weka upya",
   "tasbeehTapToSwitch": "Gusa lebo kubadili",
@@ -288,7 +268,6 @@
   "tasbeehNoHistory": "Hakuna historia bado — anza kuhesabu!",
   "tasbeehComplete": "Tasbihi imekamilika! dhikri {count}",
   "tasbeehPresetComplete": "✓ {label} × {target}",
-
   "smartHomeTitle": "Nyumba Erevu",
   "smartHomeSubtitle": "Unganisha vifaa vyako na nyakati za sala",
   "smartHomeGoogleHome": "Google Home",
@@ -308,7 +287,6 @@
   "smartHomeTestConnection": "Jaribu Muunganisho",
   "smartHomeConnectionSuccess": "Imeunganishwa kwa mafanikio",
   "smartHomeConnectionFailed": "Muunganisho umeshindwa. Angalia kiungo cha akaunti yako.",
-
   "subscriptionTitle": "Ummat+",
   "subscriptionSubtitle": "Vipengele vya hali ya juu vya nyakati za sala",
   "subscriptionUpgrade": "Panda daraja hadi Ummat+",
@@ -329,19 +307,16 @@
   "subscriptionFeatureWatch": "Vipengele vya saa",
   "subscriptionFeatureSync": "Usawazishaji kati ya vifaa",
   "subscriptionFeatureAdFree": "Uzoefu bila matangazo",
-
   "watchTitle": "Saa",
   "watchNextPrayer": "Sala Inayofuata",
   "watchAllPrayers": "Sala Zote",
   "watchComplication": "Kipengele",
-
   "nextPrayer": "Sala inayofuata",
   "allPrayers": "Sala zote",
   "today": "Leo",
   "tomorrow": "Kesho",
   "thisWeek": "Wiki hii",
   "thisMonth": "Mwezi huu",
-
   "loginCreateAccount": "Unda Akaunti",
   "loginSignIn": "Ingia",
   "loginWelcomeBack": "Karibu tena",
@@ -363,7 +338,6 @@
   "loginResetFailed": "Haikuweza kutuma barua pepe ya kuweka upya",
   "loginNewToPrayCalc": "Mpya katika PrayCalc?",
   "loginAlreadyHaveAccount": "Tayari una akaunti?",
-
   "accountTitle": "Akaunti",
   "accountNotSignedIn": "Haujaingia",
   "accountSyncSection": "Usawazishaji",
@@ -390,7 +364,6 @@
   "accountTimeMinAgo": "dakika {min} zilizopita",
   "accountTimeHourAgo": "saa {hour} zilizopita",
   "accountTimeDayAgo": "siku {day} zilizopita",
-
   "statsTitle": "Takwimu za Sala",
   "statsShareTooltip": "Shiriki takwimu",
   "statsTodayPrayers": "Sala za Leo",
@@ -411,14 +384,12 @@
   "statsShareWeekly": "Wiki: {pct}%",
   "statsShareMonthly": "Mwezi: {pct}%",
   "statsShareBreakdown": "Uchambuzi wa wiki:",
-
   "aboutTitle": "Kuhusu PrayCalc",
   "aboutWebsite": "Tovuti",
   "aboutContact": "Wasiliana",
   "aboutLicenses": "Leseni za Chanzo Huria",
   "aboutCouldNotOpen": "Haikuweza kufungua kiungo.",
   "aboutCopyright": "© {year} Ummat Dev. Haki zote zimehifadhiwa.\n\nNyakati za sala zinakokotolewa kwa injini ya pray_calc_dart. Usahihi unategemea eneo lako la GPS na njia ya ukokotoaji iliyochaguliwa.",
-
   "commonCancel": "Ghairi",
   "commonSave": "Hifadhi",
   "commonDelete": "Futa",
@@ -455,7 +426,6 @@
   "commonHelp": "Msaada",
   "commonLanguage": "Lugha",
   "commonOpenSettings": "Fungua Mipangilio",
-
   "travelNotificationTitle": "Uko safarini sasa",
   "travelNotificationBody": "Nyakati za sala zinaweza kufupishwa. Gusa kujifunza kuhusu hukumu za sala ya msafiri.",
   "travelRulingsTitle": "Safari na Sala",
@@ -468,7 +438,6 @@
   "travelLearnMore": "Jifunze zaidi",
   "travelHanafiDefaultTitle": "Kwa Nini PrayCalc Inatumia Chaguo la Hanafi",
   "travelDeeperScholarly": "Mjadala wa Kina wa Kisomi",
-
   "onboardingTitle1": "Nyakati za sala, popote ulipo",
   "onboardingBody1": "Nyakati za sala sahihi za GPS kwa kila jiji duniani. Alfajiri hadi Ishaa, macheo hadi Qiyamu. Inaendeshwa na injini yetu ya ukokotoaji, iliyojengwa kwa usahihi.",
   "onboardingTitle2": "Eneo lako, nyakati zako",
@@ -485,7 +454,6 @@
   "onboardingContinueWithoutAccount": "Endelea bila akaunti",
   "onboardingSigningIn": "Inaingia…",
   "onboardingSelectLanguage": "Chagua Lugha",
-
   "duaDhikrTitle": "Dua na Dhikri",
   "duaDhikrTabDua": "Dua",
   "duaDhikrTabDhikr": "Dhikri",
@@ -494,13 +462,11 @@
   "duaDhikrTabEvening": "Jioni",
   "duaDhikrMorningAdhkar": "Adhkari za Asubuhi",
   "duaDhikrEveningAdhkar": "Adhkari za Jioni",
-
   "calGregToggle": "Greg",
   "calHijriToggle": "Hijri",
   "calYearlyTooltip": "Kalenda ya mwaka",
   "calExportIcsTooltip": "Hamisha .ics",
   "calMagCol": "Mag",
-
   "qiblaShowOnMap": "Onyesha kwenye ramani",
   "qiblaWaitingCompass": "Inasubiri dira...",
   "qiblaNoCompassSensor": "Hakuna sensori ya dira. Inaonyesha mwelekeo wa Qibla kisimamo.",
@@ -512,7 +478,6 @@
   "qiblaYourLocation": "Eneo lako",
   "qiblaGpsAccurate": "Sahihi ya GPS",
   "qiblaCityCenter": "Katikati ya jiji",
-
   "moonIlluminatedLabel": "Iliyoangazwa",
   "moonAgeLabel": "Umri",
   "moonFirstQtr": "Robo ya Kwanza",
@@ -521,7 +486,6 @@
   "moonTomorrow": "Kesho",
   "moonDaysAway": "siku {days}",
   "moonBeta": "Beta",
-
   "setHomeTitle": "Weka Eneo la Nyumbani",
   "setHomeSearchHint": "Tafuta jiji, mji au msimbo wa posta…",
   "setHomeClear": "Futa",
@@ -535,7 +499,6 @@
   "setHomeNoCitiesFound": "Hakuna miji iliyopatikana.",
   "setHomeSearchPrompt": "Tafuta jiji lako la nyumbani",
   "setHomeSearchBody": "Andika hapo juu kutafuta, au tumia eneo lako la sasa. Hali ya safari itatambua unapokuwa mbali na nyumbani.",
-
   "subscriptionYouHavePlus": "Una Ummat+",
   "subscriptionUpgradeTo": "Panda daraja hadi Ummat+",
   "subscriptionThankYou": "Asante kwa kuunga mkono PrayCalc.",
@@ -550,7 +513,6 @@
   "subscriptionFeatureCalendar": "Kalenda ya mwezi",
   "subscriptionFeatureTasbeeh": "Kihesabu cha tasbihi",
   "subscriptionFeatureMoon": "Mwezi na Hijri",
-
   "smartHomeAlertType": "Aina ya Tahadhari",
   "smartHomeAlertModal": "Kidirisha cha skrini kamili",
   "smartHomeAlertCorner": "Arifa ya kona",
@@ -563,10 +525,8 @@
   "smartHomeAudioAdhan": "Adhana",
   "smartHomeAudioBeep": "Bipu",
   "smartHomeAudioSilent": "Kimya",
-
   "aboutPrivacy": "Sera ya Faragha",
   "aboutVersion": "Toleo {version}",
-
   "notifDefaultAdhan": "Adhana ya Kawaida",
   "notifFajrAdhan": "Adhana ya Alfajiri",
   "notifFajrAdhanSubtitle": "Inachezwa wakati wa sala ya Alfajiri",
@@ -574,7 +534,6 @@
   "notifRegularAdhanSubtitle": "Inachezwa wakati wa Adhuhuri, Alasiri, Magharibi, Ishaa",
   "notifPerPrayerSettings": "Mipangilio kwa Kila Sala",
   "notifPreview": "Hakiki",
-
   "tvSettingsTitle": "Mipangilio ya TV",
   "tvDisplayMode": "Hali ya Onyesho",
   "tvMasjidMode": "Hali ya Msikiti",
@@ -613,7 +572,6 @@
   "tvPhotoCategoryTitle": "Aina ya Picha",
   "tvEnterHint": "Weka {title}",
   "tvSystemDefault": "Chaguo la mfumo",
-
   "smartHomeIntegrations": "Muunganisho",
   "smartHomeLinkedSpeakers": "Spika na Onyesho Zilizounganishwa",
   "smartHomeAlertDisplay": "Onyesho la Tahadhari",
@@ -656,10 +614,8 @@
   "smartHomeLinkedStatus": "Imeunganishwa",
   "smartHomeNotLinkedStatus": "Haijaunganishwa",
   "smartHomeCouldNotOpen": "Haikuweza kufungua kiungo.",
-
   "adhkarCompletedCount": "{completed} / {total} imekamilika",
   "adhkarReset": "Weka Upya",
-
   "syncHistoryTitle": "Historia ya Usawazishaji",
   "syncClearHistory": "Futa historia",
   "syncNoConflicts": "Hakuna migogoro ya usawazishaji iliyotambuliwa. Vifaa vyote vimesawazishwa.",
@@ -670,12 +626,10 @@
   "syncTimeMinAgo": "dakika {min} zilizopita",
   "syncTimeHourAgo": "saa {hour} zilizopita",
   "syncTimeDayAgo": "siku {day} zilizopita",
-
   "pinCity": "Bandika",
   "pinMaxReached": "Upeo wa miji 5 iliyobandikwa. Panda daraja hadi Ummat+ kwa zaidi.",
   "pinCityUnpinned": "{city} imebandulishwa",
   "pinUndo": "Tendua",
-
   "smartHomeDevices": "Vifaa",
   "smartHomeAddDevice": "Ongeza Kifaa",
   "smartHomeDeleteDevice": "Futa",
@@ -685,7 +639,9 @@
   "smartHomeDeviceLastSeen": "Ilionekana mwisho: {time}",
   "@smartHomeDeviceLastSeen": {
     "placeholders": {
-      "time": { "type": "String" }
+      "time": {
+        "type": "String"
+      }
     }
   },
   "smartHomeDeviceName": "Jina la kifaa",
@@ -711,7 +667,6 @@
   "smartHomeLoadingDevices": "Inapakia vifaa...",
   "smartHomeLoadingIntegrations": "Inapakia miunganisho...",
   "smartHomeServiceUnavailable": "Huduma ya nyumba smart haipatikani kwa sasa. Tafadhali jaribu tena baadaye.",
-
   "tvPairingScanQr": "Scan TV QR Code",
   "tvPairingScanInstruction": "Point your camera at the QR code on your TV",
   "tvPairingEnterManually": "Enter code manually",
@@ -725,6 +680,30 @@
   "tvPairingTimeout": "Request timed out. Is the TV on and connected?",
   "tvPairingServerError": "Could not connect to server.",
   "tvPairingSignInRequired": "Sign in to your account before pairing a TV.",
-
-  "tvJumuahGreeting": "Jumu'ah Mubarak"
+  "tvJumuahGreeting": "Jumu'ah Mubarak",
+  "desktopNextPrayer": "Swala Inayofuata…",
+  "desktopOpen": "Fungua PrayCalc",
+  "desktopQuit": "Funga PrayCalc",
+  "desktopSettings": "Mipangilio…",
+  "desktopTrayTooltip": "PrayCalc – Nyakati za Swala",
+  "desktopTvDisplays": "Maonyesho ya TV…",
+  "statsBestStreak": "Msururu Bora",
+  "statsDailyGoalLabel": "{goal} swala / siku",
+  "statsDailyGoalTitle": "Lengo la Swala la Kila Siku",
+  "statsGoalStreak": "Msururu wa Lengo",
+  "statsHeatmapDetail": "{count} / 5 swala zimekamilika",
+  "statsHeatmapNoData": "Hakuna swala zilizorekodiwa kwa siku hii",
+  "statsHeatmapTitle": "Muhtasari wa Mwaka",
+  "tvChildFajrExplanation": "Fajr ni swala ya asubuhi. Tunaamka kabla ya jua kuchomoza ili kumshukuru Allah kwa siku mpya!",
+  "tvChildFajrFunFact": "Nabii ﷺ alisema: \"Swala bora mbele ya Allah ni Fajr ya Ijumaa.\" (Bukhari)",
+  "tvChildSunriseExplanation": "Baada ya Fajr, jua linachomoza. Huu ni wakati wa baraka wa kufanya dhikr na kusoma Qurani.",
+  "tvChildSunriseFunFact": "Kukaa baada ya Fajr hadi jua lichomoe kisha kuswali rakaa mbili huingiza thawabu ya Hija kamili! (Tirmidhi)",
+  "tvChildDhuhrExplanation": "Dhuhr ni swala ya adhuhuri. Jua liko juu zaidi angani, nasi tunasimama kwa dakika kukumbuka Allah.",
+  "tvChildDhuhrFunFact": "Nabii ﷺ alipenda kuswali Dhuhr mapema jua linapoanza kushuka. (Muslim)",
+  "tvChildAsrExplanation": "Asar ni swala ya alasiri. Allah anaapa kwa wakati huu katika Surah Al-Asar — ni muhimu sana!",
+  "tvChildAsrFunFact": "Kukosa swala ya Asar ni kama kupoteza familia na mali yako. Ndivyo Allah anavyoipenda! (Bukhari)",
+  "tvChildMaghribExplanation": "Maghrib ni swala ya machweo ya jua. Jua linapotua, tunamshukuru Allah kwa siku nzuri.",
+  "tvChildMaghribFunFact": "Malaika wa mchana na usiku wanakutana wakati wa Fajr na Maghrib. Jinsi inavyostaajabu! (Bukhari)",
+  "tvChildIshaExplanation": "Isha ni swala ya usiku. Tunamaliza siku yetu kwa kumshukuru Allah kabla ya kulala.",
+  "tvChildIshaFunFact": "Kuswali Isha na Fajr kwa jamaa ni kama kuswali usiku mzima! (Muslim)"
 }

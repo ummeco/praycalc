@@ -1,8 +1,6 @@
 {
   "@@locale": "so",
-
   "appTitle": "PrayCalc",
-
   "prayerFajr": "Fajr",
   "prayerSunrise": "Qorrax-soo-bax",
   "prayerDhuhr": "Dhuhr",
@@ -12,7 +10,6 @@
   "prayerQiyam": "Qiyaam",
   "prayerSuhoor": "Suxuur",
   "prayerIftar": "Afuur",
-
   "hijriMuharram": "Muharram",
   "hijriSafar": "Safar",
   "hijriRabiAlAwwal": "Rabi' al-Awwal",
@@ -25,7 +22,6 @@
   "hijriShawwal": "Shawwal",
   "hijriDhulQidah": "Dhu al-Qi'dah",
   "hijriDhulHijjah": "Dhu al-Hijjah",
-
   "monthJan": "Jan",
   "monthFeb": "Feb",
   "monthMar": "Mar",
@@ -38,7 +34,6 @@
   "monthOct": "Okt",
   "monthNov": "Nof",
   "monthDec": "Dis",
-
   "monthJanuary": "Janaayo",
   "monthFebruary": "Febraayo",
   "monthMarch": "Maarso",
@@ -51,7 +46,6 @@
   "monthOctober": "Oktoobar",
   "monthNovember": "Nofembar",
   "monthDecember": "Disembar",
-
   "dayMonShort": "Isn",
   "dayTueShort": "Tal",
   "dayWedShort": "Arb",
@@ -59,7 +53,6 @@
   "dayFriShort": "Jim",
   "daySatShort": "Sab",
   "daySunShort": "Axd",
-
   "dayMonday": "Isniin",
   "dayTuesday": "Talaado",
   "dayWednesday": "Arbaco",
@@ -67,7 +60,6 @@
   "dayFriday": "Jimce",
   "daySaturday": "Sabti",
   "daySunday": "Axad",
-
   "daySuChart": "Ax",
   "dayMoChart": "Is",
   "dayTuChart": "Ta",
@@ -75,7 +67,6 @@
   "dayThChart": "Kh",
   "dayFrChart": "Ji",
   "daySaChart": "Sa",
-
   "chooseCityLabel": "Dooro magaalo",
   "setCityFab": "Dejiso magaalo",
   "prayerTimesError": "Lama xisaabin karin waqtiyada salaadda.\n{error}",
@@ -84,7 +75,6 @@
   "ramadanDayProgress": "Maalin {day} / 30",
   "lastTenNights": "10-da Habeenkii Ugu Dambeeyay",
   "laylatulQadr": "Laylatul Qadr",
-
   "homeSuffixAH": "H",
   "homeSuffixCE": "M",
   "homeNoCitySelected": "Magaalo lama dooran",
@@ -95,7 +85,6 @@
   "homeActionDuaDhikr": "Ducada &\nDhikriga",
   "homeActionPrayerStats": "Tirada\nSalaadda",
   "homePolarBanner": "{count} waqtiyada salaadda looma xisaabin karo goobta aad joogto xiligan (qorrax-habeenka dhexe / habeenka cirifka). Isku day qiyaasta latitude-ka ugu dhow ee settings-ka.",
-
   "settingsTitle": "Dejinta",
   "settingsSectionPrayerCalc": "Xisaabinta Salaadda",
   "settingsCalcMethod": "Habka Xisaabinta",
@@ -147,12 +136,10 @@
   "settingsTvSettings": "Dejinta TV",
   "settingsTvSettingsSubtitle": "Qaabka masjidka, kala duwanaashada iqaamah, deegaanka",
   "settingsAboutPrayCalc": "Ku saabsan PrayCalc",
-
   "syncSynced": "Waa la isku mid noqday",
   "syncSyncing": "Waa la isku mid noqonayaa...",
   "syncOffline": "Offline",
   "syncError": "Khalad isku-mid-noqod",
-
   "notifSettingsTitle": "Ogeysiisyada & Adhaanka",
   "notifAdhanLabel": "Adhaan",
   "notifReminderMinBefore": "Xusuusin: {minutes} daqiiqo ka hor",
@@ -162,19 +149,16 @@
   "notifModeReminderOnly": "Xusuusin kaliya",
   "notifModeArrival": "Waqtiga salaadda",
   "notifModeBoth": "Xusuusin + waqtiga",
-
   "citySearchHint": "Raadi magaalo…",
   "citySearchDetectTooltip": "Ogaaw goobta aan joogto",
   "citySearchNoCityGps": "Lagama helin magaalada GPS-ka.",
   "citySearchPermissionDenied": "Ogolaanshaha goobta waa la diiday. Gacanta ku raadi.",
   "citySearchNoResults": "Magaalo lama helin.",
   "citySearchStartTyping": "Bilow qorista si aad u raadiso…",
-
   "agendasTitle": "Ajendaha Salaadda",
   "agendasEmpty": "Wali ma jirto ajenda.\nTaabo + si aad ugu darto xusuusin ku xiran salaadadaada.",
   "agendasUndo": "Ka noqo",
   "agendasRemoved": "{label} waa la saaray",
-
   "agendaNewTitle": "Ajenda Cusub",
   "agendaEditTitle": "Wax ka Beddel Ajendaha",
   "agendaSave": "Kaydi",
@@ -196,7 +180,6 @@
   "agendaDayW": "A",
   "agendaDayF": "J",
   "agendaDayS": "S",
-
   "moonTitle": "Dayaxa & Taariikhda Hijriga",
   "moonIlluminated": "{pct}% iftiin",
   "moonFullTonight": "Dayax buuxa caawa!",
@@ -224,7 +207,6 @@
   "hijriTodayLabel": "Maanta Taariikhda Hijriga",
   "ramadanBeginsLabel": "Ramadaan {year} H bilaabmo",
   "ramadanDaysAway": "{days} maalmood ka maqan",
-
   "calDateCol": "Taariikh",
   "calHijriCol": "Hijri",
   "calFajrCol": "Fajr",
@@ -239,7 +221,6 @@
   "calNextMonthTooltip": "Bisha xigta",
   "calExportHeader": "PrayCalc — {month}",
   "calExportSubject": "Waqtiyada Salaadda — {month}",
-
   "qiblaTitle": "Qibla",
   "qiblaSwitchToCompass": "U beddel compass-ka",
   "qiblaSwitchToAR": "U beddel kaamiraddaAR",
@@ -251,7 +232,6 @@
   "qiblaDistKm": "{dist} km Kacbada",
   "qiblaDistThousandKm": "{dist}K km Kacbada",
   "qiblaFacingQibla": "Waxaad u jeedaa Qiblada ✓",
-
   "tasbeehTitle": "Tasbiix",
   "tasbeehResetTooltip": "Dib u deji",
   "tasbeehTapToSwitch": "Taabo cinwaanka si aad u beddesho",
@@ -265,7 +245,6 @@
   "tasbeehNoHistory": "Wali taariikhma jirto — bilow tirinta!",
   "tasbeehComplete": "Tasbiixda waa la dhammeeyay! {count} dhikr",
   "tasbeehPresetComplete": "✓ {label} × {target}",
-
   "smartHomeTitle": "Guriga Casriga",
   "smartHomeSubtitle": "Ku xir aaladahaaga waqtiyada salaadda",
   "smartHomeGoogleHome": "Google Home",
@@ -285,7 +264,6 @@
   "smartHomeTestConnection": "Tijaabi Xiriirka",
   "smartHomeConnectionSuccess": "Si guul leh ayaa loo xiray",
   "smartHomeConnectionFailed": "Xiriirku waa guul-darreystay. Hubi xiritaanka akoonkaaga.",
-
   "subscriptionTitle": "Ummat+",
   "subscriptionSubtitle": "Sifooyinka salaadda premium-ka",
   "subscriptionUpgrade": "U kor u qaad Ummat+",
@@ -306,26 +284,22 @@
   "subscriptionFeatureWatch": "Saacadda complications",
   "subscriptionFeatureSync": "Isku mid-noqoshada aaladaha",
   "subscriptionFeatureAdFree": "Khibrad xayeysiis la'aan ah",
-
   "tvTitle": "Muuqaalka TV",
   "tvMasjidMode": "Qaabka Masjidka",
   "tvAmbientMode": "Qaabka Deegaanka",
   "tvSettingsIqamah": "Kala duwanaashada Iqaamah",
   "tvSettingsAnnouncements": "Ogeysiisyo",
   "tvConnectQR": "Sawir si aad u xirto",
-
   "watchTitle": "Saacadda",
   "watchNextPrayer": "Salaadda Xigta",
   "watchAllPrayers": "Dhammaan Salaadaha",
   "watchComplication": "Complication",
-
   "nextPrayer": "Salaadda xigta",
   "allPrayers": "Dhammaan salaadaha",
   "today": "Maanta",
   "tomorrow": "Berri",
   "thisWeek": "Toddobaadkan",
   "thisMonth": "Bishan",
-
   "loginCreateAccount": "Samee Akoon",
   "loginSignIn": "Soo Gal",
   "loginWelcomeBack": "Ku soo dhawoow mar kale",
@@ -347,7 +321,6 @@
   "loginResetFailed": "Lama diri karin iimayl-ka dib-u-dejinta",
   "loginNewToPrayCalc": "Cusub PrayCalc?",
   "loginAlreadyHaveAccount": "Horey ma u leedahay akoon?",
-
   "accountTitle": "Akoonka",
   "accountNotSignedIn": "Lama soo gelin",
   "accountSyncSection": "Isku mid noqod",
@@ -374,7 +347,6 @@
   "accountTimeMinAgo": "{min}d ka hor",
   "accountTimeHourAgo": "{hour}s ka hor",
   "accountTimeDayAgo": "{day}m ka hor",
-
   "statsTitle": "Tirada Salaadda",
   "statsShareTooltip": "La wadaag tirada",
   "statsTodayPrayers": "Salaadaha Maanta",
@@ -395,14 +367,12 @@
   "statsShareWeekly": "Toddobaadlaha: {pct}%",
   "statsShareMonthly": "Bishiiba: {pct}%",
   "statsShareBreakdown": "Faahfaahinta toddobaadlaha:",
-
   "aboutTitle": "Ku saabsan PrayCalc",
   "aboutWebsite": "Websaydhka",
   "aboutContact": "La xiriir",
   "aboutLicenses": "Shatiyada Open Source",
   "aboutCouldNotOpen": "Lama furin karin xiriirka.",
   "aboutCopyright": "© {year} Ummat Dev. Dhammaan xuquuqda way dhowrsanyihiin.\n\nWaqtiyada salaadda waxaa lagu xisaabiyaa matoorka pray_calc_dart. Saxda waxay ku xiran tahay goobta GPS iyo habka xisaabinta la doortay.",
-
   "commonCancel": "Ka noqo",
   "commonSave": "Kaydi",
   "commonDelete": "Tirtir",
@@ -439,7 +409,6 @@
   "commonHelp": "Caawimaad",
   "commonLanguage": "Luqadda",
   "commonOpenSettings": "Fur Dejinta",
-
   "travelNotificationTitle": "Hadda waxaad safrayaysaa",
   "travelNotificationBody": "Waqtiyada salaadda laga yaabaa in la gaabsiiyo. Taabo si aad wax uga barato xukmaha safarka.",
   "travelRulingsTitle": "Safar & Salaad",
@@ -452,7 +421,6 @@
   "travelLearnMore": "Wax badan baro",
   "travelHanafiDefaultTitle": "Sababta PrayCalc uu u Isticmaalo Default-ka Xanafiga",
   "travelDeeperScholarly": "Dood Cilmiyeed Qoto Dheer",
-
   "onboardingTitle1": "Waqtiyada salaadda, meel kasta oo aad joogto",
   "onboardingBody1": "Waqtiyada salaadda ee GPS-ku sax u yahay magaalo kasta oo dhulka ah. Fajr ilaa Isha, qorrax-soo-bax ilaa Qiyaam. Matoorkeena xisaabinta oo u dhisan saxnaanta.",
   "onboardingTitle2": "Goobta aad joogto, waqtiyadaada",
@@ -469,7 +437,6 @@
   "onboardingContinueWithoutAccount": "Ku sii wad akoon la'aan",
   "onboardingSigningIn": "Waa la soo galayaa…",
   "onboardingSelectLanguage": "Dooro Luqad",
-
   "duaDhikrTitle": "Ducada & Dhikriga",
   "duaDhikrTabDua": "Duco",
   "duaDhikrTabDhikr": "Dhikr",
@@ -478,13 +445,11 @@
   "duaDhikrTabEvening": "Fiid",
   "duaDhikrMorningAdhkar": "Adhkaar Subax",
   "duaDhikrEveningAdhkar": "Adhkaar Fiid",
-
   "calGregToggle": "Greg",
   "calHijriToggle": "Hijri",
   "calYearlyTooltip": "Taariikhda sannadka",
   "calExportIcsTooltip": "Dhigaal .ics",
   "calMagCol": "Mag",
-
   "qiblaShowOnMap": "Ku muuji khariidadda",
   "qiblaWaitingCompass": "Waa la sugayaa compass-ka...",
   "qiblaNoCompassSensor": "Sensor compass ma jiro. Waxaa la muujinayaa jihada Qiblada si taagan.",
@@ -496,7 +461,6 @@
   "qiblaYourLocation": "Goobta aad joogto",
   "qiblaGpsAccurate": "GPS sax ah",
   "qiblaCityCenter": "Bartamaha magaalada",
-
   "moonIlluminatedLabel": "Iftiin",
   "moonAgeLabel": "Da'da",
   "moonFirstQtr": "Rubucii Koowaad",
@@ -505,7 +469,6 @@
   "moonTomorrow": "Berri",
   "moonDaysAway": "{days}m",
   "moonBeta": "Beta",
-
   "moonLunarCycle": "Wareegga Dayaxa",
   "moonDayOfCycle": "Maalin {day} ka mid ah ~29.5",
   "moonHilalSightingForecast": "Saadaasha Arkida Hilaasha",
@@ -529,7 +492,6 @@
   "moonUpcomingIslamicEvents": "Munaasabadaha Islaamiga Soo Socda",
   "moonTodayLabel": "Maanta",
   "moonTomorrowLabel": "Berri",
-
   "setHomeTitle": "Deji Goobta Guriga",
   "setHomeSearchHint": "Raadi magaalo, tuulo ama zip…",
   "setHomeClear": "Nadiifi",
@@ -543,7 +505,6 @@
   "setHomeNoCitiesFound": "Magaalo lama helin.",
   "setHomeSearchPrompt": "Raadi magaaladaada guriga",
   "setHomeSearchBody": "Kor ku qor si aad u raadiso, ama isticmaal goobta aad hadda joogto. Qaabka safarka wuxuu ogaan doonaa marka aad ka maqan tahay guriga.",
-
   "subscriptionYouHavePlus": "Waxaad leedahay Ummat+",
   "subscriptionUpgradeTo": "U kor u qaad Ummat+",
   "subscriptionThankYou": "Waad ku mahadsan tahay taageerada PrayCalc.",
@@ -558,7 +519,6 @@
   "subscriptionFeatureCalendar": "Taariikhda bishiiba",
   "subscriptionFeatureTasbeeh": "Tiriyaha Tasbiixda",
   "subscriptionFeatureMoon": "Dayaxa & Hijri",
-
   "smartHomeAlertType": "Nooca Digniin",
   "smartHomeAlertModal": "Shaashad-buuxda modal",
   "smartHomeAlertCorner": "Ogeysiis geeska",
@@ -571,10 +531,8 @@
   "smartHomeAudioAdhan": "Adhaan",
   "smartHomeAudioBeep": "Dhawaaq",
   "smartHomeAudioSilent": "Aamusnaan",
-
   "aboutPrivacy": "Siyaasadda Asturnaanta",
   "aboutVersion": "Nooca {version}",
-
   "notifDefaultAdhan": "Adhaanka Caadiga",
   "notifFajrAdhan": "Adhaanka Fajr",
   "notifFajrAdhanSubtitle": "Waxaa la ciyaaraa waqtiga salaadda Fajr",
@@ -582,7 +540,6 @@
   "notifRegularAdhanSubtitle": "Waxaa la ciyaaraa Dhuhr, Asr, Maghrib, Isha",
   "notifPerPrayerSettings": "Dejinta Salaat kasta",
   "notifPreview": "Hordhac",
-
   "tvSettingsTitle": "Dejinta TV",
   "tvDisplayMode": "Qaabka Muuqaalka",
   "tvMasjidModeSubtitle": "Muuqaal calaamad weyn oo leh waqtiyada iqaamah",
@@ -620,7 +577,6 @@
   "tvPhotoCategoryTitle": "Qaybta Sawirka",
   "tvEnterHint": "Gali {title}",
   "tvSystemDefault": "Caadiga nidaamka",
-
   "smartHomeIntegrations": "Isdhexgelinta",
   "smartHomeLinkedSpeakers": "Speakers & Shaashado La Xiray",
   "smartHomeAlertDisplay": "Muuqaalka Digniinta",
@@ -663,10 +619,8 @@
   "smartHomeLinkedStatus": "Waa La Xiray",
   "smartHomeNotLinkedStatus": "Lama xirin",
   "smartHomeCouldNotOpen": "Lama furin karin xiriirka.",
-
   "adhkarCompletedCount": "{completed} / {total} la dhammeeyay",
   "adhkarReset": "Dib u deji",
-
   "syncHistoryTitle": "Taariikhda Isku Mid Noqodka",
   "syncClearHistory": "Tirtir taariikhda",
   "syncNoConflicts": "Khilaaf isku mid noqod lama helin. Dhammaan aaladaha waa isku mid yihiin.",
@@ -677,12 +631,10 @@
   "syncTimeMinAgo": "{min}d ka hor",
   "syncTimeHourAgo": "{hour}s ka hor",
   "syncTimeDayAgo": "{day}m ka hor",
-
   "pinCity": "Xidhidh",
   "pinMaxReached": "Ugu badnaan 5 magaalo la xidhay. U kor u qaad Ummat+ si aad wax badan u hesho.",
   "pinCityUnpinned": "{city} waa la furturay",
   "pinUndo": "Ka noqo",
-
   "smartHomeDevices": "Aaladaha",
   "smartHomeAddDevice": "Ku dar Aalad",
   "smartHomeDeleteDevice": "Tirtir",
@@ -692,7 +644,9 @@
   "smartHomeDeviceLastSeen": "Markii ugu dambeysay la arkay: {time}",
   "@smartHomeDeviceLastSeen": {
     "placeholders": {
-      "time": { "type": "String" }
+      "time": {
+        "type": "String"
+      }
     }
   },
   "smartHomeDeviceName": "Magaca aaladda",
@@ -718,7 +672,6 @@
   "smartHomeLoadingDevices": "Aaladaha waa la soo rarayaa...",
   "smartHomeLoadingIntegrations": "Isku xidhka waa la soo rarayaa...",
   "smartHomeServiceUnavailable": "Adeegga guriga casriga ah hadda ma diyaara. Fadlan dib u isku day hadhow.",
-
   "tvPairingScanQr": "Scan TV QR Code",
   "tvPairingScanInstruction": "Point your camera at the QR code on your TV",
   "tvPairingEnterManually": "Enter code manually",
@@ -732,6 +685,30 @@
   "tvPairingTimeout": "Request timed out. Is the TV on and connected?",
   "tvPairingServerError": "Could not connect to server.",
   "tvPairingSignInRequired": "Sign in to your account before pairing a TV.",
-
-  "tvJumuahGreeting": "Jumu'ah Mubarak"
+  "tvJumuahGreeting": "Jumu'ah Mubarak",
+  "desktopNextPrayer": "Salaadda Xigta…",
+  "desktopOpen": "Fur PrayCalc",
+  "desktopQuit": "Ka bax PrayCalc",
+  "desktopSettings": "Goobaha…",
+  "desktopTrayTooltip": "PrayCalc – Waqtiyada Salaadda",
+  "desktopTvDisplays": "Shaashadaha TV…",
+  "statsBestStreak": "Silsiladda Ugu Fiican",
+  "statsDailyGoalLabel": "{goal} salaad / maalin",
+  "statsDailyGoalTitle": "Bartilmaameedka Salaadda Maalinlaha",
+  "statsGoalStreak": "Silsiladda Bartilmaameedka",
+  "statsHeatmapDetail": "{count} / 5 salaadood la dhamaystiray",
+  "statsHeatmapNoData": "Maalintaas ma jiraan salaadood la diiwaan geliyay",
+  "statsHeatmapTitle": "Sanadka Guud ahaan",
+  "tvChildFajrExplanation": "Fajr waa salaadda aroorta. Waxaan toosannaa kahor qorraxda soo baxa si aynnu Alle ugu mahadnaqno maalinta cusub!",
+  "tvChildFajrFunFact": "Nebiga ﷺ wuxuu yiri: \"Salaadda ugu fiican ee Alle agoontii waa Fajrka Jimcaha.\" (Bukhari)",
+  "tvChildSunriseExplanation": "Ka dib Fajr, qorraxdu soo baxtaa. Waa waqti barakaysan oo ah mid lagu sameeyo dhikriga iyo akhrinta Quraanka.",
+  "tvChildSunriseFunFact": "Fadhiisiga ka dib Fajr ilaa qorraxda soo baxdo kaddibna tukashada laba rakco waxay keentaa abaalmarinta Xajka oo dhammaystiran! (Tirmidhi)",
+  "tvChildDhuhrExplanation": "Dhuhr waa salaadda dhexe. Qorraxdu waxay joogtaa meelka ugu sareysa samada, waxaana nagu hadhaa inaan xusuusanno Alle.",
+  "tvChildDhuhrFunFact": "Nebiga ﷺ wuxuu jeclaan jiray inuu Dhuhr goor hore tukado markii qorraxdu bilaabato dhicidda. (Muslim)",
+  "tvChildAsrExplanation": "Casar waa salaadda galabtii. Alle ayaa ku dhaartay waqtigan Surah Al-Asr — waa muhiim aad ah!",
+  "tvChildAsrFunFact": "Maqnaanshaha Salaadda Casar waxay la mid tahay waayida qoyska iyo maalka. Sidaa Alle u jecel yahay! (Bukhari)",
+  "tvChildMaghribExplanation": "Maqrib waa salaadda machweo ya jua. Jua linapotua, tunamshukuru Allah kwa siku nzuri.",
+  "tvChildMaghribFunFact": "Malaa'igta maalinta iyo habeenka waxay kulmaan Fajr iyo Maqrib. Sidee u gaara! (Bukhari)",
+  "tvChildIshaExplanation": "Cisha waa salaadda habeenka. Maalintayada waxaan ku dhameyneynaa mahadnaqida Alle ka hor intaanaan seexan.",
+  "tvChildIshaFunFact": "Tukaasho Cisha iyo Fajr jamaa'ah ayaa la mid ah tukaashada habeenkii oo dhan! (Muslim)"
 }

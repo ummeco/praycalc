@@ -1,8 +1,6 @@
 {
   "@@locale": "ps",
-
   "appTitle": "PrayCalc",
-
   "prayerFajr": "سحر",
   "prayerSunrise": "لمر ختل",
   "prayerDhuhr": "غرمه",
@@ -12,7 +10,6 @@
   "prayerQiyam": "قیام",
   "prayerSuhoor": "سحري",
   "prayerIftar": "افطار",
-
   "hijriMuharram": "محرم",
   "hijriSafar": "صفر",
   "hijriRabiAlAwwal": "ربیع‌الاول",
@@ -25,7 +22,6 @@
   "hijriShawwal": "شوال",
   "hijriDhulQidah": "ذوالقعده",
   "hijriDhulHijjah": "ذوالحجه",
-
   "monthJan": "جنوري",
   "monthFeb": "فبروري",
   "monthMar": "مارچ",
@@ -38,7 +34,6 @@
   "monthOct": "اکتوبر",
   "monthNov": "نومبر",
   "monthDec": "دسمبر",
-
   "monthJanuary": "جنوري",
   "monthFebruary": "فبروري",
   "monthMarch": "مارچ",
@@ -51,7 +46,6 @@
   "monthOctober": "اکتوبر",
   "monthNovember": "نومبر",
   "monthDecember": "دسمبر",
-
   "dayMonShort": "دو",
   "dayTueShort": "سه",
   "dayWedShort": "چهار",
@@ -59,7 +53,6 @@
   "dayFriShort": "جمعه",
   "daySatShort": "شنبه",
   "daySunShort": "یک",
-
   "dayMonday": "دوشنبه",
   "dayTuesday": "سه‌شنبه",
   "dayWednesday": "چهارشنبه",
@@ -67,7 +60,6 @@
   "dayFriday": "جمعه",
   "daySaturday": "شنبه",
   "daySunday": "یکشنبه",
-
   "daySuChart": "ی",
   "dayMoChart": "د",
   "dayTuChart": "س",
@@ -75,7 +67,6 @@
   "dayThChart": "پ",
   "dayFrChart": "ج",
   "daySaChart": "ش",
-
   "chooseCityLabel": "ښار غوره کړئ",
   "setCityFab": "ښار ټاکل",
   "prayerTimesError": "د لمونځ وختونه نشي حساب کیدلی.\n{error}",
@@ -84,7 +75,6 @@
   "ramadanDayProgress": "ورځ {day} / ۳۰",
   "lastTenNights": "وروستۍ ۱۰ شپې",
   "laylatulQadr": "لیلة القدر",
-
   "homeSuffixAH": "هـ",
   "homeSuffixCE": "م",
   "homeNoCitySelected": "هیڅ ښار نه دی ټاکل شوی",
@@ -95,7 +85,6 @@
   "homeActionDuaDhikr": "دعا او\nذکر",
   "homeActionPrayerStats": "د لمونځ\nشمیرنې",
   "homePolarBanner": "{count} د لمونځ وختونه ستاسو د موقعیت لپاره په دې دوره کې نشي حساب کیدلی. په ترتیباتو کې نږدې عرض جغرافیایي تخمین وازمایئ.",
-
   "settingsTitle": "ترتیبات",
   "settingsSectionPrayerCalc": "د لمونځ حساب",
   "settingsCalcMethod": "د حساب طریقه",
@@ -147,12 +136,10 @@
   "settingsTvSettings": "د ټلویزیون ترتیبات",
   "settingsTvSettingsSubtitle": "د مسجد حالت، د اقامت آفسیټ، محیطي",
   "settingsAboutPrayCalc": "د PrayCalc په اړه",
-
   "syncSynced": "همغږ شوی",
   "syncSyncing": "همغږ کیږي...",
   "syncOffline": "آفلاین",
   "syncError": "د همغږۍ تېروتنه",
-
   "notifSettingsTitle": "خبرتیاوې او اذان",
   "notifAdhanLabel": "اذان",
   "notifReminderMinBefore": "یادونه: {minutes} دقیقې مخکې",
@@ -162,19 +149,16 @@
   "notifModeReminderOnly": "یوازې یادونه",
   "notifModeArrival": "د لمونځ په وخت",
   "notifModeBoth": "یادونه + د لمونځ وخت",
-
   "citySearchHint": "ښار ولټوئ…",
   "citySearchDetectTooltip": "زما موقعیت پیدا کړئ",
   "citySearchNoCityGps": "له GPS څخه ښار ونه پیژندل شو.",
   "citySearchPermissionDenied": "د موقعیت اجازه رد شوه. په لاسي ډول ولټوئ.",
   "citySearchNoResults": "هیڅ ښار ونه موندل شو.",
   "citySearchStartTyping": "د لټون لپاره لیکل پیل کړئ…",
-
   "agendasTitle": "د لمونځ اجنداوې",
   "agendasEmpty": "تر اوسه هیڅ اجندا نشته.\n+ ټک وکړئ ترڅو د خپلو لمونځونو سره تړلې یادونه اضافه کړئ.",
   "agendasUndo": "بیرته راوستل",
   "agendasRemoved": "{label} لرې شو",
-
   "agendaNewTitle": "نوې اجندا",
   "agendaEditTitle": "اجندا سمول",
   "agendaSave": "خوندي کړئ",
@@ -196,7 +180,6 @@
   "agendaDayW": "چ",
   "agendaDayF": "ج",
   "agendaDayS": "ش",
-
   "moonTitle": "سپوږمۍ او هجري تقویم",
   "moonIlluminated": "{pct}٪ رڼا",
   "moonFullTonight": "نن شپه بشپړه سپوږمۍ!",
@@ -247,7 +230,6 @@
   "moonUpcomingIslamicEvents": "راتلونکي اسلامي پیښې",
   "moonTodayLabel": "نن",
   "moonTomorrowLabel": "سبا",
-
   "calDateCol": "نیټه",
   "calHijriCol": "هجري",
   "calFajrCol": "سحر",
@@ -262,7 +244,6 @@
   "calNextMonthTooltip": "بله میاشت",
   "calExportHeader": "PrayCalc — {month}",
   "calExportSubject": "د لمونځ وختونه — {month}",
-
   "qiblaTitle": "قبله",
   "qiblaSwitchToCompass": "قطب نما ته ورشئ",
   "qiblaSwitchToAR": "AR کامرې ته ورشئ",
@@ -274,7 +255,6 @@
   "qiblaDistKm": "له کعبې څخه {dist} کم",
   "qiblaDistThousandKm": "له کعبې څخه {dist} زره کم",
   "qiblaFacingQibla": "مخ د قبلې لوري ✓",
-
   "tasbeehTitle": "تسبیح",
   "tasbeehResetTooltip": "بیا تنظیم",
   "tasbeehTapToSwitch": "د بدلون لپاره لیبل ته ټک وکړئ",
@@ -288,7 +268,6 @@
   "tasbeehNoHistory": "تر اوسه هیڅ تاریخ نشته — شمیرل پیل کړئ!",
   "tasbeehComplete": "تسبیح بشپړ شو! {count} ذکر",
   "tasbeehPresetComplete": "✓ {label} × {target}",
-
   "smartHomeTitle": "هوښیار کور",
   "smartHomeSubtitle": "خپل وسایل د لمونځ وختونو سره وصل کړئ",
   "smartHomeGoogleHome": "Google Home",
@@ -308,7 +287,6 @@
   "smartHomeTestConnection": "اتصال وازمایئ",
   "smartHomeConnectionSuccess": "په بریالیتوب سره وصل شو",
   "smartHomeConnectionFailed": "اتصال ناکام شو. د خپل حساب اتصال وګورئ.",
-
   "subscriptionTitle": "Ummat+",
   "subscriptionSubtitle": "د لمونځ وختونو ممتاز ځانګړتیاوې",
   "subscriptionUpgrade": "Ummat+ ته لوړ کړئ",
@@ -329,19 +307,16 @@
   "subscriptionFeatureWatch": "د ساعت ځانګړتیاوې",
   "subscriptionFeatureSync": "د وسایلو ترمنځ همغږي",
   "subscriptionFeatureAdFree": "بې اعلاناتو تجربه",
-
   "watchTitle": "ساعت",
   "watchNextPrayer": "بل لمونځ",
   "watchAllPrayers": "ټول لمونځونه",
   "watchComplication": "ځانګړتیا",
-
   "nextPrayer": "بل لمونځ",
   "allPrayers": "ټول لمونځونه",
   "today": "نن",
   "tomorrow": "سبا",
   "thisWeek": "دا اونۍ",
   "thisMonth": "دا میاشت",
-
   "loginCreateAccount": "حساب جوړ کړئ",
   "loginSignIn": "ننوتل",
   "loginWelcomeBack": "بیرته ښه راغلاست",
@@ -363,7 +338,6 @@
   "loginResetFailed": "د بیا تنظیم بریښنالیک نشي لیږل کیدلی",
   "loginNewToPrayCalc": "PrayCalc ته نوي یاست؟",
   "loginAlreadyHaveAccount": "مخکې حساب لرئ؟",
-
   "accountTitle": "حساب",
   "accountNotSignedIn": "ننوتلي نه یاست",
   "accountSyncSection": "همغږي",
@@ -390,7 +364,6 @@
   "accountTimeMinAgo": "{min} دقیقې مخکې",
   "accountTimeHourAgo": "{hour} ساعته مخکې",
   "accountTimeDayAgo": "{day} ورځې مخکې",
-
   "statsTitle": "د لمونځ شمیرنې",
   "statsShareTooltip": "شمیرنې شریکې کړئ",
   "statsTodayPrayers": "د نن لمونځونه",
@@ -411,14 +384,12 @@
   "statsShareWeekly": "اونیزې: {pct}٪",
   "statsShareMonthly": "میاشتنۍ: {pct}٪",
   "statsShareBreakdown": "اونیزه تفصیل:",
-
   "aboutTitle": "د PrayCalc په اړه",
   "aboutWebsite": "ویبپاڼه",
   "aboutContact": "اړیکه",
   "aboutLicenses": "خلاصې سرچینې جوازونه",
   "aboutCouldNotOpen": "لینک نشي خلاصیدلی.",
   "aboutCopyright": "© {year} Ummat Dev. ټول حقوق خوندي دي.\n\nد لمونځ وختونه د pray_calc_dart انجن په کارولو محاسبه کیږي. دقت ستاسو GPS موقعیت او ټاکل شوي حساب میتود پورې اړه لري.",
-
   "commonCancel": "لغوه",
   "commonSave": "خوندي کړئ",
   "commonDelete": "حذف",
@@ -455,7 +426,6 @@
   "commonHelp": "مرسته",
   "commonLanguage": "ژبه",
   "commonOpenSettings": "ترتیبات خلاص کړئ",
-
   "travelNotificationTitle": "تاسې اوس مسافر یاست",
   "travelNotificationBody": "لمونځونه ممکن لنډ شي. د مسافر د لمونځ احکامو لپاره ټک وکړئ.",
   "travelRulingsTitle": "سفر او لمونځ",
@@ -468,7 +438,6 @@
   "travelLearnMore": "نور زده کړئ",
   "travelHanafiDefaultTitle": "ولې PrayCalc حنفي ډیفالټ کاروي",
   "travelDeeperScholarly": "ژوره علمي بحث",
-
   "onboardingTitle1": "د لمونځ وختونه، هرچیرته چې یاست",
   "onboardingBody1": "د GPS دقیق سلاه وختونه د ځمکې هر ښار لپاره. سحر تر ماخستن، لمر ختل تر قیام. زموږ د خپل حساب انجن لخوا چلول کیږي.",
   "onboardingTitle2": "ستاسو موقعیت، ستاسو وختونه",
@@ -485,7 +454,6 @@
   "onboardingContinueWithoutAccount": "بې حساب دوام ورکړئ",
   "onboardingSigningIn": "ننوتل کیږي…",
   "onboardingSelectLanguage": "ژبه غوره کړئ",
-
   "duaDhikrTitle": "دعا او ذکر",
   "duaDhikrTabDua": "دعاګانې",
   "duaDhikrTabDhikr": "ذکر",
@@ -494,13 +462,11 @@
   "duaDhikrTabEvening": "ماښام",
   "duaDhikrMorningAdhkar": "سهارنۍ اذکار",
   "duaDhikrEveningAdhkar": "ماښامنۍ اذکار",
-
   "calGregToggle": "میلادي",
   "calHijriToggle": "هجري",
   "calYearlyTooltip": "کلنی تقویم",
   "calExportIcsTooltip": ".ics صادر کړئ",
   "calMagCol": "ماښام",
-
   "qiblaShowOnMap": "په نقشه ښکاره کړئ",
   "qiblaWaitingCompass": "د قطب نما تم ته...",
   "qiblaNoCompassSensor": "د قطب نما سینسر نشته. د قبلې لوری ثابته ښودل کیږي.",
@@ -512,7 +478,6 @@
   "qiblaYourLocation": "ستاسو موقعیت",
   "qiblaGpsAccurate": "GPS دقیق",
   "qiblaCityCenter": "د ښار مرکز",
-
   "moonIlluminatedLabel": "رڼا",
   "moonAgeLabel": "عمر",
   "moonFirstQtr": "لومړۍ ربع",
@@ -521,7 +486,6 @@
   "moonTomorrow": "سبا",
   "moonDaysAway": "{days} ورځې",
   "moonBeta": "آزمایشي",
-
   "setHomeTitle": "د کور موقعیت ټاکل",
   "setHomeSearchHint": "ښار، کلی یا پوستي کوډ ولټوئ…",
   "setHomeClear": "پاک کړئ",
@@ -535,7 +499,6 @@
   "setHomeNoCitiesFound": "هیڅ ښار ونه موندل شو.",
   "setHomeSearchPrompt": "خپل کور ښار ولټوئ",
   "setHomeSearchBody": "پورته لیکل وکړئ ترڅو ولټوئ، یا خپل اوسنی موقعیت وکاروئ. د سفر حالت به پیژني کله چې له کوره لرې یاست.",
-
   "subscriptionYouHavePlus": "تاسو Ummat+ لرئ",
   "subscriptionUpgradeTo": "Ummat+ ته لوړ کړئ",
   "subscriptionThankYou": "د PrayCalc ملاتړ لپاره مننه.",
@@ -550,7 +513,6 @@
   "subscriptionFeatureCalendar": "میاشتنی تقویم",
   "subscriptionFeatureTasbeeh": "تسبیح شمیرنه",
   "subscriptionFeatureMoon": "سپوږمۍ او هجري",
-
   "smartHomeAlertType": "د خبرتیا ډول",
   "smartHomeAlertModal": "بشپړ سکرین پاپ اپ",
   "smartHomeAlertCorner": "کونجي خبرتیا",
@@ -563,10 +525,8 @@
   "smartHomeAudioAdhan": "اذان",
   "smartHomeAudioBeep": "بیپ",
   "smartHomeAudioSilent": "خاموش",
-
   "aboutPrivacy": "د محرمیت تګلاره",
   "aboutVersion": "نسخه {version}",
-
   "notifDefaultAdhan": "ډیفالټ اذان",
   "notifFajrAdhan": "د سحر اذان",
   "notifFajrAdhanSubtitle": "د سحر د لمونځ وخت پخیږي",
@@ -574,7 +534,6 @@
   "notifRegularAdhanSubtitle": "غرمه، مازدیګر، ماښام، ماخستن وختونو کې پخیږي",
   "notifPerPrayerSettings": "د هر لمونځ ترتیبات",
   "notifPreview": "مخکتنه",
-
   "tvSettingsTitle": "د ټلویزیون ترتیبات",
   "tvDisplayMode": "د ښودنې حالت",
   "tvMasjidMode": "د مسجد حالت",
@@ -613,7 +572,6 @@
   "tvPhotoCategoryTitle": "د عکس کتګوري",
   "tvEnterHint": "{title} دننه کړئ",
   "tvSystemDefault": "د سیسټم ډیفالټ",
-
   "smartHomeIntegrations": "اتصالات",
   "smartHomeLinkedSpeakers": "وصل شوي سپیکرونه او ښودنې",
   "smartHomeAlertDisplay": "د خبرتیا ښودنه",
@@ -656,10 +614,8 @@
   "smartHomeLinkedStatus": "وصل شوی",
   "smartHomeNotLinkedStatus": "وصل شوی نه دی",
   "smartHomeCouldNotOpen": "لینک نشي خلاصیدلی.",
-
   "adhkarCompletedCount": "{completed} / {total} بشپړ شو",
   "adhkarReset": "بیا تنظیم",
-
   "syncHistoryTitle": "د همغږۍ تاریخ",
   "syncClearHistory": "تاریخ پاک کړئ",
   "syncNoConflicts": "هیڅ همغږۍ تعارض ونه موندل شو. ټولې وسایل همغږ دي.",
@@ -670,12 +626,10 @@
   "syncTimeMinAgo": "{min} دقیقې مخکې",
   "syncTimeHourAgo": "{hour} ساعته مخکې",
   "syncTimeDayAgo": "{day} ورځې مخکې",
-
   "pinCity": "پین",
   "pinMaxReached": "اعظمي ۵ پین شوي ښارونه. د نورو لپاره Ummat+ ته لوړ کړئ.",
   "pinCityUnpinned": "{city} غیر پین شو",
   "pinUndo": "بیرته راوستل",
-
   "smartHomeDevices": "وسایل",
   "smartHomeAddDevice": "وسیله اضافه کړئ",
   "smartHomeDeleteDevice": "حذف",
@@ -685,7 +639,9 @@
   "smartHomeDeviceLastSeen": "وروستی ځل لیدل شوی: {time}",
   "@smartHomeDeviceLastSeen": {
     "placeholders": {
-      "time": { "type": "String" }
+      "time": {
+        "type": "String"
+      }
     }
   },
   "smartHomeDeviceName": "د وسیلې نوم",
@@ -711,7 +667,6 @@
   "smartHomeLoadingDevices": "وسایل بارکیږي...",
   "smartHomeLoadingIntegrations": "یوځای کول بارکیږي...",
   "smartHomeServiceUnavailable": "د سمارټ کور خدمت اوس مهال شتون نلري. مهرباني وکړئ وروسته بیا هڅه وکړئ.",
-
   "tvPairingScanQr": "Scan TV QR Code",
   "tvPairingScanInstruction": "Point your camera at the QR code on your TV",
   "tvPairingEnterManually": "Enter code manually",
@@ -725,6 +680,30 @@
   "tvPairingTimeout": "Request timed out. Is the TV on and connected?",
   "tvPairingServerError": "Could not connect to server.",
   "tvPairingSignInRequired": "Sign in to your account before pairing a TV.",
-
-  "tvJumuahGreeting": "جمعه مبارکه"
+  "tvJumuahGreeting": "جمعه مبارکه",
+  "desktopNextPrayer": "راتلونکې لمونځ…",
+  "desktopOpen": "PrayCalc پرانیزئ",
+  "desktopQuit": "PrayCalc وتل",
+  "desktopSettings": "ترتیبات…",
+  "desktopTrayTooltip": "PrayCalc – د لمانځه وختونه",
+  "desktopTvDisplays": "د ټلویزیون نندارې…",
+  "statsBestStreak": "غوره لړۍ",
+  "statsDailyGoalLabel": "{goal} لمانځه / ورځ",
+  "statsDailyGoalTitle": "د ورځني لمانځه هدف",
+  "statsGoalStreak": "د هدف لړۍ",
+  "statsHeatmapDetail": "{count} / ۵ لمانځه بشپړ شوي",
+  "statsHeatmapNoData": "د دې ورځې لپاره هیڅ لمونځ ثبت شوی نه دی",
+  "statsHeatmapTitle": "کال یو نظر کې",
+  "tvChildFajrExplanation": "فجر د سهار لمونځ دی. موږ د لمر خاتو دمخه پاڅیږو ترڅو د نوې ورځ لپاره الله ته شکر وکړو!",
+  "tvChildFajrFunFact": "نبي ﷺ وفرمایل: \"د الله سره د ټولو لمانځونو ترټولو غوره د جمعې فجر دی.\" (بخاري)",
+  "tvChildSunriseExplanation": "د فجر وروسته، لمر خاته کیږي. دا د ذکر کولو او قرآن لوستلو لپاره مبارک وخت دی.",
+  "tvChildSunriseFunFact": "د فجر وروسته تر لمر خاتو پورې کیناستل او دوه رکعته ادا کول د بشپړ حج ثواب ورکوي! (ترمذي)",
+  "tvChildDhuhrExplanation": "ظهر د غرمې لمونځ دی. لمر آسمان کې تر ټولو لوړ وي، او موږ د الله د یادولو لپاره ودریږو.",
+  "tvChildDhuhrFunFact": "نبي ﷺ خوښاوه چې ظهر وخته ادا کړي کله چې لمر کږیدل پیل کوي. (مسلم)",
+  "tvChildAsrExplanation": "عصر د مازدیګر لمونځ دی. الله تعالی د سورت العصر کې پدې وخت قسم خوري — دا خورا مهم دی!",
+  "tvChildAsrFunFact": "د عصر لمونځ پریښودل لکه د کورنۍ او مال ضایع کول دي. الله دومره یې خوښوي! (بخاري)",
+  "tvChildMaghribExplanation": "مغرب د لمر پریوتو لمونځ دی. کله چې لمر پریوزي، موږ د ښکلې ورځ لپاره الله ته شکر وکړو.",
+  "tvChildMaghribFunFact": "د ورځې او شپې پرښتې د فجر او مغرب پر وخت سره یوځای کیږي. څومره ځانګړی دی! (بخاري)",
+  "tvChildIshaExplanation": "عشا د شپې لمونځ دی. موږ خپل ورځ د ویدیدو دمخه د الله شکرګزارۍ سره پای ته رسوو.",
+  "tvChildIshaFunFact": "د جماعت سره عشا او فجر ادا کول لکه د ټولې شپې لمونځ کول دي! (مسلم)"
 }
