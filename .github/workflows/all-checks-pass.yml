@@ -51,4 +51,5 @@ jobs:
         #     - "all-checks-pass"                  (this job — aggregation marker)
         #
         # If any required check fails, GitHub blocks merge automatically.
-        run: echo "all-checks-pass: gate marker job — branch protection enforces individual required checks"
+        run: |
+          echo "all-checks-pass gate marker job - branch protection enforces individual required checks"
