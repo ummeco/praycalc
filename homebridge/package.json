@@ -7,10 +7,18 @@
     "build": "tsc",
     "watch": "tsc -w"
   },
-  "keywords": ["homebridge-plugin", "praycalc", "prayer", "muslim", "islamic"],
-  "engines": { "homebridge": ">=1.6.0" },
-  "dependencies": {},
+  "keywords": [
+    "homebridge-plugin",
+    "praycalc",
+    "prayer",
+    "muslim",
+    "islamic"
+  ],
+  "engines": {
+    "homebridge": ">=1.6.0"
+  },
   "devDependencies": {
+    "@types/node": "^22.20.0",
     "homebridge": "^1.8.0",
     "typescript": "^5.0.0"
   }
