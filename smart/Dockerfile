@@ -1,4 +1,4 @@
-FROM node:20-alpine AS builder
+FROM node:22-alpine AS builder
 WORKDIR /app
 COPY vendor/ vendor/
 COPY package.json pnpm-lock.yaml ./
@@ -7,7 +7,7 @@ COPY tsconfig.json ./
 COPY src/ src/
 RUN pnpm build
 
-FROM node:20-alpine
+FROM node:22-alpine
 WORKDIR /app
 RUN corepack enable
 COPY vendor/ vendor/
