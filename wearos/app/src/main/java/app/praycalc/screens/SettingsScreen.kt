@@ -25,6 +25,7 @@ import androidx.wear.compose.material.Chip
 import androidx.wear.compose.material.ChipDefaults
 import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Text
+import androidx.wear.compose.material.RadioButton
 import androidx.wear.compose.material.ToggleChip
 import androidx.wear.compose.material.ToggleChipDefaults
 import app.praycalc.PrayCalcColors
@@ -50,7 +51,7 @@ fun SettingsScreen(
             .focusRequester(focusRequester)
             .onRotaryScrollEvent { event ->
                 coroutineScope.launch {
-                    listState.animateScrollBy(event.verticalScrollPixels)
+                    listState.lazyListState.animateScrollBy(event.verticalScrollPixels)
                 }
                 true
             },
@@ -125,7 +126,7 @@ fun SettingsScreen(
                     )
                 },
                 toggleControl = {
-                    ToggleChipDefaults.radioToggleControl()
+                    RadioButton(selected = isSelected)
                 },
                 colors = ToggleChipDefaults.toggleChipColors(
                     checkedStartBackgroundColor = PrayCalcColors.Primary,
