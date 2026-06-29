@@ -50,7 +50,7 @@ export function getHijriDate(date: Date = new Date()): string {
     Math.floor((30 - j) / 15) * Math.floor((17719 * j) / 50) -
     Math.floor(j / 16) * Math.floor((15238 * j) / 43) +
     29;
-  const iYear = 19 * n + j - 30;
+  const iYear = 30 * n + j - 30;
   const iMonth = Math.floor((24 * l) / 709);
   const iDay = l - Math.floor((709 * iMonth) / 24);
 

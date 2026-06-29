@@ -1,5 +1,6 @@
 use tauri::{AppHandle, Manager};
 use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
 
 mod tray;
 
@@ -16,26 +17,53 @@ pub struct PrayerTimesResponse {
     pub method: String,
 }
 
+// API returns [{date, prayers: {Name: "HH:MM:SS"}}]
+#[derive(Debug, Deserialize)]
+struct ApiDay {
+    date: String,
+    prayers: HashMap<String, String>,
+}
+
+const PRAYER_ORDER: &[&str] = &["Fajr", "Sunrise", "Dhuhr", "Asr", "Maghrib", "Isha"];
+
 #[tauri::command]
 async fn fetch_prayer_times(
     lat: f64,
     lng: f64,
     tz: String,
-    method: String,
+    _method: String,
     hanafi: bool,
 ) -> Result<PrayerTimesResponse, String> {
     let today = chrono::Local::now().format("%Y-%m-%d").to_string();
     let url = format!(
-        "https://praycalc.com/api/prayers?lat={}&lng={}&tz={}&date={}&hanafi={}&method={}",
-        lat, lng, tz, today, if hanafi { 1 } else { 0 }, method
+        "https://praycalc.com/api/prayers?lat={}&lng={}&tz={}&from={}&to={}&hanafi={}",
+        lat, lng, tz, today, today, if hanafi { 1 } else { 0 }
     );
-    let resp = reqwest::get(&url)
+    let days: Vec<ApiDay> = reqwest::get(&url)
         .await
         .map_err(|e| e.to_string())?
-        .json::<PrayerTimesResponse>()
+        .json()
         .await
         .map_err(|e| e.to_string())?;
-    Ok(resp)
+
+    let day = days.into_iter().next().ok_or("No prayer data returned")?;
+
+    // Convert dict to ordered vec; trim seconds from "HH:MM:SS" → "HH:MM"
+    let prayers: Vec<PrayerEntry> = PRAYER_ORDER
+        .iter()
+        .filter_map(|name| {
+            day.prayers.get(*name).map(|t| PrayerEntry {
+                name: name.to_string(),
+                time: t.chars().take(5).collect(),
+            })
+        })
+        .collect();
+
+    Ok(PrayerTimesResponse {
+        date: day.date,
+        prayers,
+        method: "MWL".to_string(),
+    })
 }
 
 #[tauri::command]
@@ -49,7 +77,6 @@ async fn update_tray_tooltip(app: AppHandle, label: String) -> Result<(), String
 #[tauri::command]
 async fn update_tray_title(app: AppHandle, label: String) -> Result<(), String> {
     if let Some(tray) = app.tray_by_id("main") {
-        // set_title shows text in the menu bar next to the icon (macOS only; no-op on other platforms)
         tray.set_title(Some(&label)).map_err(|e| e.to_string())?;
     }
     Ok(())
