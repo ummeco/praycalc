@@ -107,10 +107,11 @@ export function formatTime12(time24: string): string {
   return `${h12}:${String(m).padStart(2, '0')} ${ampm}`;
 }
 
+// Signed: positive = seconds until, negative = seconds since (prayer already passed)
 export function secondsUntil(time24: string): number {
   const nowSec = nowSeconds();
   const target = toMinutes(time24) * 60;
-  return target > nowSec ? target - nowSec : 0;
+  return target - nowSec;
 }
 
 export function formatCountdown(seconds: number): string {

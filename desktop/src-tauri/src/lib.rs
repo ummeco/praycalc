@@ -11,9 +11,12 @@ struct PrayerState {
     next_name: String,
     next_time: String, // "HH:MM" 24h
     notifications: bool,
-    display_mode: String, // "countdown" | "time"
-    name_format: String,  // "abbrev" | "full"
+    display_mode: String,    // "countdown" | "time"
+    name_format: String,     // "abbrev" | "full"
+    show_seconds: bool,
+    countdown_prefix: String, // "minus" | "none" | "in"
     adhan_triggered: bool,
+    refresh_triggered: bool, // auto-advance to next prayer after 60s
 }
 
 struct AppState {
@@ -44,25 +47,49 @@ fn format_time_12h(time_str: &str) -> String {
     time_str.to_string()
 }
 
-fn format_tray_label(name: &str, time_str: &str, remaining_secs: i64, display_mode: &str, name_format: &str) -> String {
+fn format_tray_label(
+    name: &str,
+    time_str: &str,
+    remaining_secs: i64,
+    display_mode: &str,
+    name_format: &str,
+    show_seconds: bool,
+    countdown_prefix: &str,
+) -> String {
     if name.is_empty() {
         return "☽".to_string();
     }
-    let prefix = if name_format == "full" { name.to_string() } else { prayer_abbrev(name).to_string() };
+    // At prayer time: full name + "!"
+    if remaining_secs <= 0 {
+        return format!("{}!", name);
+    }
+    let label = if name_format == "full" { name.to_string() } else { prayer_abbrev(name).to_string() };
     let value = if display_mode == "time" {
         format_time_12h(time_str)
-    } else if remaining_secs >= 3600 {
+    } else {
         let h = remaining_secs / 3600;
         let m = (remaining_secs % 3600) / 60;
-        format!("{}:{:02}", h, m)
-    } else if remaining_secs > 0 {
-        let m = remaining_secs / 60;
         let s = remaining_secs % 60;
-        format!("{}:{:02}", m, s)
-    } else {
-        "now".to_string()
+        if show_seconds {
+            if h > 0 {
+                format!("{}:{:02}:{:02}", h, m, s)
+            } else {
+                format!("{}:{:02}", m, s)
+            }
+        } else {
+            if h > 0 {
+                format!("{}:{:02}", h, m)
+            } else {
+                format!("{}", m)
+            }
+        }
     };
-    format!("{} {}", prefix, value)
+    let sep = match countdown_prefix {
+        "minus" => " \u{2212}", // − (minus sign)
+        "in"    => " in",
+        _       => " ",
+    };
+    format!("{}{}{}", label, sep, value)
 }
 
 fn seconds_until(time_str: &str) -> i64 {
@@ -140,6 +167,8 @@ fn set_next_prayer(
     notifications: bool,
     display_mode: String,
     name_format: String,
+    show_seconds: bool,
+    countdown_prefix: String,
 ) {
     let mut p = state.prayer.lock().unwrap();
     let changed = name != p.next_name || time != p.next_time;
@@ -148,8 +177,11 @@ fn set_next_prayer(
     p.notifications = notifications;
     p.display_mode = display_mode;
     p.name_format = name_format;
+    p.show_seconds = show_seconds;
+    p.countdown_prefix = countdown_prefix;
     if changed {
         p.adhan_triggered = false;
+        p.refresh_triggered = false;
     }
 }
 
@@ -210,6 +242,8 @@ pub fn run() {
                         remaining,
                         &snapshot.display_mode,
                         &snapshot.name_format,
+                        snapshot.show_seconds,
+                        &snapshot.countdown_prefix,
                     );
 
                     if let Some(tray) = handle.tray_by_id("main") {
@@ -222,6 +256,15 @@ pub fn run() {
                             p.adhan_triggered = true;
                         }
                         let _ = handle.emit("prayer-time", &snapshot.next_name);
+                    }
+
+                    // Auto-advance: tell JS to reload prayers 60s after prayer time
+                    if remaining < -60 && !snapshot.refresh_triggered {
+                        {
+                            let mut p = state.prayer.lock().unwrap();
+                            p.refresh_triggered = true;
+                        }
+                        let _ = handle.emit("prayer-refresh", ());
                     }
                 }
             });

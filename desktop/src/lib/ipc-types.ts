@@ -13,6 +13,7 @@ export interface PrayerTimesResponse {
 
 export type DisplayMode = 'countdown' | 'time';
 export type NameFormat = 'abbrev' | 'full';
+export type CountdownPrefix = 'minus' | 'none' | 'in';
 
 export interface Settings {
   lat: number;
@@ -28,6 +29,8 @@ export interface Settings {
   showIcon: boolean;
   arabicMode: boolean;
   adhan: 'makkah' | 'mishari';
+  showSeconds: boolean;
+  countdownPrefix: CountdownPrefix;
 }
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -44,6 +47,8 @@ export const DEFAULT_SETTINGS: Settings = {
   showIcon: true,
   arabicMode: false,
   adhan: 'makkah',
+  showSeconds: true,
+  countdownPrefix: 'minus',
 };
 
 export const METHODS = [

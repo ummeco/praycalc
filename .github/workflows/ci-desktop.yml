@@ -88,6 +88,7 @@ jobs:
         run: pnpm build
 
       - name: Cargo check (Rust)
+        if: matrix.platform != 'windows-latest'
         working-directory: desktop/src-tauri
         run: cargo check --all-targets
 

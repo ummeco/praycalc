@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from 'react';
-import type { Settings, DisplayMode, NameFormat } from '../lib/ipc-types';
+import type { Settings, DisplayMode, NameFormat, CountdownPrefix } from '../lib/ipc-types';
 import { METHODS, PRESET_CITIES } from '../lib/ipc-types';
 import { saveSettings } from '../lib/store';
 import { invoke } from '@tauri-apps/api/core';
@@ -89,6 +89,24 @@ export default function SettingsPanel({ settings, onSave }: Props) {
               options={[
                 { value: 'abbrev', label: 'Abbreviation (F, D, A…)' },
                 { value: 'full', label: 'Full name (Fajr, Dhuhr…)' },
+              ]}
+            />
+
+            <Toggle
+              label="Show seconds in countdown"
+              desc='e.g. "M −3:24:11" vs "M −3:24"'
+              checked={form.showSeconds}
+              onChange={(v) => setForm((f) => ({ ...f, showSeconds: v }))}
+            />
+
+            <SelectField
+              label="Countdown prefix"
+              value={form.countdownPrefix}
+              onChange={(v) => setForm((f) => ({ ...f, countdownPrefix: v as CountdownPrefix }))}
+              options={[
+                { value: 'minus', label: 'Minus sign  (−3:24)' },
+                { value: 'none', label: 'None  (3:24)' },
+                { value: 'in', label: 'Word  (in 3:24)' },
               ]}
             />
 

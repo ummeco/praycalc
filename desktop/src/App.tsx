@@ -46,7 +46,7 @@ export default function App() {
       const c = getCurrentPrayer(resp.prayers);
       setNext(n);
       setCurrent(c);
-      setSeconds(n ? secondsUntil(n.time) : 0);
+      setSeconds(n ? secondsUntil(n.time) : 0); // signed: negative means prayer just passed
     } catch {
       setError('Failed to fetch prayer times');
     } finally {
@@ -72,21 +72,26 @@ export default function App() {
       notifications: s.notifications,
       displayMode: s.displayMode,
       nameFormat: s.nameFormat,
+      showSeconds: s.showSeconds,
+      countdownPrefix: s.countdownPrefix,
     }).catch(() => {});
   }, [next, settings]);
 
-  // Listen for adhan trigger fired by Rust native timer
+  // Listen for events fired by Rust native timer
   useEffect(() => {
-    let unlisten: (() => void) | undefined;
+    let unlistenTime: (() => void) | undefined;
+    let unlistenRefresh: (() => void) | undefined;
     listen<string>('prayer-time', (event) => {
-      if (settingsRef.current.notifications) {
-        setAdhanActive(event.payload);
-      }
-    }).then((fn) => { unlisten = fn; });
-    return () => unlisten?.();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+      if (settingsRef.current.notifications) setAdhanActive(event.payload);
+    }).then((fn) => { unlistenTime = fn; });
+    // Auto-advance: Rust fires this 60s after prayer time (window may be hidden)
+    listen<null>('prayer-refresh', () => {
+      loadPrayers(settingsRef.current);
+    }).then((fn) => { unlistenRefresh = fn; });
+    return () => { unlistenTime?.(); unlistenRefresh?.(); };
+  }, [loadPrayers]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // 1-second tick for UI countdown display only (no tray updates, no adhan)
+  // 1-second tick for UI countdown display only (Rust handles tray + adhan + refresh)
   useEffect(() => {
     const id = setInterval(() => {
       if (next) setSeconds(secondsUntil(next.time));
@@ -189,6 +194,8 @@ export default function App() {
             displayMode={settings.displayMode}
             nameFormat={settings.nameFormat}
             arabicMode={settings.arabicMode}
+            showSeconds={settings.showSeconds}
+            countdownPrefix={settings.countdownPrefix}
           />
           <div className="flex-1 overflow-y-auto">
             <PrayerList
