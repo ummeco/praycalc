@@ -159,9 +159,18 @@ export default function SettingsPanel({ settings, onSave }: Props) {
           <>
             <Toggle
               label="Prayer time notifications"
-              desc="Notify when each prayer time begins"
+              desc="Play adhan when each prayer time begins"
               checked={form.notifications}
               onChange={(v) => setForm((f) => ({ ...f, notifications: v }))}
+            />
+            <SelectField
+              label="Adhan recitation"
+              value={form.adhan ?? 'makkah'}
+              onChange={(v) => setForm((f) => ({ ...f, adhan: v as 'makkah' | 'mishari' }))}
+              options={[
+                { value: 'makkah', label: 'Makkah (short)' },
+                { value: 'mishari', label: 'Mishari Rashid al-Afasy' },
+              ]}
             />
           </>
         )}

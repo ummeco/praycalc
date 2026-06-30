@@ -1,8 +1,85 @@
-use tauri::{AppHandle, Manager};
+use tauri::{AppHandle, Emitter, Manager};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
+use std::sync::Mutex;
 
 mod tray;
+
+// Shared state updated by JS whenever next prayer changes
+#[derive(Default, Clone)]
+struct PrayerState {
+    next_name: String,
+    next_time: String, // "HH:MM" 24h
+    notifications: bool,
+    display_mode: String, // "countdown" | "time"
+    name_format: String,  // "abbrev" | "full"
+    adhan_triggered: bool,
+}
+
+struct AppState {
+    prayer: Mutex<PrayerState>,
+}
+
+fn prayer_abbrev(name: &str) -> &str {
+    match name {
+        "Fajr" => "F",
+        "Sunrise" => "S",
+        "Dhuhr" => "D",
+        "Asr" => "A",
+        "Maghrib" => "M",
+        "Isha" => "I",
+        _ => "?",
+    }
+}
+
+fn format_time_12h(time_str: &str) -> String {
+    let parts: Vec<&str> = time_str.split(':').collect();
+    if parts.len() >= 2 {
+        if let (Ok(h), Ok(m)) = (parts[0].parse::<u32>(), parts[1].parse::<u32>()) {
+            let period = if h < 12 { "a" } else { "p" };
+            let h12 = if h == 0 { 12 } else if h > 12 { h - 12 } else { h };
+            return format!("{}:{:02}{}", h12, m, period);
+        }
+    }
+    time_str.to_string()
+}
+
+fn format_tray_label(name: &str, time_str: &str, remaining_secs: i64, display_mode: &str, name_format: &str) -> String {
+    if name.is_empty() {
+        return "☽".to_string();
+    }
+    let prefix = if name_format == "full" { name.to_string() } else { prayer_abbrev(name).to_string() };
+    let value = if display_mode == "time" {
+        format_time_12h(time_str)
+    } else if remaining_secs >= 3600 {
+        let h = remaining_secs / 3600;
+        let m = (remaining_secs % 3600) / 60;
+        format!("{}:{:02}", h, m)
+    } else if remaining_secs > 0 {
+        let m = remaining_secs / 60;
+        let s = remaining_secs % 60;
+        format!("{}:{:02}", m, s)
+    } else {
+        "now".to_string()
+    };
+    format!("{} {}", prefix, value)
+}
+
+fn seconds_until(time_str: &str) -> i64 {
+    use chrono::TimeZone;
+    let now = chrono::Local::now();
+    let parts: Vec<&str> = time_str.split(':').collect();
+    if parts.len() >= 2 {
+        if let (Ok(h), Ok(m)) = (parts[0].parse::<u32>(), parts[1].parse::<u32>()) {
+            if let Some(naive) = now.date_naive().and_hms_opt(h, m, 0) {
+                if let Some(t) = chrono::Local.from_local_datetime(&naive).single() {
+                    return (t - now).num_seconds();
+                }
+            }
+        }
+    }
+    i64::MIN
+}
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct PrayerEntry {
@@ -17,7 +94,6 @@ pub struct PrayerTimesResponse {
     pub method: String,
 }
 
-// API returns [{date, prayers: {Name: "HH:MM:SS"}}]
 #[derive(Debug, Deserialize)]
 struct ApiDay {
     date: String,
@@ -27,13 +103,7 @@ struct ApiDay {
 const PRAYER_ORDER: &[&str] = &["Fajr", "Sunrise", "Dhuhr", "Asr", "Maghrib", "Isha"];
 
 #[tauri::command]
-async fn fetch_prayer_times(
-    lat: f64,
-    lng: f64,
-    tz: String,
-    _method: String,
-    hanafi: bool,
-) -> Result<PrayerTimesResponse, String> {
+async fn fetch_prayer_times(lat: f64, lng: f64, tz: String, _method: String, hanafi: bool) -> Result<PrayerTimesResponse, String> {
     let today = chrono::Local::now().format("%Y-%m-%d").to_string();
     let url = format!(
         "https://praycalc.com/api/prayers?lat={}&lng={}&tz={}&from={}&to={}&hanafi={}",
@@ -47,8 +117,6 @@ async fn fetch_prayer_times(
         .map_err(|e| e.to_string())?;
 
     let day = days.into_iter().next().ok_or("No prayer data returned")?;
-
-    // Convert dict to ordered vec; trim seconds from "HH:MM:SS" → "HH:MM"
     let prayers: Vec<PrayerEntry> = PRAYER_ORDER
         .iter()
         .filter_map(|name| {
@@ -59,27 +127,35 @@ async fn fetch_prayer_times(
         })
         .collect();
 
-    Ok(PrayerTimesResponse {
-        date: day.date,
-        prayers,
-        method: "MWL".to_string(),
-    })
+    Ok(PrayerTimesResponse { date: day.date, prayers, method: "MWL".to_string() })
+}
+
+/// JS calls this whenever next prayer or settings change.
+/// Rust background loop uses this to update the tray and fire adhan.
+#[tauri::command]
+fn set_next_prayer(
+    state: tauri::State<AppState>,
+    name: String,
+    time: String,
+    notifications: bool,
+    display_mode: String,
+    name_format: String,
+) {
+    let mut p = state.prayer.lock().unwrap();
+    let changed = name != p.next_name || time != p.next_time;
+    p.next_name = name;
+    p.next_time = time;
+    p.notifications = notifications;
+    p.display_mode = display_mode;
+    p.name_format = name_format;
+    if changed {
+        p.adhan_triggered = false;
+    }
 }
 
 #[tauri::command]
-async fn update_tray_tooltip(app: AppHandle, label: String) -> Result<(), String> {
-    if let Some(tray) = app.tray_by_id("main") {
-        tray.set_tooltip(Some(&label)).map_err(|e| e.to_string())?;
-    }
-    Ok(())
-}
-
-#[tauri::command]
-async fn update_tray_title(app: AppHandle, label: String) -> Result<(), String> {
-    if let Some(tray) = app.tray_by_id("main") {
-        tray.set_title(Some(&label)).map_err(|e| e.to_string())?;
-    }
-    Ok(())
+fn quit_app(app: AppHandle) {
+    app.exit(0);
 }
 
 #[tauri::command]
@@ -87,20 +163,17 @@ fn get_today_date() -> String {
     chrono::Local::now().format("%Y-%m-%d").to_string()
 }
 
+// Legacy stubs so old JS invocations don't error
 #[tauri::command]
-async fn notify_prayer(app: AppHandle, name: String) -> Result<(), String> {
-    use tauri_plugin_notification::NotificationExt;
-    app.notification()
-        .builder()
-        .title("Prayer Time")
-        .body(format!("It's time for {}", name))
-        .show()
-        .map_err(|e| e.to_string())?;
-    Ok(())
-}
+async fn update_tray_title(_app: AppHandle, _label: String) -> Result<(), String> { Ok(()) }
+#[tauri::command]
+async fn update_tray_tooltip(_app: AppHandle, _label: String) -> Result<(), String> { Ok(()) }
+#[tauri::command]
+async fn notify_prayer(_app: AppHandle, _name: String) -> Result<(), String> { Ok(()) }
 
 pub fn run() {
     tauri::Builder::default()
+        .manage(AppState { prayer: Mutex::new(PrayerState::default()) })
         .plugin(tauri_plugin_store::Builder::default().build())
         .plugin(tauri_plugin_notification::init())
         .plugin(tauri_plugin_autostart::init(
@@ -108,19 +181,61 @@ pub fn run() {
             Some(vec![]),
         ))
         .setup(|app| {
+            // Hide dock icon — tray-only app
+            #[cfg(target_os = "macos")]
+            app.set_activation_policy(tauri::ActivationPolicy::Accessory);
+
             tray::setup_tray(app)?;
-            // Hide the default window — app lives in the tray
             if let Some(win) = app.get_webview_window("main") {
                 win.hide()?;
             }
+
+            // Native 1-second timer — runs regardless of window visibility
+            let handle = app.handle().clone();
+            tauri::async_runtime::spawn(async move {
+                loop {
+                    tokio::time::sleep(tokio::time::Duration::from_secs(1)).await;
+
+                    let state = handle.state::<AppState>();
+                    let snapshot = state.prayer.lock().unwrap().clone();
+
+                    if snapshot.next_name.is_empty() {
+                        continue;
+                    }
+
+                    let remaining = seconds_until(&snapshot.next_time);
+                    let label = format_tray_label(
+                        &snapshot.next_name,
+                        &snapshot.next_time,
+                        remaining,
+                        &snapshot.display_mode,
+                        &snapshot.name_format,
+                    );
+
+                    if let Some(tray) = handle.tray_by_id("main") {
+                        let _ = tray.set_title(Some(&label));
+                    }
+
+                    if remaining <= 0 && !snapshot.adhan_triggered && snapshot.notifications {
+                        {
+                            let mut p = state.prayer.lock().unwrap();
+                            p.adhan_triggered = true;
+                        }
+                        let _ = handle.emit("prayer-time", &snapshot.next_name);
+                    }
+                }
+            });
+
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
             fetch_prayer_times,
+            set_next_prayer,
             update_tray_tooltip,
             update_tray_title,
             get_today_date,
             notify_prayer,
+            quit_app,
         ])
         .run(tauri::generate_context!())
         .expect("error while running praycalc desktop");

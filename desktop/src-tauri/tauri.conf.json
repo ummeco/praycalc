@@ -24,10 +24,6 @@
         "skipTaskbar": true
       }
     ],
-    "trayIcon": {
-      "id": "main",
-      "iconPath": "icons/tray-icon.png"
-    },
     "security": {
       "csp": "default-src 'self'; connect-src https://praycalc.com ipc: http://ipc.localhost; img-src 'self' data:; style-src 'self' 'unsafe-inline'"
     }

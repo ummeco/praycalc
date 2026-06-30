@@ -27,6 +27,7 @@ export interface Settings {
   nameFormat: NameFormat;
   showIcon: boolean;
   arabicMode: boolean;
+  adhan: 'makkah' | 'mishari';
 }
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -42,6 +43,7 @@ export const DEFAULT_SETTINGS: Settings = {
   nameFormat: 'abbrev',
   showIcon: true,
   arabicMode: false,
+  adhan: 'makkah',
 };
 
 export const METHODS = [

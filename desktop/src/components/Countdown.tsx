@@ -1,5 +1,5 @@
-import type { PrayerEntry, DisplayMode, NameFormat } from '../lib/ipc-types';
-import { formatCountdown, formatTime12, getPrayerDisplay } from '../lib/prayers';
+import type { PrayerEntry, DisplayMode, NameFormat, PrayerName } from '../lib/ipc-types';
+import { formatTime12, PRAYER_ARABIC } from '../lib/prayers';
 
 interface Props {
   next: PrayerEntry | null;
@@ -9,23 +9,53 @@ interface Props {
   arabicMode: boolean;
 }
 
-export default function Countdown({ next, seconds, displayMode, nameFormat, arabicMode }: Props) {
+export default function Countdown({ next, seconds, displayMode, arabicMode }: Props) {
   if (!next) return null;
 
-  const label = getPrayerDisplay(next.name, nameFormat, arabicMode);
+  const prayerName = arabicMode
+    ? PRAYER_ARABIC[next.name as PrayerName]
+    : next.name;
+
+  const h = Math.floor(seconds / 3600);
+  const m = Math.floor((seconds % 3600) / 60);
+  const s = seconds % 60;
+
+  // Main countdown display (H:MM or M) + seconds as superscript
+  const mainStr = displayMode !== 'countdown'
+    ? formatTime12(next.time)
+    : h > 0
+      ? `${h}:${String(m).padStart(2, '0')}`
+      : `${m}`;
+  const secStr = `:${String(s).padStart(2, '0')}`;
 
   return (
-    <div className="px-4 py-3 bg-brand-deep/40 border-b border-brand-dark/40">
-      <div className="text-[10px] uppercase tracking-widest text-brand-mid/70 mb-0.5">
-        {arabicMode ? label : next.name} in
+    <div className="px-5 pt-5 pb-4 border-b border-white/5">
+      <div className="text-[10px] uppercase tracking-widest text-green-400/50 mb-1.5">
+        {displayMode === 'countdown' ? `${prayerName} in` : prayerName}
       </div>
-      <div className="flex items-baseline gap-2">
-        <div className="text-xl font-bold text-brand-light tabular-nums">
-          {displayMode === 'countdown' ? formatCountdown(seconds) : formatTime12(next.time)}
+
+      {displayMode === 'countdown' ? (
+        <div className="flex items-start mb-2">
+          {/* Main time */}
+          <span className="text-5xl font-bold text-white tabular-nums leading-none">
+            {mainStr}
+          </span>
+          {/* Seconds — half-size, slightly raised */}
+          <span
+            className="text-2xl font-bold tabular-nums leading-none ml-0.5"
+            style={{ color: 'rgba(255,255,255,0.4)', marginTop: '6px' }}
+          >
+            {secStr}
+          </span>
         </div>
-        {!arabicMode && nameFormat === 'abbrev' && (
-          <div className="text-xs text-brand-mid/60 font-medium">{label}</div>
-        )}
+      ) : (
+        <div className="text-5xl font-bold text-white tabular-nums leading-none mb-2">
+          {mainStr}
+        </div>
+      )}
+
+      <div className="text-green-400/55 text-sm">
+        at {formatTime12(next.time)}
       </div>
     </div>
   );

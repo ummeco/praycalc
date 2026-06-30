@@ -74,15 +74,15 @@ export function formatTrayLabel(
   if (displayMode === 'time') {
     return `${label} ${formatTime12(next.time)}`;
   }
-  // countdown mode: "A -3:43"
+  // countdown mode: "A 2:00" (no hyphen; H:MM when ≥1hr, M:SS when <1hr)
   const m = Math.floor(seconds / 60);
   const s = seconds % 60;
   if (seconds >= 3600) {
     const h = Math.floor(seconds / 3600);
     const rem = Math.floor((seconds % 3600) / 60);
-    return `${label} -${h}:${String(rem).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+    return `${label} ${h}:${String(rem).padStart(2, '0')}`;
   }
-  return `${label} -${m}:${String(s).padStart(2, '0')}`;
+  return `${label} ${m}:${String(s).padStart(2, '0')}`;
 }
 
 export function getCurrentPrayer(prayers: PrayerEntry[]): PrayerName | null {

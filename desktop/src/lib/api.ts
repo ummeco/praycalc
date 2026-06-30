@@ -26,3 +26,7 @@ export async function getTodayDate(): Promise<string> {
 export async function sendPrayerNotification(name: string): Promise<void> {
   return invoke('notify_prayer', { name });
 }
+
+export async function quitApp(): Promise<void> {
+  return invoke('quit_app');
+}
