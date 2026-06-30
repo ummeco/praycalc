@@ -12,7 +12,7 @@ import {
 } from './lib/prayers';
 import PrayerList from './components/PrayerList';
 import Countdown from './components/Countdown';
-import SettingsPanel from './components/Settings';
+import SettingsPanel, { type SettingsPanelHandle } from './components/Settings';
 import AdhanOverlay from './components/AdhanOverlay';
 import { invoke } from '@tauri-apps/api/core';
 import { listen } from '@tauri-apps/api/event';
@@ -32,9 +32,12 @@ export default function App() {
   const [adhanActive, setAdhanActive] = useState<string | null>(null);
   const settingsRef = useRef<Settings>(DEFAULT_SETTINGS);
   const adhanActiveRef = useRef<string | null>(null);
+  const settingsPanelRef = useRef<SettingsPanelHandle>(null);
+  const viewRef = useRef<View>('prayers');
 
   settingsRef.current = settings;
   adhanActiveRef.current = adhanActive;
+  viewRef.current = view;
 
   const loadPrayers = useCallback(async (s: Settings) => {
     setLoading(true);
@@ -126,7 +129,8 @@ export default function App() {
     (window as unknown as Record<string, unknown>).__showSettings = () => setView('settings');
   }, []);
 
-  // Hide window on blur/ESC — suppressed while adhan plays
+  // Hide window on blur/ESC — suppressed while adhan plays.
+  // ESC in settings cancels (navigates back) instead of hiding.
   useEffect(() => {
     const hide = () => {
       if (adhanActiveRef.current) return;
@@ -134,7 +138,15 @@ export default function App() {
         getCurrentWindow().hide().catch(() => {});
       });
     };
-    const onKeyDown = (e: KeyboardEvent) => { if (e.key === 'Escape') hide(); };
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        if (viewRef.current === 'settings') {
+          setView('prayers');
+        } else {
+          hide();
+        }
+      }
+    };
     window.addEventListener('blur', hide);
     document.addEventListener('keydown', onKeyDown);
     return () => {
@@ -178,7 +190,7 @@ export default function App() {
       {/* Content */}
       {view === 'settings' ? (
         <div className="flex-1 overflow-y-auto">
-          <SettingsPanel settings={settings} onSave={handleSettingsSave} />
+          <SettingsPanel ref={settingsPanelRef} settings={settings} onSave={handleSettingsSave} />
         </div>
       ) : loading ? (
         <div className="flex-1 flex items-center justify-center text-green-300/40 text-sm">
@@ -215,19 +227,38 @@ export default function App() {
         className="flex items-center justify-between px-5 py-2.5 flex-shrink-0"
         style={{ borderTop: '1px solid rgba(255,255,255,0.07)', background: 'rgba(0,0,0,0.18)' }}
       >
-        <button
-          onClick={() => setView(view === 'settings' ? 'prayers' : 'settings')}
-          className="flex items-center gap-1.5 text-brand-mid hover:text-brand-light text-xs font-medium transition-colors"
-        >
-          <span className="text-sm">⚙</span>
-          <span>{view === 'settings' ? '← Back' : 'Settings'}</span>
-        </button>
-        <button
-          onClick={() => quitApp().catch(() => {})}
-          className="text-white/30 hover:text-red-400 text-xs transition-colors"
-        >
-          Quit
-        </button>
+        {view === 'settings' ? (
+          <>
+            <button
+              onClick={() => setView('prayers')}
+              className="text-white/40 hover:text-white/70 text-xs font-medium transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={() => settingsPanelRef.current?.save()}
+              className="bg-brand-mid hover:bg-brand-light text-brand-bg text-xs font-semibold px-4 py-1.5 rounded transition-colors"
+            >
+              Save
+            </button>
+          </>
+        ) : (
+          <>
+            <button
+              onClick={() => setView('settings')}
+              className="flex items-center gap-1.5 text-brand-mid hover:text-brand-light text-xs font-medium transition-colors"
+            >
+              <span className="text-sm">⚙</span>
+              <span>Settings</span>
+            </button>
+            <button
+              onClick={() => quitApp().catch(() => {})}
+              className="text-white/30 hover:text-red-400 text-xs transition-colors"
+            >
+              Quit
+            </button>
+          </>
+        )}
       </div>
     </div>
   );

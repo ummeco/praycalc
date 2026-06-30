@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, forwardRef, useImperativeHandle } from 'react';
 import type { Settings, DisplayMode, NameFormat, CountdownPrefix } from '../lib/ipc-types';
 import { METHODS, PRESET_CITIES } from '../lib/ipc-types';
 import { saveSettings } from '../lib/store';
@@ -9,16 +9,19 @@ interface Props {
   onSave: (s: Settings) => void;
 }
 
+export interface SettingsPanelHandle {
+  save: () => Promise<void>;
+}
+
 type Tab = 'general' | 'location' | 'notifications' | 'advanced';
 
-export default function SettingsPanel({ settings, onSave }: Props) {
+const SettingsPanel = forwardRef<SettingsPanelHandle, Props>(function SettingsPanel({ settings, onSave }, ref) {
   const [form, setForm] = useState<Settings>(settings);
   const [tab, setTab] = useState<Tab>('general');
 
 
   const handleSave = useCallback(async () => {
     await saveSettings(form);
-    // Sync autostart with OS
     try {
       if (form.autostart) {
         await invoke('plugin:autostart|enable');
@@ -30,6 +33,8 @@ export default function SettingsPanel({ settings, onSave }: Props) {
     }
     onSave(form);
   }, [form, onSave]);
+
+  useImperativeHandle(ref, () => ({ save: handleSave }), [handleSave]);
 
   // Keep form in sync when settings prop changes externally
   useEffect(() => {
@@ -211,18 +216,11 @@ export default function SettingsPanel({ settings, onSave }: Props) {
           </>
         )}
       </div>
-
-      <div className="px-4 pb-4">
-        <button
-          onClick={handleSave}
-          className="w-full bg-brand-mid hover:bg-brand-light text-brand-bg font-semibold text-sm py-2 rounded transition-colors"
-        >
-          Save
-        </button>
-      </div>
     </div>
   );
-}
+});
+
+export default SettingsPanel;
 
 function Toggle({
   label,
