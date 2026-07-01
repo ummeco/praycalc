@@ -137,6 +137,13 @@ regexes = [
   '''^eyJ[A-Za-z0-9_-]+\.{3}''',
   # Explicit test fixtures
   '''(?i)test-admin-secret''',
+  # JSDoc/comment prose describing fail-closed validation behavior (e.g.
+  # "returns false on missing secret, missing/garbled token, expiry...").
+  # Historical FP: web/app/account/delete/_lib/delete.ts:48 (commit 989befb2,
+  # generic-api-key rule tripped on "missing/garbled " due to entropy, not an
+  # actual credential). Path no longer exists post Astro migration, but the
+  # commit remains in history so the shape must be allowlisted.
+  '''(?i)missing/garbled''',
   # Cross-line bleed: rules using `\s*[=:]\s*` can match past a blank env-var
   # line into the NEXT line's "KEY=value" (e.g. docs .env block listing empty
   # vars). The captured group is itself a full env assignment, never a secret.
