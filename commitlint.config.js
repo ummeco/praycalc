@@ -3,6 +3,14 @@
 
 module.exports = {
   extends: ['@commitlint/config-conventional'],
+  // Dependabot commits append `Signed-off-by:` / `Co-authored-by:` trailers
+  // directly after the YAML front-matter block with no blank line separator,
+  // which trips `footer-leading-blank`. These commits are bot-generated and
+  // already Conventional-Commits-shaped (type(deps): ...) — ignore only that
+  // exact bot signature, keep full enforcement for human commits.
+  ignores: [
+    (message) => message.includes('Signed-off-by: dependabot[bot]'),
+  ],
   rules: {
     'type-enum': [2, 'always', [
       'feat', 'fix', 'chore', 'docs', 'test', 'refactor',
