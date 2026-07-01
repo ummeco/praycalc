@@ -63,7 +63,7 @@ praycalc/
 
 **Release process:** pushing a `desktop-v*` tag triggers `.github/workflows/release-desktop.yml`, which builds a 3-OS matrix (macOS arm64, Windows x64, Linux x64) and publishes one GitHub release with all installers (`.dmg`/`.app.tar.gz`, `.msi`/`.exe`, `.deb`/`.AppImage`/`.rpm`). `.github/workflows/ci-desktop.yml` validates the same 3-OS build on every push to `main` touching `desktop/**`.
 
-Current release: [desktop-v1.1.0](https://github.com/ummeco/praycalc/releases/tag/desktop-v1.1.0) (2026-07-01).
+Current release: [desktop-v1.1.1](https://github.com/ummeco/praycalc/releases/tag/desktop-v1.1.1) (2026-07-01).
 
 ## Backend Integration
 

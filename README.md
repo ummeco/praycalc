@@ -107,7 +107,7 @@ flutter run
 
 ## Desktop Downloads
 
-Latest release: [desktop-v1.1.0](https://github.com/ummeco/praycalc/releases/tag/desktop-v1.1.0)
+Latest release: [desktop-v1.1.1](https://github.com/ummeco/praycalc/releases/tag/desktop-v1.1.1)
 
 | Platform | Installers |
 | --- | --- |
