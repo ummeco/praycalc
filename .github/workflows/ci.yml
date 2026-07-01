@@ -58,7 +58,7 @@ jobs:
         # mobile-375 (WebKit), tablet-768, desktop-1280.
         run: pnpm test:e2e
       - name: Upload Playwright report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: playwright-report

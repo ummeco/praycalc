@@ -44,7 +44,7 @@ jobs:
         run: lhci autorun
       - name: Upload Lighthouse report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: lighthouse-${{ inputs.project_path }}
           path: ${{ inputs.project_path }}/.lighthouseci

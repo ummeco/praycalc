@@ -23,7 +23,7 @@ jobs:
             | tar -xz gitleaks && sudo mv gitleaks /usr/local/bin/
       - name: Scan (ALWAYS blocking — no warn mode for secrets)
         run: gitleaks detect --source . --config .gitleaks.toml --redact --report-format json --report-path gitleaks-report.json
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with: { name: gitleaks-report, path: gitleaks-report.json }
   deps-osv:
@@ -34,7 +34,7 @@ jobs:
         with: { scan-args: "--recursive --format json --output osv-report.json ." }
       - name: Gate on CVSS>=7
         run: node .github/scripts/rampart-gate.js osv-report.json --tool osv
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with: { name: osv-report, path: osv-report.json }
   deps-pnpm:
@@ -51,7 +51,7 @@ jobs:
         with: { node-version: 22 }
       - run: pnpm audit --prod --json > pnpm-audit.json || true
       - run: node ../.github/scripts/rampart-gate.js pnpm-audit.json --tool pnpm --baseline ../.github/rampart-baseline.json
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with: { name: pnpm-audit-report, path: pnpm-audit.json }
   sast:
@@ -64,7 +64,7 @@ jobs:
                   --config p/secrets --config rules/rampart/ \
                   --json --output semgrep-report.json --error .
       - run: node .github/scripts/rampart-gate.js semgrep-report.json --tool semgrep
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with: { name: semgrep-report, path: semgrep-report.json }
   summary:

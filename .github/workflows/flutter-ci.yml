@@ -83,7 +83,7 @@ jobs:
         working-directory: flutter
         run: flutter build appbundle --release --flavor google -t lib/main.dart
       - name: Upload AAB
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: praycalc-release-${{ github.sha }}
           path: flutter/build/app/outputs/bundle/googleRelease/app-google-release.aab
@@ -112,7 +112,7 @@ jobs:
         working-directory: flutter
         run: flutter build ios --no-codesign --debug
       - name: Upload iOS Runner.app
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: praycalc-ios-debug-${{ github.sha }}
           path: flutter/build/ios/iphonesimulator/Runner.app
