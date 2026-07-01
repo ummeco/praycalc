@@ -1,6 +1,13 @@
+# Pin the Apple targets' C/C++ compiler + linker to Xcode's clang: this machine's
+# default `cc` can be a broken shim, so ring/vswhom C sources fail without it.
+# These are TARGET-SCOPED (CC_<triple>) on purpose — a global [env] CC/CXX would
+# leak these Unix paths onto the Windows MSVC target and break that build. Windows
+# (cl.exe) and Linux (gcc) are left to cc-rs auto-detection.
 [target.aarch64-apple-darwin]
 linker = "/usr/bin/clang"
 
 [env]
-CC = "/usr/bin/clang"
-CXX = "/usr/bin/clang++"
+CC_aarch64-apple-darwin = "/usr/bin/clang"
+CXX_aarch64-apple-darwin = "/usr/bin/clang++"
+CC_x86_64-apple-darwin = "/usr/bin/clang"
+CXX_x86_64-apple-darwin = "/usr/bin/clang++"
