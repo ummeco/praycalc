@@ -45,7 +45,12 @@ export default function App() {
     try {
       const resp = await fetchPrayerTimes(s.lat, s.lng, s.tz, s.method, s.hanafi);
       setPrayers(resp.prayers);
-      const n = getNextPrayer(resp.prayers);
+      // After Isha all of today's prayers have passed and getNextPrayer returns
+      // null — roll over to tomorrow's Fajr so the countdown (tray + popup)
+      // keeps running across midnight instead of freezing on "Isha!".
+      const n =
+        getNextPrayer(resp.prayers) ??
+        (resp.tomorrowFajr ? { name: 'Fajr' as const, time: resp.tomorrowFajr } : null);
       const c = getCurrentPrayer(resp.prayers);
       setNext(n);
       setCurrent(c);

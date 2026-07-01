@@ -35,6 +35,7 @@ PrayCalc is a free, GPS-accurate Islamic prayer time calculator for web and mobi
 - Dark mode (WCAG 2.2 AA, system-preference-aware)
 - Accessible (WCAG 2.2 AA — axe audited, Playwright viewport matrix)
 - Ummat+ premium features: smart home display, TV widget, home screen widgets
+- Desktop menu bar / tray app for macOS, Windows, Linux with live countdown
 
 ## Tech Stack
 
@@ -43,6 +44,7 @@ PrayCalc is a free, GPS-accurate Islamic prayer time calculator for web and mobi
 | Web | Next.js 15, TypeScript, Tailwind CSS |
 | Mobile (Active) | React Native + Expo SDK 53 (iOS + Android) + react-native-tvos (TV platforms) |
 | Mobile (Archive) | Flutter 1.2.3 — [archived branch](https://github.com/ummeco/praycalc/tree/archive/praycalc-flutter-1.2.3) (D-P2-PRAYCALC-RN) |
+| Desktop | Tauri 2 + Vite + React 19 (macOS, Windows, Linux) |
 | Backend platform | nSelf (100% — self-hosted PaaS on Hetzner) |
 | API | Hasura GraphQL Engine (all data access via GraphQL, no direct SQL) |
 | Auth | Hasura Auth — shared SSO at auth.ummat.dev |
@@ -58,6 +60,7 @@ PrayCalc is a free, GPS-accurate Islamic prayer time calculator for web and mobi
 praycalc/
 ├── web/        praycalc.com — Next.js web app
 ├── org/        praycalc.org — documentation site
+├── desktop/    menu bar / tray app — Tauri 2 + Vite + React 19 (macOS, Windows, Linux)
 └── flutter/    iOS + Android + macOS + Windows + Linux + TV + Watch + Smart Display
 ```
 
@@ -86,6 +89,14 @@ pnpm install
 pnpm dev        # http://localhost:3003
 ```
 
+**Desktop app:**
+
+```bash
+cd desktop
+pnpm install
+pnpm tauri dev
+```
+
 **Flutter app:**
 
 ```bash
@@ -93,6 +104,16 @@ cd flutter
 flutter pub get
 flutter run
 ```
+
+## Desktop Downloads
+
+Latest release: [desktop-v1.1.0](https://github.com/ummeco/praycalc/releases/tag/desktop-v1.1.0)
+
+| Platform | Installers |
+| --- | --- |
+| macOS (arm64) | `.dmg`, `.app.tar.gz` |
+| Windows (x64) | `.msi`, `.exe` |
+| Linux (x64) | `.deb`, `.AppImage`, `.rpm` |
 
 ## Backend
 

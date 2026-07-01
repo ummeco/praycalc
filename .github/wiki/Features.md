@@ -38,6 +38,19 @@
 | Persistent notification shade | Done |
 | Shorebird OTA updates | Done |
 
+## Desktop App (macOS, Windows, Linux)
+
+| Feature | Status |
+| --- | --- |
+| Menu bar / system tray app (Tauri 2 + Vite + React 19) | Done |
+| Live countdown text in tray (macOS) | Done |
+| Live countdown via tooltip + click popup (Windows, Linux) | Done |
+| Popup auto-positions above/below tray based on taskbar position | Done |
+| Tray-only, no dock icon (macOS) | Done |
+| Auto-start on login | Done |
+| Native notifications | Done |
+| Unified 3-platform release (.dmg, .msi/.exe, .deb/.AppImage/.rpm) | Done |
+
 ## Documentation Site (praycalc.org)
 
 | Feature | Status |

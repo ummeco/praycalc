@@ -9,6 +9,8 @@ export interface PrayerTimesResponse {
   date: string;
   prayers: PrayerEntry[];
   method: string;
+  /** Tomorrow's Fajr (HH:MM) — countdown target after Isha passes. */
+  tomorrowFajr?: string | null;
 }
 
 export type DisplayMode = 'countdown' | 'time';

@@ -100,7 +100,13 @@ fn seconds_until(time_str: &str) -> i64 {
         if let (Ok(h), Ok(m)) = (parts[0].parse::<u32>(), parts[1].parse::<u32>()) {
             if let Some(naive) = now.date_naive().and_hms_opt(h, m, 0) {
                 if let Some(t) = chrono::Local.from_local_datetime(&naive).single() {
-                    return (t - now).num_seconds();
+                    let secs = (t - now).num_seconds();
+                    // Day-aware rollover: after Isha the next prayer is tomorrow's
+                    // Fajr, whose HH:MM lies far in "today's" past. Prayers are never
+                    // >6h apart, so anything beyond -6h means "tomorrow" — shift by
+                    // 24h so the countdown keeps working across midnight. The adhan
+                    // hold window (0 to -60s) is unaffected.
+                    return if secs < -21_600 { secs + 86_400 } else { secs };
                 }
             }
         }
@@ -115,10 +121,14 @@ pub struct PrayerEntry {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct PrayerTimesResponse {
     pub date: String,
     pub prayers: Vec<PrayerEntry>,
     pub method: String,
+    /// Tomorrow's Fajr time (HH:MM) — used by JS after Isha so the countdown
+    /// rolls over to the next day instead of freezing on "Isha!" until midnight.
+    pub tomorrow_fajr: Option<String>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -131,10 +141,15 @@ const PRAYER_ORDER: &[&str] = &["Fajr", "Sunrise", "Dhuhr", "Asr", "Maghrib", "I
 
 #[tauri::command]
 async fn fetch_prayer_times(lat: f64, lng: f64, tz: String, _method: String, hanafi: bool) -> Result<PrayerTimesResponse, String> {
-    let today = chrono::Local::now().format("%Y-%m-%d").to_string();
+    // Fetch today AND tomorrow so the countdown can roll over to tomorrow's
+    // Fajr after Isha (the API computes PrayCalc's own method; only `hanafi`
+    // affects output — there is no method parameter server-side).
+    let now = chrono::Local::now();
+    let today = now.format("%Y-%m-%d").to_string();
+    let tomorrow = (now + chrono::Duration::days(1)).format("%Y-%m-%d").to_string();
     let url = format!(
         "https://praycalc.com/api/prayers?lat={}&lng={}&tz={}&from={}&to={}&hanafi={}",
-        lat, lng, tz, today, today, if hanafi { 1 } else { 0 }
+        lat, lng, tz, today, tomorrow, if hanafi { 1 } else { 0 }
     );
     let days: Vec<ApiDay> = reqwest::get(&url)
         .await
@@ -143,7 +158,11 @@ async fn fetch_prayer_times(lat: f64, lng: f64, tz: String, _method: String, han
         .await
         .map_err(|e| e.to_string())?;
 
-    let day = days.into_iter().next().ok_or("No prayer data returned")?;
+    let mut iter = days.into_iter();
+    let day = iter.next().ok_or("No prayer data returned")?;
+    let tomorrow_fajr = iter
+        .next()
+        .and_then(|d| d.prayers.get("Fajr").map(|t| t.chars().take(5).collect()));
     let prayers: Vec<PrayerEntry> = PRAYER_ORDER
         .iter()
         .filter_map(|name| {
@@ -154,7 +173,7 @@ async fn fetch_prayer_times(lat: f64, lng: f64, tz: String, _method: String, han
         })
         .collect();
 
-    Ok(PrayerTimesResponse { date: day.date, prayers, method: "MWL".to_string() })
+    Ok(PrayerTimesResponse { date: day.date, prayers, method: "PrayCalc".to_string(), tomorrow_fajr })
 }
 
 /// JS calls this whenever next prayer or settings change.

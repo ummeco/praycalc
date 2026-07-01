@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect, forwardRef, useImperativeHandle } from 'react';
 import type { Settings, DisplayMode, NameFormat, CountdownPrefix } from '../lib/ipc-types';
-import { METHODS, PRESET_CITIES } from '../lib/ipc-types';
+import { PRESET_CITIES } from '../lib/ipc-types';
 import { saveSettings } from '../lib/store';
 import { invoke } from '@tauri-apps/api/core';
 
@@ -200,13 +200,10 @@ const SettingsPanel = forwardRef<SettingsPanelHandle, Props>(function SettingsPa
 
         {tab === 'advanced' && (
           <>
-            <SelectField
-              label="Calculation method"
-              value={form.method}
-              onChange={(v) => setForm((f) => ({ ...f, method: v }))}
-              options={METHODS}
-            />
-
+            {/* Calculation-method picker removed: /api/prayers computes PrayCalc's
+                own method and has no method parameter, so the picker did nothing
+                (PCI filed to add API method support, then restore it). The `method`
+                field stays in Settings for stored-settings compatibility. */}
             <Toggle
               label="Hanafi school (Asr)"
               desc="Use Hanafi method for Asr calculation"
