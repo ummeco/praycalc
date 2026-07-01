@@ -247,7 +247,11 @@ pub fn run() {
                     );
 
                     if let Some(tray) = handle.tray_by_id("main") {
+                        // macOS shows this text in the menu bar. set_title is a no-op on
+                        // Windows and hidden on Linux, so mirror the label into the tooltip
+                        // — hover then gives Win/Linux users the same live countdown.
                         let _ = tray.set_title(Some(&label));
+                        let _ = tray.set_tooltip(Some(&label));
                     }
 
                     if remaining <= 0 && !snapshot.adhan_triggered && snapshot.notifications {

@@ -1,0 +1,96 @@
+name: Release Tauri Desktop App
+
+# Push a `desktop-v*` tag (e.g. desktop-v1.1.0) → build every platform and
+# publish ONE GitHub release with all installers attached:
+#   macOS  .dmg + .app.tar.gz     Windows  .msi + .exe     Linux  .deb + .AppImage
+on:
+  push:
+    tags: ['desktop-v*']
+
+# The release is created once and every matrix leg uploads its own installers
+# to the same tag, so they must not race on creation — tauri-action handles this.
+permissions:
+  contents: write
+
+jobs:
+  release-tauri-desktop:
+    name: Release (${{ matrix.label }})
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: macos-15
+            targets: aarch64-apple-darwin
+            label: macOS (arm64)
+          - platform: ubuntu-22.04
+            targets: x86_64-unknown-linux-gnu
+            label: Linux (x64)
+          - platform: windows-latest
+            targets: x86_64-pc-windows-msvc
+            label: Windows (x64)
+
+    runs-on: ${{ matrix.platform }}
+    defaults:
+      run:
+        working-directory: desktop
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'pnpm'
+
+      - name: Install Rust stable
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.targets }}
+
+      - name: Install Linux system dependencies
+        if: matrix.platform == 'ubuntu-22.04'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libwebkit2gtk-4.1-dev \
+            libappindicator3-dev \
+            librsvg2-dev \
+            patchelf \
+            libgtk-3-dev \
+            libsoup-3.0-dev \
+            libjavascriptcoregtk-4.1-dev
+
+      - name: Install LLVM (Windows — needed by vswhom-sys build script)
+        if: matrix.platform == 'windows-latest'
+        uses: KyleMayes/install-llvm-action@v2
+        with:
+          version: '17'
+
+      - name: Cache Rust build artifacts
+        uses: actions/cache@v4
+        with:
+          path: desktop/src-tauri/target
+          key: ${{ runner.os }}-tauri-release-${{ hashFiles('desktop/src-tauri/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-tauri-release-
+            ${{ runner.os }}-tauri-
+
+      - name: Install JS dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build Tauri app + publish to release
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          projectPath: desktop
+          args: --target ${{ matrix.targets }}
+          tagName: ${{ github.ref_name }}
+          releaseName: 'PrayCalc Desktop ${{ github.ref_name }}'
+          releaseBody: 'Menu bar / system tray prayer-time app for macOS, Windows, and Linux. Download the installer for your platform below.'
+          releaseDraft: false
+          prerelease: false
