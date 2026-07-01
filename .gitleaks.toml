@@ -116,24 +116,58 @@ regexes = [
   '''(?i)(example|placeholder|your[_-]?key[_-]?here|changeme|replace[_-]?me|REPLACE_WITH|test[_-]?secret)''',
   '''(?i)#\s*(example|see|ref|link|note|todo):''',
   '''HASURA_GRAPHQL_ADMIN_SECRET=.*\$\{''',
+  # ── Shape-based FP suppression (matched against the captured secret) ──
+  # Go RE2 has no lookahead, so the rules can't exclude these in-regex.
+  # JS/TS env references: process.env.X / process.env['X'] / import.meta.env.X
+  '''(?i)^(process|import\.meta)\.env[.\[_]''',
+  # Shell/interpolation refs and code fragments: $VAR, "${VAR}", sed scripts,
+  # pipe/query fragments — a literal secret never starts with this punctuation
+  '''^["'?/|.$]''',
+  # Bare env-var NAMES used as values in docs (e.g. "HASURA_GRAPHQL_JWT_SECRET=")
+  '''^[A-Z_]+=?$''',
+  # Env-var assignments whose value is a URL (docs) — URLs are not secrets
+  '''^([A-Z_]+=)?https?://''',
+  # kebab-case identifiers (localStorage keys, gpg options, verify prefixes)
+  '''^[a-z0-9]+(-[a-z0-9]+)+(=[0-9]*)?$''',
+  # Dotted identifier/property paths (e.g. e2ee.conversationKey)
+  '''^[a-z][a-zA-Z0-9]*\.[a-zA-Z0-9.]+$''',
+  # zod schema declarations matched as "values" (e.g. HASURA_...: z.string()...)
+  '''^z\.(string|coerce|number)\(\)''',
+  # Truncated JWT illustrations in docs ("eyJ..." followed by a literal ellipsis)
+  '''^eyJ[A-Za-z0-9_-]+\.{3}''',
+  # Explicit test fixtures
+  '''(?i)test-admin-secret''',
+  # Cross-line bleed: rules using `\s*[=:]\s*` can match past a blank env-var
+  # line into the NEXT line's "KEY=value" (e.g. docs .env block listing empty
+  # vars). The captured group is itself a full env assignment, never a secret.
+  '''^[A-Z][A-Z0-9_]*=\S*$''',
 ]
+# NOTE: gitleaks `paths` entries are Go REGEXES, not globs. Glob syntax like
+# "**/*.test.ts" is an invalid regex ("missing argument to repetition operator")
+# and makes gitleaks PANIC at config load — failing the secrets job on every PR
+# before any scan runs. Keep every entry valid regex.
 paths = [
-  ".env.example",
-  ".env.template",
-  ".env.sample",
+  # Never scan these paths — they contain fixture/example values by design
+  '''\.env\.(example|template|sample)$''',
   '''\.next/''',
   '''\.dart_tool/''',
   '''node_modules/''',
-  '''.*\.test\.(ts|tsx)$''',
+  # Test files may contain fixture secrets
+  '''.*\.(test|spec)\.(ts|tsx)$''',
   '''.*fixtures?/.*''',
-  "**/*.test.ts",
-  "**/*.spec.ts",
-  "**/__tests__/**",
-  ".github/docs/**",
-  ".github/wiki/**",
-  "pnpm-lock.yaml",
-  ".gitleaks.toml",
+  '''.*__tests__/.*''',
+  # Documentation
+  '''\.github/(docs|wiki)/.*''',
+  # Lock files don't contain secrets (pnpm-lock.yaml / Podfile.lock spec
+  # checksums are SHA1 hashes of pod specs, not credentials)
+  '''pnpm-lock\.yaml$''',
+  '''Podfile\.lock$''',
+  # This config file itself
+  '''\.gitleaks\.toml$''',
 ]
 
-[allowlist.commits]
+# Commit SHAs known clean if gitleaks flags historical commits in full-history
+# scans. Must be a FLAT key inside [allowlist] — a nested [allowlist.commits]
+# table crashes gitleaks config decoding ("expected type 'string', got
+# unconvertible type 'map'").
 commits = []
