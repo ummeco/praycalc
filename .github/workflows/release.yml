@@ -102,12 +102,12 @@ jobs:
             --release \
             --no-tree-shake-icons
       - name: Upload AAB artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: android-aab
           path: flutter/build/app/outputs/bundle/googleRelease/app-google-release.aab
       - name: Upload Amazon APK artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: android-amazon-apk
           path: flutter/build/app/outputs/flutter-apk/app-amazon-release.apk
@@ -222,7 +222,7 @@ jobs:
             --wait
           xcrun stapler staple /tmp/PrayCalc.dmg
       - name: Upload DMG artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: macos-dmg
           path: /tmp/PrayCalc.dmg
@@ -252,7 +252,7 @@ jobs:
           $src = "flutter\build\windows\x64\runner\Release"
           Compress-Archive -Path "$src\*" -DestinationPath "$env:RUNNER_TEMP\PrayCalc-Windows.zip"
       - name: Upload ZIP artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: windows-zip
           path: ${{ runner.temp }}/PrayCalc-Windows.zip
@@ -319,12 +319,12 @@ jobs:
 
           dpkg-deb --build "$PKG" /tmp/praycalc_${VER}_amd64.deb
       - name: Upload tar.gz artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: linux-targz
           path: /tmp/PrayCalc-Linux.tar.gz
       - name: Upload .deb artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: linux-deb
           path: /tmp/praycalc_${{ steps.ver.outputs.version }}_amd64.deb
@@ -382,7 +382,7 @@ jobs:
         uses: CycloneDX/gh-node-npm-buildplugin@v1
         with:
           working-directory: web
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: sbom-web
           path: web/bom.xml
