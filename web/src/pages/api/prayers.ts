@@ -1,15 +1,18 @@
 /**
  * api/prayers.ts — Prayer times computation endpoint.
  *
- * PURPOSE: GET /api/prayers?lat=&lng=&tz=&from=&to=&hanafi= — computes prayer times
- *   for a date range. Used by calendar export and mobile app.
- * INPUTS: lat, lng, tz, from (YYYY-MM-DD), to (YYYY-MM-DD), hanafi
+ * PURPOSE: GET /api/prayers?lat=&lng=&tz=&from=&to=&hanafi=&method= — computes prayer
+ *   times for a date range. Used by calendar export, mobile app, and desktop app.
+ * INPUTS: lat, lng, tz, from (YYYY-MM-DD), to (YYYY-MM-DD), hanafi, method (optional)
  * OUTPUTS: JSON array of { date, prayers }
- * REF: P2-E3-W02-S02-T03
+ * CONSTRAINTS: method must be one of KNOWN_METHOD_IDS (pray-calc's traditional methods);
+ *   Tehran/Jafari is not offered (not present in pray-calc's Methods map). Absent/unset
+ *   method preserves the original PrayCalc Dynamic Method default (backward compatible).
+ * REF: P2-E3-W02-S02-T03 · PCI msg-2026-07-01-praycalc-api-method-param
  */
 
 import type { APIRoute } from 'astro';
-import { getPrayerTimes } from '@/lib/prayers.server';
+import { getPrayerTimes, isKnownMethod, KNOWN_METHOD_IDS } from '@/lib/prayers.server';
 import { getUtcOffset } from '@/lib/geo';
 
 export const GET: APIRoute = ({ url }) => {
@@ -20,9 +23,19 @@ export const GET: APIRoute = ({ url }) => {
   const from = p.get('from') ?? '';
   const to = p.get('to') ?? '';
   const hanafi = p.get('hanafi') === '1';
+  const method = p.get('method') ?? undefined;
 
   if (isNaN(lat) || isNaN(lng) || !from || !to) {
     return new Response(JSON.stringify({ error: 'Missing or invalid params' }), { status: 400 });
+  }
+
+  if (method && !isKnownMethod(method)) {
+    return new Response(
+      JSON.stringify({
+        error: `Unrecognized method '${method}'. Valid values: ${KNOWN_METHOD_IDS.join(', ')}`,
+      }),
+      { status: 400 },
+    );
   }
 
   const fromDate = new Date(`${from}T12:00:00Z`);
@@ -41,7 +54,7 @@ export const GET: APIRoute = ({ url }) => {
   const cursor = new Date(fromDate);
 
   for (let i = 0; i <= diffDays; i++) {
-    const prayers = getPrayerTimes(cursor, lat, lng, tzOffset, hanafi);
+    const prayers = getPrayerTimes(cursor, lat, lng, tzOffset, hanafi, false, method);
     results.push({
       date: cursor.toISOString().slice(0, 10),
       prayers,

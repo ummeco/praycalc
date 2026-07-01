@@ -140,17 +140,21 @@ struct ApiDay {
 const PRAYER_ORDER: &[&str] = &["Fajr", "Sunrise", "Dhuhr", "Asr", "Maghrib", "Isha"];
 
 #[tauri::command]
-async fn fetch_prayer_times(lat: f64, lng: f64, tz: String, _method: String, hanafi: bool) -> Result<PrayerTimesResponse, String> {
+async fn fetch_prayer_times(lat: f64, lng: f64, tz: String, method: String, hanafi: bool) -> Result<PrayerTimesResponse, String> {
     // Fetch today AND tomorrow so the countdown can roll over to tomorrow's
-    // Fajr after Isha (the API computes PrayCalc's own method; only `hanafi`
-    // affects output — there is no method parameter server-side).
+    // Fajr after Isha. `method` (a pray-calc method ID, e.g. "MWL", "Karachi")
+    // is forwarded to the API when set; empty string means "PrayCalc Dynamic
+    // Method" (server default), matching Settings' METHODS[''] option.
     let now = chrono::Local::now();
     let today = now.format("%Y-%m-%d").to_string();
     let tomorrow = (now + chrono::Duration::days(1)).format("%Y-%m-%d").to_string();
-    let url = format!(
+    let mut url = format!(
         "https://praycalc.com/api/prayers?lat={}&lng={}&tz={}&from={}&to={}&hanafi={}",
         lat, lng, tz, today, tomorrow, if hanafi { 1 } else { 0 }
     );
+    if !method.is_empty() {
+        url.push_str(&format!("&method={}", method));
+    }
     let days: Vec<ApiDay> = reqwest::get(&url)
         .await
         .map_err(|e| e.to_string())?
@@ -173,7 +177,8 @@ async fn fetch_prayer_times(lat: f64, lng: f64, tz: String, _method: String, han
         })
         .collect();
 
-    Ok(PrayerTimesResponse { date: day.date, prayers, method: "PrayCalc".to_string(), tomorrow_fajr })
+    let method_label = if method.is_empty() { "PrayCalc".to_string() } else { method };
+    Ok(PrayerTimesResponse { date: day.date, prayers, method: method_label, tomorrow_fajr })
 }
 
 /// JS calls this whenever next prayer or settings change.

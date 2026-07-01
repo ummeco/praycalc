@@ -10,11 +10,22 @@
  * REF: P2-E3-W02-S02-T03 · D-P2-STACK-CANON
  */
 
-import { calcTimes, calcTimesAll } from 'pray-calc';
+import { calcTimes, calcTimesAll, METHODS } from 'pray-calc';
 import type { FormattedPrayerTimes, FormattedPrayerTimesAll } from 'pray-calc';
 import type { PrayerResult } from './prayer-utils';
 
 export type { PrayerResult } from './prayer-utils';
+
+// Tehran/Jafari (Shia fiqh method) is excluded per D-P3-19 — it is not present
+// in pray-calc's METHODS map, so no filtering is needed here; every id in
+// METHODS is an approved fixed-angle/seasonal method safe to expose via the API.
+/** All method IDs the API accepts for the `method` query param (e.g. 'MWL', 'Karachi'). */
+export const KNOWN_METHOD_IDS: readonly string[] = METHODS.map((m) => m.id);
+
+/** True if `id` is a recognized calculation method (case-sensitive, matches pray-calc's Methods map keys). */
+export function isKnownMethod(id: string): boolean {
+  return KNOWN_METHOD_IDS.includes(id);
+}
 
 // Muslim World League (MWL) Fajr/Isha angles: 18° Fajr / 17° Isha.
 // Islamic basis: MWL is the globally accepted standard for Fajr/Isha angles,
@@ -23,7 +34,7 @@ export type { PrayerResult } from './prayer-utils';
 // For Hanafi Asr, the madhab uses shadow-ratio 2x (controlled by `hanafi` flag).
 // MWL is chosen as the hanafiAngles method; Karachi (18°/18°) is the South-Asian
 // Hanafi alternative but MWL is the broader global default.
-// Users may override via the calculation method selector in the UI (see PrayerCalculator.tsx).
+// Users may override via the `method` query param — see getPrayerTimes() below.
 const _HANAFI_ANGLES_METHOD_ID = 'MWL' as const;
 
 /**
@@ -35,6 +46,9 @@ const _HANAFI_ANGLES_METHOD_ID = 'MWL' as const;
  * @param tzOffset - UTC offset in hours (from luxon DateTime)
  * @param hanafi - Use Hanafi Asr calculation (shadow = 2x)
  * @param hanafiAngles - Use MWL fixed-angle Fajr (18°) / Isha (17°) instead of dynamic calculation
+ * @param method - Optional traditional method ID (see KNOWN_METHOD_IDS) to override Fajr/Isha
+ *   with that method's fixed-angle/seasonal times instead of the PrayCalc Dynamic Method.
+ *   Unknown/absent -> falls through to default PrayCalc behavior (backward compatible).
  */
 export function getPrayerTimes(
   date: Date,
@@ -43,11 +57,27 @@ export function getPrayerTimes(
   tzOffset: number,
   hanafi = false,
   hanafiAngles = false,
+  method?: string,
 ): PrayerResult {
-  if (hanafi && hanafiAngles) {
+  if (method && isKnownMethod(method)) {
     const allTimes = calcTimesAll(date, lat, lng, tzOffset, 0, undefined, undefined, hanafi) as FormattedPrayerTimesAll;
     // calcTimesAll returns a `Methods` map keyed by string method ID (e.g. 'MWL', 'Karachi') —
     // NOT numeric indices. Using the string ID is required; numeric string keys ('5') are undefined.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- pray-calc CJS types do not expose Methods shape
+    const methodEntry = (allTimes as any).Methods?.[method] as [string, string] | undefined;
+    return {
+      Fajr:    (methodEntry?.[0] ?? allTimes.Fajr)    ?? 'N/A',
+      Sunrise: allTimes.Sunrise ?? 'N/A',
+      Dhuhr:   allTimes.Dhuhr   ?? 'N/A',
+      Asr:     allTimes.Asr     ?? 'N/A',
+      Maghrib: allTimes.Maghrib ?? 'N/A',
+      Isha:    (methodEntry?.[1] ?? allTimes.Isha)    ?? 'N/A',
+      Qiyam:   allTimes.Qiyam   ?? 'N/A',
+    };
+  }
+
+  if (hanafi && hanafiAngles) {
+    const allTimes = calcTimesAll(date, lat, lng, tzOffset, 0, undefined, undefined, hanafi) as FormattedPrayerTimesAll;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any -- pray-calc CJS types do not expose Methods shape
     const hanafiEntry = (allTimes as any).Methods?.[_HANAFI_ANGLES_METHOD_ID] as [string, string] | undefined;
     return {
