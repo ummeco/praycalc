@@ -107,11 +107,15 @@ export function formatTime12(time24: string): string {
   return `${h12}:${String(m).padStart(2, '0')} ${ampm}`;
 }
 
-// Signed: positive = seconds until, negative = seconds since (prayer already passed)
+// Signed: positive = seconds until, negative = seconds since (prayer already passed).
+// Day-aware: after Isha the next target is tomorrow's Fajr, whose HH:MM lies far in
+// "today's" past. Prayers are never >6h apart, so beyond -6h means "tomorrow" —
+// shift by 24h so the countdown rolls over midnight. Mirrors Rust seconds_until.
 export function secondsUntil(time24: string): number {
   const nowSec = nowSeconds();
   const target = toMinutes(time24) * 60;
-  return target - nowSec;
+  const secs = target - nowSec;
+  return secs < -21_600 ? secs + 86_400 : secs;
 }
 
 export function formatCountdown(seconds: number): string {
