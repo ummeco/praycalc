@@ -10,6 +10,8 @@
 //   - D-P3-21: Umami for analytics (not Vercel Analytics)
 // REF: T-03 (P2-E3-W02-S02) · D-P2-STACK-CANON · D-P2-REACT19
 
+import { createRequire } from 'node:module';
+import path from 'node:path';
 import { defineConfig } from 'astro/config';
 import react from '@astrojs/react';
 import sitemap from '@astrojs/sitemap';
@@ -17,6 +19,20 @@ import vercel from '@astrojs/vercel';
 import sentry from '@sentry/astro';
 import tailwindcss from '@tailwindcss/vite';
 import { astroUmmat } from '@ummat/astro-preset';
+
+// nrel-spa (via pray-calc) loads ../lib/spa.js through a _load() indirection that
+// Vercel's file tracing cannot follow, so the file is missing at Lambda runtime
+// (FUNCTION_INVOCATION_FAILED on every /api/prayers call). Resolve the installed
+// entry and include lib/spa.js explicitly; resolving at config time keeps the
+// path correct across nrel-spa versions and pnpm layouts.
+// nrel-spa is a transitive dep of pray-calc — under pnpm's strict layout it is
+// only resolvable from pray-calc's own context, so chain createRequire through it.
+const configRequire = createRequire(import.meta.url);
+const prayCalcRequire = createRequire(configRequire.resolve('pray-calc'));
+const nrelSpaLib = path.relative(
+  process.cwd(),
+  path.join(path.dirname(prayCalcRequire.resolve('nrel-spa')), '../lib/spa.js'),
+);
 
 export default defineConfig({
   site: 'https://praycalc.com',
@@ -26,7 +42,7 @@ export default defineConfig({
     webAnalytics: { enabled: false }, // Umami handles analytics (D-P3-21)
     // data-lookup.server.ts reads path.join(process.cwd(), 'data', ...) at Lambda runtime.
     // includeFiles ensures geo.json + auto.json are bundled at the function root.
-    includeFiles: ['./data/geo.json', './data/auto.json'],
+    includeFiles: ['./data/geo.json', './data/auto.json', nrelSpaLib],
   }),
   integrations: [
     astroUmmat({
