@@ -17,16 +17,21 @@ import {
   Switch,
   StyleSheet,
   Alert,
+  Linking,
 } from 'react-native';
 import * as Location from 'expo-location';
 import { Colors } from '../../../constants/colors';
 import { CALC_METHODS } from '../../../constants/methods';
 import { useSettingsStore } from '../store/useSettingsStore';
+import { useAuthStore } from '../../auth/store/useAuthStore';
 import type { Madhab, TimeFormat, HighLatRule } from '../../../types/prayer';
 import { ErrorState, LoadingState } from '../../../components/shared/UIStates';
 
+const UPGRADE_URL = 'https://praycalc.com/upgrade';
+
 export default function SettingsScreen() {
   const settings = useSettingsStore();
+  const auth = useAuthStore();
   const [isLocating, setIsLocating] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
 
@@ -66,6 +71,34 @@ export default function SettingsScreen() {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+
+      {/* Account / Ummat+ */}
+      <SectionHeader title="Account" />
+      <View style={styles.card}>
+        <View style={styles.row}>
+          <Text style={styles.rowLabel}>
+            {auth.mode === 'account' ? 'Signed in' : 'Anonymous'}
+          </Text>
+          {auth.isPlus ? (
+            <Text style={styles.plusBadge}>Ummat+</Text>
+          ) : (
+            <Text style={styles.rowValue}>Free</Text>
+          )}
+        </View>
+        {!auth.isPlus && (
+          <View style={styles.upsellRow}>
+            <Text style={styles.hint}>
+              Ummat+ $9.99/yr — unlocks TV app & Smart Home
+            </Text>
+            <TouchableOpacity
+              style={[styles.button, styles.buttonSecondary]}
+              onPress={() => Linking.openURL(UPGRADE_URL)}
+            >
+              <Text style={styles.buttonSecondaryText}>Upgrade to Ummat+</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+      </View>
 
       {/* Location */}
       <SectionHeader title="Location" />
@@ -221,6 +254,17 @@ const styles = StyleSheet.create({
   rowLabel: { fontSize: 15, color: Colors.text.primary },
   rowValue: { fontSize: 14, color: Colors.text.muted },
   hint: { fontSize: 13, color: Colors.text.muted, fontStyle: 'italic' },
+  plusBadge: {
+    backgroundColor: Colors.brand.mid,
+    color: Colors.text.inverse,
+    fontWeight: '700',
+    fontSize: 12,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 8,
+    overflow: 'hidden',
+  },
+  upsellRow: { gap: 8 },
   button: {
     backgroundColor: Colors.brand.dark,
     borderRadius: 8,

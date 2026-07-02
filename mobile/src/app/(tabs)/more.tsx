@@ -34,6 +34,7 @@ const MENU_ITEMS: MenuItem[] = [
   { label: 'Go Pro', subtitle: 'Unlock premium features', route: '/subscription', icon: '⭐' },
   { label: 'Home Widget', subtitle: 'Next prayer on home screen', route: '/home-widget', icon: '🪟' },
   { label: 'Smart Home', subtitle: 'Lock devices during salah', route: '/smart-home', icon: '🏠' },
+  { label: 'Pair TV', subtitle: 'Link the PrayCalc TV app', route: '/pair-tv', icon: '📺' },
   { label: 'Prayer Calendar', subtitle: 'Add prayer times to calendar', route: '/agendas', icon: '📅' },
   { label: 'Travel Mode', subtitle: 'Musafir qasr for travellers', route: '/travel', icon: '✈️' },
 ];

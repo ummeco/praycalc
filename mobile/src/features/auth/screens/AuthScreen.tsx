@@ -21,6 +21,7 @@ import {
 } from 'react-native';
 import { Colors } from '../../../constants/colors';
 import { useAuthStore } from '../store/useAuthStore';
+import { signin, signup } from '../../../lib/auth/authClient';
 import {
   LoadingState,
   ErrorState,
@@ -33,6 +34,7 @@ export default function AuthScreen() {
   const [activeTab, setActiveTab] = useState<AuthTab>('anonymous');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [displayName, setDisplayName] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -54,19 +56,35 @@ export default function AuthScreen() {
     setIsLoading(true);
     setError(null);
     try {
-      // POST to auth.ummat.dev for JWT
-      const response = await fetch('https://auth.ummat.dev/token', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
-      if (!response.ok) {
-        throw new Error('Invalid credentials');
-      }
-      const data = (await response.json()) as { token: string; userId: string };
-      await auth.setAccount(data.userId, data.token);
+      const session = await signin(email, password);
+      await auth.setAccount(session.user.id, session.accessToken, session.refreshToken);
+      await auth.fetchEntitlement();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Login failed');
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  async function handleAccountRegister() {
+    if (!email || !password) {
+      setError('Please enter email and password.');
+      return;
+    }
+    setIsLoading(true);
+    setError(null);
+    try {
+      const session = await signup(email, password, displayName || undefined);
+      if (!session) {
+        // Email verification required — no session issued yet.
+        setError('Check your email to verify your account, then sign in.');
+        setActiveTab('login');
+        return;
+      }
+      await auth.setAccount(session.user.id, session.accessToken, session.refreshToken);
+      await auth.fetchEntitlement();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Registration failed');
     } finally {
       setIsLoading(false);
     }
@@ -155,6 +173,14 @@ export default function AuthScreen() {
             <Text style={styles.panelTitle}>Create Account</Text>
             <TextInput
               style={styles.input}
+              placeholder="Name (optional)"
+              value={displayName}
+              onChangeText={setDisplayName}
+              autoCapitalize="words"
+              placeholderTextColor={Colors.text.muted}
+            />
+            <TextInput
+              style={styles.input}
               placeholder="Email"
               value={email}
               onChangeText={setEmail}
@@ -171,7 +197,7 @@ export default function AuthScreen() {
               secureTextEntry
               placeholderTextColor={Colors.text.muted}
             />
-            <TouchableOpacity style={styles.primaryButton} onPress={handleAccountLogin}>
+            <TouchableOpacity style={styles.primaryButton} onPress={handleAccountRegister}>
               <Text style={styles.primaryButtonText}>Create Account</Text>
             </TouchableOpacity>
           </View>

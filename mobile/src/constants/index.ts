@@ -13,6 +13,9 @@ export const API_URL =
 export const AUTH_URL =
   process.env['EXPO_PUBLIC_AUTH_URL'] ?? 'https://auth.ummat.dev';
 
+export const BILLING_URL =
+  process.env['EXPO_PUBLIC_BILLING_URL'] ?? 'https://api.praycalc.com/billing';
+
 export const SENTRY_DSN =
   process.env['EXPO_PUBLIC_SENTRY_DSN_PRAYCALC'] ?? '';
 

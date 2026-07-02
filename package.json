@@ -18,6 +18,8 @@
   },
   "pnpm": {
     "overrides": {
+      "@types/react": "^19.0.0",
+      "@types/react-dom": "^19.0.0",
       "@grpc/grpc-js": ">=1.14.4 <2",
       "@opentelemetry/exporter-prometheus": ">=0.217.0",
       "@opentelemetry/sdk-node": ">=0.217.0",

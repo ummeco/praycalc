@@ -17,8 +17,11 @@ import {
 import { authExchange } from '@urql/exchange-auth';
 import * as SecureStore from 'expo-secure-store';
 
-const GRAPHQL_URL = 'https://api.ummat.dev/v1/graphql';
+import { API_URL } from '../../constants';
+
+const GRAPHQL_URL = API_URL;
 const TOKEN_KEY = 'praycalc_jwt';
+const REFRESH_TOKEN_KEY = 'praycalc_refresh_token';
 
 async function getToken(): Promise<string | null> {
   return SecureStore.getItemAsync(TOKEN_KEY);
@@ -32,7 +35,28 @@ async function clearToken(): Promise<void> {
   return SecureStore.deleteItemAsync(TOKEN_KEY);
 }
 
-export { getToken, saveToken, clearToken, TOKEN_KEY };
+async function getRefreshToken(): Promise<string | null> {
+  return SecureStore.getItemAsync(REFRESH_TOKEN_KEY);
+}
+
+async function saveRefreshToken(token: string): Promise<void> {
+  return SecureStore.setItemAsync(REFRESH_TOKEN_KEY, token);
+}
+
+async function clearRefreshToken(): Promise<void> {
+  return SecureStore.deleteItemAsync(REFRESH_TOKEN_KEY);
+}
+
+export {
+  getToken,
+  saveToken,
+  clearToken,
+  TOKEN_KEY,
+  getRefreshToken,
+  saveRefreshToken,
+  clearRefreshToken,
+  REFRESH_TOKEN_KEY,
+};
 
 export function GqlClientProvider({ children }: { children: React.ReactNode }) {
   const client = useMemo(
@@ -51,9 +75,23 @@ export function GqlClientProvider({ children }: { children: React.ReactNode }) {
                 });
               },
               async refreshAuth() {
-                // Anonymous mode — clear stale token
-                await clearToken();
-                token = null;
+                const storedRefreshToken = await getRefreshToken();
+                if (!storedRefreshToken) {
+                  // Anonymous mode or no session — clear stale token
+                  await clearToken();
+                  token = null;
+                  return;
+                }
+                try {
+                  const { refreshToken: doRefresh } = await import('../auth/authClient');
+                  const refreshed = await doRefresh(storedRefreshToken);
+                  await saveToken(refreshed.accessToken);
+                  token = refreshed.accessToken;
+                } catch {
+                  await clearToken();
+                  await clearRefreshToken();
+                  token = null;
+                }
               },
               didAuthError(error) {
                 return error.graphQLErrors.some((e) => e.extensions?.code === 'invalid-jwt');
