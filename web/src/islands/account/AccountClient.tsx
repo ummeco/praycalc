@@ -109,7 +109,8 @@ export default function AccountClient() {
     return () => {
       if (refreshTimer.current) clearTimeout(refreshTimer.current);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // Intentionally narrow deps: only reschedule when the token identity changes,
+    // not on every session field update (avoids refresh-timer churn).
   }, [session?.accessToken, session?.refreshToken, session?.accessTokenExpiresAt]);
 
   // Avoid rendering the sign-in card before we know the session state
@@ -344,7 +345,9 @@ function Dashboard({
     return () => {
       cancelled = true;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // Intentionally narrow deps: re-fetch billing status only when the token
+    // changes, not on every session field update (onSessionUpdate is stable
+    // per render cycle from the parent's perspective here).
   }, [session.accessToken]);
 
   function handleRemoveCity(slug: string) {
