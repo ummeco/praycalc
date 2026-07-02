@@ -18,7 +18,7 @@ process.env.HASURA_AUTH_URL = 'http://auth:4000';
 
 // In-memory stores simulating Hasura tables
 const webhookStore = new Map<string, any>();
-const subscriptionStore = new Map<string, any>();
+export const subscriptionStore = new Map<string, any>(); // userId => { plan, status, ... }
 const freeTierStore = new Map<string, number>(); // "identifier:date" => count
 const integrationStore = new Map<string, any>();
 const deviceStore = new Map<string, any>();

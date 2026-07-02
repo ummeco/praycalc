@@ -20,6 +20,11 @@ function getStripe(): Stripe {
 
 /** POST /billing/checkout — Create a Stripe Checkout session. */
 billingRouter.post('/checkout', requireAuth, async (req: AuthRequest, res) => {
+  if (!STRIPE_SECRET_KEY) {
+    res.status(503).json({ error: 'billing_disabled' });
+    return;
+  }
+
   try {
     const session = await getStripe().checkout.sessions.create({
       mode: 'subscription',

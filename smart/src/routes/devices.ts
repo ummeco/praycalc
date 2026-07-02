@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { requireAuth, type AuthRequest } from '../middleware/auth.js';
+import { requireAuth, requirePlus, type AuthRequest } from '../middleware/auth.js';
 
 export const devicesRouter = Router();
 
@@ -47,8 +47,8 @@ devicesRouter.get('/', requireAuth, async (req: AuthRequest, res) => {
   }
 });
 
-/** POST /api/v1/devices — Register a smart home device. */
-devicesRouter.post('/', requireAuth, async (req: AuthRequest, res) => {
+/** POST /api/v1/devices — Register a smart home device. GATE: Ummat+ required (device/token issuance). */
+devicesRouter.post('/', requireAuth, requirePlus, async (req: AuthRequest, res) => {
   const userId = req.userId!;
   const { name, type, platform, metadata } = req.body;
 

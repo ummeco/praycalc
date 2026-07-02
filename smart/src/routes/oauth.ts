@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import crypto from 'crypto';
+import { hasUmmatPlus } from '../lib/subscription.js';
 
 export const oauthRouter = Router();
 
@@ -92,6 +93,18 @@ oauthRouter.post('/authorize', async (req, res) => {
 
     if (!userId) {
       res.status(500).send('Authentication error');
+      return;
+    }
+
+    // GATE: smart-home account linking (Google Home / Alexa) requires Ummat+.
+    // "Plus unlocks TV" applies here too — the same OAuth flow issues the
+    // tokens smart-home fulfillment handlers use to resolve the linked user.
+    const isPlus = await hasUmmatPlus(userId);
+    if (!isPlus) {
+      res.status(402).send(
+        'Ummat+ is required to link a smart home device. ' +
+        '<a href="https://praycalc.com/upgrade">Upgrade to Ummat+</a>',
+      );
       return;
     }
 

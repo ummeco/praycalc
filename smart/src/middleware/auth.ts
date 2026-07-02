@@ -1,5 +1,6 @@
 import type { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
+import { hasUmmatPlus } from '../lib/subscription.js';
 
 // HASURA_GRAPHQL_JWT_SECRET may be:
 //   1. Valid JSON:   {"type":"HS256","key":"<hex>"}
@@ -62,4 +63,31 @@ export function requireAuth(req: AuthRequest, res: Response, next: NextFunction)
     }
     next();
   });
+}
+
+/**
+ * Require an active Ummat+ subscription. Must run AFTER requireAuth (relies on
+ * req.userId already being set). Returns 402 Payment Required if the user is
+ * not Plus — this is the server-side gate for smart-home account linking
+ * (Google Home / Alexa OAuth) and TV device/token issuance: "Plus unlocks TV".
+ * Fails closed: any subscription-lookup error is treated as not-Plus (see
+ * hasUmmatPlus / getSubscriptionStatus fail-open-to-free behavior in
+ * subscription.ts — free is the safe default for a paywall check).
+ */
+export async function requirePlus(req: AuthRequest, res: Response, next: NextFunction): Promise<void> {
+  if (!req.isAuthenticated || !req.userId) {
+    res.status(401).json({ error: 'Authentication required' });
+    return;
+  }
+
+  const isPlus = await hasUmmatPlus(req.userId);
+  if (!isPlus) {
+    res.status(402).json({
+      error: 'ummat_plus_required',
+      upgrade: 'https://praycalc.com/upgrade',
+    });
+    return;
+  }
+
+  next();
 }
