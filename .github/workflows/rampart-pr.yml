@@ -31,6 +31,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: google/osv-scanner-action/osv-scanner-action@v2.3.8
+        continue-on-error: ${{ env.RAMPART_ENFORCE == 'warn' }}
         with: { scan-args: "--recursive --format json --output osv-report.json ." }
       - name: Gate on CVSS>=7
         run: node .github/scripts/rampart-gate.js osv-report.json --tool osv
@@ -59,7 +60,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: pipx install semgrep==1.154.0
-      - run: |
+      - name: Scan
+        continue-on-error: ${{ env.RAMPART_ENFORCE == 'warn' }}
+        run: |
           semgrep --config p/typescript --config p/react --config p/owasp-top-ten \
                   --config p/secrets --config rules/rampart/ \
                   --json --output semgrep-report.json --error .
