@@ -15,7 +15,7 @@ jobs:
   secrets:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with: { fetch-depth: 0 }
       - name: Install gitleaks (version from env — NEVER hardcoded in the URL)
         run: |
@@ -29,7 +29,7 @@ jobs:
   deps-osv:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: google/osv-scanner-action/osv-scanner-action@v2.3.8
         continue-on-error: ${{ env.RAMPART_ENFORCE == 'warn' }}
         with: { scan-args: "--recursive --format json --output osv-report.json ." }
@@ -45,7 +45,7 @@ jobs:
         # JS package lives at web/ — no package.json at repo root (§3.3a item 7)
         working-directory: web/
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: pnpm/action-setup@v4
         with: { version: 9 }
       - uses: actions/setup-node@v4
@@ -58,7 +58,7 @@ jobs:
   sast:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - run: pipx install semgrep==1.154.0
       - name: Scan
         continue-on-error: ${{ env.RAMPART_ENFORCE == 'warn' }}
@@ -75,7 +75,7 @@ jobs:
     if: always()
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: actions/download-artifact@v4
         with: { path: artifacts }
       - name: Aggregate + comment + gate
