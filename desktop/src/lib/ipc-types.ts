@@ -40,7 +40,7 @@ export const DEFAULT_SETTINGS: Settings = {
   lng: -80.5595,
   tz: 'America/New_York',
   city: 'Conneaut',
-  method: 'isna',
+  method: '',
   hanafi: false,
   notifications: true,
   autostart: false,
@@ -53,20 +53,27 @@ export const DEFAULT_SETTINGS: Settings = {
   countdownPrefix: 'minus',
 };
 
+// Values match pray-calc's Methods map keys (KNOWN_METHOD_IDS in web/src/lib/prayers.server.ts) —
+// passed as-is to GET /api/prayers?method=. '' = PrayCalc Dynamic Method (server default).
+// Tehran/Jafari (Shia fiqh method) is intentionally not offered — it is not in pray-calc's
+// Methods map (D-P3-19). IGUT (Institute of Geophysics, Univ. of Tehran) is a distinct
+// Sunni-published fixed-angle method and is offered normally.
 export const METHODS = [
-  { value: 'isna', label: 'ISNA (North America)' },
-  { value: 'mwl', label: 'Muslim World League' },
-  { value: 'egypt', label: 'Egyptian Authority' },
-  { value: 'makkah', label: 'Umm al-Qura (Makkah)' },
-  { value: 'karachi', label: 'University of Karachi' },
-  { value: 'tehran', label: 'Institute of Geophysics, Tehran' },
-  { value: 'gulf', label: 'Gulf Region' },
-  { value: 'kuwait', label: 'Kuwait' },
-  { value: 'qatar', label: 'Qatar' },
-  { value: 'singapore', label: 'Majlis Ugama Islam Singapura' },
-  { value: 'france', label: 'Union Organization Islamic de France' },
-  { value: 'turkey', label: 'Diyanet İşleri Başkanlığı, Turkey' },
-  { value: 'russia', label: 'Spiritual Administration of Muslims of Russia' },
+  { value: '', label: 'PrayCalc Dynamic Method (default)' },
+  { value: 'ISNA', label: 'ISNA — Islamic Society of North America' },
+  { value: 'MWL', label: 'Muslim World League' },
+  { value: 'Egypt', label: 'Egyptian General Authority of Survey' },
+  { value: 'UAQ', label: 'Umm al-Qura University, Makkah' },
+  { value: 'Karachi', label: 'University of Islamic Sciences, Karachi' },
+  { value: 'IGUT', label: 'Institute of Geophysics, University of Tehran' },
+  { value: 'Kuwait', label: 'Kuwait Ministry of Islamic Affairs' },
+  { value: 'Qatar', label: 'Qatar / Gulf Standard' },
+  { value: 'MUIS', label: 'Majlis Ugama Islam Singapura' },
+  { value: 'UOIF', label: 'Union des Organisations Islamiques de France' },
+  { value: 'DIBT', label: 'Diyanet İşleri Başkanlığı, Turkey' },
+  { value: 'SAMR', label: 'Spiritual Administration of Muslims of Russia' },
+  { value: 'ISNACA', label: 'IQNA / Islamic Council of North America' },
+  { value: 'MSC', label: 'Moonsighting Committee Worldwide' },
 ];
 
 export const PRESET_CITIES: { name: string; lat: number; lng: number; tz: string }[] = [

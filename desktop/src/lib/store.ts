@@ -1,6 +1,36 @@
 import { load } from '@tauri-apps/plugin-store';
-import { DEFAULT_SETTINGS } from './ipc-types';
+import { DEFAULT_SETTINGS, METHODS } from './ipc-types';
 import type { Settings } from './ipc-types';
+
+// Pre-v1.1.2 builds stored slug-style method values (e.g. 'isna', 'makkah') that
+// never reached the API. METHODS now uses pray-calc's real ids, which ARE sent
+// as /api/prayers?method= — map legacy slugs across and drop anything unknown
+// to '' (PrayCalc default) so an old settings.json can never cause a 400.
+const LEGACY_METHOD_MAP: Record<string, string> = {
+  // 'isna' was the old stored DEFAULT while the picker was a no-op, so it carries
+  // no user intent — everyone with it was actually getting PrayCalc dynamic times.
+  // It maps to '' (keep current behavior) rather than 'ISNA' (silent time change).
+  isna: '',
+  mwl: 'MWL',
+  egypt: 'Egypt',
+  makkah: 'UAQ',
+  karachi: 'Karachi',
+  gulf: 'Qatar',
+  kuwait: 'Kuwait',
+  qatar: 'Qatar',
+  singapore: 'MUIS',
+  france: 'UOIF',
+  turkey: 'DIBT',
+  russia: 'SAMR',
+  // 'tehran' intentionally unmapped — Tehran/Jafari is not offered (D-P3-19);
+  // it falls through to '' (PrayCalc default).
+};
+
+/** Normalize a stored method value to a valid METHODS option ('' = PrayCalc default). */
+export function normalizeMethod(method: string): string {
+  if (METHODS.some((m) => m.value === method)) return method;
+  return LEGACY_METHOD_MAP[method] ?? '';
+}
 
 let _store: Awaited<ReturnType<typeof load>> | null = null;
 
@@ -18,7 +48,9 @@ export async function loadSettings(): Promise<Settings> {
       (saved as Record<string, unknown>)[key] = val;
     }
   }
-  return { ...DEFAULT_SETTINGS, ...saved };
+  const merged = { ...DEFAULT_SETTINGS, ...saved };
+  merged.method = normalizeMethod(merged.method);
+  return merged;
 }
 
 export async function saveSettings(settings: Settings): Promise<void> {
