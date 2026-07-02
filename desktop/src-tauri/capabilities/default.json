@@ -20,8 +20,10 @@
     "store:allow-set",
     "store:allow-get",
     "store:allow-save",
+    "store:allow-delete",
     "autostart:allow-enable",
     "autostart:allow-disable",
-    "autostart:allow-is-enabled"
+    "autostart:allow-is-enabled",
+    "opener:allow-open-url"
   ]
 }
