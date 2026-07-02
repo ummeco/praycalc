@@ -3,21 +3,29 @@
  *
  * PURPOSE: Full account experience in one client island:
  *   - Sign-in card (magic-link default tab + password tab + social row) when no session.
- *   - Dashboard (profile, account settings, Ummat+ upsell, sign out) when a session exists.
- *   Session is the lightweight client profile in localStorage ('praycalc-session').
+ *   - Dashboard (profile, saved cities, account settings, Ummat+ upsell, sign out)
+ *     when a session exists.
+ *   Session is the lightweight client profile (+ optional tokens) in localStorage
+ *   ('praycalc-session'). Password sign-in and magic-link requests hit the shared
+ *   Ummat Hasura Auth instance directly (src/lib/auth/client.ts). Billing status /
+ *   checkout hit the praycalc "smart" service (src/lib/billing.ts).
  * CONSTRAINTS: Astro island (client:load). No next/* imports. SSR-safe.
- *   Mock client auth — any email+password signs in (account.spec.ts contract).
- * REF: P2-PRAYCALC-E2E-REBUILD · account.spec.ts
+ *   Social sign-in providers are visually present but inert ("coming soon") —
+ *   not wired to any backend yet.
+ * REF: P2-PRAYCALC-E2E-REBUILD · account.spec.ts · real-auth task (2026-07)
  */
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   buildSession,
   clearSession,
   getSession,
   saveSession,
+  hasValidToken,
   type PrayCalcSession,
 } from '@/lib/session';
+import { signIn, requestMagicLink, refreshSession, signOut } from '@/lib/auth/client';
+import { getBillingStatus, startCheckout, isBillingDisabled } from '@/lib/billing';
 
 // ── Saved-cities localStorage helpers ──────────────────────────────────────
 const CITIES_KEY = 'praycalc-saved-cities';
@@ -46,14 +54,63 @@ type Mode = 'magic' | 'password';
 
 const SOCIAL_PROVIDERS = ['Google', 'Apple', 'Facebook', 'X'] as const;
 
+/** Milliseconds before expiry to trigger a token refresh. */
+const REFRESH_LEAD_MS = 60_000;
+/** Minimum delay before scheduling a refresh (avoid tight refresh loops). */
+const MIN_REFRESH_DELAY_MS = 5_000;
+
 export default function AccountClient() {
   const [ready, setReady] = useState(false);
   const [session, setSession] = useState<PrayCalcSession | null>(null);
+  const refreshTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     setSession(getSession());
     setReady(true);
+    return () => {
+      if (refreshTimer.current) clearTimeout(refreshTimer.current);
+    };
   }, []);
+
+  // Schedule/cancel token refresh whenever the session changes.
+  useEffect(() => {
+    if (refreshTimer.current) {
+      clearTimeout(refreshTimer.current);
+      refreshTimer.current = null;
+    }
+    if (!session?.accessToken || !session.refreshToken || !session.accessTokenExpiresAt) {
+      return;
+    }
+    const delay = Math.max(
+      session.accessTokenExpiresAt - REFRESH_LEAD_MS - Date.now(),
+      MIN_REFRESH_DELAY_MS,
+    );
+    const rt = session.refreshToken;
+    refreshTimer.current = setTimeout(() => {
+      refreshSession(rt)
+        .then((result) => {
+          const next: PrayCalcSession = {
+            ...session,
+            email: result.user.email || session.email,
+            displayName: result.user.displayName || session.displayName,
+            accessToken: result.tokens.accessToken,
+            refreshToken: result.tokens.refreshToken,
+            accessTokenExpiresAt: result.tokens.accessTokenExpiresAt,
+          };
+          saveSession(next);
+          setSession(next);
+        })
+        .catch(() => {
+          // Refresh failed — sign the user out gracefully, no crash.
+          clearSession();
+          setSession(null);
+        });
+    }, delay);
+    return () => {
+      if (refreshTimer.current) clearTimeout(refreshTimer.current);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [session?.accessToken, session?.refreshToken, session?.accessTokenExpiresAt]);
 
   // Avoid rendering the sign-in card before we know the session state
   // (prevents an account-card flash on seeded-session loads).
@@ -64,8 +121,18 @@ export default function AccountClient() {
       <Dashboard
         session={session}
         onSignOut={() => {
+          const rt = session.refreshToken;
+          if (rt) {
+            signOut(rt).catch(() => {
+              // best-effort; session is cleared client-side regardless
+            });
+          }
           clearSession();
           setSession(null);
+        }}
+        onSessionUpdate={(s) => {
+          saveSession(s);
+          setSession(s);
         }}
       />
     );
@@ -89,17 +156,71 @@ function SignIn({ onSignedIn }: { onSignedIn: (s: PrayCalcSession) => void }) {
   const [mode, setMode] = useState<Mode>('magic');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [magicLinkSent, setMagicLinkSent] = useState(false);
 
-  const submitDisabled = mode === 'magic' ? !email.trim() : !(email.trim() && password);
+  const submitDisabled =
+    loading || (mode === 'magic' ? !email.trim() : !(email.trim() && password));
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (submitDisabled) return;
-    // Magic-link mode would email a link; for the mock client flow we only
-    // complete sign-in for the password path (account.spec drives password).
-    if (mode === 'password') {
-      onSignedIn(buildSession(email));
+    setError(null);
+
+    if (mode === 'magic') {
+      setLoading(true);
+      try {
+        await requestMagicLink(email.trim());
+        setMagicLinkSent(true);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to send login link.');
+      } finally {
+        setLoading(false);
+      }
+      return;
     }
+
+    setLoading(true);
+    try {
+      const result = await signIn(email.trim(), password);
+      const session: PrayCalcSession = {
+        ...buildSession(result.user.email || email, result.user.displayName),
+        accessToken: result.tokens.accessToken,
+        refreshToken: result.tokens.refreshToken,
+        accessTokenExpiresAt: result.tokens.accessTokenExpiresAt,
+      };
+      onSignedIn(session);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Sign-in failed.');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  if (mode === 'magic' && magicLinkSent) {
+    return (
+      <div className="account-card">
+        <a href="/" className="account-logo-back" aria-label="Back to PrayCalc">
+          <span aria-hidden="true">←</span>
+          <img src="/logo-sunrise.svg" alt="PrayCalc" width="28" height="28" />
+        </a>
+        <h1 className="account-title">Check your email</h1>
+        <p className="account-magic-sent">
+          We sent a login link to <strong>{email.trim()}</strong>. Click it to sign in.
+        </p>
+        <button
+          type="button"
+          className="account-submit-btn"
+          onClick={() => {
+            setMagicLinkSent(false);
+            setError(null);
+          }}
+        >
+          Use a different email
+        </button>
+      </div>
+    );
   }
 
   return (
@@ -117,7 +238,10 @@ function SignIn({ onSignedIn }: { onSignedIn: (s: PrayCalcSession) => void }) {
           role="tab"
           aria-selected={mode === 'magic'}
           className={`account-mode-tab${mode === 'magic' ? ' account-mode-tab--active' : ''}`}
-          onClick={() => setMode('magic')}
+          onClick={() => {
+            setMode('magic');
+            setError(null);
+          }}
         >
           Login Link
         </button>
@@ -126,7 +250,10 @@ function SignIn({ onSignedIn }: { onSignedIn: (s: PrayCalcSession) => void }) {
           role="tab"
           aria-selected={mode === 'password'}
           className={`account-mode-tab${mode === 'password' ? ' account-mode-tab--active' : ''}`}
-          onClick={() => setMode('password')}
+          onClick={() => {
+            setMode('password');
+            setError(null);
+          }}
         >
           Password
         </button>
@@ -153,14 +280,26 @@ function SignIn({ onSignedIn }: { onSignedIn: (s: PrayCalcSession) => void }) {
             onChange={(e) => setPassword(e.target.value)}
           />
         )}
+        {error && (
+          <p className="account-error" role="alert">
+            {error}
+          </p>
+        )}
         <button type="submit" className="account-submit-btn" disabled={submitDisabled}>
-          {mode === 'magic' ? 'Send login link' : 'Sign in'}
+          {loading ? 'Please wait…' : mode === 'magic' ? 'Send login link' : 'Sign in'}
         </button>
       </form>
 
       <div className="account-social-row" aria-label="Sign in with a provider">
         {SOCIAL_PROVIDERS.map((p) => (
-          <button key={p} type="button" className="account-social-btn" aria-label={`Sign in with ${p}`}>
+          <button
+            key={p}
+            type="button"
+            className="account-social-btn"
+            aria-label={`Sign in with ${p}`}
+            title="Coming soon"
+            disabled
+          >
             {p[0]}
           </button>
         ))}
@@ -176,18 +315,54 @@ function SignIn({ onSignedIn }: { onSignedIn: (s: PrayCalcSession) => void }) {
 function Dashboard({
   session,
   onSignOut,
+  onSessionUpdate,
 }: {
   session: PrayCalcSession;
   onSignOut: () => void;
+  onSessionUpdate: (s: PrayCalcSession) => void;
 }) {
   const [cities, setCities] = useState<SavedCity[]>([]);
+  const [isPlus, setIsPlus] = useState(session.isUmmatPlus);
+  const [checkoutState, setCheckoutState] = useState<'idle' | 'loading' | 'unavailable'>('idle');
 
   useEffect(() => {
     setCities(getSavedCities());
   }, []);
 
+  // Fetch real billing status on mount when we have a live token.
+  useEffect(() => {
+    if (!hasValidToken(session)) return;
+    let cancelled = false;
+    getBillingStatus(session.accessToken!).then((status) => {
+      if (cancelled) return;
+      const plus = status.plan === 'plus' && status.isActive;
+      setIsPlus(plus);
+      if (plus !== session.isUmmatPlus) {
+        onSessionUpdate({ ...session, isUmmatPlus: plus });
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [session.accessToken]);
+
   function handleRemoveCity(slug: string) {
     setCities(removeSavedCity(slug));
+  }
+
+  async function handleUpgradeClick() {
+    if (isBillingDisabled() || !hasValidToken(session)) {
+      setCheckoutState('unavailable');
+      return;
+    }
+    setCheckoutState('loading');
+    const result = await startCheckout(session.accessToken!);
+    if (result.ok) {
+      window.location.href = result.url;
+      return;
+    }
+    setCheckoutState('unavailable');
   }
 
   return (
@@ -237,14 +412,27 @@ function Dashboard({
         <p className="dashboard-settings-row">Manage your profile, preferences, and home city.</p>
       </div>
 
-      {!session.isUmmatPlus && (
+      {!isPlus && (
         <div className="dashboard-plus-card">
           <div className="dashboard-plus-header">
             <span className="dashboard-plus-name">Ummat+</span>
-            <span className="dashboard-plus-price">$2.99/mo</span>
+            <span className="dashboard-plus-price">$9.99/yr</span>
           </div>
-          <p className="dashboard-plus-tagline">Unlock adhan voices, calendar exports, and more.</p>
-          <button type="button" className="dashboard-plus-btn">Upgrade to Ummat+</button>
+          <p className="dashboard-plus-tagline">
+            Unlock the TV app, Smart Home integrations, adhan voices, calendar exports, and more.
+          </p>
+          <button
+            type="button"
+            className="dashboard-plus-btn"
+            onClick={handleUpgradeClick}
+            disabled={checkoutState === 'loading' || checkoutState === 'unavailable'}
+          >
+            {checkoutState === 'loading'
+              ? 'Please wait…'
+              : checkoutState === 'unavailable'
+                ? 'Ummat+ launching soon'
+                : 'Upgrade to Ummat+'}
+          </button>
         </div>
       )}
 

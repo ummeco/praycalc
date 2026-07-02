@@ -1,0 +1,43 @@
+---
+/**
+ * upgrade.astro — Ummat+ upgrade landing page.
+ *
+ * PURPOSE: Simple explanatory page for the Ummat+ upgrade flow. The actual
+ *   checkout is triggered from the account dashboard (which has the signed-in
+ *   user's access token); this page exists as a stable landing/redirect
+ *   target (e.g. from marketing links) and points users back to /account.
+ * CONSTRAINTS: Static Astro page (no client island needed).
+ * REF: praycalc/smart/src/routes/billing.ts (cancel_url) · real-auth task (2026-07)
+ */
+
+import RootLayout from '@/layouts/RootLayout.astro';
+---
+
+<RootLayout
+  title="Ummat+ | PrayCalc"
+  description="Unlock the TV app, Smart Home integrations, and more with Ummat+."
+  canonical="https://praycalc.com/upgrade"
+  noIndex={true}
+>
+  <main id="main-content" class="info-page">
+    <div class="info-page-inner">
+      <div class="info-page-header">
+        <a href="/" class="info-page-back">← Home</a>
+      </div>
+      <h1 class="text-3xl font-bold text-white">Ummat+</h1>
+      <section class="info-section">
+        <p class="text-white/60 leading-relaxed">
+          Ummat+ unlocks the TV app, Smart Home integrations, adhan voices, calendar exports,
+          and more — for $9.99/yr.
+        </p>
+        <p class="text-white/60 leading-relaxed">
+          Sign in to your account to upgrade.
+        </p>
+        <a
+          href="/account"
+          class="text-ummat-light/70 hover:text-ummat-light"
+        >Go to your account →</a>
+      </section>
+    </div>
+  </main>
+</RootLayout>

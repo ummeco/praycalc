@@ -18,6 +18,60 @@ import { test, expect } from "@playwright/test";
 const LONDON = "/gb/england/london";
 
 // ---------------------------------------------------------------------------
+// Network mocking — real auth now requires a network call to Hasura Auth
+// (auth.ummat.dev) and the smart billing service. Route-intercept both so
+// the "any credentials work" contract stays deterministic in CI.
+// ---------------------------------------------------------------------------
+
+/** Mock the Hasura Auth sign-in endpoint to accept any email/password. */
+async function mockAuthRoutes(page: import("@playwright/test").Page) {
+  await page.route("**/v1/auth/signin/email-password", async (route) => {
+    const body = route.request().postDataJSON() as { email: string };
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({
+        accessToken: "e2e-access-token",
+        refreshToken: "e2e-refresh-token",
+        accessTokenExpiresIn: 900,
+        user: { id: "e2e-user", email: body.email },
+      }),
+    });
+  });
+  await page.route("**/v1/auth/signin/passwordless/email", async (route) => {
+    await route.fulfill({ status: 200, contentType: "application/json", body: "{}" });
+  });
+  await page.route("**/v1/auth/signout", async (route) => {
+    await route.fulfill({ status: 200, contentType: "application/json", body: "{}" });
+  });
+  await page.route("**/v1/auth/token", async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({
+        accessToken: "e2e-access-token-2",
+        refreshToken: "e2e-refresh-token-2",
+        accessTokenExpiresIn: 900,
+        user: { id: "e2e-user", email: "refreshed@example.com" },
+      }),
+    });
+  });
+  await page.route("**/billing/status", async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({
+        plan: "free",
+        status: "none",
+        isActive: false,
+        expiresAt: null,
+        currentPeriodEnd: null,
+      }),
+    });
+  });
+}
+
+// ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
 
@@ -60,6 +114,7 @@ async function switchToPasswordTab(page: import("@playwright/test").Page) {
 
 test.describe("Account page — not signed in", () => {
   test.beforeEach(async ({ page }) => {
+    await mockAuthRoutes(page);
     await page.goto("/account");
     await page.evaluate(() => localStorage.removeItem("praycalc-session"));
     await page.reload();
@@ -117,6 +172,7 @@ test.describe("Account page — not signed in", () => {
 
 test.describe("Account page — password sign-in", () => {
   test.beforeEach(async ({ page }) => {
+    await mockAuthRoutes(page);
     await page.goto("/account");
     await page.evaluate(() => localStorage.removeItem("praycalc-session"));
     await page.reload();
@@ -184,6 +240,7 @@ test.describe("Account page — password sign-in", () => {
 test.describe("Account page — returning user (session seeded)", () => {
   test.beforeEach(async ({ page }) => {
     // Navigate first to establish the origin, then seed localStorage, then reload
+    await mockAuthRoutes(page);
     await page.goto("/account");
     await seedSession(page, "returning@example.com", "Returning User");
     await page.reload();
@@ -233,6 +290,7 @@ test.describe("Account page — returning user (session seeded)", () => {
 
 test.describe("Account page — owner session", () => {
   test.beforeEach(async ({ page }) => {
+    await mockAuthRoutes(page);
     await page.goto("/account");
     await seedSession(page, "alisalaah@gmail.com", "Ali Salaah", true, true);
     await page.reload();
@@ -258,6 +316,7 @@ test.describe("Account page — owner session", () => {
 
 test.describe("Account page — standard user (Ummat+ upsell)", () => {
   test.beforeEach(async ({ page }) => {
+    await mockAuthRoutes(page);
     await page.goto("/account");
     await seedSession(page, "standard@example.com", "Standard User", false, false);
     await page.reload();
@@ -276,6 +335,7 @@ test.describe("Account page — standard user (Ummat+ upsell)", () => {
 
   test("Ummat+ upsell card shows the price", async ({ page }) => {
     await expect(page.locator(".dashboard-plus-price")).toBeVisible();
+    await expect(page.locator(".dashboard-plus-price")).toContainText("$9.99/yr");
   });
 });
 
@@ -286,6 +346,7 @@ test.describe("Account page — standard user (Ummat+ upsell)", () => {
 test.describe("Account page — session persistence", () => {
   test("session persists across page reload", async ({ page }) => {
     // Navigate and clear any existing session
+    await mockAuthRoutes(page);
     await page.goto("/account");
     await page.evaluate(() => localStorage.removeItem("praycalc-session"));
     await page.reload();
@@ -317,6 +378,7 @@ test.describe("Account page — session persistence", () => {
 test.describe("Settings gear — signed-in state on city page", () => {
   test.beforeEach(async ({ page }) => {
     // Navigate to establish origin, seed localStorage, then go to city page
+    await mockAuthRoutes(page);
     await page.goto("/account");
     await page.evaluate(() => {
       localStorage.setItem("pc_geo_prompt_dismissed", "1");

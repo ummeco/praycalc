@@ -8,6 +8,9 @@ interface ImportMetaEnv {
   readonly REMOTE_SCHEMA_SECRET: string;
   readonly UMAMI_WEBSITE_ID: string;
   readonly PUBLIC_API_URL: string;
+  readonly PUBLIC_AUTH_URL: string;
+  readonly PUBLIC_BILLING_URL: string;
+  readonly PUBLIC_BILLING_MODE: string;
 }
 
 interface ImportMeta {
