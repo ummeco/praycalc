@@ -321,7 +321,8 @@ jobs:
           java-version: '17'
       - name: Install Shorebird
         run: |
-          curl --proto '=https' --tlsv1.2 https://raw.githubusercontent.com/shorebirdtech/install/main/install.sh -sSf | bash
+          curl --proto '=https' --tlsv1.2 -sSf -o /tmp/shorebird-install.sh https://raw.githubusercontent.com/shorebirdtech/install/main/install.sh
+          bash /tmp/shorebird-install.sh
           echo "$HOME/.shorebird/bin" >> $GITHUB_PATH
       - name: Inject google-services.json
         run: echo "${{ secrets.GOOGLE_SERVICES_JSON }}" | base64 --decode > flutter/android/app/google-services.json
@@ -363,7 +364,8 @@ jobs:
           cache: true
       - name: Install Shorebird
         run: |
-          curl --proto '=https' --tlsv1.2 https://raw.githubusercontent.com/shorebirdtech/install/main/install.sh -sSf | bash
+          curl --proto '=https' --tlsv1.2 -sSf -o /tmp/shorebird-install.sh https://raw.githubusercontent.com/shorebirdtech/install/main/install.sh
+          bash /tmp/shorebird-install.sh
           echo "$HOME/.shorebird/bin" >> $GITHUB_PATH
       - name: Inject GoogleService-Info.plist
         run: echo "${{ secrets.GOOGLE_SERVICE_INFO_PLIST }}" | base64 --decode > flutter/ios/Runner/GoogleService-Info.plist

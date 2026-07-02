@@ -59,16 +59,20 @@ jobs:
         run: pnpm dev &
 
       - name: Wait for server
-        run: npx wait-on http://localhost:${{ inputs.port }} -t 60000
+        env:
+          AXE_PORT: ${{ inputs.port }}
+        run: npx wait-on "http://localhost:${AXE_PORT}" -t 60000
 
       - name: Install axe-core CLI
         run: npm install -g @axe-core/cli
 
       - name: Run axe — root route
         working-directory: ${{ inputs.project_path }}
+        env:
+          AXE_PORT: ${{ inputs.port }}
         run: |
           axe \
-            http://localhost:${{ inputs.port }} \
+            "http://localhost:${AXE_PORT}" \
             --exit \
             --tags wcag2a,wcag2aa,wcag21a,wcag21aa \
             --chromedriver-path "$(which chromedriver)"
@@ -76,12 +80,15 @@ jobs:
       - name: Run axe — extra routes
         if: ${{ inputs.extra_urls != '' }}
         working-directory: ${{ inputs.project_path }}
+        env:
+          AXE_PORT: ${{ inputs.port }}
+          AXE_EXTRA_URLS: ${{ inputs.extra_urls }}
         run: |
           CHROMEDRIVER="$(which chromedriver)"
-          for path in ${{ inputs.extra_urls }}; do
-            echo "--- axe: http://localhost:${{ inputs.port }}${path} ---"
+          for path in ${AXE_EXTRA_URLS}; do
+            echo "--- axe: http://localhost:${AXE_PORT}${path} ---"
             axe \
-              "http://localhost:${{ inputs.port }}${path}" \
+              "http://localhost:${AXE_PORT}${path}" \
               --exit \
               --tags wcag2a,wcag2aa,wcag21a,wcag21aa \
               --chromedriver-path "$CHROMEDRIVER"
