@@ -35,16 +35,6 @@
       "statusCode": 302
     },
     {
-      "source": "/account",
-      "destination": "/",
-      "statusCode": 302
-    },
-    {
-      "source": "/account/:path*",
-      "destination": "/",
-      "statusCode": 302
-    },
-    {
       "source": "/dashboard",
       "destination": "/",
       "statusCode": 302
@@ -56,11 +46,6 @@
     },
     {
       "source": "/activate",
-      "destination": "/",
-      "statusCode": 302
-    },
-    {
-      "source": "/upgrade",
       "destination": "/",
       "statusCode": 302
     }
