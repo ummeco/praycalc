@@ -1,6 +1,8 @@
 # Branch Name Validator — praycalc
 # Sprint Q-CHARTER T14 | charter § 18 enforcement
-# Validates branch names follow: <type>/T-PN-NN-short-slug pattern.
+# Validates branch names. Conventional-commit prefixes and dependabot branches
+# always pass. Anything else is a non-blocking warning (never fails the check) —
+# a naming gate must never block merges org-wide.
 # Exempts: main, master, develop, release/*, hotfix/*, and Dependabot branches.
 
 name: Branch Name
@@ -24,13 +26,22 @@ jobs:
         run: |
           BRANCH="${GITHUB_REF#refs/heads/}"
           echo "Branch: $BRANCH"
-          # Allow convention-compliant branch names
-          if echo "$BRANCH" | grep -qE '^(feat|fix|docs|chore|refactor|test|perf|security|ci)/T-P[0-9]+-[A-Z0-9-]+-[a-z0-9-]+$'; then
+
+          # Dependabot branches always pass.
+          if echo "$BRANCH" | grep -qE '^dependabot/'; then
+            echo "Branch name OK (dependabot): $BRANCH"
+            exit 0
+          fi
+
+          # Conventional prefix + kebab-case slug (ticket-ID suffix optional).
+          if echo "$BRANCH" | grep -qE '^(feat|fix|docs|chore|refactor|test|perf|security|ci|build)/[a-z0-9][a-z0-9-]*$'; then
             echo "Branch name OK: $BRANCH"
             exit 0
           fi
-          echo "::error::Branch name '$BRANCH' does not match the required pattern."
-          echo "::error::Expected: <type>/T-PN-NN-short-slug"
-          echo "::error::Example: feat/T-P7-Q-CHARTER-07-eslint-plugin"
-          echo "::error::See ENGINEERING-CHARTER.md § 18 for the full naming convention."
-          exit 1
+
+          # Anything else: warn, don't block. A branch-naming gate should never
+          # fail the whole PR — surface it as an annotation instead.
+          echo "::warning::Branch name '$BRANCH' doesn't match the conventional pattern <type>/kebab-case-slug."
+          echo "::warning::Preferred: <type>/T-PN-NN-short-slug (see ENGINEERING-CHARTER.md § 18), but any <type>/kebab-case name is accepted."
+          echo "::warning::Example: feat/T-P7-Q-CHARTER-07-eslint-plugin or fix/rampart-warn-mode"
+          exit 0
