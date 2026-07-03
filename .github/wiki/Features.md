@@ -47,7 +47,7 @@ Ummat+ status is checked server-side wherever it matters — the client never de
 | Ummat+ badge + billing status | Done |
 | `/upgrade` and `/upgrade/success` pages | Done |
 
-## Mobile App (Flutter)
+## Mobile App (React Native + Expo)
 
 | Feature | Status |
 | --- | --- |

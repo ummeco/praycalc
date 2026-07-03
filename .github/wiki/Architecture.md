@@ -4,7 +4,7 @@
 
 ```
 praycalc/
-├── web/                    praycalc.com (Next.js 15)
+├── web/                    praycalc.com (Astro)
 │   ├── app/                App Router pages and API routes
 │   │   ├── [country]/[state]/[city]/   city prayer times page
 │   │   ├── api/            API routes (prayers, search, geo, calendar PDF)
@@ -15,7 +15,7 @@ praycalc/
 │   ├── messages/           i18n translation files (8 languages)
 │   ├── public/             static assets (adhan audio, icons)
 │   └── tests/              Vitest unit + Playwright E2E
-├── org/                    praycalc.org (documentation, Next.js + MDX)
+├── org/                    praycalc.org (documentation, Astro + MDX)
 │   └── src/                docs pages and components
 ├── desktop/                menu bar / tray app (Tauri 2 + Vite + React 19)
 │   ├── src/                React frontend (tray popup UI)
@@ -34,8 +34,8 @@ praycalc/
 
 | Layer | Technology |
 | --- | --- |
-| Web frontend | Next.js 15, TypeScript, Tailwind CSS |
-| Mobile | Flutter (iOS + Android) |
+| Web frontend | Astro, TypeScript, Tailwind CSS |
+| Mobile | React Native + Expo (iOS + Android); Flutter archived (D-P2-PRAYCALC-RN) |
 | Calculation engine | `pray_calc_dart` (pure Dart, no dependencies) |
 | i18n | next-intl (EN, AR, TR, UR, ID, FR, BN, SO) |
 | PWA | Serwist (service worker, offline caching) |
