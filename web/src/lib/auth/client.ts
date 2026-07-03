@@ -71,7 +71,10 @@ function parseAuthResponse(data: FlatAuthResponse): AuthResult {
     user: {
       id: user.id ?? '',
       email: user.email ?? '',
-      displayName: user.displayName || user.email?.split('@')[0] || '',
+      // When the server sends no display name, derive a friendly one from the
+      // email local-part (john.doe@… → "john doe"), matching buildSession.
+      displayName:
+        user.displayName || user.email?.split('@')[0]?.replace(/[._-]+/g, ' ') || '',
     },
     tokens: {
       accessToken,

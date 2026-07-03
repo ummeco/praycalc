@@ -267,9 +267,12 @@ test.describe("Account page — returning user (session seeded)", () => {
   });
 
   test("dashboard has Account Settings card", async ({ page }) => {
-    const cards = page.locator(".dashboard-card");
-    await expect(cards.first()).toBeVisible();
-    await expect(cards.first()).toContainText("Account Settings");
+    // Card order is not fixed (Saved Cities may render first); assert the
+    // Account Settings card exists among the dashboard cards, not that it is first.
+    const settingsCard = page
+      .locator(".dashboard-card")
+      .filter({ hasText: "Account Settings" });
+    await expect(settingsCard).toBeVisible();
   });
 
   test("sign-out clears session from localStorage", async ({ page }) => {
