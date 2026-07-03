@@ -8,7 +8,7 @@ Accurate prayer times for Muslims, every device, every method, free forever.
 
 **Live:** [praycalc.com](https://praycalc.com) | **Docs:** [praycalc.org](https://praycalc.org)
 
-**P7 status (2026-05):** Stripe TEST mode only. Payment-gated features (Ummat+ premium) use Stripe TEST keys. No live charges. See [Changelog](.github/docs/changelog.md) for P7 updates.
+**Billing status (2026-07):** Stripe is not yet provisioned for this account. `/upgrade` shows a "launching soon" state instead of checkout — no live charges. Accounts, sign-in, and the free calculator work today on every surface. See [Changelog](.github/docs/changelog.md).
 
 ## Engineering Charter — Required Reading
 
@@ -34,7 +34,8 @@ PrayCalc is a free, GPS-accurate Islamic prayer time calculator for web and mobi
 - Countdown to next prayer
 - Dark mode (WCAG 2.2 AA, system-preference-aware)
 - Accessible (WCAG 2.2 AA — axe audited, Playwright viewport matrix)
-- Ummat+ premium features: smart home display, TV widget, home screen widgets
+- Ummat account sign-in on web, mobile, and desktop — one login across the ecosystem
+- Ummat+ ($9.99/yr): unlocks the TV app and Smart Home integrations (Google Home, Alexa)
 - Desktop menu bar / tray app for macOS, Windows, Linux with live countdown
 
 ## Tech Stack

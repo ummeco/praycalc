@@ -1,3 +1,18 @@
+## [Unreleased] — 2026-07-02 — P4: Ummat Accounts + Ummat+
+
+### Added
+- Web: real Hasura Auth sign-in/sign-up (replaces the mock auth stub), account island, `/upgrade` and `/upgrade/success` pages, Ummat+ badge and billing status
+- Mobile: real sign-up/sign-in (the register tab was previously mis-wired to the login mutation), entitlement fetch, "Pair TV" screen (writes `pc_tv_pairing`), `praycalc://pair` deep link
+- Desktop: Account tab (sign in/up, entitlement badge, sign out, opens `/upgrade`), CSP updated for the auth endpoint, session persisted in the Tauri store
+- Smart home: `requirePlus` middleware (`402 ummat_plus_required`) on Google Home / Alexa account linking and on device/token routes
+- Backend (`ummat/backend`): migration formalizing the 5 `pc_` tables; Hasura Plus-gate on `pc_tv_pairing` (INSERT restricted to the `plus` role with a `user_id` session preset; poll SELECT open to unauthenticated clients, scoped to poll-safe columns); `syncPlusRole` converges the `plus` Hasura role with `umm_subscriptions` on every Stripe/Apple/Google webhook; `dev-grant-plus.sh` for local QA without live billing
+
+### Notes
+- Stripe is not yet provisioned for this account. `/billing/checkout` returns `503 billing_disabled` until keys exist; `/upgrade` shows a "launching soon" state, no live charges.
+- Verified locally end-to-end: dev-grant moves a user to active Plus (role + subscription); a Plus JWT can pair a TV to itself; a free account is blocked from pairing; role escalation attempts are denied; an unauthenticated TV poll can still read paired status by pin.
+
+---
+
 ## [3.2.0] — 2026-06-27 — E-05: Tauri 2 Desktop App
 
 ### Added

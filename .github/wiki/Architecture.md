@@ -68,8 +68,20 @@ Current release: [desktop-v1.1.1](https://github.com/ummeco/praycalc/releases/ta
 ## Backend Integration
 
 PrayCalc connects to the shared Ummat backend via GraphQL for:
-- User authentication (shared SSO via Hasura Auth)
+- User authentication (shared SSO via Hasura Auth at `auth.ummat.dev`)
 - Settings sync across devices
 - Saved cities and preferences
 
 API endpoint: `https://api.praycalc.com/v1/graphql`
+
+## Accounts & Entitlements
+
+Every surface (web, mobile, desktop) signs in against the shared Ummat backend and gets back a JWT. Free accounts get the full calculator on every surface. Ummat+ ($9.99/yr) unlocks the TV app and Smart Home integrations.
+
+Entitlement checks happen server-side, not in the client:
+- The billing service converges the user's Hasura role (`plus`) with their subscription record on every Stripe/Apple/Google webhook.
+- TV pairing writes are restricted to the `plus` role at the Hasura permission layer — a free account cannot insert a pairing row even by calling the API directly.
+- Smart-home routes (Google Home / Alexa account linking, device and token issuance) run a `requirePlus` middleware that returns `402 ummat_plus_required` for non-Plus accounts.
+- `/billing/checkout` returns `503 billing_disabled` while Stripe is unprovisioned for this account — no live charges happen yet.
+
+This keeps the client dumb: the web account island, the mobile "Pair TV" screen, and the desktop Account tab all just call the same endpoints and show whatever the backend says, instead of each surface re-implementing its own gate.

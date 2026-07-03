@@ -1,5 +1,26 @@
 # Features
 
+## Accounts & Ummat+
+
+PrayCalc uses the shared Ummat account system — one sign-in works across every app in the ecosystem (web, mobile, desktop, TV). Auth runs against `auth.ummat.dev` (Hasura Auth) and issues a JWT that each surface stores locally.
+
+| Tier | Price | What you get |
+| --- | --- | --- |
+| Free | $0 | Full prayer time calculator on every surface: web, mobile, desktop |
+| Ummat+ | $9.99/yr | Everything in Free, plus TV app access and Smart Home integrations |
+
+Ummat+ status is checked server-side wherever it matters — the client never decides who gets Plus. Billing runs through the shared Ummat backend (Stripe + Apple/Google IAP webhooks keep entitlement in sync).
+
+| Surface | Free tier | Ummat+ adds |
+| --- | --- | --- |
+| Web (praycalc.com) | Sign in/up, saved settings, calculator | Plus badge on the account island, `/upgrade` checkout flow |
+| Mobile (RN) | Sign in/up, calculator, notifications | Pair a TV from Settings > Connect TV |
+| Desktop (Tauri) | Sign in/up from the Account tab, calculator | Entitlement badge, link out to `/upgrade` |
+| TV | — | TV app pairing and access are Plus-only |
+| Smart Home | — | Google Home / Alexa account linking, device + token routes |
+
+**Note:** Stripe is not yet provisioned for this account. Until then, `/upgrade` shows a "launching soon" state instead of a live checkout — nothing charges. Signing in, syncing settings, and using the calculator work today on every surface regardless of tier.
+
 ## Web App (praycalc.com)
 
 | Feature | Status |
@@ -22,6 +43,9 @@
 | Last visited cities | Done |
 | Popular cities | Done |
 | Session management | Done |
+| Account sign in/up (Hasura Auth) | Done |
+| Ummat+ badge + billing status | Done |
+| `/upgrade` and `/upgrade/success` pages | Done |
 
 ## Mobile App (Flutter)
 
@@ -50,6 +74,7 @@
 | Auto-start on login | Done |
 | Native notifications | Done |
 | Unified 3-platform release (.dmg, .msi/.exe, .deb/.AppImage/.rpm) | Done |
+| Account tab: sign in/up, entitlement badge, sign out | Done |
 
 ## Documentation Site (praycalc.org)
 
