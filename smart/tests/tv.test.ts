@@ -2,9 +2,24 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import request from 'supertest';
 import jwt from 'jsonwebtoken';
 import { app } from '../src/index.js';
-import { tvDeviceStore, userProfileStore } from './setup.js';
+import { tvDeviceStore, userProfileStore, subscriptionStore } from './setup.js';
 
 const JWT_SECRET = process.env.HASURA_GRAPHQL_JWT_SECRET || 'test-secret';
+
+/**
+ * Grant an Ummat+ subscription to a test user. Gated TV routes (pair,
+ * auth/authorize, auth/refresh, app-code, guest-qr) require Plus. Use a
+ * UNIQUE userId per test: getSubscriptionStatus caches per-user across tests
+ * while subscriptionStore is cleared each test.
+ */
+function grantPlus(userId: string): void {
+  subscriptionStore.set(userId, {
+    user_id: userId,
+    plan: 'plus',
+    status: 'active',
+    current_period_end: new Date(Date.now() + 86_400_000).toISOString(),
+  });
+}
 
 function makeToken(userId: string): string {
   return jwt.sign(
@@ -263,7 +278,8 @@ describe('TV Routes', () => {
     });
 
     it('requires device_id', async () => {
-      const token = makeToken('user-tv-test');
+      grantPlus('user-tv-refresh-p1');
+      const token = makeToken('user-tv-refresh-p1');
       const res = await request(app)
         .post('/api/v1/tv/auth/refresh')
         .set('Authorization', `Bearer ${token}`)
@@ -272,7 +288,8 @@ describe('TV Routes', () => {
     });
 
     it('returns a JWT for valid request', async () => {
-      const token = makeToken('user-tv-test');
+      grantPlus('user-tv-refresh-p2');
+      const token = makeToken('user-tv-refresh-p2');
       const res = await request(app)
         .post('/api/v1/tv/auth/refresh')
         .set('Authorization', `Bearer ${token}`)
@@ -292,7 +309,8 @@ describe('TV Routes', () => {
     });
 
     it('requires lat and lng', async () => {
-      const token = makeToken('user-guest-qr');
+      grantPlus('user-guest-qr-p1');
+      const token = makeToken('user-guest-qr-p1');
       const res = await request(app)
         .post('/api/v1/tv/guest-qr')
         .set('Authorization', `Bearer ${token}`)
@@ -301,7 +319,8 @@ describe('TV Routes', () => {
     });
 
     it('returns a guest QR URL with 24h expiry', async () => {
-      const token = makeToken('user-guest-qr');
+      grantPlus('user-guest-qr-p2');
+      const token = makeToken('user-guest-qr-p2');
       const res = await request(app)
         .post('/api/v1/tv/guest-qr')
         .set('Authorization', `Bearer ${token}`)
@@ -317,6 +336,30 @@ describe('TV Routes', () => {
     });
   });
 
+  describe('Ummat+ gating (requirePlus) — user-side TV routes return 402 for free users', () => {
+    const GATED: Array<{ path: string; body: Record<string, unknown> }> = [
+      { path: '/api/v1/tv/pair', body: { code: '1234' } },
+      { path: '/api/v1/tv/auth/authorize', body: { user_code: 'AAAA-BBBB' } },
+      { path: '/api/v1/tv/auth/refresh', body: { device_id: 'dev-1' } },
+      { path: '/api/v1/tv/app-code', body: {} },
+      { path: '/api/v1/tv/guest-qr', body: { lat: 21.3891, lng: 39.8579 } },
+    ];
+
+    for (const { path, body } of GATED) {
+      it(`POST ${path} → 402 ummat_plus_required for authenticated free user`, async () => {
+        // Unique id per route; no subscriptionStore entry → free tier.
+        const token = makeToken(`free-user-${path.replace(/\W+/g, '-')}`);
+        const res = await request(app)
+          .post(path)
+          .set('Authorization', `Bearer ${token}`)
+          .send(body);
+        expect(res.status).toBe(402);
+        expect(res.body.error).toBe('ummat_plus_required');
+        expect(res.body.upgrade).toBe('https://praycalc.com/upgrade');
+      });
+    }
+  });
+
   describe('GET /api/v1/tv/guest/:code', () => {
     it('returns 404 for unknown code', async () => {
       const res = await request(app).get('/api/v1/tv/guest/nonexistent');
@@ -325,6 +368,7 @@ describe('TV Routes', () => {
 
     it('returns location for valid code', async () => {
       // First generate a code.
+      grantPlus('user-guest-qr-lookup');
       const token = makeToken('user-guest-qr-lookup');
       const post = await request(app)
         .post('/api/v1/tv/guest-qr')

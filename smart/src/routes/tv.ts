@@ -23,7 +23,7 @@
 import crypto from 'crypto';
 import { EventEmitter } from 'events';
 import { Router } from 'express';
-import { requireAuth, type AuthRequest } from '../middleware/auth.js';
+import { requireAuth, requirePlus, type AuthRequest } from '../middleware/auth.js';
 import { isMinioConfigured, createPresignedUploadUrl, photoKey, createScreenshotUploadUrl, createScreenshotDownloadUrl } from '../lib/minio.js';
 // CFG-B2: Import all tunable constants from the centralized config module.
 import {
@@ -42,6 +42,14 @@ function stripHtml(text: string): string {
   return text.replace(/<[^>]*>/g, '').trim();
 }
 
+// Ummat+ gating ("Plus unlocks TV"): every USER-side route that attaches a TV
+// to an account or issues it credentials is requirePlus-gated (/pair,
+// /auth/authorize, /auth/refresh, /app-code, /guest-qr). DEVICE-side endpoints
+// (/code, /auth/device, /auth/poll, /code/:code/status, /activate, /guest/:code,
+// /streams) stay open by design — a TV cannot authenticate before pairing
+// (RFC 8628), and entitlement is enforced at the user-side issuance points.
+// Post-pairing management (GET /, /heartbeat, settings, screenshots) stays
+// requireAuth-only; a lapsed subscription loses access at /auth/refresh.
 export const tvRouter = Router();
 
 // Parse Hasura JSON format {"type":"HS256","key":"<hex>"} or use raw string.
@@ -156,7 +164,7 @@ function generateTvJwt(userId: string, deviceId: string): string {
 
 // ── TV2-1.3: POST /api/v1/tv/pair ─────────────────────────────────────────────
 
-tvRouter.post('/pair', requireAuth, async (req: AuthRequest, res) => {
+tvRouter.post('/pair', requireAuth, requirePlus, async (req: AuthRequest, res) => {
   const userId = req.userId!;
   const { code, deviceName, deviceModel, androidId } = req.body;
 
@@ -297,7 +305,7 @@ tvRouter.get('/auth/poll', async (req, res) => {
 //   • 4-digit code shown on TV (pairingCodes map)
 //   • 8-char RFC 8628 user_code (deviceAuthCodes map)
 
-tvRouter.post('/auth/authorize', requireAuth, async (req: AuthRequest, res) => {
+tvRouter.post('/auth/authorize', requireAuth, requirePlus, async (req: AuthRequest, res) => {
   const userId = req.userId!;
   const { user_code } = req.body;
 
@@ -361,7 +369,7 @@ tvRouter.post('/auth/authorize', requireAuth, async (req: AuthRequest, res) => {
 
 // ── TV2-1.7: POST /api/v1/tv/auth/refresh — Refresh TV JWT ───────────────────
 
-tvRouter.post('/auth/refresh', requireAuth, async (req: AuthRequest, res) => {
+tvRouter.post('/auth/refresh', requireAuth, requirePlus, async (req: AuthRequest, res) => {
   const userId = req.userId!;
   const { device_id } = req.body;
 
@@ -405,7 +413,7 @@ tvRouter.get('/code/:code/status', (req, res) => {
 //   GET  /api/v1/tv/app-code/:c/status — authenticated poll (app waits for TV)
 //   POST /api/v1/tv/activate           — unauthenticated (TV submits code, gets JWT)
 
-tvRouter.post('/app-code', requireAuth, async (req: AuthRequest, res) => {
+tvRouter.post('/app-code', requireAuth, requirePlus, async (req: AuthRequest, res) => {
   const userId = req.userId!;
   const code = (Math.floor(Math.random() * 9000) + 1000).toString();
 
@@ -516,7 +524,7 @@ const GUEST_QR_TTL_MS = 24 * 60 * 60 * 1000;
  * The TV sends its home coordinates; guests scan the resulting QR to view prayer
  * times for that location without creating an account.
  */
-tvRouter.post('/guest-qr', requireAuth, (req: AuthRequest, res) => {
+tvRouter.post('/guest-qr', requireAuth, requirePlus, (req: AuthRequest, res) => {
   const { lat, lng } = req.body as { lat?: unknown; lng?: unknown };
   if (typeof lat !== 'number' || typeof lng !== 'number') {
     res.status(400).json({ error: 'lat and lng (numbers) required' });
