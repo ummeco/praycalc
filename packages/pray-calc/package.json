@@ -27,7 +27,7 @@
     "src"
   ],
   "scripts": {
-    "build": "tsc -p tsconfig.esm.json && tsc -p tsconfig.cjs.json && find dist/cjs -name '*.js' | while read f; do mv \"$f\" \"${f%.js}.cjs\"; done && find dist/cjs -name '*.cjs' -exec perl -pi -e 's|require\\\\(([\\'\"])(\\\\.{1,2}/[^\\'\"]+)\\\\.js\\\\1\\\\)|require($1$2.cjs$1)|g' {} + && tsc -p tsconfig.types.json",
+    "build": "tsc -p tsconfig.esm.json && tsc -p tsconfig.cjs.json && node scripts/fix-cjs.mjs && tsc -p tsconfig.types.json",
     "typecheck": "tsc --noEmit",
     "test": "vitest run --coverage",
     "test:watch": "vitest",
