@@ -6,7 +6,8 @@
  * SPORT: praycalc/tv screens
  */
 
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
+import { useFocusDestination } from '../hooks/useFocusDestination';
 import {
   View,
   Text,
@@ -43,7 +44,7 @@ export default function CitySearchScreen(): React.JSX.Element {
   const navigation = useNavigation<CityNavProp>();
   const { settings, updateSettings } = useSettingsStore();
   const [selected, setSelected] = useState(settings.cityId);
-  const firstRef = useRef<TouchableHighlight>(null);
+  const [firstNode, firstRef] = useFocusDestination<TouchableHighlight>();
 
   const handleSelect = (city: CityLocation): void => {
     setSelected(city.id);
@@ -61,7 +62,7 @@ export default function CitySearchScreen(): React.JSX.Element {
     <TvScreenWrapper title="Select City" onBack={() => navigation.goBack()}>
       <View style={styles.root}>
         <Text style={styles.hint}>D-pad Up/Down to navigate · Select to confirm</Text>
-        <TVFocusGuideView style={styles.listContainer} destinations={[firstRef]}>
+        <TVFocusGuideView style={styles.listContainer} destinations={firstNode ? [firstNode] : []}>
           <FlatList
             data={SAMPLE_CITIES}
             keyExtractor={(item) => item.id}

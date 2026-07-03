@@ -6,7 +6,8 @@
  * SPORT: praycalc/tv screens
  */
 
-import React, { useRef } from 'react';
+import React from 'react';
+import { useFocusDestination } from '../hooks/useFocusDestination';
 import {
   View,
   Text,
@@ -60,7 +61,7 @@ const UPCOMING_EVENTS: IslamicEvent[] = [
 
 export default function IslamicEventsScreen(): React.JSX.Element {
   const navigation = useNavigation<EventsNavProp>();
-  const firstRef = useRef<TouchableHighlight>(null);
+  const [firstNode, firstRef] = useFocusDestination<TouchableHighlight>();
   const today = new Date().toISOString().split('T')[0];
 
   const upcoming = UPCOMING_EVENTS.filter((e) => e.gregorianDate >= today);
@@ -68,7 +69,7 @@ export default function IslamicEventsScreen(): React.JSX.Element {
   return (
     <TvScreenWrapper title="Islamic Events" onBack={() => navigation.goBack()}>
       <View style={styles.root}>
-        <TVFocusGuideView style={styles.list} destinations={[firstRef]}>
+        <TVFocusGuideView style={styles.list} destinations={firstNode ? [firstNode] : []}>
           <FlatList
             data={upcoming}
             keyExtractor={(item) => item.id}

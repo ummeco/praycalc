@@ -61,7 +61,6 @@ export default function ScreensaverScreen(): React.JSX.Element {
     return () => {
       if (dimTimerRef.current) clearTimeout(dimTimerRef.current);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timeoutMs]);
 
   // Any remote button press exits screensaver

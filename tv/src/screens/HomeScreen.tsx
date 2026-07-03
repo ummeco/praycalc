@@ -6,7 +6,8 @@
  * SPORT: praycalc/tv screens
  */
 
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useFocusDestination } from '../hooks/useFocusDestination';
 import {
   View,
   Text,
@@ -38,7 +39,7 @@ export default function HomeScreen(): React.JSX.Element {
   const { prayerTimes, nextPrayer, markCompleted, setPrayerDay, setNextPrayer } = usePrayerStore();
   const { settings } = useSettingsStore();
   const [currentTime, setCurrentTime] = useState(new Date());
-  const firstBadgeRef = useRef<TouchableHighlight>(null);
+  const [firstBadgeNode, firstBadgeRef] = useFocusDestination<TouchableHighlight>();
 
   // Update clock every second
   useEffect(() => {
@@ -93,7 +94,7 @@ export default function HomeScreen(): React.JSX.Element {
       </View>
 
       {/* Prayer Times Grid */}
-      <TVFocusGuideView style={styles.grid} destinations={[firstBadgeRef]}>
+      <TVFocusGuideView style={styles.grid} destinations={firstBadgeNode ? [firstBadgeNode] : []}>
         {prayerTimes.map((prayer, index) => (
           <TouchableHighlight
             key={prayer.name}

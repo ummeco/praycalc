@@ -6,7 +6,9 @@
     "strictNullChecks": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
+      "react-native": [
+        "./node_modules/react-native"
+      ]
     },
     "jsx": "react-native",
     "allowJs": false,
@@ -15,9 +17,20 @@
     "moduleResolution": "node16",
     "module": "node16",
     "target": "ES2020",
-    "lib": ["ES2020"],
-    "types": ["react-native"]
+    "lib": [
+      "ES2020"
+    ],
+    "types": [
+      "react-native"
+    ]
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "**/__tests__/**", "android", "ios"]
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "**/__tests__/**",
+    "android",
+    "ios"
+  ]
 }

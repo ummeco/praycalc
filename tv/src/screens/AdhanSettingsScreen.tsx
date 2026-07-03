@@ -6,7 +6,8 @@
  * SPORT: praycalc/tv screens
  */
 
-import React, { useRef } from 'react';
+import React from 'react';
+import { useFocusDestination } from '../hooks/useFocusDestination';
 import {
   View,
   Text,
@@ -39,7 +40,7 @@ const PRAYER_LABELS: Record<PrayerName, string> = {
 export default function AdhanSettingsScreen(): React.JSX.Element {
   const navigation = useNavigation<AdhanNavProp>();
   const { settings, updateSettings } = useSettingsStore();
-  const firstMethodRef = useRef<TouchableHighlight>(null);
+  const [firstMethodNode, firstMethodRef] = useFocusDestination<TouchableHighlight>();
 
   const setVolume = (name: PrayerName, delta: number): void => {
     const current = settings.prayerVolumes[name] ?? settings.adhanVolume;
@@ -52,7 +53,7 @@ export default function AdhanSettingsScreen(): React.JSX.Element {
       <View style={styles.root}>
         {/* Calculation Method */}
         <Text style={styles.sectionTitle}>Calculation Method</Text>
-        <TVFocusGuideView style={styles.methodGrid} destinations={[firstMethodRef]}>
+        <TVFocusGuideView style={styles.methodGrid} destinations={firstMethodNode ? [firstMethodNode] : []}>
           {CALCULATION_METHODS.map((method, i) => (
             <TouchableHighlight
               key={method.id}

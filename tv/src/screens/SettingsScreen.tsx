@@ -6,7 +6,8 @@
  * SPORT: praycalc/tv screens
  */
 
-import React, { useRef } from 'react';
+import React from 'react';
+import { useFocusDestination } from '../hooks/useFocusDestination';
 import {
   View,
   Text,
@@ -31,7 +32,7 @@ interface SettingsRow {
 export default function SettingsScreen(): React.JSX.Element {
   const navigation = useNavigation<SettingsNavProp>();
   const { settings, updateSettings } = useSettingsStore();
-  const firstRef = useRef<TouchableHighlight>(null);
+  const [firstNode, firstRef] = useFocusDestination<TouchableHighlight>();
 
   const rows: SettingsRow[] = [
     {
@@ -86,7 +87,7 @@ export default function SettingsScreen(): React.JSX.Element {
   return (
     <TvScreenWrapper title="Settings" onBack={() => navigation.goBack()}>
       <View style={styles.root}>
-        <TVFocusGuideView style={styles.list} destinations={[firstRef]}>
+        <TVFocusGuideView style={styles.list} destinations={firstNode ? [firstNode] : []}>
           {rows.map((row, i) => (
             <TouchableHighlight
               key={row.label}

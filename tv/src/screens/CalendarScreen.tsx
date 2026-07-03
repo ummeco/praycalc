@@ -6,7 +6,8 @@
  * SPORT: praycalc/tv screens
  */
 
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
+import { useFocusDestination } from '../hooks/useFocusDestination';
 import {
   View,
   Text,
@@ -46,19 +47,12 @@ function gregorianToHijriApprox(gregorianDate: Date): { day: number; month: numb
   return { day, month, year };
 }
 
-const ISLAMIC_EVENTS: { month: number; day: number; name: string }[] = [
-  { month: 0, day: 1, name: 'New Year' },
-  { month: 8, day: 1, name: 'Ramadan begins' },
-  { month: 9, day: 1, name: 'Eid al-Fitr' },
-  { month: 11, day: 10, name: 'Eid al-Adha' },
-];
-
 export default function CalendarScreen(): React.JSX.Element {
   const navigation = useNavigation<CalendarNavProp>();
   const today = new Date();
   const [viewYear, setViewYear] = useState(today.getFullYear());
   const [viewMonth, setViewMonth] = useState(today.getMonth());
-  const todayRef = useRef<TouchableHighlight>(null);
+  const [todayNode, todayRef] = useFocusDestination<TouchableHighlight>();
 
   useTVEventHandler((evt) => {
     if (evt.eventType === 'left') {
@@ -98,7 +92,7 @@ export default function CalendarScreen(): React.JSX.Element {
         </View>
 
         {/* Calendar grid */}
-        <TVFocusGuideView style={styles.grid} destinations={[todayRef]}>
+        <TVFocusGuideView style={styles.grid} destinations={todayNode ? [todayNode] : []}>
           {cells.map((day, idx) => {
             if (!day) return <View key={`empty-${idx}`} style={styles.emptyCell} />;
             const isToday =
