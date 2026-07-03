@@ -64,13 +64,13 @@ export default function MobileNavToggle({ navigation, currentPath }: Props) {
           className="border-b border-zinc-200 bg-white px-4 pb-6 dark:border-zinc-800 dark:bg-zinc-950"
         >
           <nav aria-label="Mobile navigation">
-            <ul role="list" className="space-y-6 pt-4">
+            <ul className="space-y-6 pt-4">
               {navigation.map((group) => (
                 <li key={group.title}>
                   <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
                     {group.title}
                   </p>
-                  <ul role="list" className="space-y-1">
+                  <ul className="space-y-1">
                     {group.links.map((link) => {
                       const active = isActive(link.href, currentPath);
                       return (

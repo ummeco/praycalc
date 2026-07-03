@@ -116,7 +116,7 @@ export default function DocsSidebar({ navigation, currentPath }: Props) {
 
   return (
     <nav aria-label="Sidebar navigation">
-      <ul role="list" className="space-y-8">
+      <ul className="space-y-8">
         {navigation.map((group) => {
           return (
             <li key={group.title}>
@@ -128,7 +128,7 @@ export default function DocsSidebar({ navigation, currentPath }: Props) {
                 {/* Vertical rule */}
                 <div className="absolute inset-y-0 left-0 w-px bg-zinc-900/10 dark:bg-white/5" />
 
-                <ul role="list" className="space-y-0.5">
+                <ul className="space-y-0.5">
                   {group.links.map((link) => {
                     const active = isActive(link.href, currentPath);
 

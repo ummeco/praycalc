@@ -105,7 +105,7 @@ export default function TableOfContents() {
         <p className="mb-4 text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
           On this page
         </p>
-        <ul role="list" className="space-y-2 text-sm">
+        <ul className="space-y-2 text-sm">
           {headings.map(({ id, text, level }) => (
             <li key={id}>
               <a
