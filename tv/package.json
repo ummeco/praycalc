@@ -12,7 +12,7 @@
     "test": "jest"
   },
   "dependencies": {
-    "@acamarata/pray-calc": "workspace:../packages/pray-calc",
+    "@acamarata/pray-calc": "workspace:*",
     "@react-navigation/native": "^6.1.18",
     "@react-navigation/stack": "^6.4.1",
     "react": "19.0.0",

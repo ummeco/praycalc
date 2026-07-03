@@ -354,7 +354,7 @@ importers:
   tv:
     dependencies:
       '@acamarata/pray-calc':
-        specifier: workspace:../packages/pray-calc
+        specifier: workspace:*
         version: link:../packages/pray-calc
       '@react-native-async-storage/async-storage':
         specifier: ^2.0.0
