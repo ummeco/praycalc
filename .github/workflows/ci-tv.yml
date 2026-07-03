@@ -1,6 +1,7 @@
 name: PrayCalc TV CI (react-native-tvos)
 
 on:
+  workflow_dispatch: {}
   push:
     branches: [main]
     paths: ['tv/**']
