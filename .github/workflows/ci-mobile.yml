@@ -1,6 +1,7 @@
 name: PrayCalc Mobile CI (React Native)
 
 on:
+  workflow_dispatch: {}
   push:
     branches: [main]
     paths: ['mobile/**']
