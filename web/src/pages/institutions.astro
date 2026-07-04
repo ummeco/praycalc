@@ -1,0 +1,338 @@
+---
+/**
+ * institutions.astro — Islamic Calendar & Accommodation Guide for Institutions.
+ *
+ * PURPOSE: Static reference page for schools, universities, correctional
+ *   facilities, hospitals, the U.S. military, employers, and government
+ *   agencies on Islamic religious obligations and reasonable accommodation.
+ *   Includes a multi-year table of key Islamic dates computed at build time.
+ * THEOLOGY GATE: Content describes obligations under ahl us-sunnah wal-jama'ah
+ *   consensus (five daily prayers, Ramadan fast, two Eids, Hajj). Dates use the
+ *   Umm al-Qura calendar (lib/islamic-dates.ts); a ±1 day moon-sighting caveat
+ *   is shown. No new fiqh methodology claims.
+ * REF: restored from git ecc0a7c^ (Next.js era) · D-P2-STACK-CANON (Astro)
+ */
+import RootLayout from '@/layouts/RootLayout.astro';
+import {
+  getMultiYearDates,
+  getCurrentHijriYear,
+  formatDateShort,
+  formatWeekday,
+} from '@/lib/islamic-dates';
+
+// Forward-looking table: current Hijri year + 15 years ahead (~16-year horizon).
+// Starting at the current year means no stale past rows and zero annual upkeep —
+// the "current" highlight is always the first row and advances each Hijri new year.
+const START_YEAR = getCurrentHijriYear();
+const YEAR_COUNT = 16;
+const yearData = getMultiYearDates(START_YEAR, YEAR_COUNT);
+const currentHijriYear = START_YEAR;
+
+const cellDate = (d: Date) => ({ day: formatWeekday(d), date: formatDateShort(d) });
+---
+
+<RootLayout
+  title="Islamic Calendar for Institutions | PrayCalc"
+  description="Multi-year Islamic dates and religious-accommodation guidance for schools, prisons, hospitals, the military, and employers. Ramadan, Eid al-Fitr, Eid al-Adha, and daily prayer, dietary, and dress accommodations."
+  canonical="https://praycalc.com/institutions"
+>
+  <main id="main-content" class="info-page">
+    <div class="info-page-inner">
+      <!-- Header -->
+      <div class="info-page-header">
+        <a href="/" class="info-page-back">← PrayCalc</a>
+      </div>
+      <div class="flex items-start justify-between gap-4 flex-wrap">
+        <h1 class="text-3xl font-bold text-white">Islamic Calendar for Institutions</h1>
+        <button
+          type="button"
+          id="print-page"
+          class="shrink-0 text-sm text-ummat-light/70 hover:text-ummat-light border border-ummat-light/30 rounded-lg px-3 py-1.5 transition-colors print:hidden"
+        >
+          Print this page
+        </button>
+      </div>
+      <div class="h-px bg-white/10"></div>
+      <p class="text-white/60 leading-relaxed">
+        Around five million Muslims live in the United States, making up nearly 2% of the
+        population. Many work, study, receive care, serve in the military, or are held in
+        institutional settings where schedules, meals, dress codes, and holidays were not
+        specifically designed around their needs as a religious minority. This page is a
+        practical reference for schools, universities, correctional facilities, hospitals,
+        the U.S. military, employers, and government agencies that want to understand Islamic
+        religious obligations and provide reasonable accommodation, including dates for
+        Muslims to break their Ramadan fasts with pre-dawn and sunset meals. Below you will
+        find a multi-year table of key Islamic dates, an explanation of what each date means,
+        detailed accommodation guidelines organized by topic, and links to authoritative
+        resources from the U.S. government and civil rights organizations.
+      </p>
+
+      <!-- Context -->
+      <section class="info-section">
+        <p class="text-white/60 leading-relaxed">
+          Muslims observe several religious occasions throughout the year that may require
+          schedule adjustments, dietary accommodations, or time off. The most significant are
+          <strong class="text-white/80">Ramadan</strong> (a month of fasting from dawn to sunset)
+          and the two <strong class="text-white/80">Eid</strong> holidays. The Islamic calendar
+          is lunar, so these dates shift earlier by about 11 days each year. This means Ramadan
+          and Eid do not fall on the same Gregorian dates from year to year, and institutions
+          need to check the calendar annually.
+        </p>
+        <p class="text-white/60 leading-relaxed">
+          The dates below are calculated using the <strong class="text-white/80">Umm al-Qura</strong>
+          astronomical calendar — the standard basis for pre-announced Islamic date tables across
+          North America (including the Fiqh Council of North America and ISNA) and Saudi Arabia,
+          and widely used for advance institutional planning. Some Muslim communities begin each
+          month by local moon sighting, which may shift an observed date by one day. For scheduling,
+          this calculated calendar provides the reliable baseline institutions need.
+        </p>
+      </section>
+
+      <!-- Dates table -->
+      <section class="info-section">
+        <h2 class="text-xl font-semibold text-ummat-light">
+          Key Islamic Dates ({yearData[0].gregorianYear}&ndash;{yearData[yearData.length - 1].gregorianYear})
+        </h2>
+        <div class="overflow-x-auto -mx-4 px-4">
+          <table class="w-full text-sm border-collapse min-w-[640px]">
+            <thead>
+              <tr class="text-left text-white/50 border-b border-white/15">
+                <th class="py-2 pr-3 font-medium">Hijri Year</th>
+                <th class="py-2 pr-3 font-medium">Ramadan Begins</th>
+                <th class="py-2 pr-3 font-medium">Last 10 Nights</th>
+                <th class="py-2 pr-3 font-medium">Eid al-Fitr</th>
+                <th class="py-2 pr-3 font-medium">Day of Arafah</th>
+                <th class="py-2 pr-3 font-medium">Eid al-Adha</th>
+                <th class="py-2 pr-3 font-medium">Ashura*</th>
+              </tr>
+            </thead>
+            <tbody>
+              {yearData.map((yr) => {
+                const isCurrent = yr.hijriYear === currentHijriYear;
+                const cells = [
+                  cellDate(yr.ramadanStart),
+                  cellDate(yr.last10Start),
+                  cellDate(yr.eidAlFitr),
+                  cellDate(yr.dayOfArafah),
+                  cellDate(yr.eidAlAdha),
+                  cellDate(yr.ashura),
+                ];
+                return (
+                  <tr class={`border-b border-white/5 ${isCurrent ? 'bg-ummat-light/10' : ''}`}>
+                    <td class="py-2 pr-3 font-medium text-white/80 whitespace-nowrap">
+                      {yr.hijriYear}
+                      {isCurrent && (
+                        <span class="ml-2 text-[0.65rem] uppercase tracking-wide text-ummat-light bg-ummat-light/15 rounded px-1.5 py-0.5">current</span>
+                      )}
+                    </td>
+                    {cells.map((c) => (
+                      <td class="py-2 pr-3 text-white/70 whitespace-nowrap">
+                        <span class="text-white/40 mr-1">{c.day}</span>{c.date}
+                      </td>
+                    ))}
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+        <p class="text-white/40 text-xs">
+          Source: <a href="https://fiqhcouncil.org/calendar/" target="_blank" rel="noopener noreferrer" class="text-ummat-light/70 hover:text-ummat-light underline">Fiqh Council of North America</a>.
+          Computed via the Umm al-Qura calendar; local moon sighting may shift a date by ±1 day.
+        </p>
+      </section>
+
+      <!-- What each date means -->
+      <section class="info-section">
+        <h2 class="text-xl font-semibold text-ummat-light">What Each Date Means</h2>
+        <div class="grid sm:grid-cols-2 gap-4">
+          <div class="rounded-xl border border-white/10 bg-white/[0.03] p-4">
+            <h3 class="font-semibold text-white/90 mb-2">Ramadan (29–30 days)</h3>
+            <p class="text-white/60 text-sm leading-relaxed">The ninth month of the Islamic calendar. Muslims fast from the pre-dawn prayer (Fajr) until sunset (Maghrib) each day — no food, drink, or smoking during daylight hours. Fasting Ramadan is one of the five pillars of Islam and is obligatory for every adult Muslim who is physically able. Exemptions exist for those who are ill, pregnant, nursing, traveling, or elderly, but for most Muslims this is a non-negotiable religious duty, not an optional practice.</p>
+          </div>
+          <div class="rounded-xl border border-white/10 bg-white/[0.03] p-4">
+            <h3 class="font-semibold text-white/90 mb-2">Last 10 Nights</h3>
+            <p class="text-white/60 text-sm leading-relaxed">The final 10 nights of Ramadan hold special significance. They include Laylatul Qadr (the Night of Power), considered the holiest night of the year. Muslims increase worship during these nights with extended prayers (Taraweeh and Qiyam), and some perform I'tikaf (a spiritual retreat in the mosque for the last 10 days). Schedule flexibility during these final days is especially appreciated.</p>
+          </div>
+          <div class="rounded-xl border border-white/10 bg-white/[0.03] p-4">
+            <h3 class="font-semibold text-white/90 mb-2">Eid al-Fitr</h3>
+            <p class="text-white/60 text-sm leading-relaxed">Marks the end of Ramadan on the 1st of Shawwal. Muslims attend a special morning congregational prayer (typically 8–10 AM), then celebrate with family and community gatherings. The Eid prayer is an obligation for every Muslim, and this is one of the two most important holidays in Islam. Many families celebrate for 2–3 days. It is comparable in significance to major holidays in other faith traditions.</p>
+          </div>
+          <div class="rounded-xl border border-white/10 bg-white/[0.03] p-4">
+            <h3 class="font-semibold text-white/90 mb-2">Day of Arafah</h3>
+            <p class="text-white/60 text-sm leading-relaxed">The 9th of Dhul Hijjah. Millions of Muslims perform the Hajj pilgrimage in Mecca on this day. Muslims not on Hajj fast this day, as it is considered one of the most virtuous fasts of the year. Some may be traveling for Hajj during the first 10 days of Dhul Hijjah (roughly 2–3 weeks including travel). The fast of Arafah is highly recommended rather than obligatory, but widely observed.</p>
+          </div>
+          <div class="rounded-xl border border-white/10 bg-white/[0.03] p-4">
+            <h3 class="font-semibold text-white/90 mb-2">Eid al-Adha (1 + 3 days)</h3>
+            <p class="text-white/60 text-sm leading-relaxed">The 10th of Dhul Hijjah, the day after Arafah. The second major holiday in Islam, commemorating Prophet Ibrahim's (Abraham's) willingness to sacrifice his son in obedience to God. The Eid day is followed by 3 Days of Tashreeq (11th–13th Dhul Hijjah), during which celebrations continue. Fasting is prohibited on Eid day and the Days of Tashreeq. The Eid prayer is an obligation. Many families distribute meat to the poor during these days as an act of charity.</p>
+          </div>
+          <div class="rounded-xl border border-white/10 bg-white/[0.03] p-4">
+            <h3 class="font-semibold text-white/90 mb-2">Ashura</h3>
+            <p class="text-white/60 text-sm leading-relaxed">The 10th of Muharram, the first month of the Islamic year. Muslims fast on this day (and the day before or after it), commemorating the day God saved the Children of Israel from Pharaoh. The fast of Ashura is highly recommended rather than obligatory. It is a single day and generally does not require institutional accommodation beyond awareness.</p>
+          </div>
+        </div>
+        <p class="text-white/60 leading-relaxed">
+          Of these dates, Ramadan and the two Eid holidays are the ones most likely to require
+          institutional accommodation. Ramadan affects daily schedules for an entire month, while
+          the Eid holidays carry the same religious weight as major holidays in any faith tradition.
+          The Eid prayers on both holidays are obligatory and take place in the morning. Just as
+          institutions would not schedule a mandatory event during a major religious holiday, they
+          should avoid doing so on Eid. The Day of Arafah and Ashura involve a single day of fasting
+          and are highly recommended rather than obligatory, but awareness and flexibility are always
+          appreciated.
+        </p>
+        <p class="text-white/40 text-xs">* Technically Ashura falls in the next Hijri year but is listed here for convenience, as it typically occurs weeks after Eid al-Adha.</p>
+      </section>
+
+      <!-- Understanding the calendar -->
+      <section class="info-section">
+        <h2 class="text-xl font-semibold text-ummat-light">Understanding the Islamic Calendar</h2>
+        <p class="text-white/60 leading-relaxed">The Islamic (Hijri) calendar is a purely lunar calendar with 12 months of 29 or 30 days each. A Hijri year is about 354 days, roughly 11 days shorter than the Gregorian (solar) year. This is why Ramadan and the Eid holidays shift earlier by about 11 days each year, cycling through all four seasons over a period of about 33 years. Islamic dates cannot be memorized as fixed calendar dates — institutions need to consult the table above (or a resource like this page) each year to plan ahead.</p>
+        <p class="text-white/60 leading-relaxed">The dates in the table are calculated astronomically. Traditionally, some communities begin each lunar month based on physical sighting of the new crescent moon after sunset, which can cause the actual observed date to shift by one day from the calculated date. For planning purposes, the calculated calendar provides the certainty institutions need, and any shift from moon sighting would only be by a single day.</p>
+        <p class="text-white/60 leading-relaxed">Because the calendar shifts every year, institutions should bookmark this page or print the table above and distribute it to scheduling staff, chaplains, dietary coordinators, and human resources departments at the start of each academic or fiscal year.</p>
+      </section>
+
+      <!-- Accommodation guidelines -->
+      <section class="info-section">
+        <h2 class="text-xl font-semibold text-ummat-light">Accommodation Guidelines</h2>
+        <p class="text-white/60 leading-relaxed">The standard American calendar was not built with Islam in mind. The weekly congregational day for Muslims is Friday (not Sunday), and the two major holidays (Eid al-Fitr and Eid al-Adha) are not recognized as national days off. This does not mean institutions need to restructure their entire calendar, but the same spirit of accommodation already extended to other faith traditions should be extended to Muslims as well. In most cases the accommodation is straightforward: an excused absence, a schedule swap, a halal meal option, or access to a quiet room for a few minutes of prayer. Federal law requires reasonable accommodation of sincerely held religious beliefs under Title VII of the Civil Rights Act (employers), RLUIPA (correctional and government institutions), and the First Amendment (public schools and the military).</p>
+
+        <div class="flex flex-col gap-4">
+          <div class="rounded-xl border border-white/10 bg-white/[0.03] p-5">
+            <h3 class="font-semibold text-white/90 mb-3">During Ramadan</h3>
+            <ul class="text-white/60 text-sm leading-relaxed list-disc pl-5 space-y-2 marker:text-ummat-light/50">
+              <li>Fasting is obligatory during Ramadan for all adult Muslims who are physically able. Those fasting will not eat or drink anything from the pre-dawn prayer (Fajr) until sunset (Maghrib). This is one of the five pillars of Islam.</li>
+              <li>Avoid scheduling mandatory meals, food-related events, taste tests, or cooking activities during fasting hours. If a team lunch or food event is planned, allow fasting individuals to opt out without explanation or stigma.</li>
+              <li>Consider flexible scheduling for exams, physical fitness tests, strenuous labor, or other demanding activities. Late afternoon is typically the most challenging period, especially in summer when fasting days can exceed 16 hours.</li>
+              <li>The pre-dawn meal (<strong class="text-white/80">Suhoor</strong>) must be eaten before the Fajr prayer time. Fajr can be as early as 3:30 AM in summer or as late as 6:00 AM in winter. The fast-breaking meal (<strong class="text-white/80">Iftar</strong>) happens immediately at sunset (Maghrib), which shifts daily. These times do not align with standard institutional meal schedules. Use <a href="/" class="text-ummat-light/80 hover:text-ummat-light underline">PrayCalc</a> to look up exact Fajr and Maghrib times for your location on any date.</li>
+              <li><strong class="text-white/80">Correctional facilities:</strong> Suhoor and Iftar timing is the single most common accommodation issue in prisons during Ramadan. Suhoor must be provided before the Fajr time printed on that day's schedule, not at a generic early hour. If Fajr is at 4:12 AM, the meal must be available before 4:12 AM. Iftar must be available at the actual Maghrib (sunset) time, not held until the next scheduled service. Many facilities use bag meals or pre-packaged trays distributed at the correct times. The Federal Bureau of Prisons policy (P5360.09) requires accommodating Ramadan fasting, including adjusted meal times. Muslims break their fast with dates and water before the meal. Federal courts have consistently upheld the right to Ramadan accommodation under RLUIPA.</li>
+              <li><strong class="text-white/80">Hospitals and care facilities:</strong> Patients who choose to fast should not be pressured to eat during daylight hours unless there is a specific medical contraindication their physician has explained to them. Suhoor trays should be available before Fajr and Iftar trays at Maghrib. Muslim patients too ill to fast are Islamically exempt and should be informed if they seem unaware.</li>
+              <li><strong class="text-white/80">Schools and universities:</strong> Boarding students need early kitchen access or pre-packaged Suhoor before Fajr and Iftar provisions at sunset. Day students fasting during school hours may have lower energy, especially in afternoon classes. Cafeterias can offer to-go options or a designated Iftar space.</li>
+              <li><strong class="text-white/80">Employers:</strong> Fasting employees can continue normal duties. Flexibility on break times (shifting a lunch break to sunset for Iftar, or arriving slightly later to accommodate Taraweeh prayers the night before) is helpful and usually easy. Do not question whether an employee is "really fasting" or pressure them to eat at team events.</li>
+              <li><strong class="text-white/80">U.S. Military:</strong> DoD Instruction 1300.17 requires commanders accommodate religious practices unless doing so would adversely affect readiness, unit cohesion, or good order and discipline. Fasting service members may need adjusted PT schedules, Suhoor before Fajr, and Iftar at sunset. During deployments, commanders should work with unit chaplains. The military has accommodated Ramadan fasting for decades.</li>
+            </ul>
+          </div>
+
+          <div class="rounded-xl border border-white/10 bg-white/[0.03] p-5">
+            <h3 class="font-semibold text-white/90 mb-3">For Eid Holidays</h3>
+            <ul class="text-white/60 text-sm leading-relaxed list-disc pl-5 space-y-2 marker:text-ummat-light/50">
+              <li>Both Eid al-Fitr and Eid al-Adha begin with a special congregational prayer in the morning (typically 8–10 AM). This prayer is an obligation, not optional, and is followed by family and community gatherings for the rest of the day. For observant Muslims, missing Eid prayer is not an option.</li>
+              <li>Most Muslims consider at least the first day of each Eid a major holiday. Eid al-Adha is followed by 3 additional Days of Tashreeq (11th–13th Dhul Hijjah), and many families observe 2–4 total days of celebration.</li>
+              <li>Excused absences for Eid should be treated the same way institutions already handle other major religious holidays. If employees or students receive time off for recognized holidays without using personal or vacation days, the same courtesy should be extended for the two Eids.</li>
+              <li>Avoid scheduling exams, hearings, mandatory meetings, deadlines, disciplinary reviews, or important events on Eid days. If truly unavoidable, provide make-up opportunities without penalty.</li>
+              <li><strong class="text-white/80">Correctional facilities:</strong> Incarcerated Muslims should be allowed to attend Eid congregational prayer if a Muslim chaplain or volunteer leads it. Where no imam is available, inmates should be permitted to pray together in a designated space. Eid meals should reflect the celebratory nature of the day where possible — the same practice many facilities already extend to Thanksgiving and other holidays. The BOP and most state DOCs recognize both Eids as authorized religious holy days.</li>
+              <li><strong class="text-white/80">U.S. Military:</strong> DoD Instruction 1300.17 provides for religious holiday accommodation. Service members should be granted pass or liberty on Eid days when mission requirements allow. Unit commanders should plan around known Eid dates (in the table above) the same way they plan around other recognized holidays.</li>
+              <li><strong class="text-white/80">Schools:</strong> Eid absences should be treated as excused religious absences. Some districts have added Eid to their official holiday calendars (New York City, Montgomery County MD, and others). Even where Eid is not an official school holiday, individual student absences for Eid should carry no penalty.</li>
+            </ul>
+          </div>
+
+          <div class="rounded-xl border border-white/10 bg-white/[0.03] p-5">
+            <h3 class="font-semibold text-white/90 mb-3">Daily Prayers</h3>
+            <ul class="text-white/60 text-sm leading-relaxed list-disc pl-5 space-y-2 marker:text-ummat-light/50">
+              <li>Muslims pray five times daily at times determined by the sun's position: before sunrise (Fajr), midday (Dhuhr), afternoon (Asr), sunset (Maghrib), and evening (Isha). Each prayer takes about 5–10 minutes and requires a clean, quiet space roughly the size of a yoga mat to stand, bow, and prostrate. Daily prayer is one of the five pillars of Islam and is obligatory.</li>
+              <li>A clean room, empty office, library study room, or any designated quiet area is sufficient. Restrooms are not appropriate as a prayer space. No special equipment is needed; many Muslims carry a small prayer rug. The space need not be dedicated exclusively to prayer — any clean, quiet room available for 10 minutes is enough.</li>
+              <li>Muslims perform a brief washing ritual (wudu) before prayer, using running water to wash hands, face, arms to the elbows, and feet. Access to a sink or restroom beforehand is sufficient and takes 1–2 minutes.</li>
+              <li>The Friday midday prayer (Jumu'ah) is a congregational obligation for Muslim men and highly recommended for women. It replaces the regular Dhuhr prayer and typically runs 12:30–1:30 PM. Attendees may need 60–90 minutes total, including travel to and from a mosque if no on-site prayer space exists.</li>
+              <li><strong class="text-white/80">Correctional facilities:</strong> Muslim inmates have a right to daily prayers and Friday congregational prayer (Jumu'ah). Facilities should provide a clean prayer space and allow group Friday prayer with a chaplain or volunteer imam. Prayer times shift daily with the sun, so movement and count schedules may need to accommodate prayer windows. The BOP designates Friday Jumu'ah as a required religious program; courts have consistently held that denying Jumu'ah without a compelling security justification violates RLUIPA.</li>
+              <li><strong class="text-white/80">Schools:</strong> During the school day, Dhuhr (midday) prayer typically falls during school hours. A 5-minute accommodation during lunch or a free period is usually sufficient. In winter, Asr (afternoon prayer) may also fall before dismissal. Public schools are constitutionally required to permit student-initiated prayer that does not disrupt instruction.</li>
+              <li><strong class="text-white/80">Employers:</strong> Most employers already allow short breaks. A Muslim employee using a few minutes for prayer is comparable to any other short break. Providing a quiet space (even a seldom-used conference or storage room) makes this simple. For Friday Jumu'ah, a flexible lunch break or minor schedule adjustment is usually all that is needed.</li>
+              <li><strong class="text-white/80">U.S. Military:</strong> Chaplains coordinate prayer spaces and Friday Jumu'ah on most installations. During field exercises or deployments, commanders should allow a few minutes for prayer when operationally feasible. Prayer requires no equipment beyond a clean surface.</li>
+            </ul>
+          </div>
+
+          <div class="rounded-xl border border-white/10 bg-white/[0.03] p-5">
+            <h3 class="font-semibold text-white/90 mb-3">Dietary Needs (Year-Round)</h3>
+            <ul class="text-white/60 text-sm leading-relaxed list-disc pl-5 space-y-2 marker:text-ummat-light/50">
+              <li>Muslims follow halal dietary guidelines year-round, not just during Ramadan. Pork and pork-derived products (gelatin, lard, certain enzymes, any pork byproducts) are always prohibited, as is alcohol. Meat must come from an animal slaughtered according to Islamic guidelines (similar to kosher requirements).</li>
+              <li>Kosher-certified food is generally acceptable as a substitute when halal options are unavailable, because kosher slaughter requirements are similar. Vegetarian and seafood options are always halal-safe alternatives.</li>
+              <li>Clearly labeling ingredients in cafeterias, dining halls, and commissaries helps Muslim individuals identify suitable options without asking each time. Labels should call out pork, alcohol, and animal-derived gelatin.</li>
+              <li><strong class="text-white/80">Correctional facilities:</strong> Halal meal options should be a standing dietary accommodation, not something inmates must repeatedly request or file grievances to obtain. The BOP maintains a Religious Diet Program that includes a halal option; many state DOCs contract with providers offering halal-certified meal plans. At minimum, a no-pork diet with vegetarian or seafood protein satisfies basic requirements. Commissary items should also be reviewed, and cross-contamination (cooking halal meals in pans used for pork without washing) should be avoided.</li>
+              <li><strong class="text-white/80">Hospitals and care facilities:</strong> Halal restrictions should be recorded in the patient's chart on admission, like allergy or kosher notes. Meal services should flag halal trays automatically rather than requiring the patient to reject non-halal food at each meal.</li>
+              <li><strong class="text-white/80">Schools:</strong> If the cafeteria regularly serves pork products (hot dogs, pepperoni pizza, ham, bacon), a clearly labeled non-pork alternative should be available at every meal. Muslim students should not be left with no lunch option. For younger children, staff should be aware the student cannot eat pork, as young children may not always know which foods contain it.</li>
+              <li><strong class="text-white/80">U.S. Military:</strong> Dining facilities (DFACs) increasingly offer halal MREs and halal-certified options. During deployments, commanders should ensure halal rations are available, and base DFACs should label menu items that contain pork.</li>
+            </ul>
+          </div>
+
+          <div class="rounded-xl border border-white/10 bg-white/[0.03] p-5">
+            <h3 class="font-semibold text-white/90 mb-3">Hajj Travel</h3>
+            <ul class="text-white/60 text-sm leading-relaxed list-disc pl-5 space-y-2 marker:text-ummat-light/50">
+              <li>The Hajj pilgrimage to Mecca occurs during the first 10 days of Dhul Hijjah (the month containing Eid al-Adha). It is a once-in-a-lifetime obligation for Muslims who are physically and financially able, and one of the five pillars of Islam.</li>
+              <li>Employees or students performing Hajj typically need 2–3 weeks off, including international travel. This period can be estimated from the Eid al-Adha date in the table above (roughly 2 weeks before Eid al-Adha through a few days after).</li>
+              <li>Most Muslims perform Hajj only once in their lifetime, so this is not an annual request. When it is made, it carries enormous religious significance.</li>
+              <li><strong class="text-white/80">U.S. Military:</strong> DoD policy allows leave for religious pilgrimages. Service members planning Hajj should coordinate with their chain of command and unit chaplain well in advance; the dates are predictable years ahead using the table on this page.</li>
+            </ul>
+          </div>
+
+          <div class="rounded-xl border border-white/10 bg-white/[0.03] p-5">
+            <h3 class="font-semibold text-white/90 mb-3">Dress and Modesty</h3>
+            <ul class="text-white/60 text-sm leading-relaxed list-disc pl-5 space-y-2 marker:text-ummat-light/50">
+              <li>Some Muslim women wear a headscarf (hijab) as a religious obligation. Dress code and uniform policies must accommodate religious head coverings. This is protected under Title VII of the Civil Rights Act, affirmed by the Supreme Court in EEOC v. Abercrombie &amp; Fitch (2015).</li>
+              <li>Many Muslim men keep a beard. Grooming policies should accommodate religiously motivated beards unless there is a genuine, documented safety concern (such as certain respirator-fit requirements). Even then, alternatives (tight-fitting respirators designed for bearded users) should be explored before denying the accommodation.</li>
+              <li>Muslim men and women may prefer not to participate in mixed-gender physical activities, particularly those involving close physical contact or swimwear. Where possible, provide same-gender alternatives for swimming, physical education, or fitness requirements.</li>
+              <li><strong class="text-white/80">Correctional facilities:</strong> Female Muslim inmates may request to keep their hijab. The BOP and many state DOCs permit religious head coverings that do not pose a security risk. Strip searches and pat-downs should be conducted by same-gender staff — already standard practice, but especially important for Muslim inmates who observe modesty as a religious duty. Courts have ruled under RLUIPA (Holt v. Hobbs, 2015) that blanket bans on beards in prisons violate religious freedom when less restrictive alternatives exist.</li>
+              <li><strong class="text-white/80">U.S. Military:</strong> The DoD has increasingly approved religious accommodation for hijab, beards, and turbans. Army Directive 2017-03 and subsequent updates established a process for requesting grooming and appearance accommodation; service members may apply for a beard waiver and hijab accommodation through their chain of command.</li>
+              <li><strong class="text-white/80">Schools:</strong> Students have a constitutional right to wear hijab in public schools. Dress codes that ban head coverings must include a religious exemption, and PE dress codes should accommodate modesty requirements (long sleeves, leggings, sports hijab).</li>
+            </ul>
+          </div>
+
+          <div class="rounded-xl border border-white/10 bg-white/[0.03] p-5">
+            <h3 class="font-semibold text-white/90 mb-3">Religious Materials and Property</h3>
+            <ul class="text-white/60 text-sm leading-relaxed list-disc pl-5 space-y-2 marker:text-ummat-light/50">
+              <li>Muslims may carry a small copy of the Quran, prayer beads (misbaha/tasbih), and a prayer rug. These should be permitted wherever personal religious items from other traditions (Bible, rosary, yarmulke) are allowed.</li>
+              <li>The Quran holds special significance and should be handled respectfully — not placed on the floor, stacked under other books, or handled in a deliberately disrespectful manner. During searches, staff should handle it the same way they would any sacred text.</li>
+              <li><strong class="text-white/80">Correctional facilities:</strong> The BOP Religious Beliefs and Practices policy (P5360.09) lists authorized religious property for Muslim inmates, including a Quran, prayer rug, kufi (prayer cap), and prayer beads. These should not be confiscated absent a specific, documented security concern. Access to Islamic books and educational materials through the library or chaplain's office supports rehabilitation and should be facilitated.</li>
+              <li><strong class="text-white/80">Hospitals:</strong> Muslim patients may wish to have a Quran, prayer rug, or compass (to determine the prayer direction toward Mecca) at their bedside. These should be permitted as personal religious items.</li>
+            </ul>
+          </div>
+
+          <div class="rounded-xl border border-white/10 bg-white/[0.03] p-5">
+            <h3 class="font-semibold text-white/90 mb-3">End-of-Life and Burial</h3>
+            <ul class="text-white/60 text-sm leading-relaxed list-disc pl-5 space-y-2 marker:text-ummat-light/50">
+              <li>Burial should take place as soon as possible after death, ideally within 24 hours. Hospitals and morgues should be prepared to release the body promptly when the family requests it.</li>
+              <li>The body is washed (ghusl) according to Islamic rites by same-gender Muslims, then wrapped in plain white cloth (kafan) without embalming. Autopsy should be avoided unless legally required, and the family should be consulted.</li>
+              <li><strong class="text-white/80">Correctional facilities:</strong> When a Muslim inmate passes away, the facility should contact a local imam or Islamic organization to assist with the ghusl and janazah (funeral prayer). The BOP recognizes Islamic burial requirements, and the body should be released to the family or Islamic organization as quickly as possible.</li>
+              <li><strong class="text-white/80">Hospitals:</strong> If a Muslim patient is terminally ill, the family may wish for a chaplain or imam to visit. After death, the body should ideally remain covered and not be left unattended. Staff should ask the family about their wishes regarding washing, autopsy, and organ donation.</li>
+            </ul>
+          </div>
+        </div>
+
+        <p class="text-white/60 leading-relaxed">These guidelines are not exhaustive, and individual needs vary. The best approach is to ask Muslim community members directly about their specific needs. Most will appreciate even basic awareness, and accommodations need not be elaborate to be meaningful. The core principle is straightforward: the same understanding and flexibility already extended to members of other faith traditions should be extended to Muslims as well. A quiet room for prayer, awareness of Eid dates, sensitivity during Ramadan, and a halal meal option go a long way. These accommodations are also a legal obligation under Title VII of the Civil Rights Act, the Religious Freedom Restoration Act, RLUIPA, and the First Amendment.</p>
+      </section>
+
+      <!-- Resources -->
+      <section class="info-section">
+        <h2 class="text-xl font-semibold text-ummat-light">Additional Resources</h2>
+        <p class="text-white/60 leading-relaxed">The following organizations and government agencies provide detailed guidance on religious accommodation in institutional settings, including specific references to Islamic practices, template accommodation request letters, and the legal standards institutions are required to meet.</p>
+        <ul class="text-white/60 text-sm leading-relaxed space-y-3">
+          <li><a href="https://www.eeoc.gov/laws/guidance/section-12-religious-discrimination" target="_blank" rel="noopener noreferrer" class="text-ummat-light/80 hover:text-ummat-light underline">U.S. Equal Employment Opportunity Commission (EEOC)</a> — Section 12: Religious Discrimination. Covers employer obligations for reasonable accommodation, including prayer breaks, religious dress, dietary needs, and holiday observance. Applies to employers with 15+ employees.</li>
+          <li><a href="https://www2.ed.gov/policy/gen/guid/religionandschools/prayer_guidance.html" target="_blank" rel="noopener noreferrer" class="text-ummat-light/80 hover:text-ummat-light underline">U.S. Department of Education</a> — Guidance on constitutionally protected prayer and religious expression in public schools. Clarifies that students may pray individually or in groups during non-instructional time, wear religious clothing, and be absent for religious observances.</li>
+          <li><a href="https://www.cair.com/know-your-rights/" target="_blank" rel="noopener noreferrer" class="text-ummat-light/80 hover:text-ummat-light underline">Council on American-Islamic Relations (CAIR)</a> — Know Your Rights guides for Muslim employees, students, travelers, and community members, including template accommodation request letters, legal fact sheets, and how to report discrimination.</li>
+          <li><a href="https://www.justice.gov/crt/religious-land-use-and-institutionalized-persons-act" target="_blank" rel="noopener noreferrer" class="text-ummat-light/80 hover:text-ummat-light underline">U.S. Department of Justice — RLUIPA</a> — Religious Land Use and Institutionalized Persons Act. Protects the religious exercise of persons confined to correctional facilities, psychiatric hospitals, and other government institutions.</li>
+          <li><a href="https://www.bop.gov/policy/progstat/5360.009_cn-1.pdf" target="_blank" rel="noopener noreferrer" class="text-ummat-light/80 hover:text-ummat-light underline">Federal Bureau of Prisons (BOP) — P5360.09</a> — Religious Beliefs and Practices policy. Lists authorized religious property, dietary accommodation (including halal and Ramadan meal adjustments), holy day observance, and religious programming requirements.</li>
+          <li><a href="https://www.esd.whs.mil/Portals/54/Documents/DD/issuances/dodi/130017p.pdf" target="_blank" rel="noopener noreferrer" class="text-ummat-light/80 hover:text-ummat-light underline">DoD Instruction 1300.17</a> — Accommodation of Religious Practices Within the Military Services. Establishes policy and procedures for requesting accommodation of dietary needs, grooming standards, prayer, holy days, and religious dress.</li>
+          <li><a href="https://www.interfaithalliance.org/" target="_blank" rel="noopener noreferrer" class="text-ummat-light/80 hover:text-ummat-light underline">Interfaith Alliance</a> — Resources for understanding religious diversity in schools, workplaces, and communities, with guides for educators and administrators on creating inclusive environments.</li>
+        </ul>
+      </section>
+
+      <!-- CTA -->
+      <section class="info-section rounded-2xl border border-ummat-light/20 bg-ummat-light/[0.06] p-6 text-center">
+        <h2 class="text-xl font-semibold text-ummat-light">Need Prayer Times for Your Location?</h2>
+        <p class="text-white/60 leading-relaxed">PrayCalc provides accurate prayer times for any city worldwide, including the exact Fajr (pre-dawn) and Maghrib (sunset) times needed for Suhoor and Iftar meal scheduling during Ramadan. Correctional facilities, hospitals, and military installations can generate a full month of prayer times for their coordinates, making it easy for chaplains, dietary coordinators, and unit leaders to plan Ramadan meal schedules and daily prayer accommodation in advance.</p>
+        <a href="/" class="inline-block mt-2 rounded-lg bg-ummat-light text-ummat-deep font-semibold px-5 py-2.5 hover:bg-ummat-light/90 transition-colors">Find Prayer Times</a>
+      </section>
+
+      <!-- Footer -->
+      <div class="flex flex-wrap gap-3 pt-4 border-t border-white/10">
+        <a href="/" class="text-white/40 hover:text-white text-sm">Home</a>
+        <a href="/about" class="text-white/40 hover:text-white text-sm">About</a>
+        <a href="https://praycalc.org" class="text-ummat-light/60 hover:text-ummat-light text-sm" target="_blank" rel="noopener">praycalc.org →</a>
+        <a href="/legal/privacy" class="text-white/40 hover:text-white text-sm">Privacy Policy</a>
+        <a href="/legal/terms" class="text-white/40 hover:text-white text-sm">Terms</a>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    document.getElementById('print-page')?.addEventListener('click', () => window.print());
+  </script>
+</RootLayout>
