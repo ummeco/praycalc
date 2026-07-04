@@ -10,8 +10,8 @@
  * CONSTRAINTS: Astro island. No next/router — window.location for navigation.
  *   DOM contract (homepage.spec / city-page.spec):
  *     input[data-testid="city-search-input"], compact placeholder "Search city…",
- *     .gps-location-btn, .search-dropdown, .search-dropdown-item,
- *     .search-result-name, .search-result-slug
+ *     .location-gps-pill, .location-search-dropdown, .location-search-item,
+ *     .location-search-name, .location-search-slug
  * REF: P2-PRAYCALC-E2E-REBUILD
  */
 
@@ -135,18 +135,18 @@ export default function LocationSearch({ compact = false, autoFocus = false }: P
       </div>
 
       {open && visible.length > 0 && (
-        <div className="search-dropdown" role="listbox" aria-label="Search results">
+        <div className="location-search-dropdown" role="listbox" aria-label="Search results">
           {visible.map((r, i) => (
             <button
               key={`${r.slug}-${i}`}
               type="button"
               role="option"
               aria-selected={false}
-              className="search-dropdown-item"
+              className="location-search-item"
               onClick={() => handleSelect(r)}
             >
-              <span className="search-result-name">{r.displayName}</span>
-              <span className="search-result-slug">/{r.slug}</span>
+              <span className="location-search-name">{r.displayName}</span>
+              <span className="location-search-slug">/{r.slug}</span>
             </button>
           ))}
         </div>
@@ -156,7 +156,7 @@ export default function LocationSearch({ compact = false, autoFocus = false }: P
         <div className="location-search-extras">
           <button
             type="button"
-            className="gps-location-btn location-gps-pill"
+            className="location-gps-pill"
             onClick={handleGeoLocate}
             disabled={geoLoading}
             aria-label="Use my GPS location"

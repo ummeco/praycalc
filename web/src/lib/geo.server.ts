@@ -12,6 +12,7 @@
 import {
   lookupGeoBySlug,
   lookupGeoByIata,
+  lookupGeoByName,
   lookupGeoByZip,
   type GeoRecord,
 } from './data-lookup.server';
@@ -78,11 +79,19 @@ export function geoRecordToResult(record: GeoRecord): GeoResult {
 /** Resolve slug parts array from the catch-all route */
 export function geocodeSlugParts(parts: string[]): GeoResult | null {
   if (parts.length === 1) {
-    if (/^[A-Za-z]{3}$/.test(parts[0] ?? '')) {
-      const record = lookupGeoByIata(parts[0]!);
-      return record ? geoRecordToResult(record) : null;
+    const seg = parts[0] ?? '';
+    if (!seg) return null;
+    // 3-letter IATA airport codes (e.g. /JFK) resolve to their metro area.
+    if (/^[A-Za-z]{3}$/.test(seg)) {
+      const record = lookupGeoByIata(seg);
+      if (record) return geoRecordToResult(record);
     }
-    return null;
+    // Bare city slugs (e.g. /mecca, /new-york, /london) are the primary
+    // shareable URLs emitted by /times and the search box. De-slugify the
+    // hyphens back to spaces so the name lookup matches (data uses "new york",
+    // the slug uses "new-york"), highest-population match wins.
+    const record = lookupGeoByName(seg.replace(/-/g, ' '));
+    return record ? geoRecordToResult(record) : null;
   }
 
   if (parts.length === 2) {
