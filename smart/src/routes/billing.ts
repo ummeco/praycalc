@@ -124,15 +124,21 @@ billingRouter.post('/webhook', raw({ type: 'application/json' }), async (req, re
 
     case 'invoice.paid': {
       const invoice = event.data.object as Stripe.Invoice;
-      const sub = invoice.subscription as string;
-      if (sub) {
-        const subscription = await getStripe().subscriptions.retrieve(sub);
+      // Stripe API 2025-03-31+: Invoice.subscription moved to
+      // Invoice.parent.subscription_details.subscription.
+      const sub = invoice.parent?.subscription_details?.subscription;
+      const subId = typeof sub === 'string' ? sub : sub?.id;
+      if (subId) {
+        const subscription = await getStripe().subscriptions.retrieve(subId);
         const userId = subscription.metadata?.userId;
-        if (userId) {
+        // Stripe API 2025-03-31+: current_period_end moved from the
+        // Subscription to each SubscriptionItem.
+        const currentPeriodEnd = subscription.items.data[0]?.current_period_end;
+        if (userId && currentPeriodEnd) {
           await upsertSubscription(userId, {
             plan: 'plus',
             status: 'active',
-            currentPeriodEnd: new Date(subscription.current_period_end * 1000).toISOString(),
+            currentPeriodEnd: new Date(currentPeriodEnd * 1000).toISOString(),
           });
         }
       }
@@ -142,10 +148,11 @@ billingRouter.post('/webhook', raw({ type: 'application/json' }), async (req, re
     case 'customer.subscription.updated': {
       const subscription = event.data.object as Stripe.Subscription;
       const userId = subscription.metadata?.userId;
-      if (userId) {
+      const currentPeriodEnd = subscription.items.data[0]?.current_period_end;
+      if (userId && currentPeriodEnd) {
         await upsertSubscription(userId, {
           status: subscription.status === 'active' ? 'active' : subscription.status,
-          currentPeriodEnd: new Date(subscription.current_period_end * 1000).toISOString(),
+          currentPeriodEnd: new Date(currentPeriodEnd * 1000).toISOString(),
         });
       }
       break;
