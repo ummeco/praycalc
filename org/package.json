@@ -16,7 +16,7 @@
   "dependencies": {
     "@algolia/autocomplete-core": "^1.19.9",
     "@astrojs/mdx": "^4.3.14",
-    "@astrojs/react": "^4.4.2",
+    "@astrojs/react": "^6.0.1",
     "@astrojs/sitemap": "^3.7.3",
     "@astrojs/vercel": "^8.2.11",
     "@headlessui/react": "^2.2.4",
