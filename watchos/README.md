@@ -2,6 +2,13 @@
 
 Standalone Apple Watch app for PrayCalc. Shows prayer times, countdown to next prayer, and Qibla direction.
 
+## Status
+
+Source scaffold (Swift/SwiftUI + WidgetKit). The Xcode project is not checked
+in; generate it locally (Xcode > open the folder, or xcodegen if a spec is
+added later). Builds and App Store packaging happen on a Mac with Xcode —
+there is no CI leg for this target yet.
+
 ## Features
 
 - Prayer list with all 5 daily prayers, next prayer highlighted

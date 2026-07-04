@@ -5,3 +5,8 @@ packages:
   - "tv"
   - "packages/*"
   - "desktop"
+# Deliberately excluded from the workspace:
+#   smart/      standalone service with its own lockfile (deployed alone; CI installs it standalone)
+#   homebridge/ standalone plugin, own lockfile
+#   flutter/    archived reference (read-only, no JS toolchain)
+#   watchos/ wearos/  native scaffolds (Swift / Kotlin)
