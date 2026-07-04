@@ -175,3 +175,13 @@ Initial web app release.
 - **Dark mode:** System preference detection with manual toggle.
 - **Security:** CSP headers, rate limiting, input validation.
 - **Error states:** Custom 404, 500, offline, and skeleton loading screens.
+
+## 2026-07-04 — Web app: Institutions page + deep-review fixes
+- **Restored** the Institutions accommodation-reference page at `/institutions`
+  (Islamic dates table + guidance for prisons/hospitals/schools/military/employers),
+  recovered from git and rebuilt on Astro + `@umalqura/core`. Footer link added.
+- **Fixed (deep review):** bare city-slug routing (`/mecca` etc. were 404),
+  unstyled search widget, missing hero + OG images, robots.txt sitemap URL, and a
+  self-contradicting "No tracking" footer line.
+- **Reverted** `@astrojs/react` 6→4.4.2 (broke island SSR: `React is not defined`).
+- Full review + deferred items: `.github/docs/reviews/2026-07-04-web-deep-review.md`.

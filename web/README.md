@@ -51,3 +51,17 @@ See `.env.example` for full list.
 ## Production
 
 Vercel project: `ummat-praycalc` · Domain: `praycalc.com`
+
+## Content Pages
+
+- `/institutions` — Islamic Calendar & accommodation guide for institutions
+  (prisons, hospitals, schools, the U.S. military, employers). Build-time
+  multi-year Umm al-Qura date table via `src/lib/islamic-dates.ts`
+  (`@umalqura/core`; same engine as `src/lib/hijri.ts`). Static SSR content page,
+  linked from the home footer.
+
+> Note: `@astrojs/react` is pinned at `^4.4.2`. Do not bump to 6.x without
+> migrating islands to the automatic JSX runtime and verifying the BUILT SSR
+> output — 6.x compiles island JSX with the classic transform and throws
+> `React is not defined` when server-rendering `client:load` islands. See
+> `.github/docs/adr/ADR-web-institutions-and-astro-react-pin.md`.

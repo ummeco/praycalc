@@ -47,6 +47,15 @@ Ummat+ status is checked server-side wherever it matters — the client never de
 | Ummat+ badge + billing status | Done |
 | `/upgrade` and `/upgrade/success` pages | Done |
 
+## Institutions Reference (praycalc.com/institutions)
+
+A public reference page for schools, universities, correctional facilities, hospitals, the U.S. military, employers, and government agencies on Islamic religious obligations and reasonable accommodation.
+
+- **Multi-year Islamic dates table** — Ramadan, Last 10 Nights, Eid al-Fitr, Day of Arafah, Eid al-Adha, and Ashura, computed via the Umm al-Qura calendar (`@umalqura/core`). Auto-starts at the current Hijri year and runs 15 years forward, so it never needs manual updates; the current year is highlighted.
+- **Accommodation guidance by topic** — Ramadan Suhoor/Iftar timing, the two Eids, daily prayer, halal dietary needs, dress/modesty, Hajj travel, religious property, and end-of-life — each with specific callouts for prisons, hospitals, schools, the military, and employers.
+- **Authoritative references** — EEOC, U.S. Dept. of Education, CAIR, DOJ RLUIPA, Federal Bureau of Prisons (P5360.09), and DoD Instruction 1300.17.
+- Printable; linked from the praycalc.com footer.
+
 ## Mobile App (React Native + Expo)
 
 | Feature | Status |
