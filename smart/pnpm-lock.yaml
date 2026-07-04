@@ -40,8 +40,8 @@ importers:
         specifier: file:./vendor/pray-calc
         version: file:vendor/pray-calc
       stripe:
-        specifier: ^17.0.0
-        version: 17.7.0
+        specifier: ^22.3.0
+        version: 22.3.0(@types/node@22.19.13)
     devDependencies:
       '@eslint/js':
         specifier: ^10.0.1
@@ -1543,9 +1543,14 @@ packages:
   strip-literal@3.1.0:
     resolution: {integrity: sha512-8r3mkIM/2+PpjHoOtiAW8Rg3jJLHaV7xPwG+YRGrv6FP0wwk/toTpATxWYOW0BKdWwl82VT2tFYi5DlROa0Mxg==}
 
-  stripe@17.7.0:
-    resolution: {integrity: sha512-aT2BU9KkizY9SATf14WhhYVv2uOapBWX0OFWF4xvcj1mPaNotlSc2CsxpS4DS46ZueSppmCF5BX1sNYBtwBvfw==}
-    engines: {node: '>=12.*'}
+  stripe@22.3.0:
+    resolution: {integrity: sha512-ypO6xjVrMWs9SmIMeHr8naCx3dAQ0clxMdUTxn7Ejd7hmY9meBGfE+N4pVHkf9sUNebAHp6uJo6mV3GxDIc2cA==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      '@types/node': '>=18'
+    peerDependenciesMeta:
+      '@types/node':
+        optional: true
 
   superagent@10.3.0:
     resolution: {integrity: sha512-B+4Ik7ROgVKrQsXTV0Jwp2u+PXYLSlqtDAhYnkkD+zn3yg8s/zjA2MeGayPoY/KICrbitwneDHrjSotxKL+0XQ==}
@@ -3197,10 +3202,9 @@ snapshots:
     dependencies:
       js-tokens: 9.0.1
 
-  stripe@17.7.0:
-    dependencies:
+  stripe@22.3.0(@types/node@22.19.13):
+    optionalDependencies:
       '@types/node': 22.19.13
-      qs: 6.15.0
 
   superagent@10.3.0:
     dependencies:

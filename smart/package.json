@@ -21,7 +21,7 @@
     "node-cache": "^5.1.2",
     "node-cron": "^4.5.0",
     "pray-calc": "file:./vendor/pray-calc",
-    "stripe": "^17.0.0"
+    "stripe": "^22.3.0"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
