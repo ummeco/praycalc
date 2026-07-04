@@ -18,7 +18,7 @@
     "@astrojs/mdx": "^4.3.14",
     "@astrojs/react": "^4.4.2",
     "@astrojs/sitemap": "^3.7.3",
-    "@astrojs/vercel": "^8.2.11",
+    "@astrojs/vercel": "^9.0.5",
     "@headlessui/react": "^2.2.4",
     "@sentry/astro": "^10.63.0",
     "@sindresorhus/slugify": "^2.2.1",
