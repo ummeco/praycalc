@@ -1,5 +1,15 @@
 name: Release
 
+# DISABLED (gh workflow disable) — flutter/ is an archived read-only reference
+# per ASI Policy 2 (Flutter eliminated) and this repo's PRI; it is no longer
+# shipped. `v*` tags now mark whole-platform releases (see v3.x), not Flutter
+# releases, so this workflow no longer matches its own trigger's intent.
+# Kept on disk (not deleted) only so the Shorebird/signing steps remain
+# available for reference if a Flutter hotfix is ever required before the
+# React Native rewrite (praycalc/mobile, praycalc/tv) reaches store parity.
+# Once RN fully replaces flutter/, delete this file and flutter/ together.
+# Re-enable with: gh workflow enable release.yml
+#
 # Triggered by: git tag v1.2.0 && git push origin v1.2.0
 # Produces a GitHub Release with signed/packaged artifacts for every platform.
 #
