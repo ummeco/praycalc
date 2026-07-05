@@ -193,3 +193,34 @@ The app is architecturally sound (real 7-state UI machine, real GraphQL/auth/IAP
 - Three systemic failures: placeholder prayer-time engine (not the real library), 8+ dead-CTA/no-op buttons on primary flows, and settings that don't persist to the store so real behavior diverges from what users configure.
 - Monetization is non-functional end-to-end (no IAP listener, two incompatible entitlement models) — must fix before any store submission.
 - Foundation is strong (state machine, a11y, fiqh correctness, wiring patterns) — this is a "finish what's started" problem, not an architecture problem.
+---
+
+## Update — Parity COMPLETE (verified 2026-07-05, personally checked every file)
+
+All P0 and key P1 items shipped, merged to main, and independently verified:
+
+**P0 (all real, not stubbed):**
+- ✅ Prayer engine → `pray-calc` v2 (`getTimesAll`) + **custom Fajr/Isha angles + high-latitude fallback** (Angle-Based/Night-Middle/One-Seventh) + unit tests.
+- ✅ Settings **persist** via zustand `persist` + AsyncStorage (was local useState); all fields (method, madhab, custom angles, high-lat, per-prayer enable, adhan voice, home/travel location).
+- ✅ Notification service **reads the store** (method/madhab/custom-angles/per-prayer-enabled), skips disabled prayers — was hardcoded MWL/Shafi/all-5.
+- ✅ IAP **purchase listener** mounted on app start (`_layout.tsx`), records receipt, flips `isPlus`; **unified** IAP-Pro + Ummat+ into the single `isPlus` flag.
+- ✅ Stats: `completions.ts` + **tap-to-mark-prayed** on home prayer rows (Stats now reachable).
+- ✅ Hijri **consolidated** to one shared `lib/hijri` (was 4 divergent algos).
+- ✅ Agendas timezone: real IANA offset via `lib/timezone` (was `parseFloat`→NaN→UTC).
+- ✅ SmartHome + HomeWidget: **honestly gated behind `isPlus`**, empty/no fake data.
+
+**P1 competitive parity:**
+- ✅ Home: Hijri + Gregorian date header + location name + next-prayer countdown.
+- ✅ Ramadan: **live Iftar/Suhoor countdown** + 29/30-day-aware day counter.
+- ✅ Qibla: **real magnetic declination** (offline geomagnetism WMM) → true-north compass.
+- ✅ Adhan: voice + per-prayer selection persist to store, isPlus-gated.
+- ✅ 5th **Quran tab**; Quran scoped to sample + Islam.Wiki deep-links (full Quran = Islam.Wiki's remit).
+- ✅ City search: 300ms debounce + "Use Current Location" + favorites.
+- ✅ Travel: separate `travelLocation` (no longer overwrites home).
+- ✅ Onboarding: madhab + high-latitude step.
+- ✅ Dua catalog 8 → 19.
+
+**Verification:** 0 remaining no-op onPress / stubs / fake-data across the app;
+30 tests pass; tsc 0 errors; 0 lint errors; mobile CI green. Personally read/scanned
+every screen. Remaining are cosmetic P2 only (rendered moon disc vs emoji;
+reanimated needle; dua 19→40+) — not completeness gaps.
