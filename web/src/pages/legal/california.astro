@@ -1,0 +1,167 @@
+---
+/**
+ * legal/california.astro — CCPA/CPRA disclosure page (praycalc.com).
+ *
+ * PURPOSE: California Consumer Privacy Act rights disclosure. Precise
+ *   geolocation (used for prayer times / Qibla direction) is classified as
+ *   sensitive personal information under CPRA § 1798.121.
+ * CONSTRAINTS: noIndex — DO NOT flip to indexed or remove the DRAFT banner
+ *   until U-15 (counsel review of the CPRA sensitive-info classification +
+ *   entity details) is resolved (TRAP-P6 do-not-publish rule). Ported as-is
+ *   from the pre-Astro-migration Next.js page (git a4993c5) — U-15 was still
+ *   open as of this port. See .github/docs/adr/ADR-consent-banner-astro-gate.md.
+ * REF: S05-11 · U-15
+ */
+import RootLayout from '@/layouts/RootLayout.astro';
+
+const categories: Array<[string, string, string]> = [
+  ['Identifiers', 'Email (account), IP address', 'Yes'],
+  [
+    'Precise geolocation (sensitive)',
+    'GPS coordinates used for prayer time calculation (browser API, with permission)',
+    'Yes — session only; not stored',
+  ],
+  ['Coarse geolocation', 'Country/region via IP (always used as fallback)', 'Yes'],
+  ['Internet activity', 'Pages viewed (aggregated analytics)', 'Yes — aggregated'],
+  ['Commercial information', 'Subscription status (Ummat+ members only)', 'Yes — members only'],
+  ['Inferences', 'No user profiles drawn from location data', 'No'],
+];
+---
+
+<RootLayout
+  title="California Privacy Rights | PrayCalc"
+  description="California Consumer Privacy Act (CCPA/CPRA) disclosure for PrayCalc. Location data rights and opt-out."
+  noIndex={true}
+>
+  <main id="main-content" class="info-page">
+    <div class="info-page-inner">
+      <!-- Draft — do not publish until U-15 resolved -->
+      <div class="rounded-lg border border-yellow-500/40 bg-yellow-500/10 px-4 py-3 text-sm text-yellow-300">
+        <strong>DRAFT — Not yet effective.</strong> Counsel copy pending (U-15). Committed
+        for development review only. Do not link from production footers until U-15 is resolved.
+      </div>
+
+      <div class="info-page-header">
+        <a href="/legal/privacy" class="info-page-back">← Back to Privacy Policy</a>
+      </div>
+
+      <div class="info-section">
+        <h1 class="text-3xl font-bold text-white sm:text-4xl">California Privacy Rights</h1>
+        <p class="text-white/40 text-sm">
+          California Consumer Privacy Rights Act (CPRA/CCPA) — Last updated: May 6, 2026
+        </p>
+        <p class="text-white/70 max-w-2xl text-sm leading-relaxed">
+          PrayCalc uses your location to calculate accurate prayer times and Qibla direction.
+          Under the California Consumer Privacy Rights Act,
+          <strong class="text-white/90">precise geolocation is classified as sensitive personal information</strong>.
+          You have the right to limit our use of this data.
+          <!-- TODO(U-15): Insert full legal entity details and confirm geolocation classification with counsel. -->
+        </p>
+      </div>
+
+      <!-- Do Not Sell — prominent -->
+      <div class="rounded-xl border border-ummat-dark/40 bg-ummat-dark/10 px-6 py-6">
+        <h2 class="text-base font-semibold text-white mb-2">Do Not Sell or Share My Personal Information</h2>
+        <p class="text-sm text-white/60 mb-4">
+          <!-- TODO(U-15): Confirm with counsel. -->
+          Ummeco, LLC does not sell personal information, including location data, to third parties.
+        </p>
+        <a
+          href="mailto:privacy@ummat.dev?subject=CPRA%20Opt-Out%20Request&body=Full%20name%3A%0AEmail%3A%0ARequest%3A%20Do%20not%20sell%20or%20share%20my%20personal%20information."
+          class="inline-flex items-center gap-2 rounded-lg bg-ummat-mid px-5 py-2.5 text-sm font-medium text-ummat-deep hover:bg-ummat-light transition-colors"
+        >
+          Submit Opt-Out Request — privacy@ummat.dev
+        </a>
+      </div>
+
+      <section class="info-section">
+        <h2 class="text-xl font-semibold text-ummat-light">Categories of Personal Information We Collect</h2>
+        <!-- TODO(U-15): Verify location data categories — precise vs coarse — with counsel. -->
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm border-collapse">
+            <thead>
+              <tr class="border-b border-white/10">
+                <th class="text-left py-2 pr-4 text-white/50 font-medium">Category</th>
+                <th class="text-left py-2 pr-4 text-white/50 font-medium">Examples</th>
+                <th class="text-left py-2 text-white/50 font-medium">Collected?</th>
+              </tr>
+            </thead>
+            <tbody>
+              {categories.map(([cat, ex, col]) => (
+                <tr class="border-b border-white/5">
+                  <td class="py-2 pr-4 text-white/80">{cat}</td>
+                  <td class="py-2 pr-4 text-white/40">{ex}</td>
+                  <td class:list={['py-2 font-medium text-xs', col === 'No' ? 'text-white/30' : 'text-ummat-light']}>{col}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="info-section">
+        <h2 class="text-xl font-semibold text-ummat-light">Sensitive Personal Information — Location Data</h2>
+        <p class="text-white/70 text-sm leading-relaxed">
+          <!-- TODO(U-15): Confirm § 1798.121 right-to-limit language for geolocation with counsel. -->
+          Under CPRA § 1798.121, precise geolocation is sensitive personal information. You have the right to
+          limit our use of your location data to purposes strictly necessary to provide the prayer time service.
+        </p>
+        <p class="text-white/70 text-sm leading-relaxed">
+          PrayCalc accesses precise location only within your browser session (using the Geolocation API), and
+          only with your explicit browser permission. Precise coordinates are not persisted to our servers.
+          You can revoke location permission at any time in your browser settings.
+        </p>
+        <p class="text-white/70 text-sm leading-relaxed">
+          To limit use of your location data beyond prayer time calculation, email
+          <a href="mailto:privacy@ummat.dev" class="text-ummat-light/80 hover:text-ummat-light underline">privacy@ummat.dev</a>.
+        </p>
+      </section>
+
+      <section class="info-section">
+        <h2 class="text-xl font-semibold text-ummat-light">Your California Rights</h2>
+        <div class="text-white/70 text-sm leading-relaxed space-y-3">
+          <div>
+            <h3 class="text-base font-semibold text-white">Right to Know</h3>
+            <p>You may request disclosure of the categories and specific pieces of personal information we have collected about you.</p>
+          </div>
+          <div>
+            <h3 class="text-base font-semibold text-white">Right to Delete</h3>
+            <p>You may request deletion of your account and associated personal information.</p>
+          </div>
+          <div>
+            <h3 class="text-base font-semibold text-white">Right to Correct</h3>
+            <p>You may request correction of inaccurate personal information. Account details can be updated in settings.</p>
+          </div>
+          <div>
+            <h3 class="text-base font-semibold text-white">Right to Opt-Out of Sale or Sharing</h3>
+            <p>We do not sell personal information, including location data.</p>
+          </div>
+          <div>
+            <h3 class="text-base font-semibold text-white">Right to Limit Use of Sensitive Personal Information</h3>
+            <p>You have the right to limit use of your precise geolocation to providing the prayer time service. No additional uses apply.</p>
+          </div>
+          <div>
+            <h3 class="text-base font-semibold text-white">Right to Non-Discrimination</h3>
+            <p>We will not discriminate against you for exercising your CPRA rights.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="info-section">
+        <h2 class="text-xl font-semibold text-ummat-light">How to Submit a Request</h2>
+        <p class="text-white/70 text-sm leading-relaxed">
+          Email <a href="mailto:privacy@ummat.dev" class="text-ummat-light/80 hover:text-ummat-light underline">privacy@ummat.dev</a> with subject "CPRA Request". Include your full name and account email.
+        </p>
+        <p class="text-white/70 text-sm leading-relaxed">We respond within 45 days (extendable to 90 days with notice).</p>
+      </section>
+
+      <section class="info-section border-t border-white/10 pt-6">
+        <h2 class="text-lg font-semibold text-white">Related</h2>
+        <ul class="space-y-1 text-sm">
+          <li><a href="/legal/privacy" class="text-ummat-light/80 hover:text-ummat-light underline">Privacy Policy</a></li>
+          <li><a href="/preferences" class="text-ummat-light/80 hover:text-ummat-light underline">Manage Cookie Preferences</a></li>
+        </ul>
+      </section>
+    </div>
+  </main>
+</RootLayout>

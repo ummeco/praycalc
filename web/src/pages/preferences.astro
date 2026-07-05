@@ -1,0 +1,19 @@
+---
+/**
+ * preferences.astro — PrayCalc consent management page.
+ *
+ * PURPOSE: Hosts the PreferencesClient island — persistent page (linked from
+ *   the footer + cookie banner + legal pages) for reviewing/changing cookie
+ *   category consent and unsubscribing from marketing email, outside the
+ *   dismissible banner/modal flow.
+ * CONSTRAINTS: Island pattern only, per account.astro.
+ * REF: S05-08 · .github/docs/adr/ADR-consent-banner-astro-gate.md
+ */
+
+import RootLayout from '@/layouts/RootLayout.astro';
+import PreferencesClient from '@/islands/preferences/PreferencesClient';
+---
+
+<RootLayout title="Privacy Preferences | PrayCalc" description="Manage your cookie and privacy preferences for PrayCalc.">
+  <PreferencesClient client:load />
+</RootLayout>
