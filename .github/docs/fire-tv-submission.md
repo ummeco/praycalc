@@ -2,9 +2,10 @@
 
 ## Prerequisites
 
-1. Amazon Developer account ($99/year) — sign up at developer.amazon.com
+1. Amazon Developer account (free) — sign up at developer.amazon.com
 2. Fire TV device for testing (or Fire TV emulator via Android Studio AVD)
-3. PrayCalc amazon flavor APK built (`./flutter/amazon-build.sh`)
+3. PrayCalc TV APK built via EAS — either download the `praycalc-tv-android-apk` artifact from
+   a `release-tv.yml` GitHub Actions run, or build locally: `cd tv && eas build --platform android --profile production`
 
 ## Step 1 — Test on Device
 
@@ -12,8 +13,8 @@ Install and test the APK on a real Fire TV:
 
 ```bash
 adb connect <fire-tv-ip>:5555
-adb install flutter/build/app/outputs/flutter-apk/app-amazon-release.apk
-adb shell monkey -p com.praycalc.app.amazon -c android.intent.category.LEANBACK_LAUNCHER 1
+adb install praycalc-tv-android.apk
+adb shell monkey -p com.ummeco.praycalc.tv -c android.intent.category.LEANBACK_LAUNCHER 1
 ```
 
 **Test checklist:**
@@ -39,11 +40,11 @@ Place finalized assets in `assets/firetv/` before submission.
    - Title: PrayCalc — Islamic Prayer Times
    - Category: Lifestyle > Religion & Spirituality
    - Content rating: Everyone
-   - Package name: `com.praycalc.app.amazon`
+   - Package name: `com.ummeco.praycalc.tv`
 3. **Availability & Pricing:** Free, All countries
-4. **Description:** Copy from `assets/firetv/store-assets-manifest.md`
-5. **Images:** Upload from `assets/firetv/`
-6. **APK Upload:** Upload `app-amazon-release.apk`
+4. **Description:** Copy from `.github/docs/store-listing.md`
+5. **Images:** See `.github/docs/store-listing.md` § Screenshots (Android TV / Fire TV section)
+6. **APK Upload:** Upload the `praycalc-tv-android-apk` artifact downloaded from a `release-tv.yml` run
 7. **Device Support:** Select "Fire TV" (all generations), optionally Fire Tablet
 
 ## Step 4 — Submit for Review
@@ -60,14 +61,13 @@ During review, Amazon will test:
 
 After approval:
 - App appears in Amazon Appstore under Lifestyle > Religion
-- Deep link: `amzn://apps/android?p=com.praycalc.app.amazon`
+- Deep link: `amzn://apps/android?p=com.ummeco.praycalc.tv`
 - Web link: `https://www.amazon.com/dp/[ASIN]` (assigned after approval)
 
 Update the PrayCalc website and README with the Amazon Appstore link.
 
 ## Notes
 
-- Amazon Developer account costs $99/year — this is the FOR-USER blocker (FIRETV-4)
-- The `amazon` flavor APK excludes Firebase/FCM since Fire TV has no Google Play Services
-- Local notifications still work via flutter_local_notifications
-- Prayer time calculations are identical to the Google Play version
+- Amazon Developer registration itself is free (no annual fee, unlike Apple's Developer Program)
+- No Firebase/FCM in this stack at all (D-P3-41) — push notifications go through the nSelf push plugin, which doesn't depend on Google Play Services, so this isn't Fire-TV-specific handling
+- Prayer time calculations are identical to the Google Play / App Store versions (same `@acamarata/pray-calc` engine across every surface)

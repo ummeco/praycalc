@@ -1,0 +1,51 @@
+diff --git a/scripts/codegen/generate-artifacts-executor.js b/scripts/codegen/generate-artifacts-executor.js
+index 866290496959be6288e71c14d9d49d8c1a99a89f..810a52d1d5d8ef95c9006ec161b1bfa87c7444e5 100644
+--- a/scripts/codegen/generate-artifacts-executor.js
++++ b/scripts/codegen/generate-artifacts-executor.js
+@@ -24,6 +24,7 @@ const glob = require('glob');
+ const mkdirp = require('mkdirp');
+ const os = require('os');
+ const path = require('path');
++const Module = require('module');
+ 
+ const REACT_NATIVE_REPOSITORY_ROOT = path.join(
+   __dirname,
+@@ -224,7 +225,7 @@ function extractSupportedApplePlatforms(dependency, dependencyPath) {
+   return supportedPlatformsMap;
+ }
+ 
+-function findExternalLibraries(pkgJson) {
++function findExternalLibraries(pkgJson, projectRoot) {
+   const dependencies = {
+     ...pkgJson.dependencies,
+     ...pkgJson.devDependencies,
+@@ -236,10 +237,20 @@ function findExternalLibraries(pkgJson) {
+     '[Codegen] Searching for codegen-enabled libraries in the project dependencies.',
+   );
+   // Handle third-party libraries
++  // PATCH (pnpm workspace fix): resolve relative to the app's own project root
++  // instead of ambient require.resolve, which walks up from this script's location
++  // inside node_modules/.pnpm and can pick up an unrelated same-named "react-native"
++  // package hoisted for a sibling pnpm workspace member (e.g. a plain react-native
++  // dependency used by another app in the monorepo), rather than this project's
++  // aliased react-native-tvos.
++  const resolvePaths = projectRoot
++    ? Module._nodeModulePaths(projectRoot)
++    : undefined;
+   return Object.keys(dependencies).flatMap(dependency => {
+     try {
+       const configFilePath = require.resolve(
+         path.join(dependency, 'package.json'),
++        resolvePaths ? {paths: resolvePaths} : undefined,
+       );
+       const configFile = JSON.parse(fs.readFileSync(configFilePath));
+       const codegenConfigFileDir = path.dirname(configFilePath);
+@@ -510,7 +521,7 @@ function findCodegenEnabledLibraries(pkgJson, projectRoot) {
+   } else {
+     return [
+       ...projectLibraries,
+-      ...findExternalLibraries(pkgJson),
++      ...findExternalLibraries(pkgJson, projectRoot),
+       ...findLibrariesFromReactNativeConfig(projectRoot),
+     ];
+   }

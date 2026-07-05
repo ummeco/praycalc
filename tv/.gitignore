@@ -1,0 +1,16 @@
+# iOS native build artifacts (checked-in: *.xcworkspace, *.xcodeproj, Podfile, Podfile.lock)
+ios/Pods/
+ios/build/
+ios/DerivedData/
+ios/*.xcuserstate
+ios/*.xcuserdatad/
+ios/.xcode.env.local
+
+# Android native build artifacts (checked-in: gradlew, gradle/wrapper/gradle-wrapper.jar)
+android/build/
+android/app/build/
+android/.gradle/
+android/local.properties
+*.keystore
+!android/app/debug.keystore
+.cxx/
