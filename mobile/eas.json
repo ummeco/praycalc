@@ -12,26 +12,36 @@
     },
     "preview": {
       "distribution": "internal",
+      "channel": "preview",
+      "autoIncrement": true,
       "android": {
         "buildType": "apk"
       }
     },
     "production": {
+      "channel": "production",
+      "autoIncrement": true,
       "android": {
         "buildType": "aab"
       }
     }
   },
   "cli": {
-    "version": ">= 5.0.0"
+    "version": ">= 13.0.0",
+    "appVersionSource": "local"
   },
   "submit": {
     "production": {
       "android": {
-        "serviceAccount": "UD-PENDING-STORE-SERVICE-ACCOUNT"
+        "serviceAccountKeyPath": "./google-service-account.json",
+        "track": "internal"
       },
       "ios": {
-        "appleId": "UD-PENDING-APPLE-ID"
+        "ascApiKeyPath": "./asc-api-key.p8",
+        "ascApiKeyIssuerId": "UD-PENDING-ASC-API-KEY-ISSUER-ID",
+        "ascApiKeyId": "UD-PENDING-ASC-API-KEY-ID",
+        "appleTeamId": "UD-PENDING-APPLE-TEAM-ID",
+        "ascAppId": "UD-PENDING-ASC-APP-ID"
       }
     }
   }

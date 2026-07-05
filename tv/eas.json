@@ -1,24 +1,53 @@
 {
   "build": {
     "development": {
-      "developmentClient": true,
       "distribution": "internal",
-      "tvos": {
+      "ios": {
+        "scheme": "PrayCalcTV-tvOS",
         "simulator": true
+      },
+      "android": {
+        "buildType": "apk"
       }
     },
     "preview": {
-      "distribution": "internal"
+      "distribution": "internal",
+      "channel": "preview",
+      "autoIncrement": true,
+      "ios": {
+        "scheme": "PrayCalcTV-tvOS"
+      },
+      "android": {
+        "buildType": "apk"
+      }
     },
-    "production": {}
+    "production": {
+      "channel": "production",
+      "autoIncrement": true,
+      "ios": {
+        "scheme": "PrayCalcTV-tvOS"
+      },
+      "android": {
+        "buildType": "aab"
+      }
+    }
   },
   "cli": {
-    "version": ">= 5.0.0"
+    "version": ">= 13.0.0",
+    "appVersionSource": "local"
   },
   "submit": {
     "production": {
-      "tvos": {
-        "appleId": "UD-PENDING-APPLE-ID"
+      "ios": {
+        "ascApiKeyPath": "./asc-api-key.p8",
+        "ascApiKeyIssuerId": "UD-PENDING-ASC-API-KEY-ISSUER-ID",
+        "ascApiKeyId": "UD-PENDING-ASC-API-KEY-ID",
+        "appleTeamId": "UD-PENDING-APPLE-TEAM-ID",
+        "ascAppId": "UD-PENDING-ASC-APP-ID-TV"
+      },
+      "android": {
+        "serviceAccountKeyPath": "./google-service-account.json",
+        "track": "internal"
       }
     }
   }

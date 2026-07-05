@@ -1,0 +1,118 @@
+name: Release PrayCalc TV (EAS Build + Submit)
+
+# Two ways to ship a TV build:
+#   1. Push a `tv-v*` tag (e.g. tv-v0.2.0) → production profile, all platforms, auto-submit.
+#   2. Run manually (workflow_dispatch) → pick platform/profile/submit yourself.
+#
+# tv/ is a BARE (non-Expo) react-native-tvos project — EAS Build supports bare workflow
+# projects directly via the committed ios/ + android/ folders, no Expo config needed.
+# There is no "tvos" platform value in EAS; the Apple TV target is built via the regular
+# `ios` platform using the `PrayCalcTV-tvOS` Xcode scheme set in tv/eas.json. EAS's support
+# for tvOS schemes specifically is less battle-tested than iPhone/iPad builds — if a build
+# fails in a way that looks EAS-specific (not a project bug), the documented fallback is a
+# direct macOS-runner job using xcodebuild + fastlane instead of EAS for the iOS/tvOS leg
+# only (Android TV via EAS is the well-supported path and unaffected by this caveat).
+#
+# Amazon Appstore (Fire TV) has no EAS Submit integration — the Android job uploads the
+# built APK as a workflow artifact for manual submission via the Amazon Developer Console
+# (or scripted later with Amazon's Appstore Submission API once those credentials exist).
+on:
+  push:
+    tags: ['tv-v*']
+  workflow_dispatch:
+    inputs:
+      platform:
+        description: 'Platform to build'
+        required: true
+        default: 'all'
+        type: choice
+        options: ['all', 'ios', 'android']
+      profile:
+        description: 'EAS build profile'
+        required: true
+        default: 'production'
+        type: choice
+        options: ['production', 'preview']
+      submit:
+        description: 'Auto-submit to App Store / Play Store after build (Amazon Appstore is always manual)'
+        required: true
+        default: true
+        type: boolean
+
+concurrency:
+  group: release-tv-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build-and-submit:
+    name: EAS Build + Submit
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    defaults:
+      run:
+        working-directory: tv
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Setup EAS
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Write App Store Connect API key
+        if: ${{ github.event.inputs.submit != 'false' }}
+        run: echo "${{ secrets.ASC_API_KEY_P8 }}" | base64 -d > asc-api-key.p8
+
+      - name: Write Google Play service account key
+        if: ${{ github.event.inputs.submit != 'false' }}
+        run: echo '${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON_TV }}' > google-service-account.json
+
+      - name: EAS Build (+ submit)
+        env:
+          PLATFORM: ${{ github.event.inputs.platform || 'all' }}
+          PROFILE: ${{ github.event.inputs.profile || 'production' }}
+          DO_SUBMIT: ${{ github.event.inputs.submit || 'true' }}
+        run: |
+          SUBMIT_FLAG=""
+          if [ "$DO_SUBMIT" = "true" ]; then
+            SUBMIT_FLAG="--auto-submit"
+          fi
+          eas build --platform "$PLATFORM" --profile "$PROFILE" --non-interactive --wait $SUBMIT_FLAG
+
+      - name: Clean up credential files
+        if: always()
+        run: rm -f asc-api-key.p8 google-service-account.json
+
+      - name: Fetch Android build APK for Amazon Appstore
+        if: ${{ github.event.inputs.platform != 'ios' }}
+        env:
+          PROFILE: ${{ github.event.inputs.profile || 'production' }}
+        run: |
+          BUILD_URL=$(eas build:list --platform android --profile "$PROFILE" --limit 1 --non-interactive --json | node -e "process.stdin.once('data', d => console.log(JSON.parse(d)[0]?.artifacts?.buildUrl || ''))")
+          if [ -n "$BUILD_URL" ]; then
+            curl -fsSL "$BUILD_URL" -o praycalc-tv-android.apk
+          else
+            echo "No Android build artifact URL found — skipping download" >&2
+          fi
+
+      - name: Upload Android APK as workflow artifact (for manual Amazon Appstore upload)
+        if: ${{ github.event.inputs.platform != 'ios' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: praycalc-tv-android-apk
+          path: tv/praycalc-tv-android.apk
+          retention-days: 14
+          if-no-files-found: warn

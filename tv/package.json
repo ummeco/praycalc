@@ -5,7 +5,7 @@
   "scripts": {
     "start": "react-native start",
     "android": "react-native run-android --device",
-    "ios": "react-native run-ios --scheme PrayCalcTV --simulator 'Apple TV'",
+    "ios": "react-native run-ios --scheme PrayCalcTV-tvOS --simulator 'Apple TV'",
     "build": "tsc --noEmit",
     "typecheck": "tsc --noEmit",
     "lint": "eslint src --ext .ts,.tsx --max-warnings 0",
@@ -21,13 +21,15 @@
     "i18next": "^23.14.0",
     "react": "19.0.0",
     "react-i18next": "^15.0.0",
-    "react-native": "npm:react-native-tvos@^0.74.2-0",
+    "react-native": "npm:react-native-tvos@0.74.5-0",
     "react-native-qrcode-svg": "^6.3.2",
     "react-native-svg": "^15.6.0",
     "urql": "^4.1.0",
     "zustand": "^5.0.0"
   },
   "devDependencies": {
+    "@react-native-community/cli-platform-android": "13.6.9",
+    "@react-native/gradle-plugin": "0.74.87",
     "@tsconfig/react-native": "^3.0.0",
     "@types/jest": "^29.5.14",
     "@types/react": "^19.0.0",

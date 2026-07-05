@@ -87,9 +87,12 @@ id_rsa*
 id_ed25519*
 credentials.json
 service-account*.json
+google-service-account.json
 vault.env
 *.p12
 *.pfx
+*.p8
+asc-api-key*
 
 # AI tools (extended set) — P8 HYGIENE-gitignore T03
 .copilot/

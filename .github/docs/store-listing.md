@@ -137,8 +137,14 @@ https://praycalc.com
 
 ## Store IDs
 
-| Platform | App ID |
-| --- | --- |
-| Apple App Store | TBD — submit via Xcode / Transporter |
-| Google Play | com.praycalc.app |
-| Amazon Appstore | com.praycalc.app (Amazon build flavor) |
+Bundle/package IDs below are for the current React Native apps (`mobile/`, `tv/`), not the
+archived Flutter app. Mobile keeps the Flutter app's original ID so its store listings
+continue rather than fork into new ones (see `mobile/DEPLOYMENT.md` FGAP-08).
+
+| Platform | App | App ID |
+| --- | --- | --- |
+| Apple App Store | Mobile (`mobile/`) | `com.praycalc.praycalcApp` |
+| Apple tvOS App Store | TV (`tv/`) | `com.ummeco.praycalc.tv` |
+| Google Play | Mobile | `com.praycalc.praycalcApp` |
+| Google Play (Android TV) | TV | `com.ummeco.praycalc.tv` |
+| Amazon Appstore (Fire TV) | TV | `com.ummeco.praycalc.tv` |
