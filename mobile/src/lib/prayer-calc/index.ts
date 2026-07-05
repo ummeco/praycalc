@@ -1,21 +1,30 @@
 /**
  * Purpose: Prayer-time + qibla wrapper for RN consumption.
  *   Prayer times use the validated `pray-calc` package (v2, the same engine the
- *   web app uses) via calcTimesAll — NREL SPA solar position + the Dynamic Method,
- *   with fixed-angle method presets and Hanafi/Shafi Asr. Replaces the former
- *   hand-rolled placeholder algorithm.
- * Inputs: latitude, longitude, date, method key, madhab, tz offset (hours).
+ *   web app uses) via getTimesAll — NREL SPA solar position + the Dynamic Method,
+ *   with fixed-angle method presets and Hanafi/Shafi Asr. Adds two layers pray-calc
+ *   itself does not provide: (1) user-supplied custom Fajr/Isha depression angles,
+ *   solved via the standard solar hour-angle equation against pray-calc's own solar
+ *   ephemeris/noon outputs; (2) high-latitude fallback (Angle-Based / Middle-of-the-
+ *   Night / One-Seventh) applied whenever a depression angle is geometrically
+ *   unreachable (polar summer), using the classical night-length approximation from
+ *   the praytimes.org reference algorithm that the whole industry's high-lat rules
+ *   are built on.
+ * Inputs: latitude, longitude, date, method key, madhab, tz offset (hours),
+ *   optional highLatRule + custom angles.
  * Outputs: PrayerTimes { Fajr, Sunrise, Dhuhr, Asr, Maghrib, Isha } as Date objects.
  * Constraints: Tehran/Jafari never passed (not in pray-calc's METHODS — D-P3-19).
  * SPORT: REGISTRY-FUNCTIONS.md#praycalc-mobile-lib-prayer-calc
  */
 
-import { calcTimesAll } from 'pray-calc';
-import type { PrayerTimes, Madhab } from '../../types/prayer';
+import { getTimesAll, solarEphemeris, toJulianDate } from 'pray-calc';
+import type { PrayerTimes, Madhab, HighLatRule } from '../../types/prayer';
 import type { CalcMethodKey } from '../../constants/methods';
+import { CALC_METHODS } from '../../constants/methods';
 
 const KAABA_LAT = 21.4225;
 const KAABA_LNG = 39.8262;
+const DEG = Math.PI / 180;
 
 /**
  * Great-circle bearing toward the Kaaba (NOT planar approximation — CR-C requirement).
@@ -35,7 +44,7 @@ export function getQiblaDirection(lat: number, lng: number): number {
 
 /**
  * Map the app's method key to pray-calc's METHODS map id.
- * Keys not present (e.g. 'Custom') fall back to the Dynamic Method default.
+ * Keys not present (e.g. 'Custom') are handled separately (custom angle solve).
  */
 const METHOD_ID: Partial<Record<CalcMethodKey, string>> = {
   MWL: 'MWL',
@@ -44,25 +53,90 @@ const METHOD_ID: Partial<Record<CalcMethodKey, string>> = {
   Makkah: 'UAQ', // Umm Al-Qura University, Makkah
   Karachi: 'Karachi',
   UOIF: 'UOIF',
-  // 'Custom' → undefined → Dynamic Method (calcTimesAll top-level Fajr/Isha)
 };
 
-/** Parse a "HH:MM" or "HH:MM:SS" clock string onto the given base date (local). */
-function clockToDate(base: Date, clock: string | undefined): Date {
+/** Fajr/Isha depression angle per method, for high-lat Angle-Based fallback only. */
+const METHOD_ANGLES: Partial<Record<CalcMethodKey, { fajr: number; isha: number }>> = Object.fromEntries(
+  CALC_METHODS.map((m) => [m.key, { fajr: m.fajrAngle, isha: m.ishaAngle ?? 18 }]),
+);
+
+/** Solve for the fractional-hour time a given solar depression angle is crossed. */
+function solveDepressionTime(
+  noon: number,
+  latitude: number,
+  declination: number,
+  angleDeg: number,
+  before: boolean,
+): number {
+  const lat = latitude * DEG;
+  const decl = declination * DEG;
+  const cosH = (-Math.sin(angleDeg * DEG) - Math.sin(lat) * Math.sin(decl)) / (Math.cos(lat) * Math.cos(decl));
+  if (cosH < -1 || cosH > 1 || !Number.isFinite(cosH)) return NaN;
+  const hourAngleHours = (Math.acos(cosH) * 180) / Math.PI / 15;
+  return before ? noon - hourAngleHours : noon + hourAngleHours;
+}
+
+/** Fraction-of-night portion for each high-latitude rule. NaN ('None') means "do not adjust". */
+function highLatPortion(rule: HighLatRule, angleDeg: number): number {
+  switch (rule) {
+    case 'AngleBased':
+      return angleDeg / 60;
+    case 'OneSeventh':
+      return 1 / 7;
+    case 'NightMiddle':
+      return 1 / 2;
+    case 'None':
+    default:
+      return NaN;
+  }
+}
+
+/**
+ * Apply the high-latitude fallback to an unreachable Fajr/Isha time, per the
+ * praytimes.org reference convention: nightLength = 24 - dayLength (same-day
+ * Sunrise/Maghrib), then offset Sunrise/Maghrib by `portion * nightLength`.
+ */
+function applyHighLatFallback(
+  rawTime: number,
+  sunrise: number,
+  maghrib: number,
+  rule: HighLatRule,
+  angleDeg: number,
+  isFajr: boolean,
+): number {
+  if (Number.isFinite(rawTime)) return rawTime;
+  if (!Number.isFinite(sunrise) || !Number.isFinite(maghrib)) return NaN;
+  const portion = highLatPortion(rule, angleDeg);
+  if (!Number.isFinite(portion)) return NaN; // 'None' — leave unreachable
+  // At extreme latitudes, sunset can fall just after local midnight and comes back
+  // as a small fractional-hour value (e.g. 0.06 = 00:04) that is numerically less
+  // than sunrise — unwrap it onto the same 24h+ axis before measuring night length.
+  const maghribUnwrapped = maghrib < sunrise ? maghrib + 24 : maghrib;
+  const nightLength = 24 - (maghribUnwrapped - sunrise);
+  return isFajr ? sunrise - portion * nightLength : maghribUnwrapped + portion * nightLength;
+}
+
+/** Convert fractional hours (may be NaN or slightly out of [0,24)) onto a base Date, local time. */
+function hoursToDate(base: Date, hours: number): Date {
   const d = new Date(base);
-  if (!clock || !/^\d{1,2}:\d{2}/.test(clock)) {
+  if (!Number.isFinite(hours)) {
     d.setHours(0, 0, 0, 0);
     return d;
   }
-  const [h, m, s] = clock.split(':').map((n) => parseInt(n, 10));
-  d.setHours(h ?? 0, m ?? 0, s ?? 0, 0);
+  const wrapped = ((hours % 24) + 24) % 24;
+  const h = Math.floor(wrapped);
+  const remainderMinutes = (wrapped - h) * 60;
+  const m = Math.floor(remainderMinutes);
+  const s = Math.round((remainderMinutes - m) * 60);
+  d.setHours(h, m, s, 0);
   return d;
 }
 
 /**
  * Calculate prayer times using the pray-calc v2 engine (NREL SPA), mirroring the
- * web app's getPrayerTimes(). Method presets come from the returned `.Methods`
- * map keyed by method id; unknown keys fall back to the Dynamic Method.
+ * web app's getPrayerTimes(). Method presets come from `.Methods`; 'Custom' solves
+ * the user's own Fajr/Isha depression angles directly. Unreachable angles (high
+ * latitude, polar summer) fall back per `highLatRule`.
  */
 export function calculatePrayerTimes(
   date: Date,
@@ -71,25 +145,43 @@ export function calculatePrayerTimes(
   timezone: number,
   methodKey: CalcMethodKey,
   madhab: Madhab = 'Shafi',
+  highLatRule: HighLatRule = 'NightMiddle',
+  customAngles?: { fajr: number; isha: number },
 ): PrayerTimes {
   const hanafi = madhab === 'Hanafi';
-  // calcTimesAll(date, lat, lng, tzOffset, dst, elevation?, pressure?, hanafi)
-  const all = calcTimesAll(date, latitude, longitude, timezone, 0, undefined, undefined, hanafi) as {
-    Fajr?: string; Sunrise?: string; Dhuhr?: string; Asr?: string; Maghrib?: string; Isha?: string;
-    Methods?: Record<string, [string, string]>;
-  };
+  const raw = getTimesAll(date, latitude, longitude, timezone, 0, undefined, undefined, hanafi);
 
-  const methodId = METHOD_ID[methodKey];
-  const methodEntry = methodId ? all.Methods?.[methodId] : undefined; // [Fajr, Isha]
-  const fajr = methodEntry?.[0] ?? all.Fajr;
-  const isha = methodEntry?.[1] ?? all.Isha;
+  let fajr: number;
+  let isha: number;
+  let fajrAngle: number;
+  let ishaAngle: number;
+
+  if (methodKey === 'Custom' && customAngles) {
+    const noonUtc = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), 12, 0, 0));
+    const { decl } = solarEphemeris(toJulianDate(noonUtc));
+    fajrAngle = customAngles.fajr;
+    ishaAngle = customAngles.isha;
+    fajr = solveDepressionTime(raw.Noon, latitude, decl, fajrAngle, true);
+    isha = solveDepressionTime(raw.Noon, latitude, decl, ishaAngle, false);
+  } else {
+    const methodId = METHOD_ID[methodKey];
+    const methodEntry = methodId ? raw.Methods[methodId] : undefined; // [Fajr, Isha] fractional hours
+    const methodAngles = METHOD_ANGLES[methodKey] ?? { fajr: raw.angles.fajrAngle, isha: raw.angles.ishaAngle };
+    fajrAngle = methodAngles.fajr;
+    ishaAngle = methodAngles.isha;
+    fajr = methodEntry?.[0] ?? raw.Fajr;
+    isha = methodEntry?.[1] ?? raw.Isha;
+  }
+
+  fajr = applyHighLatFallback(fajr, raw.Sunrise, raw.Maghrib, highLatRule, fajrAngle, true);
+  isha = applyHighLatFallback(isha, raw.Sunrise, raw.Maghrib, highLatRule, ishaAngle, false);
 
   return {
-    Fajr: clockToDate(date, fajr),
-    Sunrise: clockToDate(date, all.Sunrise),
-    Dhuhr: clockToDate(date, all.Dhuhr),
-    Asr: clockToDate(date, all.Asr),
-    Maghrib: clockToDate(date, all.Maghrib),
-    Isha: clockToDate(date, isha),
+    Fajr: hoursToDate(date, fajr),
+    Sunrise: hoursToDate(date, raw.Sunrise),
+    Dhuhr: hoursToDate(date, raw.Dhuhr),
+    Asr: hoursToDate(date, raw.Asr),
+    Maghrib: hoursToDate(date, raw.Maghrib),
+    Isha: hoursToDate(date, isha),
   };
 }
