@@ -162,8 +162,8 @@ export default function CalendarModal({
               ))}
             </div>
             <div className="cal-footer">
-              <button type="button" className="cal-pdf-btn">Year Calendar PDF</button>
-              <button type="button" className="cal-pdf-btn">Booklet PDF</button>
+              <button type="button" className="cal-pdf-btn" onClick={() => window.print()}>Year Calendar PDF</button>
+              <button type="button" className="cal-pdf-btn" onClick={() => window.print()}>Booklet PDF</button>
             </div>
           </>
         ) : view === 'month-cal' ? (
@@ -185,7 +185,7 @@ export default function CalendarModal({
               </div>
             )}
             <div className="cal-footer">
-              <button type="button" className="cal-pdf-btn" disabled={loading}>Download PDF</button>
+              <button type="button" className="cal-pdf-btn" disabled={loading} onClick={() => window.print()}>Download PDF</button>
             </div>
           </>
         ) : (
@@ -236,7 +236,7 @@ export default function CalendarModal({
               </div>
             )}
             <div className="cal-footer">
-              <button type="button" className="cal-pdf-btn" disabled={loading}>Download PDF</button>
+              <button type="button" className="cal-pdf-btn" disabled={loading} onClick={() => window.print()}>Download PDF</button>
             </div>
           </>
         )}
