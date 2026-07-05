@@ -8,9 +8,10 @@
  * SPORT: REGISTRY-COMPONENTS.md#praycalc-mobile-qibla-screen
  */
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useMemo } from 'react';
 import { View, Text, StyleSheet, Animated } from 'react-native';
 import { router } from 'expo-router';
+import geomagnetism from 'geomagnetism';
 import { Colors } from '../../../constants/colors';
 import { useSettingsStore } from '../../settings/store/useSettingsStore';
 import { useQibla } from '../hooks/useQibla';
@@ -29,10 +30,21 @@ export default function QiblaScreen() {
   const lat = settings.location?.latitude ?? null;
   const lng = settings.location?.longitude ?? null;
 
+  // Real magnetic declination (offline WMM model) so the compass corrects
+  // magnetic north → true north for an accurate Qibla heading.
+  const declination = useMemo(() => {
+    if (lat == null || lng == null) return 0;
+    try {
+      return geomagnetism.model().point([lat, lng]).decl;
+    } catch {
+      return 0;
+    }
+  }, [lat, lng]);
+
   const { bearing, heading, needleAngle, accuracy, status, error } = useQibla({
     latitude: lat,
     longitude: lng,
-    declination: 0, // Can be enhanced with WMM declination API
+    declination,
   });
 
   // Animated rotation for compass needle

@@ -168,6 +168,9 @@ importers:
       expo-task-manager:
         specifier: ~12.0.0
         version: 12.0.6(expo@53.0.27(@babel/core@7.29.0)(@expo/metro-runtime@4.0.1(react-native@0.81.6(@babel/core@7.29.0)(@react-native-community/cli@13.6.8)(@types/react@19.2.14)(react@19.2.4)))(graphql@16.14.2)(react-native@0.81.6(@babel/core@7.29.0)(@react-native-community/cli@13.6.8)(@types/react@19.2.14)(react@19.2.4))(react@19.2.4))(react-native@0.81.6(@babel/core@7.29.0)(@react-native-community/cli@13.6.8)(@types/react@19.2.14)(react@19.2.4))
+      geomagnetism:
+        specifier: ^0.2.0
+        version: 0.2.0
       graphql:
         specifier: ^16.10.0
         version: 16.14.2
@@ -6146,6 +6149,9 @@ packages:
   gensync@1.0.0-beta.2:
     resolution: {integrity: sha512-3hN7NaskYvMDLQY55gnW3NQ+mesEAepTqlg+VEbj7zzqEMBVNhzcGYYeqFo/TlYz6eQiFcp1HcsCZO+nGgS8zg==}
     engines: {node: '>=6.9.0'}
+
+  geomagnetism@0.2.0:
+    resolution: {integrity: sha512-dO8HJrXqah244nMe+pU5m52L90SMoi4lDA0AV3xunRxogloYV+s3aYWCW72VMMfiYis+YSAlhoKktw8aLMiJbw==}
 
   get-caller-file@2.0.5:
     resolution: {integrity: sha512-DyFP3BM/3YHTQOCUL/w0OZHR0lpKeGrxotcHWcqNEdnltqFwXVfhEBQ94eIo34AfQpo0rGki4cyIiftY06h2Fg==}
@@ -17128,6 +17134,8 @@ snapshots:
   generator-function@2.0.1: {}
 
   gensync@1.0.0-beta.2: {}
+
+  geomagnetism@0.2.0: {}
 
   get-caller-file@2.0.5: {}
 
