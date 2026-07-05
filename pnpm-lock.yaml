@@ -16,6 +16,7 @@ overrides:
   picomatch: '>=4.0.4'
   postcss: '>=8.5.14'
   vite: '>=7.3.2 <8 || >=8.0.16'
+  '@astrojs/react>vite': ^6.4.3
   '@xmldom/xmldom': '>=0.8.13'
   vitest: '>=3.2.6'
   ws: '>=7.5.11'
@@ -252,7 +253,7 @@ importers:
         version: 4.3.14(astro@5.18.2(@types/node@26.1.0)(@vercel/functions@2.2.13)(ioredis@5.10.1)(jiti@2.7.0)(rollup@4.60.3)(terser@5.46.2)(typescript@5.9.3)(yaml@2.9.0))
       '@astrojs/react':
         specifier: ^6.0.1
-        version: 6.0.1(@types/node@26.1.0)(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(esbuild@0.27.7)(jiti@2.7.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(terser@5.46.2)(yaml@2.9.0)
+        version: 6.0.1(@types/node@26.1.0)(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(jiti@2.7.0)(lightningcss@1.32.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(terser@5.46.2)(yaml@2.9.0)
       '@astrojs/sitemap':
         specifier: ^3.7.3
         version: 3.7.3
@@ -433,8 +434,8 @@ importers:
   web:
     dependencies:
       '@astrojs/react':
-        specifier: ^4.4.2
-        version: 4.4.2(@types/node@26.1.0)(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(esbuild@0.27.7)(jiti@2.7.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(terser@5.46.2)(yaml@2.9.0)
+        specifier: ^6.0.1
+        version: 6.0.1(@types/node@26.1.0)(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(jiti@2.7.0)(lightningcss@1.32.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(terser@5.46.2)(yaml@2.9.0)
       '@astrojs/sitemap':
         specifier: ^3.3.0
         version: 3.7.3
@@ -446,7 +447,7 @@ importers:
         version: 0.0.7
       '@ummat/astro-preset':
         specifier: file:./vendor/astro-preset
-        version: file:web/vendor/astro-preset(@astrojs/react@4.4.2(@types/node@26.1.0)(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(esbuild@0.27.7)(jiti@2.7.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(terser@5.46.2)(yaml@2.9.0))(astro@5.18.2(@types/node@26.1.0)(@vercel/functions@2.2.13)(ioredis@5.10.1)(jiti@2.7.0)(rollup@4.60.3)(terser@5.46.2)(typescript@5.9.3)(yaml@2.9.0))
+        version: file:web/vendor/astro-preset(@astrojs/react@6.0.1(@types/node@26.1.0)(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(jiti@2.7.0)(lightningcss@1.32.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(terser@5.46.2)(yaml@2.9.0))(astro@5.18.2(@types/node@26.1.0)(@vercel/functions@2.2.13)(ioredis@5.10.1)(jiti@2.7.0)(rollup@4.60.3)(terser@5.46.2)(typescript@5.9.3)(yaml@2.9.0))
       astro:
         specifier: ^5.7.13
         version: 5.18.2(@types/node@26.1.0)(@vercel/functions@2.2.13)(ioredis@5.10.1)(jiti@2.7.0)(rollup@4.60.3)(terser@5.46.2)(typescript@5.9.3)(yaml@2.9.0)
@@ -680,15 +681,6 @@ packages:
   '@astrojs/prism@3.3.0':
     resolution: {integrity: sha512-q8VwfU/fDZNoDOf+r7jUnMC2//H2l0TuQ6FkGJL8vD8nw/q5KiL3DS1KKBI3QhI9UQhpJ5dc7AtqfbXWuOgLCQ==}
     engines: {node: 18.20.8 || ^20.3.0 || >=22.0.0}
-
-  '@astrojs/react@4.4.2':
-    resolution: {integrity: sha512-1tl95bpGfuaDMDn8O3x/5Dxii1HPvzjvpL2YTuqOOrQehs60I2DKiDgh1jrKc7G8lv+LQT5H15V6QONQ+9waeQ==}
-    engines: {node: 18.20.8 || ^20.3.0 || >=22.0.0}
-    peerDependencies:
-      '@types/react': ^19.0.0
-      '@types/react-dom': ^19.0.0
-      react: ^17.0.2 || ^18.0.0 || ^19.0.0
-      react-dom: ^17.0.2 || ^18.0.0 || ^19.0.0
 
   '@astrojs/react@6.0.1':
     resolution: {integrity: sha512-Afs1sEm72P2plDnrOGxmIteJ7bjx/VqxlcaQLNip5eHJ5tIvKUORQetC9UKcvgwKnj51t60HWl5mOANkOsWs4w==}
@@ -9585,6 +9577,46 @@ packages:
     engines: {node: ^18.0.0 || ^20.0.0 || >=22.0.0}
     hasBin: true
 
+  vite@6.4.3:
+    resolution: {integrity: sha512-NTKlcQjlAK7MlQoyb6LgaqHc8sso/pVyUJYWMws3jg21uTJw/LddqIFPcPqP6PzpgbIcZyKI85sFE4HBrQDA8A==}
+    engines: {node: ^18.0.0 || ^20.0.0 || >=22.0.0}
+    hasBin: true
+    peerDependencies:
+      '@types/node': ^18.0.0 || ^20.0.0 || >=22.0.0
+      jiti: '>=1.21.0'
+      less: '*'
+      lightningcss: ^1.21.0
+      sass: '*'
+      sass-embedded: '*'
+      stylus: '*'
+      sugarss: '*'
+      terser: ^5.16.0
+      tsx: ^4.8.1
+      yaml: ^2.4.2
+    peerDependenciesMeta:
+      '@types/node':
+        optional: true
+      jiti:
+        optional: true
+      less:
+        optional: true
+      lightningcss:
+        optional: true
+      sass:
+        optional: true
+      sass-embedded:
+        optional: true
+      stylus:
+        optional: true
+      sugarss:
+        optional: true
+      terser:
+        optional: true
+      tsx:
+        optional: true
+      yaml:
+        optional: true
+
   vite@8.1.0:
     resolution: {integrity: sha512-BuJcQK/56NQTWDGn4ABea3q4SSBdNPWwNZKTkkUpcMPnLoquSYH8llRtSUIgoL1KSCpHt5eghLShn50mH36y7Q==}
     engines: {node: ^20.19.0 || >=22.12.0}
@@ -10335,21 +10367,22 @@ snapshots:
     dependencies:
       prismjs: 1.30.0
 
-  '@astrojs/react@4.4.2(@types/node@26.1.0)(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(esbuild@0.27.7)(jiti@2.7.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(terser@5.46.2)(yaml@2.9.0)':
+  '@astrojs/react@6.0.1(@types/node@26.1.0)(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(jiti@2.7.0)(lightningcss@1.32.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(terser@5.46.2)(yaml@2.9.0)':
     dependencies:
+      '@astrojs/internal-helpers': 0.10.1
       '@types/react': 19.2.14
       '@types/react-dom': 19.2.3(@types/react@19.2.14)
-      '@vitejs/plugin-react': 4.7.0(vite@8.1.0(@types/node@26.1.0)(esbuild@0.27.7)(jiti@2.7.0)(terser@5.46.2)(yaml@2.9.0))
-      react: 19.2.7
-      react-dom: 19.2.7(react@19.2.7)
+      '@vitejs/plugin-react': 5.2.0(vite@6.4.3(@types/node@26.1.0)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.46.2)(yaml@2.9.0))
+      devalue: 5.8.1
+      react: 19.2.4
+      react-dom: 19.2.4(react@19.2.4)
       ultrahtml: 1.6.0
-      vite: 8.1.0(@types/node@26.1.0)(esbuild@0.27.7)(jiti@2.7.0)(terser@5.46.2)(yaml@2.9.0)
+      vite: 6.4.3(@types/node@26.1.0)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.46.2)(yaml@2.9.0)
     transitivePeerDependencies:
       - '@types/node'
-      - '@vitejs/devtools'
-      - esbuild
       - jiti
       - less
+      - lightningcss
       - sass
       - sass-embedded
       - stylus
@@ -10359,23 +10392,22 @@ snapshots:
       - tsx
       - yaml
 
-  '@astrojs/react@6.0.1(@types/node@26.1.0)(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(esbuild@0.27.7)(jiti@2.7.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(terser@5.46.2)(yaml@2.9.0)':
+  '@astrojs/react@6.0.1(@types/node@26.1.0)(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(jiti@2.7.0)(lightningcss@1.32.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(terser@5.46.2)(yaml@2.9.0)':
     dependencies:
       '@astrojs/internal-helpers': 0.10.1
       '@types/react': 19.2.14
       '@types/react-dom': 19.2.3(@types/react@19.2.14)
-      '@vitejs/plugin-react': 5.2.0(vite@8.1.0(@types/node@26.1.0)(esbuild@0.27.7)(jiti@2.7.0)(terser@5.46.2)(yaml@2.9.0))
+      '@vitejs/plugin-react': 5.2.0(vite@6.4.3(@types/node@26.1.0)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.46.2)(yaml@2.9.0))
       devalue: 5.8.1
-      react: 19.2.4
-      react-dom: 19.2.4(react@19.2.4)
+      react: 19.2.7
+      react-dom: 19.2.7(react@19.2.7)
       ultrahtml: 1.6.0
-      vite: 8.1.0(@types/node@26.1.0)(esbuild@0.27.7)(jiti@2.7.0)(terser@5.46.2)(yaml@2.9.0)
+      vite: 6.4.3(@types/node@26.1.0)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.46.2)(yaml@2.9.0)
     transitivePeerDependencies:
       - '@types/node'
-      - '@vitejs/devtools'
-      - esbuild
       - jiti
       - less
+      - lightningcss
       - sass
       - sass-embedded
       - stylus
@@ -14471,11 +14503,11 @@ snapshots:
 
   '@umalqura/core@0.0.7': {}
 
-  '@ummat/astro-preset@file:web/vendor/astro-preset(@astrojs/react@4.4.2(@types/node@26.1.0)(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(esbuild@0.27.7)(jiti@2.7.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(terser@5.46.2)(yaml@2.9.0))(astro@5.18.2(@types/node@26.1.0)(@vercel/functions@2.2.13)(ioredis@5.10.1)(jiti@2.7.0)(rollup@4.60.3)(terser@5.46.2)(typescript@5.9.3)(yaml@2.9.0))':
+  '@ummat/astro-preset@file:web/vendor/astro-preset(@astrojs/react@6.0.1(@types/node@26.1.0)(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(jiti@2.7.0)(lightningcss@1.32.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(terser@5.46.2)(yaml@2.9.0))(astro@5.18.2(@types/node@26.1.0)(@vercel/functions@2.2.13)(ioredis@5.10.1)(jiti@2.7.0)(rollup@4.60.3)(terser@5.46.2)(typescript@5.9.3)(yaml@2.9.0))':
     dependencies:
       astro: 5.18.2(@types/node@26.1.0)(@vercel/functions@2.2.13)(ioredis@5.10.1)(jiti@2.7.0)(rollup@4.60.3)(terser@5.46.2)(typescript@5.9.3)(yaml@2.9.0)
     optionalDependencies:
-      '@astrojs/react': 4.4.2(@types/node@26.1.0)(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(esbuild@0.27.7)(jiti@2.7.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(terser@5.46.2)(yaml@2.9.0)
+      '@astrojs/react': 6.0.1(@types/node@26.1.0)(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(jiti@2.7.0)(lightningcss@1.32.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(terser@5.46.2)(yaml@2.9.0)
 
   '@ungap/structured-clone@1.3.0': {}
 
@@ -14642,7 +14674,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@vitejs/plugin-react@5.2.0(vite@8.1.0(@types/node@26.1.0)(esbuild@0.27.7)(jiti@2.7.0)(terser@5.46.2)(yaml@2.9.0))':
+  '@vitejs/plugin-react@5.2.0(vite@6.4.3(@types/node@26.1.0)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.46.2)(yaml@2.9.0))':
     dependencies:
       '@babel/core': 7.29.0
       '@babel/plugin-transform-react-jsx-self': 7.29.7(@babel/core@7.29.0)
@@ -14650,7 +14682,7 @@ snapshots:
       '@rolldown/pluginutils': 1.0.0-rc.3
       '@types/babel__core': 7.20.5
       react-refresh: 0.18.0
-      vite: 8.1.0(@types/node@26.1.0)(esbuild@0.27.7)(jiti@2.7.0)(terser@5.46.2)(yaml@2.9.0)
+      vite: 6.4.3(@types/node@26.1.0)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.46.2)(yaml@2.9.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -20645,7 +20677,6 @@ snapshots:
       '@rollup/rollup-win32-x64-gnu': 4.60.3
       '@rollup/rollup-win32-x64-msvc': 4.60.3
       fsevents: 2.3.3
-    optional: true
 
   rtl-detect@1.1.2: {}
 
@@ -21681,6 +21712,22 @@ snapshots:
       - terser
       - tsx
       - yaml
+
+  vite@6.4.3(@types/node@26.1.0)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.46.2)(yaml@2.9.0):
+    dependencies:
+      esbuild: 0.25.12
+      fdir: 6.5.0(picomatch@4.0.4)
+      picomatch: 4.0.4
+      postcss: 8.5.14
+      rollup: 4.60.3
+      tinyglobby: 0.2.17
+    optionalDependencies:
+      '@types/node': 26.1.0
+      fsevents: 2.3.3
+      jiti: 2.7.0
+      lightningcss: 1.32.0
+      terser: 5.46.2
+      yaml: 2.9.0
 
   vite@8.1.0(@types/node@26.0.0)(esbuild@0.27.7)(jiti@2.7.0)(terser@5.46.2)(yaml@2.9.0):
     dependencies:
