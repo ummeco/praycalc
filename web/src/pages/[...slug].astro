@@ -24,7 +24,7 @@ const slugParts = slug ? slug.split('/') : [];
 const geo = geocodeSlugParts(slugParts);
 
 if (!geo) {
-  return Astro.redirect('/404');
+  return Astro.rewrite('/404');
 }
 
 const timezone = geo.timezone ?? 'UTC';
