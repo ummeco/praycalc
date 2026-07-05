@@ -96,6 +96,10 @@ jobs:
         if: always()
         run: rm -f asc-api-key.p8 google-service-account.json
 
+      # nosemgrep: yaml.github-actions.security.run-shell-injection.run-shell-injection
+      # False positive — github.event.inputs.profile is already indirected through
+      # `env: PROFILE` and referenced as a quoted "$PROFILE" shell var below, which
+      # is precisely the safe pattern the rule itself recommends.
       - name: Fetch Android build APK for Amazon Appstore
         if: ${{ github.event.inputs.platform != 'ios' }}
         env:
