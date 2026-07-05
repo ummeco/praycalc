@@ -185,3 +185,11 @@ Initial web app release.
   self-contradicting "No tracking" footer line.
 - **Reverted** `@astrojs/react` 6→4.4.2 (broke island SSR: `React is not defined`).
 - Full review + deferred items: `.github/docs/reviews/2026-07-04-web-deep-review.md`.
+
+## 2026-07-05 — Web P1 polish + mobile core fixes
+- **Web:** shared Footer on every page, home h1, accurate city-count copy, proper
+  404s, real contact channels, working calendar PDF export, retryable checkout.
+- **Mobile:** real prayer engine (pray-calc v2), Quran scoped to Islam.Wiki
+  deep-links, 5 dead CTAs wired. (Full mobile parity continues in a dedicated
+  session — see `.github/docs/reviews/2026-07-05-mobile-competitive-audit.md`.)
+- **Desktop:** verified complete for scope (real engine via API, no stubs).
