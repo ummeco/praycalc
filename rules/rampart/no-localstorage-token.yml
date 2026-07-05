@@ -5,9 +5,9 @@ rules:
           - pattern: localStorage.setItem($KEY, ...)
           - pattern: localStorage[$KEY] = ...
           - pattern: window.localStorage.setItem($KEY, ...)
-    pattern-where:
-      - pattern-regex: $KEY
-        regex: '(?i)(token|jwt|auth|session|refresh|device|pairing|secret)'
+      - metavariable-regex:
+          metavariable: $KEY
+          regex: '(?i)(token|jwt|auth|session|refresh|device|pairing|secret)'
     message: >
       Token/auth value stored in localStorage (ADR-010: no-localstorage-token).
       localStorage is accessible by any script on the page (XSS risk).
