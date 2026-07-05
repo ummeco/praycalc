@@ -14,6 +14,7 @@ import { I18nManager } from 'react-native';
 import * as Linking from 'expo-linking';
 import { GqlClientProvider } from '../lib/graphql';
 import { extractPinFromDeepLink } from '../lib/pairing/pairingMutation';
+import { registerIAPListener } from '../lib/iap/IAPListener';
 
 /** Route praycalc://pair?pin=NNNNNN deep links (cold start + foreground) to /pair-tv. */
 function usePairingDeepLink() {
@@ -34,6 +35,12 @@ function usePairingDeepLink() {
 
 export default function RootLayout() {
   usePairingDeepLink();
+
+  useEffect(() => {
+    // Global purchase listener — must be registered once at app start, not inside
+    // SubscriptionScreen, so unfinished/restored transactions are never lost.
+    registerIAPListener();
+  }, []);
 
   useEffect(() => {
     // RTL layout hook — actual RTL enforcement via T-03 i18n (locale detection)

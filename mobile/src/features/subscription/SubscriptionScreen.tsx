@@ -1,21 +1,27 @@
 /**
- * Purpose: In-app purchase screen for PrayCalc Pro tier.
- *   expo-in-app-purchases, receipt validation via pc_iap_receipts table.
- * Inputs: IAP product IDs from constants, urql mutation, anonymous user check.
+ * Purpose: In-app purchase screen for PrayCalc Pro / Ummat+ tier.
+ *   expo-in-app-purchases; the global IAPListener (src/lib/iap/IAPListener.ts) handles
+ *   receipt validation + entitlement flip — this screen only initiates purchases and
+ *   reflects useAuthStore().isPlus, the single unified entitlement flag for both the
+ *   IAP purchase and the web Ummat+ subscription (previously two incompatible systems).
+ * Inputs: IAP product IDs from constants, useAuthStore (mode + isPlus).
  * Outputs: SubscriptionScreen — Feature 13 of 20.
- * Constraints: Anonymous users prompted to create account before purchase.
- *   Receipt stored in pc_iap_receipts with transaction_id + product_id + user_id.
+ * Constraints: Anonymous users are prompted to create an account before purchase —
+ *   useAuthStore makes zero API calls while anonymous, so there is nowhere to durably
+ *   record a receipt until the user has an account.
  *   7 UI states including payment-error.
  * SPORT: REGISTRY-APPS.md#praycalc-mobile-feature-13-iap
  */
 
 import React, { useState, useEffect, useCallback } from 'react';
 import {
-  View, Text, TouchableOpacity, StyleSheet, SafeAreaView, ScrollView, ActivityIndicator,
+  View, Text, TouchableOpacity, StyleSheet, SafeAreaView, ScrollView, ActivityIndicator, Alert,
 } from 'react-native';
+import { router } from 'expo-router';
 import * as InAppPurchases from 'expo-in-app-purchases';
 import { Colors } from '../../constants/colors';
 import { LoadingState, ErrorState } from '../../components/states';
+import { useAuthStore } from '../auth/store/useAuthStore';
 
 const PRODUCT_IDS_IOS = ['praycalc_pro_monthly', 'praycalc_pro_annual'];
 const PRODUCT_IDS_ANDROID = ['praycalc_pro_monthly', 'praycalc_pro_annual'];
@@ -37,11 +43,11 @@ const PRO_FEATURES = [
 ];
 
 export default function SubscriptionScreen() {
+  const auth = useAuthStore();
   const [products, setProducts] = useState<IAPProduct[]>([]);
   const [loading, setLoading] = useState(true);
   const [purchasing, setPurchasing] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [isPro, setIsPro] = useState(false);
 
   useEffect(() => {
     let mounted = true;
@@ -73,18 +79,29 @@ export default function SubscriptionScreen() {
   }, []);
 
   const handlePurchase = useCallback(async (productId: string) => {
+    if (auth.mode === 'anonymous') {
+      Alert.alert(
+        'Create an Account',
+        'Sign in first so your purchase can sync across your devices.',
+        [
+          { text: 'Cancel', style: 'cancel' },
+          { text: 'Sign In', onPress: () => router.push('/sign-in') },
+        ],
+      );
+      return;
+    }
     setPurchasing(true);
     setError(null);
     try {
       await InAppPurchases.purchaseItemAsync(productId);
-      // Purchase listener handles receipt + Hasura mutation
-      // (see: src/lib/iap/IAPListener.ts which registers InAppPurchases.setPurchaseListener)
+      // The global IAPListener (src/lib/iap/IAPListener.ts, registered at app start)
+      // handles the receipt mutation + isPlus reconciliation from here.
     } catch (e) {
       setError((e as Error).message ?? 'Purchase failed. Please try again.');
     } finally {
       setPurchasing(false);
     }
-  }, []);
+  }, [auth.mode]);
 
   const handleRestore = useCallback(async () => {
     setPurchasing(true);
@@ -104,7 +121,7 @@ export default function SubscriptionScreen() {
     return <ErrorState error={error} onRetry={() => { setError(null); setLoading(true); }} />;
   }
 
-  if (isPro) {
+  if (auth.isPlus) {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.proView}>
