@@ -102,6 +102,9 @@ importers:
       '@sentry/react-native':
         specifier: ^6.3.0
         version: 6.22.0(expo@53.0.27(@babel/core@7.29.0)(@expo/metro-runtime@4.0.1(react-native@0.81.6(@babel/core@7.29.0)(@react-native-community/cli@13.6.8)(@types/react@19.2.14)(react@19.2.4)))(graphql@16.14.2)(react-native@0.81.6(@babel/core@7.29.0)(@react-native-community/cli@13.6.8)(@types/react@19.2.14)(react@19.2.4))(react@19.2.4))(react-native@0.81.6(@babel/core@7.29.0)(@react-native-community/cli@13.6.8)(@types/react@19.2.14)(react@19.2.4))(react@19.2.4)
+      '@umalqura/core':
+        specifier: ^0.0.7
+        version: 0.0.7
       '@urql/exchange-auth':
         specifier: ^3.0.0
         version: 3.0.0(@urql/core@5.2.0(graphql@16.14.2))
