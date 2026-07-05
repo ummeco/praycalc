@@ -15,8 +15,10 @@ import * as Calendar from 'expo-calendar';
 import { Colors } from '../../constants/colors';
 import { PermissionDeniedState, LoadingState } from '../../components/states';
 import { calculatePrayerTimes } from '../../lib/prayer-calc';
-import { useSettingsStore } from '../settings/store/useSettingsStore';
+import { resolveTimezoneOffset } from '../../lib/timezone';
+import { useSettingsStore, useActiveLocation } from '../settings/store/useSettingsStore';
 import type { PrayerName } from '../../types/prayer';
+import type { CalcMethodKey } from '../../constants/methods';
 
 const PRAYER_NAMES: PrayerName[] = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
 const PRAYER_DURATION_MINS = 20; // Block 20 min per prayer on calendar
@@ -27,7 +29,8 @@ export default function AgendasScreen() {
     Fajr: true, Sunrise: false, Dhuhr: true, Asr: true, Maghrib: true, Isha: true,
   });
   const [syncing, setSyncing] = useState(false);
-  const { location } = useSettingsStore();
+  const location = useActiveLocation();
+  const { method, madhab, highLatRule, customFajrAngle, customIshaAngle } = useSettingsStore();
 
   useEffect(() => {
     void (async () => {
@@ -55,8 +58,11 @@ export default function AgendasScreen() {
         today,
         location.latitude,
         location.longitude,
-        parseFloat(location.timezone) || 0,
-        'MWL',
+        resolveTimezoneOffset(location.timezone, today),
+        method as CalcMethodKey,
+        madhab,
+        highLatRule,
+        method === 'Custom' ? { fajr: customFajrAngle, isha: customIshaAngle } : undefined,
       );
 
       let added = 0;
@@ -82,7 +88,7 @@ export default function AgendasScreen() {
     } finally {
       setSyncing(false);
     }
-  }, [location, enabledPrayers]);
+  }, [location, enabledPrayers, method, madhab, highLatRule, customFajrAngle, customIshaAngle]);
 
   if (permissionStatus === 'unknown') return <LoadingState message="Checking calendar permission..." />;
   if (permissionStatus === 'denied') {

@@ -1,10 +1,12 @@
 /**
- * Purpose: 5-step onboarding flow — location, calculation method, notifications,
- *   account (anonymous or sign-in), and completion.
+ * Purpose: 6-step onboarding flow — location, calculation method, madhab (+ high-latitude
+ *   note), notifications, account (anonymous or sign-in), and completion.
  * Inputs: expo-location (GPS), useSettingsStore, PrayerNotificationService, auth.
  * Outputs: OnboardingScreen — Feature 20 of 20. Sets initial settings on complete.
  * Constraints: Permission gate on notifications step (graceful degrade if denied).
  *   Anonymous mode available (no account required). MMKV marks onboarding done.
+ *   Madhab step sets a sensible high-latitude-rule default (NightMiddle, store default)
+ *   and only surfaces a passive note pointing to Settings — no extra decision required.
  *   7 UI states. Final step navigates to home.
  * SPORT: REGISTRY-APPS.md#praycalc-mobile-feature-20-onboarding
  */
@@ -25,7 +27,7 @@ import {
 } from '../../lib/notifications/PrayerNotificationService';
 import { mmkv } from '../../lib/storage/mmkv';
 import { STORAGE_KEYS } from '../../constants';
-import type { CityCoords } from '../../types/prayer';
+import type { CityCoords, Madhab } from '../../types/prayer';
 
 // Available calculation methods (Tehran/Jafari excluded per D-P3-19)
 const CALC_METHODS = [
@@ -34,11 +36,11 @@ const CALC_METHODS = [
   { key: 'Egypt', label: 'Egyptian General Authority', regions: 'Africa / Middle East' },
   { key: 'Makkah', label: 'Umm al-Qura (Makkah)', regions: 'Saudi Arabia' },
   { key: 'Karachi', label: 'University of Karachi', regions: 'South Asia' },
-  { key: 'Gulf', label: 'Gulf Region', regions: 'Gulf States' },
+  { key: 'UOIF', label: 'UOIF', regions: 'France' },
 ];
 
-type Step = 'location' | 'method' | 'notifications' | 'account' | 'complete';
-const STEPS: Step[] = ['location', 'method', 'notifications', 'account', 'complete'];
+type Step = 'location' | 'method' | 'madhab' | 'notifications' | 'account' | 'complete';
+const STEPS: Step[] = ['location', 'method', 'madhab', 'notifications', 'account', 'complete'];
 
 interface OnboardingScreenProps {
   onComplete?: () => void;
@@ -49,7 +51,7 @@ export default function OnboardingScreen({ onComplete }: OnboardingScreenProps) 
   const [loadingLocation, setLoadingLocation] = useState(false);
   const [locationError, setLocationError] = useState<string | null>(null);
   const [notifGranted, setNotifGranted] = useState<boolean | null>(null);
-  const { setLocation, setMethod } = useSettingsStore();
+  const { setLocation, setMethod, setMadhab } = useSettingsStore();
 
   const stepIndex = STEPS.indexOf(currentStep);
 
@@ -99,6 +101,14 @@ export default function OnboardingScreen({ onComplete }: OnboardingScreenProps) 
     goNext();
   }, [selectedMethod, setMethod, goNext]);
 
+  // ── Step: Madhab ──────────────────────────────────────────────────────────
+
+  const [selectedMadhab, setSelectedMadhab] = useState<Madhab>('Shafi');
+  const handleMadhabContinue = useCallback(() => {
+    setMadhab(selectedMadhab);
+    goNext();
+  }, [selectedMadhab, setMadhab, goNext]);
+
   // ── Step: Notifications ───────────────────────────────────────────────────
 
   const handleEnableNotifications = useCallback(async () => {
@@ -136,8 +146,8 @@ export default function OnboardingScreen({ onComplete }: OnboardingScreenProps) 
       <View
         style={styles.progressTrack}
         accessibilityRole="progressbar"
-        accessibilityValue={{ min: 0, max: 5, now: stepIndex + 1 }}
-        accessibilityLabel={`Step ${stepIndex + 1} of 5`}
+        accessibilityValue={{ min: 0, max: STEPS.length, now: stepIndex + 1 }}
+        accessibilityLabel={`Step ${stepIndex + 1} of ${STEPS.length}`}
       >
         <View style={[styles.progressFill, { width: `${progress * 100}%` }]} />
       </View>
@@ -211,7 +221,57 @@ export default function OnboardingScreen({ onComplete }: OnboardingScreenProps) 
           </View>
         )}
 
-        {/* ── Step 3: Notifications ──────────────────────────────────────── */}
+        {/* ── Step 3: Madhab ─────────────────────────────────────────────── */}
+        {currentStep === 'madhab' && (
+          <View style={styles.stepContent}>
+            <Text style={styles.stepIcon}>📐</Text>
+            <Text style={styles.stepTitle} accessibilityRole="header">Asr Calculation</Text>
+            <Text style={styles.stepDesc}>
+              Choose the madhab (school of thought) used to calculate Asr time.
+            </Text>
+            <TouchableOpacity
+              style={[styles.methodCard, selectedMadhab === 'Shafi' && styles.methodCardActive]}
+              onPress={() => setSelectedMadhab('Shafi')}
+              accessibilityRole="radio"
+              accessibilityState={{ selected: selectedMadhab === 'Shafi' }}
+              accessibilityLabel="Shafi, 1 times shadow factor, used by Shafi'i, Maliki, and Hanbali madhabs"
+            >
+              <Text style={styles.methodName}>Shafi</Text>
+              <Text style={styles.methodRegion}>
+                1× shadow factor (used by Shafi'i, Maliki, Hanbali madhabs)
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.methodCard, selectedMadhab === 'Hanafi' && styles.methodCardActive]}
+              onPress={() => setSelectedMadhab('Hanafi')}
+              accessibilityRole="radio"
+              accessibilityState={{ selected: selectedMadhab === 'Hanafi' }}
+              accessibilityLabel="Hanafi, 2 times shadow factor, used by Hanafi madhab"
+            >
+              <Text style={styles.methodName}>Hanafi</Text>
+              <Text style={styles.methodRegion}>2× shadow factor (used by Hanafi madhab)</Text>
+            </TouchableOpacity>
+
+            <View style={styles.highLatNote}>
+              <Text style={styles.highLatNoteText}>
+                Living at a high latitude (far north/south)? PrayCalc handles that
+                automatically — you can fine-tune it later in Settings → High-Latitude
+                Adjustment.
+              </Text>
+            </View>
+
+            <TouchableOpacity
+              style={styles.primaryBtn}
+              onPress={handleMadhabContinue}
+              accessibilityRole="button"
+              accessibilityLabel="Continue with selected madhab"
+            >
+              <Text style={styles.primaryBtnText}>Continue</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+
+        {/* ── Step 4: Notifications ──────────────────────────────────────── */}
         {currentStep === 'notifications' && (
           <View style={styles.stepContent}>
             <Text style={styles.stepIcon}>🔔</Text>
@@ -243,7 +303,7 @@ export default function OnboardingScreen({ onComplete }: OnboardingScreenProps) 
           </View>
         )}
 
-        {/* ── Step 4: Account ────────────────────────────────────────────── */}
+        {/* ── Step 5: Account ────────────────────────────────────────────── */}
         {currentStep === 'account' && (
           <View style={styles.stepContent}>
             <Text style={styles.stepIcon}>👤</Text>
@@ -271,7 +331,7 @@ export default function OnboardingScreen({ onComplete }: OnboardingScreenProps) 
           </View>
         )}
 
-        {/* ── Step 5: Complete ───────────────────────────────────────────── */}
+        {/* ── Step 6: Complete ───────────────────────────────────────────── */}
         {currentStep === 'complete' && (
           <View style={styles.stepContent}>
             <Text style={styles.stepIcon}>✅</Text>
@@ -383,4 +443,16 @@ const styles = StyleSheet.create({
   },
   methodName: { fontSize: 15, fontWeight: '600', color: Colors.text.primary },
   methodRegion: { fontSize: 13, color: Colors.text.muted, marginTop: 2 },
+  highLatNote: {
+    width: '100%',
+    padding: 12,
+    borderRadius: 10,
+    backgroundColor: Colors.background.secondary,
+    marginTop: 4,
+  },
+  highLatNoteText: {
+    fontSize: 13,
+    color: Colors.text.muted,
+    lineHeight: 19,
+  },
 });
