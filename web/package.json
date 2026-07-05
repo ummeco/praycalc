@@ -25,6 +25,7 @@
     "@astrojs/sitemap": "^3.3.0",
     "@astrojs/vercel": "^8.1.4",
     "@ummat/astro-preset": "file:./vendor/astro-preset",
+    "@ummat/consent": "file:./vendor/consent",
     "@umalqura/core": "^0.0.7",
     "astro": "^5.7.13",
     "clsx": "^2.1.1",

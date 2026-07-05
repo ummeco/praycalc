@@ -1,6 +1,17 @@
 # S05-12: Consent Banner Presence Gate — praycalc/web
 #
-# Fails PR if root layout is missing ConsentProvider or has unconditional Umami script.
+# Fails PR if the root layout drops the consent-gated analytics island, or if
+# any Umami/analytics script is loaded unconditionally instead of through
+# ConsentGatedScript.
+#
+# History: this gate originally pointed at web/app/layout.tsx (Next.js). The
+# June 2026 Next→Astro migration (D-P2-STACK-CANON) moved the root shell to
+# web/src/layouts/RootLayout.astro and, as an unintentional side effect, the
+# ConsentProvider/CookieBanner/ConsentGatedScript wiring built for S05/S30
+# never carried over — see .github/docs/adr/ADR-consent-banner-astro-gate.md.
+# The check below targets the current file split: RootLayout.astro renders
+# the <ConsentGate> island; ConsentGate.tsx (web/src/islands/) is the only
+# place ConsentProvider/ConsentGatedScript should appear.
 
 name: Consent Banner Gate
 
@@ -8,10 +19,12 @@ on:
   push:
     branches: [main]
     paths:
-      - 'web/app/layout.tsx'
+      - 'web/src/layouts/RootLayout.astro'
+      - 'web/src/islands/ConsentGate.tsx'
   pull_request:
     paths:
-      - 'web/app/layout.tsx'
+      - 'web/src/layouts/RootLayout.astro'
+      - 'web/src/islands/ConsentGate.tsx'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -25,22 +38,41 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
 
-      - name: Check ConsentProvider in root layout
+      - name: Check consent gating in root layout + ConsentGate island
         run: |
-          LAYOUT="web/app/layout.tsx"
+          LAYOUT="web/src/layouts/RootLayout.astro"
+          GATE="web/src/islands/ConsentGate.tsx"
+
           if [ ! -f "$LAYOUT" ]; then
             echo "::error::Root layout not found at $LAYOUT"
             exit 1
           fi
-          if ! grep -q "ConsentProvider" "$LAYOUT"; then
-            echo "::error file=$LAYOUT::[praycalc] Root layout missing ConsentProvider. Wrap content in <ConsentProvider> from @ummat/consent."
+          if [ ! -f "$GATE" ]; then
+            echo "::error::Consent gate island not found at $GATE"
             exit 1
           fi
-          echo "✓ ConsentProvider present"
 
-          if grep -qiE 'src=.*umami' "$LAYOUT"; then
-            if ! grep -q "ConsentGatedScript" "$LAYOUT"; then
-              echo "::error file=$LAYOUT::[praycalc] Unconditional Umami script detected. Use <ConsentGatedScript category=\"analytics\">."
+          if ! grep -q "<ConsentGate" "$LAYOUT"; then
+            echo "::error file=$LAYOUT::[praycalc] Root layout no longer renders <ConsentGate>. GDPR consent banner + preferences modal would be dropped from every page."
+            exit 1
+          fi
+          echo "✓ RootLayout renders <ConsentGate>"
+
+          if grep -qiE '<script[^>]*src=.*umami' "$LAYOUT"; then
+            echo "::error file=$LAYOUT::[praycalc] Unconditional Umami <script> found directly in RootLayout. Analytics scripts must load only via ConsentGate's <ConsentGatedScript category=\"analytics\">."
+            exit 1
+          fi
+          echo "✓ No unconditional Umami script in RootLayout"
+
+          if ! grep -q "ConsentProvider" "$GATE"; then
+            echo "::error file=$GATE::[praycalc] ConsentGate island missing ConsentProvider. Wrap the banner/modal/gated scripts in <ConsentProvider> from @ummat/consent."
+            exit 1
+          fi
+          echo "✓ ConsentProvider present in ConsentGate"
+
+          if grep -qiE 'src=.*umami' "$GATE"; then
+            if ! grep -q "ConsentGatedScript" "$GATE"; then
+              echo "::error file=$GATE::[praycalc] Unconditional Umami script detected in ConsentGate. Use <ConsentGatedScript category=\"analytics\">."
               exit 1
             fi
             echo "✓ Umami script is consent-gated"
