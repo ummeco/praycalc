@@ -26,15 +26,19 @@ import type { PrayerName } from '../../../types/prayer';
 
 const PRAYER_NAMES: PrayerName[] = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
 
+/** Tap-to-cycle options for per-prayer notification lead time. */
+const ADVANCE_MINUTE_OPTIONS = [0, 5, 10, 15, 20, 30];
+
 export default function NotificationSettingsScreen() {
-  const { notificationsEnabled, setNotificationsEnabled } = useSettingsStore();
+  const {
+    notificationsEnabled,
+    setNotificationsEnabled,
+    perPrayerNotificationEnabled,
+    setPerPrayerNotificationEnabled,
+    notificationAdvanceMinutes,
+    setNotificationAdvanceMinutes,
+  } = useSettingsStore();
   const [permissionDenied, setPermissionDenied] = useState(false);
-  const [advanceMinutes, setAdvanceMinutes] = useState<Record<PrayerName, number>>({
-    Fajr: 10, Sunrise: 0, Dhuhr: 5, Asr: 5, Maghrib: 5, Isha: 5,
-  });
-  const [enabledPrayers, setEnabledPrayers] = useState<Record<PrayerName, boolean>>({
-    Fajr: true, Sunrise: false, Dhuhr: true, Asr: true, Maghrib: true, Isha: true,
-  });
 
   const handleMasterToggle = useCallback(async (value: boolean) => {
     if (value) {
@@ -51,11 +55,21 @@ export default function NotificationSettingsScreen() {
   }, [setNotificationsEnabled]);
 
   const handlePrayerToggle = useCallback(async (name: PrayerName, value: boolean) => {
-    setEnabledPrayers((prev) => ({ ...prev, [name]: value }));
+    setPerPrayerNotificationEnabled(name, value);
     if (notificationsEnabled) {
       await schedulePrayerNotifications();
     }
-  }, [notificationsEnabled]);
+  }, [notificationsEnabled, setPerPrayerNotificationEnabled]);
+
+  const handleAdvanceCycle = useCallback(async (name: PrayerName) => {
+    const current = notificationAdvanceMinutes[name] ?? 0;
+    const idx = ADVANCE_MINUTE_OPTIONS.indexOf(current);
+    const next = ADVANCE_MINUTE_OPTIONS[(idx + 1) % ADVANCE_MINUTE_OPTIONS.length] ?? 0;
+    setNotificationAdvanceMinutes(name, next);
+    if (notificationsEnabled) {
+      await schedulePrayerNotifications();
+    }
+  }, [notificationAdvanceMinutes, notificationsEnabled, setNotificationAdvanceMinutes]);
 
   const openSystemSettings = useCallback(() => {
     if (Platform.OS === 'android') {
@@ -119,9 +133,15 @@ export default function NotificationSettingsScreen() {
               <View key={name} style={styles.prayerRow}>
                 <Text style={styles.prayerLabel}>{name}</Text>
                 <View style={styles.prayerControls}>
-                  <Text style={styles.advanceLabel}>{advanceMinutes[name]}m before</Text>
+                  <TouchableOpacity
+                    onPress={() => handleAdvanceCycle(name)}
+                    accessibilityRole="button"
+                    accessibilityLabel={`${name} notification lead time, ${notificationAdvanceMinutes[name] ?? 0} minutes before. Tap to change.`}
+                  >
+                    <Text style={styles.advanceLabel}>{notificationAdvanceMinutes[name] ?? 0}m before</Text>
+                  </TouchableOpacity>
                   <Switch
-                    value={enabledPrayers[name] ?? false}
+                    value={perPrayerNotificationEnabled[name] ?? false}
                     onValueChange={(v) => handlePrayerToggle(name, v)}
                     trackColor={{ false: Colors.background.card, true: Colors.brand.mid }}
                     thumbColor={Colors.brand.light}
@@ -174,5 +194,5 @@ const styles = StyleSheet.create({
   },
   prayerLabel: { fontSize: 16, color: Colors.text.primary, fontWeight: '500' },
   prayerControls: { flexDirection: 'row', alignItems: 'center', gap: 12 },
-  advanceLabel: { fontSize: 13, color: Colors.text.muted },
+  advanceLabel: { fontSize: 13, color: Colors.text.muted, padding: 4 },
 });

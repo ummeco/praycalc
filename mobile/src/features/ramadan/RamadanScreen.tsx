@@ -1,30 +1,34 @@
 /**
- * Purpose: Ramadan tracker — iftar/suhoor times, day counter, special Ramadan duas.
- * Inputs: Prayer times (for Fajr=suhoor end, Maghrib=iftar), Hijri date for Ramadan detection.
+ * Purpose: Ramadan tracker — iftar/suhoor times with a live countdown, day counter,
+ *   special Ramadan duas.
+ * Inputs: Prayer times (for Fajr=suhoor end, Maghrib=iftar) computed from the user's
+ *   real settings (method/madhab/high-lat rule/custom angles), Hijri date via the
+ *   shared @umalqura/core-backed module for Ramadan detection.
  * Outputs: RamadanScreen — Feature 11 of 20.
  * Constraints: Islamic content gate — special Ramadan duas from Hisn al-Muslim.
- *   Suhoor end = Fajr time. Iftar = Maghrib time.
+ *   Suhoor end = Fajr time. Iftar = Maghrib time. Day counter respects the real
+ *   29-vs-30-day Ramadan length (previously hardcoded to /30 regardless of the
+ *   actual month length).
  * SPORT: REGISTRY-APPS.md#praycalc-mobile-feature-11-ramadan
  */
 
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   View, Text, StyleSheet, SafeAreaView, ScrollView,
 } from 'react-native';
 import { Colors } from '../../constants/colors';
-import { useSettingsStore } from '../settings/store/useSettingsStore';
+import { useSettingsStore, useActiveLocation } from '../settings/store/useSettingsStore';
 import { calculatePrayerTimes } from '../../lib/prayer-calc';
+import { resolveTimezoneOffset } from '../../lib/timezone';
+import { gregorianToHijri, RAMADAN_MONTH } from '../../lib/hijri';
+import type { CalcMethodKey } from '../../constants/methods';
 
-// Hijri month 9 = Ramadan
-const RAMADAN_MONTH = 9;
-// Approximate Hijri month using moon-age calculation
-function estimateHijriMonth(date: Date): number {
-  const LUNAR_CYCLE = 29.53058867;
-  const KNOWN_NEW_MOON = new Date('2000-01-06T18:14:00Z').getTime();
-  const daysSince = (date.getTime() - KNOWN_NEW_MOON) / 86400000;
-  const totalMonths = Math.floor(daysSince / LUNAR_CYCLE);
-  // Month 0 = Muharram 1421 AH (approx); map to 1-12
-  return ((totalMonths + 2) % 12) + 1;
+function formatCountdown(seconds: number): string {
+  if (seconds <= 0) return '0m 0s';
+  const h = Math.floor(seconds / 3600);
+  const m = Math.floor((seconds % 3600) / 60);
+  const s = Math.floor(seconds % 60);
+  return h > 0 ? `${h}h ${m}m ${s}s` : `${m}m ${s}s`;
 }
 
 // Ramadan duas — Hisn al-Muslim sources
@@ -50,10 +54,20 @@ const RAMADAN_DUAS = [
 ];
 
 export default function RamadanScreen() {
-  const { location } = useSettingsStore();
-  const today = new Date();
-  const hijriMonth = estimateHijriMonth(today);
-  const isRamadan = hijriMonth === RAMADAN_MONTH;
+  const settings = useSettingsStore();
+  const location = useActiveLocation();
+  const [now, setNow] = useState(new Date());
+
+  useEffect(() => {
+    const interval = setInterval(() => setNow(new Date()), 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const today = now;
+  const hijriDate = useMemo(() => gregorianToHijri(today), [today]);
+  const isRamadan = hijriDate.month === RAMADAN_MONTH;
+  const ramadanDay = isRamadan ? hijriDate.day : null;
+  const ramadanDaysTotal = isRamadan ? hijriDate.daysInMonth : null;
 
   const prayerTimes = useMemo(() => {
     if (!location) return null;
@@ -61,20 +75,29 @@ export default function RamadanScreen() {
       today,
       location.latitude,
       location.longitude,
-      parseFloat(location.timezone) || 0,
-      'MWL',
+      resolveTimezoneOffset(location.timezone, today),
+      settings.method as CalcMethodKey,
+      settings.madhab,
+      settings.highLatRule,
+      settings.method === 'Custom'
+        ? { fajr: settings.customFajrAngle, isha: settings.customIshaAngle }
+        : undefined,
     );
-  }, [location]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- recompute each tick (`today`) + on settings/location change
+  }, [location, settings.method, settings.madhab, settings.highLatRule, settings.customFajrAngle, settings.customIshaAngle, today.toDateString()]);
 
-  // Ramadan day counter (approx. from Hijri day 1 of Ramadan)
-  const ramadanDay = isRamadan
-    ? (() => {
-        const LUNAR_CYCLE = 29.53058867;
-        const KNOWN_NEW_MOON = new Date('2000-01-06T18:14:00Z').getTime();
-        const moonAge = ((today.getTime() - KNOWN_NEW_MOON) / 86400000) % LUNAR_CYCLE;
-        return Math.max(1, Math.floor(moonAge) + 1);
-      })()
-    : null;
+  // Live Iftar/Suhoor countdown — the category's marquee Ramadan feature.
+  const countdown = useMemo(() => {
+    if (!prayerTimes) return null;
+    const nowMs = now.getTime();
+    if (nowMs < prayerTimes.Maghrib.getTime()) {
+      return { label: 'Iftar in', seconds: (prayerTimes.Maghrib.getTime() - nowMs) / 1000 };
+    }
+    // After Maghrib: count down to tomorrow's Suhoor end (Fajr).
+    const tomorrowFajr = new Date(prayerTimes.Fajr);
+    tomorrowFajr.setDate(tomorrowFajr.getDate() + 1);
+    return { label: 'Suhoor ends in', seconds: (tomorrowFajr.getTime() - nowMs) / 1000 };
+  }, [prayerTimes, now]);
 
   const formatTime = (d: Date) =>
     d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
@@ -91,15 +114,20 @@ export default function RamadanScreen() {
               </Text>
               <Text style={styles.ramadanSubtitle}>Ramadan Mubarak</Text>
               {ramadanDay && (
-                <Text style={styles.dayCounter} accessibilityLabel={`Day ${ramadanDay} of Ramadan`}>
-                  Day {ramadanDay} of 30
+                <Text style={styles.dayCounter} accessibilityLabel={`Day ${ramadanDay} of ${ramadanDaysTotal} of Ramadan`}>
+                  Day {ramadanDay} of {ramadanDaysTotal}
+                </Text>
+              )}
+              {countdown && (
+                <Text style={styles.countdown} accessibilityLabel={`${countdown.label} ${formatCountdown(countdown.seconds)}`}>
+                  {countdown.label} {formatCountdown(countdown.seconds)}
                 </Text>
               )}
             </>
           ) : (
             <Text style={styles.notRamadan} accessibilityRole="text">
               Ramadan is not currently active.{'\n'}
-              Current estimated Hijri month: {hijriMonth}/12
+              Current Hijri month: {hijriDate.monthName} ({hijriDate.month}/12)
             </Text>
           )}
         </View>
@@ -183,6 +211,7 @@ const styles = StyleSheet.create({
   },
   ramadanSubtitle: { fontSize: 16, color: Colors.brand.light + 'CC', marginTop: 4 },
   dayCounter: { fontSize: 20, color: Colors.brand.light, fontWeight: '600', marginTop: 8 },
+  countdown: { fontSize: 15, color: Colors.brand.light, fontWeight: '700', marginTop: 12, opacity: 0.9 },
   notRamadan: { fontSize: 16, color: Colors.text.inverse, textAlign: 'center', lineHeight: 26 },
   timesCard: {
     backgroundColor: Colors.background.secondary,

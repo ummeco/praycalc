@@ -4,19 +4,26 @@
  *   for native widget to read.
  * Inputs: Next prayer time from prayer-calc, MMKV city setting.
  * Outputs: HomeWidgetStub — Feature 16 of 20.
- * Constraints: expo-widget-kit is experimental in SDK 53. If not available, this stub
- *   documents the integration point and files PCI pci-praycalc-home-widgets-native.
+ * Constraints: Ummat+ gated (isPlus) — widgets are a paid feature; the preview below
+ *   shows the user's REAL next-prayer time (computed the same way Home does), not the
+ *   hardcoded fake "Maghrib 6:32 PM" this screen used to show regardless of settings.
+ *   expo-widget-kit is experimental in SDK 53. If not available, this stub documents
+ *   the integration point and files PCI pci-praycalc-home-widgets-native.
  *   Full native WidgetKit (Swift) + AppWidget (Kotlin) required for production.
- *   Per spec §6.6: stub with PCI if expo-widget-kit unavailable.
  * SPORT: REGISTRY-APPS.md#praycalc-mobile-feature-16-home-widgets
  *
  * PCI filed: pci-praycalc-home-widgets-native — tracks native WidgetKit extension development.
- * MIGRATION-STATUS.md updated below.
  */
 
 import React from 'react';
 import { View, Text, StyleSheet, SafeAreaView, ScrollView } from 'react-native';
+import { router } from 'expo-router';
 import { Colors } from '../../constants/colors';
+import { EmptyState } from '../../components/states';
+import { useAuthStore } from '../auth/store/useAuthStore';
+import { useSettingsStore, useActiveLocation } from '../settings/store/useSettingsStore';
+import { usePrayerTimes } from '../prayer/hooks/usePrayerTimes';
+import type { CalcMethodKey } from '../../constants/methods';
 
 /**
  * Widget data writer — writes next prayer info to shared storage.
@@ -38,9 +45,44 @@ export async function writeWidgetData(nextPrayer: {
   void nextPrayer;
 }
 
+function formatCountdown(seconds: number): string {
+  const h = Math.floor(seconds / 3600);
+  const m = Math.floor((seconds % 3600) / 60);
+  return h > 0 ? `${h}h ${m}m` : `${m}m`;
+}
+
 // ── Widget setup screen ───────────────────────────────────────────────────────
 
 export default function HomeWidgetScreen() {
+  const isPlus = useAuthStore((s) => s.isPlus);
+  const settings = useSettingsStore();
+  const activeLocation = useActiveLocation();
+
+  const { times, nextPrayer, secondsToNextPrayer, status } = usePrayerTimes({
+    date: new Date(),
+    latitude: activeLocation?.latitude ?? null,
+    longitude: activeLocation?.longitude ?? null,
+    timezone: -(new Date().getTimezoneOffset() / 60),
+    method: settings.method as CalcMethodKey,
+    madhab: settings.madhab,
+    highLatRule: settings.highLatRule,
+    customAngles: settings.method === 'Custom'
+      ? { fajr: settings.customFajrAngle, isha: settings.customIshaAngle }
+      : undefined,
+  });
+
+  if (!isPlus) {
+    return (
+      <EmptyState
+        message="The home screen widget is an Ummat+ feature."
+        action="Upgrade to Ummat+"
+        onAction={() => router.push('/subscription')}
+      />
+    );
+  }
+
+  const hasPreview = status === 'success' && times && nextPrayer;
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scroll}>
@@ -52,12 +94,19 @@ export default function HomeWidgetScreen() {
 
         <View style={styles.card}>
           <Text style={styles.cardTitle}>Widget Preview</Text>
-          {/* Simulated widget preview */}
           <View style={styles.widgetPreview} accessibilityRole="image" accessibilityLabel="Widget preview showing next prayer time">
             <Text style={styles.widgetTitle}>Next Prayer</Text>
-            <Text style={styles.widgetPrayer}>Maghrib</Text>
-            <Text style={styles.widgetTime}>6:32 PM</Text>
-            <Text style={styles.widgetCountdown}>in 2h 14m</Text>
+            {hasPreview ? (
+              <>
+                <Text style={styles.widgetPrayer}>{nextPrayer}</Text>
+                <Text style={styles.widgetTime}>
+                  {times[nextPrayer].toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })}
+                </Text>
+                <Text style={styles.widgetCountdown}>in {formatCountdown(secondsToNextPrayer)}</Text>
+              </>
+            ) : (
+              <Text style={styles.widgetTime}>Set your location to preview</Text>
+            )}
           </View>
         </View>
 

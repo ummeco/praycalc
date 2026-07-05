@@ -9,7 +9,7 @@
  */
 
 import { useState, useEffect, useCallback } from 'react';
-import type { PrayerTimes, PrayerName } from '../../../types/prayer';
+import type { PrayerTimes, PrayerName, HighLatRule } from '../../../types/prayer';
 import type { CalcMethodKey } from '../../../constants/methods';
 import type { Madhab } from '../../../types/prayer';
 import { calculatePrayerTimes } from '../../../lib/prayer-calc';
@@ -39,6 +39,8 @@ interface UsePrayerTimesOptions {
   timezone: number;
   method: CalcMethodKey;
   madhab: Madhab;
+  highLatRule?: HighLatRule;
+  customAngles?: { fajr: number; isha: number };
   isOffline?: boolean;
   isPermissionDenied?: boolean;
 }
@@ -50,6 +52,8 @@ export function usePrayerTimes({
   timezone,
   method,
   madhab,
+  highLatRule = 'NightMiddle',
+  customAngles,
   isOffline = false,
   isPermissionDenied = false,
 }: UsePrayerTimesOptions): UsePrayerTimesResult {
@@ -112,6 +116,8 @@ export function usePrayerTimes({
         timezone,
         method,
         madhab,
+        highLatRule,
+        customAngles,
       );
       setTimes(calculated);
       setError(null);
@@ -123,7 +129,7 @@ export function usePrayerTimes({
       setError(err instanceof Error ? err.message : 'Calculation error');
       setStatus('error');
     }
-  }, [date, latitude, longitude, timezone, method, madhab, isOffline, isPermissionDenied]);
+  }, [date, latitude, longitude, timezone, method, madhab, highLatRule, customAngles, isOffline, isPermissionDenied]);
 
   // Recalculate on inputs change
   useEffect(() => {

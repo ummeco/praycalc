@@ -14,7 +14,7 @@ import {
   Text,
   ScrollView,
   TouchableOpacity,
-  Switch,
+  TextInput,
   StyleSheet,
   Alert,
   Linking,
@@ -27,6 +27,13 @@ import { useSettingsStore } from '../store/useSettingsStore';
 import { useAuthStore } from '../../auth/store/useAuthStore';
 import type { Madhab, TimeFormat, HighLatRule } from '../../../types/prayer';
 import { ErrorState, LoadingState } from '../../../components/shared/UIStates';
+
+const HIGH_LAT_RULES: { key: HighLatRule; label: string }[] = [
+  { key: 'NightMiddle', label: 'Middle of the Night' },
+  { key: 'AngleBased', label: 'Angle-Based' },
+  { key: 'OneSeventh', label: 'One-Seventh of Night' },
+  { key: 'None', label: 'None (may show unavailable)' },
+];
 
 const UPGRADE_URL = 'https://praycalc.com/upgrade';
 
@@ -145,6 +152,62 @@ export default function SettingsScreen() {
             </TouchableOpacity>
           );
         })}
+        {settings.method === 'Custom' && (
+          <View style={styles.customAnglesRow}>
+            <View style={styles.angleField}>
+              <Text style={styles.hint}>Fajr angle (°)</Text>
+              <TextInput
+                style={styles.angleInput}
+                keyboardType="decimal-pad"
+                value={String(settings.customFajrAngle)}
+                onChangeText={(v) => {
+                  const fajr = parseFloat(v);
+                  if (!Number.isNaN(fajr)) settings.setCustomAngles(fajr, settings.customIshaAngle);
+                }}
+                accessibilityLabel="Custom Fajr angle in degrees"
+              />
+            </View>
+            <View style={styles.angleField}>
+              <Text style={styles.hint}>Isha angle (°)</Text>
+              <TextInput
+                style={styles.angleInput}
+                keyboardType="decimal-pad"
+                value={String(settings.customIshaAngle)}
+                onChangeText={(v) => {
+                  const isha = parseFloat(v);
+                  if (!Number.isNaN(isha)) settings.setCustomAngles(settings.customFajrAngle, isha);
+                }}
+                accessibilityLabel="Custom Isha angle in degrees"
+              />
+            </View>
+          </View>
+        )}
+      </View>
+
+      {/* High-latitude rule */}
+      <SectionHeader title="High-Latitude Adjustment" />
+      <View style={styles.card}>
+        <Text style={styles.hint}>
+          Applied when Fajr/Isha can't reach the required angle (far-north/south locations
+          in summer).
+        </Text>
+        {HIGH_LAT_RULES.map((rule) => {
+          const isSelected = settings.highLatRule === rule.key;
+          return (
+            <TouchableOpacity
+              key={rule.key}
+              style={[styles.optionRow, isSelected && styles.optionRowSelected]}
+              onPress={() => settings.setHighLatRule(rule.key)}
+            >
+              <View style={[styles.radio, isSelected && styles.radioSelected]}>
+                {isSelected && <View style={styles.radioInner} />}
+              </View>
+              <Text style={[styles.optionLabel, isSelected && styles.optionLabelSelected]}>
+                {rule.label}
+              </Text>
+            </TouchableOpacity>
+          );
+        })}
       </View>
 
       {/* Madhab (Asr shadow factor) */}
@@ -186,43 +249,20 @@ export default function SettingsScreen() {
         </View>
       </View>
 
-      {/* Notifications */}
+      {/* Notifications — single source of truth is NotificationSettingsScreen (per-prayer
+          enable + advance minutes); this just links out instead of duplicating the picker. */}
       <SectionHeader title="Notifications" />
       <View style={styles.card}>
-        <View style={styles.switchRow}>
+        <View style={styles.row}>
           <Text style={styles.rowLabel}>Prayer Time Alerts</Text>
-          <Switch
-            value={settings.notificationsEnabled}
-            onValueChange={settings.setNotificationsEnabled}
-            trackColor={{ true: Colors.brand.mid }}
-          />
+          <Text style={styles.rowValue}>{settings.notificationsEnabled ? 'On' : 'Off'}</Text>
         </View>
-        {settings.notificationsEnabled && (
-          <View style={styles.row}>
-            <Text style={styles.rowLabel}>Alert Before Prayer</Text>
-            <View style={styles.offsetToggle}>
-              {[0, 5, 10, 15].map((offset) => (
-                <TouchableOpacity
-                  key={offset}
-                  style={[
-                    styles.offsetOption,
-                    settings.notificationOffset === offset && styles.offsetOptionActive,
-                  ]}
-                  onPress={() => settings.setNotificationOffset(offset)}
-                >
-                  <Text
-                    style={[
-                      styles.offsetText,
-                      settings.notificationOffset === offset && styles.offsetTextActive,
-                    ]}
-                  >
-                    {offset === 0 ? 'At time' : `${offset}m`}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-          </View>
-        )}
+        <TouchableOpacity
+          style={[styles.button, styles.buttonSecondary]}
+          onPress={() => router.push('/settings/notifications')}
+        >
+          <Text style={styles.buttonSecondaryText}>Manage Notifications</Text>
+        </TouchableOpacity>
       </View>
 
     </ScrollView>
@@ -255,6 +295,19 @@ const styles = StyleSheet.create({
   rowLabel: { fontSize: 15, color: Colors.text.primary },
   rowValue: { fontSize: 14, color: Colors.text.muted },
   hint: { fontSize: 13, color: Colors.text.muted, fontStyle: 'italic' },
+  customAnglesRow: { flexDirection: 'row', gap: 12, marginTop: 4 },
+  angleField: { flex: 1, gap: 4 },
+  angleInput: {
+    backgroundColor: Colors.background.secondary,
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    fontSize: 15,
+    color: Colors.text.primary,
+    borderWidth: 1,
+    borderColor: Colors.background.card,
+    minHeight: 40,
+  },
   plusBadge: {
     backgroundColor: Colors.brand.mid,
     color: Colors.text.inverse,
@@ -301,15 +354,4 @@ const styles = StyleSheet.create({
   toggleOptionActive: { backgroundColor: Colors.brand.dark },
   toggleText: { fontSize: 14, color: Colors.text.primary, fontWeight: '500' },
   toggleTextActive: { color: Colors.text.inverse, fontWeight: '700' },
-  switchRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  offsetToggle: { flexDirection: 'row', gap: 8 },
-  offsetOption: {
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    borderRadius: 6,
-    backgroundColor: Colors.background.secondary,
-  },
-  offsetOptionActive: { backgroundColor: Colors.brand.mid },
-  offsetText: { fontSize: 13, color: Colors.text.primary },
-  offsetTextActive: { color: Colors.text.inverse, fontWeight: '600' },
 });

@@ -1,22 +1,30 @@
 /**
  * Purpose: Adhan voice library screen — browse reciters, enable/disable per prayer,
  *   play preview, select custom adhan.
- * Inputs: pc_adhan_voice GraphQL query, useSettingsStore (per-prayer enable).
+ * Inputs: pc_adhan_voice GraphQL query, useSettingsStore (adhanVoiceId + per-prayer
+ *   enable — persisted via AsyncStorage so PrayerNotificationService can read the
+ *   user's choice), useAuthStore (isPlus entitlement gate).
  * Outputs: AdhanScreen component (Feature 6 of 20).
  * Constraints: Background audio via react-native-track-player. 7 UI states.
+ *   Pro-locked voices (is_pro && !isPlus) remain previewable but cannot be selected
+ *   as the active adhan — selecting shows an Ummat+ upsell (Alert -> /subscription)
+ *   instead of persisting the choice.
  * SPORT: REGISTRY-APPS.md#praycalc-mobile-feature-06-adhan
  */
 
 import React, { useState, useCallback } from 'react';
 import {
-  View, Text, FlatList, TouchableOpacity, Switch, StyleSheet, SafeAreaView,
+  View, Text, FlatList, TouchableOpacity, Switch, StyleSheet, SafeAreaView, Alert,
 } from 'react-native';
+import { router } from 'expo-router';
 import { useQuery } from 'urql';
 import { Colors } from '../../../constants/colors';
 import {
   LoadingState, ErrorState, EmptyState, OfflineState, SkeletonState,
 } from '../../../components/states';
 import { playAdhan, stopAdhan } from '../services/AdhanAudioService';
+import { useSettingsStore } from '../../settings/store/useSettingsStore';
+import { useAuthStore } from '../../auth/store/useAuthStore';
 import type { PrayerName } from '../../../types/prayer';
 
 // ── GraphQL ───────────────────────────────────────────────────────────────────
@@ -51,15 +59,31 @@ const PRAYER_NAMES: PrayerName[] = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
 
 export default function AdhanScreen() {
   const [{ data, fetching, error }, reexecuteQuery] = useQuery({ query: GET_ADHAN_LIBRARY });
-  const [selectedId, setSelectedId] = useState<string | null>(null);
   const [playingId, setPlayingId] = useState<string | null>(null);
-  const [enabledPrayers, setEnabledPrayers] = useState<Record<PrayerName, boolean>>({
-    Fajr: true, Sunrise: false, Dhuhr: false, Asr: false, Maghrib: true, Isha: true,
-  });
+  const isPlus = useAuthStore((s) => s.isPlus);
+  const selectedId = useSettingsStore((s) => s.adhanVoiceId);
+  const setAdhanVoiceId = useSettingsStore((s) => s.setAdhanVoiceId);
+  const enabledPrayers = useSettingsStore((s) => s.perPrayerAdhanEnabled);
+  const setPerPrayerAdhanEnabled = useSettingsStore((s) => s.setPerPrayerAdhanEnabled);
 
   const togglePrayer = useCallback((name: PrayerName) => {
-    setEnabledPrayers((prev) => ({ ...prev, [name]: !prev[name] }));
-  }, []);
+    setPerPrayerAdhanEnabled(name, !enabledPrayers[name]);
+  }, [enabledPrayers, setPerPrayerAdhanEnabled]);
+
+  const handleSelect = useCallback((voice: AdhanVoice) => {
+    if (voice.is_pro && !isPlus) {
+      Alert.alert(
+        'Ummat+ Required',
+        `${voice.name} is a Pro adhan voice. Upgrade to Ummat+ to set it as your active adhan.`,
+        [
+          { text: 'Cancel', style: 'cancel' },
+          { text: 'Upgrade', onPress: () => router.push('/subscription') },
+        ],
+      );
+      return;
+    }
+    setAdhanVoiceId(voice.id);
+  }, [isPlus, setAdhanVoiceId]);
 
   const handlePlay = useCallback(async (voice: AdhanVoice) => {
     if (playingId === voice.id) {
@@ -111,10 +135,10 @@ export default function AdhanScreen() {
         renderItem={({ item: voice }) => (
           <TouchableOpacity
             style={[styles.voiceCard, selectedId === voice.id && styles.voiceCardSelected]}
-            onPress={() => setSelectedId(voice.id)}
+            onPress={() => handleSelect(voice)}
             accessibilityRole="radio"
             accessibilityState={{ selected: selectedId === voice.id }}
-            accessibilityLabel={`${voice.name} by ${voice.reciter}${voice.is_pro ? ' (Pro)' : ''}`}
+            accessibilityLabel={`${voice.name} by ${voice.reciter}${voice.is_pro ? ' (Pro, upgrade required to select)' : ''}`}
           >
             <View style={styles.voiceInfo}>
               <Text style={styles.voiceName}>{voice.name}</Text>

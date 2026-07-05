@@ -12,13 +12,63 @@
 - **5 dead CTAs wired** — "Set Location"/"Search City" (home, qibla, settings) →
   city-search; onboarding "Create Account" → sign-in; adhan retry → reexecute.
 
-## ⏳ Substantial backlog remains (this audit) — see below
-Correctness-critical items NOT yet done (deliberately not rushed): settings
-persist to store (currently local useState), notification service reads user
-settings (currently hardcoded MWL), IAP purchase listener (monetization is
-non-functional), stats completion logging, per-prayer notification wiring, full
-Quran corpus + audio, honest gating of SmartHome/HomeWidget stubs, home Hijri
-date/location, Qibla declination, content expansion, tz/travel bugs.
+## ✅ Fixed this session (P0 items 1–6 + several P1s)
+- **Custom angle + high-latitude rule** — `calculatePrayerTimes` now solves the
+  user's own Fajr/Isha depression angles directly (verified to agree with
+  pray-calc's own MWL/Karachi presets to <1 min) and implements the standard
+  NightMiddle/AngleBased/OneSeventh/None high-lat fallback when an angle is
+  geometrically unreachable — cross-checked against a genuine wraparound bug
+  found and fixed during development (near-midnight sunset at extreme latitudes).
+  Locked in with a regression test suite (`src/lib/prayer-calc/__tests__/`).
+- **Settings persistence** — `useSettingsStore` extended with per-prayer
+  notification enabled/advance-minutes, adhan voice + per-prayer enabled, travel
+  location split from home, musafir mode. NotificationSettingsScreen, AdhanScreen,
+  TravelScreen, SettingsScreen all now read/write the store instead of local
+  `useState` that silently reset on restart.
+- **Notification service** reads real settings (method/madhab/high-lat
+  rule/custom angles/per-prayer enabled+advance) instead of hardcoded
+  MWL/Shafi/all-5; also fixed a dormant bug where it read from an MMKV key the
+  settings store never actually wrote to (store persists via AsyncStorage) —
+  notifications were silently using stale/empty location data.
+- **IAP + entitlement unification** — built `IAPListener.ts` (registered globally
+  at app start per the SDK's own guidance), unified the two incompatible
+  entitlement systems into a single `useAuthStore.isPlus` flag for both the IAP
+  purchase and the web Ummat+ subscription. Anonymous users are now gated to
+  sign in before purchasing (their own documented-but-unimplemented constraint).
+- **Stats** — tap-to-mark-prayed on Home prayer rows (`src/lib/completions.ts`)
+  now actually writes completions; StatsScreen refreshes on focus instead of
+  reading once and going stale.
+- **Honest gating** — SmartHomeScreen and HomeWidgetStub now gate behind
+  `isPlus`; SmartHome's two fake hardcoded devices were removed (honestly empty
+  until real discovery ships) and HomeWidget's fake "Maghrib 6:32 PM" preview
+  now shows real computed next-prayer data.
+- **Bug fixes** — `AgendasScreen`'s `parseFloat(IANA string)` → NaN → UTC+0 bug
+  fixed via a shared `resolveTimezoneOffset` helper (numeric offsets + IANA
+  zones with DST); `TravelScreen` no longer clobbers home location when
+  selecting a travel city (`travelLocation`/`musafirMode` are separate store
+  fields, `useActiveLocation()` selector); the four independent, mutually
+  divergent Hijri approximations (Calendar/Ramadan/Moon) consolidated into one
+  `@umalqura/core`-backed module (`src/lib/hijri/`) — Ramadan/Eid dates now
+  agree app-wide, and Ramadan's day counter uses the real 29-vs-30-day length
+  instead of a hardcoded `/30`.
+- **Also discovered & fixed**: the actual live `/city-search` route was a
+  separate, more primitive scaffold (8 hardcoded cities, fake search) than the
+  fully-built GraphQL-backed `CitySearchScreen` component, which was only
+  reachable embedded in TravelScreen — every "Set Location" entry point in the
+  app was hitting the primitive one. Consolidated to one implementation, added
+  debounce + "Use Current Location".
+- **P1s**: Home screen Hijri+Gregorian date header, location name, per-prayer
+  mute indicator; live Iftar/Suhoor countdown on Ramadan; 5th tab for Quran;
+  madhab question added to onboarding.
+
+## ⏳ Backlog remains (lower priority / needs content or native work)
+Qibla real magnetic declination (WMM) + real accuracy detection — needs a full
+World Magnetic Model coefficient table, deliberately not faked; full Quran
+corpus + audio and wider dua catalog — content licensing/bundling, not a code
+task; working native home-screen widget (WidgetKit/AppWidget) and real
+adhan-voice-as-notification-sound — need bundled native assets/extensions;
+real smart-home platform integration (HomeKit/Google Home) or formally cutting
+the feature; monthly prayer timetable export; custom dhikr; social sign-in.
 
 ---
 

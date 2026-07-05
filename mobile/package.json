@@ -22,6 +22,7 @@
     "@expo/vector-icons": "^14.0.2",
     "@react-native-async-storage/async-storage": "^2.1.2",
     "@sentry/react-native": "^6.3.0",
+    "@umalqura/core": "^0.0.7",
     "@urql/exchange-auth": "^3.0.0",
     "expo": "~53.0.0",
     "expo-background-fetch": "~13.0.0",

@@ -1,8 +1,10 @@
 /**
- * Purpose: Tab navigator layout — home (prayer times), qibla, calendar, more (settings entry)
+ * Purpose: Tab navigator layout — home (prayer times), qibla, calendar, quran, more (settings entry)
  * Inputs: Expo Router tabs
- * Outputs: Bottom tab bar with 4 tabs and Ionicons icons
+ * Outputs: Bottom tab bar with 5 tabs and Ionicons icons
  * Constraints: Expo Router v4; no react-navigation explicit navigator needed (Expo Router wraps it).
+ *   Quran tab renders the same QuranScreen component as the top-level /quran stack route
+ *   (kept for deep links) — see src/app/quran/index.tsx.
  * SPORT: REGISTRY-ROUTES.md#praycalc-mobile-tabs
  */
 
@@ -53,6 +55,13 @@ export default function TabLayout() {
         options={{
           title: 'Calendar',
           tabBarIcon: tabIcon('calendar-outline', 'calendar'),
+        }}
+      />
+      <Tabs.Screen
+        name="quran"
+        options={{
+          title: 'Quran',
+          tabBarIcon: tabIcon('book-outline', 'book'),
         }}
       />
       <Tabs.Screen

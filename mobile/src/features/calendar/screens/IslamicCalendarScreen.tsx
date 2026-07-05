@@ -1,10 +1,12 @@
 /**
  * Purpose: Islamic Calendar screen — Hijri/Gregorian dual date display, month navigation,
- *   and Islamic events list. All 7 UI states implemented.
+ *   and Islamic events list. This screen has no async I/O (calendar math is synchronous
+ *   and always succeeds), so only the success state is reachable — loading/error/empty/
+ *   offline/permission-denied are not applicable here, unlike data-fetching screens.
  * Inputs: Current date (auto); navigation buttons for prev/next month
  * Outputs: Calendar grid with Hijri overlay; events list for current Hijri month
- * Constraints: Hijri conversion via useIslamicCalendar hook (tabular algorithm ±1 day).
- *   @ummat/shared hijri utils will replace once available (per spec §2.3).
+ * Constraints: Hijri conversion via useIslamicCalendar hook, backed by src/lib/hijri
+ *   (@umalqura/core — the app-wide shared Hijri source, exact Umm al-Qura tabular dates).
  * SPORT: REGISTRY-COMPONENTS.md#praycalc-mobile-calendar-screen
  */
 

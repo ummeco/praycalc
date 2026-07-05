@@ -3,8 +3,9 @@
  *   visual moon representation.
  * Inputs: Current date, calculated moon phase using standard astronomical formula.
  * Outputs: MoonScreen — Feature 9 of 20.
- * Constraints: Hijri date from @ummat/shared (not @acamarata/pray-calc).
- *   Moon phase calculated locally (no API call needed).
+ * Constraints: Hijri date via src/lib/hijri (@umalqura/core) — the single shared Hijri
+ *   source app-wide, replacing this screen's former independent ±1-day approximation.
+ *   Moon phase (illumination/age) calculated locally — no API call needed.
  * SPORT: REGISTRY-APPS.md#praycalc-mobile-feature-09-moon
  */
 
@@ -13,6 +14,9 @@ import {
   View, Text, StyleSheet, SafeAreaView, ScrollView,
 } from 'react-native';
 import { Colors } from '../../constants/colors';
+import { gregorianToHijri, RAMADAN_MONTH } from '../../lib/hijri';
+
+const DHUL_HIJJAH_MONTH = 12;
 
 // ── Moon phase calculation ────────────────────────────────────────────────────
 
@@ -36,6 +40,7 @@ interface MoonData {
   nextFullMoon: Date;
   // Hijri month crescent context
   hijriDay: number;
+  hijriMonth: number;
   hijriMonthName: string;
 }
 
@@ -77,31 +82,6 @@ function getNextPhaseDate(date: Date, targetAge: number): Date {
   return new Date(date.getTime() + daysUntil * 86400000);
 }
 
-// Simplified Hijri conversion (approximate — accurate to ±1 day)
-// Full precision from @ummat/shared hijriToGregorian — this is display-only approximation
-const HIJRI_EPOCH_JD = 1948438.5; // 1 Muharram 1 AH in Julian Days
-const HIJRI_MONTH_NAMES = [
-  'Muharram', 'Safar', "Rabi' al-Awwal", "Rabi' al-Thani",
-  'Jumada al-Ula', 'Jumada al-Akhira', 'Rajab', "Sha'ban",
-  'Ramadan', 'Shawwal', "Dhul Qa'dah", 'Dhul Hijjah',
-];
-
-function gregorianToHijriApprox(date: Date): { day: number; monthName: string; year: number } {
-  const jd = toJulianDay(date);
-  const l = jd - HIJRI_EPOCH_JD;
-  const n = Math.floor(l / 10631);
-  const r = l - 10631 * n;
-  const j = Math.floor((r + 29.5001) / 29.5);
-  const day = Math.floor(r - 29.5001 * j + 30);
-  const month = j % 12;
-  const year = n * 30 + Math.floor(j / 12) + 1;
-  return {
-    day: Math.max(1, day),
-    monthName: HIJRI_MONTH_NAMES[month] ?? 'Unknown',
-    year,
-  };
-}
-
 // ── Screen ────────────────────────────────────────────────────────────────────
 
 export default function MoonScreen() {
@@ -112,7 +92,7 @@ export default function MoonScreen() {
     const { phase, name, emoji } = getMoonPhase(age);
     const nextNewMoon = getNextPhaseDate(now, 0);
     const nextFullMoon = getNextPhaseDate(now, 14.76);
-    const { day, monthName } = gregorianToHijriApprox(now);
+    const hijri = gregorianToHijri(now);
     return {
       phase,
       illumination,
@@ -121,8 +101,9 @@ export default function MoonScreen() {
       phaseEmoji: emoji,
       nextNewMoon,
       nextFullMoon,
-      hijriDay: day,
-      hijriMonthName: monthName,
+      hijriDay: hijri.day,
+      hijriMonth: hijri.month,
+      hijriMonthName: hijri.monthName,
     };
   }, []);
 
@@ -183,14 +164,14 @@ export default function MoonScreen() {
             {/* Quran 2:189 — verified Uthmani text */}
             {'"They ask you about the new crescent moons. Say: they are times set for people and for Hajj." — Quran 2:189'}
           </Text>
-          {moonData.hijriMonthName === 'Ramadan' && (
+          {moonData.hijriMonth === RAMADAN_MONTH && (
             <Text style={styles.specialEvent}>
               It is Ramadan — the month of fasting and seeking Laylat al-Qadr.
             </Text>
           )}
-          {moonData.hijriMonthName === "Dhul Hijjah" && (
+          {moonData.hijriMonth === DHUL_HIJJAH_MONTH && (
             <Text style={styles.specialEvent}>
-              The first ten days of Dhul Hijjah are among the most virtuous of the year.
+              The first ten days of {moonData.hijriMonthName} are among the most virtuous of the year.
             </Text>
           )}
         </View>

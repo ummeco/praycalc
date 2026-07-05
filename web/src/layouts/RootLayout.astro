@@ -1,5 +1,6 @@
 ---
 import Footer from '@/components/Footer.astro';
+import ConsentGate from '@/islands/ConsentGate';
 /**
  * RootLayout.astro — Root page shell for all PrayCalc pages.
  *
@@ -12,7 +13,8 @@ import Footer from '@/components/Footer.astro';
  *   - Umami analytics only (D-P3-21) — no Vercel Analytics
  *   - Sentry DSN from env var SENTRY_DSN_PRAYCALC
  *   - WCAG 2.1 AA: skip-to-content link on every page
- * REF: P2-E3-W02-S02-T03 · D-P2-STACK-CANON
+ *   - Umami loads only after cookie consent via ConsentGate (GDPR Art. 6/7)
+ * REF: P2-E3-W02-S02-T03 · D-P2-STACK-CANON · ADR-consent-banner-astro-gate
  */
 
 import '../styles/global.css';
@@ -89,16 +91,6 @@ const umamiSiteId = import.meta.env.UMAMI_WEBSITE_ID;
       href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Noto+Naskh+Arabic:wght@400;700&display=swap"
     />
 
-    <!-- Umami analytics — cookieless, GDPR-safe (D-P3-21) -->
-    {umamiSiteId && (
-      <script
-        is:inline
-        defer
-        src="https://cloud.umami.is/script.js"
-        data-website-id={umamiSiteId}
-      />
-    )}
-
     <!-- PWA service worker (sw.js — vanilla, no build step) -->
     <script is:inline>
       if ('serviceWorker' in navigator) {
@@ -114,5 +106,6 @@ const umamiSiteId = import.meta.env.UMAMI_WEBSITE_ID;
 
     <slot />
     {!hideFooter && <Footer />}
+    <ConsentGate client:load umamiSiteId={umamiSiteId} />
   </body>
 </html>

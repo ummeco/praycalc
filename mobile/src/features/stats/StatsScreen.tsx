@@ -7,30 +7,17 @@
  * SPORT: REGISTRY-APPS.md#praycalc-mobile-feature-12-stats
  */
 
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import {
   View, Text, StyleSheet, SafeAreaView, ScrollView, TouchableOpacity,
 } from 'react-native';
+import { useFocusEffect } from 'expo-router';
 import { Colors } from '../../constants/colors';
 import { EmptyState } from '../../components/states';
-import { mmkv } from '../../lib/storage/mmkv';
+import { loadCompletions, type PrayerCompletion } from '../../lib/completions';
 import type { PrayerName } from '../../types/prayer';
 
-const COMPLETIONS_KEY = 'pc:completions';
 const PRAYER_NAMES: PrayerName[] = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
-
-interface PrayerCompletion {
-  date: string;          // YYYY-MM-DD
-  prayerName: PrayerName;
-  completedAt: number;   // Unix ms
-}
-
-function loadCompletions(): PrayerCompletion[] {
-  const raw = mmkv.getString(COMPLETIONS_KEY);
-  if (!raw) return [];
-  try { return JSON.parse(raw) as PrayerCompletion[]; }
-  catch { return []; }
-}
 
 function getStreak(completions: PrayerCompletion[]): number {
   const dailyCounts: Record<string, number> = {};
@@ -114,8 +101,16 @@ type ViewMode = 'weekly' | 'monthly';
 
 export default function StatsScreen() {
   const [mode, setMode] = useState<ViewMode>('weekly');
+  const [completions, setCompletions] = useState<PrayerCompletion[]>(loadCompletions);
 
-  const completions = useMemo(loadCompletions, []);
+  // Re-read on focus — completions are logged from the Home tab and this screen
+  // stays mounted across tab switches, so a plain useMemo(loadCompletions, []) would go stale.
+  useFocusEffect(
+    useCallback(() => {
+      setCompletions(loadCompletions());
+    }, []),
+  );
+
   const streak = useMemo(() => getStreak(completions), [completions]);
   const weeklyData = useMemo(() => getWeeklyData(completions), [completions]);
 

@@ -35,9 +35,7 @@ const QASR_RAKAT: Record<PrayerName, { normal: number; qasr: number }> = {
 };
 
 export default function TravelScreen() {
-  const { location, setLocation } = useSettingsStore();
-  const [musafirMode, setMusafirMode] = useState(false);
-  const [travelCity, setTravelCity] = useState<CityCoords | null>(null);
+  const { location, travelLocation, musafirMode, setTravelLocation, setMusafirMode } = useSettingsStore();
   const [showCitySearch, setShowCitySearch] = useState(false);
 
   const handleMusafirToggle = useCallback((value: boolean) => {
@@ -51,17 +49,16 @@ export default function TravelScreen() {
         [{ text: 'Understood', style: 'default' }],
       );
     }
-  }, []);
+  }, [setMusafirMode]);
 
   const handleSelectTravelCity = useCallback((city: CityCoords) => {
-    setTravelCity(city);
-    setLocation(city);
+    setTravelLocation(city);
     setShowCitySearch(false);
-  }, [setLocation]);
+  }, [setTravelLocation]);
 
   if (showCitySearch) {
     return (
-      <CitySearchScreen onSelectCity={handleSelectTravelCity} />
+      <CitySearchScreen onSelectCity={handleSelectTravelCity} mode="travel" />
     );
   }
 
@@ -122,11 +119,11 @@ export default function TravelScreen() {
         {/* Travel city selection */}
         <View style={styles.cityCard}>
           <Text style={styles.sectionTitle} accessibilityRole="header">Travel Destination</Text>
-          {travelCity ? (
-            <View style={styles.selectedCity} accessible accessibilityLabel={`Selected: ${travelCity.city}, ${travelCity.country}`}>
+          {travelLocation ? (
+            <View style={styles.selectedCity} accessible accessibilityLabel={`Selected: ${travelLocation.city}, ${travelLocation.country}`}>
               <View>
-                <Text style={styles.cityName}>{travelCity.city}</Text>
-                <Text style={styles.cityCountry}>{travelCity.country}</Text>
+                <Text style={styles.cityName}>{travelLocation.city}</Text>
+                <Text style={styles.cityCountry}>{travelLocation.country}</Text>
               </View>
               <TouchableOpacity
                 onPress={() => setShowCitySearch(true)}

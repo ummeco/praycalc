@@ -3,10 +3,14 @@
  *   (screen dim + DND via audio focus). expo-local-authentication.
  * Inputs: expo-local-authentication biometric check, prayer times for auto-dim trigger.
  * Outputs: SmartHomeScreen — Feature 17 of 20.
- * Constraints: iOS DnD requires entitlement (PCI pci-praycalc-ios-critical-alerts).
+ * Constraints: Ummat+ gated (isPlus) — this screen's whole premise (lock-on-salah +
+ *   device control) is a paid feature; it was previously reachable by free users.
+ *   No real device-discovery mechanism exists yet, so the device list is honestly
+ *   empty rather than showing two hardcoded fake devices as if they were the user's
+ *   real hardware — "Add Device" documents that real discovery is not yet built.
+ *   iOS DnD requires entitlement (PCI pci-praycalc-ios-critical-alerts).
  *   Android: AUDIOFOCUS_GAIN used for media interruption.
  *   Smart home REST API calls via standard fetch (no native module needed).
- *   7 UI states.
  * SPORT: REGISTRY-APPS.md#praycalc-mobile-feature-17-smart-home
  */
 
@@ -14,9 +18,11 @@ import React, { useState, useCallback } from 'react';
 import {
   View, Text, Switch, TouchableOpacity, StyleSheet, SafeAreaView, ScrollView, Alert,
 } from 'react-native';
+import { router } from 'expo-router';
 import * as LocalAuthentication from 'expo-local-authentication';
 import { Colors } from '../../constants/colors';
-import { PermissionDeniedState } from '../../components/states';
+import { PermissionDeniedState, EmptyState } from '../../components/states';
+import { useAuthStore } from '../auth/store/useAuthStore';
 
 interface SmartHomeDevice {
   id: string;
@@ -26,15 +32,11 @@ interface SmartHomeDevice {
   apiUrl: string;
 }
 
-// Mock device list — in production, discovered via local network scan or user input
-const DEMO_DEVICES: SmartHomeDevice[] = [
-  { id: 'd1', name: 'Living Room Lights', type: 'light', isOnline: true, apiUrl: 'http://192.168.1.100' },
-  { id: 'd2', name: 'Bedroom Speaker', type: 'speaker', isOnline: false, apiUrl: 'http://192.168.1.101' },
-];
-
 export default function SmartHomeScreen() {
+  const isPlus = useAuthStore((s) => s.isPlus);
   const [lockOnSalah, setLockOnSalah] = useState(false);
   const [biometricError, setBiometricError] = useState(false);
+  const [devices] = useState<SmartHomeDevice[]>([]); // No discovery mechanism yet — honestly empty, not mocked
   const [deviceStates, setDeviceStates] = useState<Record<string, boolean>>({});
 
   const handleLockOnSalah = useCallback(async (value: boolean) => {
@@ -71,6 +73,16 @@ export default function SmartHomeScreen() {
       Alert.alert('Device unreachable', `Could not reach ${device.name}. It may be offline.`);
     }
   }, []);
+
+  if (!isPlus) {
+    return (
+      <EmptyState
+        message="Smart Home (lock-on-salah + device control) is an Ummat+ feature."
+        action="Upgrade to Ummat+"
+        onAction={() => router.push('/subscription')}
+      />
+    );
+  }
 
   if (biometricError) {
     return (
@@ -109,9 +121,14 @@ export default function SmartHomeScreen() {
           )}
         </View>
 
-        {/* Smart home devices */}
+        {/* Smart home devices — honestly empty until real discovery/pairing ships */}
         <Text style={styles.heading} accessibilityRole="header">Smart Devices</Text>
-        {DEMO_DEVICES.map((device) => (
+        {devices.length === 0 && (
+          <Text style={styles.sectionDesc}>
+            No devices added yet. Device discovery isn't built yet — add one manually below.
+          </Text>
+        )}
+        {devices.map((device) => (
           <View key={device.id} style={styles.deviceCard}>
             <View style={styles.deviceLeft}>
               <Text style={styles.deviceIcon}>

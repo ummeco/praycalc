@@ -1,7 +1,10 @@
 /**
  * Purpose: City search using pc_cities table with fuzzy match and offline fallback
- *   from bundled city list.
- * Inputs: Search query, urql GraphQL query for pc_cities, bundled fallback list.
+ *   from bundled city list. This is the app's single city-search implementation —
+ *   the standalone /city-search route now renders this component directly instead
+ *   of a separate, more primitive scaffold that used to live there.
+ * Inputs: Search query (debounced 300ms), urql GraphQL query for pc_cities, bundled
+ *   fallback list, expo-location for "Use Current Location".
  * Outputs: CitySearchScreen — Feature 14 of 20.
  * Constraints: Offline fallback from bundled JSON. Fuzzy match client-side.
  *   7 UI states including offline banner.
@@ -13,10 +16,21 @@ import {
   View, Text, FlatList, TouchableOpacity, StyleSheet, SafeAreaView, TextInput,
 } from 'react-native';
 import { useQuery } from 'urql';
+import * as Location from 'expo-location';
 import { Colors } from '../../constants/colors';
 import { LoadingState, ErrorState, EmptyState, OfflineState } from '../../components/states';
 import { useSettingsStore } from '../settings/store/useSettingsStore';
 import type { CityCoords } from '../../types/prayer';
+
+/** Debounce a fast-changing value so GraphQL isn't queried on every keystroke. */
+function useDebouncedValue<T>(value: T, delayMs: number): T {
+  const [debounced, setDebounced] = useState(value);
+  useEffect(() => {
+    const timer = setTimeout(() => setDebounced(value), delayMs);
+    return () => clearTimeout(timer);
+  }, [value, delayMs]);
+  return debounced;
+}
 
 // ── Bundled fallback city list (subset — full 100k in expo-sqlite DB) ────────
 
@@ -71,15 +85,29 @@ function fuzzyMatch(query: string, target: string): boolean {
 
 // ── Screen ────────────────────────────────────────────────────────────────────
 
-export default function CitySearchScreen({ onSelectCity }: { onSelectCity?: (city: CityCoords) => void }) {
+interface CitySearchScreenProps {
+  onSelectCity?: (city: CityCoords) => void;
+  /**
+   * 'home' (default): selecting a city writes it to the store's HOME `location`
+   *   (existing behavior — used by the standalone /city-search route and Settings).
+   * 'travel': selection is reported ONLY via `onSelectCity` — this screen never
+   *   touches `location` so home is never clobbered by a travel-city pick. The
+   *   caller (e.g. TravelScreen) is responsible for calling setTravelLocation().
+   */
+  mode?: 'home' | 'travel';
+}
+
+export default function CitySearchScreen({ onSelectCity, mode = 'home' }: CitySearchScreenProps) {
   const [query, setQuery] = useState('');
+  const debouncedQuery = useDebouncedValue(query, 300);
   const [isOffline, setIsOffline] = useState(false);
+  const [locating, setLocating] = useState(false);
   const { setLocation } = useSettingsStore();
 
   const [{ data, fetching, error }] = useQuery({
     query: SEARCH_CITIES,
-    variables: { q: `%${query}%` },
-    pause: query.length < 2,
+    variables: { q: `%${debouncedQuery}%` },
+    pause: debouncedQuery.length < 2,
   });
 
   useEffect(() => {
@@ -90,8 +118,8 @@ export default function CitySearchScreen({ onSelectCity }: { onSelectCity?: (cit
   const results: CityCoords[] = useMemo(() => {
     if (isOffline || !data?.pc_cities) {
       // Offline fallback — fuzzy match on bundled list
-      if (query.length < 2) return FALLBACK_CITIES.slice(0, 10);
-      return FALLBACK_CITIES.filter((c) => fuzzyMatch(query, `${c.city} ${c.country}`));
+      if (debouncedQuery.length < 2) return FALLBACK_CITIES.slice(0, 10);
+      return FALLBACK_CITIES.filter((c) => fuzzyMatch(debouncedQuery, `${c.city} ${c.country}`));
     }
     return data.pc_cities.map((r: { name: string; country: string; latitude: number; longitude: number; timezone: string }) => ({
       city: r.name,
@@ -100,16 +128,41 @@ export default function CitySearchScreen({ onSelectCity }: { onSelectCity?: (cit
       longitude: r.longitude,
       timezone: r.timezone,
     }));
-  }, [data, isOffline, query]);
+  }, [data, isOffline, debouncedQuery]);
 
   const handleSelect = useCallback((city: CityCoords) => {
-    setLocation(city);
+    // Never write to home `location` in travel mode — the caller owns where a
+    // travel-city selection is stored (setTravelLocation), so musafir mode
+    // selection can never clobber the user's home city.
+    if (mode === 'home') setLocation(city);
     onSelectCity?.(city);
-  }, [setLocation, onSelectCity]);
+  }, [setLocation, onSelectCity, mode]);
+
+  const handleUseCurrentLocation = useCallback(async () => {
+    setLocating(true);
+    try {
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') return;
+      const loc = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced });
+      const [geo] = await Location.reverseGeocodeAsync({
+        latitude: loc.coords.latitude,
+        longitude: loc.coords.longitude,
+      });
+      handleSelect({
+        latitude: loc.coords.latitude,
+        longitude: loc.coords.longitude,
+        city: geo?.city ?? geo?.district ?? 'My Location',
+        country: geo?.country ?? '',
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      });
+    } finally {
+      setLocating(false);
+    }
+  }, [handleSelect]);
 
   // ── 7 UI States ──────────────────────────────────────────────────────────────
-  const showLoading = fetching && query.length >= 2 && !data;
-  const showEmpty = !showLoading && query.length >= 2 && results.length === 0;
+  const showLoading = (fetching || query !== debouncedQuery) && debouncedQuery.length >= 2 && !data;
+  const showEmpty = !showLoading && debouncedQuery.length >= 2 && results.length === 0;
 
   return (
     <SafeAreaView style={styles.container}>
@@ -128,6 +181,17 @@ export default function CitySearchScreen({ onSelectCity }: { onSelectCity?: (cit
           autoCorrect={false}
           autoCapitalize="words"
         />
+        <TouchableOpacity
+          style={styles.currentLocationBtn}
+          onPress={handleUseCurrentLocation}
+          disabled={locating}
+          accessibilityRole="button"
+          accessibilityLabel="Use current location"
+        >
+          <Text style={styles.currentLocationText}>
+            {locating ? 'Locating…' : '📍 Use Current Location'}
+          </Text>
+        </TouchableOpacity>
       </View>
 
       {/* Offline banner */}
@@ -192,6 +256,8 @@ const styles = StyleSheet.create({
     minHeight: 44,
   },
   hint: { fontSize: 13, color: Colors.text.muted, padding: 12, textAlign: 'center' },
+  currentLocationBtn: { marginTop: 8, paddingVertical: 10, minHeight: 44, justifyContent: 'center', alignItems: 'center' },
+  currentLocationText: { fontSize: 14, color: Colors.brand.dark, fontWeight: '600' },
   cityRow: {
     flexDirection: 'row',
     alignItems: 'center',
