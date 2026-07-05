@@ -46,12 +46,38 @@ built for reuse across Ummeco apps — but nothing in praycalc wired it up.
    Hasura tables `lg_consent_record` / `lg_policy_version` for the Art. 7 audit
    trail. Needs: confirm those tables exist in the shared Ummat Hasura backend,
    add the migration if not, and add `web/src/pages/api/consent.ts` as a thin
-   Astro API route delegating to `handleConsentRequest`.
-2. **Missing pages.** No `/preferences` consent-management page and no
-   `/legal/california` CCPA disclosure exist in the Astro app (both existed in
-   the pre-migration Next.js app). The banner's "Manage preferences" button only
-   reopens the in-page modal — there is no persistent (e.g. footer) link to
-   reopen it once dismissed.
+   Astro API route delegating to `handleConsentRequest`. The ported
+   `/preferences` page's "Unsubscribe from marketing emails" button has the
+   same gap — it posts to `/api/preferences/unsubscribe`, which has never
+   existed in this app (Next.js or Astro); it will 404 until this item lands.
+
+## Resolved (this follow-up, 2026-07-05)
+2. ~~**Missing pages.**~~ Ported from the pre-migration Next.js app
+   (git `a4993c5`):
+   - `web/src/pages/preferences.astro` + `web/src/islands/preferences/PreferencesClient.tsx`
+     — consent-category toggles + unsubscribe action. Mounts its own
+     `ConsentProvider` (from `@ummat/consent/hooks`) rather than reusing
+     `ConsentGate`'s — Astro islands are isolated component trees, so React
+     context can't cross from the layout-level island into a page-level one.
+     Both instances read/write the same localStorage-backed record, so they
+     stay consistent across a page navigation (full reload).
+   - `web/src/pages/legal/california.astro` — CCPA/CPRA disclosure, ported
+     as a static page (no client state in the original).
+   - `web/src/components/Footer.astro` now links "Cookie Settings" → `/preferences`
+     on every page, so the page is reachable after the banner is dismissed.
+
+   **U-15 status check:** confirmed still **open**, not resolved. The
+   `ADR-DEFERRED` substitution applied to chatislam's and islamwiki's CCPA
+   pages under ticket `P2-E5-W02-S02-T01` (2026-06-22) explicitly did **not**
+   reach praycalc — that ticket's own QA-C notes record praycalc's CCPA page
+   as still carrying raw `TODO(U-15)` comments, and `.claude/docs/FEATURES.md`
+   lists only chatislam/islamwiki/ummat-app-web as confirmed-noindex, omitting
+   praycalc. Counsel review of the CPRA sensitive-info classification has not
+   returned. Accordingly `legal/california.astro` preserves the original
+   gating unchanged: `noIndex={true}`, the yellow DRAFT banner, and every
+   `TODO(U-15)` marker — none of it is presented as final or counsel-reviewed
+   copy. Do not flip `noIndex` or remove the DRAFT banner without a recorded
+   U-15 resolution.
 
 ## Consequences
 - Umami cannot fire before consent on any page rendered through `RootLayout.astro`.
