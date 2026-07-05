@@ -49,6 +49,7 @@ export default [
       '.astro/**',
       '.next/**',      // legacy Next.js build artifacts
       'dist/**',
+      '.vercel/**',    // @astrojs/vercel build output (nested dist/ copy)
       'node_modules/**',
       // Root-level lib/ is legacy (pre-migration stubs); Astro source is under src/
       'lib/**',
