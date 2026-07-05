@@ -324,7 +324,7 @@ function Dashboard({
 }) {
   const [cities, setCities] = useState<SavedCity[]>([]);
   const [isPlus, setIsPlus] = useState(session.isUmmatPlus);
-  const [checkoutState, setCheckoutState] = useState<'idle' | 'loading' | 'unavailable'>('idle');
+  const [checkoutState, setCheckoutState] = useState<'idle' | 'loading' | 'unavailable' | 'error'>('idle');
 
   useEffect(() => {
     setCities(getSavedCities());
@@ -365,7 +365,9 @@ function Dashboard({
       window.location.href = result.url;
       return;
     }
-    setCheckoutState('unavailable');
+    // Transient failure (network/expired token) — retryable, NOT the permanent
+    // billing-disabled 'unavailable' state.
+    setCheckoutState('error');
   }
 
   return (
@@ -434,7 +436,9 @@ function Dashboard({
               ? 'Please wait…'
               : checkoutState === 'unavailable'
                 ? 'Ummat+ launching soon'
-                : 'Upgrade to Ummat+'}
+                : checkoutState === 'error'
+                  ? 'Something went wrong — try again'
+                  : 'Upgrade to Ummat+'}
           </button>
         </div>
       )}

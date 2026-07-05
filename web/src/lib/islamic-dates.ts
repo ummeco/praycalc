@@ -19,17 +19,17 @@
  */
 import umImport from '@umalqura/core';
 
+interface UmAlQuraStatic {
+  hijriToGregorian(hy: number, hm: number, hd: number): { gy: number; gm: number; gd: number };
+  gregorianToHijri(date: Date): { hy: number; hm: number; hd: number };
+}
+
 // CJS-interop guard: the browser bundle exposes `.$` (UmAlQuraStatic) directly,
 // but the SSR/Node module runner can wrap the CJS export as `{ default: ... }`.
-// Unwrap either shape so `um.$` is always the static API.
-const um = ((umImport as { $?: unknown; default?: { $?: unknown } })?.$
-  ? umImport
-  : (umImport as { default: unknown }).default) as {
-  $: {
-    hijriToGregorian(hy: number, hm: number, hd: number): { gy: number; gm: number; gd: number };
-    gregorianToHijri(date: Date): { hy: number; hm: number; hd: number };
-  };
-};
+// Cast through `unknown` (the two module shapes don't structurally overlap) and
+// unwrap either shape so `um.$` is always the static API.
+const umRaw = umImport as unknown as { $?: UmAlQuraStatic; default?: { $: UmAlQuraStatic } };
+const um: { $: UmAlQuraStatic } = umRaw.$ ? { $: umRaw.$ } : (umRaw.default as { $: UmAlQuraStatic });
 
 export interface IslamicYearDates {
   hijriYear: number;

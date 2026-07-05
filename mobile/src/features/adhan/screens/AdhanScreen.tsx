@@ -50,7 +50,7 @@ const PRAYER_NAMES: PrayerName[] = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
 // ── Screen ────────────────────────────────────────────────────────────────────
 
 export default function AdhanScreen() {
-  const [{ data, fetching, error }] = useQuery({ query: GET_ADHAN_LIBRARY });
+  const [{ data, fetching, error }, reexecuteQuery] = useQuery({ query: GET_ADHAN_LIBRARY });
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [playingId, setPlayingId] = useState<string | null>(null);
   const [enabledPrayers, setEnabledPrayers] = useState<Record<PrayerName, boolean>>({
@@ -77,7 +77,7 @@ export default function AdhanScreen() {
 
   // ── 7 UI States ──────────────────────────────────────────────────────────────
   if (fetching && !data) return <SkeletonState rows={6} />;
-  if (error) return <ErrorState error={error} onRetry={() => {}} />;
+  if (error) return <ErrorState error={error} onRetry={() => reexecuteQuery({ requestPolicy: 'network-only' })} />;
   if (!data?.pc_adhan_voice?.length) {
     return <EmptyState message="No adhan voices available." />;
   }

@@ -14,6 +14,7 @@ import {
   View, Text, TouchableOpacity, StyleSheet, SafeAreaView, ScrollView,
   ActivityIndicator,
 } from 'react-native';
+import { router } from 'expo-router';
 import * as Location from 'expo-location';
 import { Colors } from '../../constants/colors';
 import { useSettingsStore } from '../settings/store/useSettingsStore';
@@ -253,10 +254,7 @@ export default function OnboardingScreen({ onComplete }: OnboardingScreenProps) 
             </Text>
             <TouchableOpacity
               style={styles.primaryBtn}
-              onPress={() => {
-                // ADR-DEFERRED (P2-E5-W02-S02-T01): navigate to sign-in/register flow — deferred to auth sprint
-                goNext();
-              }}
+              onPress={() => router.push('/sign-in')}
               accessibilityRole="button"
               accessibilityLabel="Create account"
             >

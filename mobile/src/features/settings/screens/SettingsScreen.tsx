@@ -19,6 +19,7 @@ import {
   Alert,
   Linking,
 } from 'react-native';
+import { router } from 'expo-router';
 import * as Location from 'expo-location';
 import { Colors } from '../../../constants/colors';
 import { CALC_METHODS } from '../../../constants/methods';
@@ -118,7 +119,7 @@ export default function SettingsScreen() {
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.button, styles.buttonSecondary]}
-          onPress={() => {/* Navigate to city-search route via Expo Router */}}
+          onPress={() => router.push('/city-search')}
         >
           <Text style={styles.buttonSecondaryText}>Search City Manually</Text>
         </TouchableOpacity>

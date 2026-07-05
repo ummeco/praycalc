@@ -125,3 +125,25 @@ Overall site health is **weak despite polished code quality** — the underlying
 - `calendar.ics.ts` correctly implements RFC 5545 75-octet line folding — an easy detail to miss, handled properly.
 - Theology framing on `/about` is appropriately hedged and consistent with the PPI theology gate (Shia/Jafari method correctly excluded from exposed list).
 - No fabricated content found anywhere in the audit — privacy policy claims match actual code behavior.
+---
+
+## Update 2026-07-05 — P1 backlog completed
+
+All deferred/product-decision items from this review are now shipped:
+- ✅ Shared `Footer.astro` rendered by RootLayout on every page (was absent on
+  8+ pages / hand-rolled + drifting); WCAG-AA link contrast. Inline home/about
+  footers removed.
+- ✅ Home page `<h1>` (sr-only) — a11y/SEO.
+- ✅ `/times` "500+ cities" → "any city worldwide" (accurate).
+- ✅ `/[...slug]` unresolved city → `Astro.rewrite('/404')` (proper 404, no 302
+  double-hop; 404.astro sets status).
+- ✅ `/contact` real channels: email (salam@praycalc.com), GitHub issues, docs.
+- ✅ CalendarModal dead PDF buttons → `window.print()` + scoped `@media print`
+  (clean calendar save-as-PDF); .ics remains primary export.
+- ✅ Checkout dead-end → retryable 'error' state (was permanent 'launching soon'
+  on any transient failure).
+
+Only remaining item: a scholar sanity-check of the /about Dynamic-Method framing
+(human review, per the PPI theology gate — not a code change).
+
+**Note:** `salam@praycalc.com` needs email/DNS routing configured to receive mail.

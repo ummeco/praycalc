@@ -1,94 +1,68 @@
 /**
- * Purpose: Wrapper around @acamarata/pray-calc for RN consumption
- * Inputs: latitude, longitude, date, method key, madhab
- * Outputs: PrayerTimes object with 6 Date values
- * Constraints: Zero-dependency wrapper. Tehran/Jafari methods must not be passed.
+ * Purpose: Prayer-time + qibla wrapper for RN consumption.
+ *   Prayer times use the validated `pray-calc` package (v2, the same engine the
+ *   web app uses) via calcTimesAll — NREL SPA solar position + the Dynamic Method,
+ *   with fixed-angle method presets and Hanafi/Shafi Asr. Replaces the former
+ *   hand-rolled placeholder algorithm.
+ * Inputs: latitude, longitude, date, method key, madhab, tz offset (hours).
+ * Outputs: PrayerTimes { Fajr, Sunrise, Dhuhr, Asr, Maghrib, Isha } as Date objects.
+ * Constraints: Tehran/Jafari never passed (not in pray-calc's METHODS — D-P3-19).
  * SPORT: REGISTRY-FUNCTIONS.md#praycalc-mobile-lib-prayer-calc
  */
 
+import { calcTimesAll } from 'pray-calc';
 import type { PrayerTimes, Madhab } from '../../types/prayer';
 import type { CalcMethodKey } from '../../constants/methods';
 
+const KAABA_LAT = 21.4225;
+const KAABA_LNG = 39.8262;
+
 /**
- * Calculate qibla bearing from given coordinates using great-circle formula.
- * Uses the great-circle bearing formula (NOT planar approximation — CR-C requirement).
- *
- * @param lat - Observer latitude in degrees
- * @param lng - Observer longitude in degrees
- * @returns Bearing in degrees (0-360) toward Kaaba (21.4225°N, 39.8262°E)
+ * Great-circle bearing toward the Kaaba (NOT planar approximation — CR-C requirement).
+ * @returns Bearing in degrees (0-360).
  */
 export function getQiblaDirection(lat: number, lng: number): number {
-  const KAABA_LAT = 21.4225;
-  const KAABA_LNG = 39.8262;
-
   const toRad = (deg: number) => (deg * Math.PI) / 180;
   const toDeg = (rad: number) => (rad * 180) / Math.PI;
-
   const lat1 = toRad(lat);
   const lat2 = toRad(KAABA_LAT);
   const dLng = toRad(KAABA_LNG - lng);
-
-  // Great-circle bearing formula
   const y = Math.sin(dLng) * Math.cos(lat2);
   const x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLng);
   const bearing = toDeg(Math.atan2(y, x));
-
   return (bearing + 360) % 360;
 }
 
 /**
- * Get madhab-specific Asr factor (Shafi = 1 shadow length, Hanafi = 2 shadow lengths)
+ * Map the app's method key to pray-calc's METHODS map id.
+ * Keys not present (e.g. 'Custom') fall back to the Dynamic Method default.
  */
-function getAsrFactor(madhab: Madhab): number {
-  return madhab === 'Hanafi' ? 2 : 1;
-}
+const METHOD_ID: Partial<Record<CalcMethodKey, string>> = {
+  MWL: 'MWL',
+  ISNA: 'ISNA',
+  Egypt: 'Egypt',
+  Makkah: 'UAQ', // Umm Al-Qura University, Makkah
+  Karachi: 'Karachi',
+  UOIF: 'UOIF',
+  // 'Custom' → undefined → Dynamic Method (calcTimesAll top-level Fajr/Isha)
+};
 
-/**
- * Convert decimal hours to a Date object for a given base date
- */
-function hoursToDate(baseDate: Date, hours: number): Date {
-  const d = new Date(baseDate);
-  const h = Math.floor(hours);
-  const m = Math.floor((hours - h) * 60);
-  const s = Math.floor(((hours - h) * 60 - m) * 60);
-  d.setHours(h, m, s, 0);
+/** Parse a "HH:MM" or "HH:MM:SS" clock string onto the given base date (local). */
+function clockToDate(base: Date, clock: string | undefined): Date {
+  const d = new Date(base);
+  if (!clock || !/^\d{1,2}:\d{2}/.test(clock)) {
+    d.setHours(0, 0, 0, 0);
+    return d;
+  }
+  const [h, m, s] = clock.split(':').map((n) => parseInt(n, 10));
+  d.setHours(h ?? 0, m ?? 0, s ?? 0, 0);
   return d;
 }
 
 /**
- * Solar declination in degrees for day-of-year
- */
-function solarDeclination(dayOfYear: number): number {
-  return 23.45 * Math.sin(((2 * Math.PI) / 365) * (dayOfYear - 81));
-}
-
-/**
- * Day of year for a given Date
- */
-function getDayOfYear(date: Date): number {
-  const start = new Date(date.getFullYear(), 0, 0);
-  const diff = date.getTime() - start.getTime();
-  return Math.floor(diff / 86400000);
-}
-
-/**
- * Equation of time in minutes (approximation)
- */
-function equationOfTime(dayOfYear: number): number {
-  const B = (360 / 365) * (dayOfYear - 81);
-  const Br = (B * Math.PI) / 180;
-  return 9.87 * Math.sin(2 * Br) - 7.53 * Math.cos(Br) - 1.5 * Math.sin(Br);
-}
-
-/**
- * Calculate prayer times using a simplified NREL-inspired algorithm.
- * For production parity, @acamarata/pray-calc (full NREL SPA) should be called here
- * once the ESM/CJS export is compatible with Hermes. This implementation provides
- * correct output for CI/typecheck purposes and will be swapped to the package
- * when the Hermes-compatible build is available (tracked: pci-praycalc-pray-calc-hermes).
- *
- * Reference calculations have been validated against known reference tables for
- * Makkah (MWL) and New York (ISNA) within 1-minute tolerance.
+ * Calculate prayer times using the pray-calc v2 engine (NREL SPA), mirroring the
+ * web app's getPrayerTimes(). Method presets come from the returned `.Methods`
+ * map keyed by method id; unknown keys fall back to the Dynamic Method.
  */
 export function calculatePrayerTimes(
   date: Date,
@@ -98,67 +72,24 @@ export function calculatePrayerTimes(
   methodKey: CalcMethodKey,
   madhab: Madhab = 'Shafi',
 ): PrayerTimes {
-  const toRad = (d: number) => (d * Math.PI) / 180;
-  const toDeg = (r: number) => (r * 180) / Math.PI;
-
-  const dayOfYear = getDayOfYear(date);
-  const decl = toRad(solarDeclination(dayOfYear));
-  const eot = equationOfTime(dayOfYear);
-  const lat = toRad(latitude);
-
-  // Solar noon (true solar time)
-  const lngCorrection = longitude / 15;
-  const noon = 12 - lngCorrection - eot / 60 + timezone;
-
-  // Fajr/Isha angles by method
-  const methodAngles: Record<CalcMethodKey, { fajr: number; isha: number; ishaMinutes?: number }> = {
-    MWL: { fajr: 18, isha: 17 },
-    ISNA: { fajr: 15, isha: 15 },
-    Egypt: { fajr: 19.5, isha: 17.5 },
-    Makkah: { fajr: 18.5, isha: 17, ishaMinutes: 90 },
-    Karachi: { fajr: 18, isha: 18 },
-    UOIF: { fajr: 12, isha: 12 },
-    Custom: { fajr: 15, isha: 15 },
+  const hanafi = madhab === 'Hanafi';
+  // calcTimesAll(date, lat, lng, tzOffset, dst, elevation?, pressure?, hanafi)
+  const all = calcTimesAll(date, latitude, longitude, timezone, 0, undefined, undefined, hanafi) as {
+    Fajr?: string; Sunrise?: string; Dhuhr?: string; Asr?: string; Maghrib?: string; Isha?: string;
+    Methods?: Record<string, [string, string]>;
   };
 
-  const angles = methodAngles[methodKey];
-  const asrFactor = getAsrFactor(madhab);
+  const methodId = METHOD_ID[methodKey];
+  const methodEntry = methodId ? all.Methods?.[methodId] : undefined; // [Fajr, Isha]
+  const fajr = methodEntry?.[0] ?? all.Fajr;
+  const isha = methodEntry?.[1] ?? all.Isha;
 
-  // Hour angle helper: angle below horizon => prayer time offset from noon
-  function hourAngle(angle: number): number {
-    const cosHA =
-      (-Math.sin(toRad(angle)) - Math.sin(lat) * Math.sin(decl)) /
-      (Math.cos(lat) * Math.cos(decl));
-    if (cosHA < -1 || cosHA > 1) return NaN;
-    return toDeg(Math.acos(cosHA)) / 15;
-  }
-
-  // Asr hour angle (shadow factor)
-  function asrHourAngle(): number {
-    const asrAlt = toDeg(Math.atan(1 / (asrFactor + Math.tan(Math.abs(lat - decl)))));
-    const cosHA =
-      (Math.sin(toRad(asrAlt)) - Math.sin(lat) * Math.sin(decl)) /
-      (Math.cos(lat) * Math.cos(decl));
-    if (cosHA < -1 || cosHA > 1) return NaN;
-    return toDeg(Math.acos(cosHA)) / 15;
-  }
-
-  const fajrHA = hourAngle(angles.fajr);
-  const sunriseHA = hourAngle(0.833); // standard refraction
-  const asrHA = asrHourAngle();
-  const maghribHA = hourAngle(0.833);
-  const ishaHA = angles.ishaMinutes != null
-    ? undefined
-    : hourAngle(angles.isha);
-
-  const fajr = hoursToDate(date, noon - fajrHA);
-  const sunrise = hoursToDate(date, noon - sunriseHA);
-  const dhuhr = hoursToDate(date, noon + 0.05); // add ~3 minutes after true noon
-  const asr = hoursToDate(date, noon + asrHA);
-  const maghrib = hoursToDate(date, noon + maghribHA);
-  const isha = angles.ishaMinutes != null
-    ? hoursToDate(date, noon + maghribHA + angles.ishaMinutes / 60)
-    : hoursToDate(date, noon + (ishaHA ?? hourAngle(17)));
-
-  return { Fajr: fajr, Sunrise: sunrise, Dhuhr: dhuhr, Asr: asr, Maghrib: maghrib, Isha: isha };
+  return {
+    Fajr: clockToDate(date, fajr),
+    Sunrise: clockToDate(date, all.Sunrise),
+    Dhuhr: clockToDate(date, all.Dhuhr),
+    Asr: clockToDate(date, all.Asr),
+    Maghrib: clockToDate(date, all.Maghrib),
+    Isha: clockToDate(date, isha),
+  };
 }

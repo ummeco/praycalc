@@ -73,7 +73,12 @@ export default defineConfig({
     },
   },
   vite: {
-    plugins: [tailwindcss()],
+    // Cast: vite@8 resolves under two @types/node peers in the workspace, so
+    // tailwindcss()'s Plugin type is nominally distinct from astro's expected
+    // PluginOption (structurally identical; builds succeed). Localized cast
+    // avoids a broader @types/node dedupe.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    plugins: [tailwindcss()] as any,
     resolve: {
       alias: {
         '@': '/src',

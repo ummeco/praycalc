@@ -17,6 +17,7 @@ import {
   I18nManager,
 } from 'react-native';
 import * as Location from 'expo-location';
+import { router } from 'expo-router';
 import { Colors } from '../../../constants/colors';
 import { CALC_METHODS } from '../../../constants/methods';
 import { useSettingsStore } from '../../settings/store/useSettingsStore';
@@ -137,7 +138,7 @@ export default function PrayerTimesScreen() {
         title="Set Your City"
         subtitle="Enable location or manually select a city to see prayer times."
         action="Set Location"
-        onAction={() => {/* Navigate to city search — wired via Expo Router in T-03 */}}
+        onAction={() => router.push('/city-search')}
       />
     );
   }

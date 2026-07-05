@@ -79,11 +79,11 @@ test.describe("City page — prayer times", () => {
     const compactSearch = page.locator('input[placeholder="Search city…"]');
     await compactSearch.fill("Cairo");
 
-    await expect(page.locator(".search-dropdown")).toBeVisible({
+    await expect(page.locator(".location-search-dropdown")).toBeVisible({
       timeout: 5_000,
     });
 
-    await page.locator(".search-dropdown-item").first().click();
+    await page.locator(".location-search-item").first().click();
     await page.waitForURL(/\/eg\//, { timeout: 15_000 });
     expect(page.url()).toMatch(/\/eg\//);
   });

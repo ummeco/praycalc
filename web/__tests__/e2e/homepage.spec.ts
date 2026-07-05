@@ -45,16 +45,16 @@ test.describe("Homepage", () => {
     await searchInput.fill("London");
 
     // Wait for debounce (250ms) + results to appear
-    await expect(page.locator(".search-dropdown")).toBeVisible({
+    await expect(page.locator(".location-search-dropdown")).toBeVisible({
       timeout: 5_000,
     });
 
     // At least one result should appear
-    const results = page.locator(".search-dropdown-item");
+    const results = page.locator(".location-search-item");
     await expect(results.first()).toBeVisible();
 
     // Result name should be visible (green text)
-    const firstName = results.first().locator(".search-result-name");
+    const firstName = results.first().locator(".location-search-name");
     await expect(firstName).toBeVisible();
     await expect(firstName).not.toBeEmpty();
   });
@@ -63,11 +63,11 @@ test.describe("Homepage", () => {
     const searchInput = page.locator('[data-testid="city-search-input"]');
     await searchInput.fill("Mecca");
 
-    await expect(page.locator(".search-dropdown")).toBeVisible({
+    await expect(page.locator(".location-search-dropdown")).toBeVisible({
       timeout: 5_000,
     });
 
-    const slugHint = page.locator(".search-result-slug").first();
+    const slugHint = page.locator(".location-search-slug").first();
     await expect(slugHint).toBeVisible();
     // Slug should start with /
     await expect(slugHint).toContainText("/");
@@ -77,12 +77,12 @@ test.describe("Homepage", () => {
     const searchInput = page.locator('[data-testid="city-search-input"]');
     await searchInput.fill("New York");
 
-    await expect(page.locator(".search-dropdown")).toBeVisible({
+    await expect(page.locator(".location-search-dropdown")).toBeVisible({
       timeout: 5_000,
     });
 
     // Click the first result
-    await page.locator(".search-dropdown-item").first().click();
+    await page.locator(".location-search-item").first().click();
 
     // Should navigate away from homepage
     await page.waitForURL(/\/us\//, { timeout: 15_000 });
@@ -93,12 +93,12 @@ test.describe("Homepage", () => {
     const searchInput = page.locator('[data-testid="city-search-input"]');
     await searchInput.fill("London");
 
-    await expect(page.locator(".search-dropdown")).toBeVisible({
+    await expect(page.locator(".location-search-dropdown")).toBeVisible({
       timeout: 5_000,
     });
 
     await searchInput.press("Escape");
-    await expect(page.locator(".search-dropdown")).not.toBeVisible();
+    await expect(page.locator(".location-search-dropdown")).not.toBeVisible();
   });
 
   test("moon phase card is rendered", async ({ page }) => {

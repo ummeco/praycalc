@@ -287,3 +287,14 @@ html, body {
 .info-page-back { color: rgba(255,255,255,0.6); text-decoration: none; font-size: 0.875rem; }
 .info-page-back:hover { color: #fff; }
 .info-section { display: flex; flex-direction: column; gap: 16px; }
+
+/* --- Print: calendar modal export (window.print → save-as-PDF) --- */
+@media print {
+  body * { visibility: hidden; }
+  .cal-modal, .cal-modal * { visibility: visible; }
+  .cal-modal {
+    position: absolute; inset: 0; margin: 0; max-height: none;
+    width: 100%; box-shadow: none; overflow: visible; background: #fff; color: #000;
+  }
+  .modal-close, .cal-pdf-btn, .cal-nav-btn, .cal-back-btn { display: none !important; }
+}

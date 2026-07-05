@@ -1,4 +1,5 @@
 ---
+import Footer from '@/components/Footer.astro';
 /**
  * RootLayout.astro — Root page shell for all PrayCalc pages.
  *
@@ -24,6 +25,7 @@ interface Props {
   locale?: string;
   dir?: 'ltr' | 'rtl';
   noIndex?: boolean;
+  hideFooter?: boolean;
 }
 
 const {
@@ -34,6 +36,7 @@ const {
   locale = 'en',
   dir,
   noIndex = false,
+  hideFooter = false,
 } = Astro.props;
 
 // Active locale: NEXT_LOCALE cookie (via middleware) wins over the prop default.
@@ -110,5 +113,6 @@ const umamiSiteId = import.meta.env.UMAMI_WEBSITE_ID;
     <a href="#main-content" class="skip-to-content">Skip to main content</a>
 
     <slot />
+    {!hideFooter && <Footer />}
   </body>
 </html>
