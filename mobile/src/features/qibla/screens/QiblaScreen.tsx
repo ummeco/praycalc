@@ -10,6 +10,7 @@
 
 import React, { useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, Animated } from 'react-native';
+import { router } from 'expo-router';
 import { Colors } from '../../../constants/colors';
 import { useSettingsStore } from '../../settings/store/useSettingsStore';
 import { useQibla } from '../hooks/useQibla';
@@ -70,7 +71,7 @@ export default function QiblaScreen() {
         title="Location Required"
         subtitle="Set your location in Settings to find the Qibla direction."
         action="Set Location"
-        onAction={() => {/* Navigate to city-search */}}
+        onAction={() => router.push('/city-search')}
       />
     );
   }

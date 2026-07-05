@@ -2,7 +2,7 @@
   "name": "@ummat/praycalc-mobile",
   "version": "0.1.0",
   "private": true,
-  "description": "PrayCalc — React Native + Expo SDK 53 prayer times app",
+  "description": "PrayCalc \u2014 React Native + Expo SDK 53 prayer times app",
   "main": "expo-router/entry",
   "scripts": {
     "start": "expo start",
@@ -55,7 +55,8 @@
     "react-native-screens": "~4.10.0",
     "react-native-track-player": "^4.1.1",
     "urql": "^4.1.0",
-    "zustand": "^5.0.0"
+    "zustand": "^5.0.0",
+    "pray-calc": "^2.1.2"
   },
   "devDependencies": {
     "@babel/core": "^7.24.0",

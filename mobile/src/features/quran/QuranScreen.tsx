@@ -18,6 +18,7 @@ import {
 import { Colors } from '../../constants/colors';
 import { SkeletonState, EmptyState } from '../../components/states';
 import { mmkv } from '../../lib/storage/mmkv';
+import SURAH_META from './data/surahs.json';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -42,20 +43,31 @@ const BOOKMARKS_KEY = 'pc:quran:bookmarks';
 
 // ── Surah metadata (first 7 surahs — full 114 loaded from bundled JSON in production) ──
 
+/** Raw shape of the bundled 114-surah metadata (data/surahs.json). */
+interface SurahMetaRaw {
+  number: number;
+  nameArabic: string;
+  nameEnglish: string;
+  nameTranslit: string;
+  totalAyahs: number;
+  revelationType: string; // 'Meccan' | 'Medinan'
+  juzStart: number;
+}
+
 /**
- * Arabic surah names: Uthmani script, full tashkeel.
- * Verified against Tanzil.net (quran.com reference) — DO NOT modify without re-verification.
+ * All 114 surahs (metadata) — Arabic names in Uthmani script, from the verified
+ * bundled corpus (data/surahs.json). DO NOT hand-edit Arabic without re-verifying
+ * against Tanzil.net.
  */
-export const SURAHS: Surah[] = [
-  { number: 1,  arabicName: 'الْفَاتِحَة',         transliteratedName: 'Al-Fatiha',      englishName: 'The Opening',       verseCount: 7,   revelationType: 'meccan',  juzNumber: 1  },
-  { number: 2,  arabicName: 'الْبَقَرَة',           transliteratedName: 'Al-Baqara',      englishName: 'The Cow',            verseCount: 286, revelationType: 'medinan', juzNumber: 1  },
-  { number: 3,  arabicName: 'آلْ عِمْرَان',         transliteratedName: "Al-Imran",       englishName: "The Family of Imran", verseCount: 200, revelationType: 'medinan', juzNumber: 3  },
-  { number: 4,  arabicName: 'النِّسَاء',             transliteratedName: 'An-Nisa',        englishName: 'The Women',          verseCount: 176, revelationType: 'medinan', juzNumber: 4  },
-  { number: 5,  arabicName: 'الْمَائِدَة',           transliteratedName: 'Al-Maida',       englishName: 'The Table Spread',   verseCount: 120, revelationType: 'medinan', juzNumber: 6  },
-  { number: 112,arabicName: 'الْإِخْلَاص',           transliteratedName: 'Al-Ikhlas',      englishName: 'The Sincerity',      verseCount: 4,   revelationType: 'meccan',  juzNumber: 30 },
-  { number: 113,arabicName: 'الْفَلَق',             transliteratedName: 'Al-Falaq',       englishName: 'The Daybreak',       verseCount: 5,   revelationType: 'meccan',  juzNumber: 30 },
-  { number: 114,arabicName: 'النَّاس',              transliteratedName: 'An-Nas',         englishName: 'Mankind',            verseCount: 6,   revelationType: 'meccan',  juzNumber: 30 },
-];
+export const SURAHS: Surah[] = (SURAH_META as SurahMetaRaw[]).map((s) => ({
+  number: s.number,
+  arabicName: s.nameArabic,
+  transliteratedName: s.nameTranslit,
+  englishName: s.nameEnglish,
+  verseCount: s.totalAyahs,
+  revelationType: s.revelationType.toLowerCase() === 'medinan' ? 'medinan' : 'meccan',
+  juzNumber: s.juzStart,
+}));
 
 /**
  * Al-Fatiha (1:1-7) — Uthmani script.
@@ -107,17 +119,16 @@ const AL_FATIHA_AYAHS: Ayah[] = [
   },
 ];
 
-// Load ayahs for a given surah number (production: from bundled SQLite / API)
-function loadAyahs(surahNumber: number): Ayah[] {
-  if (surahNumber === 1) return AL_FATIHA_AYAHS;
-  // ADR-DEFERRED (P2-E5-W02-S02-T01): scaffold for other surahs pending full Quran corpus bundling
-  // Production: load from expo-sqlite local DB (bundled Hafs corpus)
-  return Array.from({ length: 3 }, (_, i) => ({
-    number: i + 1,
-    arabic: '﴿ آية قرآنية ﴾', // scaffold — RTL, correct directionality (ADR P2-E5-W02-S02-T01)
-    transliteration: `Ayah ${i + 1} of Surah ${surahNumber} (loading from local DB)`,
-    translation: 'Quran corpus loading. Full text available after first sync.',
-  }));
+// Surahs with verified, bundled ayah text. Others show an honest "coming soon"
+// state rather than placeholder glyphs (Islamic content gate: never display
+// unverified Quran text). The full Hafs corpus is bundled incrementally.
+const BUNDLED_AYAHS: Record<number, Ayah[]> = {
+  1: AL_FATIHA_AYAHS,
+};
+
+/** Verified ayahs for a surah, or null if its text is not yet bundled. */
+function loadAyahs(surahNumber: number): Ayah[] | null {
+  return BUNDLED_AYAHS[surahNumber] ?? null;
 }
 
 // ── Sub-screen: Surah Detail ──────────────────────────────────────────────────
@@ -162,12 +173,23 @@ function SurahDetailView({ surah, onBack }: { surah: Surah; onBack: () => void }
       </View>
       <ScrollView contentContainerStyle={styles.scroll}>
         {/* Bismillah (except At-Tawba 9 and Al-Fatiha 1 which has its own) */}
-        {surah.number !== 1 && surah.number !== 9 && (
+        {ayahs && surah.number !== 1 && surah.number !== 9 && (
           <Text style={styles.bismillah} accessibilityLabel="Bismillah">
             {'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ'}
           </Text>
         )}
-        {ayahs.map((ayah) => {
+        {/* Honest state: text not yet bundled (never show unverified Quran) */}
+        {!ayahs && (
+          <View style={styles.comingSoon}>
+            <Text style={styles.comingSoonArabic}>{surah.arabicName}</Text>
+            <Text style={styles.comingSoonTitle}>Full reading coming soon</Text>
+            <Text style={styles.comingSoonBody}>
+              {surah.transliteratedName} ({surah.verseCount} verses) — verified
+              Uthmani text is being added surah by surah. Al-Fatiha is available now.
+            </Text>
+          </View>
+        )}
+        {(ayahs ?? []).map((ayah) => {
           const key = `${surah.number}:${ayah.number}`;
           const isBookmarked = bookmarks.includes(key);
           return (
@@ -369,4 +391,11 @@ const styles = StyleSheet.create({
     color: Colors.text.primary,
     lineHeight: 22,
   },
+  comingSoon: { alignItems: 'center', padding: 24, gap: 10 },
+  comingSoonArabic: {
+    fontSize: 30, textAlign: 'center', writingDirection: 'rtl',
+    color: Colors.brand.dark, fontWeight: '600', lineHeight: 48,
+  },
+  comingSoonTitle: { fontSize: 16, fontWeight: '700', color: Colors.text.primary },
+  comingSoonBody: { fontSize: 14, color: Colors.text.muted, textAlign: 'center', lineHeight: 21 },
 });
