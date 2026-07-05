@@ -160,13 +160,19 @@ if (tool === 'pnpm') {
 
 if (tool === 'semgrep') {
   // semgrep JSON: { results: [{ check_id, path, extra: { severity, metadata: { rampart } } }] }
+  // Custom rampart/ rules are authored with `severity: ERROR` so semgrep never
+  // filters them out, and carry the real business severity in `metadata.rampart`
+  // instead. That metadata must win over the raw semgrep severity — otherwise
+  // every custom rule (all `severity: ERROR` by convention) gets promoted to
+  // CRITICAL regardless of its own documented rampart severity.
   const results = report.results || [];
   for (const r of results) {
     const rawSev = r.extra?.severity || r.severity || 'WARNING';
     const rampartMeta = r.extra?.metadata?.rampart || '';
     let sev;
-    if (rampartMeta === 'CRITICAL' || rawSev === 'ERROR') sev = 'CRITICAL';
-    else if (rampartMeta === 'HIGH' || rawSev === 'WARNING') sev = 'HIGH';
+    if (rampartMeta) sev = rampartMeta.toUpperCase();
+    else if (rawSev === 'ERROR') sev = 'CRITICAL';
+    else if (rawSev === 'WARNING') sev = 'HIGH';
     else if (rawSev === 'INFO') sev = 'LOW';
     else sev = 'MEDIUM';
     const filePath = r.path || 'unknown';
