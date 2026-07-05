@@ -13,7 +13,7 @@
 
 import React, { useState, useCallback } from 'react';
 import {
-  View, Text, FlatList, TouchableOpacity, StyleSheet, SafeAreaView, ScrollView,
+  View, Text, FlatList, TouchableOpacity, StyleSheet, SafeAreaView, ScrollView, Linking,
 } from 'react-native';
 import { Colors } from '../../constants/colors';
 import { SkeletonState, EmptyState } from '../../components/states';
@@ -178,15 +178,24 @@ function SurahDetailView({ surah, onBack }: { surah: Surah; onBack: () => void }
             {'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ'}
           </Text>
         )}
-        {/* Honest state: text not yet bundled (never show unverified Quran) */}
+        {/* Proper scope: praycalc shows a sample; the full Quran (all 114 surahs
+            with translations & audio) lives on Islam.Wiki. Deep-link out. */}
         {!ayahs && (
           <View style={styles.comingSoon}>
             <Text style={styles.comingSoonArabic}>{surah.arabicName}</Text>
-            <Text style={styles.comingSoonTitle}>Full reading coming soon</Text>
+            <Text style={styles.comingSoonTitle}>{surah.transliteratedName}</Text>
             <Text style={styles.comingSoonBody}>
-              {surah.transliteratedName} ({surah.verseCount} verses) — verified
-              Uthmani text is being added surah by surah. Al-Fatiha is available now.
+              Read {surah.transliteratedName} ({surah.verseCount} verses) with
+              translation and recitation on Islam.Wiki — our full Quran reader.
             </Text>
+            <TouchableOpacity
+              style={styles.wikiBtn}
+              onPress={() => Linking.openURL(`https://islam.wiki/quran/${surah.number}`)}
+              accessibilityRole="link"
+              accessibilityLabel={`Read Surah ${surah.transliteratedName} on Islam.Wiki`}
+            >
+              <Text style={styles.wikiBtnText}>Read on Islam.Wiki →</Text>
+            </TouchableOpacity>
           </View>
         )}
         {(ayahs ?? []).map((ayah) => {
@@ -271,6 +280,18 @@ export default function QuranScreen() {
         contentContainerStyle={{ paddingBottom: 32 }}
         accessible
         accessibilityLabel="Surah list"
+        ListFooterComponent={() => (
+          <TouchableOpacity
+            style={styles.wikiFooter}
+            onPress={() => Linking.openURL('https://islam.wiki/quran')}
+            accessibilityRole="link"
+            accessibilityLabel="Open the full Quran on Islam.Wiki"
+          >
+            <Text style={styles.wikiFooterText}>
+              📖 Full Quran — all 114 surahs, translations & audio on Islam.Wiki →
+            </Text>
+          </TouchableOpacity>
+        )}
       />
     </SafeAreaView>
   );
@@ -398,4 +419,14 @@ const styles = StyleSheet.create({
   },
   comingSoonTitle: { fontSize: 16, fontWeight: '700', color: Colors.text.primary },
   comingSoonBody: { fontSize: 14, color: Colors.text.muted, textAlign: 'center', lineHeight: 21 },
+  wikiBtn: {
+    marginTop: 8, paddingVertical: 12, paddingHorizontal: 24, borderRadius: 10,
+    backgroundColor: Colors.brand.dark,
+  },
+  wikiBtnText: { color: Colors.text.inverse, fontWeight: '700', fontSize: 15 },
+  wikiFooter: {
+    margin: 16, marginTop: 8, padding: 16, borderRadius: 12,
+    backgroundColor: Colors.brand.mid + '1A', borderWidth: 1, borderColor: Colors.brand.mid + '44',
+  },
+  wikiFooterText: { color: Colors.brand.dark, fontWeight: '600', fontSize: 14, textAlign: 'center', lineHeight: 21 },
 });
