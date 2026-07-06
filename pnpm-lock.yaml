@@ -23,6 +23,9 @@ overrides:
   undici: '>=7.28.0'
 
 patchedDependencies:
+  react-native-track-player@4.1.2:
+    hash: 5cccd470f1addf95d5e5b2e2634134d5242396a3de4f71c75c3fa49385b29dd7
+    path: patches/react-native-track-player@4.1.2.patch
   react-native-tvos@0.74.5-0:
     hash: d392e7e2b58a6a68b4fd977b0474c708c62959f8f3f6c6f0b98d86062dbfd8fe
     path: patches/react-native-tvos@0.74.5-0.patch
@@ -218,7 +221,7 @@ importers:
         version: 4.10.0(react-native@0.81.6(@babel/core@7.29.0)(@react-native-community/cli@13.6.9)(@types/react@19.2.14)(react@19.2.4))(react@19.2.4)
       react-native-track-player:
         specifier: ^4.1.1
-        version: 4.1.2(react-native@0.81.6(@babel/core@7.29.0)(@react-native-community/cli@13.6.9)(@types/react@19.2.14)(react@19.2.4))(react@19.2.4)
+        version: 4.1.2(patch_hash=5cccd470f1addf95d5e5b2e2634134d5242396a3de4f71c75c3fa49385b29dd7)(react-native@0.81.6(@babel/core@7.29.0)(@react-native-community/cli@13.6.9)(@types/react@19.2.14)(react@19.2.4))(react@19.2.4)
       urql:
         specifier: ^4.1.0
         version: 4.2.2(@urql/core@5.2.0(graphql@16.14.2))(react@19.2.4)
@@ -20398,7 +20401,7 @@ snapshots:
       react: 19.0.0
       react-native: react-native-tvos@0.74.5-0(patch_hash=d392e7e2b58a6a68b4fd977b0474c708c62959f8f3f6c6f0b98d86062dbfd8fe)(@babel/core@7.29.0)(@babel/preset-env@7.29.7(@babel/core@7.29.0))(@types/react@19.2.14)(react-native-tvos@0.74.5-0)(react@19.0.0)
 
-  react-native-track-player@4.1.2(react-native@0.81.6(@babel/core@7.29.0)(@react-native-community/cli@13.6.9)(@types/react@19.2.14)(react@19.2.4))(react@19.2.4):
+  react-native-track-player@4.1.2(patch_hash=5cccd470f1addf95d5e5b2e2634134d5242396a3de4f71c75c3fa49385b29dd7)(react-native@0.81.6(@babel/core@7.29.0)(@react-native-community/cli@13.6.9)(@types/react@19.2.14)(react@19.2.4))(react@19.2.4):
     dependencies:
       react: 19.2.4
       react-native: 0.81.6(@babel/core@7.29.0)(@react-native-community/cli@13.6.9)(@types/react@19.2.14)(react@19.2.4)

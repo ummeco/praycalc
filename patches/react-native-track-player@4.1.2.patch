@@ -1,0 +1,341 @@
+diff --git a/lib/src/TrackPlayerModule.web.js b/lib/src/TrackPlayerModule.web.js
+index 0fc943e2835508a129eaaef5d9e3fb40d4b5f9f7..b9b35af20241131116685c84d9da23118a07e44d 100644
+--- a/lib/src/TrackPlayerModule.web.js
++++ b/lib/src/TrackPlayerModule.web.js
+@@ -1,2 +1,2 @@
+-import TrackPlayerModule from '../web';
++import TrackPlayerModule from '../web/index.js';
+ export default TrackPlayerModule;
+diff --git a/lib/src/constants/Capability.js b/lib/src/constants/Capability.js
+index cf92d7b47d0adfc315222e785bdbadf6977702bf..b4b7fbcc9d670ab0560fa217c48cf81ad3465ed8 100644
+--- a/lib/src/constants/Capability.js
++++ b/lib/src/constants/Capability.js
+@@ -1,4 +1,4 @@
+-import TrackPlayer from '../TrackPlayerModule';
++import TrackPlayer from '../TrackPlayerModule.js';
+ export var Capability;
+ (function (Capability) {
+     Capability[Capability["Play"] = TrackPlayer.CAPABILITY_PLAY] = "Play";
+diff --git a/lib/src/constants/PitchAlgorithm.js b/lib/src/constants/PitchAlgorithm.js
+index 900c52f216745bda9a5c05eecc33edadee483302..440e773a518e5519fa6c0ff38e9df36a07bcdb93 100644
+--- a/lib/src/constants/PitchAlgorithm.js
++++ b/lib/src/constants/PitchAlgorithm.js
+@@ -1,4 +1,4 @@
+-import TrackPlayer from '../TrackPlayerModule';
++import TrackPlayer from '../TrackPlayerModule.js';
+ export var PitchAlgorithm;
+ (function (PitchAlgorithm) {
+     /**
+diff --git a/lib/src/constants/RatingType.js b/lib/src/constants/RatingType.js
+index 1799b6290d455f086e8e0901088d2b71470dac2d..d86b03acefd62ec864663ddeb4285591b292f81f 100644
+--- a/lib/src/constants/RatingType.js
++++ b/lib/src/constants/RatingType.js
+@@ -1,4 +1,4 @@
+-import TrackPlayer from '../TrackPlayerModule';
++import TrackPlayer from '../TrackPlayerModule.js';
+ export var RatingType;
+ (function (RatingType) {
+     RatingType[RatingType["Heart"] = TrackPlayer.RATING_HEART] = "Heart";
+diff --git a/lib/src/constants/RepeatMode.js b/lib/src/constants/RepeatMode.js
+index ac339ecb4d0cec0618f64f0d4b60b1c66195bcd0..8f150d9c10777f7baad6af2fe154566dc3439625 100644
+--- a/lib/src/constants/RepeatMode.js
++++ b/lib/src/constants/RepeatMode.js
+@@ -1,4 +1,4 @@
+-import TrackPlayer from '../TrackPlayerModule';
++import TrackPlayer from '../TrackPlayerModule.js';
+ export var RepeatMode;
+ (function (RepeatMode) {
+     /** Playback stops when the last track in the queue has finished playing. */
+diff --git a/lib/src/constants/index.js b/lib/src/constants/index.js
+index c9381810ce3d8b108990608cd7fe91fd803da878..c4ac855c46b9dc803b7b161e08b0459fc7cd7d77 100644
+--- a/lib/src/constants/index.js
++++ b/lib/src/constants/index.js
+@@ -1,12 +1,12 @@
+-export * from './AndroidAudioContentType';
+-export * from './AppKilledPlaybackBehavior';
+-export * from './Capability';
+-export * from './Event';
+-export * from './IOSCategory';
+-export * from './IOSCategoryMode';
+-export * from './IOSCategoryOptions';
+-export * from './PitchAlgorithm';
+-export * from './RatingType';
+-export * from './RepeatMode';
+-export * from './State';
+-export * from './TrackType';
++export * from './AndroidAudioContentType.js';
++export * from './AppKilledPlaybackBehavior.js';
++export * from './Capability.js';
++export * from './Event.js';
++export * from './IOSCategory.js';
++export * from './IOSCategoryMode.js';
++export * from './IOSCategoryOptions.js';
++export * from './PitchAlgorithm.js';
++export * from './RatingType.js';
++export * from './RepeatMode.js';
++export * from './State.js';
++export * from './TrackType.js';
+diff --git a/lib/src/hooks/index.js b/lib/src/hooks/index.js
+index c914e689c9f517eb132b206ffbce99708be0156e..3060db71fbab78a4db9e5b04a4518b14726cda4f 100644
+--- a/lib/src/hooks/index.js
++++ b/lib/src/hooks/index.js
+@@ -1,6 +1,6 @@
+-export * from './useActiveTrack';
+-export * from './useIsPlaying';
+-export * from './usePlayWhenReady';
+-export * from './usePlaybackState';
+-export * from './useProgress';
+-export * from './useTrackPlayerEvents';
++export * from './useActiveTrack.js';
++export * from './useIsPlaying.js';
++export * from './usePlayWhenReady.js';
++export * from './usePlaybackState.js';
++export * from './useProgress.js';
++export * from './useTrackPlayerEvents.js';
+diff --git a/lib/src/hooks/useActiveTrack.js b/lib/src/hooks/useActiveTrack.js
+index 953182876af51039321bdd95863fe664af092d9c..16e21fa61c417456e7fa7ae9dbe6fb875df95cc2 100644
+--- a/lib/src/hooks/useActiveTrack.js
++++ b/lib/src/hooks/useActiveTrack.js
+@@ -1,7 +1,7 @@
+ import { useState, useEffect } from 'react';
+-import { getActiveTrack } from '../trackPlayer';
+-import { Event } from '../constants';
+-import { useTrackPlayerEvents } from './useTrackPlayerEvents';
++import { getActiveTrack } from '../trackPlayer.js';
++import { Event } from '../constants/index.js';
++import { useTrackPlayerEvents } from './useTrackPlayerEvents.js';
+ export const useActiveTrack = () => {
+     const [track, setTrack] = useState();
+     // Sets the initial index (if still undefined)
+diff --git a/lib/src/hooks/useIsPlaying.js b/lib/src/hooks/useIsPlaying.js
+index 6757ebb47e6ca310724e0e798b94259a794321ec..6d50af7b9da4212401bdce15e979fe14a397adf0 100644
+--- a/lib/src/hooks/useIsPlaying.js
++++ b/lib/src/hooks/useIsPlaying.js
+@@ -1,7 +1,7 @@
+ import TrackPlayer from '..';
+-import { State } from '../constants';
+-import { usePlayWhenReady } from './usePlayWhenReady';
+-import { usePlaybackState } from './usePlaybackState';
++import { State } from '../constants/index.js';
++import { usePlayWhenReady } from './usePlayWhenReady.js';
++import { usePlaybackState } from './usePlaybackState.js';
+ /**
+  * Tells whether the TrackPlayer is in a mode that most people would describe
+  * as "playing." Great for UI to decide whether to show a Play or Pause button.
+diff --git a/lib/src/hooks/usePlayWhenReady.js b/lib/src/hooks/usePlayWhenReady.js
+index d6b0d26687b901d1d6a13c358da02e0cc163ab20..b3764d3d033b6575ecb2f497e84a0419e95561b0 100644
+--- a/lib/src/hooks/usePlayWhenReady.js
++++ b/lib/src/hooks/usePlayWhenReady.js
+@@ -1,6 +1,6 @@
+ import { useState, useEffect } from 'react';
+-import { getPlayWhenReady, addEventListener } from '../trackPlayer';
+-import { Event } from '../constants';
++import { getPlayWhenReady, addEventListener } from '../trackPlayer.js';
++import { Event } from '../constants/index.js';
+ export const usePlayWhenReady = () => {
+     const [playWhenReady, setPlayWhenReady] = useState(undefined);
+     useEffect(() => {
+diff --git a/lib/src/hooks/usePlaybackState.js b/lib/src/hooks/usePlaybackState.js
+index a2e9513137976a333f799a0325e010206f6c9671..723c22418dcd392971f0c873a036795e891b70a2 100644
+--- a/lib/src/hooks/usePlaybackState.js
++++ b/lib/src/hooks/usePlaybackState.js
+@@ -1,6 +1,6 @@
+ import { useEffect, useState } from 'react';
+-import { getPlaybackState, addEventListener } from '../trackPlayer';
+-import { Event } from '../constants';
++import { getPlaybackState, addEventListener } from '../trackPlayer.js';
++import { Event } from '../constants/index.js';
+ /**
+  * Get current playback state and subsequent updates.
+  *
+diff --git a/lib/src/hooks/useProgress.js b/lib/src/hooks/useProgress.js
+index acd52501385f238161e084e9d9aed4d74bbf2622..4b0ab54693971ee3f5c7adcb79106c5c4481812e 100644
+--- a/lib/src/hooks/useProgress.js
++++ b/lib/src/hooks/useProgress.js
+@@ -1,7 +1,7 @@
+ import { useEffect, useState } from 'react';
+-import { getProgress } from '../trackPlayer';
+-import { Event } from '../constants';
+-import { useTrackPlayerEvents } from './useTrackPlayerEvents';
++import { getProgress } from '../trackPlayer.js';
++import { Event } from '../constants/index.js';
++import { useTrackPlayerEvents } from './useTrackPlayerEvents.js';
+ const INITIAL_STATE = {
+     position: 0,
+     duration: 0,
+diff --git a/lib/src/hooks/useTrackPlayerEvents.js b/lib/src/hooks/useTrackPlayerEvents.js
+index a91bed9f41a178f4b854eab03d2a67e4da97c615..cc5b02699d62a0488fda3b209b1f56bd7c7a1d05 100644
+--- a/lib/src/hooks/useTrackPlayerEvents.js
++++ b/lib/src/hooks/useTrackPlayerEvents.js
+@@ -1,6 +1,6 @@
+ import { useEffect, useRef } from 'react';
+-import { addEventListener } from '../trackPlayer';
+-import { Event } from '../constants';
++import { addEventListener } from '../trackPlayer.js';
++import { Event } from '../constants/index.js';
+ /**
+  * Attaches a handler to the given TrackPlayer events and performs cleanup on unmount
+  * @param events - TrackPlayer events to subscribe to
+diff --git a/lib/src/index.js b/lib/src/index.js
+index ea0697e2bb1c1574746adb5d16c6cd540256e110..067615e25d185f1ee1b898adefa6084e4adb1210 100644
+--- a/lib/src/index.js
++++ b/lib/src/index.js
+@@ -1,5 +1,5 @@
+-import * as TrackPlayer from './trackPlayer';
+-export * from './constants';
+-export * from './hooks';
+-export * from './interfaces';
++import * as TrackPlayer from './trackPlayer.js';
++export * from './constants/index.js';
++export * from './hooks/index.js';
++export * from './interfaces/index.js';
+ export default TrackPlayer;
+diff --git a/lib/src/interfaces/events/EventPayloadByEvent.js b/lib/src/interfaces/events/EventPayloadByEvent.js
+index 8de76fbdb960348c2cca9606af16feb88767ee5e..9ff68e6c76a398997a01d8b13c9d0e303448bd1f 100644
+--- a/lib/src/interfaces/events/EventPayloadByEvent.js
++++ b/lib/src/interfaces/events/EventPayloadByEvent.js
+@@ -1 +1 @@
+-import { Event } from '../../constants';
++import { Event } from '../../constants/index.js';
+diff --git a/lib/src/interfaces/events/index.js b/lib/src/interfaces/events/index.js
+index 92b5df2a41eaf0d69e835d6c7f65dac011e91753..ad37a3d9db282d87f748c4073125f34a6fe7563b 100644
+--- a/lib/src/interfaces/events/index.js
++++ b/lib/src/interfaces/events/index.js
+@@ -1,16 +1,16 @@
+-export * from './EventPayloadByEvent';
+-export * from './PlaybackActiveTrackChangedEvent';
+-export * from './PlaybackErrorEvent';
+-export * from './PlaybackMetadataReceivedEvent';
+-export * from './PlaybackPlayWhenReadyChangedEvent';
+-export * from './PlaybackProgressUpdatedEvent';
+-export * from './PlaybackQueueEndedEvent';
+-export * from './PlaybackTrackChangedEvent';
+-export * from './RemoteDuckEvent';
+-export * from './RemoteJumpBackwardEvent';
+-export * from './RemoteJumpForwardEvent';
+-export * from './RemotePlayIdEvent';
+-export * from './RemotePlaySearchEvent';
+-export * from './RemoteSeekEvent';
+-export * from './RemoteSetRatingEvent';
+-export * from './RemoteSkipEvent';
++export * from './EventPayloadByEvent.js';
++export * from './PlaybackActiveTrackChangedEvent.js';
++export * from './PlaybackErrorEvent.js';
++export * from './PlaybackMetadataReceivedEvent.js';
++export * from './PlaybackPlayWhenReadyChangedEvent.js';
++export * from './PlaybackProgressUpdatedEvent.js';
++export * from './PlaybackQueueEndedEvent.js';
++export * from './PlaybackTrackChangedEvent.js';
++export * from './RemoteDuckEvent.js';
++export * from './RemoteJumpBackwardEvent.js';
++export * from './RemoteJumpForwardEvent.js';
++export * from './RemotePlayIdEvent.js';
++export * from './RemotePlaySearchEvent.js';
++export * from './RemoteSeekEvent.js';
++export * from './RemoteSetRatingEvent.js';
++export * from './RemoteSkipEvent.js';
+diff --git a/lib/src/interfaces/index.js b/lib/src/interfaces/index.js
+index a9cc240e14d4672936ee3f9fee7da047e5a55553..86ab3025fadd6f129040eca35802d976329a3a38 100644
+--- a/lib/src/interfaces/index.js
++++ b/lib/src/interfaces/index.js
+@@ -1,13 +1,13 @@
+-export * from './AndroidOptions';
+-export * from './FeedbackOptions';
+-export * from './MetadataOptions';
+-export * from './NowPlayingMetadata';
+-export * from './PlaybackState';
+-export * from './PlayerOptions';
+-export * from './Progress';
+-export * from './ResourceObject';
+-export * from './ServiceHandler';
+-export * from './Track';
+-export * from './TrackMetadataBase';
+-export * from './UpdateOptions';
+-export * from './events';
++export * from './AndroidOptions.js';
++export * from './FeedbackOptions.js';
++export * from './MetadataOptions.js';
++export * from './NowPlayingMetadata.js';
++export * from './PlaybackState.js';
++export * from './PlayerOptions.js';
++export * from './Progress.js';
++export * from './ResourceObject.js';
++export * from './ServiceHandler.js';
++export * from './Track.js';
++export * from './TrackMetadataBase.js';
++export * from './UpdateOptions.js';
++export * from './events/index.js';
+diff --git a/lib/src/trackPlayer.js b/lib/src/trackPlayer.js
+index 191e5dea7ce96f145d0a2ea16d9d925136ce4454..3faf744dd455f3f48703b6c3373df17757543fb9 100644
+--- a/lib/src/trackPlayer.js
++++ b/lib/src/trackPlayer.js
+@@ -1,6 +1,6 @@
+ import { AppRegistry, DeviceEventEmitter, NativeEventEmitter, Platform, } from 'react-native';
+-import TrackPlayer from './TrackPlayerModule';
+-import resolveAssetSource from './resolveAssetSource';
++import TrackPlayer from './TrackPlayerModule.js';
++import resolveAssetSource from './resolveAssetSource.js';
+ const emitter = Platform.OS !== 'android'
+     ? new NativeEventEmitter(TrackPlayer)
+     : DeviceEventEmitter;
+diff --git a/lib/web/TrackPlayer/Player.js b/lib/web/TrackPlayer/Player.js
+index 595327692ee96d272691058198202ff0b0cba57a..f4c04c90b00314df585cdb07810b0720a687f868 100644
+--- a/lib/web/TrackPlayer/Player.js
++++ b/lib/web/TrackPlayer/Player.js
+@@ -1,5 +1,5 @@
+-import { State } from '../../src/constants/State';
+-import { SetupNotCalledError } from './SetupNotCalledError';
++import { State } from '../../src/constants/State.js';
++import { SetupNotCalledError } from './SetupNotCalledError.js';
+ export class Player {
+     hasInitialized = false;
+     element;
+diff --git a/lib/web/TrackPlayer/PlaylistPlayer.js b/lib/web/TrackPlayer/PlaylistPlayer.js
+index 67b34a422a0d11e8d45fda19a2b7ba44b5446e6a..148070a5e45eca2bee645e07df71e61dbf5d6e14 100644
+--- a/lib/web/TrackPlayer/PlaylistPlayer.js
++++ b/lib/web/TrackPlayer/PlaylistPlayer.js
+@@ -1,6 +1,6 @@
+-import { Player } from './Player';
+-import { RepeatMode } from './RepeatMode';
+-import { State } from '../../src';
++import { Player } from './Player.js';
++import { RepeatMode } from './RepeatMode.js';
++import { State } from '../../src/index.js';
+ export class PlaylistPlayer extends Player {
+     // TODO: use immer to make the `playlist` immutable
+     playlist = [];
+diff --git a/lib/web/TrackPlayer/index.js b/lib/web/TrackPlayer/index.js
+index 0545767835e539d8b71bd47494dbddb0dffaa8da..03742e7bdb6fe8dc2d2919f52c208c9a9eaf0d46 100644
+--- a/lib/web/TrackPlayer/index.js
++++ b/lib/web/TrackPlayer/index.js
+@@ -1,3 +1,3 @@
+-export * from './Player';
+-export * from './PlaylistPlayer';
+-export * from './RepeatMode';
++export * from './Player.js';
++export * from './PlaylistPlayer.js';
++export * from './RepeatMode.js';
+diff --git a/lib/web/TrackPlayerModule.js b/lib/web/TrackPlayerModule.js
+index 08c7d3c2de9304c7803baf1a6aeeff5421e04db1..76f9cb5bc1cffe12d15d79d7be4f33ef4efebd8f 100644
+--- a/lib/web/TrackPlayerModule.js
++++ b/lib/web/TrackPlayerModule.js
+@@ -1,7 +1,7 @@
+ import { DeviceEventEmitter } from 'react-native';
+-import { Event, State } from '../src';
+-import { PlaylistPlayer, RepeatMode } from './TrackPlayer';
+-import { SetupNotCalledError } from './TrackPlayer/SetupNotCalledError';
++import { Event, State } from '../src/index.js';
++import { PlaylistPlayer, RepeatMode } from './TrackPlayer/index.js';
++import { SetupNotCalledError } from './TrackPlayer/SetupNotCalledError.js';
+ export class TrackPlayerModule extends PlaylistPlayer {
+     emitter = DeviceEventEmitter;
+     progressUpdateEventInterval;
+diff --git a/lib/web/index.js b/lib/web/index.js
+index ad8108dfbc6922d7fbc8a9f0b8c777ac21145583..67973c92a05e6c8c50bb4ec38a2fdbc5ac768c0b 100644
+--- a/lib/web/index.js
++++ b/lib/web/index.js
+@@ -1,3 +1,3 @@
+-import { TrackPlayerModule } from './TrackPlayerModule';
++import { TrackPlayerModule } from './TrackPlayerModule.js';
+ const module = new TrackPlayerModule();
+ export default module;

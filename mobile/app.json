@@ -91,7 +91,6 @@
           "calendarPermission": "Prayer Times adds salah blocks to your calendar as reminders."
         }
       ],
-      "react-native-track-player",
       [
         "react-native-android-widget",
         {
