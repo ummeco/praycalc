@@ -20,56 +20,47 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 
+// signIn/signUp/refreshSession/signOut now call PrayCalc's own same-origin
+// /api/auth/* proxy routes — the routes hold the real tokens as httpOnly
+// cookies server-side (ADR-010 fix) and only ever return { user,
+// accessTokenExpiresAt } to the client. requestMagicLink is the one
+// exception: it never returns a token, so it still calls Hasura Auth
+// directly.
+
 describe("signIn", () => {
-  it("resolves with user + tokens on the flat response shape", async () => {
+  it("resolves with user + accessTokenExpiresAt (no raw tokens)", async () => {
     (fetch as unknown as ReturnType<typeof vi.fn>).mockResolvedValue(
       jsonResponse({
-        accessToken: "at-1",
-        refreshToken: "rt-1",
-        accessTokenExpiresIn: 900,
         user: { id: "u1", email: "a@b.com", displayName: "A B" },
+        accessTokenExpiresAt: Date.now() + 900_000,
       }),
     );
     const result = await signIn("a@b.com", "secret");
     expect(result.user.email).toBe("a@b.com");
     expect(result.user.displayName).toBe("A B");
-    expect(result.tokens.accessToken).toBe("at-1");
-    expect(result.tokens.refreshToken).toBe("rt-1");
-    expect(result.tokens.accessTokenExpiresAt).toBeGreaterThan(Date.now());
+    expect(result.accessTokenExpiresAt).toBeGreaterThan(Date.now());
+    expect((result as unknown as { tokens?: unknown }).tokens).toBeUndefined();
   });
 
-  it("falls back to unwrapping a nested session shape", async () => {
-    (fetch as unknown as ReturnType<typeof vi.fn>).mockResolvedValue(
-      jsonResponse({
-        session: {
-          accessToken: "at-2",
-          refreshToken: "rt-2",
-          accessTokenExpiresIn: 600,
-          user: { id: "u2", email: "c@d.com" },
-        },
-      }),
-    );
-    const result = await signIn("c@d.com", "secret");
-    expect(result.tokens.accessToken).toBe("at-2");
-    // displayName falls back to email local-part when absent
-    expect(result.user.displayName).toBe("c");
-  });
-
-  it("calls the correct endpoint with credentials in the body", async () => {
+  it("posts to the same-origin proxy route with credentials", async () => {
     const mockFetch = fetch as unknown as ReturnType<typeof vi.fn>;
     mockFetch.mockResolvedValue(
-      jsonResponse({ accessToken: "x", refreshToken: "y", user: { email: "e@e.com" } }),
+      jsonResponse({ user: { email: "e@e.com", displayName: "e" }, accessTokenExpiresAt: Date.now() }),
     );
     await signIn("e@e.com", "pw");
     expect(mockFetch).toHaveBeenCalledWith(
-      expect.stringContaining("/v1/auth/signin/email-password"),
-      expect.objectContaining({ method: "POST" }),
+      "/api/auth/signin",
+      expect.objectContaining({
+        method: "POST",
+        credentials: "same-origin",
+        body: JSON.stringify({ email: "e@e.com", password: "pw" }),
+      }),
     );
   });
 
   it("throws a user-presentable message on failure", async () => {
     (fetch as unknown as ReturnType<typeof vi.fn>).mockResolvedValue(
-      jsonResponse({ message: "Invalid email or password." }, false, 401),
+      jsonResponse({ error: "Invalid email or password." }, false, 401),
     );
     await expect(signIn("a@b.com", "wrong")).rejects.toThrow("Invalid email or password.");
   });
@@ -82,31 +73,22 @@ describe("signIn", () => {
         throw new Error("not json");
       },
     } as unknown as Response);
-    await expect(signIn("a@b.com", "wrong")).rejects.toThrow("Invalid email or password.");
-  });
-
-  it("throws when the success response is missing tokens", async () => {
-    (fetch as unknown as ReturnType<typeof vi.fn>).mockResolvedValue(jsonResponse({}));
-    await expect(signIn("a@b.com", "pw")).rejects.toThrow("Unexpected response from auth server.");
+    await expect(signIn("a@b.com", "wrong")).rejects.toThrow("Request failed.");
   });
 });
 
 describe("signUp", () => {
-  it("posts to the signup endpoint with options.displayName", async () => {
+  it("posts to the signup proxy route with displayName", async () => {
     const mockFetch = fetch as unknown as ReturnType<typeof vi.fn>;
     mockFetch.mockResolvedValue(
-      jsonResponse({ accessToken: "at", refreshToken: "rt", user: { email: "n@n.com", displayName: "New" } }),
+      jsonResponse({ user: { email: "n@n.com", displayName: "New" }, accessTokenExpiresAt: Date.now() }),
     );
     const result = await signUp("n@n.com", "pw123456", "New");
     expect(mockFetch).toHaveBeenCalledWith(
-      expect.stringContaining("/v1/auth/signup/email-password"),
+      "/api/auth/signup",
       expect.objectContaining({
         method: "POST",
-        body: JSON.stringify({
-          email: "n@n.com",
-          password: "pw123456",
-          options: { displayName: "New" },
-        }),
+        body: JSON.stringify({ email: "n@n.com", password: "pw123456", displayName: "New" }),
       }),
     );
     expect(result.user.displayName).toBe("New");
@@ -114,7 +96,7 @@ describe("signUp", () => {
 
   it("throws a user-presentable message on failure", async () => {
     (fetch as unknown as ReturnType<typeof vi.fn>).mockResolvedValue(
-      jsonResponse({ message: "Email already registered." }, false, 409),
+      jsonResponse({ error: "Email already registered." }, false, 409),
     );
     await expect(signUp("dupe@e.com", "pw")).rejects.toThrow("Email already registered.");
   });
@@ -126,7 +108,7 @@ describe("requestMagicLink", () => {
     await expect(requestMagicLink("m@m.com")).resolves.toBeUndefined();
   });
 
-  it("calls the passwordless email endpoint", async () => {
+  it("calls the passwordless email endpoint directly on the auth server", async () => {
     const mockFetch = fetch as unknown as ReturnType<typeof vi.fn>;
     mockFetch.mockResolvedValue(jsonResponse({}));
     await requestMagicLink("m@m.com");
@@ -145,30 +127,56 @@ describe("requestMagicLink", () => {
 });
 
 describe("refreshSession", () => {
-  it("resolves with new tokens on success", async () => {
+  it("resolves with a new accessTokenExpiresAt on success (cookie-based, no args)", async () => {
     (fetch as unknown as ReturnType<typeof vi.fn>).mockResolvedValue(
-      jsonResponse({ accessToken: "at-new", refreshToken: "rt-new", user: { email: "r@r.com" } }),
+      jsonResponse({ user: { email: "r@r.com" }, accessTokenExpiresAt: Date.now() + 900_000 }),
     );
-    const result = await refreshSession("rt-old");
-    expect(result.tokens.accessToken).toBe("at-new");
+    const result = await refreshSession();
+    expect(result.accessTokenExpiresAt).toBeGreaterThan(Date.now());
+    expect(fetch).toHaveBeenCalledWith(
+      "/api/auth/refresh",
+      expect.objectContaining({ body: JSON.stringify({}) }),
+    );
+  });
+
+  it("passes a legacy refresh token in the body for one-time migration", async () => {
+    const mockFetch = fetch as unknown as ReturnType<typeof vi.fn>;
+    mockFetch.mockResolvedValue(
+      jsonResponse({ user: { email: "r@r.com" }, accessTokenExpiresAt: Date.now() }),
+    );
+    await refreshSession("rt-old");
+    expect(mockFetch).toHaveBeenCalledWith(
+      "/api/auth/refresh",
+      expect.objectContaining({ body: JSON.stringify({ refreshToken: "rt-old" }) }),
+    );
   });
 
   it("throws on failure", async () => {
     (fetch as unknown as ReturnType<typeof vi.fn>).mockResolvedValue(
-      jsonResponse({}, false, 401),
+      jsonResponse({ error: "Session refresh failed." }, false, 401),
     );
-    await expect(refreshSession("expired")).rejects.toThrow("Session refresh failed.");
+    await expect(refreshSession()).rejects.toThrow("Session refresh failed.");
   });
 });
 
 describe("signOut", () => {
   it("resolves even when the network call fails (best-effort)", async () => {
     (fetch as unknown as ReturnType<typeof vi.fn>).mockRejectedValue(new Error("network down"));
-    await expect(signOut("rt-1")).resolves.toBeUndefined();
+    await expect(signOut()).resolves.toBeUndefined();
   });
 
   it("resolves on success", async () => {
-    (fetch as unknown as ReturnType<typeof vi.fn>).mockResolvedValue(jsonResponse({}));
-    await expect(signOut("rt-1")).resolves.toBeUndefined();
+    (fetch as unknown as ReturnType<typeof vi.fn>).mockResolvedValue(jsonResponse({ ok: true }));
+    await expect(signOut()).resolves.toBeUndefined();
+  });
+
+  it("passes a legacy refresh token in the body when provided", async () => {
+    const mockFetch = fetch as unknown as ReturnType<typeof vi.fn>;
+    mockFetch.mockResolvedValue(jsonResponse({ ok: true }));
+    await signOut("rt-legacy");
+    expect(mockFetch).toHaveBeenCalledWith(
+      "/api/auth/signout",
+      expect.objectContaining({ body: JSON.stringify({ refreshToken: "rt-legacy" }) }),
+    );
   });
 });

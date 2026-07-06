@@ -29,45 +29,44 @@ test.skip(
 );
 
 // ---------------------------------------------------------------------------
-// Network mocking — real auth now requires a network call to Hasura Auth
-// (auth.ummat.dev) and the smart billing service. Route-intercept both so
-// the "any credentials work" contract stays deterministic in CI.
+// Network mocking — real auth now goes through PrayCalc's own same-origin
+// /api/auth/* and /api/billing/* proxy routes (ADR-010 fix: tokens are set
+// as httpOnly cookies server-side, never returned to the client). Playwright
+// intercepts these at the browser network layer, so the mock response is
+// returned without the real route handler ever running (no live call to
+// Hasura Auth or the billing service happens in these tests).
 // ---------------------------------------------------------------------------
 
-/** Mock the Hasura Auth sign-in endpoint to accept any email/password. */
+/** Mock the PrayCalc auth/billing proxy routes to accept any email/password. */
 async function mockAuthRoutes(page: import("@playwright/test").Page) {
-  await page.route("**/v1/auth/signin/email-password", async (route) => {
+  await page.route("**/api/auth/signin", async (route) => {
     const body = route.request().postDataJSON() as { email: string };
     await route.fulfill({
       status: 200,
       contentType: "application/json",
       body: JSON.stringify({
-        accessToken: "e2e-access-token",
-        refreshToken: "e2e-refresh-token",
-        accessTokenExpiresIn: 900,
-        user: { id: "e2e-user", email: body.email },
+        user: { id: "e2e-user", email: body.email, displayName: body.email.split("@")[0] },
+        accessTokenExpiresAt: Date.now() + 900_000,
       }),
     });
   });
   await page.route("**/v1/auth/signin/passwordless/email", async (route) => {
     await route.fulfill({ status: 200, contentType: "application/json", body: "{}" });
   });
-  await page.route("**/v1/auth/signout", async (route) => {
-    await route.fulfill({ status: 200, contentType: "application/json", body: "{}" });
+  await page.route("**/api/auth/signout", async (route) => {
+    await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ ok: true }) });
   });
-  await page.route("**/v1/auth/token", async (route) => {
+  await page.route("**/api/auth/refresh", async (route) => {
     await route.fulfill({
       status: 200,
       contentType: "application/json",
       body: JSON.stringify({
-        accessToken: "e2e-access-token-2",
-        refreshToken: "e2e-refresh-token-2",
-        accessTokenExpiresIn: 900,
-        user: { id: "e2e-user", email: "refreshed@example.com" },
+        user: { id: "e2e-user", email: "refreshed@example.com", displayName: "refreshed" },
+        accessTokenExpiresAt: Date.now() + 900_000,
       }),
     });
   });
-  await page.route("**/billing/status", async (route) => {
+  await page.route("**/api/billing/status", async (route) => {
     await route.fulfill({
       status: 200,
       contentType: "application/json",
@@ -101,7 +100,12 @@ function buildSessionJSON(
   return JSON.stringify({ email, displayName, initials, isOwner, isUmmatPlus });
 }
 
-/** Seed a session into localStorage via page.evaluate (runs in current page context). */
+/**
+ * Seed a session into localStorage via page.evaluate (runs in current page context).
+ * Intentionally writes the pre-2026-07 legacy key ("praycalc-session", no token
+ * fields) rather than the current "praycalc-profile" key — this doubles as
+ * coverage for the legacy-session fallback path in getSession() (ADR-010 fix).
+ */
 async function seedSession(
   page: import("@playwright/test").Page,
   email: string,
@@ -111,6 +115,14 @@ async function seedSession(
 ) {
   const json = buildSessionJSON(email, displayName, isOwner, isUmmatPlus);
   await page.evaluate((j) => localStorage.setItem("praycalc-session", j), json);
+}
+
+/** Clear both the current and pre-2026-07 legacy session keys. */
+async function clearAllSessionKeys(page: import("@playwright/test").Page) {
+  await page.evaluate(() => {
+    localStorage.removeItem("praycalc-profile");
+    localStorage.removeItem("praycalc-session");
+  });
 }
 
 /** Switch from default magic-link tab to password tab. */
@@ -127,7 +139,7 @@ test.describe("Account page — not signed in", () => {
   test.beforeEach(async ({ page }) => {
     await mockAuthRoutes(page);
     await page.goto("/account");
-    await page.evaluate(() => localStorage.removeItem("praycalc-session"));
+    await clearAllSessionKeys(page);
     await page.reload();
   });
 
@@ -185,7 +197,7 @@ test.describe("Account page — password sign-in", () => {
   test.beforeEach(async ({ page }) => {
     await mockAuthRoutes(page);
     await page.goto("/account");
-    await page.evaluate(() => localStorage.removeItem("praycalc-session"));
+    await clearAllSessionKeys(page);
     await page.reload();
     await switchToPasswordTab(page);
     await expect(page.locator('input[type="email"]')).toBeVisible();
@@ -362,7 +374,7 @@ test.describe("Account page — session persistence", () => {
     // Navigate and clear any existing session
     await mockAuthRoutes(page);
     await page.goto("/account");
-    await page.evaluate(() => localStorage.removeItem("praycalc-session"));
+    await clearAllSessionKeys(page);
     await page.reload();
 
     // Switch to password mode and sign in

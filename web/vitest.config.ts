@@ -37,6 +37,11 @@ export default defineConfig({
         'src/lib/geo.server.ts',
         'src/lib/data-lookup.server.ts',
         'src/lib/prayers.server.ts',
+        // Server-only Hasura Auth proxy helpers (Astro API routes only) —
+        // covered indirectly via the /api/auth/* and /api/billing/* routes,
+        // not unit-testable in jsdom (AstroCookies requires an Astro request context).
+        'src/lib/auth/cookies.server.ts',
+        'src/lib/auth/hasura.server.ts',
         // Browser geolocation API — requires navigator.geolocation not in jsdom
         'src/lib/geo.ts',
         // Large prayer calculation engine — server-side only via pray-calc package
