@@ -59,6 +59,8 @@ export interface SettingsState {
   onboardingDone: boolean;
   /** Per-prayer manual minute corrections (±30) applied after calculation, to match a local mosque timetable. */
   prayerMinuteAdjustments: Record<PrayerName, number>;
+  /** Minutes after adhan for an iqamah reminder notification (0 = off, max 60). */
+  iqamahOffsetMinutes: Record<PrayerName, number>;
   /** Hijri date offset in days (±2) for local moon-sighting differences vs Umm al-Qura. */
   hijriDayAdjustment: number;
   themeMode: ThemeMode;
@@ -81,6 +83,7 @@ export interface SettingsState {
   setLocale: (locale: string) => void;
   setOnboardingDone: (done: boolean) => void;
   setPrayerMinuteAdjustment: (prayer: PrayerName, minutes: number) => void;
+  setIqamahOffsetMinutes: (prayer: PrayerName, minutes: number) => void;
   setHijriDayAdjustment: (days: number) => void;
   setThemeMode: (mode: ThemeMode) => void;
   reset: () => void;
@@ -106,6 +109,7 @@ const initialState = {
   locale: 'en',
   onboardingDone: false,
   prayerMinuteAdjustments: defaultPerPrayer(0, 0),
+  iqamahOffsetMinutes: defaultPerPrayer(0, 0),
   hijriDayAdjustment: 0,
   themeMode: 'system' as ThemeMode,
 };
@@ -140,6 +144,13 @@ export const useSettingsStore = create<SettingsState>()(
           prayerMinuteAdjustments: {
             ...s.prayerMinuteAdjustments,
             [prayer]: Math.max(-MINUTE_ADJUST_LIMIT, Math.min(MINUTE_ADJUST_LIMIT, Math.round(minutes))),
+          },
+        })),
+      setIqamahOffsetMinutes: (prayer, minutes) =>
+        set((s) => ({
+          iqamahOffsetMinutes: {
+            ...s.iqamahOffsetMinutes,
+            [prayer]: Math.max(0, Math.min(60, Math.round(minutes))),
           },
         })),
       setHijriDayAdjustment: (days) =>

@@ -121,6 +121,7 @@ export default function RootLayout() {
         <Stack.Screen name="settings" options={{ headerShown: true, title: 'Settings' }} />
         <Stack.Screen name="city-search" options={{ headerShown: true, title: 'Find City' }} />
         <Stack.Screen name="timetable" options={{ headerShown: true, title: 'Timetable' }} />
+        <Stack.Screen name="mosques" options={{ headerShown: true, title: 'Nearby Mosques' }} />
         <Stack.Screen name="pair-tv" options={{ headerShown: true, title: 'Pair TV' }} />
         <Stack.Screen name="onboarding" options={{ presentation: 'modal', headerShown: false }} />
         <Stack.Screen name="+not-found" />

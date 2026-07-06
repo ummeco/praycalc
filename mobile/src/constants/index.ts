@@ -58,6 +58,14 @@ export const PRAYER_RESCHEDULE_TASK = 'PRAYER_RESCHEDULE';
 // Notification channel ID (Android)
 export const NOTIFICATION_CHANNEL_ID = 'prayer-alarms';
 
+/** Android channel whose sound is the bundled adhan takbir excerpt (channel sound
+ *  is immutable after creation — hence a separate channel from the default one). */
+export const NOTIFICATION_CHANNEL_ADHAN_ID = 'prayer-alarms-adhan';
+
+/** Bundled notification sound (26.6s opening takbir cut from the Makkah adhan we
+ *  ship — iOS caps notification sounds at 30s; the full adhan plays on tap). */
+export const ADHAN_NOTIFICATION_SOUND = 'adhan_takbir.wav';
+
 // Max notifications schedulable ahead (iOS/Android limit)
 export const MAX_SCHEDULED_NOTIFICATIONS = 64;
 

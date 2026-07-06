@@ -42,6 +42,9 @@ const PRAYER_LABEL_KEYS: Record<PrayerName, string> = {
 /** Tap-to-cycle options for per-prayer notification lead time. */
 const ADVANCE_MINUTE_OPTIONS = [0, 5, 10, 15, 20, 30];
 
+/** Tap-to-cycle options for the iqamah follow-up reminder (0 = off). */
+const IQAMAH_OFFSET_OPTIONS = [0, 10, 15, 20, 30];
+
 export default function NotificationSettingsScreen() {
   const { t } = useTranslation();
   const colors = useThemeColors();
@@ -53,6 +56,8 @@ export default function NotificationSettingsScreen() {
     setPerPrayerNotificationEnabled,
     notificationAdvanceMinutes,
     setNotificationAdvanceMinutes,
+    iqamahOffsetMinutes,
+    setIqamahOffsetMinutes,
   } = useSettingsStore();
   const [permissionDenied, setPermissionDenied] = useState(false);
 
@@ -89,6 +94,16 @@ export default function NotificationSettingsScreen() {
       await schedulePrayerNotifications();
     }
   }, [notificationAdvanceMinutes, notificationsEnabled, setNotificationAdvanceMinutes]);
+
+  const handleIqamahCycle = useCallback(async (name: PrayerName) => {
+    const current = iqamahOffsetMinutes[name] ?? 0;
+    const idx = IQAMAH_OFFSET_OPTIONS.indexOf(current);
+    const next = IQAMAH_OFFSET_OPTIONS[(idx + 1) % IQAMAH_OFFSET_OPTIONS.length] ?? 0;
+    setIqamahOffsetMinutes(name, next);
+    if (notificationsEnabled) {
+      await schedulePrayerNotifications();
+    }
+  }, [iqamahOffsetMinutes, notificationsEnabled, setIqamahOffsetMinutes]);
 
   const openSystemSettings = useCallback(() => {
     if (Platform.OS === 'android') {
@@ -158,6 +173,15 @@ export default function NotificationSettingsScreen() {
                     accessibilityLabel={`${name} notification lead time, ${notificationAdvanceMinutes[name] ?? 0} minutes before. Tap to change.`}
                   >
                     <Text style={styles.advanceLabel}>{notificationAdvanceMinutes[name] ?? 0}m before</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => handleIqamahCycle(name)}
+                    accessibilityRole="button"
+                    accessibilityLabel={`${name} iqamah reminder, ${(iqamahOffsetMinutes[name] ?? 0) === 0 ? 'off' : `${iqamahOffsetMinutes[name]} minutes after adhan`}. Tap to change.`}
+                  >
+                    <Text style={styles.advanceLabel}>
+                      {(iqamahOffsetMinutes[name] ?? 0) === 0 ? 'iqamah off' : `iqamah +${iqamahOffsetMinutes[name]}m`}
+                    </Text>
                   </TouchableOpacity>
                   <Switch
                     value={perPrayerNotificationEnabled[name] ?? false}

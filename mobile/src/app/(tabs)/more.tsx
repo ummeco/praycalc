@@ -38,6 +38,7 @@ const MENU_ITEMS: MenuItem[] = [
   { label: 'Pair TV', subtitle: 'Link the PrayCalc TV app', route: '/pair-tv', icon: '📺' },
   { label: 'Prayer Calendar', subtitle: 'Add prayer times to calendar', route: '/agendas', icon: '📅' },
   { label: 'Monthly Timetable', subtitle: 'Full month prayer times + calendar export', route: '/timetable', icon: '🗓️' },
+  { label: 'Nearby Mosques', subtitle: 'Find mosques around you', route: '/mosques', icon: '🕌' },
   { label: 'Travel Mode', subtitle: 'Musafir qasr for travellers', route: '/travel', icon: '✈️' },
 ];
 

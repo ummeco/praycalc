@@ -15,7 +15,7 @@ export const PAIR_TV_MUTATION = `
       object: { pin: $pin, device_id: $deviceId, is_active: true, paired: true }
       on_conflict: {
         constraint: pc_tv_pairing_pin_key
-        update_columns: [device_id, is_active, paired, user_id]
+        update_columns: [device_id, is_active, paired]
       }
     ) {
       pin

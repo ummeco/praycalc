@@ -14,7 +14,9 @@
       "resizeMode": "contain",
       "backgroundColor": "#1E5E2F"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.praycalc.praycalcApp",
@@ -23,7 +25,11 @@
         "NSLocationAlwaysAndWhenInUseUsageDescription": "Allow Prayer Times to access your location to calculate accurate prayer times.",
         "NSCalendarsFullAccessUsageDescription": "Prayer Times adds salah blocks to your calendar as reminders.",
         "NSFaceIDUsageDescription": "Prayer Times uses Face ID to confirm lock-on-salah mode.",
-        "UIBackgroundModes": ["fetch", "remote-notification", "audio"]
+        "UIBackgroundModes": [
+          "fetch",
+          "remote-notification",
+          "audio"
+        ]
       }
     },
     "android": {
@@ -68,7 +74,9 @@
           "icon": "./assets/notification-icon.png",
           "color": "#1E5E2F",
           "defaultChannel": "prayer-alarm",
-          "sounds": []
+          "sounds": [
+            "./assets/sounds/adhan_takbir.wav"
+          ]
         }
       ],
       [
