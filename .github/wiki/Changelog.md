@@ -193,3 +193,20 @@ Initial web app release.
   deep-links, 5 dead CTAs wired. (Full mobile parity continues in a dedicated
   session — see `.github/docs/reviews/2026-07-05-mobile-competitive-audit.md`.)
 - **Desktop:** verified complete for scope (real engine via API, no stubs).
+
+## 2026-07-06 — Final deep QA pass (web · desktop · mobile)
+- **Auth (all platforms):** every client called `auth.ummat.dev/v1/auth/*` — a
+  path nginx has no upstream for (502). Production sign-in had never worked.
+  All clients now use hasura-auth's real bare paths (verified live).
+- **Billing:** defaults pointed at `api.praycalc.com/billing` (404); corrected
+  to the real `smart.praycalc.com/billing` in web proxy routes + desktop
+  (+ Tauri CSP). Ummat+ entitlement checks now reach the service.
+- **Web:** /embed made frameable (was blocked site-wide — the widget feature
+  was dead); tz validation (400 instead of masked 500); city pages get a real
+  SSR h1; /preferences fixes (single footer landmark, canonical, working
+  unsubscribe, California link held per U-15 counsel gate); E2E search flake
+  fixed with deterministic response waits.
+- **Mobile:** travel-aware Qibla (useActiveLocation), offline state wired to
+  expo-network (was dead code), parity-doc Tehran row corrected.
+- Repo hygiene: 12 stale session branches/worktrees pruned (all content
+  verified merged or superseded); master list updated with 5 new entities.
