@@ -85,7 +85,17 @@ export const GET: APIRoute = ({ url }) => {
     dayDate.setUTCDate(now.getUTCDate() + d);
     const dateStr = dayDate.toISOString().slice(0, 10);
 
-    const tzOffset = getUtcOffset(tz, dayDate);
+    let tzOffset: number;
+
+    try {
+
+      tzOffset = getUtcOffset(tz);
+
+    } catch (e) {
+
+      return new Response(e instanceof Error ? e.message : 'Invalid tz', { status: 400 });
+
+    }
     const times = getPrayerTimes(dayDate, lat, lng, tzOffset, hanafi);
 
     for (let pi = 0; pi < PRAYER_NAMES.length; pi++) {

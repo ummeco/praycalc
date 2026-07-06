@@ -49,7 +49,12 @@ export const GET: APIRoute = ({ url }) => {
     return new Response(JSON.stringify({ error: 'Date range out of bounds' }), { status: 400 });
   }
 
-  const tzOffset = getUtcOffset(tz);
+  let tzOffset: number;
+  try {
+    tzOffset = getUtcOffset(tz);
+  } catch (e) {
+    return new Response(JSON.stringify({ error: e instanceof Error ? e.message : 'Invalid tz' }), { status: 400 });
+  }
   const results: { date: string; prayers: ReturnType<typeof getPrayerTimes> }[] = [];
   const cursor = new Date(fromDate);
 

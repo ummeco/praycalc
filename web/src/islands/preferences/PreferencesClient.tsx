@@ -121,22 +121,21 @@ function PreferencesForm() {
   async function handleUnsubscribe() {
     setUnsubscribing(true);
     setUnsubErr(null);
+    // Local-first: the authoritative opt-out is the consent record (what the
+    // Umami/marketing gates actually read). The old code called
+    // /api/preferences/unsubscribe — an endpoint that has NEVER existed — so
+    // this button always errored. Server audit-trail sync now goes best-effort
+    // through /api/consent (GDPR Art. 7 route from #63) without failing the UX.
+    setDraft((p) => ({ ...p, marketing: false }));
+    saveCategories({ ...draft, marketing: false });
     try {
-      const res = await fetch('/api/preferences/unsubscribe', {
+      await fetch('/api/consent', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ domain: 'praycalc.com' }),
+        body: JSON.stringify({ action: 'unsubscribe-marketing', domain: 'praycalc.com' }),
         credentials: 'same-origin',
-      });
-      if (!res.ok) {
-        const b = (await res.json().catch(() => ({}))) as { message?: string };
-        throw new Error(b.message ?? `Error ${res.status}`);
-      }
-      setDraft((p) => ({ ...p, marketing: false }));
-      saveCategories({ ...draft, marketing: false });
+      }).catch(() => undefined);
       setToast('Unsubscribed from marketing emails.');
-    } catch (err) {
-      setUnsubErr(err instanceof Error ? err.message : 'Failed. Please try again.');
     } finally {
       setUnsubscribing(false);
     }
@@ -212,10 +211,15 @@ function PreferencesForm() {
             {unsubscribing ? 'Processing...' : 'Unsubscribe from marketing emails'}
           </button>
         </section>
-        <footer className="text-sm text-white/40 space-y-1">
+        {/* In-content contact block — not a <footer>: the site footer landmark
+            is rendered globally by RootLayout, and duplicating the landmark
+            confuses screen-reader navigation. */}
+        <section aria-label="Privacy contact" className="text-sm text-white/40 space-y-1">
           <p>Location data requests: <a href="mailto:privacy@ummat.dev" className="text-ummat-mid hover:underline">privacy@ummat.dev</a></p>
-          <p><a href="/legal/california" className="text-ummat-mid hover:underline">California privacy rights</a></p>
-        </footer>
+          {/* U-15 gate: /legal/california stays UNLINKED until counsel review completes
+              (see the DO-NOT-LINK constraint in legal/california.astro). Restore this
+              link when U-15 resolves. */}
+        </section>
       </div>
       {toast && <Toast message={toast} onDismiss={dismissToast} />}
     </main>

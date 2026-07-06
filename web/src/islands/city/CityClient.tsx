@@ -170,7 +170,7 @@ export default function CityClient({
   return (
     <div className="city-client">
       <header className="city-header">
-        <h1 className="city-name">{locationName}</h1>
+        <h2 className="city-name">{locationName}</h2>
         <button
           type="button"
           ref={gearRef}

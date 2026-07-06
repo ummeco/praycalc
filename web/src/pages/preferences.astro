@@ -14,6 +14,10 @@ import RootLayout from '@/layouts/RootLayout.astro';
 import PreferencesClient from '@/islands/preferences/PreferencesClient';
 ---
 
-<RootLayout title="Privacy Preferences | PrayCalc" description="Manage your cookie and privacy preferences for PrayCalc.">
+<RootLayout
+  title="Privacy Preferences | PrayCalc"
+  description="Manage your cookie and privacy preferences for PrayCalc."
+  canonical="https://praycalc.com/preferences"
+>
   <PreferencesClient client:load />
 </RootLayout>

@@ -46,9 +46,26 @@ export async function reverseGeocode(
   }
 }
 
-/** Approximate UTC offset in hours for a given timezone and date */
+/**
+ * Approximate UTC offset in hours for a given timezone and date.
+ * Accepts IANA zone names ("America/New_York") or plain numeric offsets
+ * ("3", "-5.5") for backward compatibility. Throws a TypeError with a clear
+ * message for anything else (API routes convert it to a 400) — previously an
+ * invalid zone propagated as an unhandled Luxon RangeError (500/masked 404).
+ */
 export function getUtcOffset(timezone: string, date: Date = new Date()): number {
-  return DateTime.fromJSDate(date, { zone: timezone }).offset / 60;
+  const asNumber = Number(timezone);
+  if (timezone.trim() !== '' && Number.isFinite(asNumber)) {
+    if (asNumber < -14 || asNumber > 14) {
+      throw new TypeError(`Invalid UTC offset: ${timezone} (expected -14..14)`);
+    }
+    return asNumber;
+  }
+  const dt = DateTime.fromJSDate(date, { zone: timezone });
+  if (!dt.isValid) {
+    throw new TypeError(`Invalid timezone: ${timezone} (expected IANA name like America/New_York)`);
+  }
+  return dt.offset / 60;
 }
 
 // Approximate timezone per US state abbreviation (fallback)

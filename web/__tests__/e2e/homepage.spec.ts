@@ -43,6 +43,8 @@ test.describe("Homepage", () => {
   test("city search shows dropdown results when typing", async ({ page }) => {
     const searchInput = page.locator('[data-testid="city-search-input"]');
     await searchInput.fill("London");
+    // Deterministic wait: the dropdown only renders after /api/search responds
+    await page.waitForResponse((r) => r.url().includes('/api/search'), { timeout: 10_000 });
 
     // Wait for debounce (250ms) + results to appear
     await expect(page.locator(".location-search-dropdown")).toBeVisible({
@@ -62,6 +64,8 @@ test.describe("Homepage", () => {
   test("city search result shows slug hint", async ({ page }) => {
     const searchInput = page.locator('[data-testid="city-search-input"]');
     await searchInput.fill("Mecca");
+    // Deterministic wait: the dropdown only renders after /api/search responds
+    await page.waitForResponse((r) => r.url().includes('/api/search'), { timeout: 10_000 });
 
     await expect(page.locator(".location-search-dropdown")).toBeVisible({
       timeout: 5_000,
@@ -76,6 +80,8 @@ test.describe("Homepage", () => {
   test("selecting a search result navigates to city page", async ({ page }) => {
     const searchInput = page.locator('[data-testid="city-search-input"]');
     await searchInput.fill("New York");
+    // Deterministic wait: the dropdown only renders after /api/search responds
+    await page.waitForResponse((r) => r.url().includes('/api/search'), { timeout: 10_000 });
 
     await expect(page.locator(".location-search-dropdown")).toBeVisible({
       timeout: 5_000,
@@ -92,6 +98,8 @@ test.describe("Homepage", () => {
   test("search dropdown closes when pressing Escape", async ({ page }) => {
     const searchInput = page.locator('[data-testid="city-search-input"]');
     await searchInput.fill("London");
+    // Deterministic wait: the dropdown only renders after /api/search responds
+    await page.waitForResponse((r) => r.url().includes('/api/search'), { timeout: 10_000 });
 
     await expect(page.locator(".location-search-dropdown")).toBeVisible({
       timeout: 5_000,
