@@ -38,13 +38,15 @@ export const POST: APIRoute = async ({ request, cookies }) => {
 
   setAuthCookies(cookies, result.session);
   const expiresIn = result.session.accessTokenExpiresIn ?? 900;
-  const email = result.session.user.email || body.email;
   return json(
     {
       user: {
         id: result.session.user.id ?? '',
-        email,
-        displayName: result.session.user.displayName || email.split('@')[0],
+        email: result.session.user.email || body.email,
+        // Leave blank when Hasura has no displayName on file — buildSession()
+        // client-side derives a nicely-formatted one from the email local-part
+        // (dots/underscores -> spaces). Don't duplicate that logic here.
+        displayName: result.session.user.displayName ?? '',
       },
       accessTokenExpiresAt: Date.now() + expiresIn * 1000,
     },

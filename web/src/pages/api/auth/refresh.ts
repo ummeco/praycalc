@@ -49,10 +49,11 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       user: {
         id: result.session.user.id ?? '',
         email: result.session.user.email ?? '',
-        displayName:
-          result.session.user.displayName ||
-          result.session.user.email?.split('@')[0] ||
-          '',
+        // Leave blank when Hasura has no displayName on file — callers (the
+        // refresh-timer effect, the legacy-session migration) fall back to
+        // the existing session's already-derived displayName in that case
+        // rather than overwriting it with a raw, unnormalized email local-part.
+        displayName: result.session.user.displayName ?? '',
       },
       accessTokenExpiresAt: Date.now() + expiresIn * 1000,
     },

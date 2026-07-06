@@ -45,7 +45,10 @@ async function mockAuthRoutes(page: import("@playwright/test").Page) {
       status: 200,
       contentType: "application/json",
       body: JSON.stringify({
-        user: { id: "e2e-user", email: body.email, displayName: body.email.split("@")[0] },
+        // Real Hasura Auth has no displayName on file for a fresh test user —
+        // leave it blank so buildSession() derives one from the email
+        // client-side (dots/underscores -> spaces), matching production.
+        user: { id: "e2e-user", email: body.email, displayName: "" },
         accessTokenExpiresAt: Date.now() + 900_000,
       }),
     });
