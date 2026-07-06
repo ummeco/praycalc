@@ -16,7 +16,7 @@ import type { APIRoute } from 'astro';
 import { readAccessToken } from '@/lib/auth/cookies.server';
 
 const BILLING_URL: string =
-  (import.meta.env.PUBLIC_BILLING_URL as string | undefined) || 'https://api.praycalc.com/billing';
+  (import.meta.env.PUBLIC_BILLING_URL as string | undefined) || 'https://smart.praycalc.com/billing';
 const BILLING_MODE: string | undefined = import.meta.env.PUBLIC_BILLING_MODE as string | undefined;
 
 function json(body: unknown): Response {
