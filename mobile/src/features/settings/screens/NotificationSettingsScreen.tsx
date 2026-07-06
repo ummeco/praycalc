@@ -14,6 +14,7 @@ import {
   View, Text, Switch, TouchableOpacity, StyleSheet, SafeAreaView, ScrollView,
   Platform, Linking,
 } from 'react-native';
+import { useTranslation } from '../../../i18n';
 import { useThemeColors } from '../../../hooks/useThemeColors';
 import type { ThemeColors } from '../../../constants/colors';
 import { PermissionDeniedState } from '../../../components/states';
@@ -28,10 +29,21 @@ import type { PrayerName } from '../../../types/prayer';
 
 const PRAYER_NAMES: PrayerName[] = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
 
+/** Translation key per prayer name, `prayer` namespace (render-time only). */
+const PRAYER_LABEL_KEYS: Record<PrayerName, string> = {
+  Fajr: 'prayer.fajr',
+  Sunrise: 'prayer.sunrise',
+  Dhuhr: 'prayer.dhuhr',
+  Asr: 'prayer.asr',
+  Maghrib: 'prayer.maghrib',
+  Isha: 'prayer.isha',
+};
+
 /** Tap-to-cycle options for per-prayer notification lead time. */
 const ADVANCE_MINUTE_OPTIONS = [0, 5, 10, 15, 20, 30];
 
 export default function NotificationSettingsScreen() {
+  const { t } = useTranslation();
   const colors = useThemeColors();
   const styles = useMemo(() => createStyles(colors), [colors]);
   const {
@@ -138,7 +150,7 @@ export default function NotificationSettingsScreen() {
             <Text style={styles.sectionTitle} accessibilityRole="header">Per-Prayer Alerts</Text>
             {PRAYER_NAMES.map((name) => (
               <View key={name} style={styles.prayerRow}>
-                <Text style={styles.prayerLabel}>{name}</Text>
+                <Text style={styles.prayerLabel}>{t(PRAYER_LABEL_KEYS[name])}</Text>
                 <View style={styles.prayerControls}>
                   <TouchableOpacity
                     onPress={() => handleAdvanceCycle(name)}

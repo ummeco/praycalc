@@ -18,6 +18,7 @@ import React, { useMemo, useState, useCallback } from 'react';
 import {
   View, Text, Switch, TouchableOpacity, StyleSheet, SafeAreaView, ScrollView, Alert,
 } from 'react-native';
+import { useTranslation } from '../../i18n';
 import { useThemeColors } from '../../hooks/useThemeColors';
 import type { ThemeColors } from '../../constants/colors';
 import { useSettingsStore } from '../settings/store/useSettingsStore';
@@ -35,7 +36,18 @@ const QASR_RAKAT: Record<PrayerName, { normal: number; qasr: number }> = {
   Isha:    { normal: 4, qasr: 2 },  // shortened
 };
 
+/** Translation key per prayer name, `prayer` namespace (render-time only). */
+const PRAYER_LABEL_KEYS: Record<PrayerName, string> = {
+  Fajr: 'prayer.fajr',
+  Sunrise: 'prayer.sunrise',
+  Dhuhr: 'prayer.dhuhr',
+  Asr: 'prayer.asr',
+  Maghrib: 'prayer.maghrib',
+  Isha: 'prayer.isha',
+};
+
 export default function TravelScreen() {
+  const { t } = useTranslation();
   const colors = useThemeColors();
   const styles = useMemo(() => createStyles(colors), [colors]);
   const { location, travelLocation, musafirMode, setTravelLocation, setMusafirMode } = useSettingsStore();
@@ -96,14 +108,15 @@ export default function TravelScreen() {
             {prayerNames.map((name) => {
               const r = QASR_RAKAT[name];
               if (!r || r.normal === 0) return null;
+              const label = t(PRAYER_LABEL_KEYS[name]);
               return (
                 <View
                   key={name}
                   style={styles.rakatRow}
                   accessible
-                  accessibilityLabel={`${name}: normal ${r.normal} rakat, qasr ${r.qasr} rakat`}
+                  accessibilityLabel={`${label}: normal ${r.normal} rakat, qasr ${r.qasr} rakat`}
                 >
-                  <Text style={styles.prayerName}>{name}</Text>
+                  <Text style={styles.prayerName}>{label}</Text>
                   <Text style={styles.rakatNormal}>{r.normal} rak'at</Text>
                   <Text style={styles.arrow}>→</Text>
                   <Text style={[styles.rakatQasr, r.qasr < r.normal && styles.shortened]}>

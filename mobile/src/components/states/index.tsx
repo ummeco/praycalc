@@ -9,18 +9,21 @@
 
 import React, { useMemo } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
+import { useTranslation } from '../../i18n';
 import { useThemeColors } from '../../hooks/useThemeColors';
 import type { ThemeColors } from '../../constants/colors';
 
 // ── LoadingState ──────────────────────────────────────────────────────────────
 
-export function LoadingState({ message = 'Loading...' }: { message?: string }) {
+export function LoadingState({ message }: { message?: string }) {
+  const { t } = useTranslation();
   const colors = useThemeColors();
   const styles = useMemo(() => createStyles(colors), [colors]);
+  const resolvedMessage = message ?? t('common.loading');
   return (
-    <View style={styles.container} accessibilityRole="progressbar" accessibilityLabel={message}>
+    <View style={styles.container} accessibilityRole="progressbar" accessibilityLabel={resolvedMessage}>
       <ActivityIndicator size="large" color={colors.brand.mid} />
-      <Text style={styles.message}>{message}</Text>
+      <Text style={styles.message}>{resolvedMessage}</Text>
     </View>
   );
 }
@@ -48,6 +51,7 @@ export function ErrorState({
   error?: Error | string | null;
   onRetry?: () => void;
 }) {
+  const { t } = useTranslation();
   const colors = useThemeColors();
   const styles = useMemo(() => createStyles(colors), [colors]);
   const msg = typeof error === 'string' ? error : error?.message ?? 'Something went wrong.';
@@ -62,7 +66,7 @@ export function ErrorState({
           accessibilityRole="button"
           accessibilityLabel="Retry"
         >
-          <Text style={styles.buttonText}>Retry</Text>
+          <Text style={styles.buttonText}>{t('common.retry')}</Text>
         </TouchableOpacity>
       )}
     </View>
@@ -147,6 +151,7 @@ export function RateLimitedState({ retryAfter, onRetry }: {
   retryAfter?: number; // seconds
   onRetry?: () => void;
 }) {
+  const { t } = useTranslation();
   const colors = useThemeColors();
   const styles = useMemo(() => createStyles(colors), [colors]);
   return (
@@ -163,7 +168,7 @@ export function RateLimitedState({ retryAfter, onRetry }: {
           accessibilityRole="button"
           accessibilityLabel="Retry request"
         >
-          <Text style={styles.buttonText}>Retry</Text>
+          <Text style={styles.buttonText}>{t('common.retry')}</Text>
         </TouchableOpacity>
       )}
     </View>

@@ -18,6 +18,7 @@ import {
 } from 'react-native';
 import { router } from 'expo-router';
 import { useQuery } from 'urql';
+import { useTranslation } from '../../../i18n';
 import { useThemeColors } from '../../../hooks/useThemeColors';
 import type { ThemeColors } from '../../../constants/colors';
 import {
@@ -56,9 +57,20 @@ interface AdhanVoice {
 
 const PRAYER_NAMES: PrayerName[] = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
 
+/** Translation key per prayer name, `prayer` namespace (render-time only). */
+const PRAYER_LABEL_KEYS: Record<PrayerName, string> = {
+  Fajr: 'prayer.fajr',
+  Sunrise: 'prayer.sunrise',
+  Dhuhr: 'prayer.dhuhr',
+  Asr: 'prayer.asr',
+  Maghrib: 'prayer.maghrib',
+  Isha: 'prayer.isha',
+};
+
 // ── Screen ────────────────────────────────────────────────────────────────────
 
 export default function AdhanScreen() {
+  const { t } = useTranslation();
   const colors = useThemeColors();
   const styles = useMemo(() => createStyles(colors), [colors]);
   const [{ data, fetching, error }, reexecuteQuery] = useQuery({ query: GET_ADHAN_LIBRARY });
@@ -120,13 +132,13 @@ export default function AdhanScreen() {
         <Text style={styles.sectionTitle} accessibilityRole="header">Enable Adhan Per Prayer</Text>
         {PRAYER_NAMES.map((name) => (
           <View key={name} style={styles.toggleRow}>
-            <Text style={styles.toggleLabel}>{name}</Text>
+            <Text style={styles.toggleLabel}>{t(PRAYER_LABEL_KEYS[name])}</Text>
             <Switch
               value={enabledPrayers[name]}
               onValueChange={() => togglePrayer(name)}
               trackColor={{ false: colors.background.card, true: colors.brand.mid }}
               thumbColor={colors.brand.light}
-              accessibilityLabel={`Enable ${name} adhan`}
+              accessibilityLabel={`Enable ${t(PRAYER_LABEL_KEYS[name])} adhan`}
             />
           </View>
         ))}

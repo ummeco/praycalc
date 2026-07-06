@@ -35,12 +35,13 @@ interface IAPProduct {
   subscriptionPeriod?: string;
 }
 
+// Must list ONLY features actually gated behind isPlus (stats, custom methods,
+// and the whole app are free and ad-free for everyone — never imply otherwise).
 const PRO_FEATURES = [
-  'Adhan voice library — premium reciters',
-  'Home screen widgets (next prayer)',
-  'Prayer stats & streak tracking',
-  'Custom calculation methods',
-  'Ad-free experience',
+  'Premium adhan voices — additional reciters',
+  'Home screen widget (next prayer)',
+  'PrayCalc TV app pairing',
+  'Smart Home — lock devices during salah',
 ];
 
 export default function SubscriptionScreen() {

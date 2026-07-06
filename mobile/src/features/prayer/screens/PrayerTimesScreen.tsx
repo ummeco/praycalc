@@ -19,6 +19,7 @@ import {
 import * as Location from 'expo-location';
 import * as Network from 'expo-network';
 import { router } from 'expo-router';
+import { useTranslation } from '../../../i18n';
 import { useThemeColors } from '../../../hooks/useThemeColors';
 import type { ThemeColors } from '../../../constants/colors';
 import { CALC_METHODS } from '../../../constants/methods';
@@ -38,13 +39,14 @@ import {
   PermissionDeniedState,
 } from '../../../components/shared/UIStates';
 
-const PRAYER_LABELS: Record<PrayerName, string> = {
-  Fajr: 'Fajr',
-  Sunrise: 'Sunrise',
-  Dhuhr: 'Dhuhr',
-  Asr: 'Asr',
-  Maghrib: 'Maghrib',
-  Isha: 'Isha',
+/** Maps each PrayerName to its translation key in the `prayer` namespace (render-time only — the internal PrayerName union stays English). */
+const PRAYER_LABEL_KEYS: Record<PrayerName, string> = {
+  Fajr: 'prayer.fajr',
+  Sunrise: 'prayer.sunrise',
+  Dhuhr: 'prayer.dhuhr',
+  Asr: 'prayer.asr',
+  Maghrib: 'prayer.maghrib',
+  Isha: 'prayer.isha',
 };
 
 const PRAYER_ORDER: PrayerName[] = ['Fajr', 'Sunrise', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
@@ -70,6 +72,7 @@ function getTimezoneOffset(): number {
 }
 
 export default function PrayerTimesScreen() {
+  const { t } = useTranslation();
   const colors = useThemeColors();
   const styles = useMemo(() => createStyles(colors), [colors]);
   const settings = useSettingsStore();
@@ -179,7 +182,7 @@ export default function PrayerTimesScreen() {
   if (status === 'offline' || isOffline) {
     return (
       <OfflineState message="Showing last-known prayer times (offline)">
-        {times ? <PrayerList times={times} nextPrayer={nextPrayer} secondsToNextPrayer={secondsToNextPrayer} settings={settings} colors={colors} styles={styles} /> : null}
+        {times ? <PrayerList times={times} nextPrayer={nextPrayer} secondsToNextPrayer={secondsToNextPrayer} settings={settings} colors={colors} styles={styles} t={t} /> : null}
       </OfflineState>
     );
   }
@@ -206,7 +209,7 @@ export default function PrayerTimesScreen() {
       {/* Next Prayer Countdown */}
       {nextPrayer && (
         <View style={styles.countdownCard}>
-          <Text style={styles.countdownLabel}>Next: {nextPrayer}</Text>
+          <Text style={styles.countdownLabel}>Next: {t(PRAYER_LABEL_KEYS[nextPrayer])}</Text>
           <Text style={styles.countdownTimer}>{formatCountdown(secondsToNextPrayer)}</Text>
         </View>
       )}
@@ -220,6 +223,7 @@ export default function PrayerTimesScreen() {
           settings={settings}
           colors={colors}
           styles={styles}
+          t={t}
         />
       )}
 
@@ -243,7 +247,7 @@ export default function PrayerTimesScreen() {
 
       {/* Method Selector (7 methods, no Tehran) */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Calculation Method</Text>
+        <Text style={styles.sectionTitle}>{t('settings.calculation.title')}</Text>
         {CALC_METHODS.map((method) => (
           <TouchableOpacity
             key={method.key}
@@ -267,9 +271,10 @@ interface PrayerListProps {
   settings: SettingsState;
   colors: ThemeColors;
   styles: ReturnType<typeof createStyles>;
+  t: (key: string) => string;
 }
 
-function PrayerList({ times, nextPrayer, settings, colors, styles }: PrayerListProps) {
+function PrayerList({ times, nextPrayer, settings, colors, styles, t }: PrayerListProps) {
   const [completedTick, setCompletedTick] = useState(0);
   if (!times) return null;
 
@@ -281,6 +286,7 @@ function PrayerList({ times, nextPrayer, settings, colors, styles }: PrayerListP
         const isNext = name === nextPrayer;
         const completed = canLog(name) && isPrayerCompleted(name);
         const muted = canLog(name) && settings.perPrayerNotificationEnabled[name] === false;
+        const label = t(PRAYER_LABEL_KEYS[name]);
         return (
           <TouchableOpacity
             key={name}
@@ -288,15 +294,15 @@ function PrayerList({ times, nextPrayer, settings, colors, styles }: PrayerListP
             disabled={!canLog(name)}
             onPress={() => {
               togglePrayerCompletion(name);
-              setCompletedTick((t) => t + 1);
+              setCompletedTick((tick) => tick + 1);
             }}
             accessibilityRole={canLog(name) ? 'checkbox' : undefined}
             accessibilityState={canLog(name) ? { checked: completed } : undefined}
-            accessibilityLabel={canLog(name) ? `${PRAYER_LABELS[name]}, ${completed ? 'marked prayed' : 'not marked prayed'}. Double-tap to toggle.` : undefined}
+            accessibilityLabel={canLog(name) ? `${label}, ${completed ? 'marked prayed' : 'not marked prayed'}. Double-tap to toggle.` : undefined}
           >
             <View style={[styles.prayerDot, { backgroundColor: colors.prayer[name.toLowerCase() as keyof typeof colors.prayer] ?? colors.brand.mid }]} />
             <Text style={[styles.prayerName, isNext && styles.prayerNameNext]}>
-              {PRAYER_LABELS[name]}
+              {label}
             </Text>
             {muted && <Text style={styles.muteIcon}>🔕</Text>}
             <Text style={[styles.prayerTime, isNext && styles.prayerTimeNext]}>

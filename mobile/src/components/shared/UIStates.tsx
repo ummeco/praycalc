@@ -16,18 +16,20 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from 'react-native';
+import { useTranslation } from '../../i18n';
 import { useThemeColors } from '../../hooks/useThemeColors';
 import type { ThemeColors } from '../../constants/colors';
 
 // ── Loading / Skeleton ────────────────────────────────────────────────────────
 
-export function LoadingState({ message = 'Loading...' }: { message?: string }) {
+export function LoadingState({ message }: { message?: string }) {
+  const { t } = useTranslation();
   const colors = useThemeColors();
   const styles = useMemo(() => createStyles(colors), [colors]);
   return (
     <View style={styles.center}>
       <ActivityIndicator size="large" color={colors.brand.dark} />
-      <Text style={styles.label}>{message}</Text>
+      <Text style={styles.label}>{message ?? t('common.loading')}</Text>
     </View>
   );
 }
@@ -157,6 +159,7 @@ export function RateLimitedState({
   retryAfterSeconds?: number;
   onRetry?: () => void;
 }) {
+  const { t } = useTranslation();
   const colors = useThemeColors();
   const styles = useMemo(() => createStyles(colors), [colors]);
   return (
@@ -167,7 +170,7 @@ export function RateLimitedState({
       </Text>
       {onRetry ? (
         <TouchableOpacity style={styles.button} onPress={onRetry}>
-          <Text style={styles.buttonText}>Retry</Text>
+          <Text style={styles.buttonText}>{t('common.retry')}</Text>
         </TouchableOpacity>
       ) : null}
     </View>

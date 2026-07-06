@@ -30,12 +30,22 @@ import { useAuthStore } from '../../auth/store/useAuthStore';
 import type { Madhab, TimeFormat, HighLatRule, PrayerName } from '../../../types/prayer';
 import { ErrorState, LoadingState } from '../../../components/shared/UIStates';
 import i18next, {
-  SUPPORTED_LOCALES, LOCALE_NAMES, RTL_LOCALES, persistLocale, type SupportedLocale,
+  SUPPORTED_LOCALES, LOCALE_NAMES, RTL_LOCALES, persistLocale, useTranslation, type SupportedLocale,
 } from '../../../i18n';
 import { schedulePrayerNotifications } from '../../../lib/notifications/PrayerNotificationService';
 
 /** Prayers exposed for manual minute corrections (Sunrise included — timetable alignment). */
 const ADJUSTABLE_PRAYERS: PrayerName[] = ['Fajr', 'Sunrise', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
+
+/** Translation key per prayer name, `prayer` namespace (render-time only). */
+const PRAYER_LABEL_KEYS: Record<PrayerName, string> = {
+  Fajr: 'prayer.fajr',
+  Sunrise: 'prayer.sunrise',
+  Dhuhr: 'prayer.dhuhr',
+  Asr: 'prayer.asr',
+  Maghrib: 'prayer.maghrib',
+  Isha: 'prayer.isha',
+};
 
 const HIGH_LAT_RULES: { key: HighLatRule; label: string }[] = [
   { key: 'NightMiddle', label: 'Middle of the Night' },
@@ -54,6 +64,7 @@ const THEME_OPTIONS: { key: ThemeMode; label: string }[] = [
 ];
 
 export default function SettingsScreen() {
+  const { t } = useTranslation();
   const colors = useThemeColors();
   const styles = useMemo(() => createStyles(colors), [colors]);
   const settings = useSettingsStore();
@@ -77,8 +88,8 @@ export default function SettingsScreen() {
     setShowLanguages(false);
     if (rtlChanged) {
       Alert.alert(
-        'Restart Required',
-        'Layout direction changes take effect the next time you open the app.',
+        t('settings.language.restart_required'),
+        t('settings.language.restart_prompt'),
       );
     }
   }
@@ -154,7 +165,7 @@ export default function SettingsScreen() {
       </View>
 
       {/* Location */}
-      <SectionHeader title="Location" styles={styles} />
+      <SectionHeader title={t('settings.location.title')} styles={styles} />
       <View style={styles.card}>
         {settings.location ? (
           <View style={styles.row}>
@@ -178,7 +189,7 @@ export default function SettingsScreen() {
       </View>
 
       {/* Calculation Method */}
-      <SectionHeader title="Calculation Method" styles={styles} />
+      <SectionHeader title={t('settings.calculation.title')} styles={styles} />
       <View style={styles.card}>
         {CALC_METHODS.map((method) => {
           const isSelected = settings.method === method.key;
@@ -286,7 +297,7 @@ export default function SettingsScreen() {
           const value = settings.prayerMinuteAdjustments[prayer] ?? 0;
           return (
             <View key={prayer} style={styles.row}>
-              <Text style={styles.rowLabel}>{prayer}</Text>
+              <Text style={styles.rowLabel}>{t(PRAYER_LABEL_KEYS[prayer])}</Text>
               <View style={styles.stepper}>
                 <TouchableOpacity
                   style={styles.stepperButton}
@@ -343,7 +354,7 @@ export default function SettingsScreen() {
       </View>
 
       {/* Language */}
-      <SectionHeader title="Language" styles={styles} />
+      <SectionHeader title={t('settings.language.title')} styles={styles} />
       <View style={styles.card}>
         <TouchableOpacity style={styles.row} onPress={() => setShowLanguages((v) => !v)}>
           <Text style={styles.rowLabel}>App Language</Text>
@@ -411,7 +422,7 @@ export default function SettingsScreen() {
 
       {/* Notifications — single source of truth is NotificationSettingsScreen (per-prayer
           enable + advance minutes); this just links out instead of duplicating the picker. */}
-      <SectionHeader title="Notifications" styles={styles} />
+      <SectionHeader title={t('settings.notifications.title')} styles={styles} />
       <View style={styles.card}>
         <View style={styles.row}>
           <Text style={styles.rowLabel}>Prayer Time Alerts</Text>
