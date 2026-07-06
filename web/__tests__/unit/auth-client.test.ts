@@ -113,7 +113,7 @@ describe("requestMagicLink", () => {
     mockFetch.mockResolvedValue(jsonResponse({}));
     await requestMagicLink("m@m.com");
     expect(mockFetch).toHaveBeenCalledWith(
-      expect.stringContaining("/v1/auth/signin/passwordless/email"),
+      expect.stringContaining("/signin/passwordless/email"),
       expect.objectContaining({ method: "POST" }),
     );
   });

@@ -19,7 +19,7 @@ import { loadPersistedSession, persistSession, clearPersistedSession } from './a
 const AUTH_URL: string =
   (import.meta.env.VITE_AUTH_URL as string | undefined) ?? 'https://auth.ummat.dev';
 const BILLING_URL: string =
-  (import.meta.env.VITE_BILLING_URL as string | undefined) ?? 'https://api.praycalc.com/billing';
+  (import.meta.env.VITE_BILLING_URL as string | undefined) ?? 'https://smart.praycalc.com/billing';
 
 function sessionFromHasura(resp: HasuraAuthSuccess, fallbackEmail: string): AuthSession {
   const s = resp.session;
@@ -52,7 +52,7 @@ async function postJson<T>(url: string, body: unknown): Promise<T> {
 
 /** Sign in with email + password. Persists and returns the new session. */
 export async function signIn(email: string, password: string): Promise<AuthSession> {
-  const resp = await postJson<HasuraAuthSuccess>(`${AUTH_URL}/v1/auth/signin/email-password`, {
+  const resp = await postJson<HasuraAuthSuccess>(`${AUTH_URL}/signin/email-password`, {
     email,
     password,
   });
@@ -63,7 +63,7 @@ export async function signIn(email: string, password: string): Promise<AuthSessi
 
 /** Create a new Ummat account with email + password. Persists and returns the new session. */
 export async function signUp(email: string, password: string): Promise<AuthSession> {
-  const resp = await postJson<HasuraAuthSuccess>(`${AUTH_URL}/v1/auth/signup/email-password`, {
+  const resp = await postJson<HasuraAuthSuccess>(`${AUTH_URL}/signup/email-password`, {
     email,
     password,
   });
@@ -78,7 +78,7 @@ export async function refreshToken(
   knownEmail = '',
   knownDisplayName = '',
 ): Promise<AuthSession> {
-  const resp = await postJson<HasuraAuthRefreshSuccess>(`${AUTH_URL}/v1/auth/token`, {
+  const resp = await postJson<HasuraAuthRefreshSuccess>(`${AUTH_URL}/token`, {
     refreshToken: refreshTokenValue,
   });
   const session: AuthSession = {
@@ -95,7 +95,7 @@ export async function refreshToken(
 /** Best-effort sign-out — clears local session regardless of network outcome. */
 export async function signOut(refreshTokenValue: string): Promise<void> {
   try {
-    await fetch(`${AUTH_URL}/v1/auth/signout`, {
+    await fetch(`${AUTH_URL}/signout`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ refreshToken: refreshTokenValue, all: false }),

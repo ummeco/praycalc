@@ -21,8 +21,8 @@ export interface EntitlementStatus {
   isPlus: boolean;
 }
 
-/** Minimal shape of hasura-auth's `/v1/auth/signin/email-password` and
- * `/v1/auth/signup/email-password` success responses. */
+/** Minimal shape of hasura-auth's `/signin/email-password` and
+ * `/signup/email-password` success responses. */
 export interface HasuraAuthSuccess {
   session: {
     accessToken: string;
@@ -35,7 +35,7 @@ export interface HasuraAuthSuccess {
   } | null;
 }
 
-/** Shape of hasura-auth's `/v1/auth/token` (refresh) success response. */
+/** Shape of hasura-auth's `/token` (refresh) success response. */
 export interface HasuraAuthRefreshSuccess {
   accessToken: string;
   accessTokenExpiresIn: number;

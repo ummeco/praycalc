@@ -20,7 +20,7 @@ describe('authClient', () => {
   });
 
   describe('signup', () => {
-    it('POSTs to /v1/auth/signup/email-password with email, password, options.displayName', async () => {
+    it('POSTs to /signup/email-password with email, password, options.displayName', async () => {
       const fetchSpy = mockFetchOnce(200, {
         session: { accessToken: 'a', refreshToken: 'r', user: { id: 'u1', email: 'x@y.com' } },
       });
@@ -29,7 +29,7 @@ describe('authClient', () => {
 
       expect(fetchSpy).toHaveBeenCalledTimes(1);
       const [url, init] = fetchSpy.mock.calls[0] as [string, RequestInit];
-      expect(url).toBe('https://auth.ummat.dev/v1/auth/signup/email-password');
+      expect(url).toBe('https://auth.ummat.dev/signup/email-password');
       expect(JSON.parse(init.body as string)).toEqual({
         email: 'x@y.com',
         password: 'hunter2',
@@ -50,7 +50,7 @@ describe('authClient', () => {
   });
 
   describe('signin', () => {
-    it('POSTs to /v1/auth/signin/email-password', async () => {
+    it('POSTs to /signin/email-password', async () => {
       const fetchSpy = mockFetchOnce(200, {
         session: { accessToken: 'a', refreshToken: 'r', user: { id: 'u1', email: 'x@y.com' } },
       });
@@ -58,7 +58,7 @@ describe('authClient', () => {
       const session = await signin('x@y.com', 'hunter2');
 
       const [url, init] = fetchSpy.mock.calls[0] as [string, RequestInit];
-      expect(url).toBe('https://auth.ummat.dev/v1/auth/signin/email-password');
+      expect(url).toBe('https://auth.ummat.dev/signin/email-password');
       expect(JSON.parse(init.body as string)).toEqual({ email: 'x@y.com', password: 'hunter2' });
       expect(session.user.id).toBe('u1');
     });
@@ -70,7 +70,7 @@ describe('authClient', () => {
   });
 
   describe('refreshToken', () => {
-    it('POSTs to /v1/auth/token with refreshToken body', async () => {
+    it('POSTs to /token with refreshToken body', async () => {
       const fetchSpy = mockFetchOnce(200, {
         accessToken: 'new-a',
         refreshToken: 'new-r',
@@ -80,7 +80,7 @@ describe('authClient', () => {
       const result = await refreshToken('old-r');
 
       const [url, init] = fetchSpy.mock.calls[0] as [string, RequestInit];
-      expect(url).toBe('https://auth.ummat.dev/v1/auth/token');
+      expect(url).toBe('https://auth.ummat.dev/token');
       expect(JSON.parse(init.body as string)).toEqual({ refreshToken: 'old-r' });
       expect(result.accessToken).toBe('new-a');
     });

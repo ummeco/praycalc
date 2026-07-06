@@ -85,7 +85,7 @@ async function postHasuraAuth(path: string, body: unknown): Promise<HasuraAuthRe
 
 /** Sign in with email + password. */
 export function signInEmailPassword(email: string, password: string): Promise<HasuraAuthResult> {
-  return postHasuraAuth('/v1/auth/signin/email-password', { email, password });
+  return postHasuraAuth('/signin/email-password', { email, password });
 }
 
 /** Register a new account with email + password. */
@@ -94,7 +94,7 @@ export function signUpEmailPassword(
   password: string,
   displayName?: string,
 ): Promise<HasuraAuthResult> {
-  return postHasuraAuth('/v1/auth/signup/email-password', {
+  return postHasuraAuth('/signup/email-password', {
     email,
     password,
     options: displayName ? { displayName } : undefined,
@@ -103,13 +103,13 @@ export function signUpEmailPassword(
 
 /** Exchange a refresh token for a new access + refresh token pair. */
 export function refreshWithToken(refreshToken: string): Promise<HasuraAuthResult> {
-  return postHasuraAuth('/v1/auth/token', { refreshToken });
+  return postHasuraAuth('/token', { refreshToken });
 }
 
 /** Invalidate a refresh token. Best-effort — never throws. */
 export async function signOutWithToken(refreshToken: string): Promise<void> {
   try {
-    await fetch(`${AUTH_URL}/v1/auth/signout`, {
+    await fetch(`${AUTH_URL}/signout`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ refreshToken, all: false }),

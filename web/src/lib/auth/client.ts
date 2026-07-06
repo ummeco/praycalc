@@ -59,7 +59,7 @@ export function signUp(email: string, password: string, displayName?: string): P
 
 /** Request a passwordless magic-link email. No session is created until the link is clicked. */
 export async function requestMagicLink(email: string): Promise<void> {
-  const res = await fetch(`${AUTH_URL}/v1/auth/signin/passwordless/email`, {
+  const res = await fetch(`${AUTH_URL}/signin/passwordless/email`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email }),
