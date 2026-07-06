@@ -32,7 +32,7 @@ GET /api/prayers?lat={lat}&lng={lng}&tz={tz}&from={date}&to={date}&hanafi={0|1}
 | --- | --- | --- | --- |
 | `lat` | float | Yes | Latitude (-90 to 90) |
 | `lng` | float | Yes | Longitude (-180 to 180) |
-| `tz` | string | No | IANA timezone (e.g., `America/New_York`). Defaults to `UTC` |
+| `tz` | string | No | IANA timezone name (e.g., `America/New_York`) or numeric UTC offset (`-14`..`14`). Defaults to `UTC` |
 | `from` | string | Yes | Start date in `YYYY-MM-DD` format |
 | `to` | string | Yes | End date in `YYYY-MM-DD` format |
 | `hanafi` | `0` or `1` | No | Use Hanafi Asr calculation. Defaults to `0` (Shafi'i) |
@@ -63,6 +63,7 @@ GET /api/prayers?lat={lat}&lng={lng}&tz={tz}&from={date}&to={date}&hanafi={0|1}
 - Coordinates are rounded to 4 decimal places
 - Times use the NREL SPA algorithm (solar position to 0.0003 degree accuracy)
 - Cache: `public, max-age=3600, stale-while-revalidate=86400`
+- An unrecognized `tz` value returns `400` (not a masked `500`)
 
 ### Example
 
@@ -156,7 +157,7 @@ GET /api/calendar/pdf?lat={lat}&lng={lng}&tz={tz}&city={name}&year={year}&type={
 | --- | --- | --- | --- |
 | `lat` | float | Yes | Latitude |
 | `lng` | float | Yes | Longitude |
-| `tz` | string | Yes | IANA timezone |
+| `tz` | string | Yes | IANA timezone name or numeric UTC offset (`-14`..`14`) |
 | `city` | string | Yes | City name for the PDF header |
 | `country` | string | No | Country name for the header |
 | `year` | integer | Yes | Gregorian year (1900-2200) |

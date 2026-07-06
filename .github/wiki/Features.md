@@ -2,7 +2,7 @@
 
 ## Accounts & Ummat+
 
-PrayCalc uses the shared Ummat account system — one sign-in works across every app in the ecosystem (web, mobile, desktop, TV). Auth runs against `auth.ummat.dev` (Hasura Auth) and issues a JWT that each surface stores locally.
+PrayCalc uses the shared Ummat account system — one sign-in works across every app in the ecosystem (web, mobile, desktop, TV). Auth runs against `auth.ummat.dev` (Hasura Auth). The web app keeps the session in httpOnly cookies behind same-origin `/api/auth/*` proxy routes; mobile stores tokens in expo-secure-store and desktop in a tauri-plugin-store file.
 
 | Tier | Price | What you get |
 | --- | --- | --- |

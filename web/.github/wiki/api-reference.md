@@ -16,13 +16,13 @@
 |---|---|---|---|
 | `lat` | number | yes | Decimal latitude |
 | `lng` | number | yes | Decimal longitude |
-| `tz` | string | no | IANA timezone (default `UTC`) |
+| `tz` | string | no | IANA timezone name (e.g. `America/New_York`) or numeric UTC offset (`-14`..`14`); default `UTC` |
 | `from` | string (YYYY-MM-DD) | yes | Start date |
 | `to` | string (YYYY-MM-DD) | yes | End date (max 400 days span) |
 | `hanafi` | `"1"` | no | Use Hanafi Asr calculation |
 
 **Response:** `{ times: PrayerResult[] }` — array of daily prayer time objects.
-**Errors:** `400` invalid/missing params, `429` rate exceeded.
+**Errors:** `400` invalid/missing params (including an unrecognized `tz` value), `429` rate exceeded.
 
 ---
 

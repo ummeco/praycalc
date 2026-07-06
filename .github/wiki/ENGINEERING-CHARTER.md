@@ -773,6 +773,9 @@ For each: PROBLEM → SOLUTION → DETECTION.
 | 18 | Adding deps without audit | CI `pnpm audit --audit-level=high` | Automated CI gate |
 | 19 | New feature without ADR | Author ADR before opening PR | Required label `adr-attached` on `feat:` PRs |
 | 20 | Commit without conventional format | commitlint rejects | Pre-commit hook + CI |
+| 21 | Reintroducing the `/v1/auth/*` prefix on hasura-auth calls | hasura-auth 0.36 at `auth.ummat.dev` serves bare paths only (`/signin/email-password`, `/signup/email-password`, `/token`, `/signout`, `/signin/passwordless/email`); the `/v1/auth/*` prefix has no nginx upstream and 502s in prod | Live probe: `curl -I https://auth.ummat.dev/v1/auth/signin/email-password` must never be treated as a passing check; grep for `v1/auth` in client auth code |
+| 22 | Pointing billing calls at `api.praycalc.com` | `api.praycalc.com` is the Hasura CORS host only — it 404s on `/billing`. Billing lives at `https://smart.praycalc.com/billing`; web goes through `/api/billing/*` proxy routes, desktop calls `smart.praycalc.com` directly (Tauri CSP must allow it) | grep for `api.praycalc.com` near billing/checkout/portal code |
+| 23 | Trying to "unset" a Vercel header in a later `headers()` rule | Vercel headers cannot be unset once set by an earlier matching rule — only overridden. To make a route iframe-able again, override with a permissive/invalid value (e.g. `X-Frame-Options: ALLOWALL` so browsers ignore it, with CSP `frame-ancestors` governing instead), never rely on a later rule removing it | Manual header check: `curl -I <route>` and confirm no conflicting `X-Frame-Options: DENY`/`SAMEORIGIN` survives from an earlier rule |
 
 > **AI-NOTE:** This catalog is the cheatsheet. If a code change does not appear
 > on the right side of any of these mistakes, it is acceptable. If it appears on
