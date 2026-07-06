@@ -13,6 +13,7 @@ import React, { useMemo } from 'react';
 import {
   View, Text, StyleSheet, SafeAreaView, ScrollView,
 } from 'react-native';
+import i18next, { useTranslation } from '../../i18n';
 import { useThemeColors } from '../../hooks/useThemeColors';
 import type { ThemeColors } from '../../constants/colors';
 import { gregorianToHijri, RAMADAN_MONTH } from '../../lib/hijri';
@@ -36,7 +37,6 @@ interface MoonData {
   phase: MoonPhase;
   illumination: number;   // 0-1
   age: number;            // days since new moon
-  phaseName: string;
   phaseEmoji: string;
   nextNewMoon: Date;
   nextFullMoon: Date;
@@ -66,15 +66,27 @@ function getMoonIllumination(age: number): number {
   return (1 - Math.cos(phaseAngle)) / 2;
 }
 
-function getMoonPhase(age: number): { phase: MoonPhase; name: string; emoji: string } {
-  if (age < 1.85 || age >= 27.68) return { phase: 'new_moon', name: 'New Moon', emoji: '🌑' };
-  if (age < 7.38) return { phase: 'waxing_crescent', name: 'Waxing Crescent', emoji: '🌒' };
-  if (age < 9.22) return { phase: 'first_quarter', name: 'First Quarter', emoji: '🌓' };
-  if (age < 14.76) return { phase: 'waxing_gibbous', name: 'Waxing Gibbous', emoji: '🌔' };
-  if (age < 16.61) return { phase: 'full_moon', name: 'Full Moon', emoji: '🌕' };
-  if (age < 22.15) return { phase: 'waning_gibbous', name: 'Waning Gibbous', emoji: '🌖' };
-  if (age < 23.99) return { phase: 'last_quarter', name: 'Last Quarter', emoji: '🌗' };
-  return { phase: 'waning_crescent', name: 'Waning Crescent', emoji: '🌘' };
+/** Translation key per moon phase, `screens.moon` namespace (render-time only — the internal MoonPhase union stays English). */
+const MOON_PHASE_LABEL_KEYS: Record<MoonPhase, string> = {
+  new_moon: 'screens.moon.phaseNewMoon',
+  waxing_crescent: 'screens.moon.phaseWaxingCrescent',
+  first_quarter: 'screens.moon.phaseFirstQuarter',
+  waxing_gibbous: 'screens.moon.phaseWaxingGibbous',
+  full_moon: 'screens.moon.phaseFullMoon',
+  waning_gibbous: 'screens.moon.phaseWaningGibbous',
+  last_quarter: 'screens.moon.phaseLastQuarter',
+  waning_crescent: 'screens.moon.phaseWaningCrescent',
+};
+
+function getMoonPhase(age: number): { phase: MoonPhase; emoji: string } {
+  if (age < 1.85 || age >= 27.68) return { phase: 'new_moon', emoji: '🌑' };
+  if (age < 7.38) return { phase: 'waxing_crescent', emoji: '🌒' };
+  if (age < 9.22) return { phase: 'first_quarter', emoji: '🌓' };
+  if (age < 14.76) return { phase: 'waxing_gibbous', emoji: '🌔' };
+  if (age < 16.61) return { phase: 'full_moon', emoji: '🌕' };
+  if (age < 22.15) return { phase: 'waning_gibbous', emoji: '🌖' };
+  if (age < 23.99) return { phase: 'last_quarter', emoji: '🌗' };
+  return { phase: 'waning_crescent', emoji: '🌘' };
 }
 
 function getNextPhaseDate(date: Date, targetAge: number): Date {
@@ -87,6 +99,7 @@ function getNextPhaseDate(date: Date, targetAge: number): Date {
 // ── Screen ────────────────────────────────────────────────────────────────────
 
 export default function MoonScreen() {
+  const { t } = useTranslation();
   const colors = useThemeColors();
   const styles = useMemo(() => createStyles(colors), [colors]);
   const hijriDayAdjustment = useSettingsStore((s) => s.hijriDayAdjustment);
@@ -94,7 +107,7 @@ export default function MoonScreen() {
     const now = new Date();
     const age = getMoonAge(now);
     const illumination = getMoonIllumination(age);
-    const { phase, name, emoji } = getMoonPhase(age);
+    const { phase, emoji } = getMoonPhase(age);
     const nextNewMoon = getNextPhaseDate(now, 0);
     const nextFullMoon = getNextPhaseDate(now, 14.76);
     const hijri = gregorianToHijri(now, hijriDayAdjustment);
@@ -102,7 +115,6 @@ export default function MoonScreen() {
       phase,
       illumination,
       age,
-      phaseName: name,
       phaseEmoji: emoji,
       nextNewMoon,
       nextFullMoon,
@@ -113,6 +125,8 @@ export default function MoonScreen() {
   }, [hijriDayAdjustment]);
 
   const illuminationPct = Math.round(moonData.illumination * 100);
+  const phaseLabel = t(MOON_PHASE_LABEL_KEYS[moonData.phase]);
+  const locale = i18next.language;
 
   return (
     <SafeAreaView style={styles.container}>
@@ -121,62 +135,62 @@ export default function MoonScreen() {
         <View
           style={styles.moonContainer}
           accessibilityRole="image"
-          accessibilityLabel={`Moon phase: ${moonData.phaseName}, ${illuminationPct}% illuminated`}
+          accessibilityLabel={`Moon phase: ${phaseLabel}, ${t('screens.moon.illuminatedPct', { pct: illuminationPct })}`}
         >
           <Text style={styles.moonEmoji}>{moonData.phaseEmoji}</Text>
-          <Text style={styles.phaseName}>{moonData.phaseName}</Text>
-          <Text style={styles.illumination}>{illuminationPct}% illuminated</Text>
+          <Text style={styles.phaseName}>{phaseLabel}</Text>
+          <Text style={styles.illumination}>{t('screens.moon.illuminatedPct', { pct: illuminationPct })}</Text>
         </View>
 
         {/* Hijri month crescent info */}
         <View style={styles.infoCard}>
-          <Text style={styles.infoTitle} accessibilityRole="header">Hijri Calendar</Text>
+          <Text style={styles.infoTitle} accessibilityRole="header">{t('screens.moon.hijriCalendar')}</Text>
           <View style={styles.infoRow}>
-            <Text style={styles.infoLabel}>Hijri Day</Text>
+            <Text style={styles.infoLabel}>{t('screens.moon.hijriDay')}</Text>
             <Text style={styles.infoValue}>{moonData.hijriDay}</Text>
           </View>
           <View style={styles.infoRow}>
-            <Text style={styles.infoLabel}>Month</Text>
+            <Text style={styles.infoLabel}>{t('screens.moon.month')}</Text>
             <Text style={styles.infoValue}>{moonData.hijriMonthName}</Text>
           </View>
           <View style={styles.infoRow}>
-            <Text style={styles.infoLabel}>Lunar Age</Text>
-            <Text style={styles.infoValue}>{moonData.age.toFixed(1)} days</Text>
+            <Text style={styles.infoLabel}>{t('screens.moon.lunarAge')}</Text>
+            <Text style={styles.infoValue}>{t('screens.moon.daysUnit', { count: Number(moonData.age.toFixed(1)) })}</Text>
           </View>
         </View>
 
         {/* Upcoming phases */}
         <View style={styles.infoCard}>
-          <Text style={styles.infoTitle} accessibilityRole="header">Upcoming Phases</Text>
+          <Text style={styles.infoTitle} accessibilityRole="header">{t('screens.moon.upcomingPhases')}</Text>
           <View style={styles.infoRow}>
-            <Text style={styles.infoLabel}>Next Full Moon 🌕</Text>
+            <Text style={styles.infoLabel}>{t('screens.moon.nextFullMoon')}</Text>
             <Text style={styles.infoValue}>
-              {moonData.nextFullMoon.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+              {moonData.nextFullMoon.toLocaleDateString(locale, { month: 'short', day: 'numeric' })}
             </Text>
           </View>
           <View style={styles.infoRow}>
-            <Text style={styles.infoLabel}>Next New Moon 🌑</Text>
+            <Text style={styles.infoLabel}>{t('screens.moon.nextNewMoon')}</Text>
             <Text style={styles.infoValue}>
-              {moonData.nextNewMoon.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+              {moonData.nextNewMoon.toLocaleDateString(locale, { month: 'short', day: 'numeric' })}
             </Text>
           </View>
         </View>
 
         {/* Islamic significance */}
         <View style={styles.infoCard}>
-          <Text style={styles.infoTitle} accessibilityRole="header">Islamic Significance</Text>
+          <Text style={styles.infoTitle} accessibilityRole="header">{t('screens.moon.significance')}</Text>
           <Text style={styles.quoteText}>
-            {/* Quran 2:189 — verified Uthmani text */}
+            {/* Quran 2:189 — verified Uthmani text — Islamic content gate: English only, never machine-translated */}
             {'"They ask you about the new crescent moons. Say: they are times set for people and for Hajj." — Quran 2:189'}
           </Text>
           {moonData.hijriMonth === RAMADAN_MONTH && (
             <Text style={styles.specialEvent}>
-              It is Ramadan — the month of fasting and seeking Laylat al-Qadr.
+              {t('screens.moon.ramadanNote')}
             </Text>
           )}
           {moonData.hijriMonth === DHUL_HIJJAH_MONTH && (
             <Text style={styles.specialEvent}>
-              The first ten days of {moonData.hijriMonthName} are among the most virtuous of the year.
+              {t('screens.moon.dhulHijjahNote', { month: moonData.hijriMonthName })}
             </Text>
           )}
         </View>

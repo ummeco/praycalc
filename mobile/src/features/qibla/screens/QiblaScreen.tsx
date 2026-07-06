@@ -12,6 +12,7 @@ import React, { useEffect, useRef, useMemo } from 'react';
 import { View, Text, StyleSheet, Animated } from 'react-native';
 import { router } from 'expo-router';
 import geomagnetism from 'geomagnetism';
+import { useTranslation } from '../../../i18n';
 import { useThemeColors } from '../../../hooks/useThemeColors';
 import type { ThemeColors } from '../../../constants/colors';
 import { useActiveLocation } from '../../settings/store/useSettingsStore';
@@ -23,9 +24,15 @@ import {
   PermissionDeniedState,
 } from '../../../components/shared/UIStates';
 
-const ACCURACY_LABELS = ['Unreliable', 'Low', 'Medium', 'High'];
+const ACCURACY_LABEL_KEYS = [
+  'screens.qibla.accuracyUnreliable',
+  'screens.qibla.accuracyLow',
+  'screens.qibla.accuracyMedium',
+  'screens.qibla.accuracyHigh',
+];
 
 export default function QiblaScreen() {
+  const { t } = useTranslation();
   const colors = useThemeColors();
   const styles = useMemo(() => createStyles(colors), [colors]);
   const accuracyColors = useMemo(
@@ -82,15 +89,15 @@ export default function QiblaScreen() {
   // ── 7 UI States ──────────────────────────────────────────────────────────────
 
   if (status === 'skeleton' || status === 'loading') {
-    return <LoadingState message="Calibrating compass..." />;
+    return <LoadingState message={t('screens.qibla.calibrating')} />;
   }
 
   if (status === 'empty') {
     return (
       <EmptyState
-        title="Location Required"
-        subtitle="Set your location in Settings to find the Qibla direction."
-        action="Set Location"
+        title={t('screens.qibla.locationRequiredTitle')}
+        subtitle={t('screens.qibla.locationRequiredSubtitle')}
+        action={t('screens.prayerTimes.setLocationAction')}
         onAction={() => router.push('/city-search')}
       />
     );
@@ -112,7 +119,7 @@ export default function QiblaScreen() {
         <Text style={styles.bearingValue}>
           {bearing !== null ? `${Math.round(bearing)}°` : '—'}
         </Text>
-        <Text style={styles.bearingLabel}>Qibla Bearing</Text>
+        <Text style={styles.bearingLabel}>{t('screens.qibla.bearingLabel')}</Text>
       </View>
 
       {/* Compass rose */}
@@ -144,13 +151,15 @@ export default function QiblaScreen() {
           ]}
         />
         <Text style={styles.accuracyLabel}>
-          Accuracy: {ACCURACY_LABELS[accuracy] ?? 'Unknown'}
+          {t('screens.qibla.accuracyLabel', {
+            level: ACCURACY_LABEL_KEYS[accuracy] ? t(ACCURACY_LABEL_KEYS[accuracy]!) : t('screens.qibla.accuracyUnknown'),
+          })}
         </Text>
       </View>
 
       {/* Declination note */}
       <Text style={styles.note}>
-        Heading: {Math.round(heading)}° | Great-circle bearing to Kaaba
+        {t('screens.qibla.headingNote', { degrees: Math.round(heading) })}
       </Text>
     </View>
   );

@@ -29,7 +29,17 @@
     "settings": "Mipangilio",
     "done": "Imekamilika",
     "next": "Ijayo",
-    "back": "Rudi"
+    "back": "Rudi",
+    "today": "Leo",
+    "on": "Washa",
+    "off": "Zima",
+    "search": "Tafuta",
+    "change": "Badilisha",
+    "reset": "Weka upya",
+    "openInMaps": "Fungua kwenye Ramani",
+    "openSettings": "Fungua Mipangilio",
+    "upgrade": "Boresha",
+    "signIn": "Ingia"
   },
   "greeting": {
     "assalamu_alaykum": "Assalamu Alaykum wa Rahmatullahi wa Barakatuh",
@@ -63,5 +73,21 @@
     "location_permission": "Tafadhali ruhusu ufikiaji wa mahali ili kuhesabu nyakati za sala",
     "network": "Haiwezekani kuunganisha kwenye mtandao",
     "calculation": "Haiwezekani kuhesabu nyakati za sala"
+  },
+  "tabs": {
+    "home": "Sala",
+    "prayerTimes": "Nyakati za Sala",
+    "qibla": "Kibla",
+    "calendar": "Kalenda",
+    "quran": "Qur'ani",
+    "more": "Zaidi"
+  },
+  "menu": {
+    "settings": {
+      "label": "Mipangilio"
+    },
+    "mosques": {
+      "label": "Misikiti ya Karibu"
+    }
   }
 }

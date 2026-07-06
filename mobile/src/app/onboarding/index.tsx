@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import { router } from 'expo-router';
 import * as Location from 'expo-location';
+import { useTranslation } from '../../i18n';
 import { useThemeColors } from '../../hooks/useThemeColors';
 import type { ThemeColors } from '../../constants/colors';
 import { useSettingsStore } from '../../features/settings/store/useSettingsStore';
@@ -21,6 +22,7 @@ const STEPS = ['welcome', 'location', 'auth'] as const;
 type OnboardingStep = typeof STEPS[number];
 
 export default function OnboardingScreen() {
+  const { t } = useTranslation();
   const [step, setStep] = useState<OnboardingStep>('welcome');
   const setLocation = useSettingsStore((s) => s.setLocation);
   const setOnboardingDone = useSettingsStore((s) => s.setOnboardingDone);
@@ -61,36 +63,36 @@ export default function OnboardingScreen() {
     <View style={styles.container}>
       {step === 'welcome' && (
         <View style={styles.panel}>
-          <Text style={styles.title}>Welcome to PrayCalc</Text>
-          <Text style={styles.desc}>Accurate prayer times, Qibla direction, and Islamic calendar — all in one place.</Text>
+          <Text style={styles.title}>{t('screens.onboarding.welcomeTitle')}</Text>
+          <Text style={styles.desc}>{t('screens.onboarding.welcomeDesc')}</Text>
           <TouchableOpacity style={styles.button} onPress={() => setStep('location')}>
-            <Text style={styles.buttonText}>Get Started</Text>
+            <Text style={styles.buttonText}>{t('screens.onboarding.getStarted')}</Text>
           </TouchableOpacity>
         </View>
       )}
 
       {step === 'location' && (
         <View style={styles.panel}>
-          <Text style={styles.title}>Enable Location</Text>
-          <Text style={styles.desc}>Prayer times require your location for accurate calculation.</Text>
+          <Text style={styles.title}>{t('screens.onboarding.locationTitle')}</Text>
+          <Text style={styles.desc}>{t('screens.onboarding.locationDesc')}</Text>
           <TouchableOpacity style={styles.button} onPress={requestLocation}>
-            <Text style={styles.buttonText}>Allow Location</Text>
+            <Text style={styles.buttonText}>{t('screens.onboarding.allowLocation')}</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.secondaryButton} onPress={() => setStep('auth')}>
-            <Text style={styles.secondaryButtonText}>Skip — I'll set manually</Text>
+            <Text style={styles.secondaryButtonText}>{t('screens.onboarding.skipManual')}</Text>
           </TouchableOpacity>
         </View>
       )}
 
       {step === 'auth' && (
         <View style={styles.panel}>
-          <Text style={styles.title}>Create Account?</Text>
-          <Text style={styles.desc}>Optional: create an account for cloud sync and prayer history. You can always sign up later.</Text>
+          <Text style={styles.title}>{t('screens.onboarding.authTitle')}</Text>
+          <Text style={styles.desc}>{t('screens.onboarding.authDesc')}</Text>
           <TouchableOpacity style={styles.button} onPress={finishToSignIn}>
-            <Text style={styles.buttonText}>Create Account</Text>
+            <Text style={styles.buttonText}>{t('common.createAccount')}</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.secondaryButton} onPress={finish}>
-            <Text style={styles.secondaryButtonText}>Skip for now</Text>
+            <Text style={styles.secondaryButtonText}>{t('screens.onboarding.skipForNow')}</Text>
           </TouchableOpacity>
         </View>
       )}

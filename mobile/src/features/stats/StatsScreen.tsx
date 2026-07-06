@@ -12,6 +12,7 @@ import {
   View, Text, StyleSheet, SafeAreaView, ScrollView, TouchableOpacity,
 } from 'react-native';
 import { useFocusEffect } from 'expo-router';
+import i18next, { useTranslation } from '../../i18n';
 import { useThemeColors } from '../../hooks/useThemeColors';
 import type { ThemeColors } from '../../constants/colors';
 import { EmptyState } from '../../components/states';
@@ -41,7 +42,7 @@ function getStreak(completions: PrayerCompletion[]): number {
   return streak;
 }
 
-function getWeeklyData(completions: PrayerCompletion[]): Array<{ day: string; count: number }> {
+function getWeeklyData(completions: PrayerCompletion[], locale: string): Array<{ day: string; count: number }> {
   const result: Array<{ day: string; count: number }> = [];
   for (let i = 6; i >= 0; i--) {
     const d = new Date();
@@ -49,7 +50,7 @@ function getWeeklyData(completions: PrayerCompletion[]): Array<{ day: string; co
     const key = d.toISOString().slice(0, 10);
     const count = completions.filter((c) => c.date === key).length;
     result.push({
-      day: d.toLocaleDateString('en-US', { weekday: 'short' }),
+      day: d.toLocaleDateString(locale, { weekday: 'short' }),
       count,
     });
   }
@@ -102,6 +103,7 @@ const createChartStyles = (colors: ThemeColors) => StyleSheet.create({
 type ViewMode = 'weekly' | 'monthly';
 
 export default function StatsScreen() {
+  const { t } = useTranslation();
   const colors = useThemeColors();
   const styles = useMemo(() => createStyles(colors), [colors]);
   const [mode, setMode] = useState<ViewMode>('weekly');
@@ -116,7 +118,7 @@ export default function StatsScreen() {
   );
 
   const streak = useMemo(() => getStreak(completions), [completions]);
-  const weeklyData = useMemo(() => getWeeklyData(completions), [completions]);
+  const weeklyData = useMemo(() => getWeeklyData(completions, i18next.language), [completions]);
 
   const totalCompletions = completions.length;
   const weeklyRate = weeklyData.reduce((sum, d) => sum + d.count, 0) / 35; // max 7×5
@@ -124,7 +126,7 @@ export default function StatsScreen() {
   if (totalCompletions === 0) {
     return (
       <EmptyState
-        message="No prayer logs yet. Start completing prayers to see your stats."
+        message={t('screens.stats.noLogs')}
       />
     );
   }
@@ -140,7 +142,7 @@ export default function StatsScreen() {
             accessibilityLabel={`Current streak: ${streak} days`}
           >
             <Text style={styles.statNumber}>{streak}</Text>
-            <Text style={styles.statLabel}>Day Streak 🔥</Text>
+            <Text style={styles.statLabel}>{t('screens.stats.dayStreak')}</Text>
           </View>
           <View
             style={styles.statCard}
@@ -148,7 +150,7 @@ export default function StatsScreen() {
             accessibilityLabel={`Weekly completion rate: ${Math.round(weeklyRate * 100)} percent`}
           >
             <Text style={styles.statNumber}>{Math.round(weeklyRate * 100)}%</Text>
-            <Text style={styles.statLabel}>Weekly Rate</Text>
+            <Text style={styles.statLabel}>{t('screens.stats.weeklyRate')}</Text>
           </View>
           <View
             style={styles.statCard}
@@ -156,7 +158,7 @@ export default function StatsScreen() {
             accessibilityLabel={`Total prayers logged: ${totalCompletions}`}
           >
             <Text style={styles.statNumber}>{totalCompletions}</Text>
-            <Text style={styles.statLabel}>Total Logged</Text>
+            <Text style={styles.statLabel}>{t('screens.stats.totalLogged')}</Text>
           </View>
         </View>
 
@@ -171,7 +173,7 @@ export default function StatsScreen() {
               accessibilityState={{ selected: mode === m }}
             >
               <Text style={[styles.toggleLabel, mode === m && styles.toggleLabelActive]}>
-                {m.charAt(0).toUpperCase() + m.slice(1)}
+                {m === 'weekly' ? t('screens.stats.weekly') : t('screens.stats.monthly')}
               </Text>
             </TouchableOpacity>
           ))}
@@ -180,13 +182,13 @@ export default function StatsScreen() {
         {/* Bar chart */}
         <View style={styles.chartCard}>
           <Text style={styles.sectionTitle} accessibilityRole="header">
-            {mode === 'weekly' ? 'Last 7 Days' : 'This Month'}
+            {mode === 'weekly' ? t('screens.stats.last7Days') : t('screens.stats.thisMonth')}
           </Text>
           <BarChart data={weeklyData} colors={colors} />
         </View>
 
         {/* Per-prayer breakdown */}
-        <Text style={styles.sectionTitle} accessibilityRole="header">By Prayer</Text>
+        <Text style={styles.sectionTitle} accessibilityRole="header">{t('screens.stats.byPrayer')}</Text>
         {PRAYER_NAMES.map((name) => {
           const count = completions.filter((c) => c.prayerName === name).length;
           const pct = totalCompletions > 0 ? count / totalCompletions : 0;

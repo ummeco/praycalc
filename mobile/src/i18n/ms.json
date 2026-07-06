@@ -29,7 +29,17 @@
     "settings": "Tetapan",
     "done": "Selesai",
     "next": "Seterusnya",
-    "back": "Kembali"
+    "back": "Kembali",
+    "today": "Hari ini",
+    "on": "Hidup",
+    "off": "Mati",
+    "search": "Cari",
+    "change": "Tukar",
+    "reset": "Set semula",
+    "openInMaps": "Buka dalam Peta",
+    "openSettings": "Buka Tetapan",
+    "upgrade": "Naik taraf",
+    "signIn": "Log masuk"
   },
   "greeting": {
     "assalamu_alaykum": "Assalamualaikum Warahmatullahi Wabarakatuh",
@@ -63,5 +73,21 @@
     "location_permission": "Sila benarkan akses lokasi untuk mengira waktu solat",
     "network": "Tidak dapat menyambung ke rangkaian",
     "calculation": "Tidak dapat mengira waktu solat"
+  },
+  "tabs": {
+    "home": "Solat",
+    "prayerTimes": "Waktu Solat",
+    "qibla": "Kiblat",
+    "calendar": "Kalendar",
+    "quran": "Al-Quran",
+    "more": "Lagi"
+  },
+  "menu": {
+    "settings": {
+      "label": "Tetapan"
+    },
+    "mosques": {
+      "label": "Masjid Berhampiran"
+    }
   }
 }

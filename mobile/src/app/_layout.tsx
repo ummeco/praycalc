@@ -18,6 +18,7 @@ import { StatusBar } from 'expo-status-bar';
 import { useColorScheme } from 'react-native';
 import * as Notifications from 'expo-notifications';
 import * as Linking from 'expo-linking';
+import { useTranslation } from '../i18n';
 import { GqlClientProvider } from '../lib/graphql';
 import { extractPinFromDeepLink } from '../lib/pairing/pairingMutation';
 import { registerIAPListener } from '../lib/iap/IAPListener';
@@ -82,6 +83,7 @@ function useAdhanOnNotificationTap() {
 }
 
 export default function RootLayout() {
+  const { t } = useTranslation();
   usePairingDeepLink();
   useAdhanOnNotificationTap();
 
@@ -118,11 +120,11 @@ export default function RootLayout() {
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-        <Stack.Screen name="settings" options={{ headerShown: true, title: 'Settings' }} />
-        <Stack.Screen name="city-search" options={{ headerShown: true, title: 'Find City' }} />
-        <Stack.Screen name="timetable" options={{ headerShown: true, title: 'Timetable' }} />
-        <Stack.Screen name="mosques" options={{ headerShown: true, title: 'Nearby Mosques' }} />
-        <Stack.Screen name="pair-tv" options={{ headerShown: true, title: 'Pair TV' }} />
+        <Stack.Screen name="settings" options={{ headerShown: true, title: t('settings.title') }} />
+        <Stack.Screen name="city-search" options={{ headerShown: true, title: t('screens.citySearch.findCityTitle') }} />
+        <Stack.Screen name="timetable" options={{ headerShown: true, title: t('menu.timetable.label') }} />
+        <Stack.Screen name="mosques" options={{ headerShown: true, title: t('menu.mosques.label') }} />
+        <Stack.Screen name="pair-tv" options={{ headerShown: true, title: t('menu.pairTv.label') }} />
         <Stack.Screen name="onboarding" options={{ presentation: 'modal', headerShown: false }} />
         <Stack.Screen name="+not-found" />
       </Stack>

@@ -21,6 +21,7 @@ import {
 } from 'react-native';
 import { useLocalSearchParams, router } from 'expo-router';
 import { useMutation } from 'urql';
+import { useTranslation } from '../../../i18n';
 import { useThemeColors } from '../../../hooks/useThemeColors';
 import type { ThemeColors } from '../../../constants/colors';
 import { useAuthStore } from '../../auth/store/useAuthStore';
@@ -31,6 +32,7 @@ import { LoadingState, ErrorState } from '../../../components/shared/UIStates';
 const UPGRADE_URL = 'https://praycalc.com/upgrade';
 
 export default function PairTvScreen() {
+  const { t } = useTranslation();
   const colors = useThemeColors();
   const styles = useMemo(() => createStyles(colors), [colors]);
   const params = useLocalSearchParams<{ pin?: string }>();
@@ -52,7 +54,7 @@ export default function PairTvScreen() {
   async function handlePair() {
     setError(null);
     if (!isValidPin(pin)) {
-      setError('Enter the 6-digit PIN shown on your TV.');
+      setError(t('screens.pairTv.enterPin'));
       return;
     }
     try {
@@ -64,7 +66,7 @@ export default function PairTvScreen() {
       }
       setSuccess(true);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Pairing failed. Try again.');
+      setError(err instanceof Error ? err.message : t('screens.pairTv.pairFailed'));
     }
   }
 
@@ -72,16 +74,16 @@ export default function PairTvScreen() {
     return (
       <View style={styles.container}>
         <View style={styles.upsellCard}>
-          <Text style={styles.upsellBadge}>Ummat+</Text>
-          <Text style={styles.upsellTitle}>Unlock TV Pairing</Text>
+          <Text style={styles.upsellBadge}>{t('screens.pairTv.upsellBadge')}</Text>
+          <Text style={styles.upsellTitle}>{t('screens.pairTv.unlockTitle')}</Text>
           <Text style={styles.upsellDesc}>
-            Ummat+ $9.99/yr — unlocks TV app & Smart Home
+            {t('screens.pairTv.unlockDesc')}
           </Text>
           <TouchableOpacity
             style={styles.primaryButton}
             onPress={() => Linking.openURL(UPGRADE_URL)}
           >
-            <Text style={styles.primaryButtonText}>Upgrade to Ummat+</Text>
+            <Text style={styles.primaryButtonText}>{t('common.upgrade')}</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -93,12 +95,12 @@ export default function PairTvScreen() {
       <View style={styles.container}>
         <View style={styles.successCard}>
           <Text style={styles.successEmoji}>✓</Text>
-          <Text style={styles.successTitle}>TV Paired</Text>
+          <Text style={styles.successTitle}>{t('screens.pairTv.pairedTitle')}</Text>
           <Text style={styles.successDesc}>
-            Your TV app is now linked to this account.
+            {t('screens.pairTv.pairedDesc')}
           </Text>
           <TouchableOpacity style={styles.primaryButton} onPress={() => router.back()}>
-            <Text style={styles.primaryButtonText}>Done</Text>
+            <Text style={styles.primaryButtonText}>{t('common.done')}</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -112,9 +114,9 @@ export default function PairTvScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.card}>
-        <Text style={styles.title}>Pair with TV</Text>
+        <Text style={styles.title}>{t('screens.pairTv.title')}</Text>
         <Text style={styles.desc}>
-          Open PrayCalc on your TV, then enter the 6-digit PIN shown on screen.
+          {t('screens.pairTv.desc')}
         </Text>
         <TextInput
           style={styles.pinInput}
@@ -131,7 +133,7 @@ export default function PairTvScreen() {
           onPress={handlePair}
           disabled={!isValidPin(pin)}
         >
-          <Text style={styles.primaryButtonText}>Pair Device</Text>
+          <Text style={styles.primaryButtonText}>{t('screens.pairTv.pairDevice')}</Text>
         </TouchableOpacity>
       </View>
     </View>

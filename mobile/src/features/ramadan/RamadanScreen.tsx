@@ -16,6 +16,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import {
   View, Text, StyleSheet, SafeAreaView, ScrollView,
 } from 'react-native';
+import i18next, { useTranslation } from '../../i18n';
 import { useThemeColors } from '../../hooks/useThemeColors';
 import type { ThemeColors } from '../../constants/colors';
 import { useSettingsStore, useActiveLocation } from '../settings/store/useSettingsStore';
@@ -55,6 +56,7 @@ const RAMADAN_DUAS = [
 ];
 
 export default function RamadanScreen() {
+  const { t } = useTranslation();
   const colors = useThemeColors();
   const styles = useMemo(() => createStyles(colors), [colors]);
   const settings = useSettingsStore();
@@ -95,16 +97,17 @@ export default function RamadanScreen() {
     if (!prayerTimes) return null;
     const nowMs = now.getTime();
     if (nowMs < prayerTimes.Maghrib.getTime()) {
-      return { label: 'Iftar in', seconds: (prayerTimes.Maghrib.getTime() - nowMs) / 1000 };
+      return { label: t('screens.ramadan.iftarIn'), seconds: (prayerTimes.Maghrib.getTime() - nowMs) / 1000 };
     }
     // After Maghrib: count down to tomorrow's Suhoor end (Fajr).
     const tomorrowFajr = new Date(prayerTimes.Fajr);
     tomorrowFajr.setDate(tomorrowFajr.getDate() + 1);
-    return { label: 'Suhoor ends in', seconds: (tomorrowFajr.getTime() - nowMs) / 1000 };
+    return { label: t('screens.ramadan.suhoorEndsIn'), seconds: (tomorrowFajr.getTime() - nowMs) / 1000 };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- t is stable per active locale
   }, [prayerTimes, now]);
 
   const formatTime = (d: Date) =>
-    d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+    d.toLocaleTimeString(i18next.language, { hour: '2-digit', minute: '2-digit', hour12: true });
 
   return (
     <SafeAreaView style={styles.container}>
@@ -116,10 +119,10 @@ export default function RamadanScreen() {
               <Text style={styles.ramadanTitle} accessibilityRole="header">
                 رَمَضَان مُبَارَك
               </Text>
-              <Text style={styles.ramadanSubtitle}>Ramadan Mubarak</Text>
+              <Text style={styles.ramadanSubtitle}>{t('screens.ramadan.subtitle')}</Text>
               {ramadanDay && (
                 <Text style={styles.dayCounter} accessibilityLabel={`Day ${ramadanDay} of ${ramadanDaysTotal} of Ramadan`}>
-                  Day {ramadanDay} of {ramadanDaysTotal}
+                  {t('screens.ramadan.dayOf', { day: ramadanDay, total: ramadanDaysTotal })}
                 </Text>
               )}
               {countdown && (
@@ -130,8 +133,7 @@ export default function RamadanScreen() {
             </>
           ) : (
             <Text style={styles.notRamadan} accessibilityRole="text">
-              Ramadan is not currently active.{'\n'}
-              Current Hijri month: {hijriDate.monthName} ({hijriDate.month}/12)
+              {t('screens.ramadan.notActive', { month: hijriDate.monthName, monthNumber: hijriDate.month })}
             </Text>
           )}
         </View>
@@ -139,9 +141,9 @@ export default function RamadanScreen() {
         {/* Times */}
         {prayerTimes && (
           <View style={styles.timesCard}>
-            <Text style={styles.sectionTitle} accessibilityRole="header">Today's Times</Text>
+            <Text style={styles.sectionTitle} accessibilityRole="header">{t('screens.ramadan.todaysTimes')}</Text>
             <View style={styles.timeRow}>
-              <Text style={styles.timeLabel}>Suhoor Ends (Fajr)</Text>
+              <Text style={styles.timeLabel}>{t('screens.ramadan.suhoorEnds')}</Text>
               <Text
                 style={styles.timeValue}
                 accessibilityLabel={`Suhoor ends at ${formatTime(prayerTimes.Fajr)}`}
@@ -150,7 +152,7 @@ export default function RamadanScreen() {
               </Text>
             </View>
             <View style={styles.timeRow}>
-              <Text style={styles.timeLabel}>Iftar (Maghrib)</Text>
+              <Text style={styles.timeLabel}>{t('screens.ramadan.iftar')}</Text>
               <Text
                 style={styles.timeValue}
                 accessibilityLabel={`Iftar at ${formatTime(prayerTimes.Maghrib)}`}
@@ -161,11 +163,11 @@ export default function RamadanScreen() {
           </View>
         )}
         {!location && (
-          <Text style={styles.noLocation}>Set your location in Settings to see prayer times.</Text>
+          <Text style={styles.noLocation}>{t('screens.ramadan.noLocation')}</Text>
         )}
 
         {/* Ramadan duas */}
-        <Text style={styles.sectionTitle} accessibilityRole="header">Ramadan Duas</Text>
+        <Text style={styles.sectionTitle} accessibilityRole="header">{t('screens.ramadan.duasTitle')}</Text>
         {RAMADAN_DUAS.map((dua) => (
           <View key={dua.id} style={styles.duaCard}>
             <Text style={styles.occasion}>{dua.occasion}</Text>
@@ -184,9 +186,9 @@ export default function RamadanScreen() {
         {/* Laylat al-Qadr note */}
         {isRamadan && ramadanDay && ramadanDay >= 21 && (
           <View style={styles.specialCard}>
-            <Text style={styles.specialTitle}>Laylat al-Qadr</Text>
+            <Text style={styles.specialTitle}>{t('screens.ramadan.laylatAlQadrTitle')}</Text>
             <Text style={styles.specialText}>
-              We are in the last ten nights of Ramadan. Increase worship, especially on odd nights (21, 23, 25, 27, 29).
+              {t('screens.ramadan.laylatAlQadrBody')}
             </Text>
           </View>
         )}

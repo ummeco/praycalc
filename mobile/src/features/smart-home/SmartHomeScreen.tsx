@@ -20,6 +20,7 @@ import {
 } from 'react-native';
 import { router } from 'expo-router';
 import * as LocalAuthentication from 'expo-local-authentication';
+import { useTranslation } from '../../i18n';
 import { useThemeColors } from '../../hooks/useThemeColors';
 import type { ThemeColors } from '../../constants/colors';
 import { PermissionDeniedState, EmptyState } from '../../components/states';
@@ -34,6 +35,7 @@ interface SmartHomeDevice {
 }
 
 export default function SmartHomeScreen() {
+  const { t } = useTranslation();
   const colors = useThemeColors();
   const styles = useMemo(() => createStyles(colors), [colors]);
   const isPlus = useAuthStore((s) => s.isPlus);
@@ -48,8 +50,8 @@ export default function SmartHomeScreen() {
       const enrolled = await LocalAuthentication.isEnrolledAsync();
       if (hasHardware && enrolled) {
         const result = await LocalAuthentication.authenticateAsync({
-          promptMessage: 'Authenticate to enable lock-on-salah',
-          fallbackLabel: 'Use passcode',
+          promptMessage: t('screens.smartHome.authPrompt'),
+          fallbackLabel: t('screens.smartHome.useFallback'),
         });
         if (!result.success) {
           setBiometricError(true);
@@ -73,15 +75,15 @@ export default function SmartHomeScreen() {
       });
     } catch {
       // Graceful degrade — toggle still updates local UI
-      Alert.alert('Device unreachable', `Could not reach ${device.name}. It may be offline.`);
+      Alert.alert(t('screens.smartHome.unreachableTitle'), t('screens.smartHome.unreachableBody', { name: device.name }));
     }
-  }, []);
+  }, [t]);
 
   if (!isPlus) {
     return (
       <EmptyState
-        message="Smart Home (lock-on-salah + device control) is an Ummat+ feature."
-        action="Upgrade to Ummat+"
+        message={t('screens.smartHome.proOnly')}
+        action={t('screens.smartHome.upgradeAction')}
         onAction={() => router.push('/subscription')}
       />
     );
@@ -101,13 +103,12 @@ export default function SmartHomeScreen() {
       <ScrollView contentContainerStyle={styles.scroll}>
         {/* Lock-on-salah section */}
         <View style={styles.sectionCard}>
-          <Text style={styles.sectionTitle} accessibilityRole="header">Lock During Prayer</Text>
+          <Text style={styles.sectionTitle} accessibilityRole="header">{t('screens.smartHome.lockDuringPrayer')}</Text>
           <Text style={styles.sectionDesc}>
-            Automatically dim screen and mute media when prayer time begins.
-            Requires authentication to configure.
+            {t('screens.smartHome.lockDesc')}
           </Text>
           <View style={styles.toggleRow}>
-            <Text style={styles.toggleLabel}>Lock on Salah</Text>
+            <Text style={styles.toggleLabel}>{t('screens.smartHome.lockOnSalah')}</Text>
             <Switch
               value={lockOnSalah}
               onValueChange={handleLockOnSalah}
@@ -118,17 +119,16 @@ export default function SmartHomeScreen() {
           </View>
           {lockOnSalah && (
             <Text style={styles.activeNote}>
-              Screen will dim and media will be paused at prayer times.{'\n'}
-              Android: media focus released. iOS: silent mode reminder shown.
+              {t('screens.smartHome.activeNote')}
             </Text>
           )}
         </View>
 
         {/* Smart home devices — honestly empty until real discovery/pairing ships */}
-        <Text style={styles.heading} accessibilityRole="header">Smart Devices</Text>
+        <Text style={styles.heading} accessibilityRole="header">{t('screens.smartHome.smartDevices')}</Text>
         {devices.length === 0 && (
           <Text style={styles.sectionDesc}>
-            No devices added yet. Device discovery isn't built yet — add one manually below.
+            {t('screens.smartHome.noDevices')}
           </Text>
         )}
         {devices.map((device) => (
@@ -140,7 +140,7 @@ export default function SmartHomeScreen() {
               <View>
                 <Text style={styles.deviceName}>{device.name}</Text>
                 <Text style={[styles.deviceStatus, { color: device.isOnline ? colors.state.success : colors.text.muted }]}>
-                  {device.isOnline ? 'Online' : 'Offline'}
+                  {device.isOnline ? t('screens.smartHome.online') : t('screens.smartHome.offline')}
                 </Text>
               </View>
             </View>
@@ -158,11 +158,11 @@ export default function SmartHomeScreen() {
 
         <TouchableOpacity
           style={styles.addBtn}
-          onPress={() => Alert.alert('Coming soon', 'Smart device discovery will be available in a future update.')}
+          onPress={() => Alert.alert(t('screens.smartHome.comingSoonTitle'), t('screens.smartHome.comingSoonBody'))}
           accessibilityRole="button"
           accessibilityLabel="Add smart device"
         >
-          <Text style={styles.addBtnText}>+ Add Device</Text>
+          <Text style={styles.addBtnText}>{t('screens.smartHome.addDevice')}</Text>
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>

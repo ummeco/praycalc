@@ -20,6 +20,7 @@
  * SPORT: REGISTRY-FUNCTIONS.md#praycalc-mobile-notification-service
  */
 
+import { Platform } from 'react-native';
 import * as Notifications from 'expo-notifications';
 import * as TaskManager from 'expo-task-manager';
 import * as BackgroundFetch from 'expo-background-fetch';
@@ -35,6 +36,31 @@ import {
 } from '../../constants';
 import type { PrayerName } from '../../types/prayer';
 import type { CalcMethodKey } from '../../constants/methods';
+
+/** Must match the `name` in app.json's react-native-android-widget plugin config. */
+const NEXT_PRAYER_WIDGET_NAME = 'NextPrayer';
+
+/**
+ * Best-effort home-screen widget repaint after (re)scheduling notifications, so the
+ * Android "Next Prayer" widget reflects a settings/schedule change immediately
+ * instead of waiting for its 30-minute updatePeriodMillis tick. Lazily imports the
+ * Android-only library behind a Platform check so iOS never loads this module, and
+ * swallows all errors — a widget-refresh failure must never break notification
+ * scheduling, which is the caller's actual job.
+ */
+async function refreshHomeScreenWidget(): Promise<void> {
+  if (Platform.OS !== 'android') return;
+  try {
+    const { requestWidgetUpdate } = await import('react-native-android-widget');
+    const { renderCurrentNextPrayerWidget } = await import('../../widgets/widgetTaskHandler');
+    await requestWidgetUpdate({
+      widgetName: NEXT_PRAYER_WIDGET_NAME,
+      renderWidget: renderCurrentNextPrayerWidget,
+    });
+  } catch {
+    // Best-effort only — never let a widget-refresh failure surface to the caller.
+  }
+}
 
 const PRAYER_NAMES: PrayerName[] = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
 const PRAYER_DISPLAY: Record<PrayerName, string> = {
@@ -226,6 +252,8 @@ export async function schedulePrayerNotifications(): Promise<void> {
       },
     });
   }
+
+  await refreshHomeScreenWidget();
 }
 
 /**

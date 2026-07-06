@@ -29,7 +29,17 @@
     "settings": "Instellingen",
     "done": "Klaar",
     "next": "Volgende",
-    "back": "Terug"
+    "back": "Terug",
+    "today": "Vandaag",
+    "on": "Aan",
+    "off": "Uit",
+    "search": "Zoeken",
+    "change": "Wijzigen",
+    "reset": "Reset",
+    "openInMaps": "Openen in Kaarten",
+    "openSettings": "Instellingen openen",
+    "upgrade": "Upgraden",
+    "signIn": "Inloggen"
   },
   "greeting": {
     "assalamu_alaykum": "Assalamu Alaykum wa Rahmatullahi wa Barakatuh",
@@ -63,5 +73,21 @@
     "location_permission": "Sta locatietoegang toe om gebedstijden te berekenen",
     "network": "Kan geen verbinding maken met het netwerk",
     "calculation": "Kan de gebedstijden niet berekenen"
+  },
+  "tabs": {
+    "home": "Gebeden",
+    "prayerTimes": "Gebedstijden",
+    "qibla": "Qibla",
+    "calendar": "Kalender",
+    "quran": "Koran",
+    "more": "Meer"
+  },
+  "menu": {
+    "settings": {
+      "label": "Instellingen"
+    },
+    "mosques": {
+      "label": "Moskeeën in de buurt"
+    }
   }
 }

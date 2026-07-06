@@ -29,7 +29,17 @@
     "settings": "Ayarlar",
     "done": "Tamam",
     "next": "İleri",
-    "back": "Geri"
+    "back": "Geri",
+    "today": "Bugün",
+    "on": "Açık",
+    "off": "Kapalı",
+    "search": "Ara",
+    "change": "Değiştir",
+    "reset": "Sıfırla",
+    "openInMaps": "Haritalarda Aç",
+    "openSettings": "Ayarları Aç",
+    "upgrade": "Yükselt",
+    "signIn": "Giriş Yap"
   },
   "greeting": {
     "assalamu_alaykum": "Esselâmü Aleyküm ve Rahmetullahi ve Berekâtüh",
@@ -63,5 +73,21 @@
     "location_permission": "Namaz vakitlerini hesaplamak için konum erişimine izin verin",
     "network": "Ağa bağlanılamadı",
     "calculation": "Namaz vakitleri hesaplanamadı"
+  },
+  "tabs": {
+    "home": "Namazlar",
+    "prayerTimes": "Namaz Vakitleri",
+    "qibla": "Kıble",
+    "calendar": "Takvim",
+    "quran": "Kur'an",
+    "more": "Diğer"
+  },
+  "menu": {
+    "settings": {
+      "label": "Ayarlar"
+    },
+    "mosques": {
+      "label": "Yakındaki Camiler"
+    }
   }
 }

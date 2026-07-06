@@ -19,7 +19,7 @@ import {
 import * as Location from 'expo-location';
 import * as Network from 'expo-network';
 import { router } from 'expo-router';
-import { useTranslation } from '../../../i18n';
+import i18next, { useTranslation } from '../../../i18n';
 import { useThemeColors } from '../../../hooks/useThemeColors';
 import type { ThemeColors } from '../../../constants/colors';
 import { CALC_METHODS } from '../../../constants/methods';
@@ -51,11 +51,11 @@ const PRAYER_LABEL_KEYS: Record<PrayerName, string> = {
 
 const PRAYER_ORDER: PrayerName[] = ['Fajr', 'Sunrise', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
 
-function formatTime(date: Date, format: '12h' | '24h'): string {
+function formatTime(date: Date, format: '12h' | '24h', locale: string): string {
   if (format === '24h') {
-    return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
+    return date.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit', hour12: false });
   }
-  return date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+  return date.toLocaleTimeString(locale, { hour: 'numeric', minute: '2-digit', hour12: true });
 }
 
 function formatCountdown(seconds: number): string {
@@ -167,9 +167,9 @@ export default function PrayerTimesScreen() {
   if (status === 'empty') {
     return (
       <EmptyState
-        title="Set Your City"
-        subtitle="Enable location or manually select a city to see prayer times."
-        action="Set Location"
+        title={t('screens.prayerTimes.setCityTitle')}
+        subtitle={t('screens.prayerTimes.setCitySubtitle')}
+        action={t('screens.prayerTimes.setLocationAction')}
         onAction={() => router.push('/city-search')}
       />
     );
@@ -181,7 +181,7 @@ export default function PrayerTimesScreen() {
 
   if (status === 'offline' || isOffline) {
     return (
-      <OfflineState message="Showing last-known prayer times (offline)">
+      <OfflineState message={t('screens.prayerTimes.offlineMessage')}>
         {times ? <PrayerList times={times} nextPrayer={nextPrayer} secondsToNextPrayer={secondsToNextPrayer} settings={settings} colors={colors} styles={styles} t={t} /> : null}
       </OfflineState>
     );
@@ -196,7 +196,7 @@ export default function PrayerTimesScreen() {
           {hijriDate.day} {hijriDate.monthName} {hijriDate.year} AH
         </Text>
         <Text style={styles.gregorianDate}>
-          {today.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}
+          {today.toLocaleDateString(i18next.language, { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}
         </Text>
         {activeLocation && (
           <Text style={styles.locationName}>
@@ -209,7 +209,7 @@ export default function PrayerTimesScreen() {
       {/* Next Prayer Countdown */}
       {nextPrayer && (
         <View style={styles.countdownCard}>
-          <Text style={styles.countdownLabel}>Next: {t(PRAYER_LABEL_KEYS[nextPrayer])}</Text>
+          <Text style={styles.countdownLabel}>{t('screens.prayerTimes.next', { prayer: t(PRAYER_LABEL_KEYS[nextPrayer]) })}</Text>
           <Text style={styles.countdownTimer}>{formatCountdown(secondsToNextPrayer)}</Text>
         </View>
       )}
@@ -229,7 +229,7 @@ export default function PrayerTimesScreen() {
 
       {/* Madhab Toggle */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Asr Calculation</Text>
+        <Text style={styles.sectionTitle}>{t('screens.prayerTimes.asrCalculation')}</Text>
         <View style={styles.toggle}>
           {(['Shafi', 'Hanafi'] as Madhab[]).map((m) => (
             <TouchableOpacity
@@ -271,7 +271,7 @@ interface PrayerListProps {
   settings: SettingsState;
   colors: ThemeColors;
   styles: ReturnType<typeof createStyles>;
-  t: (key: string) => string;
+  t: (key: string, options?: Record<string, unknown>) => string;
 }
 
 function PrayerList({ times, nextPrayer, settings, colors, styles, t }: PrayerListProps) {
@@ -298,7 +298,7 @@ function PrayerList({ times, nextPrayer, settings, colors, styles, t }: PrayerLi
             }}
             accessibilityRole={canLog(name) ? 'checkbox' : undefined}
             accessibilityState={canLog(name) ? { checked: completed } : undefined}
-            accessibilityLabel={canLog(name) ? `${label}, ${completed ? 'marked prayed' : 'not marked prayed'}. Double-tap to toggle.` : undefined}
+            accessibilityLabel={canLog(name) ? `${label}, ${completed ? t('screens.prayerTimes.markedPrayed') : t('screens.prayerTimes.notMarkedPrayed')}. ${t('screens.prayerTimes.doubleTapToggle')}` : undefined}
           >
             <View style={[styles.prayerDot, { backgroundColor: colors.prayer[name.toLowerCase() as keyof typeof colors.prayer] ?? colors.brand.mid }]} />
             <Text style={[styles.prayerName, isNext && styles.prayerNameNext]}>
@@ -306,7 +306,7 @@ function PrayerList({ times, nextPrayer, settings, colors, styles, t }: PrayerLi
             </Text>
             {muted && <Text style={styles.muteIcon}>🔕</Text>}
             <Text style={[styles.prayerTime, isNext && styles.prayerTimeNext]}>
-              {formatTime(times[name], settings.timeFormat)}
+              {formatTime(times[name], settings.timeFormat, i18next.language)}
             </Text>
             {canLog(name) && (
               <Text style={[styles.completedCheck, completed && styles.completedCheckActive]}>

@@ -31,10 +31,11 @@ export function LoadingState({ message }: { message?: string }) {
 // ── SkeletonState ─────────────────────────────────────────────────────────────
 
 export function SkeletonState({ rows = 5 }: { rows?: number }) {
+  const { t } = useTranslation();
   const colors = useThemeColors();
   const styles = useMemo(() => createStyles(colors), [colors]);
   return (
-    <View style={styles.container} accessibilityLabel="Loading content">
+    <View style={styles.container} accessibilityLabel={t('common.loadingContent')}>
       {Array.from({ length: rows }).map((_, i) => (
         <View key={i} style={[styles.skeletonRow, { width: i % 2 === 0 ? '90%' : '70%' }]} />
       ))}
@@ -54,10 +55,10 @@ export function ErrorState({
   const { t } = useTranslation();
   const colors = useThemeColors();
   const styles = useMemo(() => createStyles(colors), [colors]);
-  const msg = typeof error === 'string' ? error : error?.message ?? 'Something went wrong.';
+  const msg = typeof error === 'string' ? error : error?.message ?? t('common.somethingWentWrong');
   return (
     <View style={styles.container}>
-      <Text style={styles.errorTitle} accessibilityRole="text">Error</Text>
+      <Text style={styles.errorTitle} accessibilityRole="text">{t('common.error')}</Text>
       <Text style={styles.message}>{msg}</Text>
       {onRetry && (
         <TouchableOpacity
@@ -103,12 +104,15 @@ export function EmptyState({ message, action, onAction }: {
 // ── OfflineState ──────────────────────────────────────────────────────────────
 
 export function OfflineState({ cachedAt }: { cachedAt?: string }) {
+  const { t } = useTranslation();
   const colors = useThemeColors();
   const styles = useMemo(() => createStyles(colors), [colors]);
   return (
     <View style={styles.offlineBanner}>
       <Text style={styles.offlineText} accessibilityRole="text">
-        You're offline. {cachedAt ? `Showing data from ${cachedAt}.` : 'Cached data shown.'}
+        {cachedAt
+          ? t('common.offlineShowingCachedFrom', { cachedAt })
+          : t('common.offlineShowingCachedGeneric')}
       </Text>
     </View>
   );
@@ -123,13 +127,14 @@ export function PermissionDeniedState({
   permission: string;
   onOpenSettings?: () => void;
 }) {
+  const { t } = useTranslation();
   const colors = useThemeColors();
   const styles = useMemo(() => createStyles(colors), [colors]);
   return (
     <View style={styles.container}>
-      <Text style={styles.errorTitle} accessibilityRole="text">Permission Required</Text>
+      <Text style={styles.errorTitle} accessibilityRole="text">{t('common.permissionRequiredGeneric')}</Text>
       <Text style={styles.message}>
-        {`${permission} permission is required for this feature.`}
+        {t('common.permissionRequiredGenericBody', { permission })}
       </Text>
       {onOpenSettings && (
         <TouchableOpacity
@@ -138,7 +143,7 @@ export function PermissionDeniedState({
           accessibilityRole="button"
           accessibilityLabel="Open system settings"
         >
-          <Text style={styles.buttonText}>Open Settings</Text>
+          <Text style={styles.buttonText}>{t('common.openSettings')}</Text>
         </TouchableOpacity>
       )}
     </View>
@@ -158,8 +163,8 @@ export function RateLimitedState({ retryAfter, onRetry }: {
     <View style={styles.container}>
       <Text style={styles.message} accessibilityRole="text">
         {retryAfter
-          ? `Too many requests. Please wait ${retryAfter}s before retrying.`
-          : 'Too many requests. Please wait before retrying.'}
+          ? t('common.tooManyRequestsRetry', { seconds: retryAfter })
+          : t('common.tooManyRequestsRetryGeneric')}
       </Text>
       {onRetry && (
         <TouchableOpacity

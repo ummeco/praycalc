@@ -29,7 +29,17 @@
     "settings": "Impostazioni",
     "done": "Fatto",
     "next": "Avanti",
-    "back": "Indietro"
+    "back": "Indietro",
+    "today": "Oggi",
+    "on": "Attivo",
+    "off": "Spento",
+    "search": "Cerca",
+    "change": "Cambia",
+    "reset": "Reimposta",
+    "openInMaps": "Apri in Mappe",
+    "openSettings": "Apri impostazioni",
+    "upgrade": "Aggiorna",
+    "signIn": "Accedi"
   },
   "greeting": {
     "assalamu_alaykum": "Assalamu Alaykum wa Rahmatullahi wa Barakatuh",
@@ -63,5 +73,21 @@
     "location_permission": "Consenti l'accesso alla posizione per calcolare gli orari di preghiera",
     "network": "Impossibile connettersi alla rete",
     "calculation": "Impossibile calcolare gli orari di preghiera"
+  },
+  "tabs": {
+    "home": "Preghiere",
+    "prayerTimes": "Orari di preghiera",
+    "qibla": "Qibla",
+    "calendar": "Calendario",
+    "quran": "Corano",
+    "more": "Altro"
+  },
+  "menu": {
+    "settings": {
+      "label": "Impostazioni"
+    },
+    "mosques": {
+      "label": "Moschee vicine"
+    }
   }
 }

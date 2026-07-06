@@ -2,6 +2,26 @@
 
 All notable changes to PrayCalc are documented here.
 
+## 2026-07-06 — Absolute-100% closure (mobile 2.1.0 · desktop 1.2.1 · web 2.0.1)
+
+Closed every tracked partial from the parity re-audit, plus backend provisioning that turned out to be missing entirely.
+
+**Backend (production Hasura — none of these tables existed):**
+- `pc_adhan_voice` created + seeded with 8 recordings (already shipped in Flutter 1.2.3, now served from praycalc.com/adhan/)
+- `pc_cities` created + seeded with the full 49,742-city Flutter dataset
+- `pc_tv_pairing` created; mobile↔TV pair loop verified live end-to-end (a client mutation-shape fix landed alongside)
+
+**Mobile 2.1.0:**
+- Adhan plays as the real notification sound: bundled 26.6s opening-takbir cut (iOS 30s limit), dedicated Android channel; full reciter adhan still plays on tap
+- Iqamah reminders (per-prayer offset, off/10/15/20/30 min)
+- Mosque finder (OpenStreetMap Overpass, 10 km, open-in-maps, attribution)
+- Full i18n extraction: 374 keys across 30 screens, locale-aware dates, EN-fallback with human-review tracking (`src/i18n/REVIEW.md`); religious content never machine-translated
+- Android home-screen widget (react-native-android-widget) — travel-aware next prayer, refreshes on reschedule; iOS WidgetKit remains the one tracked PCI
+- PARITY-GATE: 19/20 PASS, 1 tracked PARTIAL (iOS widget)
+
+**Desktop 1.2.1:** version bump covering the earlier auth bare-path + billing host fixes.
+**Web 2.0.1:** four additional adhan recordings published under /adhan/.
+
 ## 2026-07-06 — Mobile competitive-parity closure
 
 Final verification pass against competitor adhan apps (Muslim Pro, Athan, Pillars), every screen re-read against real code. Commits `3cec3d9`, `f2202c2`, `98c3371`.

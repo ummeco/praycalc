@@ -15,6 +15,7 @@ import React, { useMemo, useState, useCallback } from 'react';
 import {
   View, Text, FlatList, TouchableOpacity, StyleSheet, SafeAreaView, ScrollView, Linking,
 } from 'react-native';
+import { useTranslation } from '../../i18n';
 import { useThemeColors } from '../../hooks/useThemeColors';
 import type { ThemeColors } from '../../constants/colors';
 import { SkeletonState, EmptyState } from '../../components/states';
@@ -135,6 +136,7 @@ function loadAyahs(surahNumber: number): Ayah[] | null {
 // ── Sub-screen: Surah Detail ──────────────────────────────────────────────────
 
 function SurahDetailView({ surah, onBack }: { surah: Surah; onBack: () => void }) {
+  const { t } = useTranslation();
   const colors = useThemeColors();
   const styles = useMemo(() => createStyles(colors), [colors]);
   const ayahs = loadAyahs(surah.number);
@@ -159,9 +161,9 @@ function SurahDetailView({ surah, onBack }: { surah: Surah; onBack: () => void }
           onPress={onBack}
           style={styles.backBtn}
           accessibilityRole="button"
-          accessibilityLabel="Back to surah list"
+          accessibilityLabel={t('screens.quran.backToList')}
         >
-          <Text style={styles.backText}>← Back</Text>
+          <Text style={styles.backText}>← {t('screens.quran.back')}</Text>
         </TouchableOpacity>
         <View style={styles.headerCenter}>
           {/* Surah name — RTL, full tashkeel */}
@@ -177,7 +179,7 @@ function SurahDetailView({ surah, onBack }: { surah: Surah; onBack: () => void }
       <ScrollView contentContainerStyle={styles.scroll}>
         {/* Bismillah (except At-Tawba 9 and Al-Fatiha 1 which has its own) */}
         {ayahs && surah.number !== 1 && surah.number !== 9 && (
-          <Text style={styles.bismillah} accessibilityLabel="Bismillah">
+          <Text style={styles.bismillah} accessibilityLabel={t('screens.quran.bismillah')}>
             {'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ'}
           </Text>
         )}
@@ -188,8 +190,7 @@ function SurahDetailView({ surah, onBack }: { surah: Surah; onBack: () => void }
             <Text style={styles.comingSoonArabic}>{surah.arabicName}</Text>
             <Text style={styles.comingSoonTitle}>{surah.transliteratedName}</Text>
             <Text style={styles.comingSoonBody}>
-              Read {surah.transliteratedName} ({surah.verseCount} verses) with
-              translation and recitation on Islam.Wiki — our full Quran reader.
+              {t('screens.quran.comingSoonBody', { name: surah.transliteratedName, count: surah.verseCount })}
             </Text>
             <TouchableOpacity
               style={styles.wikiBtn}
@@ -197,7 +198,7 @@ function SurahDetailView({ surah, onBack }: { surah: Surah; onBack: () => void }
               accessibilityRole="link"
               accessibilityLabel={`Read Surah ${surah.transliteratedName} on Islam.Wiki`}
             >
-              <Text style={styles.wikiBtnText}>Read on Islam.Wiki →</Text>
+              <Text style={styles.wikiBtnText}>{t('screens.quran.readOnWiki')}</Text>
             </TouchableOpacity>
           </View>
         )}
@@ -219,7 +220,7 @@ function SurahDetailView({ surah, onBack }: { surah: Surah; onBack: () => void }
                 <TouchableOpacity
                   onPress={() => toggleBookmark(key)}
                   accessibilityRole="button"
-                  accessibilityLabel={isBookmarked ? 'Remove bookmark' : 'Bookmark verse'}
+                  accessibilityLabel={isBookmarked ? t('screens.quran.removeBookmark') : t('screens.quran.bookmarkVerse')}
                   hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
                 >
                   <Text style={styles.bookmark}>{isBookmarked ? '🔖' : '○'}</Text>
@@ -242,6 +243,7 @@ function SurahDetailView({ surah, onBack }: { surah: Surah; onBack: () => void }
 // ── Main Screen: Surah List ───────────────────────────────────────────────────
 
 export default function QuranScreen() {
+  const { t } = useTranslation();
   const colors = useThemeColors();
   const styles = useMemo(() => createStyles(colors), [colors]);
   const [selectedSurah, setSelectedSurah] = useState<Surah | null>(null);
@@ -251,7 +253,7 @@ export default function QuranScreen() {
   }
 
   if (SURAHS.length === 0) {
-    return <EmptyState message="Quran data loading..." />;
+    return <EmptyState message={t('screens.quran.loading')} />;
   }
 
   return (
@@ -261,7 +263,7 @@ export default function QuranScreen() {
         keyExtractor={(s) => String(s.number)}
         ListHeaderComponent={() => (
           <Text style={styles.screenTitle} accessibilityRole="header">
-            Quran — القرآن الكريم
+            {t('tabs.quran')} — القرآن الكريم
           </Text>
         )}
         renderItem={({ item: surah }) => (
@@ -284,16 +286,16 @@ export default function QuranScreen() {
         )}
         contentContainerStyle={{ paddingBottom: 32 }}
         accessible
-        accessibilityLabel="Surah list"
+        accessibilityLabel={t('screens.quran.surahList')}
         ListFooterComponent={() => (
           <TouchableOpacity
             style={styles.wikiFooter}
             onPress={() => Linking.openURL('https://islam.wiki/quran')}
             accessibilityRole="link"
-            accessibilityLabel="Open the full Quran on Islam.Wiki"
+            accessibilityLabel={t('screens.quran.openFullQuran')}
           >
             <Text style={styles.wikiFooterText}>
-              📖 Full Quran — all 114 surahs, translations & audio on Islam.Wiki →
+              {t('screens.quran.wikiFooter')}
             </Text>
           </TouchableOpacity>
         )}

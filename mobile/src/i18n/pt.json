@@ -29,7 +29,17 @@
     "settings": "Configurações",
     "done": "Concluído",
     "next": "Próximo",
-    "back": "Voltar"
+    "back": "Voltar",
+    "today": "Hoje",
+    "on": "Ativado",
+    "off": "Desativado",
+    "search": "Pesquisar",
+    "change": "Alterar",
+    "reset": "Redefinir",
+    "openInMaps": "Abrir no Mapas",
+    "openSettings": "Abrir configurações",
+    "upgrade": "Atualizar",
+    "signIn": "Entrar"
   },
   "greeting": {
     "assalamu_alaykum": "Assalamu Alaykum wa Rahmatullahi wa Barakatuh",
@@ -63,5 +73,21 @@
     "location_permission": "Permita o acesso à localização para calcular os horários de oração",
     "network": "Não foi possível conectar à rede",
     "calculation": "Não foi possível calcular os horários de oração"
+  },
+  "tabs": {
+    "home": "Orações",
+    "prayerTimes": "Horários de oração",
+    "qibla": "Qibla",
+    "calendar": "Calendário",
+    "quran": "Alcorão",
+    "more": "Mais"
+  },
+  "menu": {
+    "settings": {
+      "label": "Configurações"
+    },
+    "mosques": {
+      "label": "Mesquitas próximas"
+    }
   }
 }

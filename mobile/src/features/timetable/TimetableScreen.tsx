@@ -37,7 +37,7 @@ import {
   Linking,
 } from 'react-native';
 import { router } from 'expo-router';
-import { useTranslation } from '../../i18n';
+import i18next, { useTranslation } from '../../i18n';
 import { useThemeColors } from '../../hooks/useThemeColors';
 import type { ThemeColors } from '../../constants/colors';
 import { useSettingsStore, useActiveLocation } from '../settings/store/useSettingsStore';
@@ -59,11 +59,6 @@ const PRAYER_LABEL_KEYS: Record<PrayerName, string> = {
   Isha: 'prayer.isha',
 };
 
-const MONTH_NAMES = [
-  'January', 'February', 'March', 'April', 'May', 'June',
-  'July', 'August', 'September', 'October', 'November', 'December',
-];
-
 /** praycalc.com's real calendar export — verified against web/src/pages/api/calendar.ics.ts. */
 const ICS_EXPORT_BASE = 'https://praycalc.com/api/calendar.ics';
 
@@ -71,11 +66,17 @@ function daysInMonth(year: number, month0: number): number {
   return new Date(year, month0 + 1, 0).getDate();
 }
 
-function formatTime(date: Date, format: '12h' | '24h'): string {
+/** Locale-aware month name, driven by the active i18next language (not a catalog key —
+ *  Gregorian month names are locale data, not translatable UI copy). */
+function getMonthName(year: number, month0: number, locale: string): string {
+  return new Date(year, month0, 1).toLocaleDateString(locale, { month: 'long' });
+}
+
+function formatTime(date: Date, format: '12h' | '24h', locale: string): string {
   if (format === '24h') {
-    return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
+    return date.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit', hour12: false });
   }
-  return date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+  return date.toLocaleTimeString(locale, { hour: 'numeric', minute: '2-digit', hour12: true });
 }
 
 interface DayRow {
@@ -167,8 +168,8 @@ export default function TimetableScreen() {
   if (!activeLocation) {
     return (
       <EmptyState
-        title="Set Your City"
-        subtitle="Set your location to see the monthly prayer timetable."
+        title={t('screens.timetable.setCityTitle')}
+        subtitle={t('screens.timetable.setCitySubtitle')}
         action={t('settings.location.title')}
         onAction={() => router.push('/city-search')}
       />
@@ -183,17 +184,17 @@ export default function TimetableScreen() {
           onPress={goPrevMonth}
           style={styles.navButton}
           accessibilityRole="button"
-          accessibilityLabel="Previous month"
+          accessibilityLabel={t('screens.timetable.previousMonth')}
           hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
         >
           <Text style={styles.navArrow}>‹</Text>
         </TouchableOpacity>
-        <Text style={styles.monthLabel}>{MONTH_NAMES[month0]} {year}</Text>
+        <Text style={styles.monthLabel}>{getMonthName(year, month0, i18next.language)} {year}</Text>
         <TouchableOpacity
           onPress={goNextMonth}
           style={styles.navButton}
           accessibilityRole="button"
-          accessibilityLabel="Next month"
+          accessibilityLabel={t('screens.timetable.nextMonth')}
           hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
         >
           <Text style={styles.navArrow}>›</Text>
@@ -227,7 +228,7 @@ export default function TimetableScreen() {
             </Text>
             {DISPLAY_PRAYERS.map((name) => (
               <Text key={name} style={[styles.tableCell, row.isToday && styles.tableCellToday]}>
-                {formatTime(row.times[name], settings.timeFormat)}
+                {formatTime(row.times[name], settings.timeFormat, i18next.language)}
               </Text>
             ))}
           </View>
@@ -239,9 +240,9 @@ export default function TimetableScreen() {
         style={styles.exportButton}
         onPress={handleExportCalendar}
         accessibilityRole="button"
-        accessibilityLabel="Export this month's prayer times as a calendar file"
+        accessibilityLabel={t('screens.timetable.exportAccessibilityLabel')}
       >
-        <Text style={styles.exportButtonText}>Export Calendar (.ics)</Text>
+        <Text style={styles.exportButtonText}>{t('screens.timetable.exportCalendar')}</Text>
       </TouchableOpacity>
     </View>
   );

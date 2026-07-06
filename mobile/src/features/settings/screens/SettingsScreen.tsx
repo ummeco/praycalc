@@ -47,20 +47,20 @@ const PRAYER_LABEL_KEYS: Record<PrayerName, string> = {
   Isha: 'prayer.isha',
 };
 
-const HIGH_LAT_RULES: { key: HighLatRule; label: string }[] = [
-  { key: 'NightMiddle', label: 'Middle of the Night' },
-  { key: 'AngleBased', label: 'Angle-Based' },
-  { key: 'OneSeventh', label: 'One-Seventh of Night' },
-  { key: 'None', label: 'None (may show unavailable)' },
+const HIGH_LAT_RULES: { key: HighLatRule; labelKey: string }[] = [
+  { key: 'NightMiddle', labelKey: 'settings.highLatitude.nightMiddle' },
+  { key: 'AngleBased', labelKey: 'settings.highLatitude.angleBased' },
+  { key: 'OneSeventh', labelKey: 'settings.highLatitude.oneSeventh' },
+  { key: 'None', labelKey: 'settings.highLatitude.none' },
 ];
 
 const UPGRADE_URL = 'https://praycalc.com/upgrade';
 
 /** Appearance section options — System follows the OS, Light/Dark force a palette. */
-const THEME_OPTIONS: { key: ThemeMode; label: string }[] = [
-  { key: 'system', label: 'System' },
-  { key: 'light', label: 'Light' },
-  { key: 'dark', label: 'Dark' },
+const THEME_OPTIONS: { key: ThemeMode; labelKey: string }[] = [
+  { key: 'system', labelKey: 'settings.appearance.system' },
+  { key: 'light', labelKey: 'settings.appearance.light' },
+  { key: 'dark', labelKey: 'settings.appearance.dark' },
 ];
 
 export default function SettingsScreen() {
@@ -100,7 +100,7 @@ export default function SettingsScreen() {
   }
 
   // UI states
-  if (isLocating) return <LoadingState message="Getting your location..." />;
+  if (isLocating) return <LoadingState message={t('settings.location.gettingLocation')} />;
   if (saveError) return <ErrorState error={saveError} onRetry={() => setSaveError(null)} />;
 
   // success (settings always show — no loading/empty/offline states for this screen)
@@ -110,7 +110,7 @@ export default function SettingsScreen() {
     try {
       const { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
-        Alert.alert('Permission Denied', 'Enable location in Settings to auto-detect your city.');
+        Alert.alert(t('settings.location.permissionDenied'), t('settings.location.permissionDeniedBody'));
         setIsLocating(false);
         return;
       }
@@ -137,28 +137,28 @@ export default function SettingsScreen() {
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
 
       {/* Account / Ummat+ */}
-      <SectionHeader title="Account" styles={styles} />
+      <SectionHeader title={t('settings.account.title')} styles={styles} />
       <View style={styles.card}>
         <View style={styles.row}>
           <Text style={styles.rowLabel}>
-            {auth.mode === 'account' ? 'Signed in' : 'Anonymous'}
+            {auth.mode === 'account' ? t('settings.account.signedIn') : t('settings.account.anonymous')}
           </Text>
           {auth.isPlus ? (
             <Text style={styles.plusBadge}>Ummat+</Text>
           ) : (
-            <Text style={styles.rowValue}>Free</Text>
+            <Text style={styles.rowValue}>{t('settings.account.free')}</Text>
           )}
         </View>
         {!auth.isPlus && (
           <View style={styles.upsellRow}>
             <Text style={styles.hint}>
-              Ummat+ $9.99/yr — unlocks TV app & Smart Home
+              {t('settings.upsell.priceLine')}
             </Text>
             <TouchableOpacity
               style={[styles.button, styles.buttonSecondary]}
               onPress={() => Linking.openURL(UPGRADE_URL)}
             >
-              <Text style={styles.buttonSecondaryText}>Upgrade to Ummat+</Text>
+              <Text style={styles.buttonSecondaryText}>{t('settings.upsell.upgradeButton')}</Text>
             </TouchableOpacity>
           </View>
         )}
@@ -169,22 +169,22 @@ export default function SettingsScreen() {
       <View style={styles.card}>
         {settings.location ? (
           <View style={styles.row}>
-            <Text style={styles.rowLabel}>Current City</Text>
+            <Text style={styles.rowLabel}>{t('settings.location.currentCity')}</Text>
             <Text style={styles.rowValue}>
               {`${settings.location.city}, ${settings.location.country}`}
             </Text>
           </View>
         ) : (
-          <Text style={styles.hint}>No location set. GPS or manual city required.</Text>
+          <Text style={styles.hint}>{t('settings.location.noneSet')}</Text>
         )}
         <TouchableOpacity style={styles.button} onPress={handleGPSLocation}>
-          <Text style={styles.buttonText}>Use GPS Location</Text>
+          <Text style={styles.buttonText}>{t('settings.location.useGps')}</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.button, styles.buttonSecondary]}
           onPress={() => router.push('/city-search')}
         >
-          <Text style={styles.buttonSecondaryText}>Search City Manually</Text>
+          <Text style={styles.buttonSecondaryText}>{t('settings.location.searchManually')}</Text>
         </TouchableOpacity>
       </View>
 
@@ -211,7 +211,7 @@ export default function SettingsScreen() {
         {settings.method === 'Custom' && (
           <View style={styles.customAnglesRow}>
             <View style={styles.angleField}>
-              <Text style={styles.hint}>Fajr angle (°)</Text>
+              <Text style={styles.hint}>{t('settings.customAngles.fajr')}</Text>
               <TextInput
                 style={styles.angleInput}
                 keyboardType="decimal-pad"
@@ -224,7 +224,7 @@ export default function SettingsScreen() {
               />
             </View>
             <View style={styles.angleField}>
-              <Text style={styles.hint}>Isha angle (°)</Text>
+              <Text style={styles.hint}>{t('settings.customAngles.isha')}</Text>
               <TextInput
                 style={styles.angleInput}
                 keyboardType="decimal-pad"
@@ -241,11 +241,10 @@ export default function SettingsScreen() {
       </View>
 
       {/* High-latitude rule */}
-      <SectionHeader title="High-Latitude Adjustment" styles={styles} />
+      <SectionHeader title={t('settings.highLatitude.title')} styles={styles} />
       <View style={styles.card}>
         <Text style={styles.hint}>
-          Applied when Fajr/Isha can't reach the required angle (far-north/south locations
-          in summer).
+          {t('settings.highLatitude.hint')}
         </Text>
         {HIGH_LAT_RULES.map((rule) => {
           const isSelected = settings.highLatRule === rule.key;
@@ -259,7 +258,7 @@ export default function SettingsScreen() {
                 {isSelected && <View style={styles.radioInner} />}
               </View>
               <Text style={[styles.optionLabel, isSelected && styles.optionLabelSelected]}>
-                {rule.label}
+                {t(rule.labelKey)}
               </Text>
             </TouchableOpacity>
           );
@@ -267,7 +266,7 @@ export default function SettingsScreen() {
       </View>
 
       {/* Madhab (Asr shadow factor) */}
-      <SectionHeader title="Madhab (Asr)" styles={styles} />
+      <SectionHeader title={t('settings.madhab.title')} styles={styles} />
       <View style={styles.card}>
         <View style={styles.toggle}>
           {(['Shafi', 'Hanafi'] as Madhab[]).map((m) => (
@@ -283,15 +282,15 @@ export default function SettingsScreen() {
           ))}
         </View>
         <Text style={styles.hint}>
-          Shafi: 1× shadow factor | Hanafi: 2× shadow factor
+          {t('settings.madhab.hint')}
         </Text>
       </View>
 
       {/* Prayer time fine-tuning — match a local mosque timetable */}
-      <SectionHeader title="Prayer Time Adjustments" styles={styles} />
+      <SectionHeader title={t('settings.prayerAdjustments.title')} styles={styles} />
       <View style={styles.card}>
         <Text style={styles.hint}>
-          Fine-tune each time by ±30 minutes to match your local mosque timetable.
+          {t('settings.prayerAdjustments.hint')}
         </Text>
         {ADJUSTABLE_PRAYERS.map((prayer) => {
           const value = settings.prayerMinuteAdjustments[prayer] ?? 0;
@@ -323,14 +322,13 @@ export default function SettingsScreen() {
       </View>
 
       {/* Hijri date adjustment — local moon-sighting offset */}
-      <SectionHeader title="Hijri Date Adjustment" styles={styles} />
+      <SectionHeader title={t('settings.hijriAdjustment.title')} styles={styles} />
       <View style={styles.card}>
         <Text style={styles.hint}>
-          Shift the Hijri date by ±2 days if your local moon sighting differs from the
-          Umm al-Qura calendar.
+          {t('settings.hijriAdjustment.hint')}
         </Text>
         <View style={styles.row}>
-          <Text style={styles.rowLabel}>Offset</Text>
+          <Text style={styles.rowLabel}>{t('settings.hijriAdjustment.offset')}</Text>
           <View style={styles.stepper}>
             <TouchableOpacity
               style={styles.stepperButton}
@@ -357,7 +355,7 @@ export default function SettingsScreen() {
       <SectionHeader title={t('settings.language.title')} styles={styles} />
       <View style={styles.card}>
         <TouchableOpacity style={styles.row} onPress={() => setShowLanguages((v) => !v)}>
-          <Text style={styles.rowLabel}>App Language</Text>
+          <Text style={styles.rowLabel}>{t('settings.appLanguage')}</Text>
           <Text style={styles.rowValue}>
             {LOCALE_NAMES[settings.locale as SupportedLocale] ?? 'English'} {showLanguages ? '▴' : '▾'}
           </Text>
@@ -382,7 +380,7 @@ export default function SettingsScreen() {
       </View>
 
       {/* Time Format */}
-      <SectionHeader title="Time Format" styles={styles} />
+      <SectionHeader title={t('settings.timeFormat.title')} styles={styles} />
       <View style={styles.card}>
         <View style={styles.toggle}>
           {(['12h', '24h'] as TimeFormat[]).map((f) => (
@@ -400,23 +398,26 @@ export default function SettingsScreen() {
       </View>
 
       {/* Appearance — theme mode: System follows the OS, Light/Dark force a palette */}
-      <SectionHeader title="Appearance" styles={styles} />
+      <SectionHeader title={t('settings.appearance.title')} styles={styles} />
       <View style={styles.card}>
         <View style={styles.toggle}>
-          {THEME_OPTIONS.map((opt) => (
-            <TouchableOpacity
-              key={opt.key}
-              style={[styles.toggleOption, settings.themeMode === opt.key && styles.toggleOptionActive]}
-              onPress={() => settings.setThemeMode(opt.key)}
-              accessibilityRole="button"
-              accessibilityLabel={`${opt.label} theme`}
-              accessibilityState={{ selected: settings.themeMode === opt.key }}
-            >
-              <Text style={[styles.toggleText, settings.themeMode === opt.key && styles.toggleTextActive]}>
-                {opt.label}
-              </Text>
-            </TouchableOpacity>
-          ))}
+          {THEME_OPTIONS.map((opt) => {
+            const label = t(opt.labelKey);
+            return (
+              <TouchableOpacity
+                key={opt.key}
+                style={[styles.toggleOption, settings.themeMode === opt.key && styles.toggleOptionActive]}
+                onPress={() => settings.setThemeMode(opt.key)}
+                accessibilityRole="button"
+                accessibilityLabel={`${label} theme`}
+                accessibilityState={{ selected: settings.themeMode === opt.key }}
+              >
+                <Text style={[styles.toggleText, settings.themeMode === opt.key && styles.toggleTextActive]}>
+                  {label}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
         </View>
       </View>
 
@@ -425,14 +426,14 @@ export default function SettingsScreen() {
       <SectionHeader title={t('settings.notifications.title')} styles={styles} />
       <View style={styles.card}>
         <View style={styles.row}>
-          <Text style={styles.rowLabel}>Prayer Time Alerts</Text>
-          <Text style={styles.rowValue}>{settings.notificationsEnabled ? 'On' : 'Off'}</Text>
+          <Text style={styles.rowLabel}>{t('settings.prayerAlerts')}</Text>
+          <Text style={styles.rowValue}>{settings.notificationsEnabled ? t('common.on') : t('common.off')}</Text>
         </View>
         <TouchableOpacity
           style={[styles.button, styles.buttonSecondary]}
           onPress={() => router.push('/settings/notifications')}
         >
-          <Text style={styles.buttonSecondaryText}>Manage Notifications</Text>
+          <Text style={styles.buttonSecondaryText}>{t('settings.manageNotifications')}</Text>
         </TouchableOpacity>
       </View>
 

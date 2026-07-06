@@ -5,17 +5,19 @@
 import { useMemo } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Link } from 'expo-router';
+import { useTranslation } from '../i18n';
 import { useThemeColors } from '../hooks/useThemeColors';
 import type { ThemeColors } from '../constants/colors';
 
 export default function NotFoundScreen() {
+  const { t } = useTranslation();
   const colors = useThemeColors();
   const styles = useMemo(() => createStyles(colors), [colors]);
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Screen Not Found</Text>
+      <Text style={styles.title}>{t('screens.notFound.title')}</Text>
       <Link href="/(tabs)/home" style={styles.link}>
-        <Text style={styles.linkText}>Go to Prayer Times</Text>
+        <Text style={styles.linkText}>{t('screens.notFound.goHome')}</Text>
       </Link>
     </View>
   );

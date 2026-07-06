@@ -88,11 +88,11 @@ export default function AdhanScreen() {
   const handleSelect = useCallback((voice: AdhanVoice) => {
     if (voice.is_pro && !isPlus) {
       Alert.alert(
-        'Ummat+ Required',
-        `${voice.name} is a Pro adhan voice. Upgrade to Ummat+ to set it as your active adhan.`,
+        t('screens.adhan.proRequiredTitle'),
+        t('screens.adhan.proRequiredBody', { name: voice.name }),
         [
-          { text: 'Cancel', style: 'cancel' },
-          { text: 'Upgrade', onPress: () => router.push('/subscription') },
+          { text: t('common.cancel'), style: 'cancel' },
+          { text: t('common.upgrade'), onPress: () => router.push('/subscription') },
         ],
       );
       return;
@@ -120,7 +120,7 @@ export default function AdhanScreen() {
   if (fetching && !data) return <SkeletonState rows={6} />;
   if (error) return <ErrorState error={error} onRetry={() => reexecuteQuery({ requestPolicy: 'network-only' })} />;
   if (!data?.pc_adhan_voice?.length) {
-    return <EmptyState message="No adhan voices available." />;
+    return <EmptyState message={t('screens.adhan.noVoices')} />;
   }
 
   const voices: AdhanVoice[] = data.pc_adhan_voice;
@@ -129,7 +129,7 @@ export default function AdhanScreen() {
     <SafeAreaView style={styles.container}>
       {/* Per-prayer enable toggles */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle} accessibilityRole="header">Enable Adhan Per Prayer</Text>
+        <Text style={styles.sectionTitle} accessibilityRole="header">{t('screens.adhan.enablePerPrayer')}</Text>
         {PRAYER_NAMES.map((name) => (
           <View key={name} style={styles.toggleRow}>
             <Text style={styles.toggleLabel}>{t(PRAYER_LABEL_KEYS[name])}</Text>
@@ -145,7 +145,7 @@ export default function AdhanScreen() {
       </View>
 
       {/* Voice library */}
-      <Text style={styles.sectionTitle} accessibilityRole="header">Adhan Library</Text>
+      <Text style={styles.sectionTitle} accessibilityRole="header">{t('screens.adhan.library')}</Text>
       <FlatList
         data={voices}
         keyExtractor={(v) => v.id}
@@ -161,14 +161,14 @@ export default function AdhanScreen() {
               <Text style={styles.voiceName}>{voice.name}</Text>
               <Text style={styles.voiceReciter}>{voice.reciter}</Text>
               {voice.is_pro && (
-                <Text style={styles.proBadge} accessibilityLabel="Pro feature">PRO</Text>
+                <Text style={styles.proBadge} accessibilityLabel={t('screens.adhan.proFeature')}>PRO</Text>
               )}
             </View>
             <TouchableOpacity
               onPress={() => handlePlay(voice)}
               style={styles.playButton}
               accessibilityRole="button"
-              accessibilityLabel={playingId === voice.id ? 'Stop preview' : 'Play preview'}
+              accessibilityLabel={playingId === voice.id ? t('screens.adhan.stopPreview') : t('screens.adhan.playPreview')}
               hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
             >
               <Text style={styles.playIcon}>{playingId === voice.id ? '■' : '▶'}</Text>
@@ -177,7 +177,7 @@ export default function AdhanScreen() {
         )}
         contentContainerStyle={{ paddingBottom: 24 }}
         accessible
-        accessibilityLabel="Adhan voice list"
+        accessibilityLabel={t('screens.adhan.voiceListLabel')}
       />
     </SafeAreaView>
   );

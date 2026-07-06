@@ -19,6 +19,7 @@ import {
 } from 'react-native';
 import { router } from 'expo-router';
 import * as InAppPurchases from 'expo-in-app-purchases';
+import { useTranslation } from '../../i18n';
 import { useThemeColors } from '../../hooks/useThemeColors';
 import type { ThemeColors } from '../../constants/colors';
 import { LoadingState, ErrorState } from '../../components/states';
@@ -37,14 +38,15 @@ interface IAPProduct {
 
 // Must list ONLY features actually gated behind isPlus (stats, custom methods,
 // and the whole app are free and ad-free for everyone — never imply otherwise).
-const PRO_FEATURES = [
-  'Premium adhan voices — additional reciters',
-  'Home screen widget (next prayer)',
-  'PrayCalc TV app pairing',
-  'Smart Home — lock devices during salah',
+const PRO_FEATURE_KEYS = [
+  'screens.subscription.featurePremiumAdhan',
+  'screens.subscription.featureHomeWidget',
+  'screens.subscription.featureTvPairing',
+  'screens.subscription.featureSmartHome',
 ];
 
 export default function SubscriptionScreen() {
+  const { t } = useTranslation();
   const colors = useThemeColors();
   const styles = useMemo(() => createStyles(colors), [colors]);
   const auth = useAuthStore();
@@ -71,10 +73,10 @@ export default function SubscriptionScreen() {
             price: r.price,
           })));
         } else {
-          setError('Could not load products. Check your connection and try again.');
+          setError(t('screens.subscription.loadProductsFailed'));
         }
       } catch (e) {
-        if (mounted) setError((e as Error).message ?? 'Failed to connect to store.');
+        if (mounted) setError((e as Error).message ?? t('screens.subscription.connectFailed'));
       } finally {
         if (mounted) setLoading(false);
       }
@@ -85,11 +87,11 @@ export default function SubscriptionScreen() {
   const handlePurchase = useCallback(async (productId: string) => {
     if (auth.mode === 'anonymous') {
       Alert.alert(
-        'Create an Account',
-        'Sign in first so your purchase can sync across your devices.',
+        t('screens.subscription.createAccountTitle'),
+        t('screens.subscription.createAccountBody'),
         [
-          { text: 'Cancel', style: 'cancel' },
-          { text: 'Sign In', onPress: () => router.push('/sign-in') },
+          { text: t('common.cancel'), style: 'cancel' },
+          { text: t('common.signIn'), onPress: () => router.push('/sign-in') },
         ],
       );
       return;
@@ -101,11 +103,11 @@ export default function SubscriptionScreen() {
       // The global IAPListener (src/lib/iap/IAPListener.ts, registered at app start)
       // handles the receipt mutation + isPlus reconciliation from here.
     } catch (e) {
-      setError((e as Error).message ?? 'Purchase failed. Please try again.');
+      setError((e as Error).message ?? t('screens.subscription.purchaseFailed'));
     } finally {
       setPurchasing(false);
     }
-  }, [auth.mode]);
+  }, [auth.mode, t]);
 
   const handleRestore = useCallback(async () => {
     setPurchasing(true);
@@ -113,14 +115,14 @@ export default function SubscriptionScreen() {
       await InAppPurchases.getPurchaseHistoryAsync();
       // Listener handles restore
     } catch (e) {
-      setError((e as Error).message ?? 'Restore failed.');
+      setError((e as Error).message ?? t('screens.subscription.restoreFailed'));
     } finally {
       setPurchasing(false);
     }
-  }, []);
+  }, [t]);
 
   // ── 7 UI States ──────────────────────────────────────────────────────────────
-  if (loading) return <LoadingState message="Loading subscription options..." />;
+  if (loading) return <LoadingState message={t('screens.subscription.loadingOptions')} />;
   if (error && products.length === 0) {
     return <ErrorState error={error} onRetry={() => { setError(null); setLoading(true); }} />;
   }
@@ -130,8 +132,8 @@ export default function SubscriptionScreen() {
       <SafeAreaView style={styles.container}>
         <View style={styles.proView}>
           <Text style={styles.proEmoji}>✨</Text>
-          <Text style={styles.proTitle} accessibilityRole="header">You're on Pro</Text>
-          <Text style={styles.proSub}>Thank you for supporting PrayCalc!</Text>
+          <Text style={styles.proTitle} accessibilityRole="header">{t('screens.subscription.proTitle')}</Text>
+          <Text style={styles.proSub}>{t('screens.subscription.proSub')}</Text>
         </View>
       </SafeAreaView>
     );
@@ -142,16 +144,16 @@ export default function SubscriptionScreen() {
       <ScrollView contentContainerStyle={styles.scroll}>
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.title} accessibilityRole="header">PrayCalc Pro</Text>
-          <Text style={styles.subtitle}>Enhance your worship experience</Text>
+          <Text style={styles.title} accessibilityRole="header">{t('screens.subscription.title')}</Text>
+          <Text style={styles.subtitle}>{t('screens.subscription.subtitle')}</Text>
         </View>
 
         {/* Pro features */}
         <View style={styles.featuresCard}>
-          {PRO_FEATURES.map((f, i) => (
+          {PRO_FEATURE_KEYS.map((key, i) => (
             <View key={i} style={styles.featureRow}>
               <Text style={styles.checkmark}>✓</Text>
-              <Text style={styles.featureText}>{f}</Text>
+              <Text style={styles.featureText}>{t(key)}</Text>
             </View>
           ))}
         </View>
@@ -181,7 +183,7 @@ export default function SubscriptionScreen() {
         ) : (
           <View style={styles.noProducts}>
             <Text style={styles.noProductsText}>
-              Subscription products unavailable. Configure in App Store Connect / Google Play Console.
+              {t('screens.subscription.noProducts')}
             </Text>
           </View>
         )}
@@ -196,12 +198,11 @@ export default function SubscriptionScreen() {
           accessibilityRole="button"
           accessibilityLabel="Restore previous purchase"
         >
-          <Text style={styles.restoreText}>Restore Purchase</Text>
+          <Text style={styles.restoreText}>{t('screens.subscription.restorePurchase')}</Text>
         </TouchableOpacity>
 
         <Text style={styles.legal}>
-          Subscriptions auto-renew unless cancelled at least 24 hours before the end of the
-          current period. Manage in your App Store / Google Play account settings.
+          {t('screens.subscription.legal')}
         </Text>
       </ScrollView>
     </SafeAreaView>

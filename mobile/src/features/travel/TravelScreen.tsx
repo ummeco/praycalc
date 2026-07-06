@@ -57,14 +57,12 @@ export default function TravelScreen() {
     setMusafirMode(value);
     if (value) {
       Alert.alert(
-        'Musafir (Traveller) Mode',
-        'Qasr (shortening) reduces Dhuhr, Asr, and Isha from 4 to 2 rakat.\n\n' +
-        'Note: Jama (combining prayers) is not automatically applied due to scholarly differences. ' +
-        'Please follow your local scholar or madhab regarding combining prayers during travel.',
-        [{ text: 'Understood', style: 'default' }],
+        t('screens.travel.musafirAlertTitle'),
+        t('screens.travel.musafirAlertBody'),
+        [{ text: t('screens.travel.understood'), style: 'default' }],
       );
     }
-  }, [setMusafirMode]);
+  }, [setMusafirMode, t]);
 
   const handleSelectTravelCity = useCallback((city: CityCoords) => {
     setTravelLocation(city);
@@ -85,9 +83,9 @@ export default function TravelScreen() {
         {/* Musafir toggle */}
         <View style={styles.musafirCard}>
           <View style={styles.cardLeft}>
-            <Text style={styles.cardTitle} accessibilityRole="header">Musafir Mode</Text>
+            <Text style={styles.cardTitle} accessibilityRole="header">{t('screens.travel.musafirModeTitle')}</Text>
             <Text style={styles.cardDesc}>
-              I am a traveller (musafir). Apply qasr to applicable prayers.
+              {t('screens.travel.musafirModeDesc')}
             </Text>
           </View>
           <Switch
@@ -103,7 +101,7 @@ export default function TravelScreen() {
         {musafirMode && (
           <View style={styles.rakatCard}>
             <Text style={styles.sectionTitle} accessibilityRole="header">
-              Qasr Rakat Count
+              {t('screens.travel.qasrRakatCount')}
             </Text>
             {prayerNames.map((name) => {
               const r = QASR_RAKAT[name];
@@ -126,15 +124,14 @@ export default function TravelScreen() {
               );
             })}
             <Text style={styles.fiqhNote}>
-              Fajr and Maghrib are not shortened (qasr applies to 4-rakat prayers only).
-              Jama (combining prayers) requires following your local scholar or madhab ruling.
+              {t('screens.travel.fiqhNote')}
             </Text>
           </View>
         )}
 
         {/* Travel city selection */}
         <View style={styles.cityCard}>
-          <Text style={styles.sectionTitle} accessibilityRole="header">Travel Destination</Text>
+          <Text style={styles.sectionTitle} accessibilityRole="header">{t('screens.travel.travelDestination')}</Text>
           {travelLocation ? (
             <View style={styles.selectedCity} accessible accessibilityLabel={`Selected: ${travelLocation.city}, ${travelLocation.country}`}>
               <View>
@@ -147,7 +144,7 @@ export default function TravelScreen() {
                 accessibilityRole="button"
                 accessibilityLabel="Change travel city"
               >
-                <Text style={styles.changeBtnText}>Change</Text>
+                <Text style={styles.changeBtnText}>{t('screens.travel.changeCity')}</Text>
               </TouchableOpacity>
             </View>
           ) : (
@@ -157,19 +154,19 @@ export default function TravelScreen() {
               accessibilityRole="button"
               accessibilityLabel="Select travel city"
             >
-              <Text style={styles.selectCityText}>Select Travel City</Text>
+              <Text style={styles.selectCityText}>{t('screens.travel.selectTravelCity')}</Text>
             </TouchableOpacity>
           )}
           <Text style={styles.cityNote}>
-            Prayer times will be recalculated for your travel destination.
+            {t('screens.travel.recalcNote')}
           </Text>
         </View>
 
         {/* Current city */}
         <View style={styles.homeCard}>
-          <Text style={styles.sectionTitle} accessibilityRole="header">Home City</Text>
+          <Text style={styles.sectionTitle} accessibilityRole="header">{t('screens.travel.homeCity')}</Text>
           <Text style={styles.homeCityText}>
-            {location ? `${location.city}, ${location.country}` : 'Not set'}
+            {location ? `${location.city}, ${location.country}` : t('screens.travel.notSet')}
           </Text>
         </View>
       </ScrollView>

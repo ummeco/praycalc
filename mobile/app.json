@@ -3,7 +3,7 @@
     "name": "PrayCalc",
     "slug": "praycalc",
     "owner": "ummeco",
-    "version": "2.0.0",
+    "version": "2.1.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "scheme": "praycalc",
@@ -91,7 +91,25 @@
           "calendarPermission": "Prayer Times adds salah blocks to your calendar as reminders."
         }
       ],
-      "react-native-track-player"
+      "react-native-track-player",
+      [
+        "react-native-android-widget",
+        {
+          "widgets": [
+            {
+              "name": "NextPrayer",
+              "label": "Next Prayer",
+              "description": "Shows the next prayer time and city at a glance.",
+              "minWidth": "180dp",
+              "minHeight": "48dp",
+              "targetCellWidth": 4,
+              "targetCellHeight": 1,
+              "updatePeriodMillis": 1800000,
+              "resizeMode": "horizontal|vertical"
+            }
+          ]
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true

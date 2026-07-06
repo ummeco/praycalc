@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { mmkv } from '../../lib/storage/mmkv';
+import { useTranslation } from '../../i18n';
 import { useThemeColors } from '../../hooks/useThemeColors';
 import type { ThemeColors } from '../../constants/colors';
 
@@ -90,6 +91,7 @@ interface TasbeehSession {
 // ── Screen ────────────────────────────────────────────────────────────────────
 
 export default function TasbeehScreen() {
+  const { t } = useTranslation();
   const colors = useThemeColors();
   const styles = useMemo(() => createStyles(colors), [colors]);
   const [selectedPreset, setSelectedPreset] = useState<DhikrPreset>(DHIKR_PRESETS[0]!);
@@ -177,8 +179,8 @@ export default function TasbeehScreen() {
           activeOpacity={0.8}
         >
           <Text style={styles.countNumber}>{count}</Text>
-          <Text style={styles.targetText}>of {selectedPreset.targetCount}</Text>
-          {isComplete && <Text style={styles.completeText}>Complete!</Text>}
+          <Text style={styles.targetText}>{t('screens.tasbeeh.of', { count: selectedPreset.targetCount })}</Text>
+          {isComplete && <Text style={styles.completeText}>{t('common.complete')}!</Text>}
         </TouchableOpacity>
 
         {/* Progress bar */}
@@ -195,13 +197,13 @@ export default function TasbeehScreen() {
           style={styles.resetButton}
           onPress={handleReset}
           accessibilityRole="button"
-          accessibilityLabel="Reset counter"
+          accessibilityLabel={t('screens.tasbeeh.resetCounter')}
         >
-          <Text style={styles.resetText}>Reset</Text>
+          <Text style={styles.resetText}>{t('common.reset')}</Text>
         </TouchableOpacity>
 
         {/* Preset selector */}
-        <Text style={styles.sectionTitle} accessibilityRole="header">Choose Dhikr</Text>
+        <Text style={styles.sectionTitle} accessibilityRole="header">{t('screens.tasbeeh.chooseDhikr')}</Text>
         {DHIKR_PRESETS.map((preset) => (
           <TouchableOpacity
             key={preset.id}

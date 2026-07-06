@@ -13,58 +13,64 @@ import {
   StyleSheet,
 } from 'react-native';
 import { router } from 'expo-router';
+import { useTranslation } from '../../i18n';
 import { useThemeColors } from '../../hooks/useThemeColors';
 import type { ThemeColors } from '../../constants/colors';
 
 interface MenuItem {
-  label: string;
-  subtitle: string;
+  labelKey: string;
+  subtitleKey: string;
   route: string;
   icon: string;
 }
 
 const MENU_ITEMS: MenuItem[] = [
-  { label: 'Settings', subtitle: 'Method, location, notifications', route: '/settings', icon: '⚙️' },
-  { label: 'Adhan Library', subtitle: 'Prayer call audio & reciter', route: '/adhan', icon: '🔊' },
-  { label: 'Tasbeeh Counter', subtitle: 'Digital dhikr counter', route: '/tasbeeh', icon: '📿' },
-  { label: 'Dua & Adhkar', subtitle: 'Morning & evening supplications', route: '/dua-dhikr', icon: '🤲' },
-  { label: 'Moon Phase', subtitle: 'Lunar calendar & Hijri date', route: '/moon', icon: '🌙' },
-  { label: 'Quran', subtitle: 'Uthmani script with bookmarks', route: '/quran', icon: '📖' },
-  { label: 'Prayer Stats', subtitle: 'Track your prayers & streaks', route: '/stats', icon: '📊' },
-  { label: 'Ramadan', subtitle: 'Suhoor & Iftar times, tracker', route: '/ramadan', icon: '🌙' },
-  { label: 'Go Pro', subtitle: 'Unlock premium features', route: '/subscription', icon: '⭐' },
-  { label: 'Home Widget', subtitle: 'Next prayer on home screen', route: '/home-widget', icon: '🪟' },
-  { label: 'Smart Home', subtitle: 'Lock devices during salah', route: '/smart-home', icon: '🏠' },
-  { label: 'Pair TV', subtitle: 'Link the PrayCalc TV app', route: '/pair-tv', icon: '📺' },
-  { label: 'Prayer Calendar', subtitle: 'Add prayer times to calendar', route: '/agendas', icon: '📅' },
-  { label: 'Monthly Timetable', subtitle: 'Full month prayer times + calendar export', route: '/timetable', icon: '🗓️' },
-  { label: 'Nearby Mosques', subtitle: 'Find mosques around you', route: '/mosques', icon: '🕌' },
-  { label: 'Travel Mode', subtitle: 'Musafir qasr for travellers', route: '/travel', icon: '✈️' },
+  { labelKey: 'menu.settings.label', subtitleKey: 'menu.settings.subtitle', route: '/settings', icon: '⚙️' },
+  { labelKey: 'menu.adhan.label', subtitleKey: 'menu.adhan.subtitle', route: '/adhan', icon: '🔊' },
+  { labelKey: 'menu.tasbeeh.label', subtitleKey: 'menu.tasbeeh.subtitle', route: '/tasbeeh', icon: '📿' },
+  { labelKey: 'menu.duaDhikr.label', subtitleKey: 'menu.duaDhikr.subtitle', route: '/dua-dhikr', icon: '🤲' },
+  { labelKey: 'menu.moon.label', subtitleKey: 'menu.moon.subtitle', route: '/moon', icon: '🌙' },
+  { labelKey: 'menu.quran.label', subtitleKey: 'menu.quran.subtitle', route: '/quran', icon: '📖' },
+  { labelKey: 'menu.stats.label', subtitleKey: 'menu.stats.subtitle', route: '/stats', icon: '📊' },
+  { labelKey: 'menu.ramadan.label', subtitleKey: 'menu.ramadan.subtitle', route: '/ramadan', icon: '🌙' },
+  { labelKey: 'menu.subscription.label', subtitleKey: 'menu.subscription.subtitle', route: '/subscription', icon: '⭐' },
+  { labelKey: 'menu.homeWidget.label', subtitleKey: 'menu.homeWidget.subtitle', route: '/home-widget', icon: '🪟' },
+  { labelKey: 'menu.smartHome.label', subtitleKey: 'menu.smartHome.subtitle', route: '/smart-home', icon: '🏠' },
+  { labelKey: 'menu.pairTv.label', subtitleKey: 'menu.pairTv.subtitle', route: '/pair-tv', icon: '📺' },
+  { labelKey: 'menu.agendas.label', subtitleKey: 'menu.agendas.subtitle', route: '/agendas', icon: '📅' },
+  { labelKey: 'menu.timetable.label', subtitleKey: 'menu.timetable.subtitle', route: '/timetable', icon: '🗓️' },
+  { labelKey: 'menu.mosques.label', subtitleKey: 'menu.mosques.subtitle', route: '/mosques', icon: '🕌' },
+  { labelKey: 'menu.travel.label', subtitleKey: 'menu.travel.subtitle', route: '/travel', icon: '✈️' },
 ];
 
 export default function MoreScreen() {
+  const { t } = useTranslation();
   const colors = useThemeColors();
   const styles = useMemo(() => createStyles(colors), [colors]);
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <Text style={styles.heading} accessibilityRole="header">More</Text>
-      {MENU_ITEMS.map((item) => (
-        <TouchableOpacity
-          key={item.label}
-          style={styles.menuRow}
-          onPress={() => router.push(item.route as Parameters<typeof router.push>[0])}
-          accessibilityRole="menuitem"
-          accessibilityLabel={item.label}
-          accessibilityHint={item.subtitle}
-        >
-          <Text style={styles.menuIcon}>{item.icon}</Text>
-          <View style={styles.menuText}>
-            <Text style={styles.menuLabel}>{item.label}</Text>
-            <Text style={styles.menuSubtitle}>{item.subtitle}</Text>
-          </View>
-          <Text style={styles.arrow}>›</Text>
-        </TouchableOpacity>
-      ))}
+      <Text style={styles.heading} accessibilityRole="header">{t('screens.more.title')}</Text>
+      {MENU_ITEMS.map((item) => {
+        const label = t(item.labelKey);
+        const subtitle = t(item.subtitleKey);
+        return (
+          <TouchableOpacity
+            key={item.labelKey}
+            style={styles.menuRow}
+            onPress={() => router.push(item.route as Parameters<typeof router.push>[0])}
+            accessibilityRole="menuitem"
+            accessibilityLabel={label}
+            accessibilityHint={subtitle}
+          >
+            <Text style={styles.menuIcon}>{item.icon}</Text>
+            <View style={styles.menuText}>
+              <Text style={styles.menuLabel}>{label}</Text>
+              <Text style={styles.menuSubtitle}>{subtitle}</Text>
+            </View>
+            <Text style={styles.arrow}>›</Text>
+          </TouchableOpacity>
+        );
+      })}
     </ScrollView>
   );
 }

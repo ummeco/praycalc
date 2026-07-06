@@ -19,6 +19,7 @@ import {
   Platform,
   ScrollView,
 } from 'react-native';
+import { useTranslation } from '../../../i18n';
 import { useThemeColors } from '../../../hooks/useThemeColors';
 import type { ThemeColors } from '../../../constants/colors';
 import { useAuthStore } from '../store/useAuthStore';
@@ -31,6 +32,7 @@ import {
 type AuthTab = 'anonymous' | 'login' | 'register';
 
 export default function AuthScreen() {
+  const { t } = useTranslation();
   const colors = useThemeColors();
   const styles = useMemo(() => createStyles(colors), [colors]);
   const auth = useAuthStore();
@@ -42,7 +44,7 @@ export default function AuthScreen() {
   const [error, setError] = useState<string | null>(null);
 
   // UI states
-  if (isLoading) return <LoadingState message="Signing in..." />;
+  if (isLoading) return <LoadingState message={t('screens.auth.signingIn')} />;
   if (error) return <ErrorState error={error} onRetry={() => setError(null)} />;
 
   async function handleAnonymous() {
@@ -53,7 +55,7 @@ export default function AuthScreen() {
 
   async function handleAccountLogin() {
     if (!email || !password) {
-      setError('Please enter email and password.');
+      setError(t('screens.auth.enterEmailPassword'));
       return;
     }
     setIsLoading(true);
@@ -63,7 +65,7 @@ export default function AuthScreen() {
       await auth.setAccount(session.user.id, session.accessToken, session.refreshToken);
       await auth.fetchEntitlement();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Login failed');
+      setError(err instanceof Error ? err.message : t('screens.auth.loginFailed'));
     } finally {
       setIsLoading(false);
     }
@@ -71,7 +73,7 @@ export default function AuthScreen() {
 
   async function handleAccountRegister() {
     if (!email || !password) {
-      setError('Please enter email and password.');
+      setError(t('screens.auth.enterEmailPassword'));
       return;
     }
     setIsLoading(true);
@@ -80,14 +82,14 @@ export default function AuthScreen() {
       const session = await signup(email, password, displayName || undefined);
       if (!session) {
         // Email verification required — no session issued yet.
-        setError('Check your email to verify your account, then sign in.');
+        setError(t('screens.auth.verifyEmail'));
         setActiveTab('login');
         return;
       }
       await auth.setAccount(session.user.id, session.accessToken, session.refreshToken);
       await auth.fetchEntitlement();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Registration failed');
+      setError(err instanceof Error ? err.message : t('screens.auth.registerFailed'));
     } finally {
       setIsLoading(false);
     }
@@ -101,8 +103,8 @@ export default function AuthScreen() {
       <ScrollView contentContainerStyle={styles.content}>
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.appName}>PrayCalc</Text>
-          <Text style={styles.tagline}>Accurate prayer times for every Muslim</Text>
+          <Text style={styles.appName}>{t('app.name')}</Text>
+          <Text style={styles.tagline}>{t('screens.auth.appTagline')}</Text>
         </View>
 
         {/* Tab selector */}
@@ -114,7 +116,7 @@ export default function AuthScreen() {
               onPress={() => setActiveTab(tab)}
             >
               <Text style={[styles.tabText, activeTab === tab && styles.tabTextActive]}>
-                {tab === 'anonymous' ? 'Skip' : tab.charAt(0).toUpperCase() + tab.slice(1)}
+                {tab === 'anonymous' ? t('screens.auth.tabSkip') : tab.charAt(0).toUpperCase() + tab.slice(1)}
               </Text>
             </TouchableOpacity>
           ))}
@@ -123,18 +125,21 @@ export default function AuthScreen() {
         {/* Anonymous mode */}
         {activeTab === 'anonymous' && (
           <View style={styles.panel}>
-            <Text style={styles.panelTitle}>Continue Without Account</Text>
+            <Text style={styles.panelTitle}>{t('screens.auth.continueTitle')}</Text>
             <Text style={styles.panelDesc}>
-              Prayer times, Qibla, and calendar work fully offline with no account needed.
-              Your settings are saved locally.
+              {t('screens.auth.continueDesc')}
             </Text>
             <View style={styles.featureList}>
-              {['Prayer times & Qibla', 'Islamic calendar', 'Settings & notifications'].map((f) => (
+              {[
+                t('screens.auth.featurePrayerQibla'),
+                t('screens.auth.featureCalendar'),
+                t('screens.auth.featureSettings'),
+              ].map((f) => (
                 <Text key={f} style={styles.featureItem}>✓ {f}</Text>
               ))}
             </View>
             <TouchableOpacity style={styles.primaryButton} onPress={handleAnonymous}>
-              <Text style={styles.primaryButtonText}>Continue Anonymously</Text>
+              <Text style={styles.primaryButtonText}>{t('screens.auth.continueAnonymously')}</Text>
             </TouchableOpacity>
           </View>
         )}
@@ -142,10 +147,10 @@ export default function AuthScreen() {
         {/* Login */}
         {activeTab === 'login' && (
           <View style={styles.panel}>
-            <Text style={styles.panelTitle}>Sign In</Text>
+            <Text style={styles.panelTitle}>{t('screens.auth.signInTitle')}</Text>
             <TextInput
               style={styles.input}
-              placeholder="Email"
+              placeholder={t('screens.auth.emailPlaceholder')}
               value={email}
               onChangeText={setEmail}
               keyboardType="email-address"
@@ -155,17 +160,17 @@ export default function AuthScreen() {
             />
             <TextInput
               style={styles.input}
-              placeholder="Password"
+              placeholder={t('screens.auth.passwordPlaceholder')}
               value={password}
               onChangeText={setPassword}
               secureTextEntry
               placeholderTextColor={colors.text.muted}
             />
             <TouchableOpacity style={styles.primaryButton} onPress={handleAccountLogin}>
-              <Text style={styles.primaryButtonText}>Sign In</Text>
+              <Text style={styles.primaryButtonText}>{t('common.signIn')}</Text>
             </TouchableOpacity>
             <Text style={styles.switchHint}>
-              Account enables cloud sync and prayer history across devices.
+              {t('screens.auth.switchHint')}
             </Text>
           </View>
         )}
@@ -173,10 +178,10 @@ export default function AuthScreen() {
         {/* Register */}
         {activeTab === 'register' && (
           <View style={styles.panel}>
-            <Text style={styles.panelTitle}>Create Account</Text>
+            <Text style={styles.panelTitle}>{t('screens.auth.registerTitle')}</Text>
             <TextInput
               style={styles.input}
-              placeholder="Name (optional)"
+              placeholder={t('screens.auth.namePlaceholder')}
               value={displayName}
               onChangeText={setDisplayName}
               autoCapitalize="words"
@@ -184,7 +189,7 @@ export default function AuthScreen() {
             />
             <TextInput
               style={styles.input}
-              placeholder="Email"
+              placeholder={t('screens.auth.emailPlaceholder')}
               value={email}
               onChangeText={setEmail}
               keyboardType="email-address"
@@ -194,14 +199,14 @@ export default function AuthScreen() {
             />
             <TextInput
               style={styles.input}
-              placeholder="Password"
+              placeholder={t('screens.auth.passwordPlaceholder')}
               value={password}
               onChangeText={setPassword}
               secureTextEntry
               placeholderTextColor={colors.text.muted}
             />
             <TouchableOpacity style={styles.primaryButton} onPress={handleAccountRegister}>
-              <Text style={styles.primaryButtonText}>Create Account</Text>
+              <Text style={styles.primaryButtonText}>{t('common.createAccount')}</Text>
             </TouchableOpacity>
           </View>
         )}

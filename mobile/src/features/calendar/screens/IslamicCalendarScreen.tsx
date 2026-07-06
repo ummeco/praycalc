@@ -18,12 +18,11 @@ import {
   ScrollView,
   StyleSheet,
 } from 'react-native';
+import i18next, { useTranslation } from '../../../i18n';
 import { useThemeColors } from '../../../hooks/useThemeColors';
 import type { ThemeColors } from '../../../constants/colors';
 import { useIslamicCalendar } from '../hooks/useIslamicCalendar';
 import { EmptyState } from '../../../components/shared/UIStates';
-
-const WEEKDAY_LABELS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
 function getDaysInMonth(year: number, month: number): number {
   return new Date(year, month + 1, 0).getDate();
@@ -33,12 +32,24 @@ function getFirstDayOfMonth(year: number, month: number): number {
   return new Date(year, month, 1).getDay();
 }
 
-const MONTH_NAMES = [
-  'January', 'February', 'March', 'April', 'May', 'June',
-  'July', 'August', 'September', 'October', 'November', 'December',
-];
+/** Locale-aware weekday labels (short form), driven by the active i18next language. */
+function getWeekdayLabels(locale: string): string[] {
+  const base = new Date(Date.UTC(2024, 0, 7)); // a known Sunday (UTC)
+  return Array.from({ length: 7 }, (_, i) => {
+    const d = new Date(base);
+    d.setUTCDate(base.getUTCDate() + i);
+    return d.toLocaleDateString(locale, { weekday: 'short', timeZone: 'UTC' });
+  });
+}
+
+/** Locale-aware month name, driven by the active i18next language (not a catalog key —
+ *  Gregorian month names are locale data, not translatable UI copy). */
+function getMonthName(year: number, month: number, locale: string): string {
+  return new Date(year, month, 1).toLocaleDateString(locale, { month: 'long' });
+}
 
 export default function IslamicCalendarScreen() {
+  const { t } = useTranslation();
   const colors = useThemeColors();
   const styles = useMemo(() => createStyles(colors), [colors]);
   const {
@@ -56,6 +67,9 @@ export default function IslamicCalendarScreen() {
   const firstDay = getFirstDayOfMonth(year, month);
   const today = new Date();
   const isCurrentMonth = today.getFullYear() === year && today.getMonth() === month;
+  const locale = i18next.language;
+  const weekdayLabels = useMemo(() => getWeekdayLabels(locale), [locale]);
+  const monthName = useMemo(() => getMonthName(year, month, locale), [year, month, locale]);
 
   // ── 7 UI states — calendar always has data so most states are rare ─────────
   // Empty: no scenario (calendar always shows)
@@ -75,7 +89,7 @@ export default function IslamicCalendarScreen() {
           {`${hijriDate.day} ${hijriDate.monthName} ${hijriDate.year} AH`}
         </Text>
         <Text style={styles.gregorianDate}>
-          {gregorianDate.toLocaleDateString('en-US', {
+          {gregorianDate.toLocaleDateString(locale, {
             weekday: 'long',
             year: 'numeric',
             month: 'long',
@@ -90,7 +104,7 @@ export default function IslamicCalendarScreen() {
           <Text style={styles.navButtonText}>‹</Text>
         </TouchableOpacity>
         <View style={styles.monthTitle}>
-          <Text style={styles.monthTitleText}>{`${MONTH_NAMES[month]} ${year}`}</Text>
+          <Text style={styles.monthTitleText}>{`${monthName} ${year}`}</Text>
           <Text style={styles.monthHijriText}>{hijriDate.monthName}</Text>
         </View>
         <TouchableOpacity style={styles.navButton} onPress={() => navigateMonth(1)}>
@@ -98,10 +112,10 @@ export default function IslamicCalendarScreen() {
         </TouchableOpacity>
       </View>
 
-      {/* Weekday Labels */}
+      {/* Weekday Labels — Friday (index 5) highlighted for Jumu'ah */}
       <View style={styles.weekdayRow}>
-        {WEEKDAY_LABELS.map((d) => (
-          <Text key={d} style={[styles.weekdayLabel, d === 'Fri' && styles.jumuah]}>
+        {weekdayLabels.map((d, i) => (
+          <Text key={`${d}-${i}`} style={[styles.weekdayLabel, i === 5 && styles.jumuah]}>
             {d}
           </Text>
         ))}
@@ -134,7 +148,7 @@ export default function IslamicCalendarScreen() {
       {/* Islamic Events this month */}
       {eventsThisMonth.length > 0 && (
         <View style={styles.eventsSection}>
-          <Text style={styles.sectionTitle}>Islamic Events This Month</Text>
+          <Text style={styles.sectionTitle}>{t('screens.calendar.eventsThisMonth')}</Text>
           {eventsThisMonth.map((event) => (
             <View key={event.name} style={styles.eventRow}>
               <View style={styles.eventDot} />

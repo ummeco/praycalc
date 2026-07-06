@@ -29,7 +29,17 @@
     "settings": "Dejinta",
     "done": "Dhamaaday",
     "next": "Xiga",
-    "back": "Dib"
+    "back": "Dib",
+    "today": "Maanta",
+    "on": "Furan",
+    "off": "Damid",
+    "search": "Raadi",
+    "change": "Bedel",
+    "reset": "Dib u deji",
+    "openInMaps": "Ku fur Khariidadaha",
+    "openSettings": "Fur Dejinta",
+    "upgrade": "Casriyayn",
+    "signIn": "Gal"
   },
   "greeting": {
     "assalamu_alaykum": "Assalaamu Calaykum wa Rahmatullaahi wa Barakaatuh",
@@ -63,5 +73,21 @@
     "location_permission": "Fadlan u ogolow helitaanka goobta si loo xisaabiyo waqtiyada salaadda",
     "network": "Laguma xidhaan karo shabakadda",
     "calculation": "Lama xisaabin karo waqtiyada salaadda"
+  },
+  "tabs": {
+    "home": "Salaadaha",
+    "prayerTimes": "Waqtiyada Salaadda",
+    "qibla": "Qiblada",
+    "calendar": "Jadwalka",
+    "quran": "Qur'aanka",
+    "more": "Wax dheeraad ah"
+  },
+  "menu": {
+    "settings": {
+      "label": "Dejinta"
+    },
+    "mosques": {
+      "label": "Masaajidyada Kuu Dhow"
+    }
   }
 }

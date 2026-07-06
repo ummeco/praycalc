@@ -128,9 +128,9 @@ export default function NotificationSettingsScreen() {
         {/* Master toggle */}
         <View style={styles.masterCard}>
           <View style={styles.masterLeft}>
-            <Text style={styles.masterLabel}>Prayer Notifications</Text>
+            <Text style={styles.masterLabel}>{t('screens.notifications.masterLabel')}</Text>
             <Text style={styles.masterSub}>
-              Receive alerts before each prayer time
+              {t('screens.notifications.masterSub')}
             </Text>
           </View>
           <Switch
@@ -146,7 +146,7 @@ export default function NotificationSettingsScreen() {
         {Platform.OS === 'android' && (
           <View style={styles.infoCard}>
             <Text style={styles.infoText}>
-              On Android 12+, allow "Alarms & Reminders" in system settings for exact prayer time alerts.
+              {t('screens.notifications.androidExactAlarm')}
             </Text>
             <TouchableOpacity
               style={styles.linkBtn}
@@ -154,7 +154,7 @@ export default function NotificationSettingsScreen() {
               accessibilityRole="button"
               accessibilityLabel="Open system settings for alarms"
             >
-              <Text style={styles.linkText}>Open System Settings</Text>
+              <Text style={styles.linkText}>{t('screens.notifications.openSystemSettings')}</Text>
             </TouchableOpacity>
           </View>
         )}
@@ -162,7 +162,7 @@ export default function NotificationSettingsScreen() {
         {/* Per-prayer toggles */}
         {notificationsEnabled && (
           <>
-            <Text style={styles.sectionTitle} accessibilityRole="header">Per-Prayer Alerts</Text>
+            <Text style={styles.sectionTitle} accessibilityRole="header">{t('screens.notifications.perPrayerAlerts')}</Text>
             {PRAYER_NAMES.map((name) => (
               <View key={name} style={styles.prayerRow}>
                 <Text style={styles.prayerLabel}>{t(PRAYER_LABEL_KEYS[name])}</Text>
@@ -172,7 +172,7 @@ export default function NotificationSettingsScreen() {
                     accessibilityRole="button"
                     accessibilityLabel={`${name} notification lead time, ${notificationAdvanceMinutes[name] ?? 0} minutes before. Tap to change.`}
                   >
-                    <Text style={styles.advanceLabel}>{notificationAdvanceMinutes[name] ?? 0}m before</Text>
+                    <Text style={styles.advanceLabel}>{t('screens.notifications.minutesBefore', { count: notificationAdvanceMinutes[name] ?? 0 })}</Text>
                   </TouchableOpacity>
                   <TouchableOpacity
                     onPress={() => handleIqamahCycle(name)}
@@ -180,7 +180,7 @@ export default function NotificationSettingsScreen() {
                     accessibilityLabel={`${name} iqamah reminder, ${(iqamahOffsetMinutes[name] ?? 0) === 0 ? 'off' : `${iqamahOffsetMinutes[name]} minutes after adhan`}. Tap to change.`}
                   >
                     <Text style={styles.advanceLabel}>
-                      {(iqamahOffsetMinutes[name] ?? 0) === 0 ? 'iqamah off' : `iqamah +${iqamahOffsetMinutes[name]}m`}
+                      {(iqamahOffsetMinutes[name] ?? 0) === 0 ? t('screens.notifications.iqamahOff') : t('screens.notifications.iqamahAfter', { count: iqamahOffsetMinutes[name] })}
                     </Text>
                   </TouchableOpacity>
                   <Switch

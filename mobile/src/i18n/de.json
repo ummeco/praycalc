@@ -29,7 +29,17 @@
     "settings": "Einstellungen",
     "done": "Fertig",
     "next": "Weiter",
-    "back": "Zurück"
+    "back": "Zurück",
+    "today": "Heute",
+    "on": "Ein",
+    "off": "Aus",
+    "search": "Suchen",
+    "change": "Ändern",
+    "reset": "Zurücksetzen",
+    "openInMaps": "In Karten öffnen",
+    "openSettings": "Einstellungen öffnen",
+    "upgrade": "Upgrade",
+    "signIn": "Anmelden"
   },
   "greeting": {
     "assalamu_alaykum": "Assalamu Alaykum wa Rahmatullahi wa Barakatuh",
@@ -63,5 +73,21 @@
     "location_permission": "Bitte erlauben Sie den Standortzugriff, um Gebetszeiten zu berechnen",
     "network": "Verbindung zum Netzwerk nicht möglich",
     "calculation": "Gebetszeiten konnten nicht berechnet werden"
+  },
+  "tabs": {
+    "home": "Gebete",
+    "prayerTimes": "Gebetszeiten",
+    "qibla": "Qibla",
+    "calendar": "Kalender",
+    "quran": "Koran",
+    "more": "Mehr"
+  },
+  "menu": {
+    "settings": {
+      "label": "Einstellungen"
+    },
+    "mosques": {
+      "label": "Moscheen in der Nähe"
+    }
   }
 }

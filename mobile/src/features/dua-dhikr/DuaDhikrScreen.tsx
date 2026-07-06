@@ -15,6 +15,7 @@ import React, { useMemo, useState } from 'react';
 import {
   View, Text, FlatList, TouchableOpacity, StyleSheet, SafeAreaView, ScrollView,
 } from 'react-native';
+import { useTranslation } from '../../i18n';
 import { useThemeColors } from '../../hooks/useThemeColors';
 import type { ThemeColors } from '../../constants/colors';
 import { EmptyState } from '../../components/states';
@@ -150,14 +151,15 @@ const ALL_DUAS: Dua[] = [...MORNING_ADHKAR, ...EVENING_ADHKAR, ...POST_PRAYER_DU
 
 type CategoryFilter = 'all' | DuaCategory;
 
-const CATEGORIES: Array<{ key: CategoryFilter; label: string }> = [
-  { key: 'all', label: 'All' },
-  { key: 'morning', label: 'Morning' },
-  { key: 'evening', label: 'Evening' },
-  { key: 'postPrayer', label: 'Post-Prayer' },
+const CATEGORIES: Array<{ key: CategoryFilter; labelKey: string }> = [
+  { key: 'all', labelKey: 'screens.duaDhikr.categoryAll' },
+  { key: 'morning', labelKey: 'screens.duaDhikr.categoryMorning' },
+  { key: 'evening', labelKey: 'screens.duaDhikr.categoryEvening' },
+  { key: 'postPrayer', labelKey: 'screens.duaDhikr.categoryPostPrayer' },
 ];
 
 export default function DuaDhikrScreen() {
+  const { t } = useTranslation();
   const colors = useThemeColors();
   const styles = useMemo(() => createStyles(colors), [colors]);
   const [filter, setFilter] = useState<CategoryFilter>('all');
@@ -166,27 +168,30 @@ export default function DuaDhikrScreen() {
   const filtered = filter === 'all' ? ALL_DUAS : ALL_DUAS.filter((d) => d.category === filter);
 
   if (filtered.length === 0) {
-    return <EmptyState message="No duas found for this category." />;
+    return <EmptyState message={t('screens.duaDhikr.noResults')} />;
   }
 
   return (
     <SafeAreaView style={styles.container}>
       {/* Category filter tabs */}
       <View style={styles.filterRow} accessibilityRole="tablist">
-        {CATEGORIES.map((cat) => (
-          <TouchableOpacity
-            key={cat.key}
-            style={[styles.filterTab, filter === cat.key && styles.filterTabActive]}
-            onPress={() => setFilter(cat.key)}
-            accessibilityRole="tab"
-            accessibilityState={{ selected: filter === cat.key }}
-            accessibilityLabel={`${cat.label} adhkar`}
-          >
-            <Text style={[styles.filterLabel, filter === cat.key && styles.filterLabelActive]}>
-              {cat.label}
-            </Text>
-          </TouchableOpacity>
-        ))}
+        {CATEGORIES.map((cat) => {
+          const label = t(cat.labelKey);
+          return (
+            <TouchableOpacity
+              key={cat.key}
+              style={[styles.filterTab, filter === cat.key && styles.filterTabActive]}
+              onPress={() => setFilter(cat.key)}
+              accessibilityRole="tab"
+              accessibilityState={{ selected: filter === cat.key }}
+              accessibilityLabel={`${label} adhkar`}
+            >
+              <Text style={[styles.filterLabel, filter === cat.key && styles.filterLabelActive]}>
+                {label}
+              </Text>
+            </TouchableOpacity>
+          );
+        })}
       </View>
 
       <FlatList

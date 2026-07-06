@@ -64,6 +64,10 @@ wearos/.gradle/
 wearos/app/build/
 wearos/build/
 wearos/local.properties
+
+# Expo managed-workflow generated native projects (mobile/ — prebuild output, never committed)
+mobile/android/
+mobile/ios/
 .clangd
 **/.clangd
 

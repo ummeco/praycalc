@@ -53,7 +53,7 @@ export function SkeletonCard() {
 // ── Empty ─────────────────────────────────────────────────────────────────────
 
 export function EmptyState({
-  title = 'Nothing here yet',
+  title,
   subtitle,
   action,
   onAction,
@@ -63,11 +63,12 @@ export function EmptyState({
   action?: string;
   onAction?: () => void;
 }) {
+  const { t } = useTranslation();
   const colors = useThemeColors();
   const styles = useMemo(() => createStyles(colors), [colors]);
   return (
     <View style={styles.center}>
-      <Text style={styles.emptyTitle}>{title}</Text>
+      <Text style={styles.emptyTitle}>{title ?? t('common.nothingHereYet')}</Text>
       {subtitle ? <Text style={styles.label}>{subtitle}</Text> : null}
       {action && onAction ? (
         <TouchableOpacity style={styles.button} onPress={onAction}>
@@ -87,16 +88,17 @@ export function ErrorState({
   error: string | Error | null;
   onRetry?: () => void;
 }) {
+  const { t } = useTranslation();
   const colors = useThemeColors();
   const styles = useMemo(() => createStyles(colors), [colors]);
-  const message = error instanceof Error ? error.message : (error ?? 'An error occurred');
+  const message = error instanceof Error ? error.message : (error ?? t('common.error'));
   return (
     <View style={styles.center}>
-      <Text style={styles.errorTitle}>Something went wrong</Text>
+      <Text style={styles.errorTitle}>{t('common.somethingWentWrong')}</Text>
       <Text style={styles.label}>{message}</Text>
       {onRetry ? (
         <TouchableOpacity style={styles.button} onPress={onRetry}>
-          <Text style={styles.buttonText}>Try Again</Text>
+          <Text style={styles.buttonText}>{t('common.tryAgain')}</Text>
         </TouchableOpacity>
       ) : null}
     </View>
@@ -106,18 +108,19 @@ export function ErrorState({
 // ── Offline ───────────────────────────────────────────────────────────────────
 
 export function OfflineState({
-  message = "You're offline. Showing cached data.",
+  message,
   children,
 }: {
   message?: string;
   children?: React.ReactNode;
 }) {
+  const { t } = useTranslation();
   const colors = useThemeColors();
   const styles = useMemo(() => createStyles(colors), [colors]);
   return (
     <View style={styles.offlineContainer}>
       <View style={styles.offlineBanner}>
-        <Text style={styles.offlineBannerText}>{message}</Text>
+        <Text style={styles.offlineBannerText}>{message ?? t('common.offlineCachedData')}</Text>
       </View>
       {children}
     </View>
@@ -133,17 +136,19 @@ export function PermissionDeniedState({
   permission?: string;
   onOpenSettings?: () => void;
 }) {
+  const { t } = useTranslation();
   const colors = useThemeColors();
   const styles = useMemo(() => createStyles(colors), [colors]);
+  const permissionLabel = permission.charAt(0).toUpperCase() + permission.slice(1);
   return (
     <View style={styles.center}>
-      <Text style={styles.emptyTitle}>{`${permission.charAt(0).toUpperCase() + permission.slice(1)} Permission Required`}</Text>
+      <Text style={styles.emptyTitle}>{t('common.permissionRequired', { permission: permissionLabel })}</Text>
       <Text style={styles.label}>
-        {`Prayer times require ${permission} access. Please enable it in Settings.`}
+        {t('common.permissionRequiredBody', { permission })}
       </Text>
       {onOpenSettings ? (
         <TouchableOpacity style={styles.button} onPress={onOpenSettings}>
-          <Text style={styles.buttonText}>Open Settings</Text>
+          <Text style={styles.buttonText}>{t('common.openSettings')}</Text>
         </TouchableOpacity>
       ) : null}
     </View>
@@ -164,9 +169,9 @@ export function RateLimitedState({
   const styles = useMemo(() => createStyles(colors), [colors]);
   return (
     <View style={styles.center}>
-      <Text style={styles.emptyTitle}>Too Many Requests</Text>
+      <Text style={styles.emptyTitle}>{t('common.tooManyRequests')}</Text>
       <Text style={styles.label}>
-        {`Please wait ${retryAfterSeconds}s before trying again.`}
+        {t('common.waitBeforeRetrying', { seconds: retryAfterSeconds })}
       </Text>
       {onRetry ? (
         <TouchableOpacity style={styles.button} onPress={onRetry}>

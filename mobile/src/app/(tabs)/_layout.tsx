@@ -10,6 +10,7 @@
 
 import { Tabs } from 'expo-router';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { useTranslation } from '../../i18n';
 import { useThemeColors } from '../../hooks/useThemeColors';
 
 type IoniconsName = React.ComponentProps<typeof Ionicons>['name'];
@@ -24,6 +25,7 @@ function tabIcon(
 }
 
 export default function TabLayout() {
+  const { t } = useTranslation();
   const colors = useThemeColors();
   return (
     <Tabs
@@ -39,36 +41,36 @@ export default function TabLayout() {
       <Tabs.Screen
         name="home"
         options={{
-          title: 'Prayer Times',
-          tabBarLabel: 'Prayers',
+          title: t('tabs.prayerTimes'),
+          tabBarLabel: t('tabs.home'),
           tabBarIcon: tabIcon('time-outline', 'time'),
         }}
       />
       <Tabs.Screen
         name="qibla"
         options={{
-          title: 'Qibla',
+          title: t('tabs.qibla'),
           tabBarIcon: tabIcon('compass-outline', 'compass'),
         }}
       />
       <Tabs.Screen
         name="calendar"
         options={{
-          title: 'Calendar',
+          title: t('tabs.calendar'),
           tabBarIcon: tabIcon('calendar-outline', 'calendar'),
         }}
       />
       <Tabs.Screen
         name="quran"
         options={{
-          title: 'Quran',
+          title: t('tabs.quran'),
           tabBarIcon: tabIcon('book-outline', 'book'),
         }}
       />
       <Tabs.Screen
         name="more"
         options={{
-          title: 'More',
+          title: t('tabs.more'),
           tabBarIcon: tabIcon('menu-outline', 'menu'),
         }}
       />

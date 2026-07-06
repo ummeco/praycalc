@@ -29,12 +29,69 @@
     "settings": "Settings",
     "done": "Done",
     "next": "Next",
-    "back": "Back"
+    "back": "Back",
+    "today": "Today",
+    "on": "On",
+    "off": "Off",
+    "search": "Search",
+    "change": "Change",
+    "reset": "Reset",
+    "complete": "Complete",
+    "openInMaps": "Open in Maps",
+    "openSettings": "Open Settings",
+    "upgrade": "Upgrade",
+    "signIn": "Sign In",
+    "createAccount": "Create Account",
+    "continue": "Continue",
+    "skip": "Skip",
+    "nothingHereYet": "Nothing here yet",
+    "somethingWentWrong": "Something went wrong",
+    "tryAgain": "Try Again",
+    "tooManyRequests": "Too Many Requests",
+    "waitBeforeRetrying": "Please wait {{seconds}}s before trying again.",
+    "offlineCachedData": "You're offline. Showing cached data.",
+    "permissionRequired": "{{permission}} Permission Required",
+    "permissionRequiredBody": "Prayer times require {{permission}} access. Please enable it in Settings.",
+    "loadingContent": "Loading content",
+    "permissionRequiredGeneric": "Permission Required",
+    "permissionRequiredGenericBody": "{{permission}} permission is required for this feature.",
+    "openSystemSettings": "Open system settings",
+    "retryRequest": "Retry request",
+    "tooManyRequestsRetry": "Too many requests. Please wait {{seconds}}s before retrying.",
+    "tooManyRequestsRetryGeneric": "Too many requests. Please wait before retrying.",
+    "offlineShowingCachedFrom": "You're offline. Showing data from {{cachedAt}}.",
+    "offlineShowingCachedGeneric": "You're offline. Cached data shown."
   },
   "greeting": {
     "assalamu_alaykum": "Assalamu Alaykum wa Rahmatullahi wa Barakatuh",
     "prayer_approaching": "Prayer approaching",
     "prayer_now": "Prayer time"
+  },
+  "tabs": {
+    "home": "Prayers",
+    "prayerTimes": "Prayer Times",
+    "qibla": "Qibla",
+    "calendar": "Calendar",
+    "quran": "Quran",
+    "more": "More"
+  },
+  "menu": {
+    "settings": { "label": "Settings", "subtitle": "Method, location, notifications" },
+    "adhan": { "label": "Adhan Library", "subtitle": "Prayer call audio & reciter" },
+    "tasbeeh": { "label": "Tasbeeh Counter", "subtitle": "Digital dhikr counter" },
+    "duaDhikr": { "label": "Dua & Adhkar", "subtitle": "Morning & evening supplications" },
+    "moon": { "label": "Moon Phase", "subtitle": "Lunar calendar & Hijri date" },
+    "quran": { "label": "Quran", "subtitle": "Uthmani script with bookmarks" },
+    "stats": { "label": "Prayer Stats", "subtitle": "Track your prayers & streaks" },
+    "ramadan": { "label": "Ramadan", "subtitle": "Suhoor & Iftar times, tracker" },
+    "subscription": { "label": "Go Pro", "subtitle": "Unlock premium features" },
+    "homeWidget": { "label": "Home Widget", "subtitle": "Next prayer on home screen" },
+    "smartHome": { "label": "Smart Home", "subtitle": "Lock devices during salah" },
+    "pairTv": { "label": "Pair TV", "subtitle": "Link the PrayCalc TV app" },
+    "agendas": { "label": "Prayer Calendar", "subtitle": "Add prayer times to calendar" },
+    "timetable": { "label": "Monthly Timetable", "subtitle": "Full month prayer times + calendar export" },
+    "mosques": { "label": "Nearby Mosques", "subtitle": "Find mosques around you" },
+    "travel": { "label": "Travel Mode", "subtitle": "Musafir qasr for travellers" }
   },
   "settings": {
     "title": "Settings",
@@ -56,12 +113,338 @@
     "location": {
       "title": "Location",
       "detect": "Detect automatically",
-      "manual": "Enter manually"
-    }
+      "manual": "Enter manually",
+      "useGps": "Use GPS Location",
+      "searchManually": "Search City Manually",
+      "currentCity": "Current City",
+      "noneSet": "No location set. GPS or manual city required.",
+      "gettingLocation": "Getting your location...",
+      "permissionDenied": "Permission Denied",
+      "permissionDeniedBody": "Enable location in Settings to auto-detect your city."
+    },
+    "account": {
+      "title": "Account",
+      "signedIn": "Signed in",
+      "anonymous": "Anonymous",
+      "free": "Free"
+    },
+    "highLatitude": {
+      "title": "High-Latitude Adjustment",
+      "hint": "Applied when Fajr/Isha can't reach the required angle (far-north/south locations in summer).",
+      "nightMiddle": "Middle of the Night",
+      "angleBased": "Angle-Based",
+      "oneSeventh": "One-Seventh of Night",
+      "none": "None (may show unavailable)"
+    },
+    "madhab": {
+      "title": "Madhab (Asr)",
+      "hint": "Shafi: 1× shadow factor | Hanafi: 2× shadow factor"
+    },
+    "prayerAdjustments": {
+      "title": "Prayer Time Adjustments",
+      "hint": "Fine-tune each time by ±30 minutes to match your local mosque timetable."
+    },
+    "hijriAdjustment": {
+      "title": "Hijri Date Adjustment",
+      "hint": "Shift the Hijri date by ±2 days if your local moon sighting differs from the Umm al-Qura calendar.",
+      "offset": "Offset"
+    },
+    "timeFormat": {
+      "title": "Time Format"
+    },
+    "appearance": {
+      "title": "Appearance",
+      "system": "System",
+      "light": "Light",
+      "dark": "Dark"
+    },
+    "customAngles": {
+      "fajr": "Fajr angle (°)",
+      "isha": "Isha angle (°)"
+    },
+    "upsell": {
+      "priceLine": "Ummat+ $9.99/yr — unlocks TV app & Smart Home",
+      "upgradeButton": "Upgrade to Ummat+"
+    },
+    "prayerAlerts": "Prayer Time Alerts",
+    "manageNotifications": "Manage Notifications",
+    "appLanguage": "App Language"
   },
   "errors": {
     "location_permission": "Please allow location access to calculate prayer times",
     "network": "Could not connect to the network",
     "calculation": "Could not calculate prayer times"
+  },
+  "screens": {
+    "more": {
+      "title": "More"
+    },
+    "notFound": {
+      "title": "Screen Not Found",
+      "goHome": "Go to Prayer Times"
+    },
+    "onboarding": {
+      "welcomeTitle": "Welcome to PrayCalc",
+      "welcomeDesc": "Accurate prayer times, Qibla direction, and Islamic calendar — all in one place.",
+      "getStarted": "Get Started",
+      "locationTitle": "Enable Location",
+      "locationDesc": "Prayer times require your location for accurate calculation.",
+      "allowLocation": "Allow Location",
+      "skipManual": "Skip — I'll set manually",
+      "authTitle": "Create Account?",
+      "authDesc": "Optional: create an account for cloud sync and prayer history. You can always sign up later.",
+      "skipForNow": "Skip for now"
+    },
+    "auth": {
+      "appTagline": "Accurate prayer times for every Muslim",
+      "tabSkip": "Skip",
+      "continueTitle": "Continue Without Account",
+      "continueDesc": "Prayer times, Qibla, and calendar work fully offline with no account needed. Your settings are saved locally.",
+      "featurePrayerQibla": "Prayer times & Qibla",
+      "featureCalendar": "Islamic calendar",
+      "featureSettings": "Settings & notifications",
+      "continueAnonymously": "Continue Anonymously",
+      "signInTitle": "Sign In",
+      "emailPlaceholder": "Email",
+      "passwordPlaceholder": "Password",
+      "namePlaceholder": "Name (optional)",
+      "switchHint": "Account enables cloud sync and prayer history across devices.",
+      "registerTitle": "Create Account",
+      "signingIn": "Signing in...",
+      "enterEmailPassword": "Please enter email and password.",
+      "loginFailed": "Login failed",
+      "registerFailed": "Registration failed",
+      "verifyEmail": "Check your email to verify your account, then sign in."
+    },
+    "adhan": {
+      "enablePerPrayer": "Enable Adhan Per Prayer",
+      "library": "Adhan Library",
+      "noVoices": "No adhan voices available.",
+      "proRequiredTitle": "Ummat+ Required",
+      "proRequiredBody": "{{name}} is a Pro adhan voice. Upgrade to Ummat+ to set it as your active adhan.",
+      "proFeature": "Pro feature",
+      "playPreview": "Play preview",
+      "stopPreview": "Stop preview",
+      "voiceListLabel": "Adhan voice list"
+    },
+    "agendas": {
+      "title": "Prayer Calendar",
+      "desc": "Add salah blocks to your device calendar as reminders. Each prayer gets a {{minutes}}-minute event with a 5-minute alert.",
+      "whichPrayers": "Which prayers to add",
+      "locationRequired": "Location required",
+      "locationRequiredBody": "Set your city in Settings to add prayer times to calendar.",
+      "noCalendarFound": "No calendar found",
+      "noCalendarFoundBody": "No writable calendar found on this device.",
+      "setLocationHint": "Set your city in Settings to enable calendar sync.",
+      "addButton": "Add Today's Prayers to Calendar",
+      "adding": "Adding...",
+      "done": "Done",
+      "addedCount": "Added {{count}} prayer times to your calendar.",
+      "error": "Error",
+      "addFailed": "Failed to add to calendar.",
+      "checkingPermission": "Checking calendar permission..."
+    },
+    "calendar": {
+      "eventsThisMonth": "Islamic Events This Month"
+    },
+    "citySearch": {
+      "findCityTitle": "Find City",
+      "placeholder": "Search city...",
+      "useCurrentLocation": "Use Current Location",
+      "locating": "Locating…",
+      "searching": "Searching cities...",
+      "noResults": "No cities found for \"{{query}}\".",
+      "popularHint": "Popular cities shown. Type to search.",
+      "searchError": "Search error: {{message}}"
+    },
+    "duaDhikr": {
+      "noResults": "No duas found for this category.",
+      "categoryAll": "All",
+      "categoryMorning": "Morning",
+      "categoryEvening": "Evening",
+      "categoryPostPrayer": "Post-Prayer"
+    },
+    "moon": {
+      "hijriCalendar": "Hijri Calendar",
+      "hijriDay": "Hijri Day",
+      "month": "Month",
+      "lunarAge": "Lunar Age",
+      "daysUnit": "{{count}} days",
+      "upcomingPhases": "Upcoming Phases",
+      "nextFullMoon": "Next Full Moon 🌕",
+      "nextNewMoon": "Next New Moon 🌑",
+      "significance": "Islamic Significance",
+      "illuminatedPct": "{{pct}}% illuminated",
+      "phaseNewMoon": "New Moon",
+      "phaseWaxingCrescent": "Waxing Crescent",
+      "phaseFirstQuarter": "First Quarter",
+      "phaseWaxingGibbous": "Waxing Gibbous",
+      "phaseFullMoon": "Full Moon",
+      "phaseWaningGibbous": "Waning Gibbous",
+      "phaseLastQuarter": "Last Quarter",
+      "phaseWaningCrescent": "Waning Crescent",
+      "ramadanNote": "It is Ramadan — the month of fasting and seeking Laylat al-Qadr.",
+      "dhulHijjahNote": "The first ten days of {{month}} are among the most virtuous of the year."
+    },
+    "mosques": {
+      "setLocation": "Set your location to find mosques near you.",
+      "setLocationAction": "Set Location",
+      "finding": "Finding nearby mosques...",
+      "noResults": "No mosques found within 10 km.",
+      "retry": "Retry",
+      "attribution": "Data © OpenStreetMap contributors",
+      "searchFailed": "Failed to search for mosques."
+    },
+    "pairTv": {
+      "upsellBadge": "Ummat+",
+      "unlockTitle": "Unlock TV Pairing",
+      "unlockDesc": "Ummat+ $9.99/yr — unlocks TV app & Smart Home",
+      "pairedTitle": "TV Paired",
+      "pairedDesc": "Your TV app is now linked to this account.",
+      "title": "Pair with TV",
+      "desc": "Open PrayCalc on your TV, then enter the 6-digit PIN shown on screen.",
+      "enterPin": "Enter the 6-digit PIN shown on your TV.",
+      "pairFailed": "Pairing failed. Try again.",
+      "pairDevice": "Pair Device"
+    },
+    "prayerTimes": {
+      "setCityTitle": "Set Your City",
+      "setCitySubtitle": "Enable location or manually select a city to see prayer times.",
+      "setLocationAction": "Set Location",
+      "offlineMessage": "Showing last-known prayer times (offline)",
+      "next": "Next: {{prayer}}",
+      "asrCalculation": "Asr Calculation",
+      "markedPrayed": "marked prayed",
+      "notMarkedPrayed": "not marked prayed",
+      "doubleTapToggle": "Double-tap to toggle."
+    },
+    "quran": {
+      "loading": "Quran data loading...",
+      "backToList": "Back to surah list",
+      "back": "Back",
+      "bismillah": "Bismillah",
+      "comingSoonBody": "Read {{name}} ({{count}} verses) with translation and recitation on Islam.Wiki — our full Quran reader.",
+      "readOnWiki": "Read on Islam.Wiki →",
+      "removeBookmark": "Remove bookmark",
+      "bookmarkVerse": "Bookmark verse",
+      "surahList": "Surah list",
+      "wikiFooter": "📖 Full Quran — all 114 surahs, translations & audio on Islam.Wiki →",
+      "openFullQuran": "Open the full Quran on Islam.Wiki"
+    },
+    "ramadan": {
+      "subtitle": "Ramadan Mubarak",
+      "dayOf": "Day {{day}} of {{total}}",
+      "iftarIn": "Iftar in",
+      "suhoorEndsIn": "Suhoor ends in",
+      "notActive": "Ramadan is not currently active.\nCurrent Hijri month: {{month}} ({{monthNumber}}/12)",
+      "todaysTimes": "Today's Times",
+      "suhoorEnds": "Suhoor Ends (Fajr)",
+      "iftar": "Iftar (Maghrib)",
+      "noLocation": "Set your location in Settings to see prayer times.",
+      "duasTitle": "Ramadan Duas",
+      "laylatAlQadrTitle": "Laylat al-Qadr",
+      "laylatAlQadrBody": "We are in the last ten nights of Ramadan. Increase worship, especially on odd nights (21, 23, 25, 27, 29)."
+    },
+    "notifications": {
+      "masterLabel": "Prayer Notifications",
+      "masterSub": "Receive alerts before each prayer time",
+      "androidExactAlarm": "On Android 12+, allow \"Alarms & Reminders\" in system settings for exact prayer time alerts.",
+      "openSystemSettings": "Open System Settings",
+      "perPrayerAlerts": "Per-Prayer Alerts",
+      "minutesBefore": "{{count}}m before",
+      "iqamahOff": "iqamah off",
+      "iqamahAfter": "iqamah +{{count}}m"
+    },
+    "smartHome": {
+      "proOnly": "Smart Home (lock-on-salah + device control) is an Ummat+ feature.",
+      "upgradeAction": "Upgrade to Ummat+",
+      "lockDuringPrayer": "Lock During Prayer",
+      "lockDesc": "Automatically dim screen and mute media when prayer time begins. Requires authentication to configure.",
+      "lockOnSalah": "Lock on Salah",
+      "activeNote": "Screen will dim and media will be paused at prayer times.\nAndroid: media focus released. iOS: silent mode reminder shown.",
+      "smartDevices": "Smart Devices",
+      "noDevices": "No devices added yet. Device discovery isn't built yet — add one manually below.",
+      "online": "Online",
+      "offline": "Offline",
+      "addDevice": "+ Add Device",
+      "comingSoonTitle": "Coming soon",
+      "comingSoonBody": "Smart device discovery will be available in a future update.",
+      "unreachableTitle": "Device unreachable",
+      "unreachableBody": "Could not reach {{name}}. It may be offline.",
+      "authPrompt": "Authenticate to enable lock-on-salah",
+      "useFallback": "Use passcode"
+    },
+    "stats": {
+      "noLogs": "No prayer logs yet. Start completing prayers to see your stats.",
+      "dayStreak": "Day Streak 🔥",
+      "weeklyRate": "Weekly Rate",
+      "totalLogged": "Total Logged",
+      "last7Days": "Last 7 Days",
+      "thisMonth": "This Month",
+      "byPrayer": "By Prayer",
+      "weekly": "Weekly",
+      "monthly": "Monthly"
+    },
+    "subscription": {
+      "title": "PrayCalc Pro",
+      "subtitle": "Enhance your worship experience",
+      "loadingOptions": "Loading subscription options...",
+      "loadProductsFailed": "Could not load products. Check your connection and try again.",
+      "connectFailed": "Failed to connect to store.",
+      "createAccountTitle": "Create an Account",
+      "createAccountBody": "Sign in first so your purchase can sync across your devices.",
+      "purchaseFailed": "Purchase failed. Please try again.",
+      "restoreFailed": "Restore failed.",
+      "proTitle": "You're on Pro",
+      "proSub": "Thank you for supporting PrayCalc!",
+      "noProducts": "Subscription products unavailable. Configure in App Store Connect / Google Play Console.",
+      "restorePurchase": "Restore Purchase",
+      "legal": "Subscriptions auto-renew unless cancelled at least 24 hours before the end of the current period. Manage in your App Store / Google Play account settings.",
+      "featurePremiumAdhan": "Premium adhan voices — additional reciters",
+      "featureHomeWidget": "Home screen widget (next prayer)",
+      "featureTvPairing": "PrayCalc TV app pairing",
+      "featureSmartHome": "Smart Home — lock devices during salah"
+    },
+    "tasbeeh": {
+      "chooseDhikr": "Choose Dhikr",
+      "of": "of {{count}}",
+      "resetCounter": "Reset counter"
+    },
+    "timetable": {
+      "setCityTitle": "Set Your City",
+      "setCitySubtitle": "Set your location to see the monthly prayer timetable.",
+      "previousMonth": "Previous month",
+      "nextMonth": "Next month",
+      "exportCalendar": "Export Calendar (.ics)",
+      "exportAccessibilityLabel": "Export this month's prayer times as a calendar file"
+    },
+    "travel": {
+      "musafirModeTitle": "Musafir Mode",
+      "musafirModeDesc": "I am a traveller (musafir). Apply qasr to applicable prayers.",
+      "musafirAlertTitle": "Musafir (Traveller) Mode",
+      "musafirAlertBody": "Qasr (shortening) reduces Dhuhr, Asr, and Isha from 4 to 2 rakat.\n\nNote: Jama (combining prayers) is not automatically applied due to scholarly differences. Please follow your local scholar or madhab regarding combining prayers during travel.",
+      "understood": "Understood",
+      "qasrRakatCount": "Qasr Rakat Count",
+      "fiqhNote": "Fajr and Maghrib are not shortened (qasr applies to 4-rakat prayers only). Jama (combining prayers) requires following your local scholar or madhab ruling.",
+      "travelDestination": "Travel Destination",
+      "changeCity": "Change",
+      "selectTravelCity": "Select Travel City",
+      "recalcNote": "Prayer times will be recalculated for your travel destination.",
+      "homeCity": "Home City",
+      "notSet": "Not set"
+    },
+    "qibla": {
+      "calibrating": "Calibrating compass...",
+      "locationRequiredTitle": "Location Required",
+      "locationRequiredSubtitle": "Set your location in Settings to find the Qibla direction.",
+      "bearingLabel": "Qibla Bearing",
+      "accuracyLabel": "Accuracy: {{level}}",
+      "accuracyUnknown": "Unknown",
+      "accuracyUnreliable": "Unreliable",
+      "accuracyLow": "Low",
+      "accuracyMedium": "Medium",
+      "accuracyHigh": "High",
+      "headingNote": "Heading: {{degrees}}° | Great-circle bearing to Kaaba"
+    }
   }
 }

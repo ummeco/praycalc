@@ -24,6 +24,7 @@ import {
   RefreshControl,
 } from 'react-native';
 import { router } from 'expo-router';
+import { useTranslation } from '../../i18n';
 import { useThemeColors } from '../../hooks/useThemeColors';
 import type { ThemeColors } from '../../constants/colors';
 import { LoadingState, ErrorState, EmptyState } from '../../components/states';
@@ -42,6 +43,7 @@ function formatDistance(km: number): string {
 }
 
 export default function MosqueFinderScreen() {
+  const { t } = useTranslation();
   const colors = useThemeColors();
   const styles = useMemo(() => createStyles(colors), [colors]);
 
@@ -63,12 +65,12 @@ export default function MosqueFinderScreen() {
       const results = await searchNearbyMosques(activeLocation.latitude, activeLocation.longitude);
       setMosques(results);
     } catch (err) {
-      setError(err instanceof Error ? err : new Error('Failed to search for mosques.'));
+      setError(err instanceof Error ? err : new Error(t('screens.mosques.searchFailed')));
     } finally {
       if (isRefresh) setRefreshing(false);
       else setLoading(false);
     }
-  }, [activeLocation]);
+  }, [activeLocation, t]);
 
   useEffect(() => {
     void runSearch(false);
@@ -94,15 +96,15 @@ export default function MosqueFinderScreen() {
   if (!activeLocation) {
     return (
       <EmptyState
-        message="Set your location to find mosques near you."
-        action="Set Location"
+        message={t('screens.mosques.setLocation')}
+        action={t('screens.mosques.setLocationAction')}
         onAction={() => router.push('/city-search')}
       />
     );
   }
 
   if (loading) {
-    return <LoadingState message="Finding nearby mosques..." />;
+    return <LoadingState message={t('screens.mosques.finding')} />;
   }
 
   if (error) {
@@ -112,8 +114,8 @@ export default function MosqueFinderScreen() {
   if (mosques && mosques.length === 0) {
     return (
       <EmptyState
-        message="No mosques found within 10 km."
-        action="Retry"
+        message={t('screens.mosques.noResults')}
+        action={t('screens.mosques.retry')}
         onAction={handleRetry}
       />
     );
@@ -144,13 +146,13 @@ export default function MosqueFinderScreen() {
               accessibilityRole="button"
               accessibilityLabel={`Open directions to ${item.name} in Maps`}
             >
-              <Text style={styles.directionsBtnText}>Open in Maps</Text>
+              <Text style={styles.directionsBtnText}>{t('common.openInMaps')}</Text>
             </TouchableOpacity>
           </View>
         )}
         ListFooterComponent={
           <Text style={styles.attribution} accessibilityRole="text">
-            Data © OpenStreetMap contributors
+            {t('screens.mosques.attribution')}
           </Text>
         }
       />

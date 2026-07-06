@@ -29,7 +29,17 @@
     "settings": "Ìṣètò",
     "done": "Parí",
     "next": "Tẹ̀lé",
-    "back": "Padà"
+    "back": "Padà",
+    "today": "Òní",
+    "on": "Ń ṣiṣẹ́",
+    "off": "Ti pa",
+    "search": "Wá",
+    "change": "Yí padà",
+    "reset": "Tún ṣe",
+    "openInMaps": "Ṣí nínú Àwòrán",
+    "openSettings": "Ṣí Ètò",
+    "upgrade": "Gbéga",
+    "signIn": "Wọlé"
   },
   "greeting": {
     "assalamu_alaykum": "Assalamu Alaykum wa Rahmatullahi wa Barakatuh",
@@ -63,5 +73,21 @@
     "location_permission": "Jọ̀wọ́ gbà ìráàyèsí ibi láti ṣírò àkókò ìjọsìn",
     "network": "Kò lè so mọ́ nẹ́tíwọ̀ọ̀kì",
     "calculation": "Kò lè ṣírò àkókò ìjọsìn"
+  },
+  "tabs": {
+    "home": "Àdúrà",
+    "prayerTimes": "Àkókò Àdúrà",
+    "qibla": "Kiblah",
+    "calendar": "Kàlẹ́ńdà",
+    "quran": "Kùránì",
+    "more": "Síwájú"
+  },
+  "menu": {
+    "settings": {
+      "label": "Ètò"
+    },
+    "mosques": {
+      "label": "Mọ́sáláṣí Tó Súnmọ́"
+    }
   }
 }

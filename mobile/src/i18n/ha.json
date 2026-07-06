@@ -29,7 +29,17 @@
     "settings": "Saiti",
     "done": "An gama",
     "next": "Na gaba",
-    "back": "Baya"
+    "back": "Baya",
+    "today": "Yau",
+    "on": "A kunne",
+    "off": "A kashe",
+    "search": "Bincike",
+    "change": "Canza",
+    "reset": "Sake saitawa",
+    "openInMaps": "Bude a Taswira",
+    "openSettings": "Bude Saituna",
+    "upgrade": "Haɓakawa",
+    "signIn": "Shiga"
   },
   "greeting": {
     "assalamu_alaykum": "Assalamu Alaykum wa Rahmatullahi wa Barakatuh",
@@ -63,5 +73,21 @@
     "location_permission": "Don Allah bada izinin shiga wurin don ƙididdige lokutan sallah",
     "network": "Ba a iya haɗawa da hanyar sadarwa",
     "calculation": "Ba a iya ƙididdige lokutan sallah"
+  },
+  "tabs": {
+    "home": "Sallah",
+    "prayerTimes": "Lokutan Sallah",
+    "qibla": "Alqibla",
+    "calendar": "Kalanda",
+    "quran": "Alkur'ani",
+    "more": "Ƙari"
+  },
+  "menu": {
+    "settings": {
+      "label": "Saituna"
+    },
+    "mosques": {
+      "label": "Masallatan Kusa"
+    }
   }
 }

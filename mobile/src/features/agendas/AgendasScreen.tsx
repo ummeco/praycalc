@@ -12,6 +12,7 @@ import {
   View, Text, Switch, TouchableOpacity, StyleSheet, SafeAreaView, ScrollView, Alert,
 } from 'react-native';
 import * as Calendar from 'expo-calendar';
+import { useTranslation } from '../../i18n';
 import { useThemeColors } from '../../hooks/useThemeColors';
 import type { ThemeColors } from '../../constants/colors';
 import { PermissionDeniedState, LoadingState } from '../../components/states';
@@ -21,10 +22,21 @@ import { useSettingsStore, useActiveLocation } from '../settings/store/useSettin
 import type { PrayerName } from '../../types/prayer';
 import type { CalcMethodKey } from '../../constants/methods';
 
+/** Translation key per prayer name, `prayer` namespace (render-time only). */
+const PRAYER_LABEL_KEYS: Record<PrayerName, string> = {
+  Fajr: 'prayer.fajr',
+  Sunrise: 'prayer.sunrise',
+  Dhuhr: 'prayer.dhuhr',
+  Asr: 'prayer.asr',
+  Maghrib: 'prayer.maghrib',
+  Isha: 'prayer.isha',
+};
+
 const PRAYER_NAMES: PrayerName[] = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
 const PRAYER_DURATION_MINS = 20; // Block 20 min per prayer on calendar
 
 export default function AgendasScreen() {
+  const { t } = useTranslation();
   const colors = useThemeColors();
   const styles = useMemo(() => createStyles(colors), [colors]);
   const [permissionStatus, setPermissionStatus] = useState<'unknown' | 'granted' | 'denied'>('unknown');
@@ -44,7 +56,7 @@ export default function AgendasScreen() {
 
   const handleAddToCalendar = useCallback(async () => {
     if (!location) {
-      Alert.alert('Location required', 'Set your city in Settings to add prayer times to calendar.');
+      Alert.alert(t('screens.agendas.locationRequired'), t('screens.agendas.locationRequiredBody'));
       return;
     }
     setSyncing(true);
@@ -52,7 +64,7 @@ export default function AgendasScreen() {
       const calendars = await Calendar.getCalendarsAsync(Calendar.EntityTypes.EVENT);
       const defaultCalendar = calendars.find((c: Calendar.Calendar) => c.allowsModifications) ?? calendars[0];
       if (!defaultCalendar) {
-        Alert.alert('No calendar found', 'No writable calendar found on this device.');
+        Alert.alert(t('screens.agendas.noCalendarFound'), t('screens.agendas.noCalendarFoundBody'));
         return;
       }
 
@@ -86,15 +98,15 @@ export default function AgendasScreen() {
         });
         added++;
       }
-      Alert.alert('Done', `Added ${added} prayer times to your calendar.`);
+      Alert.alert(t('screens.agendas.done'), t('screens.agendas.addedCount', { count: added }));
     } catch (e) {
-      Alert.alert('Error', (e as Error).message ?? 'Failed to add to calendar.');
+      Alert.alert(t('screens.agendas.error'), (e as Error).message ?? t('screens.agendas.addFailed'));
     } finally {
       setSyncing(false);
     }
-  }, [location, enabledPrayers, method, madhab, highLatRule, customFajrAngle, customIshaAngle]);
+  }, [location, enabledPrayers, method, madhab, highLatRule, customFajrAngle, customIshaAngle, t]);
 
-  if (permissionStatus === 'unknown') return <LoadingState message="Checking calendar permission..." />;
+  if (permissionStatus === 'unknown') return <LoadingState message={t('screens.agendas.checkingPermission')} />;
   if (permissionStatus === 'denied') {
     return <PermissionDeniedState permission="Calendar" />;
   }
@@ -102,30 +114,29 @@ export default function AgendasScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scroll}>
-        <Text style={styles.title} accessibilityRole="header">Prayer Calendar</Text>
+        <Text style={styles.title} accessibilityRole="header">{t('screens.agendas.title')}</Text>
         <Text style={styles.desc}>
-          Add salah blocks to your device calendar as reminders.
-          Each prayer gets a {PRAYER_DURATION_MINS}-minute event with a 5-minute alert.
+          {t('screens.agendas.desc', { minutes: PRAYER_DURATION_MINS })}
         </Text>
 
         {/* Prayer toggles */}
-        <Text style={styles.sectionTitle} accessibilityRole="header">Which prayers to add</Text>
+        <Text style={styles.sectionTitle} accessibilityRole="header">{t('screens.agendas.whichPrayers')}</Text>
         {PRAYER_NAMES.map((name) => (
           <View key={name} style={styles.toggleRow}>
-            <Text style={styles.toggleLabel}>{name}</Text>
+            <Text style={styles.toggleLabel}>{t(PRAYER_LABEL_KEYS[name])}</Text>
             <Switch
               value={enabledPrayers[name] ?? false}
               onValueChange={(v) => setEnabledPrayers((p) => ({ ...p, [name]: v }))}
               trackColor={{ false: colors.background.card, true: colors.brand.mid }}
               thumbColor={colors.brand.light}
-              accessibilityLabel={`Add ${name} to calendar`}
+              accessibilityLabel={`Add ${t(PRAYER_LABEL_KEYS[name])} to calendar`}
             />
           </View>
         ))}
 
         {!location && (
           <Text style={styles.locationWarning}>
-            Set your city in Settings to enable calendar sync.
+            {t('screens.agendas.setLocationHint')}
           </Text>
         )}
 
@@ -139,7 +150,7 @@ export default function AgendasScreen() {
           accessibilityState={{ disabled: !location || syncing }}
         >
           <Text style={styles.syncBtnText}>
-            {syncing ? 'Adding...' : "Add Today's Prayers to Calendar"}
+            {syncing ? t('screens.agendas.adding') : t('screens.agendas.addButton')}
           </Text>
         </TouchableOpacity>
       </ScrollView>

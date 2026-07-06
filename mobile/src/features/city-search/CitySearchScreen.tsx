@@ -17,6 +17,7 @@ import {
 } from 'react-native';
 import { useQuery } from 'urql';
 import * as Location from 'expo-location';
+import { useTranslation } from '../../i18n';
 import { useThemeColors } from '../../hooks/useThemeColors';
 import type { ThemeColors } from '../../constants/colors';
 import { LoadingState, ErrorState, EmptyState, OfflineState } from '../../components/states';
@@ -99,6 +100,7 @@ interface CitySearchScreenProps {
 }
 
 export default function CitySearchScreen({ onSelectCity, mode = 'home' }: CitySearchScreenProps) {
+  const { t } = useTranslation();
   const colors = useThemeColors();
   const styles = useMemo(() => createStyles(colors), [colors]);
   const [query, setQuery] = useState('');
@@ -175,7 +177,7 @@ export default function CitySearchScreen({ onSelectCity, mode = 'home' }: CitySe
           style={styles.input}
           value={query}
           onChangeText={setQuery}
-          placeholder="Search city..."
+          placeholder={t('screens.citySearch.placeholder')}
           placeholderTextColor={colors.text.muted}
           accessibilityLabel="City search input"
           accessibilityHint="Type a city name to search"
@@ -192,7 +194,7 @@ export default function CitySearchScreen({ onSelectCity, mode = 'home' }: CitySe
           accessibilityLabel="Use current location"
         >
           <Text style={styles.currentLocationText}>
-            {locating ? 'Locating…' : '📍 Use Current Location'}
+            {locating ? t('screens.citySearch.locating') : `📍 ${t('screens.citySearch.useCurrentLocation')}`}
           </Text>
         </TouchableOpacity>
       </View>
@@ -202,14 +204,14 @@ export default function CitySearchScreen({ onSelectCity, mode = 'home' }: CitySe
 
       {/* Error (non-offline) */}
       {error && !isOffline && (
-        <Text style={styles.errorText}>Search error: {error.message}</Text>
+        <Text style={styles.errorText}>{t('screens.citySearch.searchError', { message: error.message })}</Text>
       )}
 
       {/* Loading */}
-      {showLoading && <LoadingState message="Searching cities..." />}
+      {showLoading && <LoadingState message={t('screens.citySearch.searching')} />}
 
       {/* Empty */}
-      {showEmpty && <EmptyState message={`No cities found for "${query}".`} />}
+      {showEmpty && <EmptyState message={t('screens.citySearch.noResults', { query })} />}
 
       {/* Results */}
       {!showLoading && !showEmpty && (
@@ -218,7 +220,7 @@ export default function CitySearchScreen({ onSelectCity, mode = 'home' }: CitySe
           keyExtractor={(c, i) => `${c.city}-${i}`}
           ListHeaderComponent={
             query.length < 2 ? (
-              <Text style={styles.hint}>Popular cities shown. Type to search.</Text>
+              <Text style={styles.hint}>{t('screens.citySearch.popularHint')}</Text>
             ) : null
           }
           renderItem={({ item: city }) => (

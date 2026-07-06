@@ -29,7 +29,23 @@
     "settings": "ترتیبات",
     "done": "مکمل",
     "next": "آگے",
-    "back": "پیچھے"
+    "back": "پیچھے",
+    "today": "آج",
+    "on": "آن",
+    "off": "آف",
+    "search": "تلاش",
+    "change": "تبدیل کریں",
+    "reset": "دوبارہ ترتیب دیں",
+    "openInMaps": "نقشے میں کھولیں",
+    "openSettings": "ترتیبات کھولیں",
+    "upgrade": "اپ گریڈ کریں",
+    "signIn": "سائن ان کریں",
+    "createAccount": "اکاؤنٹ بنائیں",
+    "continue": "جاری رکھیں",
+    "skip": "چھوڑیں",
+    "nothingHereYet": "ابھی یہاں کچھ نہیں",
+    "somethingWentWrong": "کچھ غلط ہو گیا",
+    "tryAgain": "دوبارہ کوشش کریں"
   },
   "greeting": {
     "assalamu_alaykum": "السَّلَامُ عَلَيْكُمْ وَرَحْمَةُ اللّٰهِ وَبَرَكَاتُهُ",
@@ -63,5 +79,21 @@
     "location_permission": "نماز کے اوقات حساب کرنے کے لیے مقام تک رسائی کی اجازت دیں",
     "network": "نیٹ ورک سے جڑ نہیں سکے",
     "calculation": "نماز کے اوقات حساب نہیں کر سکے"
+  },
+  "tabs": {
+    "home": "نمازیں",
+    "prayerTimes": "نماز کے اوقات",
+    "qibla": "قبلہ",
+    "calendar": "کیلنڈر",
+    "quran": "قرآن",
+    "more": "مزید"
+  },
+  "menu": {
+    "settings": {
+      "label": "ترتیبات"
+    },
+    "mosques": {
+      "label": "قریبی مساجد"
+    }
   }
 }

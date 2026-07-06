@@ -1,22 +1,23 @@
 /**
- * Purpose: Home screen widget scaffold for iOS (WidgetKit) and Android (AppWidget).
- *   Writes next prayer time to shared AppGroup storage (iOS) / SharedPreferences (Android)
- *   for native widget to read.
+ * Purpose: Home screen widget setup screen + refresh trigger for Android (real,
+ *   shipped via react-native-android-widget) and iOS (WidgetKit, still pending).
  * Inputs: Next prayer time from prayer-calc, MMKV city setting.
  * Outputs: HomeWidgetStub — Feature 16 of 20.
  * Constraints: Ummat+ gated (isPlus) — widgets are a paid feature; the preview below
- *   shows the user's REAL next-prayer time (computed the same way Home does), not the
- *   hardcoded fake "Maghrib 6:32 PM" this screen used to show regardless of settings.
- *   expo-widget-kit is experimental in SDK 53. If not available, this stub documents
- *   the integration point and files PCI pci-praycalc-home-widgets-native.
- *   Full native WidgetKit (Swift) + AppWidget (Kotlin) required for production.
+ *   shows the user's REAL next-prayer time (computed the same way Home does).
+ *   Android: the "NextPrayer" AppWidget is real (src/widgets/NextPrayerWidget.tsx +
+ *   widgetTaskHandler.ts, registered in index.js) — writeWidgetData below triggers an
+ *   immediate repaint via requestWidgetUpdate so the home-screen widget doesn't wait
+ *   for its 30-minute updatePeriodMillis after settings/notifications change.
+ *   iOS: WidgetKit (Swift extension) is NOT implemented — remains a documented no-op.
+ *   PCI pci-praycalc-home-widgets-native tracks the iOS WidgetKit extension.
  * SPORT: REGISTRY-APPS.md#praycalc-mobile-feature-16-home-widgets
  *
- * PCI filed: pci-praycalc-home-widgets-native — tracks native WidgetKit extension development.
+ * PCI filed: pci-praycalc-home-widgets-native — tracks native iOS WidgetKit extension development.
  */
 
 import React, { useMemo } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, ScrollView, Platform } from 'react-native';
 import { router } from 'expo-router';
 import { useThemeColors } from '../../hooks/useThemeColors';
 import type { ThemeColors } from '../../constants/colors';
@@ -26,24 +27,41 @@ import { useSettingsStore, useActiveLocation } from '../settings/store/useSettin
 import { usePrayerTimes } from '../prayer/hooks/usePrayerTimes';
 import type { CalcMethodKey } from '../../constants/methods';
 
+/** Must match the `name` in app.json's react-native-android-widget plugin config. */
+const NEXT_PRAYER_WIDGET_NAME = 'NextPrayer';
+
 /**
- * Widget data writer — writes next prayer info to shared storage.
- * On iOS: uses expo-secure-store with keychain group (App Group) so Swift widget can read.
- * On Android: uses AsyncStorage + WorkManager bridge.
+ * Widget data writer — triggers a repaint of the home-screen widget after prayer
+ * data or settings change, instead of waiting for the OS's periodic update tick.
  *
- * NOTE: Full native WidgetKit UI requires Swift extension in ios/ target.
- * The expo-widget-kit npm plugin scaffolds the extension.
- * Until the plugin reaches stable for SDK 53, this screen documents the integration.
+ * Android: real — calls react-native-android-widget's requestWidgetUpdate, which
+ * re-renders NextPrayerWidget for every instance of the widget on the home screen.
+ * Lazily imports the library and widget tree so iOS never loads Android-only code.
+ *
+ * iOS: documented no-op — WidgetKit requires a native Swift extension that does not
+ * exist yet (PCI pci-praycalc-home-widgets-native). Nothing to trigger until then.
  */
 export async function writeWidgetData(nextPrayer: {
   name: string;
   time: string;
   timestamp: number;
 }): Promise<void> {
-  // In production: write to App Group UserDefaults (iOS) or SharedPreferences (Android)
-  // using the expo-widget-kit plugin's shared storage bridge.
-  // For now: no-op (widget reads from MMKV when native bridge is available)
-  void nextPrayer;
+  void nextPrayer; // widget recomputes from live settings — see renderCurrentNextPrayerWidget
+  if (Platform.OS !== 'android') {
+    // iOS WidgetKit not implemented yet — see PCI pci-praycalc-home-widgets-native.
+    return;
+  }
+  try {
+    const { requestWidgetUpdate } = await import('react-native-android-widget');
+    const { renderCurrentNextPrayerWidget } = await import('../../widgets/widgetTaskHandler');
+    await requestWidgetUpdate({
+      widgetName: NEXT_PRAYER_WIDGET_NAME,
+      renderWidget: renderCurrentNextPrayerWidget,
+    });
+  } catch {
+    // Best-effort refresh — a widget-update failure must never break the caller
+    // (notification scheduling, settings save, etc.).
+  }
 }
 
 function formatCountdown(seconds: number): string {
@@ -135,12 +153,13 @@ export default function HomeWidgetScreen() {
         <View style={styles.statusCard}>
           <Text style={styles.statusTitle}>Integration Status</Text>
           <Text style={styles.statusText}>
-            iOS WidgetKit extension: requires native Swift code via expo-widget-kit plugin.
-            PCI pci-praycalc-home-widgets-native filed.
+            Android: live — the "Next Prayer" home-screen widget ships via
+            react-native-android-widget and refreshes automatically every 30 minutes
+            (and immediately after you change settings or notifications).
           </Text>
           <Text style={styles.statusText}>
-            Android AppWidget: requires react-native-android-widget.
-            PCI pci-praycalc-home-widgets-native filed.
+            iOS WidgetKit extension: not yet implemented — requires a native Swift
+            extension. PCI pci-praycalc-home-widgets-native tracks this work.
           </Text>
         </View>
       </ScrollView>
