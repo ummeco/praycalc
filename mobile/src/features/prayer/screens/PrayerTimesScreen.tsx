@@ -119,7 +119,7 @@ export default function PrayerTimesScreen() {
 
   const timezone = getTimezoneOffset();
   const today = new Date();
-  const hijriDate = gregorianToHijri(today);
+  const hijriDate = gregorianToHijri(today, settings.hijriDayAdjustment);
 
   const { times, nextPrayer, secondsToNextPrayer, status, error, refresh } = usePrayerTimes({
     date: today,
@@ -132,6 +132,7 @@ export default function PrayerTimesScreen() {
     customAngles: settings.method === 'Custom'
       ? { fajr: settings.customFajrAngle, isha: settings.customIshaAngle }
       : undefined,
+    minuteAdjustments: settings.prayerMinuteAdjustments,
     isOffline,
     isPermissionDenied: locationPermission === 'denied',
   });

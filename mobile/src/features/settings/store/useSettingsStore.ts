@@ -28,6 +28,13 @@ function defaultPerPrayer<T>(value: T, sunriseValue: T): Record<PrayerName, T> {
   return map;
 }
 
+/** Theme preference — 'system' follows the OS appearance. */
+export type ThemeMode = 'system' | 'light' | 'dark';
+
+/** Clamp bounds for manual tuning (match Muslim Pro/Athan conventions). */
+const MINUTE_ADJUST_LIMIT = 30; // ± minutes per prayer
+const HIJRI_ADJUST_LIMIT = 2; // ± days (local moon-sighting offset)
+
 export interface SettingsState {
   method: string;
   customFajrAngle: number;
@@ -42,8 +49,19 @@ export interface SettingsState {
   perPrayerNotificationEnabled: Record<PrayerName, boolean>;
   notificationAdvanceMinutes: Record<PrayerName, number>;
   adhanVoiceId: string | null;
+  /** Streaming URL + display name of the selected adhan voice, persisted alongside
+   *  the id so the notification-tap handler can play it without a network round-trip. */
+  adhanVoiceUrl: string | null;
+  adhanVoiceName: string | null;
   perPrayerAdhanEnabled: Record<PrayerName, boolean>;
   locale: string;
+  /** True once the first-launch onboarding flow has completed (or been skipped). */
+  onboardingDone: boolean;
+  /** Per-prayer manual minute corrections (±30) applied after calculation, to match a local mosque timetable. */
+  prayerMinuteAdjustments: Record<PrayerName, number>;
+  /** Hijri date offset in days (±2) for local moon-sighting differences vs Umm al-Qura. */
+  hijriDayAdjustment: number;
+  themeMode: ThemeMode;
 
   // Actions
   setMethod: (method: string) => void;
@@ -58,8 +76,13 @@ export interface SettingsState {
   setPerPrayerNotificationEnabled: (prayer: PrayerName, enabled: boolean) => void;
   setNotificationAdvanceMinutes: (prayer: PrayerName, minutes: number) => void;
   setAdhanVoiceId: (id: string | null) => void;
+  setAdhanVoice: (id: string, url: string, name: string) => void;
   setPerPrayerAdhanEnabled: (prayer: PrayerName, enabled: boolean) => void;
   setLocale: (locale: string) => void;
+  setOnboardingDone: (done: boolean) => void;
+  setPrayerMinuteAdjustment: (prayer: PrayerName, minutes: number) => void;
+  setHijriDayAdjustment: (days: number) => void;
+  setThemeMode: (mode: ThemeMode) => void;
   reset: () => void;
 }
 
@@ -77,8 +100,14 @@ const initialState = {
   perPrayerNotificationEnabled: defaultPerPrayer(true, false),
   notificationAdvanceMinutes: { Fajr: 10, Sunrise: 0, Dhuhr: 5, Asr: 5, Maghrib: 5, Isha: 5 } as Record<PrayerName, number>,
   adhanVoiceId: null as string | null,
+  adhanVoiceUrl: null as string | null,
+  adhanVoiceName: null as string | null,
   perPrayerAdhanEnabled: defaultPerPrayer(true, false),
   locale: 'en',
+  onboardingDone: false,
+  prayerMinuteAdjustments: defaultPerPrayer(0, 0),
+  hijriDayAdjustment: 0,
+  themeMode: 'system' as ThemeMode,
 };
 
 export const useSettingsStore = create<SettingsState>()(
@@ -100,9 +129,22 @@ export const useSettingsStore = create<SettingsState>()(
       setNotificationAdvanceMinutes: (prayer, minutes) =>
         set((s) => ({ notificationAdvanceMinutes: { ...s.notificationAdvanceMinutes, [prayer]: minutes } })),
       setAdhanVoiceId: (adhanVoiceId) => set({ adhanVoiceId }),
+      setAdhanVoice: (adhanVoiceId, adhanVoiceUrl, adhanVoiceName) =>
+        set({ adhanVoiceId, adhanVoiceUrl, adhanVoiceName }),
       setPerPrayerAdhanEnabled: (prayer, enabled) =>
         set((s) => ({ perPrayerAdhanEnabled: { ...s.perPrayerAdhanEnabled, [prayer]: enabled } })),
       setLocale: (locale) => set({ locale }),
+      setOnboardingDone: (onboardingDone) => set({ onboardingDone }),
+      setPrayerMinuteAdjustment: (prayer, minutes) =>
+        set((s) => ({
+          prayerMinuteAdjustments: {
+            ...s.prayerMinuteAdjustments,
+            [prayer]: Math.max(-MINUTE_ADJUST_LIMIT, Math.min(MINUTE_ADJUST_LIMIT, Math.round(minutes))),
+          },
+        })),
+      setHijriDayAdjustment: (days) =>
+        set({ hijriDayAdjustment: Math.max(-HIJRI_ADJUST_LIMIT, Math.min(HIJRI_ADJUST_LIMIT, Math.round(days))) }),
+      setThemeMode: (themeMode) => set({ themeMode }),
       reset: () => set({ ...initialState }),
     }),
     {

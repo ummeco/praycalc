@@ -92,3 +92,31 @@ describe('calculatePrayerTimes — high-latitude fallback', () => {
     expect(times.Isha.getHours()).toBeGreaterThanOrEqual(17);
   });
 });
+
+describe('minute adjustments', () => {
+  const mecca = { lat: 21.3891, lng: 39.8579, tz: 3 };
+  const date = new Date('2026-03-15T00:00:00');
+
+  it('shifts each adjusted prayer by exactly the requested minutes', () => {
+    const base = calculatePrayerTimes(date, mecca.lat, mecca.lng, mecca.tz, 'Makkah');
+    const adjusted = calculatePrayerTimes(
+      date, mecca.lat, mecca.lng, mecca.tz, 'Makkah', 'Shafi', 'NightMiddle', undefined,
+      { Fajr: -3, Dhuhr: 5, Isha: 10 },
+    );
+    expect(adjusted.Fajr.getTime() - base.Fajr.getTime()).toBe(-3 * 60_000);
+    expect(adjusted.Dhuhr.getTime() - base.Dhuhr.getTime()).toBe(5 * 60_000);
+    expect(adjusted.Isha.getTime() - base.Isha.getTime()).toBe(10 * 60_000);
+    // Unadjusted prayers untouched
+    expect(adjusted.Asr.getTime()).toBe(base.Asr.getTime());
+    expect(adjusted.Maghrib.getTime()).toBe(base.Maghrib.getTime());
+    expect(adjusted.Sunrise.getTime()).toBe(base.Sunrise.getTime());
+  });
+
+  it('zero and missing adjustments are no-ops', () => {
+    const base = calculatePrayerTimes(date, mecca.lat, mecca.lng, mecca.tz, 'MWL');
+    const adjusted = calculatePrayerTimes(
+      date, mecca.lat, mecca.lng, mecca.tz, 'MWL', 'Shafi', 'NightMiddle', undefined, { Fajr: 0 },
+    );
+    expect(adjusted.Fajr.getTime()).toBe(base.Fajr.getTime());
+  });
+});

@@ -8,6 +8,7 @@
  */
 
 import { useState, useCallback, useMemo } from 'react';
+import { useSettingsStore } from '../../settings/store/useSettingsStore';
 import { gregorianToHijri, eventsInMonth, ISLAMIC_EVENTS, type HijriDate, type IslamicEvent } from '../../../lib/hijri';
 
 export type { HijriDate, IslamicEvent };
@@ -29,7 +30,8 @@ export function useIslamicCalendar(initialDate?: Date): UseIslamicCalendarResult
     month: (initialDate ?? new Date()).getMonth(),
   });
 
-  const hijriDate = useMemo(() => gregorianToHijri(gregorianDate), [gregorianDate]);
+  const hijriDayAdjustment = useSettingsStore((s) => s.hijriDayAdjustment);
+  const hijriDate = useMemo(() => gregorianToHijri(gregorianDate, hijriDayAdjustment), [gregorianDate, hijriDayAdjustment]);
   const eventsThisMonth = useMemo(() => eventsInMonth(hijriDate), [hijriDate]);
 
   const navigateMonth = useCallback((delta: number) => {

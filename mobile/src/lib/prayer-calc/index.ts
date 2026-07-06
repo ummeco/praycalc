@@ -11,14 +11,16 @@
  *   the praytimes.org reference algorithm that the whole industry's high-lat rules
  *   are built on.
  * Inputs: latitude, longitude, date, method key, madhab, tz offset (hours),
- *   optional highLatRule + custom angles.
+ *   optional highLatRule + custom angles + per-prayer manual minute adjustments
+ *   (±30, matching a local mosque timetable — applied AFTER high-lat fallback so
+ *   a correction never masks an unreachable-angle condition).
  * Outputs: PrayerTimes { Fajr, Sunrise, Dhuhr, Asr, Maghrib, Isha } as Date objects.
  * Constraints: Tehran/Jafari never passed (not in pray-calc's METHODS — D-P3-19).
  * SPORT: REGISTRY-FUNCTIONS.md#praycalc-mobile-lib-prayer-calc
  */
 
 import { getTimesAll, solarEphemeris, toJulianDate } from 'pray-calc';
-import type { PrayerTimes, Madhab, HighLatRule } from '../../types/prayer';
+import type { PrayerTimes, Madhab, HighLatRule, PrayerName } from '../../types/prayer';
 import type { CalcMethodKey } from '../../constants/methods';
 import { CALC_METHODS } from '../../constants/methods';
 
@@ -147,6 +149,7 @@ export function calculatePrayerTimes(
   madhab: Madhab = 'Shafi',
   highLatRule: HighLatRule = 'NightMiddle',
   customAngles?: { fajr: number; isha: number },
+  minuteAdjustments?: Partial<Record<PrayerName, number>>,
 ): PrayerTimes {
   const hanafi = madhab === 'Hanafi';
   const raw = getTimesAll(date, latitude, longitude, timezone, 0, undefined, undefined, hanafi);
@@ -176,7 +179,7 @@ export function calculatePrayerTimes(
   fajr = applyHighLatFallback(fajr, raw.Sunrise, raw.Maghrib, highLatRule, fajrAngle, true);
   isha = applyHighLatFallback(isha, raw.Sunrise, raw.Maghrib, highLatRule, ishaAngle, false);
 
-  return {
+  const times: PrayerTimes = {
     Fajr: hoursToDate(date, fajr),
     Sunrise: hoursToDate(date, raw.Sunrise),
     Dhuhr: hoursToDate(date, raw.Dhuhr),
@@ -184,4 +187,13 @@ export function calculatePrayerTimes(
     Maghrib: hoursToDate(date, raw.Maghrib),
     Isha: hoursToDate(date, isha),
   };
+
+  if (minuteAdjustments) {
+    for (const name of Object.keys(times) as (keyof PrayerTimes)[]) {
+      const minutes = minuteAdjustments[name as PrayerName];
+      if (minutes) times[name] = new Date(times[name].getTime() + minutes * 60_000);
+    }
+  }
+
+  return times;
 }

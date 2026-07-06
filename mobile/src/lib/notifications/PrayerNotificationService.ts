@@ -112,6 +112,7 @@ async function getUpcomingPrayerNotifications(): Promise<ScheduledPrayer[]> {
       settings.madhab,
       settings.highLatRule,
       customAngles,
+      settings.prayerMinuteAdjustments,
     );
 
     for (const name of PRAYER_NAMES) {

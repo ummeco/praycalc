@@ -22,6 +22,7 @@ type OnboardingStep = typeof STEPS[number];
 export default function OnboardingScreen() {
   const [step, setStep] = useState<OnboardingStep>('welcome');
   const setLocation = useSettingsStore((s) => s.setLocation);
+  const setOnboardingDone = useSettingsStore((s) => s.setOnboardingDone);
   const setAnonymous = useAuthStore((s) => s.setAnonymous);
 
   async function requestLocation() {
@@ -41,8 +42,16 @@ export default function OnboardingScreen() {
   }
 
   function finish() {
+    setOnboardingDone(true);
     setAnonymous();
     router.replace('/(tabs)/home');
+  }
+
+  function finishToSignIn() {
+    // Mark done BEFORE leaving — the root gate must not bounce the user back
+    // into onboarding after they return from the auth flow.
+    setOnboardingDone(true);
+    router.push('/(auth)/sign-in');
   }
 
   return (
@@ -74,7 +83,7 @@ export default function OnboardingScreen() {
         <View style={styles.panel}>
           <Text style={styles.title}>Create Account?</Text>
           <Text style={styles.desc}>Optional: create an account for cloud sync and prayer history. You can always sign up later.</Text>
-          <TouchableOpacity style={styles.button} onPress={() => router.push('/(auth)/sign-in')}>
+          <TouchableOpacity style={styles.button} onPress={finishToSignIn}>
             <Text style={styles.buttonText}>Create Account</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.secondaryButton} onPress={finish}>

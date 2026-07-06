@@ -64,7 +64,7 @@ export default function RamadanScreen() {
   }, []);
 
   const today = now;
-  const hijriDate = useMemo(() => gregorianToHijri(today), [today]);
+  const hijriDate = useMemo(() => gregorianToHijri(today, settings.hijriDayAdjustment), [today, settings.hijriDayAdjustment]);
   const isRamadan = hijriDate.month === RAMADAN_MONTH;
   const ramadanDay = isRamadan ? hijriDate.day : null;
   const ramadanDaysTotal = isRamadan ? hijriDate.daysInMonth : null;
@@ -82,9 +82,10 @@ export default function RamadanScreen() {
       settings.method === 'Custom'
         ? { fajr: settings.customFajrAngle, isha: settings.customIshaAngle }
         : undefined,
+      settings.prayerMinuteAdjustments,
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps -- recompute each tick (`today`) + on settings/location change
-  }, [location, settings.method, settings.madhab, settings.highLatRule, settings.customFajrAngle, settings.customIshaAngle, today.toDateString()]);
+  }, [location, settings.method, settings.madhab, settings.highLatRule, settings.customFajrAngle, settings.customIshaAngle, settings.prayerMinuteAdjustments, today.toDateString()]);
 
   // Live Iftar/Suhoor countdown — the category's marquee Ramadan feature.
   const countdown = useMemo(() => {

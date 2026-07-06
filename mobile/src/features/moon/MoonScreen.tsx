@@ -15,6 +15,7 @@ import {
 } from 'react-native';
 import { Colors } from '../../constants/colors';
 import { gregorianToHijri, RAMADAN_MONTH } from '../../lib/hijri';
+import { useSettingsStore } from '../settings/store/useSettingsStore';
 
 const DHUL_HIJJAH_MONTH = 12;
 
@@ -85,6 +86,7 @@ function getNextPhaseDate(date: Date, targetAge: number): Date {
 // ── Screen ────────────────────────────────────────────────────────────────────
 
 export default function MoonScreen() {
+  const hijriDayAdjustment = useSettingsStore((s) => s.hijriDayAdjustment);
   const moonData = useMemo<MoonData>(() => {
     const now = new Date();
     const age = getMoonAge(now);
@@ -92,7 +94,7 @@ export default function MoonScreen() {
     const { phase, name, emoji } = getMoonPhase(age);
     const nextNewMoon = getNextPhaseDate(now, 0);
     const nextFullMoon = getNextPhaseDate(now, 14.76);
-    const hijri = gregorianToHijri(now);
+    const hijri = gregorianToHijri(now, hijriDayAdjustment);
     return {
       phase,
       illumination,
@@ -105,7 +107,7 @@ export default function MoonScreen() {
       hijriMonth: hijri.month,
       hijriMonthName: hijri.monthName,
     };
-  }, []);
+  }, [hijriDayAdjustment]);
 
   const illuminationPct = Math.round(moonData.illumination * 100);
 

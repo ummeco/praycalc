@@ -30,7 +30,7 @@ export default function AgendasScreen() {
   });
   const [syncing, setSyncing] = useState(false);
   const location = useActiveLocation();
-  const { method, madhab, highLatRule, customFajrAngle, customIshaAngle } = useSettingsStore();
+  const { method, madhab, highLatRule, customFajrAngle, customIshaAngle, prayerMinuteAdjustments } = useSettingsStore();
 
   useEffect(() => {
     void (async () => {
@@ -63,6 +63,7 @@ export default function AgendasScreen() {
         madhab,
         highLatRule,
         method === 'Custom' ? { fajr: customFajrAngle, isha: customIshaAngle } : undefined,
+        prayerMinuteAdjustments,
       );
 
       let added = 0;

@@ -41,6 +41,7 @@ interface UsePrayerTimesOptions {
   madhab: Madhab;
   highLatRule?: HighLatRule;
   customAngles?: { fajr: number; isha: number };
+  minuteAdjustments?: Partial<Record<PrayerName, number>>;
   isOffline?: boolean;
   isPermissionDenied?: boolean;
 }
@@ -54,6 +55,7 @@ export function usePrayerTimes({
   madhab,
   highLatRule = 'NightMiddle',
   customAngles,
+  minuteAdjustments,
   isOffline = false,
   isPermissionDenied = false,
 }: UsePrayerTimesOptions): UsePrayerTimesResult {
@@ -118,6 +120,7 @@ export function usePrayerTimes({
         madhab,
         highLatRule,
         customAngles,
+        minuteAdjustments,
       );
       setTimes(calculated);
       setError(null);
@@ -129,7 +132,7 @@ export function usePrayerTimes({
       setError(err instanceof Error ? err.message : 'Calculation error');
       setStatus('error');
     }
-  }, [date, latitude, longitude, timezone, method, madhab, highLatRule, customAngles, isOffline, isPermissionDenied]);
+  }, [date, latitude, longitude, timezone, method, madhab, highLatRule, customAngles, minuteAdjustments, isOffline, isPermissionDenied]);
 
   // Recalculate on inputs change
   useEffect(() => {

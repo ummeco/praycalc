@@ -69,6 +69,7 @@ export default function HomeWidgetScreen() {
     customAngles: settings.method === 'Custom'
       ? { fajr: settings.customFajrAngle, isha: settings.customIshaAngle }
       : undefined,
+    minuteAdjustments: settings.prayerMinuteAdjustments,
   });
 
   if (!isPlus) {

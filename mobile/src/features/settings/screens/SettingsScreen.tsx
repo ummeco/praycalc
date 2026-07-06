@@ -25,8 +25,15 @@ import { Colors } from '../../../constants/colors';
 import { CALC_METHODS } from '../../../constants/methods';
 import { useSettingsStore } from '../store/useSettingsStore';
 import { useAuthStore } from '../../auth/store/useAuthStore';
-import type { Madhab, TimeFormat, HighLatRule } from '../../../types/prayer';
+import type { Madhab, TimeFormat, HighLatRule, PrayerName } from '../../../types/prayer';
 import { ErrorState, LoadingState } from '../../../components/shared/UIStates';
+import i18next, {
+  SUPPORTED_LOCALES, LOCALE_NAMES, RTL_LOCALES, persistLocale, type SupportedLocale,
+} from '../../../i18n';
+import { schedulePrayerNotifications } from '../../../lib/notifications/PrayerNotificationService';
+
+/** Prayers exposed for manual minute corrections (Sunrise included — timetable alignment). */
+const ADJUSTABLE_PRAYERS: PrayerName[] = ['Fajr', 'Sunrise', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
 
 const HIGH_LAT_RULES: { key: HighLatRule; label: string }[] = [
   { key: 'NightMiddle', label: 'Middle of the Night' },
@@ -42,6 +49,33 @@ export default function SettingsScreen() {
   const auth = useAuthStore();
   const [isLocating, setIsLocating] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
+  const [showLanguages, setShowLanguages] = useState(false);
+
+  /** Reschedule notifications after a change that shifts computed times. */
+  function rescheduleIfEnabled() {
+    if (useSettingsStore.getState().notificationsEnabled) {
+      void schedulePrayerNotifications().catch(() => undefined);
+    }
+  }
+
+  function handleSelectLocale(locale: SupportedLocale) {
+    const rtlChanged = RTL_LOCALES.has(locale) !== RTL_LOCALES.has(settings.locale as SupportedLocale);
+    persistLocale(locale);
+    settings.setLocale(locale);
+    void i18next.changeLanguage(locale);
+    setShowLanguages(false);
+    if (rtlChanged) {
+      Alert.alert(
+        'Restart Required',
+        'Layout direction changes take effect the next time you open the app.',
+      );
+    }
+  }
+
+  function adjustPrayerMinutes(prayer: PrayerName, delta: number) {
+    settings.setPrayerMinuteAdjustment(prayer, (settings.prayerMinuteAdjustments[prayer] ?? 0) + delta);
+    rescheduleIfEnabled();
+  }
 
   // UI states
   if (isLocating) return <LoadingState message="Getting your location..." />;
@@ -231,6 +265,100 @@ export default function SettingsScreen() {
         </Text>
       </View>
 
+      {/* Prayer time fine-tuning — match a local mosque timetable */}
+      <SectionHeader title="Prayer Time Adjustments" />
+      <View style={styles.card}>
+        <Text style={styles.hint}>
+          Fine-tune each time by ±30 minutes to match your local mosque timetable.
+        </Text>
+        {ADJUSTABLE_PRAYERS.map((prayer) => {
+          const value = settings.prayerMinuteAdjustments[prayer] ?? 0;
+          return (
+            <View key={prayer} style={styles.row}>
+              <Text style={styles.rowLabel}>{prayer}</Text>
+              <View style={styles.stepper}>
+                <TouchableOpacity
+                  style={styles.stepperButton}
+                  onPress={() => adjustPrayerMinutes(prayer, -1)}
+                  accessibilityLabel={`Decrease ${prayer} adjustment`}
+                >
+                  <Text style={styles.stepperButtonText}>−</Text>
+                </TouchableOpacity>
+                <Text style={styles.stepperValue}>
+                  {value > 0 ? `+${value}` : value} min
+                </Text>
+                <TouchableOpacity
+                  style={styles.stepperButton}
+                  onPress={() => adjustPrayerMinutes(prayer, 1)}
+                  accessibilityLabel={`Increase ${prayer} adjustment`}
+                >
+                  <Text style={styles.stepperButtonText}>+</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          );
+        })}
+      </View>
+
+      {/* Hijri date adjustment — local moon-sighting offset */}
+      <SectionHeader title="Hijri Date Adjustment" />
+      <View style={styles.card}>
+        <Text style={styles.hint}>
+          Shift the Hijri date by ±2 days if your local moon sighting differs from the
+          Umm al-Qura calendar.
+        </Text>
+        <View style={styles.row}>
+          <Text style={styles.rowLabel}>Offset</Text>
+          <View style={styles.stepper}>
+            <TouchableOpacity
+              style={styles.stepperButton}
+              onPress={() => settings.setHijriDayAdjustment(settings.hijriDayAdjustment - 1)}
+              accessibilityLabel="Decrease Hijri offset"
+            >
+              <Text style={styles.stepperButtonText}>−</Text>
+            </TouchableOpacity>
+            <Text style={styles.stepperValue}>
+              {settings.hijriDayAdjustment > 0 ? `+${settings.hijriDayAdjustment}` : settings.hijriDayAdjustment} d
+            </Text>
+            <TouchableOpacity
+              style={styles.stepperButton}
+              onPress={() => settings.setHijriDayAdjustment(settings.hijriDayAdjustment + 1)}
+              accessibilityLabel="Increase Hijri offset"
+            >
+              <Text style={styles.stepperButtonText}>+</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+
+      {/* Language */}
+      <SectionHeader title="Language" />
+      <View style={styles.card}>
+        <TouchableOpacity style={styles.row} onPress={() => setShowLanguages((v) => !v)}>
+          <Text style={styles.rowLabel}>App Language</Text>
+          <Text style={styles.rowValue}>
+            {LOCALE_NAMES[settings.locale as SupportedLocale] ?? 'English'} {showLanguages ? '▴' : '▾'}
+          </Text>
+        </TouchableOpacity>
+        {showLanguages && SUPPORTED_LOCALES.map((locale) => {
+          const isSelected = settings.locale === locale;
+          return (
+            <TouchableOpacity
+              key={locale}
+              style={[styles.optionRow, isSelected && styles.optionRowSelected]}
+              onPress={() => handleSelectLocale(locale)}
+            >
+              <View style={[styles.radio, isSelected && styles.radioSelected]}>
+                {isSelected && <View style={styles.radioInner} />}
+              </View>
+              <Text style={[styles.optionLabel, isSelected && styles.optionLabelSelected]}>
+                {LOCALE_NAMES[locale]}
+              </Text>
+            </TouchableOpacity>
+          );
+        })}
+      </View>
+
       {/* Time Format */}
       <SectionHeader title="Time Format" />
       <View style={styles.card}>
@@ -349,6 +477,19 @@ const styles = StyleSheet.create({
   radioInner: { width: 10, height: 10, borderRadius: 5, backgroundColor: Colors.brand.dark },
   optionLabel: { fontSize: 14, color: Colors.text.primary, flex: 1 },
   optionLabelSelected: { fontWeight: '600', color: Colors.brand.dark },
+  stepper: { flexDirection: 'row', alignItems: 'center', gap: 10 },
+  stepperButton: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: Colors.background.secondary,
+    borderWidth: 1,
+    borderColor: Colors.brand.mid,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  stepperButtonText: { fontSize: 18, fontWeight: '700', color: Colors.brand.dark, lineHeight: 20 },
+  stepperValue: { fontSize: 14, color: Colors.text.primary, minWidth: 56, textAlign: 'center', fontVariant: ['tabular-nums'] },
   toggle: { flexDirection: 'row', borderRadius: 8, overflow: 'hidden', backgroundColor: Colors.background.secondary },
   toggleOption: { flex: 1, padding: 12, alignItems: 'center' },
   toggleOptionActive: { backgroundColor: Colors.brand.dark },

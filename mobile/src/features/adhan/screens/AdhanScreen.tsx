@@ -62,7 +62,7 @@ export default function AdhanScreen() {
   const [playingId, setPlayingId] = useState<string | null>(null);
   const isPlus = useAuthStore((s) => s.isPlus);
   const selectedId = useSettingsStore((s) => s.adhanVoiceId);
-  const setAdhanVoiceId = useSettingsStore((s) => s.setAdhanVoiceId);
+  const setAdhanVoice = useSettingsStore((s) => s.setAdhanVoice);
   const enabledPrayers = useSettingsStore((s) => s.perPrayerAdhanEnabled);
   const setPerPrayerAdhanEnabled = useSettingsStore((s) => s.setPerPrayerAdhanEnabled);
 
@@ -82,8 +82,10 @@ export default function AdhanScreen() {
       );
       return;
     }
-    setAdhanVoiceId(voice.id);
-  }, [isPlus, setAdhanVoiceId]);
+    // Persist url+name alongside id so the notification-tap handler can play
+    // the chosen voice without a network round-trip.
+    setAdhanVoice(voice.id, voice.audio_url, `${voice.name} — ${voice.reciter}`);
+  }, [isPlus, setAdhanVoice]);
 
   const handlePlay = useCallback(async (voice: AdhanVoice) => {
     if (playingId === voice.id) {

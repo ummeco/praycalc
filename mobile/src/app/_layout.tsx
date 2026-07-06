@@ -7,14 +7,22 @@
  * SPORT: REGISTRY-ROUTES.md#praycalc-mobile-root
  */
 
-import { useEffect } from 'react';
+// i18n side-effect import MUST come first: it resolves the persisted/device
+// locale and calls I18nManager.forceRTL before the React tree renders (RTL
+// direction cannot change after first render without a full app reload).
+import '../i18n';
+
+import { useEffect, useRef } from 'react';
 import { Stack, router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { I18nManager } from 'react-native';
+import * as Notifications from 'expo-notifications';
 import * as Linking from 'expo-linking';
 import { GqlClientProvider } from '../lib/graphql';
 import { extractPinFromDeepLink } from '../lib/pairing/pairingMutation';
 import { registerIAPListener } from '../lib/iap/IAPListener';
+import { playAdhan } from '../features/adhan/services/AdhanAudioService';
+import { useSettingsStore } from '../features/settings/store/useSettingsStore';
+import type { PrayerName } from '../types/prayer';
 
 /** Route praycalc://pair?pin=NNNNNN deep links (cold start + foreground) to /pair-tv. */
 function usePairingDeepLink() {
@@ -33,19 +41,49 @@ function usePairingDeepLink() {
   }, []);
 }
 
+/**
+ * Play the user's selected adhan voice when a prayer notification is tapped.
+ * Notification SOUNDS are still the system default (bundled native sound assets
+ * are tracked in PCI pci-praycalc-adhan-notification-sound) — this handler is the
+ * honest in-between: tapping the notification opens the app and the chosen
+ * reciter's adhan plays. Dedupes cold-start getLastNotificationResponseAsync
+ * against the live listener via the notification request id.
+ */
+function useAdhanOnNotificationTap() {
+  const handledId = useRef<string | null>(null);
+
+  useEffect(() => {
+    function handle(response: Notifications.NotificationResponse | null) {
+      if (!response) return;
+      const id = response.notification.request.identifier;
+      if (handledId.current === id) return;
+      handledId.current = id;
+
+      const prayerName = response.notification.request.content.data?.['prayerName'] as PrayerName | undefined;
+      if (!prayerName) return;
+      const s = useSettingsStore.getState();
+      if (!s.perPrayerAdhanEnabled[prayerName] || !s.adhanVoiceUrl) return;
+      void playAdhan({
+        audioUrl: s.adhanVoiceUrl,
+        prayerName,
+        reciterName: s.adhanVoiceName ?? 'Adhan',
+      }).catch(() => undefined);
+    }
+
+    void Notifications.getLastNotificationResponseAsync().then(handle);
+    const sub = Notifications.addNotificationResponseReceivedListener(handle);
+    return () => sub.remove();
+  }, []);
+}
+
 export default function RootLayout() {
   usePairingDeepLink();
+  useAdhanOnNotificationTap();
 
   useEffect(() => {
     // Global purchase listener — must be registered once at app start, not inside
     // SubscriptionScreen, so unfinished/restored transactions are never lost.
     registerIAPListener();
-  }, []);
-
-  useEffect(() => {
-    // RTL layout hook — actual RTL enforcement via T-03 i18n (locale detection)
-    // I18nManager.forceRTL(isRtlLocale) — wired here, not yet active
-    // This comment is intentional: the hook point is in place for T-03.
   }, []);
 
   return (

@@ -54,9 +54,17 @@ export const ISLAMIC_EVENTS: IslamicEvent[] = [
   { name: 'Start of Ramadan', hijriMonth: 9, hijriDay: 1 },
 ];
 
-/** Convert a Gregorian date to Hijri via the Umm al-Qura tabular calendar. */
-export function gregorianToHijri(date: Date): HijriDate {
-  const { hy, hm, hd } = umalqura.$.gregorianToHijri(date);
+/**
+ * Convert a Gregorian date to Hijri via the Umm al-Qura tabular calendar.
+ * @param dayAdjustment ±2-day offset for local moon-sighting differences vs the
+ *   tabular calendar (settings.hijriDayAdjustment) — shifts the Gregorian input,
+ *   the standard convention competitor apps use.
+ */
+export function gregorianToHijri(date: Date, dayAdjustment = 0): HijriDate {
+  const adjusted = dayAdjustment
+    ? new Date(date.getFullYear(), date.getMonth(), date.getDate() + dayAdjustment, 12)
+    : date;
+  const { hy, hm, hd } = umalqura.$.gregorianToHijri(adjusted);
   return {
     year: hy,
     month: hm,

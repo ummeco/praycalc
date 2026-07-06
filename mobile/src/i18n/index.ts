@@ -50,6 +50,31 @@ export type SupportedLocale = (typeof SUPPORTED_LOCALES)[number];
 /** Locales that require RTL layout direction */
 export const RTL_LOCALES: ReadonlySet<SupportedLocale> = new Set(['ar', 'ur', 'ps', 'fa']);
 
+/** Native display name per locale — for the Settings language picker. */
+export const LOCALE_NAMES: Record<SupportedLocale, string> = {
+  en: 'English',
+  ar: 'العربية',
+  fr: 'Français',
+  ur: 'اردو',
+  tr: 'Türkçe',
+  id: 'Bahasa Indonesia',
+  ms: 'Bahasa Melayu',
+  bn: 'বাংলা',
+  sw: 'Kiswahili',
+  es: 'Español',
+  de: 'Deutsch',
+  nl: 'Nederlands',
+  pt: 'Português',
+  it: 'Italiano',
+  ru: 'Русский',
+  hi: 'हिन्दी',
+  ps: 'پښتو',
+  fa: 'فارسی',
+  so: 'Soomaali',
+  ha: 'Hausa',
+  yo: 'Yorùbá',
+};
+
 const I18N_LOCALE_KEY = 'i18n.locale';
 
 /** MMKV store for locale persistence (separate instance; shared storage ID) */
