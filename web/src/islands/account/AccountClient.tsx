@@ -5,14 +5,19 @@
  *   - Sign-in card (magic-link default tab + password tab + social row) when no session.
  *   - Dashboard (profile, saved cities, account settings, Ummat+ upsell, sign out)
  *     when a session exists.
- *   Session is the lightweight client profile (+ optional tokens) in localStorage
- *   ('praycalc-session'). Password sign-in and magic-link requests hit the shared
- *   Ummat Hasura Auth instance directly (src/lib/auth/client.ts). Billing status /
- *   checkout hit the praycalc "smart" service (src/lib/billing.ts).
+ *   Session is a lightweight client profile in localStorage ('praycalc-profile') —
+ *   Hasura Auth access/refresh tokens live in httpOnly cookies set by
+ *   src/pages/api/auth/*, never in this object (ADR-010 fix). Password sign-in,
+ *   refresh, and sign-out go through those same-origin proxy routes
+ *   (src/lib/auth/client.ts); magic-link requests still hit the shared Ummat
+ *   Hasura Auth instance directly (no token involved). Billing status / checkout
+ *   go through src/pages/api/billing/* (src/lib/billing.ts).
  * CONSTRAINTS: Astro island (client:load). No next/* imports. SSR-safe.
  *   Social sign-in providers are visually present but inert ("coming soon") —
- *   not wired to any backend yet.
- * REF: P2-PRAYCALC-E2E-REBUILD · account.spec.ts · real-auth task (2026-07)
+ *   not wired to any backend yet. On mount, migrates any pre-2026-07 session
+ *   still holding a raw refresh token in localStorage into a cookie-backed
+ *   session (see peekLegacyRefreshToken/clearLegacySession in session.ts).
+ * REF: P2-PRAYCALC-E2E-REBUILD · account.spec.ts · ADR-010 fix (2026-07)
  */
 
 import { useEffect, useRef, useState } from 'react';
@@ -22,6 +27,8 @@ import {
   getSession,
   saveSession,
   hasValidToken,
+  peekLegacyRefreshToken,
+  clearLegacySession,
   type PrayCalcSession,
 } from '@/lib/session';
 import { signIn, requestMagicLink, refreshSession, signOut } from '@/lib/auth/client';
@@ -65,37 +72,64 @@ export default function AccountClient() {
   const refreshTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
-    setSession(getSession());
+    const initial = getSession();
+    setSession(initial);
     setReady(true);
+
+    // One-time migration: a pre-2026-07 build may have left a raw refresh
+    // token sitting in localStorage. Exchange it server-side for a
+    // cookie-backed session, then scrub the legacy record either way so the
+    // token never lingers in client-readable storage.
+    const legacyRefreshToken = peekLegacyRefreshToken();
+    if (legacyRefreshToken) {
+      refreshSession(legacyRefreshToken)
+        .then((result) => {
+          setSession((prev) => {
+            const base = prev ?? buildSession(result.user.email);
+            const migrated: PrayCalcSession = {
+              ...base,
+              email: result.user.email || base.email,
+              displayName: result.user.displayName || base.displayName,
+              accessTokenExpiresAt: result.accessTokenExpiresAt,
+            };
+            saveSession(migrated);
+            return migrated;
+          });
+        })
+        .catch(() => {
+          // Legacy refresh token invalid/expired — nothing to migrate.
+        })
+        .finally(() => {
+          clearLegacySession();
+        });
+    }
+
     return () => {
       if (refreshTimer.current) clearTimeout(refreshTimer.current);
     };
   }, []);
 
-  // Schedule/cancel token refresh whenever the session changes.
+  // Schedule/cancel token refresh whenever the session's expiry changes.
   useEffect(() => {
     if (refreshTimer.current) {
       clearTimeout(refreshTimer.current);
       refreshTimer.current = null;
     }
-    if (!session?.accessToken || !session.refreshToken || !session.accessTokenExpiresAt) {
+    if (!session?.accessTokenExpiresAt) {
       return;
     }
     const delay = Math.max(
       session.accessTokenExpiresAt - REFRESH_LEAD_MS - Date.now(),
       MIN_REFRESH_DELAY_MS,
     );
-    const rt = session.refreshToken;
     refreshTimer.current = setTimeout(() => {
-      refreshSession(rt)
+      refreshSession()
         .then((result) => {
           const next: PrayCalcSession = {
             ...session,
             email: result.user.email || session.email,
             displayName: result.user.displayName || session.displayName,
-            accessToken: result.tokens.accessToken,
-            refreshToken: result.tokens.refreshToken,
-            accessTokenExpiresAt: result.tokens.accessTokenExpiresAt,
+            accessTokenExpiresAt: result.accessTokenExpiresAt,
           };
           saveSession(next);
           setSession(next);
@@ -109,9 +143,9 @@ export default function AccountClient() {
     return () => {
       if (refreshTimer.current) clearTimeout(refreshTimer.current);
     };
-    // Intentionally narrow deps: only reschedule when the token identity changes,
+    // Intentionally narrow deps: only reschedule when the expiry changes,
     // not on every session field update (avoids refresh-timer churn).
-  }, [session?.accessToken, session?.refreshToken, session?.accessTokenExpiresAt]);
+  }, [session?.accessTokenExpiresAt]);
 
   // Avoid rendering the sign-in card before we know the session state
   // (prevents an account-card flash on seeded-session loads).
@@ -122,12 +156,9 @@ export default function AccountClient() {
       <Dashboard
         session={session}
         onSignOut={() => {
-          const rt = session.refreshToken;
-          if (rt) {
-            signOut(rt).catch(() => {
-              // best-effort; session is cleared client-side regardless
-            });
-          }
+          signOut().catch(() => {
+            // best-effort; session is cleared client-side regardless
+          });
           clearSession();
           setSession(null);
         }}
@@ -187,9 +218,7 @@ function SignIn({ onSignedIn }: { onSignedIn: (s: PrayCalcSession) => void }) {
       const result = await signIn(email.trim(), password);
       const session: PrayCalcSession = {
         ...buildSession(result.user.email || email, result.user.displayName),
-        accessToken: result.tokens.accessToken,
-        refreshToken: result.tokens.refreshToken,
-        accessTokenExpiresAt: result.tokens.accessTokenExpiresAt,
+        accessTokenExpiresAt: result.accessTokenExpiresAt,
       };
       onSignedIn(session);
     } catch (err) {
@@ -334,7 +363,7 @@ function Dashboard({
   useEffect(() => {
     if (!hasValidToken(session)) return;
     let cancelled = false;
-    getBillingStatus(session.accessToken!).then((status) => {
+    getBillingStatus().then((status) => {
       if (cancelled) return;
       const plus = status.plan === 'plus' && status.isActive;
       setIsPlus(plus);
@@ -346,9 +375,9 @@ function Dashboard({
       cancelled = true;
     };
     // Intentionally narrow deps: re-fetch billing status only when the token
-    // changes, not on every session field update (onSessionUpdate is stable
-    // per render cycle from the parent's perspective here).
-  }, [session.accessToken]);
+    // expiry changes, not on every session field update (onSessionUpdate is
+    // stable per render cycle from the parent's perspective here).
+  }, [session.accessTokenExpiresAt]);
 
   function handleRemoveCity(slug: string) {
     setCities(removeSavedCity(slug));
@@ -360,7 +389,7 @@ function Dashboard({
       return;
     }
     setCheckoutState('loading');
-    const result = await startCheckout(session.accessToken!);
+    const result = await startCheckout();
     if (result.ok) {
       window.location.href = result.url;
       return;

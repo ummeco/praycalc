@@ -5,6 +5,8 @@ import {
   getSession,
   saveSession,
   clearSession,
+  peekLegacyRefreshToken,
+  clearLegacySession,
   hasValidToken,
   type PrayCalcSession,
 } from "@/lib/session";
@@ -31,7 +33,8 @@ Object.defineProperty(globalThis, "localStorage", {
   configurable: true,
 });
 
-const SESSION_KEY = "praycalc-session";
+const SESSION_KEY = "praycalc-profile";
+const LEGACY_SESSION_KEY = "praycalc-session";
 
 beforeEach(() => {
   _store = {};
@@ -48,14 +51,12 @@ describe("computeInitials", () => {
 });
 
 describe("buildSession", () => {
-  it("builds a session without tokens (legacy shape)", () => {
+  it("builds a session without a token expiry", () => {
     const s = buildSession("john.doe@example.com");
     expect(s.email).toBe("john.doe@example.com");
     expect(s.displayName).toBe("john doe");
     expect(s.isOwner).toBe(false);
     expect(s.isUmmatPlus).toBe(false);
-    expect(s.accessToken).toBeUndefined();
-    expect(s.refreshToken).toBeUndefined();
     expect(s.accessTokenExpiresAt).toBeUndefined();
   });
 
@@ -71,19 +72,19 @@ describe("getSession / saveSession / clearSession", () => {
     expect(getSession()).toBeNull();
   });
 
-  it("round-trips a full session (with tokens) through localStorage", () => {
+  it("round-trips a profile session (with expiry) through localStorage", () => {
     const s: PrayCalcSession = {
       email: "a@b.com",
       displayName: "A B",
       initials: "AB",
       isOwner: false,
       isUmmatPlus: true,
-      accessToken: "at-1",
-      refreshToken: "rt-1",
       accessTokenExpiresAt: Date.now() + 900_000,
     };
     saveSession(s);
     expect(getSession()).toEqual(s);
+    // Never written under the pre-2026-07 (token-bearing) key.
+    expect(_store[LEGACY_SESSION_KEY]).toBeUndefined();
   });
 
   it("round-trips a legacy session (no token fields) — backward compatible", () => {
@@ -98,7 +99,6 @@ describe("getSession / saveSession / clearSession", () => {
     _store[SESSION_KEY] = JSON.stringify(legacy);
     const loaded = getSession();
     expect(loaded).toEqual(legacy);
-    expect(loaded?.accessToken).toBeUndefined();
   });
 
   it("clearSession removes the stored session", () => {
@@ -111,6 +111,65 @@ describe("getSession / saveSession / clearSession", () => {
     _store[SESSION_KEY] = "not-json{{";
     expect(getSession()).toBeNull();
   });
+
+  it("falls back to the pre-2026-07 legacy key and strips its token fields", () => {
+    _store[LEGACY_SESSION_KEY] = JSON.stringify({
+      email: "legacy@example.com",
+      displayName: "Legacy User",
+      initials: "LU",
+      isOwner: false,
+      isUmmatPlus: false,
+      accessToken: "leaked-at",
+      refreshToken: "leaked-rt",
+      accessTokenExpiresAt: Date.now() + 900_000,
+    });
+    const loaded = getSession();
+    expect(loaded?.email).toBe("legacy@example.com");
+    expect((loaded as unknown as { accessToken?: string }).accessToken).toBeUndefined();
+    expect((loaded as unknown as { refreshToken?: string }).refreshToken).toBeUndefined();
+  });
+
+  it("clearSession removes both the current and legacy keys", () => {
+    _store[SESSION_KEY] = JSON.stringify(buildSession("a@b.com"));
+    _store[LEGACY_SESSION_KEY] = JSON.stringify({ ...buildSession("a@b.com"), refreshToken: "rt" });
+    clearSession();
+    expect(_store[SESSION_KEY]).toBeUndefined();
+    expect(_store[LEGACY_SESSION_KEY]).toBeUndefined();
+  });
+});
+
+describe("peekLegacyRefreshToken / clearLegacySession", () => {
+  it("returns null when there is no legacy record", () => {
+    expect(peekLegacyRefreshToken()).toBeNull();
+  });
+
+  it("returns null when the legacy record has no refresh token", () => {
+    _store[LEGACY_SESSION_KEY] = JSON.stringify(buildSession("a@b.com"));
+    expect(peekLegacyRefreshToken()).toBeNull();
+  });
+
+  it("returns the refresh token from a legacy record", () => {
+    _store[LEGACY_SESSION_KEY] = JSON.stringify({
+      ...buildSession("a@b.com"),
+      accessToken: "at",
+      refreshToken: "rt-legacy",
+      accessTokenExpiresAt: Date.now() + 900_000,
+    });
+    expect(peekLegacyRefreshToken()).toBe("rt-legacy");
+  });
+
+  it("returns null on malformed legacy JSON", () => {
+    _store[LEGACY_SESSION_KEY] = "not-json{{";
+    expect(peekLegacyRefreshToken()).toBeNull();
+  });
+
+  it("clearLegacySession removes only the legacy key", () => {
+    _store[SESSION_KEY] = JSON.stringify(buildSession("a@b.com"));
+    _store[LEGACY_SESSION_KEY] = JSON.stringify({ ...buildSession("a@b.com"), refreshToken: "rt" });
+    clearLegacySession();
+    expect(_store[LEGACY_SESSION_KEY]).toBeUndefined();
+    expect(_store[SESSION_KEY]).toBeDefined();
+  });
 });
 
 describe("hasValidToken", () => {
@@ -118,7 +177,7 @@ describe("hasValidToken", () => {
     expect(hasValidToken(null)).toBe(false);
   });
 
-  it("returns false for a legacy session with no token fields", () => {
+  it("returns false for a session with no expiry field", () => {
     const s = buildSession("a@b.com");
     expect(hasValidToken(s)).toBe(false);
   });
@@ -126,8 +185,6 @@ describe("hasValidToken", () => {
   it("returns false when accessTokenExpiresAt is in the past", () => {
     const s: PrayCalcSession = {
       ...buildSession("a@b.com"),
-      accessToken: "at",
-      refreshToken: "rt",
       accessTokenExpiresAt: Date.now() - 1000,
     };
     expect(hasValidToken(s)).toBe(false);
@@ -136,18 +193,8 @@ describe("hasValidToken", () => {
   it("returns true when accessTokenExpiresAt is in the future", () => {
     const s: PrayCalcSession = {
       ...buildSession("a@b.com"),
-      accessToken: "at",
-      refreshToken: "rt",
       accessTokenExpiresAt: Date.now() + 900_000,
     };
     expect(hasValidToken(s)).toBe(true);
-  });
-
-  it("returns false when accessToken is present but expiry is missing", () => {
-    const s: PrayCalcSession = {
-      ...buildSession("a@b.com"),
-      accessToken: "at",
-    };
-    expect(hasValidToken(s)).toBe(false);
   });
 });
