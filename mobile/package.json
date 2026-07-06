@@ -2,7 +2,7 @@
   "name": "@ummat/praycalc-mobile",
   "version": "0.1.0",
   "private": true,
-  "description": "PrayCalc \u2014 React Native + Expo SDK 53 prayer times app",
+  "description": "PrayCalc — React Native + Expo SDK 53 prayer times app",
   "main": "expo-router/entry",
   "scripts": {
     "start": "expo start",
@@ -36,6 +36,7 @@
     "expo-local-authentication": "~15.0.0",
     "expo-localization": "~16.0.0",
     "expo-location": "~18.0.0",
+    "expo-network": "~7.1.5",
     "expo-notifications": "~0.29.0",
     "expo-router": "~4.0.0",
     "expo-secure-store": "~14.0.0",
@@ -44,8 +45,10 @@
     "expo-status-bar": "~2.0.0",
     "expo-system-ui": "~4.0.0",
     "expo-task-manager": "~12.0.0",
+    "geomagnetism": "^0.2.0",
     "graphql": "^16.10.0",
     "i18next": "^23.15.2",
+    "pray-calc": "^2.1.2",
     "react": "^19.1.0",
     "react-i18next": "^15.1.2",
     "react-native": "^0.81.0",
@@ -56,9 +59,7 @@
     "react-native-screens": "~4.10.0",
     "react-native-track-player": "^4.1.1",
     "urql": "^4.1.0",
-    "zustand": "^5.0.0",
-    "pray-calc": "^2.1.2",
-    "geomagnetism": "^0.2.0"
+    "zustand": "^5.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.24.0",

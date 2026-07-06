@@ -17,6 +17,7 @@ import {
   I18nManager,
 } from 'react-native';
 import * as Location from 'expo-location';
+import * as Network from 'expo-network';
 import { router } from 'expo-router';
 import { Colors } from '../../../constants/colors';
 import { CALC_METHODS } from '../../../constants/methods';
@@ -73,6 +74,21 @@ export default function PrayerTimesScreen() {
   const [locationPermission, setLocationPermission] = useState<'granted' | 'denied' | 'pending'>('pending');
   const [currentCoords, setCurrentCoords] = useState<{ lat: number; lng: number } | null>(null);
   const [isOffline, setIsOffline] = useState(false);
+
+  // Real connectivity: drives the 'offline' UI state (shows last-known times).
+  // Was dead code — setIsOffline was never called anywhere.
+  useEffect(() => {
+    let mounted = true;
+    const apply = (state: Network.NetworkState) => {
+      if (mounted) setIsOffline(!(state.isInternetReachable ?? state.isConnected ?? true));
+    };
+    Network.getNetworkStateAsync().then(apply).catch(() => undefined);
+    const sub = Network.addNetworkStateListener(apply);
+    return () => {
+      mounted = false;
+      sub.remove();
+    };
+  }, []);
 
   useEffect(() => {
     // RTL layout preparation (actual RTL enforcement happens in T-03 i18n ticket)

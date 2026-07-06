@@ -15,7 +15,7 @@ This document verifies that `praycalc/mobile` (React Native + Expo SDK 53) achie
 | 2 | MWL calculation method | Implemented | Implemented | PASS |
 | 3 | Egypt calculation method | Implemented | Implemented | PASS |
 | 4 | Umm al-Qura calculation method | Implemented | Implemented | PASS |
-| 5 | Tehran calculation method | Implemented | Implemented | PASS |
+| 5 | Tehran calculation method | Implemented (legacy) | **Intentionally excluded** (D-P3-19 — Tehran/Jafari not offered) | PASS (by decision) |
 | 6 | Karachi calculation method | Implemented | Implemented | PASS |
 | 7 | GPS-based location detection | Implemented | Implemented | PASS |
 | 8 | City search & autocomplete | Implemented | Implemented | PASS |

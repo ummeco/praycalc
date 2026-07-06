@@ -13,7 +13,7 @@ import { View, Text, StyleSheet, Animated } from 'react-native';
 import { router } from 'expo-router';
 import geomagnetism from 'geomagnetism';
 import { Colors } from '../../../constants/colors';
-import { useSettingsStore } from '../../settings/store/useSettingsStore';
+import { useActiveLocation } from '../../settings/store/useSettingsStore';
 import { useQibla } from '../hooks/useQibla';
 import {
   LoadingState,
@@ -26,9 +26,11 @@ const ACCURACY_LABELS = ['Unreliable', 'Low', 'Medium', 'High'];
 const ACCURACY_COLORS = [Colors.state.error, Colors.state.warning, Colors.brand.mid, Colors.brand.dark];
 
 export default function QiblaScreen() {
-  const settings = useSettingsStore();
-  const lat = settings.location?.latitude ?? null;
-  const lng = settings.location?.longitude ?? null;
+  // Travel-aware: musafir mode points the compass from the travel city, matching
+  // every other prayer surface (Home/Ramadan/Agendas/Widget use the same hook).
+  const activeLocation = useActiveLocation();
+  const lat = activeLocation?.latitude ?? null;
+  const lng = activeLocation?.longitude ?? null;
 
   // Real magnetic declination (offline WMM model) so the compass corrects
   // magnetic north → true north for an accurate Qibla heading.
