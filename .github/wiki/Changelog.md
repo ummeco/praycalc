@@ -2,6 +2,25 @@
 
 All notable changes to PrayCalc are documented here.
 
+## 2026-07-06 — Mobile competitive-parity closure
+
+Final verification pass against competitor adhan apps (Muslim Pro, Athan, Pillars), every screen re-read against real code. Commits `3cec3d9`, `f2202c2`, `98c3371`.
+
+**Fixed (was broken or dead):**
+- Onboarding never ran — no route ever navigated to it and the done-flag was never set; now a root gate runs it on first launch (existing users auto-pass)
+- Prayer notifications silently expired after 3 days if the app stayed closed — the background reschedule task existed but was never registered; now registered at app start + on enable
+- The 21-locale i18n system was dead code (zero importers) — now initializes at startup with RTL support, a Settings language picker, and translated prayer names/core strings
+
+**Added (competitive gaps):**
+- Dark mode (System/Light/Dark) across all 26 screens/components
+- Per-prayer manual minute corrections (±30) and Hijri date adjustment (±2 days)
+- Monthly prayer timetable screen with `.ics` calendar export
+- Tapping a prayer notification plays the selected reciter's adhan
+
+**Honesty corrections:**
+- PARITY-GATE.md re-audited: 6 overstated rows corrected (16 PASS, 4 tracked PARTIALs)
+- Subscription screen now lists only actually-gated Pro features
+
 ## [Unreleased — P4]
 
 ### Added
