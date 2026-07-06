@@ -11,11 +11,12 @@
  * Fabricated Islamic rulings/text are an ABSOLUTE block on Done.
  */
 
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   View, Text, FlatList, TouchableOpacity, StyleSheet, SafeAreaView, ScrollView,
 } from 'react-native';
-import { Colors } from '../../constants/colors';
+import { useThemeColors } from '../../hooks/useThemeColors';
+import type { ThemeColors } from '../../constants/colors';
 import { EmptyState } from '../../components/states';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -157,6 +158,8 @@ const CATEGORIES: Array<{ key: CategoryFilter; label: string }> = [
 ];
 
 export default function DuaDhikrScreen() {
+  const colors = useThemeColors();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const [filter, setFilter] = useState<CategoryFilter>('all');
   const [expanded, setExpanded] = useState<string | null>(null);
 
@@ -232,58 +235,58 @@ export default function DuaDhikrScreen() {
 
 // ── Styles ────────────────────────────────────────────────────────────────────
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: Colors.background.primary },
+const createStyles = (colors: ThemeColors) => StyleSheet.create({
+  container: { flex: 1, backgroundColor: colors.background.primary },
   filterRow: {
     flexDirection: 'row',
     padding: 12,
     gap: 8,
-    backgroundColor: Colors.background.secondary,
+    backgroundColor: colors.background.secondary,
   },
   filterTab: {
     flex: 1,
     paddingVertical: 8,
     borderRadius: 8,
-    backgroundColor: Colors.background.card,
+    backgroundColor: colors.background.card,
     alignItems: 'center',
     minHeight: 44,
     justifyContent: 'center',
   },
-  filterTabActive: { backgroundColor: Colors.brand.mid },
-  filterLabel: { fontSize: 13, color: Colors.text.secondary, fontWeight: '500' },
-  filterLabelActive: { color: Colors.text.inverse, fontWeight: '700' },
+  filterTabActive: { backgroundColor: colors.brand.mid },
+  filterLabel: { fontSize: 13, color: colors.text.secondary, fontWeight: '500' },
+  filterLabelActive: { color: colors.text.inverse, fontWeight: '700' },
   duaCard: {
     flexDirection: 'row',
     padding: 16,
     marginHorizontal: 12,
     marginVertical: 4,
     borderRadius: 12,
-    backgroundColor: Colors.background.secondary,
+    backgroundColor: colors.background.secondary,
     gap: 12,
   },
   duaNumber: {
     width: 28,
     height: 28,
     borderRadius: 14,
-    backgroundColor: Colors.brand.mid,
+    backgroundColor: colors.brand.mid,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  numberText: { fontSize: 12, fontWeight: '700', color: Colors.text.inverse },
+  numberText: { fontSize: 12, fontWeight: '700', color: colors.text.inverse },
   duaContent: { flex: 1 },
   arabicText: {
     // Arabic RTL — full tashkeel — NEVER split
     fontSize: 22,
     textAlign: 'right',
     writingDirection: 'rtl',
-    color: Colors.brand.dark,
+    color: colors.brand.dark,
     fontWeight: '500',
     lineHeight: 36,
     width: '100%',
   },
   repeatBadge: {
     fontSize: 12,
-    color: Colors.brand.mid,
+    color: colors.brand.mid,
     fontWeight: '700',
     textAlign: 'right',
     marginTop: 2,
@@ -291,18 +294,18 @@ const styles = StyleSheet.create({
   transliteration: {
     fontSize: 15,
     fontStyle: 'italic',
-    color: Colors.text.secondary,
+    color: colors.text.secondary,
     marginTop: 8,
   },
   translation: {
     fontSize: 14,
-    color: Colors.text.primary,
+    color: colors.text.primary,
     marginTop: 4,
     lineHeight: 22,
   },
   source: {
     fontSize: 12,
-    color: Colors.text.muted,
+    color: colors.text.muted,
     marginTop: 6,
     fontStyle: 'italic',
   },

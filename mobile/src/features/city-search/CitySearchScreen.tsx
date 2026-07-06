@@ -17,7 +17,8 @@ import {
 } from 'react-native';
 import { useQuery } from 'urql';
 import * as Location from 'expo-location';
-import { Colors } from '../../constants/colors';
+import { useThemeColors } from '../../hooks/useThemeColors';
+import type { ThemeColors } from '../../constants/colors';
 import { LoadingState, ErrorState, EmptyState, OfflineState } from '../../components/states';
 import { useSettingsStore } from '../settings/store/useSettingsStore';
 import type { CityCoords } from '../../types/prayer';
@@ -98,6 +99,8 @@ interface CitySearchScreenProps {
 }
 
 export default function CitySearchScreen({ onSelectCity, mode = 'home' }: CitySearchScreenProps) {
+  const colors = useThemeColors();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const [query, setQuery] = useState('');
   const debouncedQuery = useDebouncedValue(query, 300);
   const [isOffline, setIsOffline] = useState(false);
@@ -173,7 +176,7 @@ export default function CitySearchScreen({ onSelectCity, mode = 'home' }: CitySe
           value={query}
           onChangeText={setQuery}
           placeholder="Search city..."
-          placeholderTextColor={Colors.text.muted}
+          placeholderTextColor={colors.text.muted}
           accessibilityLabel="City search input"
           accessibilityHint="Type a city name to search"
           returnKeyType="search"
@@ -238,26 +241,26 @@ export default function CitySearchScreen({ onSelectCity, mode = 'home' }: CitySe
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: Colors.background.primary },
+const createStyles = (colors: ThemeColors) => StyleSheet.create({
+  container: { flex: 1, backgroundColor: colors.background.primary },
   searchBar: {
     padding: 12,
-    backgroundColor: Colors.background.secondary,
+    backgroundColor: colors.background.secondary,
   },
   input: {
-    backgroundColor: Colors.background.primary,
+    backgroundColor: colors.background.primary,
     borderRadius: 10,
     paddingHorizontal: 14,
     paddingVertical: 10,
     fontSize: 16,
-    color: Colors.text.primary,
+    color: colors.text.primary,
     borderWidth: 1,
-    borderColor: Colors.background.card,
+    borderColor: colors.background.card,
     minHeight: 44,
   },
-  hint: { fontSize: 13, color: Colors.text.muted, padding: 12, textAlign: 'center' },
+  hint: { fontSize: 13, color: colors.text.muted, padding: 12, textAlign: 'center' },
   currentLocationBtn: { marginTop: 8, paddingVertical: 10, minHeight: 44, justifyContent: 'center', alignItems: 'center' },
-  currentLocationText: { fontSize: 14, color: Colors.brand.dark, fontWeight: '600' },
+  currentLocationText: { fontSize: 14, color: colors.brand.dark, fontWeight: '600' },
   cityRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -265,10 +268,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 14,
     borderBottomWidth: 1,
-    borderBottomColor: Colors.background.card,
+    borderBottomColor: colors.background.card,
     minHeight: 56,
   },
-  cityName: { fontSize: 16, color: Colors.text.primary, fontWeight: '500' },
-  countryName: { fontSize: 14, color: Colors.text.muted },
-  errorText: { fontSize: 14, color: Colors.state.error, padding: 12, textAlign: 'center' },
+  cityName: { fontSize: 16, color: colors.text.primary, fontWeight: '500' },
+  countryName: { fontSize: 14, color: colors.text.muted },
+  errorText: { fontSize: 14, color: colors.state.error, padding: 12, textAlign: 'center' },
 });

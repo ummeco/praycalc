@@ -10,7 +10,7 @@
 
 import { Tabs } from 'expo-router';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { Colors } from '../../constants/colors';
+import { useThemeColors } from '../../hooks/useThemeColors';
 
 type IoniconsName = React.ComponentProps<typeof Ionicons>['name'];
 
@@ -24,14 +24,15 @@ function tabIcon(
 }
 
 export default function TabLayout() {
+  const colors = useThemeColors();
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors.brand.dark,
-        tabBarInactiveTintColor: Colors.text.muted,
-        tabBarStyle: { backgroundColor: Colors.background.primary },
-        headerStyle: { backgroundColor: Colors.brand.deep },
-        headerTintColor: Colors.text.inverse,
+        tabBarActiveTintColor: colors.brand.dark,
+        tabBarInactiveTintColor: colors.text.muted,
+        tabBarStyle: { backgroundColor: colors.background.primary },
+        headerStyle: { backgroundColor: colors.brand.deep },
+        headerTintColor: colors.text.inverse,
         headerTitleStyle: { fontWeight: '700' },
       }}
     >

@@ -10,7 +10,7 @@
  * SPORT: REGISTRY-COMPONENTS.md#praycalc-mobile-pair-tv-screen
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   View,
   Text,
@@ -21,7 +21,8 @@ import {
 } from 'react-native';
 import { useLocalSearchParams, router } from 'expo-router';
 import { useMutation } from 'urql';
-import { Colors } from '../../../constants/colors';
+import { useThemeColors } from '../../../hooks/useThemeColors';
+import type { ThemeColors } from '../../../constants/colors';
 import { useAuthStore } from '../../auth/store/useAuthStore';
 import { PAIR_TV_MUTATION, buildPairTvRequest, isValidPin } from '../../../lib/pairing/pairingMutation';
 import { getOrCreateDeviceId } from '../../../lib/pairing/deviceId';
@@ -30,6 +31,8 @@ import { LoadingState, ErrorState } from '../../../components/shared/UIStates';
 const UPGRADE_URL = 'https://praycalc.com/upgrade';
 
 export default function PairTvScreen() {
+  const colors = useThemeColors();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const params = useLocalSearchParams<{ pin?: string }>();
   const isPlus = useAuthStore((s) => s.isPlus);
   const [pin, setPin] = useState('');
@@ -120,7 +123,7 @@ export default function PairTvScreen() {
           onChangeText={(text) => setPin(text.replace(/[^0-9]/g, '').slice(0, 6))}
           keyboardType="number-pad"
           maxLength={6}
-          placeholderTextColor={Colors.text.muted}
+          placeholderTextColor={colors.text.muted}
           accessibilityLabel="TV pairing PIN"
         />
         <TouchableOpacity
@@ -135,34 +138,34 @@ export default function PairTvScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: Colors.background.primary, padding: 24, justifyContent: 'center' },
+const createStyles = (colors: ThemeColors) => StyleSheet.create({
+  container: { flex: 1, backgroundColor: colors.background.primary, padding: 24, justifyContent: 'center' },
   card: { gap: 16 },
-  title: { fontSize: 22, fontWeight: '700', color: Colors.text.primary },
-  desc: { fontSize: 14, color: Colors.text.muted, lineHeight: 20 },
+  title: { fontSize: 22, fontWeight: '700', color: colors.text.primary },
+  desc: { fontSize: 14, color: colors.text.muted, lineHeight: 20 },
   pinInput: {
     borderWidth: 1,
-    borderColor: Colors.background.card,
+    borderColor: colors.background.card,
     borderRadius: 10,
     padding: 16,
     fontSize: 28,
     letterSpacing: 8,
     textAlign: 'center',
-    color: Colors.text.primary,
-    backgroundColor: Colors.background.secondary,
+    color: colors.text.primary,
+    backgroundColor: colors.background.secondary,
   },
   primaryButton: {
-    backgroundColor: Colors.brand.dark,
+    backgroundColor: colors.brand.dark,
     borderRadius: 12,
     padding: 16,
     alignItems: 'center',
   },
   primaryButtonDisabled: { opacity: 0.5 },
-  primaryButtonText: { color: Colors.text.inverse, fontWeight: '700', fontSize: 16 },
+  primaryButtonText: { color: colors.text.inverse, fontWeight: '700', fontSize: 16 },
   upsellCard: { gap: 12, alignItems: 'center', padding: 8 },
   upsellBadge: {
-    backgroundColor: Colors.brand.mid,
-    color: Colors.text.inverse,
+    backgroundColor: colors.brand.mid,
+    color: colors.text.inverse,
     fontWeight: '700',
     fontSize: 12,
     paddingHorizontal: 10,
@@ -170,10 +173,10 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     overflow: 'hidden',
   },
-  upsellTitle: { fontSize: 20, fontWeight: '700', color: Colors.text.primary },
-  upsellDesc: { fontSize: 14, color: Colors.text.muted, textAlign: 'center', lineHeight: 20 },
+  upsellTitle: { fontSize: 20, fontWeight: '700', color: colors.text.primary },
+  upsellDesc: { fontSize: 14, color: colors.text.muted, textAlign: 'center', lineHeight: 20 },
   successCard: { gap: 12, alignItems: 'center' },
-  successEmoji: { fontSize: 48, color: Colors.brand.dark },
-  successTitle: { fontSize: 22, fontWeight: '700', color: Colors.text.primary },
-  successDesc: { fontSize: 14, color: Colors.text.muted, textAlign: 'center' },
+  successEmoji: { fontSize: 48, color: colors.brand.dark },
+  successTitle: { fontSize: 22, fontWeight: '700', color: colors.text.primary },
+  successDesc: { fontSize: 14, color: colors.text.muted, textAlign: 'center' },
 });

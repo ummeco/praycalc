@@ -12,7 +12,8 @@ import {
   View, Text, StyleSheet, SafeAreaView, ScrollView, TouchableOpacity,
 } from 'react-native';
 import { useFocusEffect } from 'expo-router';
-import { Colors } from '../../constants/colors';
+import { useThemeColors } from '../../hooks/useThemeColors';
+import type { ThemeColors } from '../../constants/colors';
 import { EmptyState } from '../../components/states';
 import { loadCompletions, type PrayerCompletion } from '../../lib/completions';
 import type { PrayerName } from '../../types/prayer';
@@ -57,8 +58,9 @@ function getWeeklyData(completions: PrayerCompletion[]): Array<{ day: string; co
 
 // ── Inline bar chart (no extra deps) ─────────────────────────────────────────
 
-function BarChart({ data }: { data: Array<{ day: string; count: number }> }) {
+function BarChart({ data, colors }: { data: Array<{ day: string; count: number }>; colors: ThemeColors }) {
   const max = 5;
+  const chart = useMemo(() => createChartStyles(colors), [colors]);
   return (
     <View
       style={chart.container}
@@ -82,17 +84,17 @@ function BarChart({ data }: { data: Array<{ day: string; count: number }> }) {
   );
 }
 
-const chart = StyleSheet.create({
+const createChartStyles = (colors: ThemeColors) => StyleSheet.create({
   container: { flexDirection: 'row', height: 120, alignItems: 'flex-end', gap: 4, padding: 8 },
   bar: { flex: 1, alignItems: 'center', height: '100%', justifyContent: 'flex-end' },
   fill: {
     width: '80%',
-    backgroundColor: Colors.brand.mid,
+    backgroundColor: colors.brand.mid,
     borderRadius: 4,
     minHeight: 4,
   },
-  dayLabel: { fontSize: 10, color: Colors.text.muted, marginTop: 4 },
-  countLabel: { fontSize: 10, color: Colors.brand.dark, fontWeight: '700' },
+  dayLabel: { fontSize: 10, color: colors.text.muted, marginTop: 4 },
+  countLabel: { fontSize: 10, color: colors.brand.dark, fontWeight: '700' },
 });
 
 // ── Screen ────────────────────────────────────────────────────────────────────
@@ -100,6 +102,8 @@ const chart = StyleSheet.create({
 type ViewMode = 'weekly' | 'monthly';
 
 export default function StatsScreen() {
+  const colors = useThemeColors();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const [mode, setMode] = useState<ViewMode>('weekly');
   const [completions, setCompletions] = useState<PrayerCompletion[]>(loadCompletions);
 
@@ -178,7 +182,7 @@ export default function StatsScreen() {
           <Text style={styles.sectionTitle} accessibilityRole="header">
             {mode === 'weekly' ? 'Last 7 Days' : 'This Month'}
           </Text>
-          <BarChart data={weeklyData} />
+          <BarChart data={weeklyData} colors={colors} />
         </View>
 
         {/* Per-prayer breakdown */}
@@ -206,21 +210,21 @@ export default function StatsScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: Colors.background.primary },
+const createStyles = (colors: ThemeColors) => StyleSheet.create({
+  container: { flex: 1, backgroundColor: colors.background.primary },
   scroll: { padding: 16, paddingBottom: 40 },
   statsRow: { flexDirection: 'row', gap: 8, marginBottom: 16 },
   statCard: {
     flex: 1,
-    backgroundColor: Colors.brand.dark,
+    backgroundColor: colors.brand.dark,
     borderRadius: 12,
     padding: 14,
     alignItems: 'center',
     minHeight: 72,
     justifyContent: 'center',
   },
-  statNumber: { fontSize: 24, fontWeight: '800', color: Colors.brand.light },
-  statLabel: { fontSize: 11, color: Colors.brand.light + 'BB', marginTop: 2, textAlign: 'center' },
+  statNumber: { fontSize: 24, fontWeight: '800', color: colors.brand.light },
+  statLabel: { fontSize: 11, color: colors.brand.light + 'BB', marginTop: 2, textAlign: 'center' },
   toggleRow: {
     flexDirection: 'row',
     gap: 8,
@@ -230,16 +234,16 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: 8,
     borderRadius: 8,
-    backgroundColor: Colors.background.card,
+    backgroundColor: colors.background.card,
     alignItems: 'center',
     minHeight: 44,
     justifyContent: 'center',
   },
-  toggleTabActive: { backgroundColor: Colors.brand.mid },
-  toggleLabel: { fontSize: 14, color: Colors.text.secondary, fontWeight: '500' },
-  toggleLabelActive: { color: Colors.text.inverse, fontWeight: '700' },
+  toggleTabActive: { backgroundColor: colors.brand.mid },
+  toggleLabel: { fontSize: 14, color: colors.text.secondary, fontWeight: '500' },
+  toggleLabelActive: { color: colors.text.inverse, fontWeight: '700' },
   chartCard: {
-    backgroundColor: Colors.background.secondary,
+    backgroundColor: colors.background.secondary,
     borderRadius: 12,
     padding: 12,
     marginBottom: 16,
@@ -247,7 +251,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 15,
     fontWeight: '700',
-    color: Colors.text.primary,
+    color: colors.text.primary,
     marginBottom: 8,
   },
   prayerRow: {
@@ -257,19 +261,19 @@ const styles = StyleSheet.create({
     gap: 12,
     minHeight: 44,
   },
-  prayerName: { width: 64, fontSize: 14, color: Colors.text.primary, fontWeight: '500' },
+  prayerName: { width: 64, fontSize: 14, color: colors.text.primary, fontWeight: '500' },
   barTrack: {
     flex: 1,
     height: 10,
-    backgroundColor: Colors.background.card,
+    backgroundColor: colors.background.card,
     borderRadius: 5,
     overflow: 'hidden',
   },
   barFill: {
     height: '100%',
-    backgroundColor: Colors.brand.mid,
+    backgroundColor: colors.brand.mid,
     borderRadius: 5,
     minWidth: 4,
   },
-  prayerCount: { width: 32, fontSize: 13, color: Colors.text.muted, textAlign: 'right' },
+  prayerCount: { width: 32, fontSize: 13, color: colors.text.muted, textAlign: 'right' },
 });

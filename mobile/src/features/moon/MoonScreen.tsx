@@ -13,7 +13,8 @@ import React, { useMemo } from 'react';
 import {
   View, Text, StyleSheet, SafeAreaView, ScrollView,
 } from 'react-native';
-import { Colors } from '../../constants/colors';
+import { useThemeColors } from '../../hooks/useThemeColors';
+import type { ThemeColors } from '../../constants/colors';
 import { gregorianToHijri, RAMADAN_MONTH } from '../../lib/hijri';
 import { useSettingsStore } from '../settings/store/useSettingsStore';
 
@@ -86,6 +87,8 @@ function getNextPhaseDate(date: Date, targetAge: number): Date {
 // ── Screen ────────────────────────────────────────────────────────────────────
 
 export default function MoonScreen() {
+  const colors = useThemeColors();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const hijriDayAdjustment = useSettingsStore((s) => s.hijriDayAdjustment);
   const moonData = useMemo<MoonData>(() => {
     const now = new Date();
@@ -184,8 +187,8 @@ export default function MoonScreen() {
 
 // ── Styles ────────────────────────────────────────────────────────────────────
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: Colors.brand.deep },
+const createStyles = (colors: ThemeColors) => StyleSheet.create({
+  container: { flex: 1, backgroundColor: colors.brand.deep },
   scroll: { padding: 16, alignItems: 'center', paddingBottom: 40 },
   moonContainer: {
     alignItems: 'center',
@@ -199,16 +202,16 @@ const styles = StyleSheet.create({
   phaseName: {
     fontSize: 24,
     fontWeight: '700',
-    color: Colors.brand.light,
+    color: colors.brand.light,
   },
   illumination: {
     fontSize: 16,
-    color: Colors.brand.mid,
+    color: colors.brand.mid,
     marginTop: 4,
   },
   infoCard: {
     width: '100%',
-    backgroundColor: Colors.brand.dark + 'CC',
+    backgroundColor: colors.brand.dark + 'CC',
     borderRadius: 14,
     padding: 16,
     marginBottom: 12,
@@ -216,7 +219,7 @@ const styles = StyleSheet.create({
   infoTitle: {
     fontSize: 14,
     fontWeight: '700',
-    color: Colors.brand.light,
+    color: colors.brand.light,
     textTransform: 'uppercase',
     letterSpacing: 1,
     marginBottom: 12,
@@ -226,21 +229,21 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingVertical: 8,
     borderBottomWidth: 1,
-    borderBottomColor: Colors.brand.mid + '33',
+    borderBottomColor: colors.brand.mid + '33',
     minHeight: 44,
     alignItems: 'center',
   },
-  infoLabel: { fontSize: 15, color: Colors.text.inverse + 'BB' },
-  infoValue: { fontSize: 15, fontWeight: '600', color: Colors.text.inverse },
+  infoLabel: { fontSize: 15, color: colors.text.inverse + 'BB' },
+  infoValue: { fontSize: 15, fontWeight: '600', color: colors.text.inverse },
   quoteText: {
     fontSize: 14,
-    color: Colors.brand.light,
+    color: colors.brand.light,
     fontStyle: 'italic',
     lineHeight: 22,
   },
   specialEvent: {
     fontSize: 14,
-    color: Colors.brand.light,
+    color: colors.brand.light,
     marginTop: 8,
     lineHeight: 22,
   },

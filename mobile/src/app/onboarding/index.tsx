@@ -3,7 +3,7 @@
  * SPORT: REGISTRY-ROUTES.md#praycalc-mobile-onboarding
  */
 
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   View,
   Text,
@@ -12,7 +12,8 @@ import {
 } from 'react-native';
 import { router } from 'expo-router';
 import * as Location from 'expo-location';
-import { Colors } from '../../constants/colors';
+import { useThemeColors } from '../../hooks/useThemeColors';
+import type { ThemeColors } from '../../constants/colors';
 import { useSettingsStore } from '../../features/settings/store/useSettingsStore';
 import { useAuthStore } from '../../features/auth/store/useAuthStore';
 
@@ -24,6 +25,8 @@ export default function OnboardingScreen() {
   const setLocation = useSettingsStore((s) => s.setLocation);
   const setOnboardingDone = useSettingsStore((s) => s.setOnboardingDone);
   const setAnonymous = useAuthStore((s) => s.setAnonymous);
+  const colors = useThemeColors();
+  const styles = useMemo(() => createStyles(colors), [colors]);
 
   async function requestLocation() {
     const { status } = await Location.requestForegroundPermissionsAsync();
@@ -95,13 +98,13 @@ export default function OnboardingScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: Colors.brand.deep, justifyContent: 'center', padding: 32 },
+const createStyles = (colors: ThemeColors) => StyleSheet.create({
+  container: { flex: 1, backgroundColor: colors.brand.deep, justifyContent: 'center', padding: 32 },
   panel: { gap: 24 },
-  title: { fontSize: 32, fontWeight: '800', color: Colors.brand.light },
-  desc: { fontSize: 16, color: Colors.text.inverse, lineHeight: 24, opacity: 0.9 },
-  button: { backgroundColor: Colors.brand.mid, borderRadius: 14, padding: 18, alignItems: 'center' },
-  buttonText: { color: Colors.brand.deep, fontWeight: '700', fontSize: 16 },
+  title: { fontSize: 32, fontWeight: '800', color: colors.brand.light },
+  desc: { fontSize: 16, color: colors.text.inverse, lineHeight: 24, opacity: 0.9 },
+  button: { backgroundColor: colors.brand.mid, borderRadius: 14, padding: 18, alignItems: 'center' },
+  buttonText: { color: colors.brand.deep, fontWeight: '700', fontSize: 16 },
   secondaryButton: { alignItems: 'center', padding: 14 },
-  secondaryButtonText: { color: Colors.brand.light, fontSize: 14, opacity: 0.8 },
+  secondaryButtonText: { color: colors.brand.light, fontSize: 14, opacity: 0.8 },
 });

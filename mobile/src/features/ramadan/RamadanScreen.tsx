@@ -16,7 +16,8 @@ import React, { useEffect, useMemo, useState } from 'react';
 import {
   View, Text, StyleSheet, SafeAreaView, ScrollView,
 } from 'react-native';
-import { Colors } from '../../constants/colors';
+import { useThemeColors } from '../../hooks/useThemeColors';
+import type { ThemeColors } from '../../constants/colors';
 import { useSettingsStore, useActiveLocation } from '../settings/store/useSettingsStore';
 import { calculatePrayerTimes } from '../../lib/prayer-calc';
 import { resolveTimezoneOffset } from '../../lib/timezone';
@@ -54,6 +55,8 @@ const RAMADAN_DUAS = [
 ];
 
 export default function RamadanScreen() {
+  const colors = useThemeColors();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const settings = useSettingsStore();
   const location = useActiveLocation();
   const [now, setNow] = useState(new Date());
@@ -192,11 +195,11 @@ export default function RamadanScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: Colors.background.primary },
+const createStyles = (colors: ThemeColors) => StyleSheet.create({
+  container: { flex: 1, backgroundColor: colors.background.primary },
   scroll: { padding: 16, paddingBottom: 40 },
   statusCard: {
-    backgroundColor: Colors.brand.dark,
+    backgroundColor: colors.brand.dark,
     borderRadius: 16,
     padding: 24,
     alignItems: 'center',
@@ -205,17 +208,17 @@ const styles = StyleSheet.create({
   ramadanTitle: {
     fontSize: 28,
     fontWeight: '700',
-    color: Colors.brand.light,
+    color: colors.brand.light,
     textAlign: 'center',
     writingDirection: 'rtl',
     lineHeight: 44,
   },
-  ramadanSubtitle: { fontSize: 16, color: Colors.brand.light + 'CC', marginTop: 4 },
-  dayCounter: { fontSize: 20, color: Colors.brand.light, fontWeight: '600', marginTop: 8 },
-  countdown: { fontSize: 15, color: Colors.brand.light, fontWeight: '700', marginTop: 12, opacity: 0.9 },
-  notRamadan: { fontSize: 16, color: Colors.text.inverse, textAlign: 'center', lineHeight: 26 },
+  ramadanSubtitle: { fontSize: 16, color: colors.brand.light + 'CC', marginTop: 4 },
+  dayCounter: { fontSize: 20, color: colors.brand.light, fontWeight: '600', marginTop: 8 },
+  countdown: { fontSize: 15, color: colors.brand.light, fontWeight: '700', marginTop: 12, opacity: 0.9 },
+  notRamadan: { fontSize: 16, color: colors.text.inverse, textAlign: 'center', lineHeight: 26 },
   timesCard: {
-    backgroundColor: Colors.background.secondary,
+    backgroundColor: colors.background.secondary,
     borderRadius: 12,
     padding: 16,
     marginBottom: 16,
@@ -223,7 +226,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 16,
     fontWeight: '700',
-    color: Colors.text.primary,
+    color: colors.text.primary,
     marginBottom: 12,
   },
   timeRow: {
@@ -231,44 +234,44 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingVertical: 10,
     borderBottomWidth: 1,
-    borderBottomColor: Colors.background.card,
+    borderBottomColor: colors.background.card,
     minHeight: 44,
     alignItems: 'center',
   },
-  timeLabel: { fontSize: 15, color: Colors.text.secondary },
-  timeValue: { fontSize: 16, fontWeight: '700', color: Colors.brand.dark },
+  timeLabel: { fontSize: 15, color: colors.text.secondary },
+  timeValue: { fontSize: 16, fontWeight: '700', color: colors.brand.dark },
   noLocation: {
     fontSize: 14,
-    color: Colors.text.muted,
+    color: colors.text.muted,
     textAlign: 'center',
     marginBottom: 16,
     fontStyle: 'italic',
   },
   duaCard: {
-    backgroundColor: Colors.background.secondary,
+    backgroundColor: colors.background.secondary,
     borderRadius: 12,
     padding: 16,
     marginBottom: 12,
   },
-  occasion: { fontSize: 12, color: Colors.brand.mid, fontWeight: '700', marginBottom: 8 },
+  occasion: { fontSize: 12, color: colors.brand.mid, fontWeight: '700', marginBottom: 8 },
   arabicText: {
     fontSize: 20,
     textAlign: 'right',
     writingDirection: 'rtl',
-    color: Colors.brand.dark,
+    color: colors.brand.dark,
     fontWeight: '500',
     lineHeight: 34,
     marginBottom: 6,
   },
-  transliteration: { fontSize: 14, fontStyle: 'italic', color: Colors.text.secondary, marginBottom: 4 },
-  translation: { fontSize: 14, color: Colors.text.primary, lineHeight: 22 },
-  source: { fontSize: 12, color: Colors.text.muted, marginTop: 4, fontStyle: 'italic' },
+  transliteration: { fontSize: 14, fontStyle: 'italic', color: colors.text.secondary, marginBottom: 4 },
+  translation: { fontSize: 14, color: colors.text.primary, lineHeight: 22 },
+  source: { fontSize: 12, color: colors.text.muted, marginTop: 4, fontStyle: 'italic' },
   specialCard: {
-    backgroundColor: Colors.brand.dark + 'EE',
+    backgroundColor: colors.brand.dark + 'EE',
     borderRadius: 12,
     padding: 16,
     marginTop: 8,
   },
-  specialTitle: { fontSize: 16, fontWeight: '700', color: Colors.brand.light, marginBottom: 6 },
-  specialText: { fontSize: 14, color: Colors.brand.light + 'CC', lineHeight: 22 },
+  specialTitle: { fontSize: 16, fontWeight: '700', color: colors.brand.light, marginBottom: 6 },
+  specialText: { fontSize: 14, color: colors.brand.light + 'CC', lineHeight: 22 },
 });

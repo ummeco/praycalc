@@ -7,12 +7,13 @@
  * SPORT: REGISTRY-APPS.md#praycalc-mobile-feature-18-agendas
  */
 
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useMemo, useState, useCallback, useEffect } from 'react';
 import {
   View, Text, Switch, TouchableOpacity, StyleSheet, SafeAreaView, ScrollView, Alert,
 } from 'react-native';
 import * as Calendar from 'expo-calendar';
-import { Colors } from '../../constants/colors';
+import { useThemeColors } from '../../hooks/useThemeColors';
+import type { ThemeColors } from '../../constants/colors';
 import { PermissionDeniedState, LoadingState } from '../../components/states';
 import { calculatePrayerTimes } from '../../lib/prayer-calc';
 import { resolveTimezoneOffset } from '../../lib/timezone';
@@ -24,6 +25,8 @@ const PRAYER_NAMES: PrayerName[] = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
 const PRAYER_DURATION_MINS = 20; // Block 20 min per prayer on calendar
 
 export default function AgendasScreen() {
+  const colors = useThemeColors();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const [permissionStatus, setPermissionStatus] = useState<'unknown' | 'granted' | 'denied'>('unknown');
   const [enabledPrayers, setEnabledPrayers] = useState<Record<PrayerName, boolean>>({
     Fajr: true, Sunrise: false, Dhuhr: true, Asr: true, Maghrib: true, Isha: true,
@@ -113,8 +116,8 @@ export default function AgendasScreen() {
             <Switch
               value={enabledPrayers[name] ?? false}
               onValueChange={(v) => setEnabledPrayers((p) => ({ ...p, [name]: v }))}
-              trackColor={{ false: Colors.background.card, true: Colors.brand.mid }}
-              thumbColor={Colors.brand.light}
+              trackColor={{ false: colors.background.card, true: colors.brand.mid }}
+              thumbColor={colors.brand.light}
               accessibilityLabel={`Add ${name} to calendar`}
             />
           </View>
@@ -144,32 +147,32 @@ export default function AgendasScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: Colors.background.primary },
+const createStyles = (colors: ThemeColors) => StyleSheet.create({
+  container: { flex: 1, backgroundColor: colors.background.primary },
   scroll: { padding: 16, paddingBottom: 40 },
-  title: { fontSize: 22, fontWeight: '800', color: Colors.brand.dark, marginBottom: 8 },
-  desc: { fontSize: 14, color: Colors.text.muted, lineHeight: 22, marginBottom: 20 },
-  sectionTitle: { fontSize: 15, fontWeight: '700', color: Colors.text.primary, marginBottom: 10 },
+  title: { fontSize: 22, fontWeight: '800', color: colors.brand.dark, marginBottom: 8 },
+  desc: { fontSize: 14, color: colors.text.muted, lineHeight: 22, marginBottom: 20 },
+  sectionTitle: { fontSize: 15, fontWeight: '700', color: colors.text.primary, marginBottom: 10 },
   toggleRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingVertical: 12,
     borderBottomWidth: 1,
-    borderBottomColor: Colors.background.card,
+    borderBottomColor: colors.background.card,
     minHeight: 56,
   },
-  toggleLabel: { fontSize: 16, color: Colors.text.primary },
+  toggleLabel: { fontSize: 16, color: colors.text.primary },
   locationWarning: {
     fontSize: 13,
-    color: Colors.state.warning,
+    color: colors.state.warning,
     marginTop: 16,
     textAlign: 'center',
     fontStyle: 'italic',
   },
   syncBtn: {
     marginTop: 24,
-    backgroundColor: Colors.brand.dark,
+    backgroundColor: colors.brand.dark,
     borderRadius: 12,
     padding: 16,
     alignItems: 'center',
@@ -177,5 +180,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   syncBtnDisabled: { opacity: 0.5 },
-  syncBtnText: { fontSize: 16, fontWeight: '700', color: Colors.text.inverse },
+  syncBtnText: { fontSize: 16, fontWeight: '700', color: colors.text.inverse },
 });

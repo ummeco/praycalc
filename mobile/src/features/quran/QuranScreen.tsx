@@ -11,11 +11,12 @@
  * Al-Fatiha included below — verified character-by-character against standard mushaf.
  */
 
-import React, { useState, useCallback } from 'react';
+import React, { useMemo, useState, useCallback } from 'react';
 import {
   View, Text, FlatList, TouchableOpacity, StyleSheet, SafeAreaView, ScrollView, Linking,
 } from 'react-native';
-import { Colors } from '../../constants/colors';
+import { useThemeColors } from '../../hooks/useThemeColors';
+import type { ThemeColors } from '../../constants/colors';
 import { SkeletonState, EmptyState } from '../../components/states';
 import { mmkv } from '../../lib/storage/mmkv';
 import SURAH_META from './data/surahs.json';
@@ -134,6 +135,8 @@ function loadAyahs(surahNumber: number): Ayah[] | null {
 // ── Sub-screen: Surah Detail ──────────────────────────────────────────────────
 
 function SurahDetailView({ surah, onBack }: { surah: Surah; onBack: () => void }) {
+  const colors = useThemeColors();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const ayahs = loadAyahs(surah.number);
   const rawBookmarks = mmkv.getString(BOOKMARKS_KEY);
   const [bookmarks, setBookmarks] = useState<string[]>(() => {
@@ -239,6 +242,8 @@ function SurahDetailView({ surah, onBack }: { surah: Surah; onBack: () => void }
 // ── Main Screen: Surah List ───────────────────────────────────────────────────
 
 export default function QuranScreen() {
+  const colors = useThemeColors();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const [selectedSurah, setSelectedSurah] = useState<Surah | null>(null);
 
   if (selectedSurah) {
@@ -299,12 +304,12 @@ export default function QuranScreen() {
 
 // ── Styles ────────────────────────────────────────────────────────────────────
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: Colors.background.primary },
+const createStyles = (colors: ThemeColors) => StyleSheet.create({
+  container: { flex: 1, backgroundColor: colors.background.primary },
   screenTitle: {
     fontSize: 22,
     fontWeight: '800',
-    color: Colors.brand.dark,
+    color: colors.brand.dark,
     padding: 16,
     textAlign: 'center',
   },
@@ -314,7 +319,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 14,
     borderBottomWidth: 1,
-    borderBottomColor: Colors.background.card,
+    borderBottomColor: colors.background.card,
     minHeight: 56,
     gap: 12,
   },
@@ -322,20 +327,20 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: Colors.brand.mid + '33',
+    backgroundColor: colors.brand.mid + '33',
     justifyContent: 'center',
     alignItems: 'center',
   },
-  numberText: { fontSize: 13, fontWeight: '700', color: Colors.brand.dark },
+  numberText: { fontSize: 13, fontWeight: '700', color: colors.brand.dark },
   surahInfo: { flex: 1 },
-  transliteratedName: { fontSize: 16, fontWeight: '600', color: Colors.text.primary },
-  englishName: { fontSize: 13, color: Colors.text.muted, marginTop: 2 },
+  transliteratedName: { fontSize: 16, fontWeight: '600', color: colors.text.primary },
+  englishName: { fontSize: 13, color: colors.text.muted, marginTop: 2 },
   arabicSurahName: {
     // Arabic RTL — full tashkeel
     fontSize: 18,
     textAlign: 'right',
     writingDirection: 'rtl',
-    color: Colors.brand.dark,
+    color: colors.brand.dark,
     fontWeight: '500',
   },
   // Detail view
@@ -343,27 +348,27 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     padding: 12,
-    backgroundColor: Colors.brand.dark,
+    backgroundColor: colors.brand.dark,
     gap: 12,
   },
   backBtn: { padding: 8, minWidth: 44, minHeight: 44, justifyContent: 'center' },
-  backText: { color: Colors.brand.light, fontSize: 16 },
+  backText: { color: colors.brand.light, fontSize: 16 },
   headerCenter: { flex: 1, alignItems: 'center' },
   surahNameArabic: {
     fontSize: 22,
     textAlign: 'right',
     writingDirection: 'rtl',
-    color: Colors.brand.light,
+    color: colors.brand.light,
     fontWeight: '600',
   },
-  surahNameEn: { fontSize: 14, color: Colors.brand.light + 'BB', marginTop: 2 },
+  surahNameEn: { fontSize: 14, color: colors.brand.light + 'BB', marginTop: 2 },
   scroll: { padding: 16, paddingBottom: 40 },
   bismillah: {
     // Bismillah — Uthmani Arabic, centered
     fontSize: 22,
     textAlign: 'center',
     writingDirection: 'rtl',
-    color: Colors.brand.dark,
+    color: colors.brand.dark,
     fontWeight: '600',
     marginBottom: 16,
     lineHeight: 38,
@@ -371,7 +376,7 @@ const styles = StyleSheet.create({
   ayahCard: {
     marginBottom: 16,
     padding: 16,
-    backgroundColor: Colors.background.secondary,
+    backgroundColor: colors.background.secondary,
     borderRadius: 12,
   },
   ayahMeta: {
@@ -384,18 +389,18 @@ const styles = StyleSheet.create({
     width: 30,
     height: 30,
     borderRadius: 15,
-    backgroundColor: Colors.brand.mid + '44',
+    backgroundColor: colors.brand.mid + '44',
     justifyContent: 'center',
     alignItems: 'center',
   },
-  verseNumber: { fontSize: 12, fontWeight: '700', color: Colors.brand.dark },
+  verseNumber: { fontSize: 12, fontWeight: '700', color: colors.brand.dark },
   bookmark: { fontSize: 20 },
   arabicAyah: {
     // Uthmani script — RTL — NEVER split with JS string methods
     fontSize: 24,
     textAlign: 'right',
     writingDirection: 'rtl',
-    color: Colors.brand.deep,
+    color: colors.brand.deep,
     fontWeight: '400',
     lineHeight: 40,
     marginBottom: 8,
@@ -403,30 +408,30 @@ const styles = StyleSheet.create({
   transliteration: {
     fontSize: 14,
     fontStyle: 'italic',
-    color: Colors.text.secondary,
+    color: colors.text.secondary,
     marginBottom: 4,
     lineHeight: 22,
   },
   translation: {
     fontSize: 14,
-    color: Colors.text.primary,
+    color: colors.text.primary,
     lineHeight: 22,
   },
   comingSoon: { alignItems: 'center', padding: 24, gap: 10 },
   comingSoonArabic: {
     fontSize: 30, textAlign: 'center', writingDirection: 'rtl',
-    color: Colors.brand.dark, fontWeight: '600', lineHeight: 48,
+    color: colors.brand.dark, fontWeight: '600', lineHeight: 48,
   },
-  comingSoonTitle: { fontSize: 16, fontWeight: '700', color: Colors.text.primary },
-  comingSoonBody: { fontSize: 14, color: Colors.text.muted, textAlign: 'center', lineHeight: 21 },
+  comingSoonTitle: { fontSize: 16, fontWeight: '700', color: colors.text.primary },
+  comingSoonBody: { fontSize: 14, color: colors.text.muted, textAlign: 'center', lineHeight: 21 },
   wikiBtn: {
     marginTop: 8, paddingVertical: 12, paddingHorizontal: 24, borderRadius: 10,
-    backgroundColor: Colors.brand.dark,
+    backgroundColor: colors.brand.dark,
   },
-  wikiBtnText: { color: Colors.text.inverse, fontWeight: '700', fontSize: 15 },
+  wikiBtnText: { color: colors.text.inverse, fontWeight: '700', fontSize: 15 },
   wikiFooter: {
     margin: 16, marginTop: 8, padding: 16, borderRadius: 12,
-    backgroundColor: Colors.brand.mid + '1A', borderWidth: 1, borderColor: Colors.brand.mid + '44',
+    backgroundColor: colors.brand.mid + '1A', borderWidth: 1, borderColor: colors.brand.mid + '44',
   },
-  wikiFooterText: { color: Colors.brand.dark, fontWeight: '600', fontSize: 14, textAlign: 'center', lineHeight: 21 },
+  wikiFooterText: { color: colors.brand.dark, fontWeight: '600', fontSize: 14, textAlign: 'center', lineHeight: 21 },
 });

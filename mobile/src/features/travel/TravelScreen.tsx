@@ -14,11 +14,12 @@
  * User must manually select jama if desired. This screen only handles qasr + travel city.
  */
 
-import React, { useState, useCallback } from 'react';
+import React, { useMemo, useState, useCallback } from 'react';
 import {
   View, Text, Switch, TouchableOpacity, StyleSheet, SafeAreaView, ScrollView, Alert,
 } from 'react-native';
-import { Colors } from '../../constants/colors';
+import { useThemeColors } from '../../hooks/useThemeColors';
+import type { ThemeColors } from '../../constants/colors';
 import { useSettingsStore } from '../settings/store/useSettingsStore';
 import CitySearchScreen from '../city-search/CitySearchScreen';
 import type { CityCoords } from '../../types/prayer';
@@ -35,6 +36,8 @@ const QASR_RAKAT: Record<PrayerName, { normal: number; qasr: number }> = {
 };
 
 export default function TravelScreen() {
+  const colors = useThemeColors();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const { location, travelLocation, musafirMode, setTravelLocation, setMusafirMode } = useSettingsStore();
   const [showCitySearch, setShowCitySearch] = useState(false);
 
@@ -78,8 +81,8 @@ export default function TravelScreen() {
           <Switch
             value={musafirMode}
             onValueChange={handleMusafirToggle}
-            trackColor={{ false: Colors.background.card, true: Colors.brand.mid }}
-            thumbColor={Colors.brand.light}
+            trackColor={{ false: colors.background.card, true: colors.brand.mid }}
+            thumbColor={colors.brand.light}
             accessibilityLabel="Musafir travel mode"
           />
         </View>
@@ -161,29 +164,29 @@ export default function TravelScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: Colors.background.primary },
+const createStyles = (colors: ThemeColors) => StyleSheet.create({
+  container: { flex: 1, backgroundColor: colors.background.primary },
   scroll: { padding: 16, paddingBottom: 40 },
   musafirCard: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: Colors.background.secondary,
+    backgroundColor: colors.background.secondary,
     borderRadius: 14,
     padding: 16,
     marginBottom: 12,
     minHeight: 72,
   },
   cardLeft: { flex: 1, marginRight: 12 },
-  cardTitle: { fontSize: 17, fontWeight: '700', color: Colors.text.primary },
-  cardDesc: { fontSize: 13, color: Colors.text.muted, marginTop: 4, lineHeight: 20 },
+  cardTitle: { fontSize: 17, fontWeight: '700', color: colors.text.primary },
+  cardDesc: { fontSize: 13, color: colors.text.muted, marginTop: 4, lineHeight: 20 },
   rakatCard: {
-    backgroundColor: Colors.background.secondary,
+    backgroundColor: colors.background.secondary,
     borderRadius: 14,
     padding: 16,
     marginBottom: 12,
   },
-  sectionTitle: { fontSize: 15, fontWeight: '700', color: Colors.text.primary, marginBottom: 10 },
+  sectionTitle: { fontSize: 15, fontWeight: '700', color: colors.text.primary, marginBottom: 10 },
   rakatRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -191,20 +194,20 @@ const styles = StyleSheet.create({
     gap: 8,
     minHeight: 40,
   },
-  prayerName: { width: 72, fontSize: 15, color: Colors.text.primary, fontWeight: '500' },
-  rakatNormal: { fontSize: 14, color: Colors.text.muted, width: 60 },
-  arrow: { fontSize: 14, color: Colors.text.muted },
-  rakatQasr: { fontSize: 14, fontWeight: '600', color: Colors.text.primary },
-  shortened: { color: Colors.brand.dark, fontWeight: '800' },
+  prayerName: { width: 72, fontSize: 15, color: colors.text.primary, fontWeight: '500' },
+  rakatNormal: { fontSize: 14, color: colors.text.muted, width: 60 },
+  arrow: { fontSize: 14, color: colors.text.muted },
+  rakatQasr: { fontSize: 14, fontWeight: '600', color: colors.text.primary },
+  shortened: { color: colors.brand.dark, fontWeight: '800' },
   fiqhNote: {
     fontSize: 12,
-    color: Colors.text.muted,
+    color: colors.text.muted,
     marginTop: 10,
     lineHeight: 18,
     fontStyle: 'italic',
   },
   cityCard: {
-    backgroundColor: Colors.background.secondary,
+    backgroundColor: colors.background.secondary,
     borderRadius: 14,
     padding: 16,
     marginBottom: 12,
@@ -215,25 +218,25 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     minHeight: 44,
   },
-  cityName: { fontSize: 16, fontWeight: '600', color: Colors.text.primary },
-  cityCountry: { fontSize: 13, color: Colors.text.muted, marginTop: 2 },
+  cityName: { fontSize: 16, fontWeight: '600', color: colors.text.primary },
+  cityCountry: { fontSize: 13, color: colors.text.muted, marginTop: 2 },
   changeBtn: { padding: 8, minHeight: 44, justifyContent: 'center' },
-  changeBtnText: { fontSize: 14, color: Colors.brand.dark, fontWeight: '600' },
+  changeBtnText: { fontSize: 14, color: colors.brand.dark, fontWeight: '600' },
   selectCityBtn: {
     paddingVertical: 12,
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: Colors.brand.mid,
+    borderColor: colors.brand.mid,
     alignItems: 'center',
     minHeight: 44,
     justifyContent: 'center',
   },
-  selectCityText: { fontSize: 15, color: Colors.brand.mid, fontWeight: '600' },
-  cityNote: { fontSize: 12, color: Colors.text.muted, marginTop: 8, fontStyle: 'italic' },
+  selectCityText: { fontSize: 15, color: colors.brand.mid, fontWeight: '600' },
+  cityNote: { fontSize: 12, color: colors.text.muted, marginTop: 8, fontStyle: 'italic' },
   homeCard: {
-    backgroundColor: Colors.background.secondary,
+    backgroundColor: colors.background.secondary,
     borderRadius: 14,
     padding: 16,
   },
-  homeCityText: { fontSize: 16, color: Colors.text.primary },
+  homeCityText: { fontSize: 16, color: colors.text.primary },
 });

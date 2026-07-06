@@ -8,7 +8,7 @@
  * SPORT: REGISTRY-COMPONENTS.md#praycalc-mobile-settings-screen
  */
 
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   View,
   Text,
@@ -21,9 +21,11 @@ import {
 } from 'react-native';
 import { router } from 'expo-router';
 import * as Location from 'expo-location';
-import { Colors } from '../../../constants/colors';
+import { useThemeColors } from '../../../hooks/useThemeColors';
+import type { ThemeColors } from '../../../constants/colors';
 import { CALC_METHODS } from '../../../constants/methods';
 import { useSettingsStore } from '../store/useSettingsStore';
+import type { ThemeMode } from '../store/useSettingsStore';
 import { useAuthStore } from '../../auth/store/useAuthStore';
 import type { Madhab, TimeFormat, HighLatRule, PrayerName } from '../../../types/prayer';
 import { ErrorState, LoadingState } from '../../../components/shared/UIStates';
@@ -44,7 +46,16 @@ const HIGH_LAT_RULES: { key: HighLatRule; label: string }[] = [
 
 const UPGRADE_URL = 'https://praycalc.com/upgrade';
 
+/** Appearance section options — System follows the OS, Light/Dark force a palette. */
+const THEME_OPTIONS: { key: ThemeMode; label: string }[] = [
+  { key: 'system', label: 'System' },
+  { key: 'light', label: 'Light' },
+  { key: 'dark', label: 'Dark' },
+];
+
 export default function SettingsScreen() {
+  const colors = useThemeColors();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const settings = useSettingsStore();
   const auth = useAuthStore();
   const [isLocating, setIsLocating] = useState(false);
@@ -115,7 +126,7 @@ export default function SettingsScreen() {
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
 
       {/* Account / Ummat+ */}
-      <SectionHeader title="Account" />
+      <SectionHeader title="Account" styles={styles} />
       <View style={styles.card}>
         <View style={styles.row}>
           <Text style={styles.rowLabel}>
@@ -143,7 +154,7 @@ export default function SettingsScreen() {
       </View>
 
       {/* Location */}
-      <SectionHeader title="Location" />
+      <SectionHeader title="Location" styles={styles} />
       <View style={styles.card}>
         {settings.location ? (
           <View style={styles.row}>
@@ -167,7 +178,7 @@ export default function SettingsScreen() {
       </View>
 
       {/* Calculation Method */}
-      <SectionHeader title="Calculation Method" />
+      <SectionHeader title="Calculation Method" styles={styles} />
       <View style={styles.card}>
         {CALC_METHODS.map((method) => {
           const isSelected = settings.method === method.key;
@@ -219,7 +230,7 @@ export default function SettingsScreen() {
       </View>
 
       {/* High-latitude rule */}
-      <SectionHeader title="High-Latitude Adjustment" />
+      <SectionHeader title="High-Latitude Adjustment" styles={styles} />
       <View style={styles.card}>
         <Text style={styles.hint}>
           Applied when Fajr/Isha can't reach the required angle (far-north/south locations
@@ -245,7 +256,7 @@ export default function SettingsScreen() {
       </View>
 
       {/* Madhab (Asr shadow factor) */}
-      <SectionHeader title="Madhab (Asr)" />
+      <SectionHeader title="Madhab (Asr)" styles={styles} />
       <View style={styles.card}>
         <View style={styles.toggle}>
           {(['Shafi', 'Hanafi'] as Madhab[]).map((m) => (
@@ -266,7 +277,7 @@ export default function SettingsScreen() {
       </View>
 
       {/* Prayer time fine-tuning — match a local mosque timetable */}
-      <SectionHeader title="Prayer Time Adjustments" />
+      <SectionHeader title="Prayer Time Adjustments" styles={styles} />
       <View style={styles.card}>
         <Text style={styles.hint}>
           Fine-tune each time by ±30 minutes to match your local mosque timetable.
@@ -301,7 +312,7 @@ export default function SettingsScreen() {
       </View>
 
       {/* Hijri date adjustment — local moon-sighting offset */}
-      <SectionHeader title="Hijri Date Adjustment" />
+      <SectionHeader title="Hijri Date Adjustment" styles={styles} />
       <View style={styles.card}>
         <Text style={styles.hint}>
           Shift the Hijri date by ±2 days if your local moon sighting differs from the
@@ -332,7 +343,7 @@ export default function SettingsScreen() {
       </View>
 
       {/* Language */}
-      <SectionHeader title="Language" />
+      <SectionHeader title="Language" styles={styles} />
       <View style={styles.card}>
         <TouchableOpacity style={styles.row} onPress={() => setShowLanguages((v) => !v)}>
           <Text style={styles.rowLabel}>App Language</Text>
@@ -360,7 +371,7 @@ export default function SettingsScreen() {
       </View>
 
       {/* Time Format */}
-      <SectionHeader title="Time Format" />
+      <SectionHeader title="Time Format" styles={styles} />
       <View style={styles.card}>
         <View style={styles.toggle}>
           {(['12h', '24h'] as TimeFormat[]).map((f) => (
@@ -377,9 +388,30 @@ export default function SettingsScreen() {
         </View>
       </View>
 
+      {/* Appearance — theme mode: System follows the OS, Light/Dark force a palette */}
+      <SectionHeader title="Appearance" styles={styles} />
+      <View style={styles.card}>
+        <View style={styles.toggle}>
+          {THEME_OPTIONS.map((opt) => (
+            <TouchableOpacity
+              key={opt.key}
+              style={[styles.toggleOption, settings.themeMode === opt.key && styles.toggleOptionActive]}
+              onPress={() => settings.setThemeMode(opt.key)}
+              accessibilityRole="button"
+              accessibilityLabel={`${opt.label} theme`}
+              accessibilityState={{ selected: settings.themeMode === opt.key }}
+            >
+              <Text style={[styles.toggleText, settings.themeMode === opt.key && styles.toggleTextActive]}>
+                {opt.label}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </View>
+
       {/* Notifications — single source of truth is NotificationSettingsScreen (per-prayer
           enable + advance minutes); this just links out instead of duplicating the picker. */}
-      <SectionHeader title="Notifications" />
+      <SectionHeader title="Notifications" styles={styles} />
       <View style={styles.card}>
         <View style={styles.row}>
           <Text style={styles.rowLabel}>Prayer Time Alerts</Text>
@@ -397,48 +429,48 @@ export default function SettingsScreen() {
   );
 }
 
-function SectionHeader({ title }: { title: string }) {
+function SectionHeader({ title, styles }: { title: string; styles: ReturnType<typeof createStyles> }) {
   return <Text style={styles.sectionHeader}>{title}</Text>;
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: Colors.background.secondary },
+const createStyles = (colors: ThemeColors) => StyleSheet.create({
+  container: { flex: 1, backgroundColor: colors.background.secondary },
   content: { padding: 16, gap: 8 },
   sectionHeader: {
     fontSize: 12,
     fontWeight: '600',
-    color: Colors.text.muted,
+    color: colors.text.muted,
     textTransform: 'uppercase',
     letterSpacing: 0.5,
     marginTop: 8,
     paddingHorizontal: 4,
   },
   card: {
-    backgroundColor: Colors.background.primary,
+    backgroundColor: colors.background.primary,
     borderRadius: 12,
     padding: 16,
     gap: 12,
   },
   row: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  rowLabel: { fontSize: 15, color: Colors.text.primary },
-  rowValue: { fontSize: 14, color: Colors.text.muted },
-  hint: { fontSize: 13, color: Colors.text.muted, fontStyle: 'italic' },
+  rowLabel: { fontSize: 15, color: colors.text.primary },
+  rowValue: { fontSize: 14, color: colors.text.muted },
+  hint: { fontSize: 13, color: colors.text.muted, fontStyle: 'italic' },
   customAnglesRow: { flexDirection: 'row', gap: 12, marginTop: 4 },
   angleField: { flex: 1, gap: 4 },
   angleInput: {
-    backgroundColor: Colors.background.secondary,
+    backgroundColor: colors.background.secondary,
     borderRadius: 8,
     paddingHorizontal: 10,
     paddingVertical: 8,
     fontSize: 15,
-    color: Colors.text.primary,
+    color: colors.text.primary,
     borderWidth: 1,
-    borderColor: Colors.background.card,
+    borderColor: colors.background.card,
     minHeight: 40,
   },
   plusBadge: {
-    backgroundColor: Colors.brand.mid,
-    color: Colors.text.inverse,
+    backgroundColor: colors.brand.mid,
+    color: colors.text.inverse,
     fontWeight: '700',
     fontSize: 12,
     paddingHorizontal: 10,
@@ -448,14 +480,14 @@ const styles = StyleSheet.create({
   },
   upsellRow: { gap: 8 },
   button: {
-    backgroundColor: Colors.brand.dark,
+    backgroundColor: colors.brand.dark,
     borderRadius: 8,
     padding: 12,
     alignItems: 'center',
   },
-  buttonText: { color: Colors.text.inverse, fontWeight: '600', fontSize: 14 },
-  buttonSecondary: { backgroundColor: Colors.background.secondary, borderWidth: 1, borderColor: Colors.brand.mid },
-  buttonSecondaryText: { color: Colors.brand.dark, fontWeight: '600', fontSize: 14 },
+  buttonText: { color: colors.text.inverse, fontWeight: '600', fontSize: 14 },
+  buttonSecondary: { backgroundColor: colors.background.secondary, borderWidth: 1, borderColor: colors.brand.mid },
+  buttonSecondaryText: { color: colors.brand.dark, fontWeight: '600', fontSize: 14 },
   optionRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -463,36 +495,36 @@ const styles = StyleSheet.create({
     padding: 8,
     borderRadius: 8,
   },
-  optionRowSelected: { backgroundColor: Colors.background.secondary },
+  optionRowSelected: { backgroundColor: colors.background.secondary },
   radio: {
     width: 20,
     height: 20,
     borderRadius: 10,
     borderWidth: 2,
-    borderColor: Colors.text.muted,
+    borderColor: colors.text.muted,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  radioSelected: { borderColor: Colors.brand.dark },
-  radioInner: { width: 10, height: 10, borderRadius: 5, backgroundColor: Colors.brand.dark },
-  optionLabel: { fontSize: 14, color: Colors.text.primary, flex: 1 },
-  optionLabelSelected: { fontWeight: '600', color: Colors.brand.dark },
+  radioSelected: { borderColor: colors.brand.dark },
+  radioInner: { width: 10, height: 10, borderRadius: 5, backgroundColor: colors.brand.dark },
+  optionLabel: { fontSize: 14, color: colors.text.primary, flex: 1 },
+  optionLabelSelected: { fontWeight: '600', color: colors.brand.dark },
   stepper: { flexDirection: 'row', alignItems: 'center', gap: 10 },
   stepperButton: {
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: Colors.background.secondary,
+    backgroundColor: colors.background.secondary,
     borderWidth: 1,
-    borderColor: Colors.brand.mid,
+    borderColor: colors.brand.mid,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  stepperButtonText: { fontSize: 18, fontWeight: '700', color: Colors.brand.dark, lineHeight: 20 },
-  stepperValue: { fontSize: 14, color: Colors.text.primary, minWidth: 56, textAlign: 'center', fontVariant: ['tabular-nums'] },
-  toggle: { flexDirection: 'row', borderRadius: 8, overflow: 'hidden', backgroundColor: Colors.background.secondary },
+  stepperButtonText: { fontSize: 18, fontWeight: '700', color: colors.brand.dark, lineHeight: 20 },
+  stepperValue: { fontSize: 14, color: colors.text.primary, minWidth: 56, textAlign: 'center', fontVariant: ['tabular-nums'] },
+  toggle: { flexDirection: 'row', borderRadius: 8, overflow: 'hidden', backgroundColor: colors.background.secondary },
   toggleOption: { flex: 1, padding: 12, alignItems: 'center' },
-  toggleOptionActive: { backgroundColor: Colors.brand.dark },
-  toggleText: { fontSize: 14, color: Colors.text.primary, fontWeight: '500' },
-  toggleTextActive: { color: Colors.text.inverse, fontWeight: '700' },
+  toggleOptionActive: { backgroundColor: colors.brand.dark },
+  toggleText: { fontSize: 14, color: colors.text.primary, fontWeight: '500' },
+  toggleTextActive: { color: colors.text.inverse, fontWeight: '700' },
 });

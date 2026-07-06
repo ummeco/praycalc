@@ -15,10 +15,11 @@
  * PCI filed: pci-praycalc-home-widgets-native — tracks native WidgetKit extension development.
  */
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, ScrollView } from 'react-native';
 import { router } from 'expo-router';
-import { Colors } from '../../constants/colors';
+import { useThemeColors } from '../../hooks/useThemeColors';
+import type { ThemeColors } from '../../constants/colors';
 import { EmptyState } from '../../components/states';
 import { useAuthStore } from '../auth/store/useAuthStore';
 import { useSettingsStore, useActiveLocation } from '../settings/store/useSettingsStore';
@@ -54,6 +55,8 @@ function formatCountdown(seconds: number): string {
 // ── Widget setup screen ───────────────────────────────────────────────────────
 
 export default function HomeWidgetScreen() {
+  const colors = useThemeColors();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const isPlus = useAuthStore((s) => s.isPlus);
   const settings = useSettingsStore();
   const activeLocation = useActiveLocation();
@@ -145,47 +148,47 @@ export default function HomeWidgetScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: Colors.background.primary },
+const createStyles = (colors: ThemeColors) => StyleSheet.create({
+  container: { flex: 1, backgroundColor: colors.background.primary },
   scroll: { padding: 16, paddingBottom: 40 },
   header: { alignItems: 'center', padding: 20, marginBottom: 12 },
   icon: { fontSize: 48, marginBottom: 8 },
-  title: { fontSize: 24, fontWeight: '800', color: Colors.brand.dark },
-  subtitle: { fontSize: 15, color: Colors.text.muted, marginTop: 4, textAlign: 'center' },
+  title: { fontSize: 24, fontWeight: '800', color: colors.brand.dark },
+  subtitle: { fontSize: 15, color: colors.text.muted, marginTop: 4, textAlign: 'center' },
   card: {
-    backgroundColor: Colors.background.secondary,
+    backgroundColor: colors.background.secondary,
     borderRadius: 14,
     padding: 16,
     marginBottom: 12,
   },
-  cardTitle: { fontSize: 16, fontWeight: '700', color: Colors.text.primary, marginBottom: 12 },
+  cardTitle: { fontSize: 16, fontWeight: '700', color: colors.text.primary, marginBottom: 12 },
   widgetPreview: {
-    backgroundColor: Colors.brand.dark,
+    backgroundColor: colors.brand.dark,
     borderRadius: 12,
     padding: 16,
     alignItems: 'center',
     gap: 4,
   },
-  widgetTitle: { fontSize: 12, color: Colors.brand.light + '99', textTransform: 'uppercase', letterSpacing: 1 },
-  widgetPrayer: { fontSize: 20, fontWeight: '800', color: Colors.brand.light, marginTop: 4 },
-  widgetTime: { fontSize: 32, fontWeight: '700', color: Colors.text.inverse },
-  widgetCountdown: { fontSize: 14, color: Colors.brand.light + 'CC' },
+  widgetTitle: { fontSize: 12, color: colors.brand.light + '99', textTransform: 'uppercase', letterSpacing: 1 },
+  widgetPrayer: { fontSize: 20, fontWeight: '800', color: colors.brand.light, marginTop: 4 },
+  widgetTime: { fontSize: 32, fontWeight: '700', color: colors.text.inverse },
+  widgetCountdown: { fontSize: 14, color: colors.brand.light + 'CC' },
   step: { flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 10, minHeight: 40 },
   stepNum: {
     width: 28,
     height: 28,
     borderRadius: 14,
-    backgroundColor: Colors.brand.mid,
+    backgroundColor: colors.brand.mid,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  stepNumText: { fontSize: 13, fontWeight: '700', color: Colors.text.inverse },
-  stepText: { fontSize: 14, color: Colors.text.primary, flex: 1 },
+  stepNumText: { fontSize: 13, fontWeight: '700', color: colors.text.inverse },
+  stepText: { fontSize: 14, color: colors.text.primary, flex: 1 },
   statusCard: {
-    backgroundColor: Colors.brand.light + '33',
+    backgroundColor: colors.brand.light + '33',
     borderRadius: 12,
     padding: 14,
   },
-  statusTitle: { fontSize: 14, fontWeight: '700', color: Colors.brand.dark, marginBottom: 8 },
-  statusText: { fontSize: 13, color: Colors.brand.deep, lineHeight: 20, marginBottom: 6 },
+  statusTitle: { fontSize: 14, fontWeight: '700', color: colors.brand.dark, marginBottom: 8 },
+  statusText: { fontSize: 13, color: colors.brand.deep, lineHeight: 20, marginBottom: 6 },
 });

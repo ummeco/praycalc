@@ -14,13 +14,14 @@
  * SPORT: REGISTRY-APPS.md#praycalc-mobile-feature-17-smart-home
  */
 
-import React, { useState, useCallback } from 'react';
+import React, { useMemo, useState, useCallback } from 'react';
 import {
   View, Text, Switch, TouchableOpacity, StyleSheet, SafeAreaView, ScrollView, Alert,
 } from 'react-native';
 import { router } from 'expo-router';
 import * as LocalAuthentication from 'expo-local-authentication';
-import { Colors } from '../../constants/colors';
+import { useThemeColors } from '../../hooks/useThemeColors';
+import type { ThemeColors } from '../../constants/colors';
 import { PermissionDeniedState, EmptyState } from '../../components/states';
 import { useAuthStore } from '../auth/store/useAuthStore';
 
@@ -33,6 +34,8 @@ interface SmartHomeDevice {
 }
 
 export default function SmartHomeScreen() {
+  const colors = useThemeColors();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const isPlus = useAuthStore((s) => s.isPlus);
   const [lockOnSalah, setLockOnSalah] = useState(false);
   const [biometricError, setBiometricError] = useState(false);
@@ -108,8 +111,8 @@ export default function SmartHomeScreen() {
             <Switch
               value={lockOnSalah}
               onValueChange={handleLockOnSalah}
-              trackColor={{ false: Colors.background.card, true: Colors.brand.mid }}
-              thumbColor={Colors.brand.light}
+              trackColor={{ false: colors.background.card, true: colors.brand.mid }}
+              thumbColor={colors.brand.light}
               accessibilityLabel="Lock on salah mode"
             />
           </View>
@@ -136,7 +139,7 @@ export default function SmartHomeScreen() {
               </Text>
               <View>
                 <Text style={styles.deviceName}>{device.name}</Text>
-                <Text style={[styles.deviceStatus, { color: device.isOnline ? Colors.state.success : Colors.text.muted }]}>
+                <Text style={[styles.deviceStatus, { color: device.isOnline ? colors.state.success : colors.text.muted }]}>
                   {device.isOnline ? 'Online' : 'Offline'}
                 </Text>
               </View>
@@ -145,8 +148,8 @@ export default function SmartHomeScreen() {
               value={deviceStates[device.id] ?? false}
               onValueChange={(v) => handleDeviceToggle(device, v)}
               disabled={!device.isOnline}
-              trackColor={{ false: Colors.background.card, true: Colors.brand.mid }}
-              thumbColor={Colors.brand.light}
+              trackColor={{ false: colors.background.card, true: colors.brand.mid }}
+              thumbColor={colors.brand.light}
               accessibilityLabel={`Toggle ${device.name}`}
               accessibilityState={{ disabled: !device.isOnline }}
             />
@@ -166,31 +169,31 @@ export default function SmartHomeScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: Colors.background.primary },
+const createStyles = (colors: ThemeColors) => StyleSheet.create({
+  container: { flex: 1, backgroundColor: colors.background.primary },
   scroll: { padding: 16, paddingBottom: 40 },
   sectionCard: {
-    backgroundColor: Colors.background.secondary,
+    backgroundColor: colors.background.secondary,
     borderRadius: 14,
     padding: 16,
     marginBottom: 16,
   },
-  sectionTitle: { fontSize: 16, fontWeight: '700', color: Colors.text.primary, marginBottom: 6 },
-  sectionDesc: { fontSize: 14, color: Colors.text.muted, lineHeight: 22, marginBottom: 12 },
+  sectionTitle: { fontSize: 16, fontWeight: '700', color: colors.text.primary, marginBottom: 6 },
+  sectionDesc: { fontSize: 14, color: colors.text.muted, lineHeight: 22, marginBottom: 12 },
   toggleRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     minHeight: 44,
   },
-  toggleLabel: { fontSize: 16, color: Colors.text.primary },
-  activeNote: { fontSize: 13, color: Colors.brand.dark, marginTop: 10, lineHeight: 20 },
-  heading: { fontSize: 16, fontWeight: '700', color: Colors.text.primary, marginBottom: 10 },
+  toggleLabel: { fontSize: 16, color: colors.text.primary },
+  activeNote: { fontSize: 13, color: colors.brand.dark, marginTop: 10, lineHeight: 20 },
+  heading: { fontSize: 16, fontWeight: '700', color: colors.text.primary, marginBottom: 10 },
   deviceCard: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: Colors.background.secondary,
+    backgroundColor: colors.background.secondary,
     borderRadius: 12,
     padding: 14,
     marginBottom: 8,
@@ -198,18 +201,18 @@ const styles = StyleSheet.create({
   },
   deviceLeft: { flexDirection: 'row', alignItems: 'center', gap: 12 },
   deviceIcon: { fontSize: 24 },
-  deviceName: { fontSize: 15, fontWeight: '600', color: Colors.text.primary },
+  deviceName: { fontSize: 15, fontWeight: '600', color: colors.text.primary },
   deviceStatus: { fontSize: 12, marginTop: 2 },
   addBtn: {
     marginTop: 8,
     padding: 14,
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: Colors.brand.mid,
+    borderColor: colors.brand.mid,
     borderStyle: 'dashed',
     alignItems: 'center',
     minHeight: 44,
     justifyContent: 'center',
   },
-  addBtnText: { fontSize: 15, color: Colors.brand.mid, fontWeight: '600' },
+  addBtnText: { fontSize: 15, color: colors.brand.mid, fontWeight: '600' },
 });

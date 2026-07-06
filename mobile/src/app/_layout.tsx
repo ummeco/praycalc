@@ -15,11 +15,16 @@ import '../i18n';
 import { useEffect, useRef } from 'react';
 import { Stack, router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { useColorScheme } from 'react-native';
 import * as Notifications from 'expo-notifications';
 import * as Linking from 'expo-linking';
 import { GqlClientProvider } from '../lib/graphql';
 import { extractPinFromDeepLink } from '../lib/pairing/pairingMutation';
 import { registerIAPListener } from '../lib/iap/IAPListener';
+import {
+  registerRescheduleTask,
+  schedulePrayerNotifications,
+} from '../lib/notifications/PrayerNotificationService';
 import { playAdhan } from '../features/adhan/services/AdhanAudioService';
 import { useSettingsStore } from '../features/settings/store/useSettingsStore';
 import type { PrayerName } from '../types/prayer';
@@ -80,15 +85,36 @@ export default function RootLayout() {
   usePairingDeepLink();
   useAdhanOnNotificationTap();
 
+  // Same resolution rule as useThemeColors(): 'system' follows the OS, else forced.
+  // Duplicated here (rather than calling useThemeColors) so the root layout doesn't
+  // need the full color palette — it only needs the light/dark boolean for the bar.
+  const themeMode = useSettingsStore((s) => s.themeMode);
+  const systemScheme = useColorScheme();
+  const isDark = themeMode === 'system' ? systemScheme === 'dark' : themeMode === 'dark';
+
   useEffect(() => {
     // Global purchase listener — must be registered once at app start, not inside
     // SubscriptionScreen, so unfinished/restored transactions are never lost.
     registerIAPListener();
   }, []);
 
+  useEffect(() => {
+    // Keep the notification window alive: notifications are only pre-scheduled
+    // NOTIFICATION_DAYS_AHEAD days out, so every app start (a) re-registers the
+    // midnight background reschedule task and (b) refreshes the schedule now.
+    // Without this the schedule silently expires if the app stays closed longer
+    // than the pre-scheduled window and the background task was never registered.
+    void (async () => {
+      await useSettingsStore.persist.rehydrate();
+      if (!useSettingsStore.getState().notificationsEnabled) return;
+      await registerRescheduleTask();
+      await schedulePrayerNotifications();
+    })().catch(() => undefined);
+  }, []);
+
   return (
     <GqlClientProvider>
-      <StatusBar style="auto" />
+      <StatusBar style={isDark ? 'light' : 'dark'} />
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="(auth)" options={{ headerShown: false }} />

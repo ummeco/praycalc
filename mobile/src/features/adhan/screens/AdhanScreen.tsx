@@ -12,13 +12,14 @@
  * SPORT: REGISTRY-APPS.md#praycalc-mobile-feature-06-adhan
  */
 
-import React, { useState, useCallback } from 'react';
+import React, { useMemo, useState, useCallback } from 'react';
 import {
   View, Text, FlatList, TouchableOpacity, Switch, StyleSheet, SafeAreaView, Alert,
 } from 'react-native';
 import { router } from 'expo-router';
 import { useQuery } from 'urql';
-import { Colors } from '../../../constants/colors';
+import { useThemeColors } from '../../../hooks/useThemeColors';
+import type { ThemeColors } from '../../../constants/colors';
 import {
   LoadingState, ErrorState, EmptyState, OfflineState, SkeletonState,
 } from '../../../components/states';
@@ -58,6 +59,8 @@ const PRAYER_NAMES: PrayerName[] = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
 // ── Screen ────────────────────────────────────────────────────────────────────
 
 export default function AdhanScreen() {
+  const colors = useThemeColors();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const [{ data, fetching, error }, reexecuteQuery] = useQuery({ query: GET_ADHAN_LIBRARY });
   const [playingId, setPlayingId] = useState<string | null>(null);
   const isPlus = useAuthStore((s) => s.isPlus);
@@ -121,8 +124,8 @@ export default function AdhanScreen() {
             <Switch
               value={enabledPrayers[name]}
               onValueChange={() => togglePrayer(name)}
-              trackColor={{ false: Colors.background.card, true: Colors.brand.mid }}
-              thumbColor={Colors.brand.light}
+              trackColor={{ false: colors.background.card, true: colors.brand.mid }}
+              thumbColor={colors.brand.light}
               accessibilityLabel={`Enable ${name} adhan`}
             />
           </View>
@@ -170,13 +173,13 @@ export default function AdhanScreen() {
 
 // ── Styles ────────────────────────────────────────────────────────────────────
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: Colors.background.primary },
-  section: { padding: 16, backgroundColor: Colors.background.secondary },
+const createStyles = (colors: ThemeColors) => StyleSheet.create({
+  container: { flex: 1, backgroundColor: colors.background.primary },
+  section: { padding: 16, backgroundColor: colors.background.secondary },
   sectionTitle: {
     fontSize: 16,
     fontWeight: '700',
-    color: Colors.text.primary,
+    color: colors.text.primary,
     paddingHorizontal: 16,
     paddingVertical: 12,
   },
@@ -187,10 +190,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 10,
     borderBottomWidth: 1,
-    borderBottomColor: Colors.background.card,
+    borderBottomColor: colors.background.card,
     minHeight: 44,
   },
-  toggleLabel: { fontSize: 16, color: Colors.text.primary },
+  toggleLabel: { fontSize: 16, color: colors.text.primary },
   voiceCard: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -200,22 +203,22 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
     marginVertical: 4,
     borderRadius: 10,
-    backgroundColor: Colors.background.secondary,
+    backgroundColor: colors.background.secondary,
     minHeight: 64,
   },
   voiceCardSelected: {
     borderWidth: 2,
-    borderColor: Colors.brand.mid,
-    backgroundColor: Colors.brand.light + '22',
+    borderColor: colors.brand.mid,
+    backgroundColor: colors.brand.light + '22',
   },
   voiceInfo: { flex: 1 },
-  voiceName: { fontSize: 16, fontWeight: '600', color: Colors.text.primary },
-  voiceReciter: { fontSize: 14, color: Colors.text.muted, marginTop: 2 },
+  voiceName: { fontSize: 16, fontWeight: '600', color: colors.text.primary },
+  voiceReciter: { fontSize: 14, color: colors.text.muted, marginTop: 2 },
   proBadge: {
     fontSize: 10,
     fontWeight: '700',
-    color: Colors.brand.dark,
-    backgroundColor: Colors.brand.light,
+    color: colors.brand.dark,
+    backgroundColor: colors.brand.light,
     paddingHorizontal: 6,
     paddingVertical: 2,
     borderRadius: 4,
@@ -228,5 +231,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  playIcon: { fontSize: 20, color: Colors.brand.mid },
+  playIcon: { fontSize: 20, color: colors.brand.mid },
 });

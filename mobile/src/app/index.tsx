@@ -13,7 +13,7 @@
 import { useEffect, useState } from 'react';
 import { View, ActivityIndicator } from 'react-native';
 import { Redirect } from 'expo-router';
-import { Colors } from '../constants/colors';
+import { useThemeColors } from '../hooks/useThemeColors';
 import { useSettingsStore } from '../features/settings/store/useSettingsStore';
 
 function useSettingsHydrated(): boolean {
@@ -30,11 +30,12 @@ export default function Index() {
   const hydrated = useSettingsHydrated();
   const onboardingDone = useSettingsStore((s) => s.onboardingDone);
   const hasLocation = useSettingsStore((s) => s.location !== null);
+  const colors = useThemeColors();
 
   if (!hydrated) {
     return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: Colors.brand.deep }}>
-        <ActivityIndicator color={Colors.brand.light} />
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.brand.deep }}>
+        <ActivityIndicator color={colors.brand.light} />
       </View>
     );
   }

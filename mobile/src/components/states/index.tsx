@@ -4,18 +4,22 @@
  * Outputs: LoadingState, SkeletonState, ErrorState, EmptyState, OfflineState,
  *          PermissionDeniedState, RateLimitedState React components.
  * Constraints: All must be accessible (WCAG 2.1 AA); no fixed font sizes.
+ *   Theme-aware via useThemeColors.
  */
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
-import { Colors } from '../../constants/colors';
+import { useThemeColors } from '../../hooks/useThemeColors';
+import type { ThemeColors } from '../../constants/colors';
 
 // ── LoadingState ──────────────────────────────────────────────────────────────
 
 export function LoadingState({ message = 'Loading...' }: { message?: string }) {
+  const colors = useThemeColors();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   return (
     <View style={styles.container} accessibilityRole="progressbar" accessibilityLabel={message}>
-      <ActivityIndicator size="large" color={Colors.brand.mid} />
+      <ActivityIndicator size="large" color={colors.brand.mid} />
       <Text style={styles.message}>{message}</Text>
     </View>
   );
@@ -24,6 +28,8 @@ export function LoadingState({ message = 'Loading...' }: { message?: string }) {
 // ── SkeletonState ─────────────────────────────────────────────────────────────
 
 export function SkeletonState({ rows = 5 }: { rows?: number }) {
+  const colors = useThemeColors();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   return (
     <View style={styles.container} accessibilityLabel="Loading content">
       {Array.from({ length: rows }).map((_, i) => (
@@ -42,6 +48,8 @@ export function ErrorState({
   error?: Error | string | null;
   onRetry?: () => void;
 }) {
+  const colors = useThemeColors();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const msg = typeof error === 'string' ? error : error?.message ?? 'Something went wrong.';
   return (
     <View style={styles.container}>
@@ -68,6 +76,8 @@ export function EmptyState({ message, action, onAction }: {
   action?: string;
   onAction?: () => void;
 }) {
+  const colors = useThemeColors();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   return (
     <View style={styles.container}>
       <Text style={styles.emptyIcon} aria-hidden>🕌</Text>
@@ -89,6 +99,8 @@ export function EmptyState({ message, action, onAction }: {
 // ── OfflineState ──────────────────────────────────────────────────────────────
 
 export function OfflineState({ cachedAt }: { cachedAt?: string }) {
+  const colors = useThemeColors();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   return (
     <View style={styles.offlineBanner}>
       <Text style={styles.offlineText} accessibilityRole="text">
@@ -107,6 +119,8 @@ export function PermissionDeniedState({
   permission: string;
   onOpenSettings?: () => void;
 }) {
+  const colors = useThemeColors();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   return (
     <View style={styles.container}>
       <Text style={styles.errorTitle} accessibilityRole="text">Permission Required</Text>
@@ -133,6 +147,8 @@ export function RateLimitedState({ retryAfter, onRetry }: {
   retryAfter?: number; // seconds
   onRetry?: () => void;
 }) {
+  const colors = useThemeColors();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   return (
     <View style={styles.container}>
       <Text style={styles.message} accessibilityRole="text">
@@ -156,7 +172,7 @@ export function RateLimitedState({ retryAfter, onRetry }: {
 
 // ── Styles ────────────────────────────────────────────────────────────────────
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ThemeColors) => StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
@@ -166,14 +182,14 @@ const styles = StyleSheet.create({
   },
   message: {
     fontSize: 16,
-    color: Colors.text.secondary,
+    color: colors.text.secondary,
     textAlign: 'center',
     lineHeight: 24,
   },
   errorTitle: {
     fontSize: 18,
     fontWeight: '700',
-    color: Colors.state.error,
+    color: colors.state.error,
     textAlign: 'center',
   },
   emptyIcon: {
@@ -184,19 +200,19 @@ const styles = StyleSheet.create({
     marginTop: 12,
     paddingVertical: 12,
     paddingHorizontal: 24,
-    backgroundColor: Colors.brand.mid,
+    backgroundColor: colors.brand.mid,
     borderRadius: 8,
     minHeight: 44,
     justifyContent: 'center',
     alignItems: 'center',
   },
   buttonText: {
-    color: Colors.text.inverse,
+    color: colors.text.inverse,
     fontWeight: '600',
     fontSize: 16,
   },
   offlineBanner: {
-    backgroundColor: Colors.brand.deep,
+    backgroundColor: colors.brand.deep,
     paddingVertical: 8,
     paddingHorizontal: 16,
     borderRadius: 6,
@@ -204,13 +220,13 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   offlineText: {
-    color: Colors.text.inverse,
+    color: colors.text.inverse,
     fontSize: 14,
     textAlign: 'center',
   },
   skeletonRow: {
     height: 20,
-    backgroundColor: Colors.brand.light + '44',
+    backgroundColor: colors.brand.light + '44',
     borderRadius: 4,
     marginVertical: 6,
   },

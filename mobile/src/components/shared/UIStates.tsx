@@ -4,11 +4,11 @@
  *   permission-denied, rate-limited.
  * Inputs: State-specific props
  * Outputs: React Native view components
- * Constraints: No external UI library — StyleSheet only.
+ * Constraints: No external UI library — StyleSheet only. Theme-aware via useThemeColors.
  * SPORT: REGISTRY-COMPONENTS.md#praycalc-mobile-ui-states
  */
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   View,
   Text,
@@ -16,26 +16,31 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from 'react-native';
-import { Colors } from '../../constants/colors';
+import { useThemeColors } from '../../hooks/useThemeColors';
+import type { ThemeColors } from '../../constants/colors';
 
 // ── Loading / Skeleton ────────────────────────────────────────────────────────
 
 export function LoadingState({ message = 'Loading...' }: { message?: string }) {
+  const colors = useThemeColors();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   return (
     <View style={styles.center}>
-      <ActivityIndicator size="large" color={Colors.brand.dark} />
+      <ActivityIndicator size="large" color={colors.brand.dark} />
       <Text style={styles.label}>{message}</Text>
     </View>
   );
 }
 
 export function SkeletonBar({ width = '80%', height = 16 }: { width?: number | string; height?: number }) {
+  const colors = useThemeColors();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   return <View style={[styles.skeletonBar, { width: width as number, height }]} />;
 }
 
 export function SkeletonCard() {
   return (
-    <View style={styles.skeletonCard}>
+    <View style={createStyles(useThemeColors()).skeletonCard}>
       <SkeletonBar width="60%" height={20} />
       <SkeletonBar width="40%" height={14} />
       <SkeletonBar width="50%" height={14} />
@@ -56,6 +61,8 @@ export function EmptyState({
   action?: string;
   onAction?: () => void;
 }) {
+  const colors = useThemeColors();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   return (
     <View style={styles.center}>
       <Text style={styles.emptyTitle}>{title}</Text>
@@ -78,6 +85,8 @@ export function ErrorState({
   error: string | Error | null;
   onRetry?: () => void;
 }) {
+  const colors = useThemeColors();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const message = error instanceof Error ? error.message : (error ?? 'An error occurred');
   return (
     <View style={styles.center}>
@@ -101,6 +110,8 @@ export function OfflineState({
   message?: string;
   children?: React.ReactNode;
 }) {
+  const colors = useThemeColors();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   return (
     <View style={styles.offlineContainer}>
       <View style={styles.offlineBanner}>
@@ -120,6 +131,8 @@ export function PermissionDeniedState({
   permission?: string;
   onOpenSettings?: () => void;
 }) {
+  const colors = useThemeColors();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   return (
     <View style={styles.center}>
       <Text style={styles.emptyTitle}>{`${permission.charAt(0).toUpperCase() + permission.slice(1)} Permission Required`}</Text>
@@ -144,6 +157,8 @@ export function RateLimitedState({
   retryAfterSeconds?: number;
   onRetry?: () => void;
 }) {
+  const colors = useThemeColors();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   return (
     <View style={styles.center}>
       <Text style={styles.emptyTitle}>Too Many Requests</Text>
@@ -161,7 +176,7 @@ export function RateLimitedState({
 
 // ── Styles ────────────────────────────────────────────────────────────────────
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ThemeColors) => StyleSheet.create({
   center: {
     flex: 1,
     alignItems: 'center',
@@ -171,41 +186,41 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 14,
-    color: Colors.text.muted,
+    color: colors.text.muted,
     textAlign: 'center',
   },
   emptyTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: Colors.text.primary,
+    color: colors.text.primary,
     textAlign: 'center',
   },
   errorTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: Colors.state.error,
+    color: colors.state.error,
     textAlign: 'center',
   },
   button: {
-    backgroundColor: Colors.brand.dark,
+    backgroundColor: colors.brand.dark,
     paddingHorizontal: 24,
     paddingVertical: 12,
     borderRadius: 8,
     marginTop: 8,
   },
   buttonText: {
-    color: Colors.text.inverse,
+    color: colors.text.inverse,
     fontWeight: '600',
     fontSize: 14,
   },
   skeletonBar: {
-    backgroundColor: Colors.background.card,
+    backgroundColor: colors.background.card,
     borderRadius: 4,
     marginBottom: 8,
   },
   skeletonCard: {
     padding: 16,
-    backgroundColor: Colors.background.secondary,
+    backgroundColor: colors.background.secondary,
     borderRadius: 12,
     marginVertical: 4,
     width: '100%',
@@ -215,12 +230,12 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   offlineBanner: {
-    backgroundColor: Colors.state.warning,
+    backgroundColor: colors.state.warning,
     padding: 8,
     alignItems: 'center',
   },
   offlineBannerText: {
-    color: Colors.text.inverse,
+    color: colors.text.inverse,
     fontSize: 13,
     fontWeight: '500',
   },

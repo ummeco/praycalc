@@ -12,7 +12,8 @@ import React, { useEffect, useRef, useMemo } from 'react';
 import { View, Text, StyleSheet, Animated } from 'react-native';
 import { router } from 'expo-router';
 import geomagnetism from 'geomagnetism';
-import { Colors } from '../../../constants/colors';
+import { useThemeColors } from '../../../hooks/useThemeColors';
+import type { ThemeColors } from '../../../constants/colors';
 import { useActiveLocation } from '../../settings/store/useSettingsStore';
 import { useQibla } from '../hooks/useQibla';
 import {
@@ -23,9 +24,14 @@ import {
 } from '../../../components/shared/UIStates';
 
 const ACCURACY_LABELS = ['Unreliable', 'Low', 'Medium', 'High'];
-const ACCURACY_COLORS = [Colors.state.error, Colors.state.warning, Colors.brand.mid, Colors.brand.dark];
 
 export default function QiblaScreen() {
+  const colors = useThemeColors();
+  const styles = useMemo(() => createStyles(colors), [colors]);
+  const accuracyColors = useMemo(
+    () => [colors.state.error, colors.state.warning, colors.brand.mid, colors.brand.dark],
+    [colors],
+  );
   // Travel-aware: musafir mode points the compass from the travel city, matching
   // every other prayer surface (Home/Ramadan/Agendas/Widget use the same hook).
   const activeLocation = useActiveLocation();
@@ -134,7 +140,7 @@ export default function QiblaScreen() {
         <View
           style={[
             styles.accuracyDot,
-            { backgroundColor: ACCURACY_COLORS[accuracy] ?? Colors.state.error },
+            { backgroundColor: accuracyColors[accuracy] ?? colors.state.error },
           ]}
         />
         <Text style={styles.accuracyLabel}>
@@ -150,31 +156,31 @@ export default function QiblaScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ThemeColors) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.background.primary,
+    backgroundColor: colors.background.primary,
     alignItems: 'center',
     justifyContent: 'center',
     padding: 24,
     gap: 24,
   },
   bearingInfo: { alignItems: 'center' },
-  bearingValue: { fontSize: 48, fontWeight: '700', color: Colors.brand.dark },
-  bearingLabel: { fontSize: 14, color: Colors.text.muted },
+  bearingValue: { fontSize: 48, fontWeight: '700', color: colors.brand.dark },
+  bearingLabel: { fontSize: 14, color: colors.text.muted },
   compassContainer: { alignItems: 'center', justifyContent: 'center' },
   compassOuter: {
     width: 260,
     height: 260,
     borderRadius: 130,
     borderWidth: 3,
-    borderColor: Colors.brand.mid,
+    borderColor: colors.brand.mid,
     alignItems: 'center',
     justifyContent: 'center',
     position: 'relative',
-    backgroundColor: Colors.background.secondary,
+    backgroundColor: colors.background.secondary,
   },
-  compassDir: { position: 'absolute', fontSize: 16, fontWeight: '700', color: Colors.text.primary },
+  compassDir: { position: 'absolute', fontSize: 16, fontWeight: '700', color: colors.text.primary },
   compassN: { top: 10 },
   compassS: { bottom: 10 },
   compassE: { right: 10 },
@@ -188,14 +194,14 @@ const styles = StyleSheet.create({
   needleTop: {
     width: 10,
     height: 90,
-    backgroundColor: Colors.brand.dark,
+    backgroundColor: colors.brand.dark,
     borderTopLeftRadius: 5,
     borderTopRightRadius: 5,
   },
   needleBottom: {
     width: 10,
     height: 90,
-    backgroundColor: Colors.background.card,
+    backgroundColor: colors.background.card,
     borderBottomLeftRadius: 5,
     borderBottomRightRadius: 5,
   },
@@ -204,7 +210,7 @@ const styles = StyleSheet.create({
     width: 16,
     height: 16,
     borderRadius: 8,
-    backgroundColor: Colors.brand.mid,
+    backgroundColor: colors.brand.mid,
   },
   accuracyRow: {
     flexDirection: 'row',
@@ -212,6 +218,6 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   accuracyDot: { width: 12, height: 12, borderRadius: 6 },
-  accuracyLabel: { fontSize: 14, color: Colors.text.muted },
-  note: { fontSize: 12, color: Colors.text.muted, textAlign: 'center' },
+  accuracyLabel: { fontSize: 14, color: colors.text.muted },
+  note: { fontSize: 12, color: colors.text.muted, textAlign: 'center' },
 });

@@ -13,13 +13,14 @@
  * SPORT: REGISTRY-APPS.md#praycalc-mobile-feature-13-iap
  */
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useMemo, useState, useEffect, useCallback } from 'react';
 import {
   View, Text, TouchableOpacity, StyleSheet, SafeAreaView, ScrollView, ActivityIndicator, Alert,
 } from 'react-native';
 import { router } from 'expo-router';
 import * as InAppPurchases from 'expo-in-app-purchases';
-import { Colors } from '../../constants/colors';
+import { useThemeColors } from '../../hooks/useThemeColors';
+import type { ThemeColors } from '../../constants/colors';
 import { LoadingState, ErrorState } from '../../components/states';
 import { useAuthStore } from '../auth/store/useAuthStore';
 
@@ -43,6 +44,8 @@ const PRO_FEATURES = [
 ];
 
 export default function SubscriptionScreen() {
+  const colors = useThemeColors();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const auth = useAuthStore();
   const [products, setProducts] = useState<IAPProduct[]>([]);
   const [loading, setLoading] = useState(true);
@@ -165,7 +168,7 @@ export default function SubscriptionScreen() {
               accessibilityState={{ disabled: purchasing }}
             >
               {purchasing ? (
-                <ActivityIndicator color={Colors.text.inverse} />
+                <ActivityIndicator color={colors.text.inverse} />
               ) : (
                 <>
                   <Text style={styles.productTitle}>{product.title}</Text>
@@ -204,26 +207,26 @@ export default function SubscriptionScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: Colors.background.primary },
+const createStyles = (colors: ThemeColors) => StyleSheet.create({
+  container: { flex: 1, backgroundColor: colors.background.primary },
   scroll: { padding: 16, paddingBottom: 40, alignItems: 'center' },
   header: { alignItems: 'center', marginBottom: 20, padding: 16 },
-  title: { fontSize: 28, fontWeight: '800', color: Colors.brand.dark },
-  subtitle: { fontSize: 16, color: Colors.text.muted, marginTop: 4 },
+  title: { fontSize: 28, fontWeight: '800', color: colors.brand.dark },
+  subtitle: { fontSize: 16, color: colors.text.muted, marginTop: 4 },
   featuresCard: {
     width: '100%',
-    backgroundColor: Colors.background.secondary,
+    backgroundColor: colors.background.secondary,
     borderRadius: 14,
     padding: 16,
     marginBottom: 20,
     gap: 12,
   },
   featureRow: { flexDirection: 'row', alignItems: 'center', gap: 10, minHeight: 32 },
-  checkmark: { fontSize: 16, color: Colors.brand.mid, fontWeight: '700' },
-  featureText: { fontSize: 15, color: Colors.text.primary, flex: 1 },
+  checkmark: { fontSize: 16, color: colors.brand.mid, fontWeight: '700' },
+  featureText: { fontSize: 15, color: colors.text.primary, flex: 1 },
   productCard: {
     width: '100%',
-    backgroundColor: Colors.brand.dark,
+    backgroundColor: colors.brand.dark,
     borderRadius: 12,
     padding: 20,
     marginBottom: 10,
@@ -232,16 +235,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     minHeight: 64,
   },
-  productTitle: { fontSize: 16, fontWeight: '700', color: Colors.text.inverse },
-  productPrice: { fontSize: 18, fontWeight: '800', color: Colors.brand.light },
+  productTitle: { fontSize: 16, fontWeight: '700', color: colors.text.inverse },
+  productPrice: { fontSize: 18, fontWeight: '800', color: colors.brand.light },
   noProducts: {
     padding: 16,
-    backgroundColor: Colors.background.secondary,
+    backgroundColor: colors.background.secondary,
     borderRadius: 10,
     marginBottom: 12,
   },
-  noProductsText: { fontSize: 14, color: Colors.text.muted, textAlign: 'center', lineHeight: 22 },
-  errorText: { fontSize: 14, color: Colors.state.error, textAlign: 'center', marginBottom: 8 },
+  noProductsText: { fontSize: 14, color: colors.text.muted, textAlign: 'center', lineHeight: 22 },
+  errorText: { fontSize: 14, color: colors.state.error, textAlign: 'center', marginBottom: 8 },
   restoreBtn: {
     paddingVertical: 12,
     paddingHorizontal: 24,
@@ -249,10 +252,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  restoreText: { fontSize: 15, color: Colors.brand.dark, fontWeight: '500' },
+  restoreText: { fontSize: 15, color: colors.brand.dark, fontWeight: '500' },
   legal: {
     fontSize: 11,
-    color: Colors.text.muted,
+    color: colors.text.muted,
     textAlign: 'center',
     lineHeight: 18,
     marginTop: 12,
@@ -260,6 +263,6 @@ const styles = StyleSheet.create({
   },
   proView: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 8 },
   proEmoji: { fontSize: 48 },
-  proTitle: { fontSize: 24, fontWeight: '800', color: Colors.brand.dark },
-  proSub: { fontSize: 16, color: Colors.text.muted },
+  proTitle: { fontSize: 24, fontWeight: '800', color: colors.brand.dark },
+  proSub: { fontSize: 16, color: colors.text.muted },
 });

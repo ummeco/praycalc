@@ -9,14 +9,16 @@
  * SPORT: REGISTRY-APPS.md#praycalc-mobile-feature-15-notifications
  */
 
-import React, { useState, useCallback } from 'react';
+import React, { useMemo, useState, useCallback } from 'react';
 import {
   View, Text, Switch, TouchableOpacity, StyleSheet, SafeAreaView, ScrollView,
   Platform, Linking,
 } from 'react-native';
-import { Colors } from '../../../constants/colors';
+import { useThemeColors } from '../../../hooks/useThemeColors';
+import type { ThemeColors } from '../../../constants/colors';
 import { PermissionDeniedState } from '../../../components/states';
 import {
+  registerRescheduleTask,
   requestNotificationPermission,
   schedulePrayerNotifications,
   setupNotificationChannel,
@@ -30,6 +32,8 @@ const PRAYER_NAMES: PrayerName[] = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
 const ADVANCE_MINUTE_OPTIONS = [0, 5, 10, 15, 20, 30];
 
 export default function NotificationSettingsScreen() {
+  const colors = useThemeColors();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const {
     notificationsEnabled,
     setNotificationsEnabled,
@@ -48,6 +52,9 @@ export default function NotificationSettingsScreen() {
         return;
       }
       await setupNotificationChannel();
+      // Midnight background task keeps the 3-day window rolling even if the
+      // app stays closed (also re-registered on every app start in _layout).
+      await registerRescheduleTask();
       await schedulePrayerNotifications();
     }
     setNotificationsEnabled(value);
@@ -102,8 +109,8 @@ export default function NotificationSettingsScreen() {
           <Switch
             value={notificationsEnabled}
             onValueChange={handleMasterToggle}
-            trackColor={{ false: Colors.background.card, true: Colors.brand.mid }}
-            thumbColor={Colors.brand.light}
+            trackColor={{ false: colors.background.card, true: colors.brand.mid }}
+            thumbColor={colors.brand.light}
             accessibilityLabel="Enable prayer notifications"
           />
         </View>
@@ -143,8 +150,8 @@ export default function NotificationSettingsScreen() {
                   <Switch
                     value={perPrayerNotificationEnabled[name] ?? false}
                     onValueChange={(v) => handlePrayerToggle(name, v)}
-                    trackColor={{ false: Colors.background.card, true: Colors.brand.mid }}
-                    thumbColor={Colors.brand.light}
+                    trackColor={{ false: colors.background.card, true: colors.brand.mid }}
+                    thumbColor={colors.brand.light}
                     accessibilityLabel={`Enable ${name} notification`}
                   />
                 </View>
@@ -157,42 +164,42 @@ export default function NotificationSettingsScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: Colors.background.primary },
+const createStyles = (colors: ThemeColors) => StyleSheet.create({
+  container: { flex: 1, backgroundColor: colors.background.primary },
   scroll: { padding: 16, paddingBottom: 40 },
   masterCard: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: Colors.background.secondary,
+    backgroundColor: colors.background.secondary,
     borderRadius: 14,
     padding: 16,
     marginBottom: 12,
     minHeight: 64,
   },
   masterLeft: { flex: 1, marginRight: 12 },
-  masterLabel: { fontSize: 17, fontWeight: '700', color: Colors.text.primary },
-  masterSub: { fontSize: 13, color: Colors.text.muted, marginTop: 2 },
+  masterLabel: { fontSize: 17, fontWeight: '700', color: colors.text.primary },
+  masterSub: { fontSize: 13, color: colors.text.muted, marginTop: 2 },
   infoCard: {
-    backgroundColor: Colors.brand.light + '33',
+    backgroundColor: colors.brand.light + '33',
     borderRadius: 10,
     padding: 12,
     marginBottom: 12,
   },
-  infoText: { fontSize: 13, color: Colors.brand.dark, lineHeight: 20 },
+  infoText: { fontSize: 13, color: colors.brand.dark, lineHeight: 20 },
   linkBtn: { marginTop: 8, minHeight: 44, justifyContent: 'center' },
-  linkText: { fontSize: 14, color: Colors.brand.dark, fontWeight: '600' },
-  sectionTitle: { fontSize: 15, fontWeight: '700', color: Colors.text.primary, marginBottom: 8 },
+  linkText: { fontSize: 14, color: colors.brand.dark, fontWeight: '600' },
+  sectionTitle: { fontSize: 15, fontWeight: '700', color: colors.text.primary, marginBottom: 8 },
   prayerRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingVertical: 12,
     borderBottomWidth: 1,
-    borderBottomColor: Colors.background.card,
+    borderBottomColor: colors.background.card,
     minHeight: 56,
   },
-  prayerLabel: { fontSize: 16, color: Colors.text.primary, fontWeight: '500' },
+  prayerLabel: { fontSize: 16, color: colors.text.primary, fontWeight: '500' },
   prayerControls: { flexDirection: 'row', alignItems: 'center', gap: 12 },
-  advanceLabel: { fontSize: 13, color: Colors.text.muted, padding: 4 },
+  advanceLabel: { fontSize: 13, color: colors.text.muted, padding: 4 },
 });

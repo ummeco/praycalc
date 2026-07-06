@@ -8,7 +8,7 @@
  * SPORT: REGISTRY-COMPONENTS.md#praycalc-mobile-auth-screen
  */
 
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   View,
   Text,
@@ -19,7 +19,8 @@ import {
   Platform,
   ScrollView,
 } from 'react-native';
-import { Colors } from '../../../constants/colors';
+import { useThemeColors } from '../../../hooks/useThemeColors';
+import type { ThemeColors } from '../../../constants/colors';
 import { useAuthStore } from '../store/useAuthStore';
 import { signin, signup } from '../../../lib/auth/authClient';
 import {
@@ -30,6 +31,8 @@ import {
 type AuthTab = 'anonymous' | 'login' | 'register';
 
 export default function AuthScreen() {
+  const colors = useThemeColors();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const auth = useAuthStore();
   const [activeTab, setActiveTab] = useState<AuthTab>('anonymous');
   const [email, setEmail] = useState('');
@@ -148,7 +151,7 @@ export default function AuthScreen() {
               keyboardType="email-address"
               autoCapitalize="none"
               autoCorrect={false}
-              placeholderTextColor={Colors.text.muted}
+              placeholderTextColor={colors.text.muted}
             />
             <TextInput
               style={styles.input}
@@ -156,7 +159,7 @@ export default function AuthScreen() {
               value={password}
               onChangeText={setPassword}
               secureTextEntry
-              placeholderTextColor={Colors.text.muted}
+              placeholderTextColor={colors.text.muted}
             />
             <TouchableOpacity style={styles.primaryButton} onPress={handleAccountLogin}>
               <Text style={styles.primaryButtonText}>Sign In</Text>
@@ -177,7 +180,7 @@ export default function AuthScreen() {
               value={displayName}
               onChangeText={setDisplayName}
               autoCapitalize="words"
-              placeholderTextColor={Colors.text.muted}
+              placeholderTextColor={colors.text.muted}
             />
             <TextInput
               style={styles.input}
@@ -187,7 +190,7 @@ export default function AuthScreen() {
               keyboardType="email-address"
               autoCapitalize="none"
               autoCorrect={false}
-              placeholderTextColor={Colors.text.muted}
+              placeholderTextColor={colors.text.muted}
             />
             <TextInput
               style={styles.input}
@@ -195,7 +198,7 @@ export default function AuthScreen() {
               value={password}
               onChangeText={setPassword}
               secureTextEntry
-              placeholderTextColor={Colors.text.muted}
+              placeholderTextColor={colors.text.muted}
             />
             <TouchableOpacity style={styles.primaryButton} onPress={handleAccountRegister}>
               <Text style={styles.primaryButtonText}>Create Account</Text>
@@ -207,37 +210,37 @@ export default function AuthScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: Colors.background.primary },
+const createStyles = (colors: ThemeColors) => StyleSheet.create({
+  container: { flex: 1, backgroundColor: colors.background.primary },
   content: { padding: 24, gap: 24, flexGrow: 1, justifyContent: 'center' },
   header: { alignItems: 'center', gap: 8 },
-  appName: { fontSize: 36, fontWeight: '800', color: Colors.brand.dark },
-  tagline: { fontSize: 14, color: Colors.text.muted, textAlign: 'center' },
-  tabs: { flexDirection: 'row', backgroundColor: Colors.background.secondary, borderRadius: 10, padding: 4 },
+  appName: { fontSize: 36, fontWeight: '800', color: colors.brand.dark },
+  tagline: { fontSize: 14, color: colors.text.muted, textAlign: 'center' },
+  tabs: { flexDirection: 'row', backgroundColor: colors.background.secondary, borderRadius: 10, padding: 4 },
   tab: { flex: 1, padding: 10, borderRadius: 8, alignItems: 'center' },
-  tabActive: { backgroundColor: Colors.background.primary, shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.1, shadowRadius: 2, elevation: 2 },
-  tabText: { fontSize: 14, color: Colors.text.muted },
-  tabTextActive: { fontWeight: '600', color: Colors.brand.dark },
+  tabActive: { backgroundColor: colors.background.primary, shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.1, shadowRadius: 2, elevation: 2 },
+  tabText: { fontSize: 14, color: colors.text.muted },
+  tabTextActive: { fontWeight: '600', color: colors.brand.dark },
   panel: { gap: 16 },
-  panelTitle: { fontSize: 22, fontWeight: '700', color: Colors.text.primary },
-  panelDesc: { fontSize: 14, color: Colors.text.muted, lineHeight: 20 },
+  panelTitle: { fontSize: 22, fontWeight: '700', color: colors.text.primary },
+  panelDesc: { fontSize: 14, color: colors.text.muted, lineHeight: 20 },
   featureList: { gap: 6 },
-  featureItem: { fontSize: 14, color: Colors.text.secondary },
+  featureItem: { fontSize: 14, color: colors.text.secondary },
   input: {
     borderWidth: 1,
-    borderColor: Colors.background.card,
+    borderColor: colors.background.card,
     borderRadius: 10,
     padding: 14,
     fontSize: 15,
-    color: Colors.text.primary,
-    backgroundColor: Colors.background.secondary,
+    color: colors.text.primary,
+    backgroundColor: colors.background.secondary,
   },
   primaryButton: {
-    backgroundColor: Colors.brand.dark,
+    backgroundColor: colors.brand.dark,
     borderRadius: 12,
     padding: 16,
     alignItems: 'center',
   },
-  primaryButtonText: { color: Colors.text.inverse, fontWeight: '700', fontSize: 16 },
-  switchHint: { fontSize: 12, color: Colors.text.muted, textAlign: 'center' },
+  primaryButtonText: { color: colors.text.inverse, fontWeight: '700', fontSize: 16 },
+  switchHint: { fontSize: 12, color: colors.text.muted, textAlign: 'center' },
 });

@@ -2,11 +2,15 @@
  * Purpose: 404 / not-found route for Expo Router
  * SPORT: REGISTRY-ROUTES.md#praycalc-mobile-not-found
  */
+import { useMemo } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Link } from 'expo-router';
-import { Colors } from '../constants/colors';
+import { useThemeColors } from '../hooks/useThemeColors';
+import type { ThemeColors } from '../constants/colors';
 
 export default function NotFoundScreen() {
+  const colors = useThemeColors();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Screen Not Found</Text>
@@ -17,9 +21,9 @@ export default function NotFoundScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ThemeColors) => StyleSheet.create({
   container: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 16 },
-  title: { fontSize: 20, fontWeight: '600', color: Colors.text.primary },
+  title: { fontSize: 20, fontWeight: '600', color: colors.text.primary },
   link: {},
-  linkText: { color: Colors.brand.dark, textDecorationLine: 'underline' },
+  linkText: { color: colors.brand.dark, textDecorationLine: 'underline' },
 });

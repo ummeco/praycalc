@@ -4,7 +4,7 @@
  * SPORT: REGISTRY-ROUTES.md#praycalc-mobile-more-tab
  */
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   View,
   Text,
@@ -13,7 +13,8 @@ import {
   StyleSheet,
 } from 'react-native';
 import { router } from 'expo-router';
-import { Colors } from '../../constants/colors';
+import { useThemeColors } from '../../hooks/useThemeColors';
+import type { ThemeColors } from '../../constants/colors';
 
 interface MenuItem {
   label: string;
@@ -40,6 +41,8 @@ const MENU_ITEMS: MenuItem[] = [
 ];
 
 export default function MoreScreen() {
+  const colors = useThemeColors();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       <Text style={styles.heading} accessibilityRole="header">More</Text>
@@ -64,22 +67,22 @@ export default function MoreScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: Colors.background.secondary },
+const createStyles = (colors: ThemeColors) => StyleSheet.create({
+  container: { flex: 1, backgroundColor: colors.background.secondary },
   content: { padding: 16, gap: 4 },
-  heading: { fontSize: 28, fontWeight: '800', color: Colors.text.primary, marginBottom: 8 },
+  heading: { fontSize: 28, fontWeight: '800', color: colors.text.primary, marginBottom: 8 },
   menuRow: {
     flexDirection: 'row',
     alignItems: 'center',
     padding: 16,
-    backgroundColor: Colors.background.primary,
+    backgroundColor: colors.background.primary,
     borderRadius: 12,
     gap: 12,
     minHeight: 60,
   },
   menuIcon: { fontSize: 22, width: 32, textAlign: 'center' },
   menuText: { flex: 1 },
-  menuLabel: { fontSize: 16, fontWeight: '500', color: Colors.text.primary },
-  menuSubtitle: { fontSize: 13, color: Colors.text.muted, marginTop: 2 },
-  arrow: { fontSize: 20, color: Colors.text.muted },
+  menuLabel: { fontSize: 16, fontWeight: '500', color: colors.text.primary },
+  menuSubtitle: { fontSize: 13, color: colors.text.muted, marginTop: 2 },
+  arrow: { fontSize: 20, color: colors.text.muted },
 });

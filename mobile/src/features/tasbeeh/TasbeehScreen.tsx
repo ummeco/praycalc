@@ -7,13 +7,14 @@
  * SPORT: REGISTRY-APPS.md#praycalc-mobile-feature-07-tasbeeh
  */
 
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useMemo, useState, useCallback, useEffect } from 'react';
 import {
   View, Text, TouchableOpacity, StyleSheet, SafeAreaView, ScrollView,
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { mmkv } from '../../lib/storage/mmkv';
-import { Colors } from '../../constants/colors';
+import { useThemeColors } from '../../hooks/useThemeColors';
+import type { ThemeColors } from '../../constants/colors';
 
 // ── Dhikr presets (ahl us-sunnah sources) ────────────────────────────────────
 
@@ -89,6 +90,8 @@ interface TasbeehSession {
 // ── Screen ────────────────────────────────────────────────────────────────────
 
 export default function TasbeehScreen() {
+  const colors = useThemeColors();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const [selectedPreset, setSelectedPreset] = useState<DhikrPreset>(DHIKR_PRESETS[0]!);
   const [count, setCount] = useState<number>(0);
   const [isComplete, setIsComplete] = useState<boolean>(false);
@@ -222,14 +225,14 @@ export default function TasbeehScreen() {
 
 // ── Styles ────────────────────────────────────────────────────────────────────
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: Colors.background.primary },
+const createStyles = (colors: ThemeColors) => StyleSheet.create({
+  container: { flex: 1, backgroundColor: colors.background.primary },
   scroll: { padding: 16, paddingBottom: 40, alignItems: 'center' },
   arabicContainer: {
     alignItems: 'center',
     marginBottom: 24,
     padding: 16,
-    backgroundColor: Colors.background.secondary,
+    backgroundColor: colors.background.secondary,
     borderRadius: 12,
     width: '100%',
   },
@@ -238,27 +241,27 @@ const styles = StyleSheet.create({
     fontSize: 32,
     textAlign: 'right',
     writingDirection: 'rtl',
-    color: Colors.brand.dark,
+    color: colors.brand.dark,
     fontWeight: '600',
     lineHeight: 52,
     width: '100%',
   },
   transliteration: {
     fontSize: 18,
-    color: Colors.text.primary,
+    color: colors.text.primary,
     marginTop: 8,
     textAlign: 'center',
     fontStyle: 'italic',
   },
   translation: {
     fontSize: 15,
-    color: Colors.text.secondary,
+    color: colors.text.secondary,
     marginTop: 4,
     textAlign: 'center',
   },
   source: {
     fontSize: 12,
-    color: Colors.text.muted,
+    color: colors.text.muted,
     marginTop: 4,
     textAlign: 'center',
   },
@@ -266,46 +269,46 @@ const styles = StyleSheet.create({
     width: 180,
     height: 180,
     borderRadius: 90,
-    backgroundColor: Colors.brand.dark,
+    backgroundColor: colors.brand.dark,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 16,
     elevation: 4,
-    shadowColor: Colors.brand.deep,
+    shadowColor: colors.brand.deep,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
   },
   counterButtonComplete: {
-    backgroundColor: Colors.state.success,
+    backgroundColor: colors.state.success,
   },
   countNumber: {
     fontSize: 56,
     fontWeight: '800',
-    color: Colors.text.inverse,
+    color: colors.text.inverse,
   },
   targetText: {
     fontSize: 14,
-    color: Colors.brand.light,
+    color: colors.brand.light,
     marginTop: 2,
   },
   completeText: {
     fontSize: 14,
-    color: Colors.brand.light,
+    color: colors.brand.light,
     fontWeight: '700',
     marginTop: 4,
   },
   progressTrack: {
     width: '80%',
     height: 8,
-    backgroundColor: Colors.background.card,
+    backgroundColor: colors.background.card,
     borderRadius: 4,
     marginBottom: 16,
     overflow: 'hidden',
   },
   progressFill: {
     height: '100%',
-    backgroundColor: Colors.brand.mid,
+    backgroundColor: colors.brand.mid,
     borderRadius: 4,
   },
   resetButton: {
@@ -313,16 +316,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 32,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: Colors.brand.mid,
+    borderColor: colors.brand.mid,
     marginBottom: 24,
     minHeight: 44,
     justifyContent: 'center',
   },
-  resetText: { fontSize: 16, color: Colors.brand.mid, fontWeight: '600' },
+  resetText: { fontSize: 16, color: colors.brand.mid, fontWeight: '600' },
   sectionTitle: {
     fontSize: 16,
     fontWeight: '700',
-    color: Colors.text.primary,
+    color: colors.text.primary,
     alignSelf: 'flex-start',
     marginBottom: 12,
   },
@@ -330,26 +333,26 @@ const styles = StyleSheet.create({
     width: '100%',
     padding: 12,
     borderRadius: 10,
-    backgroundColor: Colors.background.secondary,
+    backgroundColor: colors.background.secondary,
     marginBottom: 8,
     minHeight: 44,
   },
   presetCardActive: {
     borderWidth: 2,
-    borderColor: Colors.brand.mid,
-    backgroundColor: Colors.brand.light + '22',
+    borderColor: colors.brand.mid,
+    backgroundColor: colors.brand.light + '22',
   },
   presetArabic: {
     // Arabic RTL — full tashkeel — NEVER split
     fontSize: 18,
     textAlign: 'right',
     writingDirection: 'rtl',
-    color: Colors.brand.dark,
+    color: colors.brand.dark,
     lineHeight: 30,
   },
   presetTranslit: {
     fontSize: 13,
-    color: Colors.text.muted,
+    color: colors.text.muted,
     marginTop: 4,
   },
 });

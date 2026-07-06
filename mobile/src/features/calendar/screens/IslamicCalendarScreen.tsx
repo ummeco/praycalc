@@ -10,7 +10,7 @@
  * SPORT: REGISTRY-COMPONENTS.md#praycalc-mobile-calendar-screen
  */
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   View,
   Text,
@@ -18,7 +18,8 @@ import {
   ScrollView,
   StyleSheet,
 } from 'react-native';
-import { Colors } from '../../../constants/colors';
+import { useThemeColors } from '../../../hooks/useThemeColors';
+import type { ThemeColors } from '../../../constants/colors';
 import { useIslamicCalendar } from '../hooks/useIslamicCalendar';
 import { EmptyState } from '../../../components/shared/UIStates';
 
@@ -38,6 +39,8 @@ const MONTH_NAMES = [
 ];
 
 export default function IslamicCalendarScreen() {
+  const colors = useThemeColors();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const {
     gregorianDate,
     hijriDate,
@@ -149,45 +152,45 @@ export default function IslamicCalendarScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: Colors.background.primary },
+const createStyles = (colors: ThemeColors) => StyleSheet.create({
+  container: { flex: 1, backgroundColor: colors.background.primary },
   content: { padding: 16, gap: 16 },
   dateHeader: {
-    backgroundColor: Colors.brand.deep,
+    backgroundColor: colors.brand.deep,
     borderRadius: 16,
     padding: 20,
     alignItems: 'center',
     gap: 4,
   },
-  hijriDate: { fontSize: 20, fontWeight: '700', color: Colors.brand.light },
-  gregorianDate: { fontSize: 14, color: Colors.text.inverse, opacity: 0.8 },
+  hijriDate: { fontSize: 20, fontWeight: '700', color: colors.brand.light },
+  gregorianDate: { fontSize: 14, color: colors.text.inverse, opacity: 0.8 },
   navigation: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   navButton: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: Colors.background.secondary,
+    backgroundColor: colors.background.secondary,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  navButtonText: { fontSize: 24, color: Colors.brand.dark, fontWeight: '600' },
+  navButtonText: { fontSize: 24, color: colors.brand.dark, fontWeight: '600' },
   monthTitle: { alignItems: 'center' },
-  monthTitleText: { fontSize: 18, fontWeight: '700', color: Colors.text.primary },
-  monthHijriText: { fontSize: 12, color: Colors.text.muted },
+  monthTitleText: { fontSize: 18, fontWeight: '700', color: colors.text.primary },
+  monthHijriText: { fontSize: 12, color: colors.text.muted },
   weekdayRow: { flexDirection: 'row' },
-  weekdayLabel: { flex: 1, textAlign: 'center', fontSize: 12, color: Colors.text.muted, fontWeight: '500' },
-  jumuah: { color: Colors.brand.dark },
+  weekdayLabel: { flex: 1, textAlign: 'center', fontSize: 12, color: colors.text.muted, fontWeight: '500' },
+  jumuah: { color: colors.brand.dark },
   grid: { flexDirection: 'row', flexWrap: 'wrap' },
   cell: { width: '14.28%', aspectRatio: 1, alignItems: 'center', justifyContent: 'center' },
-  cellToday: { backgroundColor: Colors.brand.mid, borderRadius: 20 },
-  cellSelected: { backgroundColor: Colors.brand.dark, borderRadius: 20 },
-  cellText: { fontSize: 14, color: Colors.text.primary },
-  cellTodayText: { color: Colors.text.inverse, fontWeight: '700' },
-  cellSelectedText: { color: Colors.text.inverse, fontWeight: '700' },
+  cellToday: { backgroundColor: colors.brand.mid, borderRadius: 20 },
+  cellSelected: { backgroundColor: colors.brand.dark, borderRadius: 20 },
+  cellText: { fontSize: 14, color: colors.text.primary },
+  cellTodayText: { color: colors.text.inverse, fontWeight: '700' },
+  cellSelectedText: { color: colors.text.inverse, fontWeight: '700' },
   eventsSection: { gap: 8 },
-  sectionTitle: { fontSize: 13, color: Colors.text.muted, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 0.5 },
-  eventRow: { flexDirection: 'row', alignItems: 'flex-start', gap: 12, padding: 12, backgroundColor: Colors.background.secondary, borderRadius: 8 },
-  eventDot: { width: 8, height: 8, borderRadius: 4, backgroundColor: Colors.brand.mid, marginTop: 4 },
-  eventName: { fontSize: 14, color: Colors.text.primary, fontWeight: '500' },
-  eventDate: { fontSize: 12, color: Colors.text.muted },
+  sectionTitle: { fontSize: 13, color: colors.text.muted, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 0.5 },
+  eventRow: { flexDirection: 'row', alignItems: 'flex-start', gap: 12, padding: 12, backgroundColor: colors.background.secondary, borderRadius: 8 },
+  eventDot: { width: 8, height: 8, borderRadius: 4, backgroundColor: colors.brand.mid, marginTop: 4 },
+  eventName: { fontSize: 14, color: colors.text.primary, fontWeight: '500' },
+  eventDate: { fontSize: 12, color: colors.text.muted },
 });
