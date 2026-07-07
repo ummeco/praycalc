@@ -2,6 +2,19 @@
 
 All notable changes to PrayCalc are documented here.
 
+## 2026-07-07 — Deep review round: 16 verified fixes
+
+Three Opus review agents (correctness, security with live production probes, architecture) audited everything shipped 2026-07-06; every finding was adversarially verified before approval. Highlights:
+
+- **Notifications now reschedule immediately** when you change calculation method, location, madhab, high-latitude rule, custom angles, travel mode/city, or adhan voice — previously they kept firing at stale times until app restart (worst case: travelers getting home-city alarms)
+- Bundled fallback cities now carry IANA timezones (DST-correct); stored-city rendering no longer assumes the device timezone
+- Notification titles/bodies localized (with proper plurals); adhan playback rejects non-https URLs
+- Production hardening: TV pairing rows self-deactivate after 1 hour (bounds pin-guess exposure); the pashaii voice removed per the recorded Gate B content decision
+- Refactors: prayer label keys deduplicated from 7 copies to one module; the two parallel state-component systems consolidated (a11y gap closed); SettingsScreen split from 542 to 285 lines; zustand persist versioning added
+- 20 new tests (notification scheduling, qibla bearing, DST) — suite now 62
+
+Also: desktop v1.2.1 published; expo prebuild now validates end-to-end (track-player patch, real icon set replacing placeholder squares); full surface roadmap authored (.github/docs/roadmap/); GitHub Actions billing bypassed via self-hosted runners on ummat-sentry.
+
 ## 2026-07-06 — Absolute-100% closure (mobile 2.1.0 · desktop 1.2.1 · web 2.0.1)
 
 Closed every tracked partial from the parity re-audit, plus backend provisioning that turned out to be missing entirely.

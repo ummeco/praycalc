@@ -43,21 +43,10 @@ import type { ThemeColors } from '../../constants/colors';
 import { useSettingsStore, useActiveLocation } from '../settings/store/useSettingsStore';
 import { calculatePrayerTimes } from '../../lib/prayer-calc';
 import { resolveTimezoneOffset } from '../../lib/timezone';
+import { PRAYER_LABEL_KEYS, DISPLAY_PRAYERS } from '../../constants/prayers';
 import type { CalcMethodKey } from '../../constants/methods';
-import type { PrayerName, PrayerTimes } from '../../types/prayer';
-import { EmptyState } from '../../components/shared/UIStates';
-
-const DISPLAY_PRAYERS: PrayerName[] = ['Fajr', 'Sunrise', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
-
-/** Translation key per prayer name, `prayer` namespace (render-time only). */
-const PRAYER_LABEL_KEYS: Record<PrayerName, string> = {
-  Fajr: 'prayer.fajr',
-  Sunrise: 'prayer.sunrise',
-  Dhuhr: 'prayer.dhuhr',
-  Asr: 'prayer.asr',
-  Maghrib: 'prayer.maghrib',
-  Isha: 'prayer.isha',
-};
+import type { PrayerTimes } from '../../types/prayer';
+import { EmptyState } from '../../components/states';
 
 /** praycalc.com's real calendar export — verified against web/src/pages/api/calendar.ics.ts. */
 const ICS_EXPORT_BASE = 'https://praycalc.com/api/calendar.ics';

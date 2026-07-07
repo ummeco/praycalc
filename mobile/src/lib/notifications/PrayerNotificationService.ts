@@ -26,6 +26,7 @@ import * as TaskManager from 'expo-task-manager';
 import * as BackgroundFetch from 'expo-background-fetch';
 import { calculatePrayerTimes } from '../prayer-calc';
 import { resolveTimezoneOffset } from '../timezone';
+import { t } from '../../i18n';
 import { useSettingsStore } from '../../features/settings/store/useSettingsStore';
 import {
   NOTIFICATION_DAYS_AHEAD,
@@ -63,9 +64,15 @@ async function refreshHomeScreenWidget(): Promise<void> {
 }
 
 const PRAYER_NAMES: PrayerName[] = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
-const PRAYER_DISPLAY: Record<PrayerName, string> = {
-  Fajr: 'Fajr', Sunrise: 'Sunrise', Dhuhr: 'Dhuhr',
-  Asr: 'Asr', Maghrib: 'Maghrib', Isha: 'Isha',
+
+/** Translation key per prayer name, `prayer` namespace (render-time only). */
+const PRAYER_LABEL_KEYS: Record<PrayerName, string> = {
+  Fajr: 'prayer.fajr',
+  Sunrise: 'prayer.sunrise',
+  Dhuhr: 'prayer.dhuhr',
+  Asr: 'prayer.asr',
+  Maghrib: 'prayer.maghrib',
+  Isha: 'prayer.isha',
 };
 
 // ── Background task ───────────────────────────────────────────────────────────
@@ -184,7 +191,7 @@ async function getUpcomingPrayerNotifications(): Promise<ScheduledPrayer[]> {
 
       // Iqamah reminder N minutes after the prayer time (0 = off). Uses the
       // default chime, never the adhan sound. Worst case volume stays well
-      // under the 64-notification OS cap: 3 days × 6 × 2 = 36.
+      // under the 64-notification OS cap: 3 days × 5 × 2 = 30.
       const iqamahOffset = settings.iqamahOffsetMinutes[name] ?? 0;
       if (iqamahOffset > 0) {
         const iqamahTime = t.getTime() + iqamahOffset * 60_000;
@@ -205,14 +212,14 @@ async function getUpcomingPrayerNotifications(): Promise<ScheduledPrayer[]> {
 }
 
 function notificationBody(prayer: ScheduledPrayer): string {
-  const label = PRAYER_DISPLAY[prayer.name] ?? prayer.name;
+  const label = t(PRAYER_LABEL_KEYS[prayer.name]) || prayer.name;
   if (prayer.kind === 'iqamah') {
-    return `Iqamah reminder for ${label} (adhan was at ${prayer.formattedTime})`;
+    return t('notifications.bodyIqamah', { prayer: label, time: prayer.formattedTime });
   }
   if (prayer.advanceMinutes <= 0) {
-    return `It's time for ${label} prayer — ${prayer.formattedTime}`;
+    return t('notifications.bodyNow', { prayer: label, time: prayer.formattedTime });
   }
-  return `${label} is in ${prayer.advanceMinutes} minutes — ${prayer.formattedTime}`;
+  return t('notifications.bodyAdvance', { prayer: label, count: prayer.advanceMinutes, time: prayer.formattedTime });
 }
 
 /**
@@ -233,11 +240,12 @@ export async function schedulePrayerNotifications(): Promise<void> {
     // follow-up keep the default chime — the adhan belongs at the prayer time).
     const adhanSound =
       prayer.kind === 'adhan' && settings.perPrayerAdhanEnabled[prayer.name] && prayer.advanceMinutes <= 0;
+    const prayerLabel = t(PRAYER_LABEL_KEYS[prayer.name]) || prayer.name;
     await Notifications.scheduleNotificationAsync({
       content: {
         title: prayer.kind === 'iqamah'
-          ? `${PRAYER_DISPLAY[prayer.name] ?? prayer.name} Iqamah`
-          : `${PRAYER_DISPLAY[prayer.name] ?? prayer.name} Time`,
+          ? t('notifications.iqamahTitle', { prayer: prayerLabel })
+          : t('notifications.prayerTime', { prayer: prayerLabel }),
         body: notificationBody(prayer),
         sound: adhanSound ? ADHAN_NOTIFICATION_SOUND : 'default',
         data: { prayerName: prayer.name, timestamp: prayer.prayerTimestamp },

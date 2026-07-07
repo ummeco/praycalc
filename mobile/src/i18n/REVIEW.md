@@ -186,3 +186,20 @@ instructions.
   strings converted in this pass — all existing tests cover `lib/` logic, not
   screen components)
 - `python3 -c "import json,glob; [json.load(open(f)) for f in glob.glob('src/i18n/*.json')]"` — all 21 catalogs valid JSON
+
+## Added 2026-07-07 — `notifications.*` namespace (needs translation)
+
+Notification titles/bodies moved from hardcoded English to i18n (review fix C6). All keys
+en-only for now (fallback covers other locales); translate alongside the main queue —
+these strings are user-visible on the lock screen, so ar/ur priority applies.
+
+| Key | en value |
+|---|---|
+| notifications.prayerTime | `{{prayer}} Time` |
+| notifications.iqamahTitle | `{{prayer}} Iqamah` |
+| notifications.bodyNow | `It's time for {{prayer}} prayer — {{time}}` |
+| notifications.bodyAdvance_one / _other | `{{prayer}} is in {{count}} minute(s) — {{time}}` |
+| notifications.bodyIqamah | `Iqamah reminder for {{prayer}} (adhan was at {{time}})` |
+
+Note: scheduled notification text is frozen in the locale active at scheduling time; it
+refreshes on the next reschedule after a language change.

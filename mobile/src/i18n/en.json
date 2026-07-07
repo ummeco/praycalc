@@ -13,6 +13,14 @@
     "midnight": "Midnight",
     "lastThird": "Last Third"
   },
+  "notifications": {
+    "prayerTime": "{{prayer}} Time",
+    "iqamahTitle": "{{prayer}} Iqamah",
+    "bodyNow": "It's time for {{prayer}} prayer — {{time}}",
+    "bodyAdvance_one": "{{prayer}} is in {{count}} minute — {{time}}",
+    "bodyAdvance_other": "{{prayer}} is in {{count}} minutes — {{time}}",
+    "bodyIqamah": "Iqamah reminder for {{prayer}} (adhan was at {{time}})"
+  },
   "common": {
     "bismillah": "In the name of Allah, the Most Gracious, the Most Merciful",
     "salah": "Prayer",
@@ -351,9 +359,11 @@
       "androidExactAlarm": "On Android 12+, allow \"Alarms & Reminders\" in system settings for exact prayer time alerts.",
       "openSystemSettings": "Open System Settings",
       "perPrayerAlerts": "Per-Prayer Alerts",
-      "minutesBefore": "{{count}}m before",
+      "minutesBefore_one": "{{count}}m before",
+      "minutesBefore_other": "{{count}}m before",
       "iqamahOff": "iqamah off",
-      "iqamahAfter": "iqamah +{{count}}m"
+      "iqamahAfter_one": "iqamah +{{count}}m",
+      "iqamahAfter_other": "iqamah +{{count}}m"
     },
     "smartHome": {
       "proOnly": "Smart Home (lock-on-salah + device control) is an Ummat+ feature.",

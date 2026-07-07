@@ -25,19 +25,8 @@ import {
   setupNotificationChannel,
 } from '../../../lib/notifications/PrayerNotificationService';
 import { useSettingsStore } from '../store/useSettingsStore';
+import { PRAYER_LABEL_KEYS, NOTIFIABLE_PRAYERS as PRAYER_NAMES } from '../../../constants/prayers';
 import type { PrayerName } from '../../../types/prayer';
-
-const PRAYER_NAMES: PrayerName[] = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
-
-/** Translation key per prayer name, `prayer` namespace (render-time only). */
-const PRAYER_LABEL_KEYS: Record<PrayerName, string> = {
-  Fajr: 'prayer.fajr',
-  Sunrise: 'prayer.sunrise',
-  Dhuhr: 'prayer.dhuhr',
-  Asr: 'prayer.asr',
-  Maghrib: 'prayer.maghrib',
-  Isha: 'prayer.isha',
-};
 
 /** Tap-to-cycle options for per-prayer notification lead time. */
 const ADVANCE_MINUTE_OPTIONS = [0, 5, 10, 15, 20, 30];

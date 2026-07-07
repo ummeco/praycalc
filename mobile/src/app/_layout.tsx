@@ -18,7 +18,7 @@ import { StatusBar } from 'expo-status-bar';
 import { useColorScheme } from 'react-native';
 import * as Notifications from 'expo-notifications';
 import * as Linking from 'expo-linking';
-import { useTranslation } from '../i18n';
+import i18next, { useTranslation } from '../i18n';
 import { GqlClientProvider } from '../lib/graphql';
 import { extractPinFromDeepLink } from '../lib/pairing/pairingMutation';
 import { registerIAPListener } from '../lib/iap/IAPListener';
@@ -108,6 +108,18 @@ export default function RootLayout() {
     // than the pre-scheduled window and the background task was never registered.
     void (async () => {
       await useSettingsStore.persist.rehydrate();
+
+      // Locale single-source reconcile: i18n/index.ts resolves its own locale at module
+      // init (MMKV persisted override, else device locale) independently of this zustand
+      // store's `locale` field (AsyncStorage). The two can diverge — e.g. a fresh install
+      // where i18next picked the device locale but the store still has its default 'en'
+      // initial state before rehydration completes. i18next/MMKV is authoritative at boot
+      // (it already drove RTL direction before React rendered — see the side-effect import
+      // above), so bring the store in line with it rather than the other way around.
+      if (useSettingsStore.getState().locale !== i18next.language) {
+        useSettingsStore.getState().setLocale(i18next.language);
+      }
+
       if (!useSettingsStore.getState().notificationsEnabled) return;
       await registerRescheduleTask();
       await schedulePrayerNotifications();

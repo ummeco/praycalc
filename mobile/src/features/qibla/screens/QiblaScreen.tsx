@@ -22,7 +22,7 @@ import {
   EmptyState,
   ErrorState,
   PermissionDeniedState,
-} from '../../../components/shared/UIStates';
+} from '../../../components/states';
 
 const ACCURACY_LABEL_KEYS = [
   'screens.qibla.accuracyUnreliable',

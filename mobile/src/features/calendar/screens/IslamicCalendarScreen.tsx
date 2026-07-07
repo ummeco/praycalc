@@ -22,7 +22,6 @@ import i18next, { useTranslation } from '../../../i18n';
 import { useThemeColors } from '../../../hooks/useThemeColors';
 import type { ThemeColors } from '../../../constants/colors';
 import { useIslamicCalendar } from '../hooks/useIslamicCalendar';
-import { EmptyState } from '../../../components/shared/UIStates';
 
 function getDaysInMonth(year: number, month: number): number {
   return new Date(year, month + 1, 0).getDate();

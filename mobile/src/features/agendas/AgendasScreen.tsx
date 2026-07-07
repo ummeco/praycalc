@@ -19,20 +19,10 @@ import { PermissionDeniedState, LoadingState } from '../../components/states';
 import { calculatePrayerTimes } from '../../lib/prayer-calc';
 import { resolveTimezoneOffset } from '../../lib/timezone';
 import { useSettingsStore, useActiveLocation } from '../settings/store/useSettingsStore';
+import { PRAYER_LABEL_KEYS, NOTIFIABLE_PRAYERS as PRAYER_NAMES } from '../../constants/prayers';
 import type { PrayerName } from '../../types/prayer';
 import type { CalcMethodKey } from '../../constants/methods';
 
-/** Translation key per prayer name, `prayer` namespace (render-time only). */
-const PRAYER_LABEL_KEYS: Record<PrayerName, string> = {
-  Fajr: 'prayer.fajr',
-  Sunrise: 'prayer.sunrise',
-  Dhuhr: 'prayer.dhuhr',
-  Asr: 'prayer.asr',
-  Maghrib: 'prayer.maghrib',
-  Isha: 'prayer.isha',
-};
-
-const PRAYER_NAMES: PrayerName[] = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
 const PRAYER_DURATION_MINS = 20; // Block 20 min per prayer on calendar
 
 export default function AgendasScreen() {

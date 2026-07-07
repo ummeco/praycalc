@@ -27,7 +27,7 @@ import type { ThemeColors } from '../../../constants/colors';
 import { useAuthStore } from '../../auth/store/useAuthStore';
 import { PAIR_TV_MUTATION, buildPairTvRequest, isValidPin } from '../../../lib/pairing/pairingMutation';
 import { getOrCreateDeviceId } from '../../../lib/pairing/deviceId';
-import { LoadingState, ErrorState } from '../../../components/shared/UIStates';
+import { ErrorState } from '../../../components/states';
 
 const UPGRADE_URL = 'https://praycalc.com/upgrade';
 

@@ -30,6 +30,8 @@ import type { PrayerName, Madhab } from '../../../types/prayer';
 import type { CalcMethodKey } from '../../../constants/methods';
 import { gregorianToHijri } from '../../../lib/hijri';
 import { isPrayerCompleted, togglePrayerCompletion } from '../../../lib/completions';
+import { resolveTimezoneOffset } from '../../../lib/timezone';
+import { PRAYER_LABEL_KEYS, DISPLAY_PRAYERS as PRAYER_ORDER } from '../../../constants/prayers';
 import {
   LoadingState,
   SkeletonCard,
@@ -37,19 +39,7 @@ import {
   ErrorState,
   OfflineState,
   PermissionDeniedState,
-} from '../../../components/shared/UIStates';
-
-/** Maps each PrayerName to its translation key in the `prayer` namespace (render-time only — the internal PrayerName union stays English). */
-const PRAYER_LABEL_KEYS: Record<PrayerName, string> = {
-  Fajr: 'prayer.fajr',
-  Sunrise: 'prayer.sunrise',
-  Dhuhr: 'prayer.dhuhr',
-  Asr: 'prayer.asr',
-  Maghrib: 'prayer.maghrib',
-  Isha: 'prayer.isha',
-};
-
-const PRAYER_ORDER: PrayerName[] = ['Fajr', 'Sunrise', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
+} from '../../../components/states';
 
 function formatTime(date: Date, format: '12h' | '24h', locale: string): string {
   if (format === '24h') {
@@ -123,8 +113,13 @@ export default function PrayerTimesScreen() {
     });
   }, [activeLocation]);
 
-  const timezone = getTimezoneOffset();
   const today = new Date();
+  // Live GPS fix present → device offset is authoritative (matches the coords just read).
+  // Otherwise we're rendering a STORED city (home or travel) with no live fix — resolve
+  // its own IANA/offset timezone field instead of assuming the device's current zone.
+  const timezone = currentCoords
+    ? getTimezoneOffset()
+    : resolveTimezoneOffset(activeLocation?.timezone, today);
   const hijriDate = gregorianToHijri(today, settings.hijriDayAdjustment);
 
   const { times, nextPrayer, secondsToNextPrayer, status, error, refresh } = usePrayerTimes({

@@ -38,6 +38,9 @@ interface PlayAdhanParams {
  * Play an adhan audio track, stopping any currently-playing track first.
  */
 export async function playAdhan({ audioUrl, prayerName, reciterName }: PlayAdhanParams): Promise<void> {
+  if (!audioUrl.startsWith('https://')) {
+    throw new Error('adhan audio must be https');
+  }
   await setupAdhanPlayer();
   await TrackPlayer.reset();
   await TrackPlayer.add({

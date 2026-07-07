@@ -23,6 +23,8 @@ import { useThemeColors } from '../../hooks/useThemeColors';
 import type { ThemeColors } from '../../constants/colors';
 import { useSettingsStore } from '../settings/store/useSettingsStore';
 import CitySearchScreen from '../city-search/CitySearchScreen';
+import { schedulePrayerNotifications } from '../../lib/notifications/PrayerNotificationService';
+import { PRAYER_LABEL_KEYS, NOTIFIABLE_PRAYERS } from '../../constants/prayers';
 import type { CityCoords } from '../../types/prayer';
 import type { PrayerName } from '../../types/prayer';
 
@@ -36,16 +38,6 @@ const QASR_RAKAT: Record<PrayerName, { normal: number; qasr: number }> = {
   Isha:    { normal: 4, qasr: 2 },  // shortened
 };
 
-/** Translation key per prayer name, `prayer` namespace (render-time only). */
-const PRAYER_LABEL_KEYS: Record<PrayerName, string> = {
-  Fajr: 'prayer.fajr',
-  Sunrise: 'prayer.sunrise',
-  Dhuhr: 'prayer.dhuhr',
-  Asr: 'prayer.asr',
-  Maghrib: 'prayer.maghrib',
-  Isha: 'prayer.isha',
-};
-
 export default function TravelScreen() {
   const { t } = useTranslation();
   const colors = useThemeColors();
@@ -53,8 +45,16 @@ export default function TravelScreen() {
   const { location, travelLocation, musafirMode, setTravelLocation, setMusafirMode } = useSettingsStore();
   const [showCitySearch, setShowCitySearch] = useState(false);
 
+  /** Reschedule notifications after a change that shifts computed times (guarded, fire-and-forget). */
+  function rescheduleIfEnabled() {
+    if (useSettingsStore.getState().notificationsEnabled) {
+      void schedulePrayerNotifications().catch(() => undefined);
+    }
+  }
+
   const handleMusafirToggle = useCallback((value: boolean) => {
     setMusafirMode(value);
+    rescheduleIfEnabled();
     if (value) {
       Alert.alert(
         t('screens.travel.musafirAlertTitle'),
@@ -66,6 +66,7 @@ export default function TravelScreen() {
 
   const handleSelectTravelCity = useCallback((city: CityCoords) => {
     setTravelLocation(city);
+    rescheduleIfEnabled();
     setShowCitySearch(false);
   }, [setTravelLocation]);
 
@@ -75,7 +76,7 @@ export default function TravelScreen() {
     );
   }
 
-  const prayerNames: PrayerName[] = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
+  const prayerNames: PrayerName[] = NOTIFIABLE_PRAYERS;
 
   return (
     <SafeAreaView style={styles.container}>

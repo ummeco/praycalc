@@ -27,6 +27,8 @@ import {
 import { playAdhan, stopAdhan } from '../services/AdhanAudioService';
 import { useSettingsStore } from '../../settings/store/useSettingsStore';
 import { useAuthStore } from '../../auth/store/useAuthStore';
+import { schedulePrayerNotifications } from '../../../lib/notifications/PrayerNotificationService';
+import { PRAYER_LABEL_KEYS, NOTIFIABLE_PRAYERS as PRAYER_NAMES } from '../../../constants/prayers';
 import type { PrayerName } from '../../../types/prayer';
 
 // ── GraphQL ───────────────────────────────────────────────────────────────────
@@ -53,20 +55,6 @@ interface AdhanVoice {
   is_pro: boolean;
 }
 
-// ── Prayer Toggles ────────────────────────────────────────────────────────────
-
-const PRAYER_NAMES: PrayerName[] = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
-
-/** Translation key per prayer name, `prayer` namespace (render-time only). */
-const PRAYER_LABEL_KEYS: Record<PrayerName, string> = {
-  Fajr: 'prayer.fajr',
-  Sunrise: 'prayer.sunrise',
-  Dhuhr: 'prayer.dhuhr',
-  Asr: 'prayer.asr',
-  Maghrib: 'prayer.maghrib',
-  Isha: 'prayer.isha',
-};
-
 // ── Screen ────────────────────────────────────────────────────────────────────
 
 export default function AdhanScreen() {
@@ -81,8 +69,16 @@ export default function AdhanScreen() {
   const enabledPrayers = useSettingsStore((s) => s.perPrayerAdhanEnabled);
   const setPerPrayerAdhanEnabled = useSettingsStore((s) => s.setPerPrayerAdhanEnabled);
 
+  /** Reschedule notifications after a change that affects the baked-in sound/channel (guarded, fire-and-forget). */
+  function rescheduleIfEnabled() {
+    if (useSettingsStore.getState().notificationsEnabled) {
+      void schedulePrayerNotifications().catch(() => undefined);
+    }
+  }
+
   const togglePrayer = useCallback((name: PrayerName) => {
     setPerPrayerAdhanEnabled(name, !enabledPrayers[name]);
+    rescheduleIfEnabled();
   }, [enabledPrayers, setPerPrayerAdhanEnabled]);
 
   const handleSelect = useCallback((voice: AdhanVoice) => {
@@ -100,6 +96,7 @@ export default function AdhanScreen() {
     // Persist url+name alongside id so the notification-tap handler can play
     // the chosen voice without a network round-trip.
     setAdhanVoice(voice.id, voice.audio_url, `${voice.name} — ${voice.reciter}`);
+    rescheduleIfEnabled();
   }, [isPlus, setAdhanVoice]);
 
   const handlePlay = useCallback(async (voice: AdhanVoice) => {

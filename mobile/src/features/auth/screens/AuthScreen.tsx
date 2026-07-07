@@ -27,7 +27,7 @@ import { signin, signup } from '../../../lib/auth/authClient';
 import {
   LoadingState,
   ErrorState,
-} from '../../../components/shared/UIStates';
+} from '../../../components/states';
 
 type AuthTab = 'anonymous' | 'login' | 'register';
 

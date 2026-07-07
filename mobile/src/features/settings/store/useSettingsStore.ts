@@ -161,6 +161,13 @@ export const useSettingsStore = create<SettingsState>()(
     {
       name: 'praycalc-settings',
       storage: createJSONStorage(() => AsyncStorage),
+      version: 1,
+      // Guards future nested-shape changes (e.g. a Record<PrayerName, T> field gaining/
+      // renaming a key, or a flat field becoming nested). v0 (unversioned, pre-this-change)
+      // persisted state is structurally compatible with v1, so this is a pass-through —
+      // it exists so a FUTURE breaking shape change has a real migration path instead of
+      // silently reading stale/malformed state after an app update.
+      migrate: (persistedState) => persistedState as SettingsState,
     },
   ),
 );
