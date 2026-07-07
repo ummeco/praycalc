@@ -1,27 +1,22 @@
 /**
- * Purpose: Wrapper for @acamarata/pray-calc — computes prayer day from settings
- * Inputs: date, lat/lon, timezone, calculationMethodId, madhab
- * Outputs: PrayerDay with HH:mm time strings for all 6 prayers + sunrise
- * Constraints: Node/RN compatible; no DOM; wraps @acamarata/pray-calc
+ * Purpose: Real prayer-time computation for the TV app via the pray-calc v2 engine
+ *   (getTimesAll — NREL SPA solar position + the PrayCalc Dynamic Method). Replaces
+ *   the previous stub that called a nonexistent @acamarata/pray-calc API and silently
+ *   returned fixed placeholder offsets (05:00/06:30/12:30…) for every location — a
+ *   production defect: the TV showed fabricated times regardless of city or method.
+ * Inputs: date, lat/lon, IANA-or-numeric timezone, methodId (lowercase, 'dpc' default),
+ *   madhab ('shafi'|'hanafi').
+ * Outputs: PrayerDay with HH:mm strings; '--:--' when a value is genuinely unreachable
+ *   (polar day/night) rather than a fabricated time.
+ * Constraints: Node/RN compatible; no DOM. DPC (no PRAY_CALC_METHOD_ID entry) uses the
+ *   engine's dynamic raw times. Tehran/Jafari excluded (D-P3-19).
  * SPORT: praycalc/tv lib
  */
 
+import { getTimesAll } from 'pray-calc';
 import { PrayerDay, Madhab } from '../types';
-
-// @acamarata/pray-calc is a workspace dependency providing prayer time calculations
-// Dynamic import to handle environments where the package may not be built yet
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-let prayCalc: any = null;
-
-async function getPrayCalc(): Promise<void> {
-  if (!prayCalc) {
-    try {
-      prayCalc = await import('@acamarata/pray-calc');
-    } catch {
-      prayCalc = null;
-    }
-  }
-}
+import { resolveTimezoneOffset } from './timezone';
+import { PRAY_CALC_METHOD_ID } from '../constants/methods';
 
 interface CalcOptions {
   date: Date;
@@ -32,53 +27,38 @@ interface CalcOptions {
   madhab: Madhab;
 }
 
-function formatHHMM(date: Date): string {
-  const h = date.getHours().toString().padStart(2, '0');
-  const m = date.getMinutes().toString().padStart(2, '0');
-  return `${h}:${m}`;
+/** Fractional-hours (may be NaN / slightly out of [0,24)) → "HH:mm" local, or "--:--". */
+function hoursToHHMM(hours: number): string {
+  if (!Number.isFinite(hours)) return '--:--';
+  const wrapped = ((hours % 24) + 24) % 24;
+  const h = Math.floor(wrapped);
+  const m = Math.round((wrapped - h) * 60);
+  const hh = (m === 60 ? (h + 1) % 24 : h).toString().padStart(2, '0');
+  const mm = (m === 60 ? 0 : m).toString().padStart(2, '0');
+  return `${hh}:${mm}`;
 }
 
-function fallbackPrayerTimes(date: Date, _lat: number, _lon: number): PrayerDay {
-  // Deterministic fallback when @acamarata/pray-calc is not yet available
-  // Uses approximate fixed offsets — replaced by real calculation in production
-  const base = new Date(date);
-  base.setHours(5, 0, 0, 0);
+/**
+ * Compute the day's prayer times. DPC (the default) uses the engine's dynamic
+ * raw.Fajr/raw.Isha; a fixed method overlays its raw.Methods[id] Fajr/Isha.
+ */
+export function calculatePrayerTimes(opts: CalcOptions): PrayerDay {
+  const tz = resolveTimezoneOffset(opts.timezone, opts.date);
+  const hanafi = opts.madhab === 'hanafi';
+  const raw = getTimesAll(opts.date, opts.latitude, opts.longitude, tz, 0, undefined, undefined, hanafi);
+
+  const methodKey = PRAY_CALC_METHOD_ID[opts.methodId];
+  const methodEntry = methodKey ? raw.Methods[methodKey] : undefined; // [Fajr, Isha] fractional hours
+  const fajr = methodEntry?.[0] ?? raw.Fajr; // DPC / unknown -> dynamic
+  const isha = methodEntry?.[1] ?? raw.Isha;
+
   return {
-    fajr:    formatHHMM(new Date(base.getTime())),
-    sunrise: formatHHMM(new Date(base.setHours(6, 30, 0, 0))),
-    dhuhr:   formatHHMM(new Date(base.setHours(12, 30, 0, 0))),
-    asr:     formatHHMM(new Date(base.setHours(15, 45, 0, 0))),
-    maghrib: formatHHMM(new Date(base.setHours(18, 20, 0, 0))),
-    isha:    formatHHMM(new Date(base.setHours(19, 45, 0, 0))),
-    date:    date.toISOString().split('T')[0],
+    fajr: hoursToHHMM(fajr),
+    sunrise: hoursToHHMM(raw.Sunrise),
+    dhuhr: hoursToHHMM(raw.Dhuhr),
+    asr: hoursToHHMM(raw.Asr),
+    maghrib: hoursToHHMM(raw.Maghrib),
+    isha: hoursToHHMM(isha),
+    date: opts.date.toISOString().split('T')[0] as string,
   };
 }
-
-export function calculatePrayerTimes(opts: CalcOptions): PrayerDay {
-  // Synchronous wrapper — will use @acamarata/pray-calc when available
-  if (prayCalc) {
-    try {
-      const result = prayCalc.calculate({
-        date: opts.date,
-        coordinates: { latitude: opts.latitude, longitude: opts.longitude },
-        calculationParameters: prayCalc.CalculationMethod[opts.methodId]?.(),
-        madhab: opts.madhab === 'hanafi' ? prayCalc.Madhab.Hanafi : prayCalc.Madhab.Shafi,
-      });
-      return {
-        fajr:    formatHHMM(result.fajr),
-        sunrise: formatHHMM(result.sunrise),
-        dhuhr:   formatHHMM(result.dhuhr),
-        asr:     formatHHMM(result.asr),
-        maghrib: formatHHMM(result.maghrib),
-        isha:    formatHHMM(result.isha),
-        date:    opts.date.toISOString().split('T')[0],
-      };
-    } catch {
-      // Fall through to fallback
-    }
-  }
-  return fallbackPrayerTimes(opts.date, opts.latitude, opts.longitude);
-}
-
-// Trigger async load on module init
-void getPrayCalc();

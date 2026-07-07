@@ -1,15 +1,13 @@
 /**
  * Purpose: Screen 5 — Dua Display: scrolling full-screen dua, Arabic + translation
- * Inputs: Bundled, cited dua collection shared from mobile/src/features/dua-dhikr
+ * Inputs: pc_dua via urql (live, public role); bundled cited fallback for offline/error
  * Outputs: Full-screen Arabic dua with RTL text, transliteration, translation; D-pad scroll
  * Constraints: Arabic RTL; tashkeel preserved; authenticated dua sources only per theology gate.
- *   DATA PATH: bundled, not live-queried. pc_dua does NOT exist in production (probed
- *   api.praycalc.com 2026-07-06 — "field 'pc_dua' not found in type: 'query_root'"). Content
- *   below is copied verbatim (source citations intact) from
- *   mobile/src/features/dua-dhikr/DuaDhikrScreen.tsx, which cites Hisn al-Muslim (Sa'id
- *   al-Qahtani) and Sahih Bukhari/Muslim — the only sourced dua content in this repo. Per the
- *   Islamic content gate, no new dua text was authored here. queries.ts GET_DUA_LIST is kept
- *   ready for when a real pc_dua table + Hasura source ships.
+ *   DATA PATH: live query. pc_dua now exists in production (Wave-1 gap closure W1.3,
+ *   2026-07-07 — 9 rows seeded, public role select, verified live against
+ *   api.praycalc.com). On fetch failure or empty result (offline TV, network blip), falls
+ *   back to the same small bundled+cited collection this screen shipped with — an honest
+ *   degraded state, not fabricated content.
  * SPORT: praycalc/tv screens
  */
 
@@ -20,28 +18,44 @@ import {
   StyleSheet,
   TouchableHighlight,
   ScrollView,
+  ActivityIndicator,
   useTVEventHandler,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import type { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from '../types';
+import { useQuery } from 'urql';
+import { RootStackParamList, DuaEntry } from '../types';
 import TvScreenWrapper from '../components/TvScreenWrapper';
+import { GET_DUA_LIST } from '../lib/graphql/queries';
 
 type DuaNavProp = StackNavigationProp<RootStackParamList, 'DuaDisplay'>;
 
-interface BundledDua {
+interface PcDuaRow {
   id: string;
-  titleAr: string;
-  titleEn: string;
-  textAr: string;
-  textEn: string;
+  title_ar: string;
+  title_en: string;
+  text_ar: string;
+  text_en: string;
   transliteration: string;
   source: string;
 }
 
-// Bundled dua collection — copied verbatim (citations intact) from
-// mobile/src/features/dua-dhikr/DuaDhikrScreen.tsx (Hisn al-Muslim / Sahih Bukhari+Muslim).
-const BUNDLED_DUAS: BundledDua[] = [
+function toDuaEntry(row: PcDuaRow): DuaEntry {
+  return {
+    id: row.id,
+    titleAr: row.title_ar,
+    titleEn: row.title_en,
+    textAr: row.text_ar,
+    textEn: row.text_en,
+    transliteration: row.transliteration,
+    source: row.source,
+  };
+}
+
+// Offline/error fallback — same small bundled+cited collection this screen shipped
+// with before pc_dua existed (Hisn al-Muslim / Sahih Bukhari+Muslim). Kept as a
+// last-resort so the screen still shows something honest when the TV has no network.
+export const FALLBACK_DUAS: DuaEntry[] = [
   {
     id: 'morning-01',
     titleAr: 'آية الكرسي (الصباح)',
@@ -75,10 +89,18 @@ export default function DuaDisplayScreen(): React.JSX.Element {
   const navigation = useNavigation<DuaNavProp>();
   const [currentIndex, setCurrentIndex] = useState(0);
   const backRef = useRef<TouchableHighlight>(null);
-  const dua = BUNDLED_DUAS[currentIndex];
+
+  const [{ data, fetching, error }] = useQuery<{ pc_dua: PcDuaRow[] }>({
+    query: GET_DUA_LIST,
+  });
+
+  const liveDuas = data?.pc_dua?.map(toDuaEntry) ?? [];
+  const duas = liveDuas.length > 0 ? liveDuas : FALLBACK_DUAS;
+  const usingFallback = liveDuas.length === 0;
+  const dua = duas[Math.min(currentIndex, duas.length - 1)];
 
   useTVEventHandler((evt) => {
-    if (evt.eventType === 'right' && currentIndex < BUNDLED_DUAS.length - 1) {
+    if (evt.eventType === 'right' && currentIndex < duas.length - 1) {
       setCurrentIndex((i) => i + 1);
     }
     if (evt.eventType === 'left' && currentIndex > 0) {
@@ -87,10 +109,26 @@ export default function DuaDisplayScreen(): React.JSX.Element {
     if (evt.eventType === 'menu') navigation.goBack();
   });
 
+  if (fetching && !data) {
+    return (
+      <TvScreenWrapper title="Dua & Dhikr" onBack={() => navigation.goBack()}>
+        <View style={styles.centerState}>
+          <ActivityIndicator color="#C9F27A" size="large" />
+        </View>
+      </TvScreenWrapper>
+    );
+  }
+
   return (
     <TvScreenWrapper title="Dua & Dhikr" onBack={() => navigation.goBack()}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View style={styles.root}>
+          {(error || usingFallback) && (
+            <Text style={styles.offlineNotice}>
+              {error ? 'Offline — showing bundled duas' : 'Showing bundled duas'}
+            </Text>
+          )}
+
           {/* Dua title */}
           <Text style={styles.titleAr}>{dua.titleAr}</Text>
           <Text style={styles.titleEn}>{dua.titleEn}</Text>
@@ -123,9 +161,9 @@ export default function DuaDisplayScreen(): React.JSX.Element {
               <Text style={styles.navBtnText}>◀ Back</Text>
             </TouchableHighlight>
             <Text style={styles.pageIndicator}>
-              {currentIndex + 1} / {BUNDLED_DUAS.length}
+              {currentIndex + 1} / {duas.length}
             </Text>
-            {currentIndex < BUNDLED_DUAS.length - 1 && (
+            {currentIndex < duas.length - 1 && (
               <TouchableHighlight
                 accessible={true}
                 accessibilityRole="button"
@@ -145,6 +183,18 @@ export default function DuaDisplayScreen(): React.JSX.Element {
 
 const styles = StyleSheet.create({
   scrollContent: { flexGrow: 1 },
+  centerState: {
+    flex: 1,
+    backgroundColor: '#0D2F17',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  offlineNotice: {
+    color: '#79C24C',
+    fontSize: 18,
+    fontStyle: 'italic',
+    marginBottom: 16,
+  },
   root: {
     flex: 1,
     backgroundColor: '#0D2F17',

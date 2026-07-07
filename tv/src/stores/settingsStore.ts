@@ -23,7 +23,7 @@ const DEFAULT_SETTINGS: TvSettings = {
   latitude: 21.3891,
   longitude: 39.8579,
   timezone: 'Asia/Riyadh',
-  calculationMethodId: 'mwl',
+  calculationMethodId: 'dpc',
   madhab: 'shafi' as Madhab,
   language: 'en',
   autoAdvanceScreens: false,

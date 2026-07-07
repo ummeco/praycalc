@@ -23,22 +23,28 @@ export const GET_PRAYER_DAY = `
   }
 `;
 
-export const GET_HADITH_OF_DAY = `
-  query GetTvHadithOfDay($offset: Int!) {
-    pc_hadith(limit: 1, offset: $offset) {
+/**
+ * pc_hadith is small (3 rows as of 2026-07-07) — fetched in full and rotated
+ * client-side by pickDailyHadith's day-seeded index, same convention the prior
+ * bundled-array version used. reference is aliased to "source" to match the
+ * HadithEntry type the screen renders.
+ */
+export const GET_HADITH_LIST = `
+  query GetTvHadithList {
+    pc_hadith(order_by: { id: asc }) {
       id
       text_ar
       text_en
-      source
       narrator
+      source: reference
       grading
     }
   }
 `;
 
 export const GET_DUA_LIST = `
-  query GetTvDuaList($limit: Int!, $offset: Int!) {
-    pc_dua(limit: $limit, offset: $offset, order_by: { sort_order: asc }) {
+  query GetTvDuaList {
+    pc_dua(order_by: { sort_order: asc }) {
       id
       title_ar
       title_en
@@ -50,18 +56,22 @@ export const GET_DUA_LIST = `
   }
 `;
 
+/**
+ * pc_islamic_event stores a Hijri (month, day) pair, not a Gregorian date — the
+ * screen computes the next upcoming Gregorian occurrence client-side via the
+ * shared @umalqura/core hijri lib (same approach the prior hardcoded
+ * ISLAMIC_EVENTS array used), so dates stay correct across Hijri years without
+ * a server-side recompute job. is_active lets admin-seeded content be hidden
+ * without a delete (e.g. a future content-gate correction).
+ */
 export const GET_ISLAMIC_EVENTS = `
-  query GetIslamicEvents($from_date: date!, $to_date: date!) {
-    pc_islamic_event(
-      where: { gregorian_date: { _gte: $from_date, _lte: $to_date } }
-      order_by: { gregorian_date: asc }
-    ) {
+  query GetIslamicEvents {
+    pc_islamic_event(where: { is_active: { _eq: true } }, order_by: { hijri_month: asc, hijri_day: asc }) {
       id
-      name_ar
-      name_en
-      hijri_date
-      gregorian_date
-      is_significant
+      name
+      hijri_month
+      hijri_day
+      description
     }
   }
 `;

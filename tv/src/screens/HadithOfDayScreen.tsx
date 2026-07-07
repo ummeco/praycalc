@@ -1,38 +1,53 @@
 /**
  * Purpose: Screen 4 — Hadith of the Day: large text; touch-free; day-seeded rotation
- * Inputs: Bundled, cited Hadith collection; day-seeded index for 24h rotation
+ * Inputs: pc_hadith via urql (live, public role); bundled cited fallback for offline/error
  * Outputs: Full-screen Hadith display with Arabic RTL text (tashkeel preserved), source citation
  * Constraints: Arabic text must be RTL; tashkeel (diacritics) preserved; cite narrator chain + collection.
- *   DATA PATH: bundled, not live-queried. pc_hadith does NOT exist in production (probed
- *   api.praycalc.com 2026-07-06 — "field 'pc_hadith' not found in type: 'query_root'") and no
- *   sourced hadith content exists elsewhere in this repo to reuse. Per the Islamic content gate,
- *   fabricating a live query against a nonexistent table (or fabricating more hadith text) is
- *   disallowed — this stays an honest, small, correctly-cited offline collection until a real
- *   pc_hadith table + Hasura source ships (queries.ts GET_HADITH_OF_DAY is kept ready for that).
+ *   DATA PATH: live query. pc_hadith now exists in production (Wave-1 gap closure W1.3,
+ *   2026-07-07 — 3 rows seeded, public role select, verified live against
+ *   api.praycalc.com). The day-seeded rotation index is applied client-side over whichever
+ *   list is in play (live or fallback), so "hadith of the day" stays deterministic per
+ *   calendar day either way. On fetch failure or empty result, falls back to the same
+ *   small bundled+cited collection this screen shipped with.
  * SPORT: praycalc/tv screens
  */
 
 import React, { useRef } from 'react';
-import { View, Text, StyleSheet, TouchableHighlight, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableHighlight, ScrollView, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import type { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from '../types';
+import { useQuery } from 'urql';
+import { RootStackParamList, HadithEntry } from '../types';
 import TvScreenWrapper from '../components/TvScreenWrapper';
+import { GET_HADITH_LIST } from '../lib/graphql/queries';
 
 type HadithNavProp = StackNavigationProp<RootStackParamList, 'HadithOfDay'>;
 
-interface BundledHadith {
-  textAr: string;
-  textEn: string;
-  source: string;
+interface PcHadithRow {
+  id: string;
+  text_ar: string;
+  text_en: string;
   narrator: string;
+  source: string;
   grading: string;
 }
 
-// Bundled, cited Hadith collection — Sahih al-Bukhari / Sahih Muslim only (authenticated
-// collections per the theology gate). Narrator chain + collection + grading required per entry.
-const BUNDLED_HADITH: BundledHadith[] = [
+function toHadithEntry(row: PcHadithRow): HadithEntry {
+  return {
+    id: row.id,
+    textAr: row.text_ar,
+    textEn: row.text_en,
+    source: row.source,
+    narrator: row.narrator.startsWith('Narrated by') ? row.narrator : `Narrated by ${row.narrator}`,
+    grading: row.grading,
+  };
+}
+
+// Offline/error fallback — same small bundled+cited collection this screen shipped
+// with before pc_hadith existed (Sahih al-Bukhari / Sahih Muslim only, per the theology gate).
+export const FALLBACK_HADITH: HadithEntry[] = [
   {
+    id: 'hadith-01',
     textAr: 'إِنَّمَا الأَعْمَالُ بِالنِّيَّاتِ، وَإِنَّمَا لِكُلِّ امْرِئٍ مَا نَوَى',
     textEn:
       'Actions are judged only by intentions, and every person will get what they intended.',
@@ -41,6 +56,7 @@ const BUNDLED_HADITH: BundledHadith[] = [
     grading: 'Sahih (Authentic)',
   },
   {
+    id: 'hadith-02',
     textAr: 'مَنْ كَانَ يُؤْمِنُ بِاللَّهِ وَالْيَوْمِ الآخِرِ فَلْيَقُلْ خَيْرًا أَوْ لِيَصْمُتْ',
     textEn:
       'Whoever believes in Allah and the Last Day should speak good or remain silent.',
@@ -49,6 +65,7 @@ const BUNDLED_HADITH: BundledHadith[] = [
     grading: 'Sahih (Authentic)',
   },
   {
+    id: 'hadith-03',
     textAr: 'الطُّهُورُ شَطْرُ الإِيمَانِ',
     textEn: 'Cleanliness is half of faith.',
     source: 'Sahih Muslim 223',
@@ -58,20 +75,44 @@ const BUNDLED_HADITH: BundledHadith[] = [
 ];
 
 /** Day-seeded index so the displayed Hadith rotates once per 24h without a server. */
-function pickDailyHadith(): BundledHadith {
+export function pickDailyHadith(list: HadithEntry[]): HadithEntry {
   const daySeed = Math.floor(Date.now() / (1000 * 60 * 60 * 24));
-  return BUNDLED_HADITH[daySeed % BUNDLED_HADITH.length];
+  return list[daySeed % list.length];
 }
 
 export default function HadithOfDayScreen(): React.JSX.Element {
   const navigation = useNavigation<HadithNavProp>();
   const backRef = useRef<TouchableHighlight>(null);
-  const hadith = pickDailyHadith();
+
+  const [{ data, fetching, error }] = useQuery<{ pc_hadith: PcHadithRow[] }>({
+    query: GET_HADITH_LIST,
+  });
+
+  const liveHadith = data?.pc_hadith?.map(toHadithEntry) ?? [];
+  const list = liveHadith.length > 0 ? liveHadith : FALLBACK_HADITH;
+  const usingFallback = liveHadith.length === 0;
+  const hadith = pickDailyHadith(list);
+
+  if (fetching && !data) {
+    return (
+      <TvScreenWrapper title="Hadith of the Day" onBack={() => navigation.goBack()}>
+        <View style={styles.centerState}>
+          <ActivityIndicator color="#C9F27A" size="large" />
+        </View>
+      </TvScreenWrapper>
+    );
+  }
 
   return (
     <TvScreenWrapper title="Hadith of the Day" onBack={() => navigation.goBack()}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View style={styles.root}>
+          {(error || usingFallback) && (
+            <Text style={styles.offlineNotice}>
+              {error ? 'Offline — showing bundled Hadith' : 'Showing bundled Hadith'}
+            </Text>
+          )}
+
           {/* Arabic text — RTL, tashkeel preserved */}
           <View style={styles.arabicContainer}>
             <Text style={styles.arabicText}>{hadith.textAr}</Text>
@@ -108,6 +149,19 @@ export default function HadithOfDayScreen(): React.JSX.Element {
 const styles = StyleSheet.create({
   scrollContent: {
     flexGrow: 1,
+  },
+  centerState: {
+    flex: 1,
+    backgroundColor: '#0D2F17',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  offlineNotice: {
+    color: '#79C24C',
+    fontSize: 18,
+    fontStyle: 'italic',
+    marginBottom: 16,
+    textAlign: 'center',
   },
   root: {
     flex: 1,

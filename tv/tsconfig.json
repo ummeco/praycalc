@@ -14,8 +14,8 @@
     "allowJs": false,
     "skipLibCheck": true,
     "resolveJsonModule": true,
-    "moduleResolution": "node16",
-    "module": "node16",
+    "moduleResolution": "bundler",
+    "module": "esnext",
     "target": "ES2020",
     "lib": [
       "ES2020"
