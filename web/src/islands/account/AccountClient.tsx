@@ -2,7 +2,7 @@
  * AccountClient.tsx — PrayCalc account island (sign-in + dashboard).
  *
  * PURPOSE: Full account experience in one client island:
- *   - Sign-in card (magic-link default tab + password tab + social row) when no session.
+ *   - Sign-in card (magic-link default tab + password tab) when no session.
  *   - Dashboard (profile, saved cities, account settings, Ummat+ upsell, sign out)
  *     when a session exists.
  *   Session is a lightweight client profile in localStorage ('praycalc-profile') —
@@ -13,10 +13,14 @@
  *   Hasura Auth instance directly (no token involved). Billing status / checkout
  *   go through src/pages/api/billing/* (src/lib/billing.ts).
  * CONSTRAINTS: Astro island (client:load). No next/* imports. SSR-safe.
- *   Social sign-in providers are visually present but inert ("coming soon") —
- *   not wired to any backend yet. On mount, migrates any pre-2026-07 session
- *   still holding a raw refresh token in localStorage into a cookie-backed
- *   session (see peekLegacyRefreshToken/clearLegacySession in session.ts).
+ *   Social sign-in (Google/Apple/etc.) is intentionally NOT offered — hasura-auth
+ *   OAuth provider redirect URLs are not configured server-side (verified: no
+ *   provider config anywhere in src/lib/auth/*), so a working social button
+ *   cannot be wired without that infra. Removed rather than shipped as an inert
+ *   ("coming soon") control (Wave-3 gap closure, 2026-07). On mount, migrates
+ *   any pre-2026-07 session still holding a raw refresh token in localStorage
+ *   into a cookie-backed session (see peekLegacyRefreshToken/clearLegacySession
+ *   in session.ts).
  * REF: P2-PRAYCALC-E2E-REBUILD · account.spec.ts · ADR-010 fix (2026-07)
  */
 
@@ -58,8 +62,6 @@ function removeSavedCity(slug: string): SavedCity[] {
 }
 
 type Mode = 'magic' | 'password';
-
-const SOCIAL_PROVIDERS = ['Google', 'Apple', 'Facebook', 'X'] as const;
 
 /** Milliseconds before expiry to trigger a token refresh. */
 const REFRESH_LEAD_MS = 60_000;
@@ -319,21 +321,6 @@ function SignIn({ onSignedIn }: { onSignedIn: (s: PrayCalcSession) => void }) {
           {loading ? 'Please wait…' : mode === 'magic' ? 'Send login link' : 'Sign in'}
         </button>
       </form>
-
-      <div className="account-social-row" aria-label="Sign in with a provider">
-        {SOCIAL_PROVIDERS.map((p) => (
-          <button
-            key={p}
-            type="button"
-            className="account-social-btn"
-            aria-label={`Sign in with ${p}`}
-            title="Coming soon"
-            disabled
-          >
-            {p[0]}
-          </button>
-        ))}
-      </div>
     </div>
   );
 }

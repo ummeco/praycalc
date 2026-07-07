@@ -180,11 +180,12 @@ test.describe("Account page — not signed in", () => {
     await expect(page.locator(".account-submit-btn")).toBeEnabled();
   });
 
-  test("shows social login row with four providers", async ({ page }) => {
-    const socialRow = page.locator(".account-social-row");
-    await expect(socialRow).toBeVisible();
-    const btns = socialRow.locator(".account-social-btn");
-    await expect(btns).toHaveCount(4);
+  test("does not show inert social sign-in buttons", async ({ page }) => {
+    // Social sign-in was removed (Wave-3 gap closure) rather than shipped as a
+    // non-functional "coming soon" control — hasura-auth OAuth provider redirects
+    // are not configured server-side. Assert the row is gone entirely.
+    await expect(page.locator(".account-social-row")).toHaveCount(0);
+    await expect(page.locator(".account-social-btn")).toHaveCount(0);
   });
 
   test("shows logo with back arrow", async ({ page }) => {
