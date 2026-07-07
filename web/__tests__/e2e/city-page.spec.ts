@@ -89,14 +89,21 @@ test.describe("City page — prayer times", () => {
   });
 
   test("JSON-LD structured data is present", async ({ page }) => {
+    // City pages now emit two schema.org blocks: a Place (the city) and a
+    // BreadcrumbList (Home -> City) for richer search results.
     const jsonLd = page.locator('script[type="application/ld+json"]');
-    await expect(jsonLd).toHaveCount(1);
+    await expect(jsonLd).toHaveCount(2);
 
-    const content = await jsonLd.textContent();
-    expect(content).toBeTruthy();
-    const parsed = JSON.parse(content!);
-    expect(parsed["@type"]).toBe("WebPage");
-    expect(parsed.about["@type"]).toBe("City");
+    const blocks = await jsonLd.allTextContents();
+    const parsed = blocks.map((b) => JSON.parse(b));
+    const types = parsed.map((p) => p["@type"]);
+    expect(types).toContain("Place");
+    expect(types).toContain("BreadcrumbList");
+
+    const place = parsed.find((p) => p["@type"] === "Place");
+    expect(place).toBeTruthy();
+    expect(typeof place.name).toBe("string");
+    expect(place.name.length).toBeGreaterThan(0);
   });
 
   test("PrayCalc home link navigates back to homepage", async ({ page }) => {
