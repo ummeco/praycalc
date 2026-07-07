@@ -24,7 +24,8 @@
     "react-i18next": "^15.0.0",
     "react-native": "npm:react-native-tvos@0.74.5-0",
     "react-native-qrcode-svg": "^6.3.2",
-    "react-native-svg": "^15.6.0",
+    "react-native-svg": "15.2.0",
+    "react-native-video": "6.10.1",
     "urql": "^4.1.0",
     "zustand": "^5.0.0"
   },

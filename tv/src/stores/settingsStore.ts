@@ -31,6 +31,11 @@ const DEFAULT_SETTINGS: TvSettings = {
   displayBrightness: 1,
   adhanVolume: 0.8,
   prayerVolumes: {},
+  // Dashboard cosmetic defaults (overridden by pc_tv_settings when a row exists).
+  accentColor: '#79C24C',
+  streamSource: 'makkah-tv',
+  rotateMinutes: 10,
+  showWeather: true,
 };
 
 /** Storage key — namespaced so it never collides with other AsyncStorage consumers. */

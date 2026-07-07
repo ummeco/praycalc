@@ -11,6 +11,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { RootStackParamList } from '../types';
 
+import DashboardScreen from '../screens/DashboardScreen';
 import HomeScreen from '../screens/HomeScreen';
 import QiblaScreen from '../screens/QiblaScreen';
 import CalendarScreen from '../screens/CalendarScreen';
@@ -26,6 +27,7 @@ import RamadanScreen from '../screens/RamadanScreen';
 import MoonPhaseScreen from '../screens/MoonPhaseScreen';
 import IslamicEventsScreen from '../screens/IslamicEventsScreen';
 import ScreensaverScreen from '../screens/ScreensaverScreen';
+import TvSystemScreen from '../screens/TvSystemScreen';
 
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -33,13 +35,16 @@ export default function RootNavigator(): React.JSX.Element {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="Home"
+        initialRouteName="Dashboard"
         screenOptions={{
           headerShown: false,
           animationEnabled: true,
           cardStyle: { backgroundColor: '#0D2F17' },
         }}
       >
+        {/* Dashboard is the default masjid-display screen; all legacy screens below
+            stay reachable via the dashboard Menu (navigation kept intact). */}
+        <Stack.Screen name="Dashboard" component={DashboardScreen} />
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="Qibla" component={QiblaScreen} />
         <Stack.Screen name="Calendar" component={CalendarScreen} />
@@ -55,6 +60,7 @@ export default function RootNavigator(): React.JSX.Element {
         <Stack.Screen name="MoonPhase" component={MoonPhaseScreen} />
         <Stack.Screen name="IslamicEvents" component={IslamicEventsScreen} />
         <Stack.Screen name="Screensaver" component={ScreensaverScreen} />
+        <Stack.Screen name="TvSystem" component={TvSystemScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

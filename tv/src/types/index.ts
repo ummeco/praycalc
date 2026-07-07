@@ -62,6 +62,23 @@ export interface TvSettings {
   displayBrightness: number;
   adhanVolume: number;
   prayerVolumes: Partial<Record<PrayerName, number>>;
+  // --- Dashboard cosmetic settings (synced from pc_tv_settings, public role) ---
+  /** Accent color for the prayer rail / next-prayer highlight. Hex string. */
+  accentColor: string;
+  /** Stream source id from the built-in stream library (or 'none' to disable). */
+  streamSource: string;
+  /** Minutes between content-rotation cycles (1–30). */
+  rotateMinutes: number;
+  /** Whether the bottom weather/special-day bar is shown. */
+  showWeather: boolean;
+}
+
+/** Cosmetic settings row shape from pc_tv_settings (public-role selectable columns). */
+export interface TvRemoteSettings {
+  accent_color?: string | null;
+  stream_source?: string | null;
+  rotate_minutes?: number | null;
+  show_weather?: boolean | null;
 }
 
 export interface HadithEntry {
@@ -104,10 +121,21 @@ export interface PairingState {
   isPaired: boolean;
   userId?: string;
   deviceId: string;
+  /** Location carried on the pairing row (persisted as the TV's location on success). */
+  location?: TvPairingLocation;
+}
+
+/** Location fields carried on the pc_tv_pairing row and persisted to settings on pair. */
+export interface TvPairingLocation {
+  latitude: number;
+  longitude: number;
+  city: string;
+  timezone: string;
 }
 
 // Navigation screen param types
 export type RootStackParamList = {
+  Dashboard: undefined;
   Home: undefined;
   Qibla: undefined;
   Calendar: undefined;
@@ -123,4 +151,5 @@ export type RootStackParamList = {
   MoonPhase: undefined;
   IslamicEvents: undefined;
   Screensaver: undefined;
+  TvSystem: undefined;
 };

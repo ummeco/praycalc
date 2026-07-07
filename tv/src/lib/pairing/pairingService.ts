@@ -13,7 +13,40 @@
 import { Client } from 'urql';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { CHECK_PRAYCALC_PAIRING, REGISTER_TV_PAIRING } from '../graphql/queries';
-import { PairingState } from '../../types';
+import { PairingState, TvPairingLocation } from '../../types';
+import { useSettingsStore } from '../../stores/settingsStore';
+
+/**
+ * Extracts a valid location from a pc_tv_pairing row, or null when the row carries no
+ * usable coordinates. Kept exported + pure for unit testing the persist path.
+ */
+export function extractPairingLocation(row: {
+  latitude?: number | null;
+  longitude?: number | null;
+  city?: string | null;
+  timezone?: string | null;
+}): TvPairingLocation | null {
+  if (typeof row.latitude !== 'number' || typeof row.longitude !== 'number') {
+    return null;
+  }
+  return {
+    latitude: row.latitude,
+    longitude: row.longitude,
+    // Fall back to the store's existing city/timezone when the row omits them.
+    city: row.city ?? useSettingsStore.getState().settings.cityName,
+    timezone: row.timezone ?? useSettingsStore.getState().settings.timezone,
+  };
+}
+
+/** Persists a paired TV's location into the settings store (AsyncStorage-backed). */
+export function persistPairingLocation(loc: TvPairingLocation): void {
+  useSettingsStore.getState().updateSettings({
+    latitude: loc.latitude,
+    longitude: loc.longitude,
+    cityName: loc.city,
+    timezone: loc.timezone,
+  });
+}
 
 const POLL_INTERVAL_MS = 5000;
 const PIN_LENGTH = 6;
@@ -146,11 +179,16 @@ export class PairingService {
         const row = result.data?.pc_tv_pairing?.[0];
         if (row?.paired && row?.user_id) {
           this.stopPolling();
+          // The pairing row now carries the phone-selected location — persist it as the
+          // TV's location so prayer times + weather follow the paired household.
+          const location = extractPairingLocation(row);
+          if (location) persistPairingLocation(location);
           this.onStateChange({
             pin: this.pin,
             deviceId: row.device_id ?? this.deviceId,
             isPaired: true,
             userId: row.user_id,
+            ...(location ? { location } : {}),
           });
         }
       } catch {

@@ -83,6 +83,27 @@ export const CHECK_PRAYCALC_PAIRING = `
       paired
       user_id
       device_id
+      latitude
+      longitude
+      city
+      timezone
+    }
+  }
+`;
+
+/**
+ * TV cosmetic settings sync (public role). Selected by device_id — the same persisted
+ * TV device id used for pairing. Columns are the four cosmetic fields the dashboard
+ * consumes; the phone/backend writes them, the TV only reads. When no row exists the
+ * caller falls back to store defaults.
+ */
+export const GET_TV_SETTINGS = `
+  query GetTvSettings($deviceId: String!) {
+    pc_tv_settings(where: { device_id: { _eq: $deviceId } }, limit: 1) {
+      accent_color
+      stream_source
+      rotate_minutes
+      show_weather
     }
   }
 `;

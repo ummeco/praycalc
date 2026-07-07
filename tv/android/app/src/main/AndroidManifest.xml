@@ -1,6 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Boot-launch: lets BootReceiver start the app when the TV powers on (opt-in). -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <!--
       android:icon is used to display launcher icon on mobile devices.
@@ -28,5 +30,56 @@
             <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
         </intent-filter>
       </activity>
+
+      <!--
+        Kiosk mode (default launcher). Ships DISABLED; TvSystemModule.setKioskEnabled(true)
+        enables this alias then opens the system home-chooser so the user can pick PrayCalc
+        as the Home app. In kiosk mode the Home button returns to PrayCalc — intended for
+        masjid / institution displays. targetActivity reuses MainActivity.
+      -->
+      <activity-alias
+        android:name=".KioskLauncherAlias"
+        android:targetActivity=".MainActivity"
+        android:label="@string/app_name"
+        android:banner="@drawable/tv_banner"
+        android:enabled="false"
+        android:exported="true">
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.HOME" />
+            <category android:name="android.intent.category.DEFAULT" />
+        </intent-filter>
+      </activity-alias>
+
+      <!--
+        Launch-on-boot receiver. Ships DISABLED; TvSystemModule.setBootLaunchEnabled(true)
+        enables it. On boot it foregrounds MainActivity so the app appears instantly. Home
+        still returns to the normal TV launcher. Background activity starts at boot are
+        OS-restricted; on Android TV / Fire TV leanback apps this generally works.
+      -->
+      <receiver
+        android:name=".system.BootReceiver"
+        android:enabled="false"
+        android:exported="true">
+        <intent-filter>
+            <action android:name="android.intent.action.BOOT_COMPLETED" />
+            <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+        </intent-filter>
+      </receiver>
+
+      <!--
+        "PrayCalc Ambient" system screensaver (DreamService). The user selects it in the
+        system screensaver picker (apps cannot self-set the dream). BIND_DREAM_SERVICE is
+        held by the system, restricting who may bind this service.
+      -->
+      <service
+        android:name=".system.AmbientDreamService"
+        android:exported="true"
+        android:permission="android.permission.BIND_DREAM_SERVICE">
+        <intent-filter>
+            <action android:name="android.service.dreams.DreamService" />
+            <category android:name="android.intent.category.DEFAULT" />
+        </intent-filter>
+      </service>
     </application>
 </manifest>
