@@ -2,6 +2,14 @@
 
 All notable changes to PrayCalc are documented here.
 
+## 2026-07-07 — TV dashboard epic + every remaining surface executed
+
+**TV (Android TV):** new two-pane dashboard as the default experience — 2/3 display pane with the Makkah live stream (Saudi Quran and Medina options), rotating cited Ayat/Hadith/Dua on a configurable 1-30 minute timer, and a bottom strip showing weather, Ramadan day-progress, or special-day banners (strict allowlist: Ramadan, both Eids, Arafah — Mawlid deliberately excluded); 1/3 prayer-times rail in the brand green gradient with a remotely-controlled accent color. Plus native extras: launch-on-TV-startup, opt-in kiosk mode (default launcher, for masjid/institution displays), and the "PrayCalc Ambient" screensaver selectable in Android TV settings. Full debug APK build-validated locally.
+
+**Manage your TVs from anywhere (Ummat+):** pairing now hands the TV its exact location, and every surface gained a manager — mobile "My TVs" screen, web praycalc.com/account/tvs, desktop "My TVs" tab — controlling name, accent color, stream, rotation timer, and weather per TV. Backend: new pc_tv_settings table live in production with cosmetics-only public reads; location travels only through the short-lived pairing window.
+
+**Also today:** iOS WidgetKit home widget (parity gate now 20/20), watchOS buildable + tested as a standalone watch-only app with a fully offline complication, Wear OS build-green after fixing a refresh hang that made the app non-functional, TV app data layers wired to production, mobile crash reporting, on-device validation runbook, self-hosted CI runners replacing the billing-blocked hosted Actions for the private repos.
+
 ## 2026-07-07 — Deep review round: 16 verified fixes
 
 Three Opus review agents (correctness, security with live production probes, architecture) audited everything shipped 2026-07-06; every finding was adversarially verified before approval. Highlights:
