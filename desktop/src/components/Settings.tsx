@@ -4,6 +4,7 @@ import { METHODS, PRESET_CITIES } from '../lib/ipc-types';
 import { saveSettings } from '../lib/store';
 import { invoke } from '@tauri-apps/api/core';
 import AccountTab from './AccountTab';
+import TvManager from './TvManager';
 
 interface Props {
   settings: Settings;
@@ -14,7 +15,7 @@ export interface SettingsPanelHandle {
   save: () => Promise<void>;
 }
 
-type Tab = 'general' | 'location' | 'notifications' | 'advanced' | 'account';
+type Tab = 'general' | 'location' | 'notifications' | 'advanced' | 'account' | 'tvs';
 
 const SettingsPanel = forwardRef<SettingsPanelHandle, Props>(function SettingsPanel({ settings, onSave }, ref) {
   const [form, setForm] = useState<Settings>(settings);
@@ -48,6 +49,7 @@ const SettingsPanel = forwardRef<SettingsPanelHandle, Props>(function SettingsPa
     { id: 'notifications', label: 'Alerts' },
     { id: 'advanced', label: 'Advanced' },
     { id: 'account', label: 'Account' },
+    { id: 'tvs', label: 'My TVs' },
   ];
 
   return (
@@ -219,6 +221,7 @@ const SettingsPanel = forwardRef<SettingsPanelHandle, Props>(function SettingsPa
         )}
 
         {tab === 'account' && <AccountTab />}
+        {tab === 'tvs' && <TvManager />}
       </div>
     </div>
   );
