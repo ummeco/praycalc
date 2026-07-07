@@ -136,6 +136,10 @@ export default function RootLayout() {
         <Stack.Screen name="city-search" options={{ headerShown: true, title: t('screens.citySearch.findCityTitle') }} />
         <Stack.Screen name="timetable" options={{ headerShown: true, title: t('menu.timetable.label') }} />
         <Stack.Screen name="mosques" options={{ headerShown: true, title: t('menu.mosques.label') }} />
+        <Stack.Screen name="jumuah" options={{ headerShown: true, title: t('menu.jumuah.label') }} />
+        <Stack.Screen name="masjid-mute" options={{ headerShown: true, title: t('menu.masjidMute.label') }} />
+        <Stack.Screen name="fasting" options={{ headerShown: true, title: t('menu.fasting.label') }} />
+        <Stack.Screen name="qada" options={{ headerShown: true, title: t('menu.qada.label') }} />
         <Stack.Screen name="pair-tv" options={{ headerShown: true, title: t('menu.pairTv.label') }} />
         <Stack.Screen name="tvs" options={{ headerShown: true, title: t('menu.tvManager.label') }} />
         <Stack.Screen name="onboarding" options={{ presentation: 'modal', headerShown: false }} />

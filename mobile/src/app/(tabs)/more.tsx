@@ -41,6 +41,10 @@ const MENU_ITEMS: MenuItem[] = [
   { labelKey: 'menu.agendas.label', subtitleKey: 'menu.agendas.subtitle', route: '/agendas', icon: '📅' },
   { labelKey: 'menu.timetable.label', subtitleKey: 'menu.timetable.subtitle', route: '/timetable', icon: '🗓️' },
   { labelKey: 'menu.mosques.label', subtitleKey: 'menu.mosques.subtitle', route: '/mosques', icon: '🕌' },
+  { labelKey: 'menu.jumuah.label', subtitleKey: 'menu.jumuah.subtitle', route: '/jumuah', icon: '🕌' },
+  { labelKey: 'menu.masjidMute.label', subtitleKey: 'menu.masjidMute.subtitle', route: '/masjid-mute', icon: '🔕' },
+  { labelKey: 'menu.fasting.label', subtitleKey: 'menu.fasting.subtitle', route: '/fasting', icon: '🍽️' },
+  { labelKey: 'menu.qada.label', subtitleKey: 'menu.qada.subtitle', route: '/qada', icon: '📝' },
   { labelKey: 'menu.travel.label', subtitleKey: 'menu.travel.subtitle', route: '/travel', icon: '✈️' },
 ];
 

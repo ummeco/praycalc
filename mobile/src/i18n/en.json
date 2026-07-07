@@ -84,23 +84,90 @@
     "more": "More"
   },
   "menu": {
-    "settings": { "label": "Settings", "subtitle": "Method, location, notifications" },
-    "adhan": { "label": "Adhan Library", "subtitle": "Prayer call audio & reciter" },
-    "tasbeeh": { "label": "Tasbeeh Counter", "subtitle": "Digital dhikr counter" },
-    "duaDhikr": { "label": "Dua & Adhkar", "subtitle": "Morning & evening supplications" },
-    "moon": { "label": "Moon Phase", "subtitle": "Lunar calendar & Hijri date" },
-    "quran": { "label": "Quran", "subtitle": "Uthmani script with bookmarks" },
-    "stats": { "label": "Prayer Stats", "subtitle": "Track your prayers & streaks" },
-    "ramadan": { "label": "Ramadan", "subtitle": "Suhoor & Iftar times, tracker" },
-    "subscription": { "label": "Go Pro", "subtitle": "Unlock premium features" },
-    "homeWidget": { "label": "Home Widget", "subtitle": "Next prayer on home screen" },
-    "smartHome": { "label": "Smart Home", "subtitle": "Lock devices during salah" },
-    "pairTv": { "label": "Pair TV", "subtitle": "Link the PrayCalc TV app" },
-    "tvManager": { "label": "My TVs", "subtitle": "Manage paired TV displays" },
-    "agendas": { "label": "Prayer Calendar", "subtitle": "Add prayer times to calendar" },
-    "timetable": { "label": "Monthly Timetable", "subtitle": "Full month prayer times + calendar export" },
-    "mosques": { "label": "Nearby Mosques", "subtitle": "Find mosques around you" },
-    "travel": { "label": "Travel Mode", "subtitle": "Musafir qasr for travellers" }
+    "settings": {
+      "label": "Settings",
+      "subtitle": "Method, location, notifications"
+    },
+    "adhan": {
+      "label": "Adhan Library",
+      "subtitle": "Prayer call audio & reciter"
+    },
+    "tasbeeh": {
+      "label": "Tasbeeh Counter",
+      "subtitle": "Digital dhikr counter"
+    },
+    "duaDhikr": {
+      "label": "Dua & Adhkar",
+      "subtitle": "Morning & evening supplications"
+    },
+    "moon": {
+      "label": "Moon Phase",
+      "subtitle": "Lunar calendar & Hijri date"
+    },
+    "quran": {
+      "label": "Quran",
+      "subtitle": "Uthmani script with bookmarks"
+    },
+    "stats": {
+      "label": "Prayer Stats",
+      "subtitle": "Track your prayers & streaks"
+    },
+    "ramadan": {
+      "label": "Ramadan",
+      "subtitle": "Suhoor & Iftar times, tracker"
+    },
+    "subscription": {
+      "label": "Go Pro",
+      "subtitle": "Unlock premium features"
+    },
+    "homeWidget": {
+      "label": "Home Widget",
+      "subtitle": "Next prayer on home screen"
+    },
+    "smartHome": {
+      "label": "Smart Home",
+      "subtitle": "Lock devices during salah"
+    },
+    "pairTv": {
+      "label": "Pair TV",
+      "subtitle": "Link the PrayCalc TV app"
+    },
+    "tvManager": {
+      "label": "My TVs",
+      "subtitle": "Manage paired TV displays"
+    },
+    "agendas": {
+      "label": "Prayer Calendar",
+      "subtitle": "Add prayer times to calendar"
+    },
+    "timetable": {
+      "label": "Monthly Timetable",
+      "subtitle": "Full month prayer times + calendar export"
+    },
+    "mosques": {
+      "label": "Nearby Mosques",
+      "subtitle": "Find mosques around you"
+    },
+    "travel": {
+      "label": "Travel Mode",
+      "subtitle": "Musafir qasr for travellers"
+    },
+    "jumuah": {
+      "label": "Jumu’ah",
+      "subtitle": "Friday reminders & Surah al-Kahf"
+    },
+    "masjidMute": {
+      "label": "Masjid Auto-Mute",
+      "subtitle": "Silence your phone near a masjid"
+    },
+    "fasting": {
+      "label": "Fasting Tracker",
+      "subtitle": "Ramadan, Mondays & Thursdays, White Days"
+    },
+    "qada": {
+      "label": "Missed Prayers (Qada)",
+      "subtitle": "Track and make up missed prayers"
+    }
   },
   "settings": {
     "title": "Settings",
