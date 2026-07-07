@@ -45,6 +45,8 @@ targets:
       - path: PrayCalcWatch/Models
       - path: PrayCalcWatch/Services
       - path: PrayCalcWatch/Views
+      # Phone -> watch settings sync (app-only; not in the widget extension).
+      - path: PrayCalcWatch/Sync
       - path: PrayCalcWatch/Bridge/PrayCalcEngine.swift
       - path: PrayCalcWatch/Bridge/SharedLocationStore.swift
       - path: PrayCalcWatch/Assets.xcassets

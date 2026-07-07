@@ -32,6 +32,7 @@ enum SharedLocationStore {
         static let longitude = "lastLongitude"
         static let method = "calculationMethod"
         static let madhab = "madhab"
+        static let city = "lastCity"
     }
 
     // MARK: - Location
@@ -61,6 +62,13 @@ enum SharedLocationStore {
     static var madhabKey: String {
         get { defaults.string(forKey: Key.madhab) ?? "shafii" }
         set { defaults.set(newValue, forKey: Key.madhab) }
+    }
+
+    /// Display label for the current location (e.g. "New York"). Set from a
+    /// phone-synced context; empty when only a raw GPS fix is known.
+    static var city: String {
+        get { defaults.string(forKey: Key.city) ?? "" }
+        set { defaults.set(newValue, forKey: Key.city) }
     }
 
     /// Persist the app's latest fix + preferences so the widget can read them.

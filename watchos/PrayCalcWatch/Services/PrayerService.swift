@@ -30,13 +30,52 @@ class PrayerService: NSObject, ObservableObject, CLLocationManagerDelegate {
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyKilometer
         loadCachedResponse()
+        observePhoneSync()
     }
 
     // MARK: - Public
 
     func startUpdating() {
+        // Activate phone -> watch settings sync. When a phone is paired it pushes
+        // location/method/madhab; when it isn't, this is a no-op and the watch
+        // uses its own GPS + stored defaults (offline-first).
+        WatchSessionManager.shared.activate()
         requestLocation()
         scheduleMidnightRefresh()
+    }
+
+    // MARK: - Phone Sync
+    //
+    // The phone (React Native) pushes the user's chosen location + preferences via
+    // WatchConnectivity; `WatchSessionManager` writes them into the App Group and
+    // posts `didReceivePhoneContext`. Here we adopt those values and recompute the
+    // on-screen schedule immediately, so a paired watch follows the phone even
+    // before its own CoreLocation ever fixes.
+
+    private func observePhoneSync() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handlePhoneContext(_:)),
+            name: WatchSessionManager.didReceivePhoneContext,
+            object: nil
+        )
+    }
+
+    @objc private func handlePhoneContext(_ note: Notification) {
+        // SharedLocationStore already holds the phone's authoritative values.
+        let lat = SharedLocationStore.latitude
+        let lng = SharedLocationStore.longitude
+        guard lat != 0.0 || lng != 0.0 else { return }
+
+        // Mirror into the app's own @AppStorage so its UI + future refreshes agree.
+        lastLatitude = lat
+        lastLongitude = lng
+        calculationMethod = SharedLocationStore.methodKey
+        madhab = SharedLocationStore.madhabKey
+
+        // Bust the daily cache so the new location recomputes, then recalculate.
+        cachedDate = ""
+        calculateOffline(latitude: lat, longitude: lng)
     }
 
     func refresh() {
