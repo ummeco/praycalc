@@ -20,6 +20,7 @@ export const navigation: NavGroup[] = [
     title: 'Getting Started',
     links: [
       { title: 'Introduction', href: '/' },
+      { title: 'How DPC Works', href: '/how-dpc-works', tag: 'Default' },
       { title: 'Installation', href: '/installation' },
     ],
   },

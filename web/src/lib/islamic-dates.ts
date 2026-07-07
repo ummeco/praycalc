@@ -97,6 +97,59 @@ export function getMultiYearDates(startHijriYear: number, count: number): Islami
   return Array.from({ length: count }, (_, i) => getIslamicYearDates(startHijriYear + i));
 }
 
+/** A single all-day Islamic observance on a specific Gregorian (UTC) date. */
+export interface IslamicEvent {
+  /** Stable slug for the VEVENT UID (e.g. "eid-al-fitr"). */
+  slug: string;
+  /** Display name for the calendar entry. */
+  name: string;
+  /** UTC calendar date (no time-of-day). */
+  date: Date;
+}
+
+// Fixed Hijri observances exported to calendars. Mawlid is intentionally EXCLUDED
+// (PPI theology decision, W1.1). Each entry is (Hijri month, Hijri day, name, slug).
+// Laylat al-Qadr uses 27 Ramadan (the most widely observed likely night); the true
+// night is one of the odd nights of the last ten — surfaced as an approximation.
+const FIXED_HIJRI_OBSERVANCES: { hm: number; hd: number; name: string; slug: string }[] = [
+  { hm: 1, hd: 1, name: 'Islamic New Year', slug: 'islamic-new-year' },
+  { hm: 1, hd: 10, name: 'Day of Ashura', slug: 'ashura' },
+  { hm: 7, hd: 27, name: "Isra' and Mi'raj", slug: 'isra-miraj' },
+  { hm: 9, hd: 1, name: 'First day of Ramadan', slug: 'ramadan-start' },
+  { hm: 9, hd: 27, name: 'Laylat al-Qadr (27th night)', slug: 'laylat-al-qadr' },
+  { hm: 10, hd: 1, name: 'Eid al-Fitr', slug: 'eid-al-fitr' },
+  { hm: 12, hd: 10, name: 'Eid al-Adha', slug: 'eid-al-adha' },
+];
+
+/**
+ * All fixed Islamic observances (excluding Mawlid) that fall within a given
+ * Gregorian year, computed via Umm al-Qura. Because a Hijri year drifts ~11 days
+ * earlier each Gregorian year, some observances can occur twice in one Gregorian
+ * year (e.g. two Islamic New Years); we scan the Hijri years bracketing the target
+ * Gregorian year and keep every occurrence whose Gregorian year matches.
+ *
+ * @param gregorianYear - e.g. 2026
+ * @returns events sorted ascending by date
+ */
+export function getIslamicEventsForGregorianYear(gregorianYear: number): IslamicEvent[] {
+  const midYear = new Date(Date.UTC(gregorianYear, 5, 1)); // June 1 — mid-year anchor
+  const centerHijriYear = um.$.gregorianToHijri(midYear).hy;
+  const events: IslamicEvent[] = [];
+
+  // Scan one Hijri year on either side to catch observances near the year boundary.
+  for (let hy = centerHijriYear - 1; hy <= centerHijriYear + 1; hy++) {
+    for (const obs of FIXED_HIJRI_OBSERVANCES) {
+      const date = hijriToDate(hy, obs.hm, obs.hd);
+      if (date.getUTCFullYear() === gregorianYear) {
+        events.push({ slug: obs.slug, name: obs.name, date });
+      }
+    }
+  }
+
+  events.sort((a, b) => a.date.getTime() - b.date.getTime());
+  return events;
+}
+
 /** Current Hijri year from today's date (Umm al-Qura). */
 export function getCurrentHijriYear(): number {
   return um.$.gregorianToHijri(new Date()).hy;

@@ -1,0 +1,63 @@
+---
+layout: ../layouts/DocPage.astro
+title: 'How DPC Works'
+description: 'DPC — Dynamic Prayer Calculation — computes the best Fajr and Isha times for any location on Earth by combining the lessons of every fixed method, the Moonsighting Committee seasonal model, and an Earth-Sun distance correction. Plain-language explanation first, then the technical detail.'
+---
+
+# How DPC Works
+
+DPC stands for Dynamic Prayer Calculation. It is PrayCalc's default method, and it is the one we recommend for almost everyone.
+
+The short version: instead of using one fixed twilight angle for the whole world, DPC works out the right angle for your exact latitude, your season, and even the Earth's current distance from the Sun. It takes the lessons every earlier method learned and folds them into a single calculation that adapts to where and when you are.
+
+If you have used the Moonsighting Committee method before, DPC will feel familiar. It follows the same idea of prayer times that shift with the season, and it improves on that idea with continuous physics rather than a fixed table.
+
+## The problem DPC solves
+
+Fajr begins at true dawn, when white light spreads horizontally across the eastern horizon. Isha begins when the red glow leaves the western sky. These are real, observable events in the sky.
+
+The trouble is that these events happen at different solar depression angles depending on where you are and what time of year it is. A single fixed angle, like 18 degrees, was never a physical law. It was a practical shortcut from an era before everyone carried a computer. One number stood in for what is really a seasonal, latitude-dependent curve.
+
+That shortcut breaks down in predictable ways. At high latitudes in summer, an 18 degree rule asks for an angle the Sun never reaches, so it produces a Fajr time that does not match the sky. See [Dynamic vs. Fixed Angles](/science/dynamic-vs-fixed) for worked examples.
+
+## How DPC decides the angle
+
+DPC treats the twilight angle as a function of your situation rather than a lookup value:
+
+```
+angle = f(latitude, day of year, Earth-Sun distance, elevation)
+```
+
+It builds that function in three layers, described in full on the [Research & Empirical Foundations](/research/empirical-studies) page:
+
+1. **A seasonal base from the Moonsighting Committee model.** Khalid Shaukat's field-calibrated function gives the correct seasonal shape, expressed as minutes before sunrise or after sunset and converted to a depression angle.
+2. **An Earth-Sun distance correction.** Drawn from Jean Meeus's orbital mechanics, this applies a small shift for the fact that the Sun is closer and brighter near perihelion and farther near aphelion.
+3. **Fourier smoothing.** A handful of harmonic terms remove the small discontinuities at the seasonal model's segment boundaries, so the angle changes smoothly across the year instead of jumping.
+
+On top of those layers, DPC applies atmospheric refraction and a horizon dip for your elevation, then clips the result to a physically sensible range so it never returns an implausible angle where the model is extrapolating.
+
+The final angle is handed to the [NREL Solar Position Algorithm](/science/solar-position), which computes the exact clock time when the Sun reaches that depression below your horizon.
+
+## Similar to the Moonsighting method, improved
+
+DPC and the Moonsighting Committee method usually agree closely, because they are both tracking the same physical reality. The research page explains why: converted back to depression angles, the Moonsighting times imply almost the same angles DPC computes.
+
+DPC's two improvements over the Moonsighting method are continuity and the distance correction. It removes the piecewise jumps in the seasonal model, and it adds the small but physically real Earth-Sun distance term. The result is a single smooth function that runs anywhere on Earth without a per-region table.
+
+## What DPC is honest about
+
+DPC's angle function was trained on the OpenFajr dataset, a community record of Fajr sky observations from Birmingham, UK. That gives it strong grounding at Northern European latitudes and the validation cities listed in the [research](/research/empirical-studies). It is extrapolating at equatorial and Southern Hemisphere locations, where systematic observation data is still sparse.
+
+We would rather state that plainly than overclaim. The [pray-calc-ml](https://github.com/acamarata/pray-calc-ml) project is open source, and observation data from other latitudes would improve DPC's accuracy directly.
+
+## You can still choose a fixed method
+
+DPC is the default because it fits most people in most places. If your mosque or local authority follows a specific fixed method, you can select it. PrayCalc keeps all fourteen traditional methods available. See [Calculation Methods](/science/calculation-methods) for the full list and their angles.
+
+## Read further
+
+- [Dynamic vs. Fixed Angles](/science/dynamic-vs-fixed) — worked summer and winter examples
+- [Research & Empirical Foundations](/research/empirical-studies) — the datasets, references, and the full three-layer synthesis
+- [Method Comparison](/research/method-comparison) — how DPC lines up against the fixed methods
+- [Twilight & Depression Angles](/science/twilight-angles) — the underlying physics of dawn and dusk
+- [Machine Learning](/ml) — how the angle model was trained

@@ -44,27 +44,62 @@ const description = 'Scientific documentation for PrayCalc — solar physics, tw
           The Science of Islamic<br />Prayer Times
         </h1>
         <p class="max-w-2xl text-lg text-zinc-600 dark:text-zinc-400">
-          PrayCalc is an open-source Islamic prayer time calculator built on rigorous astronomical science — NREL solar position algorithms, JPL ephemeris data, empirical twilight observations, and machine learning.
+          PrayCalc is an open-source Islamic prayer time calculator built on rigorous astronomical science. Its default method, DPC, computes the best Fajr and Isha times for any location on Earth.
         </p>
 
         <div class="mt-6 flex flex-wrap gap-3">
           <a
-            href="/science/solar-position"
+            href="/how-dpc-works"
             class="inline-flex items-center gap-2 rounded-lg bg-green-700 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-green-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-700"
           >
-            Start with Solar Position
+            How DPC Works
             <svg class="h-4 w-4" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
               <path fill-rule="evenodd" d="M2 8a.75.75 0 01.75-.75h8.69L8.22 4.03a.75.75 0 011.06-1.06l4.5 4.5a.75.75 0 010 1.06l-4.5 4.5a.75.75 0 01-1.06-1.06l3.22-3.22H2.75A.75.75 0 012 8z" clip-rule="evenodd" />
             </svg>
           </a>
           <a
-            href="/installation"
+            href="/science/solar-position"
             class="inline-flex items-center gap-2 rounded-lg bg-white px-4 py-2 text-sm font-medium text-zinc-700 shadow-sm ring-1 ring-zinc-200 hover:bg-zinc-50 dark:bg-zinc-900 dark:text-zinc-200 dark:ring-zinc-700 dark:hover:bg-zinc-800"
           >
-            Install the packages
+            Start with Solar Position
           </a>
         </div>
       </div>
+
+      <!-- DPC hero: the flagship default method, explained in one accessible block -->
+      <section
+        id="dpc"
+        aria-labelledby="dpc-heading"
+        class="mb-16 rounded-2xl border border-green-200 bg-gradient-to-br from-green-50 to-white p-6 sm:p-8 dark:border-green-900 dark:from-green-950 dark:to-zinc-900"
+      >
+        <div class="mb-4 inline-flex items-center gap-2 rounded-full bg-green-700 px-3 py-1 text-xs font-medium text-white">
+          Default Method
+        </div>
+        <h2 id="dpc-heading" class="mb-3 text-2xl font-bold text-zinc-900 dark:text-white">
+          DPC — Dynamic Prayer Calculation
+        </h2>
+        <p class="mb-4 max-w-3xl text-zinc-700 dark:text-zinc-300">
+          Fixed methods use one twilight angle for the whole world. DPC works out the right angle for
+          your latitude, your season, and the Earth's current distance from the Sun. It takes what every
+          earlier method learned and folds it into a single calculation that adapts to where and when you are.
+        </p>
+        <p class="mb-5 max-w-3xl text-zinc-700 dark:text-zinc-300">
+          It is similar to the Moonsighting Committee method, and improved over it. DPC follows the same
+          idea of prayer times that shift with the season, then smooths out the seasonal steps and adds an
+          Earth-Sun distance correction. Where DPC's training data is sparse, we say so plainly.
+        </p>
+        <div class="flex flex-wrap gap-4 text-sm">
+          <a href="/how-dpc-works" class="font-medium text-green-700 underline decoration-green-300 hover:text-green-800 dark:text-green-400 dark:decoration-green-700 dark:hover:text-green-300">
+            Read how DPC works
+          </a>
+          <a href="/science/dynamic-vs-fixed" class="text-zinc-600 underline decoration-zinc-300 hover:text-zinc-900 dark:text-zinc-400 dark:decoration-zinc-600 dark:hover:text-white">
+            Dynamic vs. fixed angles
+          </a>
+          <a href="/research/empirical-studies" class="text-zinc-600 underline decoration-zinc-300 hover:text-zinc-900 dark:text-zinc-400 dark:decoration-zinc-600 dark:hover:text-white">
+            The research behind it
+          </a>
+        </div>
+      </section>
 
       <!-- Live calculator CTA — the interactive prayer-time calculator lives at
            praycalc.com; this is the documentation site. (The pray-calc engine

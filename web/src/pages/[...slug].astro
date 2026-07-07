@@ -18,6 +18,7 @@ import CityClient from '@/islands/city/CityClient';
 import { geocodeSlugParts } from '@/lib/geo.server';
 import { getUtcOffset } from '@/lib/geo';
 import { getPrayerTimes } from '@/lib/prayers.server';
+import { placeSchema, breadcrumbSchema, type Crumb } from '@/lib/structured-data';
 
 const { slug } = Astro.params;
 const slugParts = slug ? slug.split('/') : [];
@@ -38,37 +39,32 @@ const pageUrl = `${BASE_URL}/${slug}`;
 const title = `Prayer Times in ${geo.displayName}`;
 const description = `Today's Fajr, Dhuhr, Asr, Maghrib, and Isha prayer times for ${geo.displayName}. GPS-accurate times with Qibla direction and Hijri calendar.`;
 
-// JSON-LD structured data
-const jsonLd = JSON.stringify({
-  '@context': 'https://schema.org',
-  '@type': 'WebPage',
-  name: title,
-  description,
-  url: pageUrl,
-  about: {
-    '@type': 'City',
-    name: geo.displayName,
-    geo: {
-      '@type': 'GeoCoordinates',
-      latitude: geo.lat,
-      longitude: geo.lng,
-    },
-  },
-  provider: {
-    '@type': 'WebSite',
-    name: 'PrayCalc',
-    url: BASE_URL,
-  },
-});
+// JSON-LD structured data: Place (the city prayer times are computed for) +
+// BreadcrumbList (Home → each slug segment). Both are server-rendered via the
+// layout so crawlers of the 235k-city site get consistent geo + navigation data.
+const crumbs: Crumb[] = [{ name: 'PrayCalc', url: BASE_URL }];
+let crumbPath = '';
+for (const part of slugParts) {
+  crumbPath += `/${part}`;
+  const isLast = crumbPath === `/${slug}`;
+  crumbs.push({
+    name: isLast ? geo.displayName : part.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()),
+    url: `${BASE_URL}${crumbPath}`,
+  });
+}
+
+const jsonLd = [
+  placeSchema(geo.displayName, geo.lat, geo.lng, pageUrl),
+  breadcrumbSchema(crumbs),
+];
 ---
 
 <RootLayout
   title={`${title} | PrayCalc`}
   description={description}
   canonical={pageUrl}
+  jsonLd={jsonLd}
 >
-  <script is:inline type="application/ld+json" set:html={jsonLd} />
-
   <main id="main-content" class="city-page-main">
     <div class="w-full max-w-2xl">
       <a

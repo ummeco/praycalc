@@ -276,6 +276,17 @@ html, body {
 .qibla-distance {
   text-align: center; font-size: 0.875rem; color: rgba(201,242,122,0.85); margin: 0;
 }
+.qibla-live-btn {
+  display: block; margin: 14px auto 0; padding: 8px 16px;
+  border: 1px solid rgba(201,242,122,0.4); border-radius: 999px;
+  background: rgba(201,242,122,0.08); color: #C9F27A;
+  font-size: 0.85rem; cursor: pointer; transition: background 0.15s ease;
+}
+.qibla-live-btn:hover { background: rgba(201,242,122,0.16); }
+.qibla-live-status {
+  text-align: center; font-size: 0.8rem; color: rgba(255,255,255,0.65); margin: 12px 0 0;
+}
+.qibla-live-status--denied { color: rgba(255,180,120,0.85); }
 
 /* --- City page --- */
 .city-page-main { min-height: 100dvh; padding: 24px 16px 80px; display: flex; flex-direction: column; align-items: center; gap: 24px; }

@@ -3,6 +3,8 @@ import {
   getPrayerTimes,
   isKnownMethod,
   KNOWN_METHOD_IDS,
+  DPC_METHOD_ID,
+  getMethodOptions,
 } from "@/lib/prayers.server";
 
 // ---------------------------------------------------------------------------
@@ -44,6 +46,31 @@ describe("isKnownMethod", () => {
   it("is case-sensitive, matching pray-calc's Methods map keys exactly", () => {
     expect(isKnownMethod("mwl")).toBe(false);
   });
+
+  it("accepts 'DPC' as the flagship dynamic default", () => {
+    expect(DPC_METHOD_ID).toBe("DPC");
+    expect(isKnownMethod("DPC")).toBe(true);
+    expect(KNOWN_METHOD_IDS[0]).toBe("DPC");
+  });
+});
+
+// ---------------------------------------------------------------------------
+// getMethodOptions — picker UI source (DPC first + recommended)
+// ---------------------------------------------------------------------------
+describe("getMethodOptions", () => {
+  it("lists DPC first, marked recommended, with a Recommended label", () => {
+    const opts = getMethodOptions();
+    expect(opts[0]!.id).toBe("DPC");
+    expect(opts[0]!.recommended).toBe(true);
+    expect(opts[0]!.label).toMatch(/Recommended/);
+  });
+
+  it("marks only DPC as recommended and keeps fixed methods selectable", () => {
+    const opts = getMethodOptions();
+    expect(opts.filter((o) => o.recommended)).toHaveLength(1);
+    expect(opts.some((o) => o.id === "MWL")).toBe(true);
+    expect(opts.some((o) => o.id === "ISNA")).toBe(true);
+  });
 });
 
 // ---------------------------------------------------------------------------
@@ -54,6 +81,22 @@ describe("getPrayerTimes with method param", () => {
     const dynamic = getPrayerTimes(date, lat, lng, tzOffset);
     const explicitDefault = getPrayerTimes(date, lat, lng, tzOffset, false, false, undefined);
     expect(explicitDefault).toEqual(dynamic);
+  });
+
+  it("method='DPC' returns the same dynamic times as the default (no fixed overlay)", () => {
+    const dynamic = getPrayerTimes(date, lat, lng, tzOffset);
+    const dpc = getPrayerTimes(date, lat, lng, tzOffset, false, false, "DPC");
+    expect(dpc).toEqual(dynamic);
+  });
+
+  it("DPC dynamic Fajr/Isha differ from a fixed method (MWL)", () => {
+    const dpc = getPrayerTimes(date, lat, lng, tzOffset, false, false, "DPC");
+    const mwl = getPrayerTimes(date, lat, lng, tzOffset, false, false, "MWL");
+    // Shared prayers stay identical; the dynamic default is not the MWL overlay.
+    expect(dpc.Dhuhr).toBe(mwl.Dhuhr);
+    expect(dpc.Fajr).not.toBe("N/A");
+    // For this mid-latitude summer fixture, DPC and MWL Fajr should not coincide.
+    expect(dpc.Fajr === mwl.Fajr && dpc.Isha === mwl.Isha).toBe(false);
   });
 
   it("returns different Fajr/Isha for a known method vs. the default", () => {

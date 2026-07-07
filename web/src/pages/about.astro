@@ -8,12 +8,36 @@
  */
 
 import RootLayout from '@/layouts/RootLayout.astro';
+import { faqPageSchema, organizationSchema } from '@/lib/structured-data';
+
+// JSON-LD: FAQPage mirrors the on-page Q&A sections + Organization.
+const jsonLd = [
+  faqPageSchema([
+    {
+      question: 'What is PrayCalc?',
+      answer:
+        'PrayCalc calculates prayer times using the PrayCalc Dynamic Method — a physics-grounded algorithm based on the NREL Solar Position Algorithm (SPA), the most accurate solar position model available for civilian use. Prayer times are computed fresh for your exact coordinates.',
+    },
+    {
+      question: 'Which calculation methods does PrayCalc support?',
+      answer:
+        "PrayCalc supports the Dynamic Method (default), Shafi'i/Maliki/Hanbali Asr, and Hanafi Asr. Fajr and Isha use dynamic twilight angle computation. Users can also choose from 14 traditional fixed-angle methods.",
+    },
+    {
+      question: 'How does PrayCalc handle privacy?',
+      answer:
+        'No ads. No third-party tracking. Location data stays in your browser. Umami analytics is used for anonymous usage statistics only.',
+    },
+  ]),
+  organizationSchema(),
+];
 ---
 
 <RootLayout
   title="About PrayCalc"
   description="PrayCalc is a free, accurate prayer time calculator built for the global Muslim community. GPS-accurate times, offline support, and multiple calculation methods."
   canonical="https://praycalc.com/about"
+  jsonLd={jsonLd}
 >
   <main id="main-content" class="info-page">
     <div class="info-page-inner">

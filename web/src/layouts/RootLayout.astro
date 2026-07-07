@@ -28,6 +28,12 @@ interface Props {
   dir?: 'ltr' | 'rtl';
   noIndex?: boolean;
   hideFooter?: boolean;
+  /**
+   * One or more schema.org JSON-LD objects, server-rendered into <head>. Each is
+   * emitted as its own <script type="application/ld+json">. Pass a single object
+   * or an array. Already-serialized strings are passed through untouched.
+   */
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[] | string;
 }
 
 const {
@@ -39,7 +45,15 @@ const {
   dir,
   noIndex = false,
   hideFooter = false,
+  jsonLd,
 } = Astro.props;
+
+// Normalize jsonLd into an array of JSON strings for <head> injection.
+const jsonLdBlocks: string[] = jsonLd == null
+  ? []
+  : (Array.isArray(jsonLd) ? jsonLd : [jsonLd]).map((block) =>
+      typeof block === 'string' ? block : JSON.stringify(block),
+    );
 
 // Active locale: NEXT_LOCALE cookie (via middleware) wins over the prop default.
 const RTL_LOCALES = new Set(['ar', 'ur', 'fa', 'he', 'ckb', 'ps']);
@@ -63,6 +77,11 @@ const umamiSiteId = import.meta.env.UMAMI_WEBSITE_ID;
 
     {noIndex && <meta name="robots" content="noindex,nofollow" />}
     {canonical && <link rel="canonical" href={canonical} />}
+
+    {/* schema.org JSON-LD structured data (server-rendered) */}
+    {jsonLdBlocks.map((block) => (
+      <script is:inline type="application/ld+json" set:html={block} />
+    ))}
 
     <!-- OpenGraph -->
     <meta property="og:type" content="website" />

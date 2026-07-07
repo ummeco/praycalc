@@ -1,18 +1,23 @@
 /**
  * api/calendar.ics.ts — ICS calendar export endpoint.
  *
- * PURPOSE: GET /api/calendar.ics?lat=&lng=&tz=&days=30&hanafi=0
+ * PURPOSE: GET /api/calendar.ics?lat=&lng=&tz=&days=30&hanafi=0&events=0
  *   Generates a valid RFC 5545 iCalendar file with one VEVENT per prayer per day.
  *   Each VEVENT spans the prayer time to the next prayer (or +1h for Isha/Qiyam).
- * INPUTS: lat, lng, tz (IANA timezone), days (1–365), hanafi (0|1)
+ *   With &events=1, appends all-day VEVENTs for the fixed Islamic observances
+ *   (Ramadan start, both Eids, Ashura, Islamic New Year, Laylat al-Qadr,
+ *   Isra & Mi'raj — Mawlid excluded) that fall within the exported date range.
+ * INPUTS: lat, lng, tz (IANA timezone), days (1–365), hanafi (0|1), events (0|1)
  * OUTPUTS: text/calendar; charset=utf-8
  * CONSTRAINTS: Pure server-side, no islands. Uses pray-calc via prayers.server.ts.
- * REF: P2-PRAYCALC-CALENDAR
+ *   Islamic events are opt-in (events=1) so existing subscriptions never change.
+ * REF: P2-PRAYCALC-CALENDAR · W1.1 (Islamic events in .ics, gap A13)
  */
 
 import type { APIRoute } from 'astro';
 import { getPrayerTimes } from '@/lib/prayers.server';
 import { getUtcOffset } from '@/lib/geo';
+import { getIslamicEventsForGregorianYear } from '@/lib/islamic-dates';
 
 const PRAYER_NAMES = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'] as const;
 type PrayerName = (typeof PRAYER_NAMES)[number];
@@ -20,6 +25,11 @@ type PrayerName = (typeof PRAYER_NAMES)[number];
 /** Format a Date as ICS timestamp: YYYYMMDDTHHmmss */
 function icsDate(d: Date): string {
   return d.toISOString().replace(/[-:]/g, '').slice(0, 15) + 'Z';
+}
+
+/** Format a UTC Date as an ICS all-day DATE value: YYYYMMDD */
+function icsAllDay(d: Date): string {
+  return d.toISOString().slice(0, 10).replace(/-/g, '');
 }
 
 /** Parse "HH:MM" in a given IANA timezone → UTC Date for the given base date */
@@ -62,6 +72,9 @@ export const GET: APIRoute = ({ url }) => {
   const tz = p.get('tz') ?? 'UTC';
   const days = Math.min(365, Math.max(1, parseInt(p.get('days') ?? '30', 10)));
   const hanafi = p.get('hanafi') === '1';
+  // Opt-in: append fixed Islamic observances as all-day events. Off by default so
+  // existing calendar subscriptions keep exporting prayers only.
+  const includeEvents = p.get('events') === '1';
 
   if (isNaN(lat) || isNaN(lng)) {
     return new Response('Missing or invalid lat/lng', { status: 400 });
@@ -132,6 +145,41 @@ export const GET: APIRoute = ({ url }) => {
       lines.push(foldLine('DESCRIPTION:' + name + ' prayer time for ' + tz + (hanafi ? ' (Hanafi)' : '')));
       lines.push('CATEGORIES:Prayer');
       lines.push('END:VEVENT');
+    }
+  }
+
+  // Opt-in Islamic observances as all-day VEVENTs within the exported window.
+  if (includeEvents) {
+    // Window covers [today, today + days). Gather events across every Gregorian
+    // year the window spans (usually 1, but 2 near a Dec/Jan boundary).
+    const windowStart = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+    const windowEnd = new Date(windowStart);
+    windowEnd.setUTCDate(windowEnd.getUTCDate() + days);
+
+    const years = new Set<number>();
+    for (let y = windowStart.getUTCFullYear(); y <= windowEnd.getUTCFullYear(); y++) {
+      years.add(y);
+    }
+
+    for (const year of years) {
+      for (const ev of getIslamicEventsForGregorianYear(year)) {
+        // Keep only observances inside the [windowStart, windowEnd) export window.
+        if (ev.date < windowStart || ev.date >= windowEnd) continue;
+
+        const dtEnd = new Date(ev.date);
+        dtEnd.setUTCDate(dtEnd.getUTCDate() + 1); // all-day DTEND is exclusive (next day)
+
+        lines.push('BEGIN:VEVENT');
+        lines.push(foldLine(`UID:${uid_base}-event-${ev.slug}-${icsAllDay(ev.date)}@praycalc.com`));
+        lines.push('DTSTAMP:' + icsDate(now));
+        lines.push('DTSTART;VALUE=DATE:' + icsAllDay(ev.date));
+        lines.push('DTEND;VALUE=DATE:' + icsAllDay(dtEnd));
+        lines.push(foldLine('SUMMARY:' + ev.name));
+        lines.push(foldLine('DESCRIPTION:' + ev.name + ' — Islamic observance (Umm al-Qura). Local moon sighting may shift the observed date by ±1 day.'));
+        lines.push('CATEGORIES:Islamic Holiday');
+        lines.push('TRANSP:TRANSPARENT');
+        lines.push('END:VEVENT');
+      }
     }
   }
 

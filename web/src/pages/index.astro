@@ -12,8 +12,12 @@ import RootLayout from '@/layouts/RootLayout.astro';
 import LocationSearch from '@/islands/LocationSearch';
 import GeoPrompt from '@/islands/home/GeoPrompt';
 import { getMoonPhase } from '@/lib/moon';
+import { webApplicationSchema, organizationSchema } from '@/lib/structured-data';
 
 const moon = getMoonPhase();
+
+// JSON-LD: WebApplication (the app itself) + Organization (publisher).
+const jsonLd = [webApplicationSchema(), organizationSchema()];
 
 // Localized tagline (NEXT_LOCALE cookie via middleware). Arabic/Urdu render in
 // their own script so RTL locales have visible localized copy.
@@ -30,6 +34,7 @@ const tagline = TAGLINES[locale] ?? TAGLINES.en;
   title="PrayCalc — Islamic Prayer Times"
   description="Accurate Islamic prayer times for any location. GPS-based, multiple calculation methods, Qibla direction, moon phases, and Hijri calendar."
   canonical="https://praycalc.com"
+  jsonLd={jsonLd}
 >
   <main id="main-content" class="home-main relative">
     <h1 class="sr-only">PrayCalc — accurate Islamic prayer times for any location</h1>

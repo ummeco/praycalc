@@ -3,6 +3,7 @@ import {
   getIslamicYearDates,
   getMultiYearDates,
   getCurrentHijriYear,
+  getIslamicEventsForGregorianYear,
   formatDateShort,
   formatWeekday,
 } from "@/lib/islamic-dates";
@@ -60,5 +61,57 @@ describe("islamic-dates (Umm al-Qura projections for /institutions)", () => {
     const d = new Date(Date.UTC(2025, 2, 1)); // Mar 1, 2025 (Sat)
     expect(formatDateShort(d)).toBe("Mar 1, 2025");
     expect(formatWeekday(d)).toBe("Sat");
+  });
+});
+
+describe("getIslamicEventsForGregorianYear (for .ics export)", () => {
+  it("includes the expected fixed observances and never Mawlid", () => {
+    const events = getIslamicEventsForGregorianYear(2026);
+    const slugs = new Set(events.map((e) => e.slug));
+    // The seven fixed observances we export (Mawlid intentionally excluded).
+    for (const slug of [
+      "islamic-new-year",
+      "ashura",
+      "isra-miraj",
+      "ramadan-start",
+      "laylat-al-qadr",
+      "eid-al-fitr",
+      "eid-al-adha",
+    ]) {
+      expect(slugs.has(slug)).toBe(true);
+    }
+    expect(slugs.has("mawlid")).toBe(false);
+    expect(events.some((e) => /mawlid/i.test(e.name))).toBe(false);
+  });
+
+  it("returns events sorted ascending, all within the requested Gregorian year", () => {
+    const events = getIslamicEventsForGregorianYear(2026);
+    expect(events.length).toBeGreaterThan(0);
+    for (const e of events) {
+      expect(e.date.getUTCFullYear()).toBe(2026);
+    }
+    const times = events.map((e) => e.date.getTime());
+    expect([...times].sort((a, b) => a - b)).toEqual(times);
+  });
+
+  it("Eid al-Fitr matches the 1 Shawwal date from getIslamicYearDates", () => {
+    // Cross-check against the proven year-dates engine: the Eid al-Fitr event in a
+    // Gregorian year must equal a 1-Shawwal date landing in that year.
+    const events = getIslamicEventsForGregorianYear(2025);
+    const eid = events.find((e) => e.slug === "eid-al-fitr");
+    expect(eid).toBeDefined();
+    // 1446 AH Eid al-Fitr is Mar 30, 2025 (asserted in the block above).
+    const expected = getIslamicYearDates(1446).eidAlFitr;
+    expect(eid!.date.toISOString().slice(0, 10)).toBe(expected.toISOString().slice(0, 10));
+  });
+
+  it("Laylat al-Qadr falls 26 days after the first day of Ramadan", () => {
+    const events = getIslamicEventsForGregorianYear(2026);
+    const ramadan = events.find((e) => e.slug === "ramadan-start");
+    const qadr = events.find((e) => e.slug === "laylat-al-qadr");
+    if (ramadan && qadr) {
+      const days = (qadr.date.getTime() - ramadan.date.getTime()) / (24 * 60 * 60 * 1000);
+      expect(days).toBe(26); // 27th day = 1 + 26
+    }
   });
 });

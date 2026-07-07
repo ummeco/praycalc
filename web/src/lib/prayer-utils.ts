@@ -43,6 +43,34 @@ export const DISPLAY_PRAYERS: Array<keyof PrayerResult> = [
   'Isha',
 ];
 
+/**
+ * Calculation-method options for the client method picker. DPC (the dynamic
+ * flagship) is first and recommended; the rest are pray-calc fixed presets.
+ * Kept client-safe here (no pray-calc import); the server validates any id via
+ * isKnownMethod() in prayers.server.ts, which is the source of truth for the
+ * full accepted set. This is the curated, user-facing subset.
+ */
+export interface CalcMethodOption {
+  id: string;
+  label: string;
+  recommended: boolean;
+}
+
+export const CALC_METHOD_OPTIONS: CalcMethodOption[] = [
+  { id: 'DPC', label: 'Dynamic (PrayCalc DPC) — Recommended', recommended: true },
+  { id: 'MWL', label: 'Muslim World League', recommended: false },
+  { id: 'ISNA', label: 'ISNA (North America)', recommended: false },
+  { id: 'Egypt', label: 'Egyptian General Authority', recommended: false },
+  { id: 'Karachi', label: 'University of Islamic Sciences, Karachi', recommended: false },
+  { id: 'UAQ', label: 'Umm al-Qura, Makkah', recommended: false },
+  { id: 'Qatar', label: 'Qatar', recommended: false },
+  { id: 'Kuwait', label: 'Kuwait', recommended: false },
+  { id: 'MUIS', label: 'Singapore (MUIS)', recommended: false },
+  { id: 'UOIF', label: 'France (UOIF)', recommended: false },
+  { id: 'DIBT', label: 'Diyanet (Türkiye)', recommended: false },
+  { id: 'MSC', label: 'Moonsighting Committee', recommended: false },
+];
+
 /** Format HH:MM:SS → 12-hour or 24-hour display */
 export function fmtTime(
   time: string,

@@ -16,6 +16,12 @@ export type AdhanVoice = 'mishari' | 'makkah';
 export type HijriCalendarSetting = 'umm-al-qura' | 'astronomical' | 'moonsighting';
 
 export interface PrayCalcSettings {
+  /**
+   * Fajr/Isha calculation method. 'DPC' (default) = PrayCalc Dynamic Calculation,
+   * the recommended per-location/season angle. Any other value is a pray-calc
+   * fixed-preset id (e.g. 'MWL', 'ISNA', 'Karachi').
+   */
+  calcMethod: string;
   hanafi: boolean;
   use24h: boolean;
   lightMode: boolean;
@@ -32,6 +38,7 @@ export interface PrayCalcSettings {
 const KEY = 'praycalc-settings';
 
 const DEFAULTS: PrayCalcSettings = {
+  calcMethod: 'DPC',
   hanafi: false,
   use24h: false,
   lightMode: false,

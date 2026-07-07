@@ -50,6 +50,13 @@ function nowHHMMSS(tz: string): string {
   }
 }
 
+/** Today's date as YYYY-MM-DD for the /api/prayers range. */
+function todayISODate(): string {
+  const d = new Date();
+  const pad = (n: number) => n.toString().padStart(2, '0');
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+}
+
 export default function CityClient({
   shafiPrayers,
   hanafiPrayers,
@@ -64,6 +71,9 @@ export default function CityClient({
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [modal, setModal] = useState<ModalKind>(null);
   const [clockHHMMSS, setClockHHMMSS] = useState('');
+  // Fixed-method Fajr/Isha overlay. Null while DPC (server-rendered dynamic
+  // default) is selected; populated from /api/prayers for any fixed preset.
+  const [methodOverlay, setMethodOverlay] = useState<{ Fajr: string; Isha: string } | null>(null);
 
   const panelRef = useRef<HTMLDivElement>(null);
   const gearRef = useRef<HTMLButtonElement>(null);
@@ -89,10 +99,42 @@ export default function CityClient({
     return () => clearInterval(id);
   }, [timezone]);
 
+  // Fixed-method Fajr/Isha overlay. DPC (default) uses the server-rendered
+  // dynamic times as-is; any fixed preset re-fetches today's Fajr/Isha for the
+  // chosen method + madhab. Only Fajr/Isha differ by method — the rest are shared.
+  useEffect(() => {
+    if (settings.calcMethod === 'DPC') {
+      setMethodOverlay(null);
+      return;
+    }
+    let cancelled = false;
+    const iso = todayISODate();
+    const params = new URLSearchParams({
+      lat: String(lat),
+      lng: String(lng),
+      tz: timezone,
+      from: iso,
+      to: iso,
+      hanafi: settings.hanafi ? '1' : '0',
+      method: settings.calcMethod,
+    });
+    fetch(`/api/prayers?${params.toString()}`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((rows: { prayers: { Fajr: string; Isha: string } }[] | null) => {
+        if (cancelled || !rows || !rows[0]) return;
+        setMethodOverlay({ Fajr: rows[0].prayers.Fajr, Isha: rows[0].prayers.Isha });
+      })
+      .catch(() => { if (!cancelled) setMethodOverlay(null); });
+    return () => { cancelled = true; };
+  }, [settings.calcMethod, settings.hanafi, lat, lng, timezone]);
+
   // Adhan playback — fires when clock crosses a prayer time
   useEffect(() => {
     if (settings.soundMode === 'none' || !clockHHMMSS) return;
-    const prayers = settings.hanafi ? hanafiPrayers : shafiPrayers;
+    const base = settings.hanafi ? hanafiPrayers : shafiPrayers;
+    const prayers = methodOverlay
+      ? { ...base, Fajr: methodOverlay.Fajr, Isha: methodOverlay.Isha }
+      : base;
     const hhmm = clockHHMMSS.slice(0, 5);
     const ss = clockHHMMSS.slice(6, 8);
     if (ss !== '00') return; // only fire at the top of the minute
@@ -134,7 +176,7 @@ export default function CityClient({
         break;
       }
     }
-  }, [clockHHMMSS, settings, shafiPrayers, hanafiPrayers]);
+  }, [clockHHMMSS, settings, shafiPrayers, hanafiPrayers, methodOverlay]);
 
   // Outside-click closes the settings panel (but not when clicking the gear)
   useEffect(() => {
@@ -159,7 +201,11 @@ export default function CityClient({
     setSession(null);
   }
 
-  const prayers = settings.hanafi ? hanafiPrayers : shafiPrayers;
+  const basePrayers = settings.hanafi ? hanafiPrayers : shafiPrayers;
+  // Overlay the selected fixed method's Fajr/Isha; DPC leaves the dynamic default.
+  const prayers = methodOverlay
+    ? { ...basePrayers, Fajr: methodOverlay.Fajr, Isha: methodOverlay.Isha }
+    : basePrayers;
   const qDeg = qiblaAngle(lat, lng);
   const qCompass = compassDir(qDeg);
 

@@ -12,12 +12,16 @@
 
 import { geocodeSlugParts } from '@/lib/geo.server';
 import { getUtcOffset } from '@/lib/geo';
-import { getPrayerTimes } from '@/lib/prayers.server';
+import { getPrayerTimes, isKnownMethod, DPC_METHOD_ID } from '@/lib/prayers.server';
 
 const p = Astro.url.searchParams;
 const theme = p.get('theme') === 'light' ? 'light' : 'dark';
 const size = ['small', 'medium', 'large'].includes(p.get('size') ?? '') ? p.get('size') : 'medium';
 const cityParam = p.get('city') ?? '';
+// Calculation method. Defaults to DPC (the dynamic flagship); any recognized
+// fixed preset id (e.g. 'MWL') is honored, unknown values fall back to DPC.
+const methodParam = p.get('method') ?? '';
+const method = isKnownMethod(methodParam) ? methodParam : DPC_METHOD_ID;
 
 // Resolve requested city; fall back to Mecca
 const slugParts = cityParam ? cityParam.split('/') : [];
@@ -33,7 +37,8 @@ if (!geo) {
 const timezone = geo.timezone ?? 'UTC';
 const now = new Date();
 const tzOffset = getUtcOffset(timezone, now);
-const prayers = getPrayerTimes(now, geo.lat, geo.lng, tzOffset, false);
+// method=DPC (or any unset value) returns the dynamic default; a fixed preset overrides Fajr/Isha.
+const prayers = getPrayerTimes(now, geo.lat, geo.lng, tzOffset, false, false, method);
 
 const PRAYERS = ['Fajr', 'Sunrise', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'] as const;
 

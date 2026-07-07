@@ -16,15 +16,62 @@ import type { PrayerResult } from './prayer-utils';
 
 export type { PrayerResult } from './prayer-utils';
 
+// DPC (Dynamic Prayer Calculation) is PrayCalc's flagship default. It is NOT a
+// fixed-angle preset in pray-calc's METHODS map — it is the engine's own dynamic
+// output (raw.Fajr / raw.Isha from calcTimesAll), a per-location, per-season angle
+// learned from empirical twilight observations. Selecting method=DPC (or omitting
+// method entirely) yields those dynamic times. See praycalc.org "How DPC Works".
+export const DPC_METHOD_ID = 'DPC' as const;
+
 // Tehran/Jafari (Shia fiqh method) is excluded per D-P3-19 — it is not present
 // in pray-calc's METHODS map, so no filtering is needed here; every id in
 // METHODS is an approved fixed-angle/seasonal method safe to expose via the API.
-/** All method IDs the API accepts for the `method` query param (e.g. 'MWL', 'Karachi'). */
-export const KNOWN_METHOD_IDS: readonly string[] = METHODS.map((m) => m.id);
+/**
+ * All method IDs the API accepts for the `method` query param. DPC (the dynamic
+ * default) is listed first, followed by every fixed-angle/seasonal preset from
+ * pray-calc's METHODS map (e.g. 'MWL', 'Karachi').
+ */
+export const KNOWN_METHOD_IDS: readonly string[] = [DPC_METHOD_ID, ...METHODS.map((m) => m.id)];
 
-/** True if `id` is a recognized calculation method (case-sensitive, matches pray-calc's Methods map keys). */
+/** True if `id` is a recognized calculation method (case-sensitive; includes DPC). */
 export function isKnownMethod(id: string): boolean {
   return KNOWN_METHOD_IDS.includes(id);
+}
+
+/** Human-readable label for each method id, used by picker UIs (embed config, etc.). */
+const METHOD_LABELS: Record<string, string> = {
+  DPC: 'Dynamic (PrayCalc DPC) — Recommended',
+  MWL: 'Muslim World League (18°/17°)',
+  ISNA: 'ISNA — North America (15°/15°)',
+  ISNACA: 'ISNA Canada',
+  Egypt: 'Egyptian General Authority (19.5°/17.5°)',
+  Karachi: 'University of Islamic Sciences, Karachi (18°/18°)',
+  UAQ: 'Umm al-Qura, Makkah (18.5°/90 min)',
+  Qatar: 'Qatar (18°/90 min)',
+  Kuwait: 'Kuwait (18°/17.5°)',
+  MUIS: 'Singapore (MUIS) (20°/18°)',
+  UOIF: 'Union des Organisations Islamiques de France (12°/12°)',
+  DIBT: 'Diyanet, Türkiye (18°/17°)',
+  IGUT: 'Institute of Geophysics, University of Tehran',
+  SAMR: 'Spiritual Administration of Muslims, Russia',
+  MSC: 'Moonsighting Committee (seasonal)',
+};
+
+/** Method id + display label, DPC first. For method-picker UIs. */
+export interface MethodOption {
+  id: string;
+  label: string;
+  /** True only for DPC — the recommended dynamic default. */
+  recommended: boolean;
+}
+
+/** All selectable methods as {id, label, recommended} — DPC first, then fixed presets. */
+export function getMethodOptions(): MethodOption[] {
+  return KNOWN_METHOD_IDS.map((id) => ({
+    id,
+    label: METHOD_LABELS[id] ?? id,
+    recommended: id === DPC_METHOD_ID,
+  }));
 }
 
 // Muslim World League (MWL) Fajr/Isha angles: 18° Fajr / 17° Isha.
@@ -46,9 +93,10 @@ const _HANAFI_ANGLES_METHOD_ID = 'MWL' as const;
  * @param tzOffset - UTC offset in hours (from luxon DateTime)
  * @param hanafi - Use Hanafi Asr calculation (shadow = 2x)
  * @param hanafiAngles - Use MWL fixed-angle Fajr (18°) / Isha (17°) instead of dynamic calculation
- * @param method - Optional traditional method ID (see KNOWN_METHOD_IDS) to override Fajr/Isha
- *   with that method's fixed-angle/seasonal times instead of the PrayCalc Dynamic Method.
- *   Unknown/absent -> falls through to default PrayCalc behavior (backward compatible).
+ * @param method - Optional method ID (see KNOWN_METHOD_IDS). 'DPC' (or omitting method)
+ *   returns the PrayCalc Dynamic Method's own per-location/season Fajr/Isha times. Any
+ *   fixed preset id (e.g. 'MWL') overrides Fajr/Isha with that method's fixed-angle/
+ *   seasonal times. Unknown/absent -> DPC dynamic default (backward compatible).
  */
 export function getPrayerTimes(
   date: Date,
@@ -59,7 +107,9 @@ export function getPrayerTimes(
   hanafiAngles = false,
   method?: string,
 ): PrayerResult {
-  if (method && isKnownMethod(method)) {
+  // DPC is the dynamic default — it has no fixed-angle overlay, so treat it exactly
+  // like the no-method path (engine's raw dynamic Fajr/Isha), never a Methods lookup.
+  if (method && method !== DPC_METHOD_ID && isKnownMethod(method)) {
     const allTimes = calcTimesAll(date, lat, lng, tzOffset, 0, undefined, undefined, hanafi) as FormattedPrayerTimesAll;
     // calcTimesAll returns a `Methods` map keyed by string method ID (e.g. 'MWL', 'Karachi') —
     // NOT numeric indices. Using the string ID is required; numeric string keys ('5') are undefined.

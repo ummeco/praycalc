@@ -14,6 +14,7 @@
 
 import type { PrayCalcSettings } from '@/lib/settings';
 import type { PrayCalcSession } from '@/lib/session';
+import { CALC_METHOD_OPTIONS } from '@/lib/prayer-utils';
 
 interface Props {
   settings: PrayCalcSettings;
@@ -107,6 +108,23 @@ export default function SettingsPanel({ settings: s, onChange, session, onSignOu
           </Row>
         </div>
       )}
+
+      {/* Calculation method — always visible; DPC is the recommended default */}
+      <div className="settings-section">
+        <h3 className="settings-section-title">Calculation Method</h3>
+        <label className="sr-only" htmlFor="calc-method-select">Calculation method</label>
+        <select
+          id="calc-method-select"
+          className="settings-method-select w-full rounded-lg bg-white/10 px-3 py-2 text-sm text-white"
+          aria-label="Calculation method"
+          value={s.calcMethod}
+          onChange={(e) => onChange('calcMethod', e.target.value)}
+        >
+          {CALC_METHOD_OPTIONS.map((m) => (
+            <option key={m.id} value={m.id}>{m.label}</option>
+          ))}
+        </select>
+      </div>
 
       {/* Notification — always visible */}
       <div className="settings-section">
