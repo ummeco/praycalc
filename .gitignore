@@ -62,6 +62,7 @@ DerivedData/
 # Wear OS / Android build
 wearos/.gradle/
 wearos/app/build/
+wearos/app/.cxx/
 wearos/build/
 wearos/local.properties
 

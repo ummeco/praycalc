@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.platform.LocalContext
 import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Colors
@@ -49,12 +50,20 @@ object Routes {
 }
 
 @Composable
-fun PrayCalcWearApp() {
+fun PrayCalcWearApp(registerPermissionCallback: ((() -> Unit) -> Unit)? = null) {
     val context = LocalContext.current
     val repository = remember { PrayerRepository(context) }
     val prayerData by repository.prayerData.collectAsState()
     val locationError by repository.locationError.collectAsState()
     val navController = rememberSwipeDismissableNavController()
+
+    // Re-run refresh() once the location-permission prompt (requested by
+    // MainActivity at launch) resolves, so a freshly granted permission is
+    // picked up without requiring the user to tap "Retry" manually.
+    DisposableEffect(registerPermissionCallback) {
+        registerPermissionCallback?.invoke { repository.refresh() }
+        onDispose { }
+    }
 
     MaterialTheme(colors = PrayCalcColorPalette) {
         SwipeDismissableNavHost(

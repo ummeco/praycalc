@@ -35,11 +35,14 @@ import java.time.format.DateTimeFormatter
 
 
 /**
- * WearOS uses an API-first approach for prayer times. All prayer time data is
- * fetched from the PrayCalc API (api.praycalc.com). Unlike watchOS which has
- * a C core library for offline-first on-device calculation, WearOS relies on
- * network connectivity. Cached responses serve as the offline fallback when
- * the network is unavailable.
+ * WearOS is offline-first: prayer times are computed on-device via the
+ * shared C core engine (`core/c/`) through the [PrayCalcNative] JNI bridge —
+ * no network round-trip required. Resolution order per refresh:
+ *   1. Data synced from the paired phone app (Wearable Data Layer), if present.
+ *   2. Local offline calculation via [calculateOffline] (JNI → C core).
+ *   3. Network fetch from `api.praycalc.com` only if the JNI calculation fails
+ *      (e.g. native lib load error) and location is available.
+ * The watch never requires connectivity for its core function.
  */
 class PrayerRepository(private val context: Context) {
 
@@ -213,14 +216,11 @@ class PrayerRepository(private val context: Context) {
     }
 
     private suspend fun getCurrentSettings(): Settings {
-        val prefs = context.dataStore.data
-        var method = "isna"
-        var madhab = "shafii"
-        prefs.collect { p ->
-            method = p[KEY_METHOD] ?: "isna"
-            madhab = p[KEY_MADHAB] ?: "shafii"
-        }
-        return Settings(method, madhab)
+        val prefs = context.dataStore.data.firstOrNull()
+        return Settings(
+            method = prefs?.get(KEY_METHOD) ?: "isna",
+            madhab = prefs?.get(KEY_MADHAB) ?: "shafii"
+        )
     }
 
     private suspend fun getLocation(): Pair<Double, Double>? {

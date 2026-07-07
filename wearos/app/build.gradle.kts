@@ -15,6 +15,7 @@ if (localPropsFile.exists()) {
 android {
     namespace = "app.praycalc"
     compileSdk = 34
+    ndkVersion = "27.1.12297006"
 
     defaultConfig {
         applicationId = "app.praycalc"
