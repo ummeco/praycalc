@@ -48,7 +48,16 @@ jobs:
         run: |
           DEST=$(xcrun simctl list devices available 2>/dev/null \
             | grep -i 'Apple Watch' | head -1 | sed -E 's/.*\(([0-9A-F-]+)\).*/\1/')
-          if [ -n "$DEST" ]; then
+          if [ -z "$DEST" ]; then
+            echo "No watchOS simulator available on this runner image; skipping tests."
+            exit 0
+          fi
+          # Cold watch sims on hosted runners flake at first app launch
+          # ("Application has termination assertions"/Busy) — pre-boot, wait
+          # for full boot, and allow ONE retry before treating it as real.
+          xcrun simctl boot "$DEST" 2>/dev/null || true
+          xcrun simctl bootstatus "$DEST" -b || true
+          run_tests() {
             xcodebuild test \
               -project PrayCalc.xcodeproj \
               -scheme PrayCalcWatch \
@@ -56,6 +65,5 @@ jobs:
               CODE_SIGN_IDENTITY="" \
               CODE_SIGNING_REQUIRED=NO \
               CODE_SIGNING_ALLOWED=NO
-          else
-            echo "No watchOS simulator available on this runner image; skipping tests."
-          fi
+          }
+          run_tests || { echo "First test run failed — retrying once after sim settle."; sleep 20; run_tests; }
