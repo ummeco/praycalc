@@ -1,4 +1,5 @@
 import Foundation
+import WidgetKit
 
 // MARK: - API Response
 
@@ -35,6 +36,40 @@ struct PrayerMeta: Codable {
     let longitude: Double
     let timezone: String
     let date: String
+}
+
+// MARK: - Complication Timeline Entry
+//
+// The model backing a watch-face complication timeline. Lives here (not in the
+// widget target) so both the widget extension and the app-side unit tests can
+// use it. Conforms to WidgetKit's `TimelineEntry`.
+
+struct PrayerTimelineEntry: TimelineEntry {
+    let date: Date
+    let prayerName: String
+    let prayerTime: String
+    let timeRemaining: TimeInterval
+    let progress: Double
+    let allPrayers: [(name: String, time: String)]
+    let isPlaceholder: Bool
+
+    static var placeholder: PrayerTimelineEntry {
+        PrayerTimelineEntry(
+            date: Date(),
+            prayerName: "Dhuhr",
+            prayerTime: "12:30 PM",
+            timeRemaining: 3600,
+            progress: 0.5,
+            allPrayers: [
+                ("Fajr", "5:42 AM"),
+                ("Dhuhr", "12:30 PM"),
+                ("Asr", "3:45 PM"),
+                ("Maghrib", "6:15 PM"),
+                ("Isha", "7:45 PM"),
+            ],
+            isPlaceholder: true
+        )
+    }
 }
 
 // MARK: - App Models

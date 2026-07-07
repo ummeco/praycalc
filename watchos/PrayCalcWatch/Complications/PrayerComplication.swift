@@ -1,35 +1,8 @@
 import SwiftUI
 import WidgetKit
 
-// MARK: - Timeline Entry
-
-struct PrayerTimelineEntry: TimelineEntry {
-    let date: Date
-    let prayerName: String
-    let prayerTime: String
-    let timeRemaining: TimeInterval
-    let progress: Double
-    let allPrayers: [(name: String, time: String)]
-    let isPlaceholder: Bool
-
-    static var placeholder: PrayerTimelineEntry {
-        PrayerTimelineEntry(
-            date: Date(),
-            prayerName: "Dhuhr",
-            prayerTime: "12:30 PM",
-            timeRemaining: 3600,
-            progress: 0.5,
-            allPrayers: [
-                ("Fajr", "5:42 AM"),
-                ("Dhuhr", "12:30 PM"),
-                ("Asr", "3:45 PM"),
-                ("Maghrib", "6:15 PM"),
-                ("Isha", "7:45 PM"),
-            ],
-            isPlaceholder: true
-        )
-    }
-}
+// `PrayerTimelineEntry` (the TimelineEntry model) lives in Models/PrayerData.swift
+// so both the widget extension and the app-side unit tests can reach it.
 
 // MARK: - Brand Colors
 

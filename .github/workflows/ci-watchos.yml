@@ -3,10 +3,10 @@ name: watchOS CI
 on:
   push:
     branches: [main]
-    paths: ['watchos/**']
+    paths: ['watchos/**', 'core/c/**']
   pull_request:
     branches: [main]
-    paths: ['watchos/**']
+    paths: ['watchos/**', 'core/c/**']
   workflow_dispatch:
 
 jobs:
@@ -16,32 +16,46 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - name: Select Xcode
-        run: sudo xcode-select -s /Applications/Xcode_16.app
+      - name: Install XcodeGen
+        run: brew install xcodegen
 
-      - name: Build watchOS (Release)
+      # The .xcodeproj is gitignored; it is generated from watchos/project.yml.
+      - name: Generate Xcode project
+        working-directory: watchos
+        run: xcodegen generate
+
+      # macos-15 images may ship without the watchOS simulator runtime.
+      - name: Ensure watchOS platform is installed
+        run: xcodebuild -downloadPlatform watchOS || true
+
+      - name: Build watchOS (Debug, no signing)
         working-directory: watchos
         run: |
           xcodebuild build \
+            -project PrayCalc.xcodeproj \
             -scheme PrayCalcWatch \
-            -configuration Release \
-            -destination 'platform=watchOS Simulator,name=Apple Watch Series 9 (45mm)' \
-            CODE_SIGN_IDENTITY="" \
-            CODE_SIGNING_REQUIRED=NO \
-            CODE_SIGNING_ALLOWED=NO | xcpretty || xcodebuild build \
-            -scheme PrayCalcWatch \
-            -configuration Release \
-            -destination 'platform=watchOS Simulator,name=Apple Watch Series 9 (45mm)' \
+            -configuration Debug \
+            -destination 'generic/platform=watchOS Simulator' \
             CODE_SIGN_IDENTITY="" \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGNING_ALLOWED=NO
 
+      # Real test gate (promoted from best-effort once WKWatchOnly made the
+      # standalone app installable on simulators). Only skips when the runner
+      # image genuinely has no watchOS simulator to boot.
       - name: Run unit tests
         working-directory: watchos
         run: |
-          xcodebuild test \
-            -scheme PrayCalcWatch \
-            -destination 'platform=watchOS Simulator,name=Apple Watch Series 9 (45mm)' \
-            CODE_SIGN_IDENTITY="" \
-            CODE_SIGNING_REQUIRED=NO \
-            CODE_SIGNING_ALLOWED=NO 2>/dev/null || true
+          DEST=$(xcrun simctl list devices available 2>/dev/null \
+            | grep -i 'Apple Watch' | head -1 | sed -E 's/.*\(([0-9A-F-]+)\).*/\1/')
+          if [ -n "$DEST" ]; then
+            xcodebuild test \
+              -project PrayCalc.xcodeproj \
+              -scheme PrayCalcWatch \
+              -destination "id=$DEST" \
+              CODE_SIGN_IDENTITY="" \
+              CODE_SIGNING_REQUIRED=NO \
+              CODE_SIGNING_ALLOWED=NO
+          else
+            echo "No watchOS simulator available on this runner image; skipping tests."
+          fi

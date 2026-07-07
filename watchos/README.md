@@ -1,13 +1,48 @@
 # PrayCalc watchOS App
 
-Standalone Apple Watch app for PrayCalc. Shows prayer times, countdown to next prayer, and Qibla direction.
+Standalone Apple Watch app for PrayCalc. Shows prayer times, countdown to next prayer, Qibla direction, and a watch-face complication with the next prayer — all computed **offline** on-device.
 
 ## Status
 
-Source scaffold (Swift/SwiftUI + WidgetKit). The Xcode project is not checked
-in; generate it locally (Xcode > open the folder, or xcodegen if a spec is
-added later). Builds and App Store packaging happen on a Mac with Xcode —
-there is no CI leg for this target yet.
+Source scaffold (Swift/SwiftUI + WidgetKit) with a committed XcodeGen spec. The
+`.xcodeproj` is generated, not checked in — run `xcodegen generate` to create it.
+
+## Building
+
+```bash
+brew install xcodegen           # one-time
+cd watchos
+xcodegen generate               # creates PrayCalc.xcodeproj from project.yml
+open PrayCalc.xcodeproj          # or build from the CLI:
+
+xcodebuild build \
+  -project PrayCalc.xcodeproj \
+  -scheme PrayCalcWatch \
+  -destination 'generic/platform=watchOS Simulator'
+```
+
+`project.yml` is the single source of truth for the Xcode project. Edit it (not
+the generated `.xcodeproj`) and re-run `xcodegen generate`. The generated project
+and Xcode's `DerivedData` are gitignored (see `watchos/.gitignore`).
+
+## Requirements
+
+- Xcode 16+ (validated on Xcode 26.3)
+- watchOS 10.0+ deployment target
+- Swift 5.9+
+- Apple Watch Series 4 or later
+- XcodeGen (`brew install xcodegen`)
+
+## Targets
+
+| Target | Type | Contents |
+| --- | --- | --- |
+| `PrayCalcWatch` | watchOS app | SwiftUI UI, `PrayerService`, `PrayCalcEngine` (C-core bridge) |
+| `PrayCalcComplication` | WidgetKit extension | Watch-face complications; computes prayer times **locally** via the C core |
+| `PrayCalcWatchTests` | unit tests | `Tests/PrayerDataTests.swift` |
+
+Both app and widget compile the shared C core (`../core/c`) and
+`Bridge/PrayCalcEngine.swift`, so the complication needs no network.
 
 ## Features
 
@@ -15,81 +50,46 @@ there is no CI leg for this target yet.
 - Countdown timer with circular progress ring
 - Qibla compass with bearing indicator and haptic alignment feedback
 - Configurable calculation method (ISNA, MWL, Egypt, Umm al-Qura, Tehran, Karachi) and madhab (Shafii, Hanafi)
-- WidgetKit complications for watch faces (circular, rectangular, corner, inline)
-- Offline caching with daily refresh
+- WidgetKit complications (circular, rectangular, corner, inline)
+- Offline-first: prayer times computed on-device by the shared C core
 - GPS location with fallback to last-known position
 
-## Requirements
+## Offline-first architecture
 
-- Xcode 15.0+
-- watchOS 10.0+
-- Swift 5.9+
-- Apple Watch Series 4 or later
+The killer feature is a next-prayer complication that updates on the wrist
+without connectivity. To make that work:
 
-## Xcode Project Setup
-
-This directory contains the Swift source files and assets. To build and run:
-
-1. Open Xcode and create a new watchOS App project:
-   - File > New > Project > watchOS > App
-   - Product Name: `PrayCalcWatch`
-   - Bundle Identifier: `com.praycalc.watch`
-   - Interface: SwiftUI
-   - Language: Swift
-
-2. Remove the auto-generated `ContentView.swift` and `PrayCalcWatchApp.swift` from the new project.
-
-3. Add all files from this directory to the Xcode project:
-   - Drag the `PrayCalcWatch/` folder into the Xcode project navigator
-   - Make sure "Copy items if needed" is unchecked (files are already in place)
-   - Select the PrayCalcWatch target
-
-4. For WidgetKit complications:
-   - File > New > Target > watchOS > Widget Extension
-   - Product Name: `PrayCalcComplication`
-   - Move the files from `Complications/` into this target
-   - Remove the `@main` from `PrayCalcWatchApp.swift` if using the widget bundle entry point, or vice versa
-
-5. Configure signing:
-   - Select the PrayCalcWatch target > Signing & Capabilities
-   - Set Team and Bundle Identifier
-   - Add "Location When In Use" capability
-
-6. Build and run on Apple Watch simulator or device.
-
-## API
-
-The app fetches prayer times from:
-
-```
-GET https://api.praycalc.com/api/v1/times
-  ?lat={latitude}
-  &lng={longitude}
-  &date={YYYY-MM-DD}
-  &method={isna|mwl|egypt|umm_al_qura|tehran|karachi}
-  &madhab={shafii|hanafi}
-```
+- `Bridge/PrayCalcEngine.swift` wraps the C core (`../core/c/pray_calc.c`,
+  `qibla.c`, `nrel_spa.c`) via the bridging header. Both targets link it.
+- `Complications/ComplicationController.swift` computes the whole timeline from
+  `PrayCalcEngine` — **no network call in the complication path**.
+- Location + method/madhab are shared app→widget through an App Group
+  (`group.com.praycalc.watch`) via `Bridge/SharedLocationStore.swift`. The app
+  writes its GPS fix there and calls `WidgetCenter.reloadAllTimelines()`.
+- The app's `PrayerService` keeps a network API call **only as a fallback** for
+  when the C core cannot compute (e.g. polar edge cases). Phone→watch sync will
+  populate the same App Group once the paired iOS app ships.
 
 ## Architecture
 
 ```
 PrayCalcWatch/
-  PrayCalcWatchApp.swift     App entry point
-  ContentView.swift          TabView with 4 tabs
-  Models/
-    PrayerData.swift         Data models + API response types
-  Services/
-    PrayerService.swift      API client, location, caching
-  Views/
-    PrayerListView.swift     Prayer list with highlighting
-    CountdownView.swift      Countdown ring + timer
-    QiblaView.swift          Qibla compass
-    SettingsView.swift       Method + madhab pickers
-  Complications/
-    PrayerComplication.swift WidgetKit complication views
-    ComplicationController.swift Timeline provider
-  Assets.xcassets/           Colors + app icon slots
-  Info.plist                 App configuration
+  PrayCalcWatchApp.swift        App entry point (@main App)
+  ContentView.swift             TabView with 4 tabs
+  Models/PrayerData.swift       Data models + response types (shared)
+  Services/PrayerService.swift  Location, C-core calc, cache
+  Views/                        PrayerList / Countdown / Qibla / Settings
+  Bridge/
+    PrayCalcEngine.swift        Swift wrapper over the C core (shared)
+    SharedLocationStore.swift   App Group location/prefs (shared)
+    PrayCalcWatch-Bridging-Header.h
+  Complications/                WidgetKit complication (@main WidgetBundle)
+  Assets.xcassets/              Colors + app icon slots
+  Info.plist
+PrayCalcComplication/
+  Info.plist                    Widget extension NSExtension config
+  PrayCalcComplication.entitlements  App Group
+project.yml                     XcodeGen spec (source of truth)
 ```
 
 ## Brand Colors

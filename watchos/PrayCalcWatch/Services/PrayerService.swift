@@ -1,7 +1,9 @@
 import Combine
 import CoreLocation
 import Foundation
+import SwiftUI
 import WatchKit
+import WidgetKit
 
 class PrayerService: NSObject, ObservableObject, CLLocationManagerDelegate {
     @Published var prayerResponse: PrayerResponse?
@@ -38,6 +40,18 @@ class PrayerService: NSObject, ObservableObject, CLLocationManagerDelegate {
     }
 
     func refresh() {
+        // Push current preferences into the shared App Group and rebuild the
+        // widget timeline, so a method/madhab change reflects on the complication
+        // even when location is denied (last-known coords are reused).
+        if lastLatitude != 0.0 && lastLongitude != 0.0 {
+            SharedLocationStore.store(
+                latitude: lastLatitude,
+                longitude: lastLongitude,
+                method: calculationMethod,
+                madhab: madhab
+            )
+            WidgetCenter.shared.reloadAllTimelines()
+        }
         requestLocation()
     }
 
@@ -67,6 +81,16 @@ class PrayerService: NSObject, ObservableObject, CLLocationManagerDelegate {
         guard let location = locations.last else { return }
         lastLatitude = location.coordinate.latitude
         lastLongitude = location.coordinate.longitude
+        // Mirror the fix + preferences into the App Group so the complication
+        // widget (a separate process) can compute prayer times offline, then
+        // ask WidgetKit to rebuild its timeline from the fresh location.
+        SharedLocationStore.store(
+            latitude: location.coordinate.latitude,
+            longitude: location.coordinate.longitude,
+            method: calculationMethod,
+            madhab: madhab
+        )
+        WidgetCenter.shared.reloadAllTimelines()
         fetchPrayerTimes(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
     }
 

@@ -1,7 +1,16 @@
 import Foundation
 import WidgetKit
 
-// MARK: - Timeline Provider
+// MARK: - Timeline Provider (offline-first, computed locally via the C core)
+//
+// This provider computes prayer times entirely on-device with `PrayCalcEngine`
+// (the Swift wrapper over the shared C core). There is NO network call in the
+// complication path — that is the whole point of the watch app: the next-prayer
+// complication must update on the wrist even with no connectivity.
+//
+// Location + method/madhab come from `SharedLocationStore` (an App Group suite
+// the watch app writes to). When the paired iOS app ships, it will push the same
+// values into that suite; until then the app's own GPS fix populates it.
 
 struct PrayerTimelineProvider: TimelineProvider {
     typealias Entry = PrayerTimelineEntry
@@ -15,224 +24,156 @@ struct PrayerTimelineProvider: TimelineProvider {
             completion(.placeholder)
             return
         }
-
-        let entry = buildEntryFromCache() ?? .placeholder
-        completion(entry)
+        completion(currentEntry() ?? .placeholder)
     }
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<PrayerTimelineEntry>) -> Void) {
-        fetchAndBuildTimeline { timeline in
-            completion(timeline)
-        }
+        completion(buildTimeline())
     }
 
-    // MARK: - Build Timeline from API
+    // MARK: - Local computation
 
-    private func fetchAndBuildTimeline(completion: @escaping (Timeline<PrayerTimelineEntry>) -> Void) {
-        let latitude = UserDefaults.standard.double(forKey: "lastLatitude")
-        let longitude = UserDefaults.standard.double(forKey: "lastLongitude")
-        let method = UserDefaults.standard.string(forKey: "calculationMethod") ?? "isna"
-        let madhab = UserDefaults.standard.string(forKey: "madhab") ?? "shafii"
+    /// Compute today's prayer schedule from the shared location using the C core.
+    /// Returns `nil` if no location is stored or the engine cannot compute.
+    private func computeSchedule(now: Date = Date()) -> PrayerSchedule? {
+        guard SharedLocationStore.hasLocation else { return nil }
 
-        guard latitude != 0.0 && longitude != 0.0 else {
-            let timeline = Timeline(
-                entries: [PrayerTimelineEntry.placeholder],
-                policy: .after(Date().addingTimeInterval(900))
+        let method = PrayCalcEngine.CalculationMethod(apiKey: SharedLocationStore.methodKey) ?? .isna
+        let madhab = PrayCalcEngine.AsrMadhab(apiKey: SharedLocationStore.madhabKey) ?? .shafi
+
+        guard let times = PrayCalcEngine.calculatePrayerTimes(
+            latitude: SharedLocationStore.latitude,
+            longitude: SharedLocationStore.longitude,
+            date: now,
+            method: method,
+            madhab: madhab
+        ) else { return nil }
+
+        return PrayerSchedule(times: times, now: now)
+    }
+
+    /// A single "now" entry (used for snapshots and cache reads).
+    private func currentEntry() -> PrayerTimelineEntry? {
+        guard let schedule = computeSchedule() else { return nil }
+        return schedule.entry(at: Date())
+    }
+
+    /// Build a full timeline: one entry per prayer transition today plus a
+    /// mid-point entry for smoother ring animation, refreshing at midnight.
+    private func buildTimeline() -> Timeline<PrayerTimelineEntry> {
+        let now = Date()
+        guard let schedule = computeSchedule(now: now) else {
+            // No location yet — show placeholder, retry in 15 min.
+            return Timeline(
+                entries: [.placeholder],
+                policy: .after(now.addingTimeInterval(900))
             )
-            completion(timeline)
-            return
         }
 
-        let today = todayDateString()
-        let urlString =
-            "https://api.praycalc.com/api/v1/times?lat=\(latitude)&lng=\(longitude)&date=\(today)&method=\(method)&madhab=\(madhab)"
+        var entries: [PrayerTimelineEntry] = [schedule.entry(at: now)]
 
-        guard let url = URL(string: urlString) else {
-            let timeline = Timeline(
-                entries: [PrayerTimelineEntry.placeholder],
-                policy: .after(Date().addingTimeInterval(900))
-            )
-            completion(timeline)
-            return
-        }
-
-        URLSession.shared.dataTask(with: url) { data, _, error in
-            guard let data = data, error == nil,
-                let response = try? JSONDecoder().decode(PrayerResponse.self, from: data)
-            else {
-                if let cached = buildEntryFromCache() {
-                    let timeline = Timeline(
-                        entries: [cached],
-                        policy: .after(Date().addingTimeInterval(900))
-                    )
-                    completion(timeline)
-                } else {
-                    let timeline = Timeline(
-                        entries: [PrayerTimelineEntry.placeholder],
-                        policy: .after(Date().addingTimeInterval(900))
-                    )
-                    completion(timeline)
-                }
-                return
+        // Add an entry at each upcoming prayer boundary + a midpoint between them
+        // so the countdown/progress refreshes as the day advances.
+        let upcoming = schedule.transitions.filter { $0.date >= now }
+        for transition in upcoming {
+            entries.append(schedule.entry(at: transition.date))
+            // Midpoint toward the following transition, for a smoother ring.
+            if let next = schedule.transitionAfter(transition.date) {
+                let mid = transition.date.addingTimeInterval(
+                    next.date.timeIntervalSince(transition.date) / 2
+                )
+                entries.append(schedule.entry(at: mid))
             }
+        }
 
-            // Cache for widget use
-            UserDefaults.standard.set(data, forKey: "cachedResponse")
-            UserDefaults.standard.set(today, forKey: "cachedDate")
+        let calendar = Calendar.current
+        let tomorrow = calendar.date(byAdding: .day, value: 1, to: now) ?? now
+        let midnight = calendar.startOfDay(for: tomorrow)
 
-            let entries = buildTimelineEntries(from: response)
-
-            // Refresh at midnight
-            let calendar = Calendar.current
-            let tomorrow = calendar.date(byAdding: .day, value: 1, to: Date()) ?? Date()
-            let midnight = calendar.startOfDay(for: tomorrow)
-
-            let timeline = Timeline(entries: entries, policy: .after(midnight))
-            completion(timeline)
-        }.resume()
-    }
-
-    // MARK: - Build Entries for Each Prayer Transition
-
-    private static func buildTimelineEntries(from response: PrayerResponse) -> [PrayerTimelineEntry] {
-        buildTimelineEntries(from: response)
+        return Timeline(
+            entries: entries.sorted { $0.date < $1.date },
+            policy: .after(midnight)
+        )
     }
 }
 
-// MARK: - Free Functions
+// MARK: - PrayerSchedule
+//
+// A day's ordered five-prayer schedule derived from the C-core engine output,
+// with helpers to build a timeline entry for any instant.
 
-private func buildTimelineEntries(from response: PrayerResponse) -> [PrayerTimelineEntry] {
-    let formatter = DateFormatter()
-    formatter.dateFormat = "h:mm a"
-
-    let prayers: [(name: String, time: String)] = [
-        ("Fajr", response.prayers.fajr),
-        ("Dhuhr", response.prayers.dhuhr),
-        ("Asr", response.prayers.asr),
-        ("Maghrib", response.prayers.maghrib),
-        ("Isha", response.prayers.isha),
-    ]
-
-    let allPrayers = prayers.map { ($0.name, $0.time) }
-    let calendar = Calendar.current
-    let now = Date()
-    let todayComponents = calendar.dateComponents([.year, .month, .day], from: now)
-
-    func makeDate(from timeString: String) -> Date? {
-        guard let parsed = formatter.date(from: timeString) else { return nil }
-        let tc = calendar.dateComponents([.hour, .minute], from: parsed)
-        var c = DateComponents()
-        c.year = todayComponents.year
-        c.month = todayComponents.month
-        c.day = todayComponents.day
-        c.hour = tc.hour
-        c.minute = tc.minute
-        return calendar.date(from: c)
+private struct PrayerSchedule {
+    struct Transition {
+        let name: String
+        let date: Date
     }
 
-    var entries: [PrayerTimelineEntry] = []
+    /// The five prayers in order, as (display name, Date) — Sunrise excluded.
+    let transitions: [Transition]
+    /// Display strings keyed by prayer name for the "all prayers" list view.
+    let allPrayers: [(name: String, time: String)]
 
-    // Create an entry for each prayer transition
-    for i in 0..<prayers.count {
-        let currentPrayer = prayers[i]
-        guard let prayerDate = makeDate(from: currentPrayer.time) else { continue }
+    init(times: PrayCalcEngine.PrayerTimes, now: Date) {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "h:mm a"
 
-        let nextPrayer: (name: String, time: String)
-        let nextDate: Date
+        let ordered: [(String, Date)] = [
+            ("Fajr", times.fajr),
+            ("Dhuhr", times.dhuhr),
+            ("Asr", times.asr),
+            ("Maghrib", times.maghrib),
+            ("Isha", times.isha),
+        ]
 
-        if i + 1 < prayers.count {
-            nextPrayer = prayers[i + 1]
-            nextDate = makeDate(from: nextPrayer.time) ?? prayerDate.addingTimeInterval(3600)
-        } else {
-            // After Isha, next is tomorrow's Fajr (approximate 10h ahead)
-            nextPrayer = ("Fajr", prayers[0].time)
-            nextDate = prayerDate.addingTimeInterval(36000)
+        self.transitions = ordered.map { Transition(name: $0.0, date: $0.1) }
+        self.allPrayers = ordered.map { ($0.0, formatter.string(from: $0.1)) }
+    }
+
+    /// The next prayer transition strictly after `date`. After Isha, rolls over
+    /// to tomorrow's Fajr (approximated one day ahead of today's Fajr).
+    func nextTransition(after date: Date) -> Transition {
+        if let upcoming = transitions.first(where: { $0.date > date }) {
+            return upcoming
         }
+        // Past Isha: next is tomorrow's Fajr.
+        let fajr = transitions[0]
+        let tomorrowFajr = Calendar.current.date(byAdding: .day, value: 1, to: fajr.date) ?? fajr.date
+        return Transition(name: "Fajr", date: tomorrowFajr)
+    }
 
-        let totalInterval = nextDate.timeIntervalSince(prayerDate)
-        let remaining = nextDate.timeIntervalSince(prayerDate)
-        let progress = 0.0  // Just starting this prayer period
+    /// The transition immediately following the one at/after `date` — used to
+    /// place a midpoint entry.
+    func transitionAfter(_ date: Date) -> Transition? {
+        transitions.first(where: { $0.date > date })
+    }
 
-        let entry = PrayerTimelineEntry(
-            date: prayerDate,
-            prayerName: nextPrayer.name,
-            prayerTime: nextPrayer.time,
+    /// The prayer period `date` currently sits in — its start bounds the ring
+    /// progress. Before Fajr, the period starts at "start of day".
+    private func periodStart(before date: Date) -> Date {
+        let past = transitions.filter { $0.date <= date }
+        if let last = past.last { return last.date }
+        return Calendar.current.startOfDay(for: date)
+    }
+
+    /// Build a timeline entry describing the state at `instant`.
+    func entry(at instant: Date) -> PrayerTimelineEntry {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "h:mm a"
+
+        let next = nextTransition(after: instant)
+        let start = periodStart(before: instant)
+        let total = next.date.timeIntervalSince(start)
+        let remaining = max(next.date.timeIntervalSince(instant), 0)
+        let progress = total > 0 ? min(max((total - remaining) / total, 0), 1) : 0
+
+        return PrayerTimelineEntry(
+            date: instant,
+            prayerName: next.name,
+            prayerTime: formatter.string(from: next.date),
             timeRemaining: remaining,
             progress: progress,
             allPrayers: allPrayers,
             isPlaceholder: false
         )
-        entries.append(entry)
-
-        // Add a mid-point entry for smoother updates
-        let midDate = prayerDate.addingTimeInterval(totalInterval / 2)
-        let midRemaining = nextDate.timeIntervalSince(midDate)
-        let midProgress = 0.5
-
-        let midEntry = PrayerTimelineEntry(
-            date: midDate,
-            prayerName: nextPrayer.name,
-            prayerTime: nextPrayer.time,
-            timeRemaining: midRemaining,
-            progress: midProgress,
-            allPrayers: allPrayers,
-            isPlaceholder: false
-        )
-        entries.append(midEntry)
     }
-
-    // Add a "now" entry if we're between prayers
-    let currentEntry = PrayerTimelineEntry(
-        date: now,
-        prayerName: response.nextPrayer.name,
-        prayerTime: response.nextPrayer.time,
-        timeRemaining: response.timeUntilNextPrayer() ?? 0,
-        progress: {
-            let total = response.totalIntervalBetweenPrayers() ?? 1
-            let remaining = response.timeUntilNextPrayer() ?? 0
-            return total > 0 ? (total - remaining) / total : 0
-        }(),
-        allPrayers: allPrayers,
-        isPlaceholder: false
-    )
-    entries.append(currentEntry)
-
-    return entries.sorted { $0.date < $1.date }
-}
-
-private func buildEntryFromCache() -> PrayerTimelineEntry? {
-    guard let data = UserDefaults.standard.data(forKey: "cachedResponse"),
-        let response = try? JSONDecoder().decode(PrayerResponse.self, from: data),
-        UserDefaults.standard.string(forKey: "cachedDate") == todayDateString()
-    else { return nil }
-
-    let prayers = [
-        (response.prayers.fajr, "Fajr"),
-        (response.prayers.dhuhr, "Dhuhr"),
-        (response.prayers.asr, "Asr"),
-        (response.prayers.maghrib, "Maghrib"),
-        (response.prayers.isha, "Isha"),
-    ]
-
-    let allPrayers = prayers.map { ($0.1, $0.0) }
-
-    return PrayerTimelineEntry(
-        date: Date(),
-        prayerName: response.nextPrayer.name,
-        prayerTime: response.nextPrayer.time,
-        timeRemaining: response.timeUntilNextPrayer() ?? 0,
-        progress: {
-            let total = response.totalIntervalBetweenPrayers() ?? 1
-            let remaining = response.timeUntilNextPrayer() ?? 0
-            return total > 0 ? (total - remaining) / total : 0
-        }(),
-        allPrayers: allPrayers,
-        isPlaceholder: false
-    )
-}
-
-private func todayDateString() -> String {
-    let formatter = DateFormatter()
-    formatter.dateFormat = "yyyy-MM-dd"
-    return formatter.string(from: Date())
 }
