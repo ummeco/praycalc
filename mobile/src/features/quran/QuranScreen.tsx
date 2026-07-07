@@ -1,14 +1,17 @@
 /**
- * Purpose: Quran surah list with navigation to per-surah display (Arabic + transliteration),
- *   verse bookmarks persisted via MMKV.
- * Inputs: Surah metadata (static), Quran text displayed on-demand.
+ * Purpose: Quran surah list with navigation to a readable mini-mushaf per-surah display
+ *   (Arabic + transliteration + translation, verse by verse) for a small curated set of
+ *   surahs useful in salah context, plus verse bookmarks persisted via MMKV.
+ * Inputs: Surah metadata (static), curated verse text from ./data/verses.ts.
  * Outputs: QuranScreen, SurahListScreen, SurahDetailScreen — Feature 10 of 20.
  * Constraints: Arabic ayat MUST use Uthmani script, RTL, tashkeel preserved.
  *   No truncation of Arabic strings. Bookmarks via MMKV.
  * SPORT: REGISTRY-APPS.md#praycalc-mobile-feature-10-quran
  *
- * Islamic content gate: Quran text must match Uthmani script exactly.
- * Al-Fatiha included below — verified character-by-character against standard mushaf.
+ * Islamic content gate: Quran text must match Uthmani script exactly — see
+ * ./data/verses.ts for the verified corpus and per-surah source notes. The full
+ * 114-surah Quran (with audio) is intentionally deferred to Islam.Wiki; this
+ * screen ships only what has been verbatim-verified.
  */
 
 import React, { useMemo, useState, useCallback } from 'react';
@@ -21,6 +24,7 @@ import type { ThemeColors } from '../../constants/colors';
 import { SkeletonState, EmptyState } from '../../components/states';
 import { mmkv } from '../../lib/storage/mmkv';
 import SURAH_META from './data/surahs.json';
+import { loadAyahs, AYAT_AL_KURSI_VERSE, type Ayah } from './data/verses';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -32,13 +36,6 @@ interface Surah {
   verseCount: number;
   revelationType: 'meccan' | 'medinan';
   juzNumber: number;
-}
-
-interface Ayah {
-  number: number;
-  arabic: string;         // Uthmani script — NEVER split
-  transliteration: string;
-  translation: string;
 }
 
 const BOOKMARKS_KEY = 'pc:quran:bookmarks';
@@ -71,75 +68,20 @@ export const SURAHS: Surah[] = (SURAH_META as SurahMetaRaw[]).map((s) => ({
   juzNumber: s.juzStart,
 }));
 
-/**
- * Al-Fatiha (1:1-7) — Uthmani script.
- * Verified against standard Hafs 'an 'Asim mushaf (Tanzil.net + IslamicFoundation.ca).
- * Any agent modifying this text MUST re-verify character-by-character.
- */
-const AL_FATIHA_AYAHS: Ayah[] = [
-  {
-    number: 1,
-    arabic: 'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ',
-    transliteration: 'Bismi llāhi r-raḥmāni r-raḥīm',
-    translation: 'In the name of Allah, the Most Gracious, the Most Merciful',
-  },
-  {
-    number: 2,
-    arabic: 'الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ',
-    transliteration: "Al-ḥamdu lillāhi rabbi l-ʿālamīn",
-    translation: 'Praise be to Allah, Lord of all worlds',
-  },
-  {
-    number: 3,
-    arabic: 'الرَّحْمَٰنِ الرَّحِيمِ',
-    transliteration: 'Ar-raḥmāni r-raḥīm',
-    translation: 'The Most Gracious, the Most Merciful',
-  },
-  {
-    number: 4,
-    arabic: 'مَالِكِ يَوْمِ الدِّينِ',
-    transliteration: 'Māliki yawmi d-dīn',
-    translation: 'Master of the Day of Judgment',
-  },
-  {
-    number: 5,
-    arabic: 'إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ',
-    transliteration: "Iyyāka naʿbudu wa-iyyāka nastaʿīn",
-    translation: 'You alone we worship, and You alone we ask for help',
-  },
-  {
-    number: 6,
-    arabic: 'اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ',
-    transliteration: 'Ihdinā ṣ-ṣirāṭa l-mustaqīm',
-    translation: 'Guide us on the straight path',
-  },
-  {
-    number: 7,
-    arabic: 'صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ',
-    transliteration: "Ṣirāṭa lladhīna anʿamta ʿalayhim ghayri l-maghḍūbi ʿalayhim wa-lā ḍ-ḍāllīn",
-    translation: 'The path of those whom You have blessed — not of those against whom there is wrath, nor of those who are astray',
-  },
-];
-
-// Surahs with verified, bundled ayah text. Others show an honest "coming soon"
-// state rather than placeholder glyphs (Islamic content gate: never display
-// unverified Quran text). The full Hafs corpus is bundled incrementally.
-const BUNDLED_AYAHS: Record<number, Ayah[]> = {
-  1: AL_FATIHA_AYAHS,
-};
-
-/** Verified ayahs for a surah, or null if its text is not yet bundled. */
-function loadAyahs(surahNumber: number): Ayah[] | null {
-  return BUNDLED_AYAHS[surahNumber] ?? null;
-}
+// Surahs with verified, bundled ayah text live in ./data/verses.ts (loadAyahs).
+// Others show an honest "coming soon" state rather than placeholder glyphs
+// (Islamic content gate: never display unverified Quran text). The full Hafs
+// corpus (all 114 surahs, translations & audio) is on Islam.Wiki.
 
 // ── Sub-screen: Surah Detail ──────────────────────────────────────────────────
 
-function SurahDetailView({ surah, onBack }: { surah: Surah; onBack: () => void }) {
+function SurahDetailView({
+  surah, onBack, singleAyah,
+}: { surah: Surah; onBack: () => void; singleAyah?: Ayah }) {
   const { t } = useTranslation();
   const colors = useThemeColors();
   const styles = useMemo(() => createStyles(colors), [colors]);
-  const ayahs = loadAyahs(surah.number);
+  const ayahs = singleAyah ? [singleAyah] : loadAyahs(surah.number);
   const rawBookmarks = mmkv.getString(BOOKMARKS_KEY);
   const [bookmarks, setBookmarks] = useState<string[]>(() => {
     try { return rawBookmarks ? (JSON.parse(rawBookmarks) as string[]) : []; }
@@ -177,8 +119,9 @@ function SurahDetailView({ surah, onBack }: { surah: Surah; onBack: () => void }
         </View>
       </View>
       <ScrollView contentContainerStyle={styles.scroll}>
-        {/* Bismillah (except At-Tawba 9 and Al-Fatiha 1 which has its own) */}
-        {ayahs && surah.number !== 1 && surah.number !== 9 && (
+        {/* Bismillah (except At-Tawba 9, Al-Fatiha 1 which has its own, and mid-surah
+            single-verse views like Ayat al-Kursi) */}
+        {ayahs && !singleAyah && surah.number !== 1 && surah.number !== 9 && (
           <Text style={styles.bismillah} accessibilityLabel={t('screens.quran.bismillah')}>
             {'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ'}
           </Text>
@@ -242,11 +185,33 @@ function SurahDetailView({ surah, onBack }: { surah: Surah; onBack: () => void }
 
 // ── Main Screen: Surah List ───────────────────────────────────────────────────
 
+/** Synthetic "surah" card for the standalone Ayat al-Kursi (2:255) featured verse. */
+const AYAT_AL_KURSI_CARD: Surah = {
+  number: 2,
+  arabicName: 'آية الكرسي',
+  transliteratedName: 'Āyat al-Kursī',
+  englishName: 'The Throne Verse (2:255)',
+  verseCount: 1,
+  revelationType: 'medinan',
+  juzNumber: 3,
+};
+
 export default function QuranScreen() {
   const { t } = useTranslation();
   const colors = useThemeColors();
   const styles = useMemo(() => createStyles(colors), [colors]);
   const [selectedSurah, setSelectedSurah] = useState<Surah | null>(null);
+  const [showKursi, setShowKursi] = useState(false);
+
+  if (showKursi) {
+    return (
+      <SurahDetailView
+        surah={AYAT_AL_KURSI_CARD}
+        onBack={() => setShowKursi(false)}
+        singleAyah={AYAT_AL_KURSI_VERSE}
+      />
+    );
+  }
 
   if (selectedSurah) {
     return <SurahDetailView surah={selectedSurah} onBack={() => setSelectedSurah(null)} />;
@@ -262,28 +227,45 @@ export default function QuranScreen() {
         data={SURAHS}
         keyExtractor={(s) => String(s.number)}
         ListHeaderComponent={() => (
-          <Text style={styles.screenTitle} accessibilityRole="header">
-            {t('tabs.quran')} — القرآن الكريم
-          </Text>
+          <>
+            <Text style={styles.screenTitle} accessibilityRole="header">
+              {t('tabs.quran')} — القرآن الكريم
+            </Text>
+            <TouchableOpacity
+              style={styles.featuredCard}
+              onPress={() => setShowKursi(true)}
+              accessibilityRole="button"
+              accessibilityLabel={`${t('screens.quran.featuredVerse')}: Ayat al-Kursi`}
+            >
+              <Text style={styles.featuredArabic}>آيَةُ الْكُرْسِيِّ</Text>
+              <Text style={styles.featuredLabel}>{t('screens.quran.featuredVerse')} · 2:255</Text>
+            </TouchableOpacity>
+          </>
         )}
-        renderItem={({ item: surah }) => (
-          <TouchableOpacity
-            style={styles.surahRow}
-            onPress={() => setSelectedSurah(surah)}
-            accessibilityRole="button"
-            accessibilityLabel={`Surah ${surah.number}, ${surah.transliteratedName}, ${surah.verseCount} verses, ${surah.revelationType}`}
-          >
-            <View style={styles.numberBadge}>
-              <Text style={styles.numberText}>{surah.number}</Text>
-            </View>
-            <View style={styles.surahInfo}>
-              <Text style={styles.transliteratedName}>{surah.transliteratedName}</Text>
-              <Text style={styles.englishName}>{surah.englishName} · {surah.verseCount}v</Text>
-            </View>
-            {/* Arabic surah name — RTL */}
-            <Text style={styles.arabicSurahName}>{surah.arabicName}</Text>
-          </TouchableOpacity>
-        )}
+        renderItem={({ item: surah }) => {
+          const hasText = loadAyahs(surah.number) !== null;
+          return (
+            <TouchableOpacity
+              style={styles.surahRow}
+              onPress={() => setSelectedSurah(surah)}
+              accessibilityRole="button"
+              accessibilityLabel={`Surah ${surah.number}, ${surah.transliteratedName}, ${surah.verseCount} verses, ${surah.revelationType}${hasText ? ', full text available' : ''}`}
+            >
+              <View style={styles.numberBadge}>
+                <Text style={styles.numberText}>{surah.number}</Text>
+              </View>
+              <View style={styles.surahInfo}>
+                <View style={styles.surahNameRow}>
+                  <Text style={styles.transliteratedName}>{surah.transliteratedName}</Text>
+                  {hasText && <Text style={styles.readableBadge}>{t('screens.quran.readableBadge')}</Text>}
+                </View>
+                <Text style={styles.englishName}>{surah.englishName} · {surah.verseCount}v</Text>
+              </View>
+              {/* Arabic surah name — RTL */}
+              <Text style={styles.arabicSurahName}>{surah.arabicName}</Text>
+            </TouchableOpacity>
+          );
+        }}
         contentContainerStyle={{ paddingBottom: 32 }}
         accessible
         accessibilityLabel={t('screens.quran.surahList')}
@@ -315,6 +297,23 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
     padding: 16,
     textAlign: 'center',
   },
+  featuredCard: {
+    margin: 16,
+    marginTop: 0,
+    padding: 16,
+    borderRadius: 12,
+    backgroundColor: colors.brand.dark,
+    alignItems: 'center',
+    gap: 6,
+  },
+  featuredArabic: {
+    fontSize: 22,
+    textAlign: 'center',
+    writingDirection: 'rtl',
+    color: colors.brand.light,
+    fontWeight: '700',
+  },
+  featuredLabel: { fontSize: 13, color: colors.brand.light, fontWeight: '600' },
   surahRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -335,7 +334,18 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
   },
   numberText: { fontSize: 13, fontWeight: '700', color: colors.brand.dark },
   surahInfo: { flex: 1 },
+  surahNameRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   transliteratedName: { fontSize: 16, fontWeight: '600', color: colors.text.primary },
+  readableBadge: {
+    fontSize: 10,
+    fontWeight: '700',
+    color: colors.brand.dark,
+    backgroundColor: colors.brand.mid + '33',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 6,
+    overflow: 'hidden',
+  },
   englishName: { fontSize: 13, color: colors.text.muted, marginTop: 2 },
   arabicSurahName: {
     // Arabic RTL — full tashkeel

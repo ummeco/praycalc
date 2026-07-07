@@ -269,9 +269,10 @@
     "duaDhikr": {
       "noResults": "No duas found for this category.",
       "categoryAll": "All",
+      "categoryAfterAdhan": "After Adhan",
+      "categoryAfterPrayer": "After Prayer",
       "categoryMorning": "Morning",
-      "categoryEvening": "Evening",
-      "categoryPostPrayer": "Post-Prayer"
+      "categoryEvening": "Evening"
     },
     "moon": {
       "hijriCalendar": "Hijri Calendar",
@@ -367,7 +368,9 @@
       "bookmarkVerse": "Bookmark verse",
       "surahList": "Surah list",
       "wikiFooter": "📖 Full Quran — all 114 surahs, translations & audio on Islam.Wiki →",
-      "openFullQuran": "Open the full Quran on Islam.Wiki"
+      "openFullQuran": "Open the full Quran on Islam.Wiki",
+      "featuredVerse": "Featured Verse",
+      "readableBadge": "Available"
     },
     "ramadan": {
       "subtitle": "Ramadan Mubarak",

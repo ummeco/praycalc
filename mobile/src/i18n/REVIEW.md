@@ -30,13 +30,18 @@ Per the release-gate rule (Islamic content correctness), the following stayed
 English in ALL non-en catalogs and were NOT touched by this pass at all:
 
 - Dua/dhikr Arabic text, transliteration, translation, and source citations
-  (`DuaDhikrScreen.tsx`, `TasbeehScreen.tsx`, `RamadanScreen.tsx` dua data
-  arrays — `MORNING_ADHKAR`, `EVENING_ADHKAR`, `POST_PRAYER_DUAS`,
-  `DHIKR_PRESETS`, `RAMADAN_DUAS`). These are literal Hisn al-Muslim / Sahih
-  Bukhari+Muslim citations — never extracted to catalogs, never
-  machine-translated.
-- Quran text and translations (`QuranScreen.tsx` — `AL_FATIHA_AYAHS`, surah
-  metadata Arabic names) and the Quran 2:189 citation in `MoonScreen.tsx`.
+  (`dua-dhikr/data/adhkar.ts` — `AFTER_ADHAN_DUAS`, `AFTER_PRAYER_DUAS`,
+  `MORNING_ADHKAR`, `EVENING_ADHKAR`; also `TasbeehScreen.tsx`,
+  `RamadanScreen.tsx` dua data arrays — `DHIKR_PRESETS`, `RAMADAN_DUAS`).
+  These are literal Hisn al-Muslim / Sahih Bukhari+Muslim citations — never
+  extracted to catalogs, never machine-translated. The `screens.duaDhikr.*`
+  category tab labels (all/afterAdhan/afterPrayer/morning/evening) ARE
+  ordinary UI strings and go through normal i18n, unlike the dua content
+  itself.
+- Quran text and translations (`quran/data/verses.ts` — Al-Fatiha, Ayat
+  al-Kursi 2:255, Al-Ikhlas, Al-Falaq, An-Nas, Al-Kawthar, Al-Asr, Al-Ma'un,
+  Al-Kafirun, An-Nasr, Al-Masad; plus surah metadata Arabic names in
+  `data/surahs.json`) and the Quran 2:189 citation in `MoonScreen.tsx`.
 - Fiqh explanations: qasr/jama notes in `TravelScreen.tsx`
   (`screens.travel.musafirAlertBody`, `screens.travel.fiqhNote`), the
   Ramadan/Laylat al-Qadr notes in `RamadanScreen.tsx` and `MoonScreen.tsx`
