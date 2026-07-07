@@ -1,8 +1,15 @@
 /**
  * Purpose: Screen 5 — Dua Display: scrolling full-screen dua, Arabic + translation
- * Inputs: Dua ID from navigation params; dua list from pc_dua via urql
+ * Inputs: Bundled, cited dua collection shared from mobile/src/features/dua-dhikr
  * Outputs: Full-screen Arabic dua with RTL text, transliteration, translation; D-pad scroll
- * Constraints: Arabic RTL; tashkeel preserved; authenticated dua sources only per theology gate
+ * Constraints: Arabic RTL; tashkeel preserved; authenticated dua sources only per theology gate.
+ *   DATA PATH: bundled, not live-queried. pc_dua does NOT exist in production (probed
+ *   api.praycalc.com 2026-07-06 — "field 'pc_dua' not found in type: 'query_root'"). Content
+ *   below is copied verbatim (source citations intact) from
+ *   mobile/src/features/dua-dhikr/DuaDhikrScreen.tsx, which cites Hisn al-Muslim (Sa'id
+ *   al-Qahtani) and Sahih Bukhari/Muslim — the only sourced dua content in this repo. Per the
+ *   Islamic content gate, no new dua text was authored here. queries.ts GET_DUA_LIST is kept
+ *   ready for when a real pc_dua table + Hasura source ships.
  * SPORT: praycalc/tv screens
  */
 
@@ -22,25 +29,45 @@ import TvScreenWrapper from '../components/TvScreenWrapper';
 
 type DuaNavProp = StackNavigationProp<RootStackParamList, 'DuaDisplay'>;
 
-// Sample authenticated dua — production fetches from pc_dua (theology-gate compliant)
-const SAMPLE_DUAS = [
+interface BundledDua {
+  id: string;
+  titleAr: string;
+  titleEn: string;
+  textAr: string;
+  textEn: string;
+  transliteration: string;
+  source: string;
+}
+
+// Bundled dua collection — copied verbatim (citations intact) from
+// mobile/src/features/dua-dhikr/DuaDhikrScreen.tsx (Hisn al-Muslim / Sahih Bukhari+Muslim).
+const BUNDLED_DUAS: BundledDua[] = [
   {
-    id: '1',
-    titleAr: 'دعاء الاستفتاح',
-    titleEn: 'Opening Supplication',
-    textAr: 'سُبْحَانَكَ اللَّهُمَّ وَبِحَمْدِكَ، وَتَبَارَكَ اسْمُكَ، وَتَعَالَى جَدُّكَ، وَلَا إِلَهَ غَيْرُكَ',
-    textEn: 'Glory be to You, O Allah, and praise. Blessed is Your name, and exalted is Your majesty. There is no god but You.',
-    transliteration: "Subhanakallahumma wa bihamdika, wa tabarakasmuka, wa ta'ala jadduka, wa la ilaha ghairuk",
-    source: 'Sunan Abu Dawud 776; graded Sahih by Al-Albani',
+    id: 'morning-01',
+    titleAr: 'آية الكرسي (الصباح)',
+    titleEn: 'Ayat al-Kursi (Morning)',
+    textAr: 'اللَّهُ لَا إِلَهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ',
+    textEn: 'Allah — there is no deity except Him, the Ever-Living, the Sustainer of existence',
+    transliteration: 'Allahu la ilaha illa huwal-hayyul-qayyum',
+    source: 'Hisn al-Muslim #96 (Ayat al-Kursi)',
   },
   {
-    id: '2',
-    titleAr: 'دعاء السفر',
-    titleEn: 'Dua for Travel',
-    textAr: 'سُبْحَانَ الَّذِي سَخَّرَ لَنَا هَذَا وَمَا كُنَّا لَهُ مُقْرِنِينَ وَإِنَّا إِلَى رَبِّنَا لَمُنْقَلِبُونَ',
-    textEn: 'Glory be to the One who has subjected this to us, for we could never have done it ourselves, and to our Lord we will return.',
-    transliteration: "Subhanalladhi sakhkhara lana hadha wa ma kunna lahu muqrinin, wa inna ila rabbina lamunqalibun",
-    source: 'Sunan Abu Dawud 2602; Sunan at-Tirmidhi 3447; graded Sahih',
+    id: 'evening-02',
+    titleAr: 'سيد الاستغفار (المساء)',
+    titleEn: 'Sayyid al-Istighfar (Evening)',
+    textAr: 'اللَّهُمَّ أَنْتَ رَبِّي لَا إِلَهَ إِلَّا أَنْتَ، خَلَقْتَنِي وَأَنَا عَبْدُكَ',
+    textEn: 'O Allah, You are my Lord, none has the right to be worshipped except You; You created me and I am Your servant',
+    transliteration: "Allahumma anta rabbi la ilaha illa ant, khalaqtani wa ana abduk",
+    source: 'Hisn al-Muslim #118 (Sahih Bukhari 6306) — Sayyid al-Istighfar',
+  },
+  {
+    id: 'post-04',
+    titleAr: 'دعاء بعد الصلاة',
+    titleEn: 'Post-Prayer Dua',
+    textAr: 'لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ',
+    textEn: 'None has the right to be worshipped except Allah, alone, without partner; to Him belongs all sovereignty and praise, and He is over all things omnipotent',
+    transliteration: "La ilaha illallahu wahdahu la sharika lah, lahul-mulku wa lahul-hamd, wa huwa 'ala kulli shay'in qadir",
+    source: 'Sahih Muslim 597',
   },
 ];
 
@@ -48,10 +75,10 @@ export default function DuaDisplayScreen(): React.JSX.Element {
   const navigation = useNavigation<DuaNavProp>();
   const [currentIndex, setCurrentIndex] = useState(0);
   const backRef = useRef<TouchableHighlight>(null);
-  const dua = SAMPLE_DUAS[currentIndex];
+  const dua = BUNDLED_DUAS[currentIndex];
 
   useTVEventHandler((evt) => {
-    if (evt.eventType === 'right' && currentIndex < SAMPLE_DUAS.length - 1) {
+    if (evt.eventType === 'right' && currentIndex < BUNDLED_DUAS.length - 1) {
       setCurrentIndex((i) => i + 1);
     }
     if (evt.eventType === 'left' && currentIndex > 0) {
@@ -96,9 +123,9 @@ export default function DuaDisplayScreen(): React.JSX.Element {
               <Text style={styles.navBtnText}>◀ Back</Text>
             </TouchableHighlight>
             <Text style={styles.pageIndicator}>
-              {currentIndex + 1} / {SAMPLE_DUAS.length}
+              {currentIndex + 1} / {BUNDLED_DUAS.length}
             </Text>
-            {currentIndex < SAMPLE_DUAS.length - 1 && (
+            {currentIndex < BUNDLED_DUAS.length - 1 && (
               <TouchableHighlight
                 accessible={true}
                 accessibilityRole="button"

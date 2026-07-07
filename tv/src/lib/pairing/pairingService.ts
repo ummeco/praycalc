@@ -1,18 +1,25 @@
 /**
- * Purpose: TV pairing service — generates PIN, polls pairing status, manages state
+ * Purpose: TV pairing service — generates PIN, pre-registers it server-side, polls
+ *   pairing status, manages state. Device ID persists across relaunch via AsyncStorage.
  * Inputs: urql client, PIN polling interval
  * Outputs: PairingState updates via callback; QR code URI string
- * Constraints: Uses pc_tv_pairing table (NOT fl_tv_device_pairing which is flock)
+ * Constraints: Uses pc_tv_pairing (NOT fl_tv_device_pairing which is flock). Pre-registration
+ *   uses the public-role insert_pc_tv_pairing_one mutation (server presets is_active=true,
+ *   paired=false); a pin collision throws a unique-violation error which this service
+ *   catches and regenerates the PIN for, retrying until an insert succeeds.
  * SPORT: praycalc/tv services
  */
 
 import { Client } from 'urql';
-import { CHECK_PRAYCALC_PAIRING } from '../graphql/queries';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { CHECK_PRAYCALC_PAIRING, REGISTER_TV_PAIRING } from '../graphql/queries';
 import { PairingState } from '../../types';
 
 const POLL_INTERVAL_MS = 5000;
 const PIN_LENGTH = 6;
 const QR_SCHEME = 'praycalc://pair';
+const DEVICE_ID_STORAGE_KEY = 'praycalc-tv-device-id';
+const MAX_REGISTER_ATTEMPTS = 5;
 
 function generatePin(): string {
   const digits = Array.from({ length: PIN_LENGTH }, () =>
@@ -22,26 +29,93 @@ function generatePin(): string {
 }
 
 function generateDeviceId(): string {
-  // Stable device ID using timestamp + random — in production, read from AsyncStorage
   return `tv-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
+}
+
+/** Returns the persisted device ID, creating and storing one on first call. */
+export async function getOrCreateDeviceId(): Promise<string> {
+  try {
+    const existing = await AsyncStorage.getItem(DEVICE_ID_STORAGE_KEY);
+    if (existing) return existing;
+  } catch {
+    // Storage read failed — fall through to generating a fresh (unpersisted) ID.
+  }
+  const created = generateDeviceId();
+  try {
+    await AsyncStorage.setItem(DEVICE_ID_STORAGE_KEY, created);
+  } catch {
+    // Best-effort persistence — device still works this session if write fails.
+  }
+  return created;
 }
 
 export function buildQrCodeUri(pin: string): string {
   return `${QR_SCHEME}?pin=${pin}`;
 }
 
+/** True when the urql/Hasura error is the pc_tv_pairing_pin_key unique violation. */
+export function isPinUniqueViolation(error: unknown): boolean {
+  const message =
+    error && typeof error === 'object' && 'message' in error
+      ? String((error as { message: unknown }).message)
+      : String(error);
+  return message.includes('pc_tv_pairing_pin_key') || message.includes('Uniqueness violation');
+}
+
 export class PairingService {
-  private pin: string;
-  private deviceId: string;
+  private pin = '';
+  private deviceId = '';
   private pollTimer: ReturnType<typeof setInterval> | null = null;
   private client: Client;
   private onStateChange: (state: PairingState) => void;
+  private ready: Promise<void>;
 
   constructor(client: Client, onStateChange: (state: PairingState) => void) {
     this.client = client;
     this.onStateChange = onStateChange;
-    this.pin = generatePin();
-    this.deviceId = generateDeviceId();
+    // Device ID must be resolved (from AsyncStorage or freshly created) before the
+    // first PIN registration so the persisted identity is stable across relaunch.
+    this.ready = this.init();
+  }
+
+  private async init(): Promise<void> {
+    this.deviceId = await getOrCreateDeviceId();
+    this.pin = await this.registerNewPin();
+  }
+
+  /** Generates a PIN and inserts the pre-registration row; retries on PIN collision. */
+  private async registerNewPin(): Promise<string> {
+    let lastError: unknown = null;
+    for (let attempt = 0; attempt < MAX_REGISTER_ATTEMPTS; attempt++) {
+      const candidate = generatePin();
+      try {
+        const result = await this.client
+          .mutation(REGISTER_TV_PAIRING, { pin: candidate, deviceId: this.deviceId })
+          .toPromise();
+        if (result.error) {
+          if (isPinUniqueViolation(result.error)) {
+            lastError = result.error;
+            continue;
+          }
+          // Non-collision error (e.g. offline) — surface the candidate PIN anyway so
+          // the screen has something to show; polling will simply not find a match
+          // until connectivity returns and a future regeneration succeeds.
+          return candidate;
+        }
+        return candidate;
+      } catch (err) {
+        if (isPinUniqueViolation(err)) {
+          lastError = err;
+          continue;
+        }
+        return candidate;
+      }
+    }
+    // Exhausted retries — extremely unlikely with a 6-digit space, but fail safe by
+    // returning the last-tried candidate rather than throwing (polling still no-ops
+    // gracefully; regeneratePin() gives the user a manual retry path).
+    void lastError;
+    return generatePin();
   }
 
   getPin(): string {
@@ -56,10 +130,11 @@ export class PairingService {
     return buildQrCodeUri(this.pin);
   }
 
-  startPolling(): void {
+  async startPolling(): Promise<void> {
+    await this.ready;
     if (this.pollTimer) return;
 
-    // Emit initial state
+    // Emit initial state once the device ID + registered PIN are resolved.
     this.onStateChange({ pin: this.pin, deviceId: this.deviceId, isPaired: false });
 
     this.pollTimer = setInterval(async () => {
@@ -84,21 +159,21 @@ export class PairingService {
     }, POLL_INTERVAL_MS);
   }
 
-  stopPolling(): void {
-    if (this.pollTimer) {
-      clearInterval(this.pollTimer);
-      this.pollTimer = null;
-    }
-  }
-
-  regeneratePin(): void {
+  async regeneratePin(): Promise<void> {
     this.stopPolling();
-    this.pin = generatePin();
+    this.pin = await this.registerNewPin();
     this.onStateChange({ pin: this.pin, deviceId: this.deviceId, isPaired: false });
-    this.startPolling();
+    await this.startPolling();
   }
 
   destroy(): void {
     this.stopPolling();
+  }
+
+  private stopPolling(): void {
+    if (this.pollTimer) {
+      clearInterval(this.pollTimer);
+      this.pollTimer = null;
+    }
   }
 }

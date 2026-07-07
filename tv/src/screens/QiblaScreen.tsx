@@ -1,6 +1,6 @@
 /**
  * Purpose: Screen 2 — Qibla Direction: compass bearing, city name, large text display for TV
- * Inputs: Qibla bearing from GraphQL (pc_city); city from settings
+ * Inputs: lat/lng from settings — bearing computed locally (great-circle); no network
  * Outputs: Large bearing display + directional text; D-pad back navigation
  * Constraints: TV has no compass sensor; bearing displayed as computed value; min 72pt text
  * SPORT: praycalc/tv screens

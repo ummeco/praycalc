@@ -1,8 +1,14 @@
 /**
- * Purpose: Screen 4 — Hadith of the Day: large text; touch-free; 24h rotation
- * Inputs: Hadith from pc_hadith via urql; day-seeded random offset for 24h rotation
+ * Purpose: Screen 4 — Hadith of the Day: large text; touch-free; day-seeded rotation
+ * Inputs: Bundled, cited Hadith collection; day-seeded index for 24h rotation
  * Outputs: Full-screen Hadith display with Arabic RTL text (tashkeel preserved), source citation
- * Constraints: Arabic text must be RTL; tashkeel (diacritics) preserved; cite narrator chain + collection
+ * Constraints: Arabic text must be RTL; tashkeel (diacritics) preserved; cite narrator chain + collection.
+ *   DATA PATH: bundled, not live-queried. pc_hadith does NOT exist in production (probed
+ *   api.praycalc.com 2026-07-06 — "field 'pc_hadith' not found in type: 'query_root'") and no
+ *   sourced hadith content exists elsewhere in this repo to reuse. Per the Islamic content gate,
+ *   fabricating a live query against a nonexistent table (or fabricating more hadith text) is
+ *   disallowed — this stays an honest, small, correctly-cited offline collection until a real
+ *   pc_hadith table + Hasura source ships (queries.ts GET_HADITH_OF_DAY is kept ready for that).
  * SPORT: praycalc/tv screens
  */
 
@@ -15,24 +21,52 @@ import TvScreenWrapper from '../components/TvScreenWrapper';
 
 type HadithNavProp = StackNavigationProp<RootStackParamList, 'HadithOfDay'>;
 
-// Static seed Hadith — in production, fetch from pc_hadith via urql with day-based offset
-// Source citation: narrator chain + collection required per Islamic content gate
-const SAMPLE_HADITH = {
-  textAr: 'إِنَّمَا الأَعْمَالُ بِالنِّيَّاتِ، وَإِنَّمَا لِكُلِّ امْرِئٍ مَا نَوَى',
-  textEn:
-    'Actions are judged only by intentions, and every person will get what they intended.',
-  source: 'Sahih al-Bukhari 1; Sahih Muslim 1907',
-  narrator: 'Narrated by ʿUmar ibn al-Khaṭṭāb (رضي الله عنه)',
-  grading: 'Sahih (Authentic)',
-};
+interface BundledHadith {
+  textAr: string;
+  textEn: string;
+  source: string;
+  narrator: string;
+  grading: string;
+}
+
+// Bundled, cited Hadith collection — Sahih al-Bukhari / Sahih Muslim only (authenticated
+// collections per the theology gate). Narrator chain + collection + grading required per entry.
+const BUNDLED_HADITH: BundledHadith[] = [
+  {
+    textAr: 'إِنَّمَا الأَعْمَالُ بِالنِّيَّاتِ، وَإِنَّمَا لِكُلِّ امْرِئٍ مَا نَوَى',
+    textEn:
+      'Actions are judged only by intentions, and every person will get what they intended.',
+    source: 'Sahih al-Bukhari 1; Sahih Muslim 1907',
+    narrator: 'Narrated by ʿUmar ibn al-Khaṭṭāb (رضي الله عنه)',
+    grading: 'Sahih (Authentic)',
+  },
+  {
+    textAr: 'مَنْ كَانَ يُؤْمِنُ بِاللَّهِ وَالْيَوْمِ الآخِرِ فَلْيَقُلْ خَيْرًا أَوْ لِيَصْمُتْ',
+    textEn:
+      'Whoever believes in Allah and the Last Day should speak good or remain silent.',
+    source: 'Sahih al-Bukhari 6018; Sahih Muslim 47',
+    narrator: 'Narrated by Abu Hurayrah (رضي الله عنه)',
+    grading: 'Sahih (Authentic)',
+  },
+  {
+    textAr: 'الطُّهُورُ شَطْرُ الإِيمَانِ',
+    textEn: 'Cleanliness is half of faith.',
+    source: 'Sahih Muslim 223',
+    narrator: 'Narrated by Abu Malik al-Ashʿari (رضي الله عنه)',
+    grading: 'Sahih (Authentic)',
+  },
+];
+
+/** Day-seeded index so the displayed Hadith rotates once per 24h without a server. */
+function pickDailyHadith(): BundledHadith {
+  const daySeed = Math.floor(Date.now() / (1000 * 60 * 60 * 24));
+  return BUNDLED_HADITH[daySeed % BUNDLED_HADITH.length];
+}
 
 export default function HadithOfDayScreen(): React.JSX.Element {
   const navigation = useNavigation<HadithNavProp>();
   const backRef = useRef<TouchableHighlight>(null);
-
-  // Day-based seed: changes every 24 hours
-  const daySeed = Math.floor(Date.now() / (1000 * 60 * 60 * 24));
-  void daySeed; // Used when fetching from GraphQL
+  const hadith = pickDailyHadith();
 
   return (
     <TvScreenWrapper title="Hadith of the Day" onBack={() => navigation.goBack()}>
@@ -40,17 +74,17 @@ export default function HadithOfDayScreen(): React.JSX.Element {
         <View style={styles.root}>
           {/* Arabic text — RTL, tashkeel preserved */}
           <View style={styles.arabicContainer}>
-            <Text style={styles.arabicText}>{SAMPLE_HADITH.textAr}</Text>
+            <Text style={styles.arabicText}>{hadith.textAr}</Text>
           </View>
 
           {/* Translation */}
-          <Text style={styles.translationText}>{SAMPLE_HADITH.textEn}</Text>
+          <Text style={styles.translationText}>{hadith.textEn}</Text>
 
           {/* Source citation — narrator chain + collection */}
           <View style={styles.citationBox}>
-            <Text style={styles.narratorText}>{SAMPLE_HADITH.narrator}</Text>
-            <Text style={styles.sourceText}>{SAMPLE_HADITH.source}</Text>
-            <Text style={styles.gradingText}>{SAMPLE_HADITH.grading}</Text>
+            <Text style={styles.narratorText}>{hadith.narrator}</Text>
+            <Text style={styles.sourceText}>{hadith.source}</Text>
+            <Text style={styles.gradingText}>{hadith.grading}</Text>
           </View>
 
           {/* Back button */}

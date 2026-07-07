@@ -87,29 +87,47 @@ export const CHECK_PRAYCALC_PAIRING = `
   }
 `;
 
-export const GET_QIBLA_BEARING = `
-  query GetQiblaBearing($city: String!) {
-    pc_city(where: { name: { _eq: $city } }, limit: 1) {
-      qibla_bearing
-      latitude
-      longitude
+/**
+ * TV-side pre-registration insert (public role). Server presets `is_active: true,
+ * paired: false` — the TV must NOT send those columns (Hasura preset overrides/rejects
+ * client-supplied values for preset columns). Unique constraint `pc_tv_pairing_pin_key`
+ * on `pin` — on collision the caller must catch the error and regenerate the PIN.
+ * Verified live against api.praycalc.com 2026-07-06: insert succeeds with exactly
+ * { pin, device_id } and returns { paired: false, is_active: true }; a duplicate pin
+ * returns a "Uniqueness violation ... pc_tv_pairing_pin_key" error.
+ */
+export const REGISTER_TV_PAIRING = `
+  mutation RegisterTvPairing($pin: String!, $deviceId: String!) {
+    insert_pc_tv_pairing_one(object: { pin: $pin, device_id: $deviceId }) {
+      pin
+      device_id
+      paired
+      is_active
     }
   }
 `;
 
+/**
+ * City search — live in production against pc_cities (NOT pc_city, which does not
+ * exist; verified via introspection + a live query against api.praycalc.com
+ * 2026-07-06: pc_cities has 49,742 rows, columns id/name/country/state/latitude/
+ * longitude/timezone/population, public role select, capped at limit 50).
+ */
 export const GET_CITY_LIST = `
-  query GetCityList($search: String!, $limit: Int!) {
-    pc_city(
+  query GetTvCityList($search: String!, $limit: Int!) {
+    pc_cities(
       where: { name: { _ilike: $search } }
-      order_by: { name: asc }
+      order_by: { population: desc_nulls_last }
       limit: $limit
     ) {
       id
       name
       country
+      state
       latitude
       longitude
       timezone
+      population
     }
   }
 `;
