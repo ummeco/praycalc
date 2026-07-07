@@ -30,14 +30,14 @@ This document verifies that `praycalc/mobile` (React Native + Expo SDK 53) achie
 | 17 | Countdown to next prayer | Implemented | Implemented | PASS |
 | 18 | Dark mode with system preference | Implemented | Implemented (System/Light/Dark setting, full 26-file themed palette; added 2026-07-06 — the 2026-06-21 gate overstated this) | PASS |
 | 19 | WCAG 2.2 AA accessibility | Implemented | Implemented (a11y roles/labels/hitSlop across screens) | PASS |
-| 20 | Premium features (smart home, TV widget, home screen widgets) | Implemented | Smart Home + TV pairing real and gated (pc_tv_pairing provisioned in production, full pair loop verified); Android home widget implemented (react-native-android-widget, travel-aware next-prayer, auto-refresh on reschedule — on-device validation pending first store build); iOS WidgetKit remains tracked | PARTIAL → mostly PASS (iOS widget: PCI pci-praycalc-home-widgets-native) |
+| 20 | Premium features (smart home, TV widget, home screen widgets) | Implemented | Smart Home + TV pairing real and gated (pc_tv_pairing provisioned in production, full pair loop verified; TV pre-registration live 2026-07-07); Android home widget (react-native-android-widget) AND iOS WidgetKit widget (@bacons/apple-targets — xcodebuild BUILD SUCCEEDED locally 2026-07-07) both implemented; on-device validation lands with the first EAS/TestFlight build (runbook: .github/docs/runbooks/on-device-validation-checklist.md) | PASS (PCI pci-praycalc-home-widgets-native closed) |
 
 ## Verification Summary
 
 - **Total Features:** 20
-- **PASS:** 19 (incl. two by documented design decision: Tehran exclusion, .ics-not-PDF)
-- **PARTIAL:** 1 — row 20's iOS home widget (WidgetKit extension, PCI pci-praycalc-home-widgets-native); the Android widget is code-complete pending first on-device build
-- **Gate Status:** OPEN ✓
+- **PASS:** 20 (incl. two by documented design decision: Tehran exclusion, .ics-not-PDF)
+- **PARTIAL:** 0 — the final one (iOS WidgetKit) closed 2026-07-07 with a locally build-validated widget target; on-device passes ride the first store build per the validation runbook
+- **Gate Status:** OPEN ✓ — 20/20
 
 ## 2026-07-06 — Competitive Gap Closure (beyond Flutter parity)
 
@@ -66,6 +66,18 @@ Deferred with tracking: native home-screen widgets (PCI), bundled adhan notifica
   human-review tracking in src/i18n/REVIEW.md.
 - Android home widget (row 20): react-native-android-widget implementation.
 - Versions: mobile 2.1.0, desktop 1.2.1, web 2.0.1.
+
+## 2026-07-07 — Every surface executed
+
+- iOS WidgetKit widget shipped (row 20 → PASS, 20/20): App-Group timeline widget,
+  xcodebuild-validated locally. PCI pci-praycalc-home-widgets-native closed.
+- TV app completed: persistence, PIN pre-registration (live backend permission),
+  4 stub screens wired honestly, api.praycalc.com endpoint, shared Hijri engine.
+- Wear OS v1 build-green (critical refresh hang + permissions + ProGuard fixed).
+- watchOS buildable + tested: xcodegen project, offline complication (zero
+  network), standalone watch-only app; BUILD + TEST SUCCEEDED on simulator.
+- Mobile crash reporting (dependency-free, consent-gated) + on-device runbook.
+- Watch & Wear "deferred" status in Migration Notes below is now historical.
 
 ## Migration Notes
 
