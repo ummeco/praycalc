@@ -1,9 +1,14 @@
 /**
  * Purpose: Digital dhikr counter with haptic feedback, custom dhikr, MMKV persistence.
+ *   Also persists a history log of completed dhikr sessions (name/count/timestamp)
+ *   and shows a simple history list + today's total dhikr count.
  * Inputs: DhikrPreset constants, user custom dhikr.
  * Outputs: TasbeehScreen — Feature 7 of 20.
  * Constraints: expo-haptics for vibration on increment. MMKV persists count across restarts.
  *   Arabic strings: full tashkeel, textAlign 'right', writingDirection 'rtl'.
+ *   History log is append-only, capped at HISTORY_LIMIT most-recent sessions to
+ *   bound MMKV storage growth; a "session" is logged only when the target count
+ *   is reached (isComplete), never on partial/abandoned counts.
  * SPORT: REGISTRY-APPS.md#praycalc-mobile-feature-07-tasbeeh
  */
 
@@ -16,6 +21,7 @@ import { mmkv } from '../../lib/storage/mmkv';
 import { useTranslation } from '../../i18n';
 import { useThemeColors } from '../../hooks/useThemeColors';
 import type { ThemeColors } from '../../constants/colors';
+import { loadTasbeehHistory, appendTasbeehHistory, getTodayTasbeehTotal, type TasbeehHistoryEntry } from './tasbeehHistory';
 
 // ── Dhikr presets (ahl us-sunnah sources) ────────────────────────────────────
 
@@ -97,6 +103,7 @@ export default function TasbeehScreen() {
   const [selectedPreset, setSelectedPreset] = useState<DhikrPreset>(DHIKR_PRESETS[0]!);
   const [count, setCount] = useState<number>(0);
   const [isComplete, setIsComplete] = useState<boolean>(false);
+  const [history, setHistory] = useState<TasbeehHistoryEntry[]>(loadTasbeehHistory);
 
   // Restore persisted session on mount
   useEffect(() => {
@@ -130,6 +137,14 @@ export default function TasbeehScreen() {
     setCount(next);
     if (next >= selectedPreset.targetCount) {
       setIsComplete(true);
+      // Session complete — log it to history (only completed sessions are logged).
+      const updated = appendTasbeehHistory({
+        dhikrId: selectedPreset.id,
+        dhikrName: selectedPreset.transliteration,
+        count: next,
+        completedAt: Date.now(),
+      });
+      setHistory(updated);
       // Heavy impact on completion
       await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     } else {
@@ -151,6 +166,8 @@ export default function TasbeehScreen() {
   }, []);
 
   const progress = Math.min(count / selectedPreset.targetCount, 1);
+  const todayTotal = useMemo(() => getTodayTasbeehTotal(history), [history]);
+  const recentHistory = useMemo(() => history.slice(0, 10), [history]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -220,6 +237,30 @@ export default function TasbeehScreen() {
             <Text style={styles.presetTranslit}>{preset.transliteration} × {preset.targetCount}</Text>
           </TouchableOpacity>
         ))}
+
+        {/* History */}
+        {history.length > 0 && (
+          <>
+            <View style={styles.todayTotalCard} accessibilityLabel={`Today's dhikr total: ${todayTotal}`}>
+              <Text style={styles.todayTotalNumber}>{todayTotal}</Text>
+              <Text style={styles.todayTotalLabel}>{t('screens.tasbeeh.todayTotal')}</Text>
+            </View>
+            <Text style={styles.sectionTitle} accessibilityRole="header">{t('screens.tasbeeh.history')}</Text>
+            {recentHistory.map((entry, i) => (
+              <View
+                key={`${entry.completedAt}-${i}`}
+                style={styles.historyRow}
+                accessibilityLabel={`${entry.dhikrName}: ${entry.count}, ${new Date(entry.completedAt).toLocaleString()}`}
+              >
+                <Text style={styles.historyName}>{entry.dhikrName}</Text>
+                <Text style={styles.historyCount}>× {entry.count}</Text>
+                <Text style={styles.historyTime}>
+                  {new Date(entry.completedAt).toLocaleDateString()}
+                </Text>
+              </View>
+            ))}
+          </>
+        )}
       </ScrollView>
     </SafeAreaView>
   );
@@ -357,4 +398,29 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
     color: colors.text.muted,
     marginTop: 4,
   },
+  todayTotalCard: {
+    width: '100%',
+    backgroundColor: colors.brand.dark,
+    borderRadius: 12,
+    padding: 14,
+    alignItems: 'center',
+    marginTop: 20,
+    marginBottom: 8,
+  },
+  todayTotalNumber: { fontSize: 24, fontWeight: '800', color: colors.brand.light },
+  todayTotalLabel: { fontSize: 12, color: colors.brand.light + 'CC', marginTop: 2 },
+  historyRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '100%',
+    paddingVertical: 10,
+    paddingHorizontal: 4,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.background.card,
+    minHeight: 40,
+    gap: 8,
+  },
+  historyName: { flex: 1, fontSize: 13, color: colors.text.primary, fontWeight: '500' },
+  historyCount: { fontSize: 13, color: colors.brand.dark, fontWeight: '700' },
+  historyTime: { fontSize: 11, color: colors.text.muted, width: 84, textAlign: 'right' },
 });

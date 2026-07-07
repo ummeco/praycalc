@@ -34,6 +34,18 @@ export type ThemeMode = 'system' | 'light' | 'dark';
 /** Clamp bounds for manual tuning (match Muslim Pro/Athan conventions). */
 const MINUTE_ADJUST_LIMIT = 30; // ± minutes per prayer
 const HIJRI_ADJUST_LIMIT = 2; // ± days (local moon-sighting offset)
+const SUHOOR_MIN = 10; // earliest Suhoor alarm before Fajr
+const SUHOOR_MAX = 120; // latest Suhoor alarm before Fajr
+
+/** Validate/normalize an HH:mm 24h clock string; fall back to `fallback` if malformed. */
+function normalizeClock(value: string, fallback: string): string {
+  const m = /^(\d{1,2}):(\d{2})$/.exec(value.trim());
+  if (!m) return fallback;
+  const h = Number(m[1]);
+  const min = Number(m[2]);
+  if (h < 0 || h > 23 || min < 0 || min > 59) return fallback;
+  return `${String(h).padStart(2, '0')}:${String(min).padStart(2, '0')}`;
+}
 
 export interface SettingsState {
   method: string;
@@ -65,6 +77,34 @@ export interface SettingsState {
   hijriDayAdjustment: number;
   themeMode: ThemeMode;
 
+  /** Id of the bundled adhan notification sound (see ADHAN_SOUNDS). Which short cut
+   *  plays in the notification itself; independent of the streamed full-adhan voice. */
+  adhanNotificationSoundId: string;
+
+  // ── Smart alarms (Suhoor / Tahajjud / Qiyam) ────────────────────────────────
+  /** Suhoor pre-Fajr alarm on. */
+  suhoorAlarmEnabled: boolean;
+  /** Minutes before Fajr for the Suhoor alarm (10–120). */
+  suhoorMinutesBeforeFajr: number;
+  /** Tahajjud / Qiyam alarm on. */
+  tahajjudAlarmEnabled: boolean;
+  /** How the Tahajjud time is derived: 'lastThird' of the night, or a fixed clock time. */
+  tahajjudMode: 'lastThird' | 'custom';
+  /** Fixed HH:mm (24h) for tahajjudMode==='custom'. */
+  tahajjudCustomTime: string;
+
+  // ── Jumu'ah reminders ───────────────────────────────────────────────────────
+  /** Friday khutbah-time reminder on. */
+  jumuahKhutbahReminderEnabled: boolean;
+  /** Friday khutbah reminder clock time (HH:mm 24h). */
+  jumuahKhutbahTime: string;
+  /** Surah al-Kahf reminder on. */
+  kahfReminderEnabled: boolean;
+  /** Day the Kahf reminder fires: 'thursdayEve' or 'fridayMorning'. */
+  kahfReminderDay: 'thursdayEve' | 'fridayMorning';
+  /** Kahf reminder clock time (HH:mm 24h). */
+  kahfReminderTime: string;
+
   // Actions
   setMethod: (method: string) => void;
   setCustomAngles: (fajr: number, isha: number) => void;
@@ -86,6 +126,17 @@ export interface SettingsState {
   setIqamahOffsetMinutes: (prayer: PrayerName, minutes: number) => void;
   setHijriDayAdjustment: (days: number) => void;
   setThemeMode: (mode: ThemeMode) => void;
+  setAdhanNotificationSoundId: (id: string) => void;
+  setSuhoorAlarmEnabled: (enabled: boolean) => void;
+  setSuhoorMinutesBeforeFajr: (minutes: number) => void;
+  setTahajjudAlarmEnabled: (enabled: boolean) => void;
+  setTahajjudMode: (mode: 'lastThird' | 'custom') => void;
+  setTahajjudCustomTime: (time: string) => void;
+  setJumuahKhutbahReminderEnabled: (enabled: boolean) => void;
+  setJumuahKhutbahTime: (time: string) => void;
+  setKahfReminderEnabled: (enabled: boolean) => void;
+  setKahfReminderDay: (day: 'thursdayEve' | 'fridayMorning') => void;
+  setKahfReminderTime: (time: string) => void;
   reset: () => void;
 }
 
@@ -112,6 +163,17 @@ const initialState = {
   iqamahOffsetMinutes: defaultPerPrayer(0, 0),
   hijriDayAdjustment: 0,
   themeMode: 'system' as ThemeMode,
+  adhanNotificationSoundId: 'takbir',
+  suhoorAlarmEnabled: false,
+  suhoorMinutesBeforeFajr: 45,
+  tahajjudAlarmEnabled: false,
+  tahajjudMode: 'lastThird' as 'lastThird' | 'custom',
+  tahajjudCustomTime: '03:00',
+  jumuahKhutbahReminderEnabled: false,
+  jumuahKhutbahTime: '12:30',
+  kahfReminderEnabled: false,
+  kahfReminderDay: 'fridayMorning' as 'thursdayEve' | 'fridayMorning',
+  kahfReminderTime: '08:00',
 };
 
 export const useSettingsStore = create<SettingsState>()(
@@ -156,6 +218,18 @@ export const useSettingsStore = create<SettingsState>()(
       setHijriDayAdjustment: (days) =>
         set({ hijriDayAdjustment: Math.max(-HIJRI_ADJUST_LIMIT, Math.min(HIJRI_ADJUST_LIMIT, Math.round(days))) }),
       setThemeMode: (themeMode) => set({ themeMode }),
+      setAdhanNotificationSoundId: (adhanNotificationSoundId) => set({ adhanNotificationSoundId }),
+      setSuhoorAlarmEnabled: (suhoorAlarmEnabled) => set({ suhoorAlarmEnabled }),
+      setSuhoorMinutesBeforeFajr: (minutes) =>
+        set({ suhoorMinutesBeforeFajr: Math.max(SUHOOR_MIN, Math.min(SUHOOR_MAX, Math.round(minutes))) }),
+      setTahajjudAlarmEnabled: (tahajjudAlarmEnabled) => set({ tahajjudAlarmEnabled }),
+      setTahajjudMode: (tahajjudMode) => set({ tahajjudMode }),
+      setTahajjudCustomTime: (time) => set((s) => ({ tahajjudCustomTime: normalizeClock(time, s.tahajjudCustomTime) })),
+      setJumuahKhutbahReminderEnabled: (jumuahKhutbahReminderEnabled) => set({ jumuahKhutbahReminderEnabled }),
+      setJumuahKhutbahTime: (time) => set((s) => ({ jumuahKhutbahTime: normalizeClock(time, s.jumuahKhutbahTime) })),
+      setKahfReminderEnabled: (kahfReminderEnabled) => set({ kahfReminderEnabled }),
+      setKahfReminderDay: (kahfReminderDay) => set({ kahfReminderDay }),
+      setKahfReminderTime: (time) => set((s) => ({ kahfReminderTime: normalizeClock(time, s.kahfReminderTime) })),
       reset: () => set({ ...initialState }),
     }),
     {

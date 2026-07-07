@@ -14,7 +14,15 @@
 
 import * as Notifications from 'expo-notifications';
 import { useSettingsStore } from '../../../features/settings/store/useSettingsStore';
-import { schedulePrayerNotifications } from '../PrayerNotificationService';
+import {
+  schedulePrayerNotifications,
+  handleSnoozeResponse,
+  computeSmartAlarms,
+  computeJumuahReminders,
+  SNOOZE_ACTION_ID,
+  SNOOZE_MINUTES,
+  ADHAN_CATEGORY_ID,
+} from '../PrayerNotificationService';
 import type { PrayerName } from '../../../types/prayer';
 
 // jest-expo auto-mocks expo-owned native modules but not third-party community modules —
@@ -46,7 +54,10 @@ jest.mock('expo-notifications', () => ({
   scheduleNotificationAsync: jest.fn().mockResolvedValue('mock-notification-id'),
   cancelAllScheduledNotificationsAsync: jest.fn().mockResolvedValue(undefined),
   setNotificationChannelAsync: jest.fn().mockResolvedValue(undefined),
+  setNotificationCategoryAsync: jest.fn().mockResolvedValue(undefined),
   requestPermissionsAsync: jest.fn().mockResolvedValue({ status: 'granted' }),
+  // Module-level registerSnoozeHandler() calls this at import time.
+  addNotificationResponseReceivedListener: jest.fn().mockReturnValue({ remove: jest.fn() }),
   AndroidImportance: { HIGH: 4 },
   AndroidAudioUsage: { ALARM: 4 },
   AndroidAudioContentType: { SONIFICATION: 4 },
@@ -259,5 +270,155 @@ describe('schedulePrayerNotifications', () => {
   it('cancels all previously-scheduled notifications before scheduling new ones (idempotent reschedule)', async () => {
     await schedulePrayerNotifications();
     expect(Notifications.cancelAllScheduledNotificationsAsync).toHaveBeenCalledTimes(1);
+  });
+
+  it('uses the user-selected bundled adhan sound + its dedicated channel', async () => {
+    useSettingsStore.setState({
+      adhanNotificationSoundId: 'makkah',
+      notificationAdvanceMinutes: { Fajr: 0, Sunrise: 0, Dhuhr: 0, Asr: 0, Maghrib: 0, Isha: 0 },
+      perPrayerAdhanEnabled: { Fajr: true, Sunrise: false, Dhuhr: false, Asr: false, Maghrib: false, Isha: false },
+    });
+
+    await schedulePrayerNotifications();
+
+    const calls = (Notifications.scheduleNotificationAsync as jest.Mock).mock.calls;
+    const fajrCalls = calls.filter(
+      ([args]) => (args.content.data as { prayerName?: PrayerName }).prayerName === 'Fajr',
+    );
+    expect(fajrCalls.length).toBeGreaterThan(0);
+    for (const [args] of fajrCalls) {
+      expect(args.content.sound).toBe('adhan_makkah.wav');
+      expect(args.trigger.channelId).toBe('prayer-alarms-adhan-makkah');
+      // The snooze category is attached to the actual adhan alert.
+      expect(args.content.categoryIdentifier).toBe(ADHAN_CATEGORY_ID);
+    }
+  });
+});
+
+describe('handleSnoozeResponse', () => {
+  const FIXED_NOW = new Date(2026, 0, 15, 5, 30, 0);
+
+  beforeEach(() => {
+    jest.useFakeTimers().setSystemTime(FIXED_NOW);
+    jest.clearAllMocks();
+    useSettingsStore.setState({
+      ...useSettingsStore.getInitialState(),
+      adhanNotificationSoundId: 'takbir',
+      perPrayerAdhanEnabled: { Fajr: true, Sunrise: false, Dhuhr: true, Asr: true, Maghrib: true, Isha: true },
+    });
+  });
+
+  afterEach(() => jest.useRealTimers());
+
+  function response(actionIdentifier: string, prayerName?: PrayerName) {
+    return {
+      actionIdentifier,
+      notification: {
+        request: { identifier: 'n1', content: { data: prayerName ? { prayerName, timestamp: FIXED_NOW.getTime() } : {} } },
+      },
+    } as unknown as Notifications.NotificationResponse;
+  }
+
+  it('reschedules the same prayer SNOOZE_MINUTES later, with the adhan sound/channel', async () => {
+    const handled = await handleSnoozeResponse(response(SNOOZE_ACTION_ID, 'Fajr'));
+    expect(handled).toBe(true);
+    expect(Notifications.scheduleNotificationAsync).toHaveBeenCalledTimes(1);
+    const [args] = (Notifications.scheduleNotificationAsync as jest.Mock).mock.calls[0];
+    const triggerDate = (args.trigger as { date: Date }).date;
+    expect(triggerDate.getTime() - FIXED_NOW.getTime()).toBe(SNOOZE_MINUTES * 60_000);
+    expect(args.content.sound).toBe('adhan_takbir.wav');
+    expect(args.trigger.channelId).toBe('prayer-alarms-adhan');
+    expect((args.content.data as { snoozed?: boolean }).snoozed).toBe(true);
+  });
+
+  it('ignores non-snooze actions and responses without a prayer name', async () => {
+    expect(await handleSnoozeResponse(response('some-other-action', 'Fajr'))).toBe(false);
+    expect(await handleSnoozeResponse(response(SNOOZE_ACTION_ID))).toBe(false);
+    expect(Notifications.scheduleNotificationAsync).not.toHaveBeenCalled();
+  });
+});
+
+describe('computeSmartAlarms (Suhoor / Tahajjud)', () => {
+  const FIXED_NOW = new Date(2026, 0, 15, 12, 0, 0); // midday, before either alarm today
+  const NYC = { latitude: 40.7128, longitude: -74.006, city: 'NYC', country: 'US', timezone: 'America/New_York' };
+
+  function baseSettings(overrides: Record<string, unknown>) {
+    return { ...useSettingsStore.getInitialState(), location: NYC, ...overrides } as ReturnType<typeof useSettingsStore.getState>;
+  }
+
+  it('returns nothing when both alarms are off', () => {
+    const alarms = computeSmartAlarms(baseSettings({}), NYC, FIXED_NOW);
+    expect(alarms).toHaveLength(0);
+  });
+
+  it('emits a Suhoor alarm before each night\'s Fajr when enabled', () => {
+    const alarms = computeSmartAlarms(
+      baseSettings({ suhoorAlarmEnabled: true, suhoorMinutesBeforeFajr: 45 }),
+      NYC, FIXED_NOW,
+    );
+    expect(alarms.every((a) => a.kind === 'suhoor')).toBe(true);
+    expect(alarms.length).toBeGreaterThan(0);
+    // All triggers are in the future and pre-dawn.
+    for (const a of alarms) expect(a.triggerTimestamp).toBeGreaterThan(FIXED_NOW.getTime());
+  });
+
+  it('emits a Tahajjud alarm (last third) when enabled', () => {
+    const alarms = computeSmartAlarms(
+      baseSettings({ tahajjudAlarmEnabled: true, tahajjudMode: 'lastThird' }),
+      NYC, FIXED_NOW,
+    );
+    expect(alarms.every((a) => a.kind === 'tahajjud')).toBe(true);
+    expect(alarms.length).toBeGreaterThan(0);
+  });
+});
+
+describe('computeJumuahReminders (day-of-week scheduling)', () => {
+  // 2026-01-15 is a THURSDAY (getDay()===4). Friday is 2026-01-16.
+  const THURSDAY_NOON = new Date(2026, 0, 15, 12, 0, 0);
+
+  function baseSettings(overrides: Record<string, unknown>) {
+    return { ...useSettingsStore.getInitialState(), ...overrides } as ReturnType<typeof useSettingsStore.getState>;
+  }
+
+  it('schedules the khutbah reminder for the coming Friday', () => {
+    const reminders = computeJumuahReminders(
+      baseSettings({ jumuahKhutbahReminderEnabled: true, jumuahKhutbahTime: '12:30' }),
+      THURSDAY_NOON,
+    );
+    expect(reminders).toHaveLength(1);
+    const d = new Date(reminders[0].triggerTimestamp);
+    expect(d.getDay()).toBe(5); // Friday
+    expect(d.getDate()).toBe(16);
+    expect(d.getHours()).toBe(12);
+    expect(d.getMinutes()).toBe(30);
+  });
+
+  it('schedules the Kahf reminder on the chosen day (Thursday eve vs Friday morning)', () => {
+    const friday = computeJumuahReminders(
+      baseSettings({ kahfReminderEnabled: true, kahfReminderDay: 'fridayMorning', kahfReminderTime: '08:00' }),
+      THURSDAY_NOON,
+    );
+    expect(new Date(friday[0].triggerTimestamp).getDay()).toBe(5);
+
+    const thursday = computeJumuahReminders(
+      baseSettings({ kahfReminderEnabled: true, kahfReminderDay: 'thursdayEve', kahfReminderTime: '20:00' }),
+      THURSDAY_NOON,
+    );
+    // 20:00 Thursday is still ahead of noon Thursday -> same day (this week's Thursday).
+    const d = new Date(thursday[0].triggerTimestamp);
+    expect(d.getDay()).toBe(4);
+    expect(d.getHours()).toBe(20);
+  });
+
+  it('rolls a passed same-day target forward a week', () => {
+    // Khutbah time 08:00 on a Friday that is already past 08:00 -> next Friday.
+    const fridayLate = new Date(2026, 0, 16, 10, 0, 0); // Friday 10:00
+    const reminders = computeJumuahReminders(
+      baseSettings({ jumuahKhutbahReminderEnabled: true, jumuahKhutbahTime: '08:00' }),
+      fridayLate,
+    );
+    const d = new Date(reminders[0].triggerTimestamp);
+    expect(d.getDay()).toBe(5);
+    expect(d.getDate()).toBe(23); // the FOLLOWING Friday
   });
 });

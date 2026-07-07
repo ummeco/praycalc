@@ -80,7 +80,10 @@
           "color": "#1E5E2F",
           "defaultChannel": "prayer-alarm",
           "sounds": [
-            "./assets/sounds/adhan_takbir.wav"
+            "./assets/sounds/adhan_takbir.wav",
+            "./assets/sounds/adhan_makkah.wav",
+            "./assets/sounds/adhan_mishari.wav",
+            "./assets/sounds/adhan_madina.wav"
           ]
         }
       ],

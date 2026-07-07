@@ -242,3 +242,57 @@ rest of `screens.*`.
 | `screens.tvManager.deleteConfirmTitle` | Remove TV? |
 | `screens.tvManager.deleteConfirmBody` | This will unpair "{{name}}" and remove its saved settings. This can't be undone. |
 | `screens.tvManager.deleteConfirmAction` | Remove |
+
+## Added 2026-07-07 — `screens.fasting.*` + `screens.qada.*` + `screens.tasbeeh.*`/`screens.stats.*` additions (needs translation, fiqh-sensitive)
+
+Fasting tracker + Qada (missed-prayer) tracker wave-2 features, plus tasbeeh history
+and stats summary-card additions. All keys en-only for now (fallback covers other
+locales). **`screens.qada.fiqhNote` / `fiqhCitation` / `consultScholar` need human
+scholarly review before translation** — this is majority-position fiqh wording
+(the menstruation/prayer-vs-fast qada distinction, Sahih al-Bukhari 321 / Sahih
+Muslim 335) and a literal machine translation risks losing the careful phrasing.
+`screens.fasting.sunnahSourceNote` (Sahih Muslim 1162; Sunan an-Nasa'i 2345 / Abu
+Dawud 2449) is citation text — translate faithfully, do not paraphrase the hadith
+references themselves.
+
+| Key | en value |
+|---|---|
+| `menu.fasting.label` / `subtitle` | Fasting Tracker / Ramadan, Mondays & Thursdays, White Days *(pre-existing, scaffolded before this pass)* |
+| `menu.qada.label` / `subtitle` | Missed Prayers (Qada) / Track and make up missed prayers *(pre-existing, scaffolded before this pass)* |
+| `screens.fasting.todaysFast` | Today's Fast |
+| `screens.fasting.logToday` / `unlogToday` | Log Today's Fast / Remove Today's Log |
+| `screens.fasting.loggedAs` | Logged: {{type}} |
+| `screens.fasting.yourStreaks` | Your Streaks |
+| `screens.fasting.mondayStreak` / `thursdayStreak` | Monday Streak / Thursday Streak |
+| `screens.fasting.whiteDaysMonth` | White Days This Month |
+| `screens.fasting.ramadanLogged` / `qadaLogged` / `voluntaryLogged` | Ramadan Fasts / Qada Made Up / Voluntary Fasts |
+| `screens.fasting.ramadanDayOf` | Ramadan — Day {{day}} of {{total}} |
+| `screens.fasting.upcomingSuggestions` | Upcoming Recommended Fast Days |
+| `screens.fasting.logAction` | Log |
+| `screens.fasting.sunnahSourceNote` | (needs human review — hadith citation, see above) |
+| `screens.fasting.recentLogs` | Recent Logs |
+| `screens.qada.totalOwed` | Total Prayers Owed |
+| `screens.qada.perPrayer` | Per-Prayer Count |
+| `screens.qada.makeUpOne` | Make Up One |
+| `screens.qada.excusedTitle` | Excused Periods |
+| `screens.qada.fiqhNote` | (**needs human scholarly review** — see note above) |
+| `screens.qada.fiqhCitation` | Sahih al-Bukhari 321 · Sahih Muslim 335 |
+| `screens.qada.consultScholar` | (**needs human scholarly review** — see note above) |
+| `screens.qada.addExcusedRange` | Add Excused Period |
+| `screens.qada.startDate` / `endDate` | Start Date / End Date |
+| `screens.qada.noteOptional` / `notePlaceholder` | Note (optional) / e.g. menses, illness |
+| `screens.tasbeeh.todayTotal` | Today's Total |
+| `screens.tasbeeh.history` | History |
+| `screens.stats.fastingStreak` | Fasting Streak |
+| `screens.stats.qadaOutstanding` | Qada Outstanding |
+
+### Verification (this pass)
+
+- `npx tsc --noEmit` — 0 errors in fasting/qada/tasbeeh/stats files (8 pre-existing
+  errors in `src/lib/__tests__/analytics-consent-gate.test.ts`, untouched by this
+  pass, belong to a parallel workstream)
+- `npx jest` — 38/38 new tests passing (fastingLogic, qadaLogic, tasbeeh history);
+  4 pre-existing failing suites (masjid-mute, notifications, analytics-consent-gate)
+  are untouched, out-of-scope parallel work
+- `python3 -c "import json; json.load(open('src/i18n/en.json'))"` — valid JSON,
+  purely additive diff (no existing keys altered)

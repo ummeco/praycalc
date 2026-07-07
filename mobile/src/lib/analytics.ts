@@ -6,12 +6,22 @@
  *   - ZERO PII — no user ID, email, device ID, or geolocation in any event payload.
  *   - Anonymous events only: event name + generic properties (prayer type, locale).
  *   - No-op when EXPO_PUBLIC_UMAMI_URL is absent (graceful degradation).
+ *   - CONSENT-GATED: no-op unless useConsentStore's analyticsConsent === 'granted'.
+ *     Default-deny — 'unset' (not yet asked) and 'denied' both suppress every event.
+ *     Read via useConsentStore.getState() (vanilla store access, no React hooks —
+ *     this is a plain module, not a component).
  *   - Fires-and-forgets: analytics failures must never affect app functionality.
  *   - Locale reported only as language code (e.g. 'ar') — not full BCP-47 tag.
- * SPORT: praycalc/mobile — Umami analytics wired
+ * SPORT: praycalc/mobile — Umami analytics wired, consent-gated
  */
 
 import i18next from '../i18n/index';
+import { useConsentStore } from '../features/consent/store/useConsentStore';
+
+/** True only when the user has explicitly granted analytics consent. */
+function hasAnalyticsConsent(): boolean {
+  return useConsentStore.getState().analyticsConsent === 'granted';
+}
 
 /** Recognised prayer event types */
 export type PrayerEventType =
@@ -49,6 +59,9 @@ const APP_HOSTNAME = 'praycalc.app';
  */
 async function sendEvent(payload: UmamiEventPayload): Promise<void> {
   if (!UMAMI_URL || !UMAMI_WEBSITE_ID) return;
+  // Single chokepoint consent gate — belt-and-suspenders on top of the per-function
+  // checks, so any future caller of sendEvent is covered by default-deny too.
+  if (!hasAnalyticsConsent()) return;
 
   try {
     await fetch(`${UMAMI_URL}/api/send`, {
@@ -75,6 +88,7 @@ async function sendEvent(payload: UmamiEventPayload): Promise<void> {
  */
 export function logPrayerEvent(type: PrayerEventType, isoTime?: string): void {
   if (!UMAMI_URL || !UMAMI_WEBSITE_ID) return;
+  if (!hasAnalyticsConsent()) return;
 
   // Strip isoTime to hour-of-day only — no date, no location context
   let hourOfDay: number | undefined;
@@ -110,6 +124,7 @@ export function logPrayerEvent(type: PrayerEventType, isoTime?: string): void {
  */
 export function logAppOpen(): void {
   if (!UMAMI_URL || !UMAMI_WEBSITE_ID) return;
+  if (!hasAnalyticsConsent()) return;
 
   void sendEvent({
     website: UMAMI_WEBSITE_ID,

@@ -142,6 +142,7 @@ export default function RootLayout() {
         <Stack.Screen name="qada" options={{ headerShown: true, title: t('menu.qada.label') }} />
         <Stack.Screen name="pair-tv" options={{ headerShown: true, title: t('menu.pairTv.label') }} />
         <Stack.Screen name="tvs" options={{ headerShown: true, title: t('menu.tvManager.label') }} />
+        <Stack.Screen name="privacy" options={{ headerShown: true, title: t('menu.privacy.label') }} />
         <Stack.Screen name="onboarding" options={{ presentation: 'modal', headerShown: false }} />
         <Stack.Screen name="+not-found" />
       </Stack>

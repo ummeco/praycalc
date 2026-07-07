@@ -26,6 +26,7 @@ interface MenuItem {
 
 const MENU_ITEMS: MenuItem[] = [
   { labelKey: 'menu.settings.label', subtitleKey: 'menu.settings.subtitle', route: '/settings', icon: '⚙️' },
+  { labelKey: 'menu.privacy.label', subtitleKey: 'menu.privacy.subtitle', route: '/privacy', icon: '🔒' },
   { labelKey: 'menu.adhan.label', subtitleKey: 'menu.adhan.subtitle', route: '/adhan', icon: '🔊' },
   { labelKey: 'menu.tasbeeh.label', subtitleKey: 'menu.tasbeeh.subtitle', route: '/tasbeeh', icon: '📿' },
   { labelKey: 'menu.duaDhikr.label', subtitleKey: 'menu.duaDhikr.subtitle', route: '/dua-dhikr', icon: '🤲' },

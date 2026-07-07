@@ -19,7 +19,20 @@
     "bodyNow": "It's time for {{prayer}} prayer — {{time}}",
     "bodyAdvance_one": "{{prayer}} is in {{count}} minute — {{time}}",
     "bodyAdvance_other": "{{prayer}} is in {{count}} minutes — {{time}}",
-    "bodyIqamah": "Iqamah reminder for {{prayer}} (adhan was at {{time}})"
+    "bodyIqamah": "Iqamah reminder for {{prayer}} (adhan was at {{time}})",
+    "snooze_one": "Snooze {{count}} min",
+    "snooze_other": "Snooze {{count}} min",
+    "snoozedBody": "Snoozed reminder for {{prayer}} prayer",
+    "suhoorTitle": "Suhoor",
+    "suhoorBody": "Time for suhoor — the pre-dawn meal. Fajr is approaching.",
+    "tahajjudTitle": "Tahajjud",
+    "tahajjudBody": "The last third of the night — a blessed time for qiyam and du'a.",
+    "jumuahKhutbahTitle": "Jumu'ah",
+    "jumuahKhutbahBody": "The khutbah is soon. Head to the masjid for Jumu'ah prayer.",
+    "kahfTitle": "Surah al-Kahf",
+    "kahfBody": "Recite Surah al-Kahf for the light between the two Fridays.",
+    "testTitle": "Test Adhan",
+    "testBody": "If you can hear this, your adhan notifications are working."
   },
   "common": {
     "bismillah": "In the name of Allah, the Most Gracious, the Most Merciful",
@@ -167,6 +180,10 @@
     "qada": {
       "label": "Missed Prayers (Qada)",
       "subtitle": "Track and make up missed prayers"
+    },
+    "privacy": {
+      "label": "Privacy & Data",
+      "subtitle": "Control analytics consent"
     }
   },
   "settings": {
@@ -372,6 +389,51 @@
       "attribution": "Data © OpenStreetMap contributors",
       "searchFailed": "Failed to search for mosques."
     },
+    "masjidMute": {
+      "title": "Masjid Auto-Mute",
+      "intro": "PrayCalc doesn't have a masjid directory yet — add your own mute zones below. We recommend adding your local masjid so your phone silences automatically when you arrive.",
+      "masterToggleLabel": "Auto-mute enabled",
+      "masterToggleSubtitle": "Silence the phone when entering any zone below",
+      "zonesHeading": "Your Zones",
+      "emptyTitle": "No zones yet",
+      "emptySubtitle": "Add your local masjid so PrayCalc can auto-mute your phone when you arrive.",
+      "addZoneAction": "Add Your Local Masjid",
+      "addZoneButton": "Add a Zone",
+      "addZoneTitle": "Add Mute Zone",
+      "editZoneTitle": "Edit Mute Zone",
+      "labelFieldLabel": "Label",
+      "labelFieldPlaceholder": "e.g. Masjid Al-Noor",
+      "labelRequired": "Please enter a label for this zone.",
+      "coordinatesInvalid": "Please enter a valid latitude and longitude, or search/use current location.",
+      "searchAddressLabel": "Search address",
+      "searchAddressPlaceholder": "Search for an address or place",
+      "searching": "Searching...",
+      "searchNoResults": "No matches found. Try a different search or enter coordinates manually.",
+      "useCurrentLocation": "Use Current Location",
+      "locating": "Locating...",
+      "locationFailed": "Could not get your current location.",
+      "manualEntryToggle": "Enter coordinates manually",
+      "latitudeLabel": "Latitude",
+      "longitudeLabel": "Longitude",
+      "radiusLabel": "Radius: {{radius}} m",
+      "radiusHint": "Between {{min}} m and {{max}} m — covers the masjid and its parking area.",
+      "saveZone": "Save Zone",
+      "deleteZone": "Delete Zone",
+      "deleteConfirmTitle": "Delete this zone?",
+      "deleteConfirmBody": "\"{{label}}\" will no longer auto-mute your phone.",
+      "mapPickerFollowUp": "A map picker for visually dropping a pin is planned — for now, search an address or use your current location.",
+      "permissionTitle": "Location Permission Needed",
+      "permissionBody": "Masjid Auto-Mute needs \"Always\" location access to detect when you enter or leave a zone, even while the app is closed.",
+      "permissionGrant": "Grant Permission",
+      "permissionDeniedNote": "Background location was not granted — zones are saved but auto-mute will not trigger until you allow \"Always\" access in system settings.",
+      "androidNote": "Android: your phone will switch to vibrate on arrival and restore your previous ringer mode on exit.",
+      "iosNote": "iOS: Apple does not allow apps to change your mute switch. Instead, PrayCalc sends a reminder notification asking you to silence your phone manually.",
+      "iosReminderTitle": "You've arrived",
+      "iosReminderBody": "You're near {{zone}} — please silence your phone.",
+      "defaultZoneLabel": "your mute zone",
+      "activeNow": "Active now — phone silenced",
+      "radiusValue": "{{radius}} m radius"
+    },
     "pairTv": {
       "upsellBadge": "Ummat+",
       "unlockTitle": "Unlock TV Pairing",
@@ -463,7 +525,40 @@
       "minutesBefore_other": "{{count}}m before",
       "iqamahOff": "iqamah off",
       "iqamahAfter_one": "iqamah +{{count}}m",
-      "iqamahAfter_other": "iqamah +{{count}}m"
+      "iqamahAfter_other": "iqamah +{{count}}m",
+      "adhanSoundTitle": "Adhan Sound",
+      "adhanSoundSub": "Which adhan plays when a prayer notification arrives.",
+      "adhanSound": {
+        "takbir": "Takbir (opening)",
+        "makkah": "Makkah",
+        "mishari": "Mishari Rashid",
+        "madina": "Madina"
+      },
+      "smartAlarmsTitle": "Smart Alarms",
+      "suhoorLabel": "Suhoor alarm",
+      "suhoorSub": "Wake before Fajr for the pre-dawn meal.",
+      "suhoorBefore_one": "{{count}} min before Fajr",
+      "suhoorBefore_other": "{{count}} min before Fajr",
+      "tahajjudLabel": "Tahajjud / Qiyam",
+      "tahajjudSub": "Rise in the last part of the night for prayer.",
+      "tahajjudLastThird": "Last third of the night",
+      "tahajjudCustom": "Custom time",
+      "nightTimesTitle": "Night Times (tonight)",
+      "lastThirdBegins": "Last third begins",
+      "middleOfNight": "Middle of the night",
+      "nightTimesUnavailable": "Set your location to see tonight's night times.",
+      "reliabilityTitle": "Reliable Adhan Delivery",
+      "reliabilitySub": "Make sure alarms fire on time",
+      "batteryTitle": "Allow reliable alarms",
+      "batteryIntro": "Android may silence prayer alarms to save battery. To hear the adhan on time:",
+      "batteryStepAlarms": "Allow \"Alarms & reminders\" (exact alarms) for Prayer Times.",
+      "batteryStepOptimization": "Turn OFF battery optimization for Prayer Times so it isn't put to sleep.",
+      "batteryOemNote": "Some phones (Xiaomi, Huawei, Samsung, OnePlus, Oppo, Vivo) have an extra \"auto-start\" or \"protected apps\" setting — enable Prayer Times there too.",
+      "openExactAlarm": "Open Alarms & reminders",
+      "openBatterySettings": "Open battery settings",
+      "testAdhanButton": "Test my adhan (5s)",
+      "testAdhanScheduled": "A test adhan will play in about 5 seconds. Lock or background the app to hear it as a notification.",
+      "dismiss": "Dismiss"
     },
     "smartHome": {
       "proOnly": "Smart Home (lock-on-salah + device control) is an Ummat+ feature.",
@@ -493,7 +588,9 @@
       "thisMonth": "This Month",
       "byPrayer": "By Prayer",
       "weekly": "Weekly",
-      "monthly": "Monthly"
+      "monthly": "Monthly",
+      "fastingStreak": "Fasting Streak",
+      "qadaOutstanding": "Qada Outstanding"
     },
     "subscription": {
       "title": "PrayCalc Pro",
@@ -518,7 +615,9 @@
     "tasbeeh": {
       "chooseDhikr": "Choose Dhikr",
       "of": "of {{count}}",
-      "resetCounter": "Reset counter"
+      "resetCounter": "Reset counter",
+      "todayTotal": "Today's Total",
+      "history": "History"
     },
     "timetable": {
       "setCityTitle": "Set Your City",
@@ -555,6 +654,117 @@
       "accuracyMedium": "Medium",
       "accuracyHigh": "High",
       "headingNote": "Heading: {{degrees}}° | Great-circle bearing to Kaaba"
+    },
+    "fasting": {
+      "todaysFast": "Today's Fast",
+      "logToday": "Log Today's Fast",
+      "unlogToday": "Remove Today's Log",
+      "loggedAs": "Logged: {{type}}",
+      "yourStreaks": "Your Streaks",
+      "mondayStreak": "Monday Streak",
+      "thursdayStreak": "Thursday Streak",
+      "whiteDaysMonth": "White Days This Month",
+      "ramadanLogged": "Ramadan Fasts",
+      "qadaLogged": "Qada Made Up",
+      "voluntaryLogged": "Voluntary Fasts",
+      "ramadanDayOf": "Ramadan — Day {{day}} of {{total}}",
+      "upcomingSuggestions": "Upcoming Recommended Fast Days",
+      "logAction": "Log",
+      "sunnahSourceNote": "Fasting Mondays & Thursdays: Sahih Muslim 1162. The White Days (13th–15th of each Hijri month): Sunan an-Nasa'i 2345, Sunan Abi Dawud 2449.",
+      "recentLogs": "Recent Logs"
+    },
+    "qada": {
+      "totalOwed": "Total Prayers Owed",
+      "perPrayer": "Per-Prayer Count",
+      "makeUpOne": "Make Up One",
+      "excusedTitle": "Excused Periods",
+      "fiqhNote": "During an excused period (such as menstruation or postnatal bleeding), a woman does not pray — and those missed prayers are not made up (qada) afterward. This is different from fasting: fasts missed during that time ARE made up later.",
+      "fiqhCitation": "Sahih al-Bukhari 321 · Sahih Muslim 335",
+      "consultScholar": "This reflects the majority position. For your specific situation, consult your local scholar.",
+      "addExcusedRange": "Add Excused Period",
+      "startDate": "Start Date",
+      "endDate": "End Date",
+      "noteOptional": "Note (optional)",
+      "notePlaceholder": "e.g. menses, illness"
+    },
+    "jumuah": {
+      "intro": "Friday is the best day of the week. Set gentle reminders and prepare for Jumu'ah with its sunnahs.",
+      "khutbahTitle": "Khutbah Reminder",
+      "khutbahSub": "A nudge every Friday before the khutbah.",
+      "kahfTitle": "Surah al-Kahf Reminder",
+      "kahfSub": "Reminder to recite Surah al-Kahf on Friday.",
+      "kahfDayThursday": "Thursday evening",
+      "kahfDayFriday": "Friday morning",
+      "reminderTime": "Reminder time",
+      "checklistTitle": "Sunnahs of Jumu'ah",
+      "virtueTitle": "The Virtue of Jumu'ah",
+      "virtueBody": "The Prophet ﷺ said: \"The best day on which the sun has risen is Friday.\"",
+      "virtueCitation": "Sahih Muslim 854",
+      "kahfVirtueBody": "The Prophet ﷺ said: \"Whoever reads Surah al-Kahf on the day of Jumu'ah, a light will shine for him between the two Fridays.\"",
+      "kahfVirtueCitation": "Reported by al-Hakim and al-Bayhaqi; graded authentic by al-Albani",
+      "checklist": {
+        "ghusl": "Perform ghusl (ritual bath)",
+        "ghuslCitation": "Sahih al-Bukhari 877 · Sahih Muslim 846",
+        "cleanClothes": "Wear clean, good clothes",
+        "cleanClothesCitation": "Sunan Abi Dawud 343 (hasan)",
+        "perfume": "Apply perfume (miswak & grooming)",
+        "perfumeCitation": "Sahih al-Bukhari 880",
+        "early": "Go early to the masjid",
+        "earlyCitation": "Sahih al-Bukhari 881 · Sahih Muslim 850",
+        "kahf": "Recite Surah al-Kahf",
+        "kahfCitation": "al-Hakim / al-Bayhaqi (sahih per al-Albani)",
+        "salawat": "Increase salawat upon the Prophet ﷺ",
+        "salawatCitation": "Sunan Abi Dawud 1047 (sahih)",
+        "dua": "Seek the hour of response in du'a",
+        "duaCitation": "Sahih al-Bukhari 935 · Sahih Muslim 852"
+      }
     }
+  },
+  "onboarding": {
+    "skip": "Skip",
+    "welcome": {
+      "title": "Welcome to PrayCalc",
+      "desc": "Accurate prayer times, Qibla direction, and the Islamic calendar — set up in a few taps.",
+      "cta": "Get Started"
+    },
+    "location": {
+      "title": "Your Location",
+      "prime": "PrayCalc uses your location to calculate exact prayer times for your city. It stays on your device — we never share it. Tap Allow on the next screen to continue.",
+      "allow": "Allow Location",
+      "later": "I'll set this later"
+    },
+    "notifications": {
+      "title": "Prayer Reminders",
+      "prime": "Get a gentle reminder or the adhan at each prayer time so you never miss a salah. You can fine-tune which prayers notify you afterwards.",
+      "allow": "Enable Reminders",
+      "later": "Not now"
+    },
+    "method": {
+      "title": "Calculation Method",
+      "dpcExplain": "DPC (Dynamic PrayCalc) automatically computes the best times for your location — an improvement on the Moonsighting method. We recommend keeping it.",
+      "dpcLabel": "Dynamic (PrayCalc DPC)",
+      "recommended": "Recommended",
+      "orFixed": "Or pick a fixed method",
+      "suggested": "For your region",
+      "continue": "Continue"
+    },
+    "consent": {
+      "title": "Help Improve PrayCalc"
+    },
+    "done": {
+      "title": "You're all set",
+      "desc": "Your prayer times are ready. You can change any of these choices anytime in Settings.",
+      "cta": "Open PrayCalc"
+    }
+  },
+  "consent": {
+    "title": "Anonymous Usage Analytics",
+    "description": "Share anonymous, aggregate usage data to help us improve PrayCalc. No personal information, location, or account details are ever collected.",
+    "privacyNote": "Off by default. Nothing is sent unless you turn this on, and you can change it anytime.",
+    "accept": "Allow",
+    "decline": "No Thanks",
+    "toggleLabel": "Share anonymous analytics",
+    "privacyScreenTitle": "Privacy",
+    "privacyScreenFooter": "PrayCalc is privacy-first. Analytics are anonymous and off unless you opt in. Turning this off stops all telemetry immediately."
   }
 }

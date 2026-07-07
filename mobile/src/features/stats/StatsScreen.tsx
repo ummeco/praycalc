@@ -1,6 +1,8 @@
 /**
- * Purpose: Prayer stats — streak, completion rate chart (weekly/monthly).
- * Inputs: MMKV-persisted prayer completions.
+ * Purpose: Prayer stats — streak, completion rate chart (weekly/monthly), plus
+ *   summary cards surfacing fasting streak and Qada outstanding count from the
+ *   fasting/qada trackers (read-only cross-feature summary — no writes).
+ * Inputs: MMKV-persisted prayer completions; useFastingStore/useQadaStore (read-only).
  * Outputs: StatsScreen — Feature 12 of 20.
  * Constraints: Data is local-only (no GraphQL on this screen — offline-first).
  *   7 UI states. Chart rendered with SVG via react-native-svg.
@@ -11,13 +13,17 @@ import React, { useCallback, useMemo, useState } from 'react';
 import {
   View, Text, StyleSheet, SafeAreaView, ScrollView, TouchableOpacity,
 } from 'react-native';
-import { useFocusEffect } from 'expo-router';
+import { useFocusEffect, router } from 'expo-router';
 import i18next, { useTranslation } from '../../i18n';
 import { useThemeColors } from '../../hooks/useThemeColors';
 import type { ThemeColors } from '../../constants/colors';
 import { EmptyState } from '../../components/states';
 import { loadCompletions, type PrayerCompletion } from '../../lib/completions';
 import type { PrayerName } from '../../types/prayer';
+import { useFastingStore } from '../fasting/store/useFastingStore';
+import { useQadaStore } from '../qada/store/useQadaStore';
+import { getWeeklyStreak } from '../fasting/fastingLogic';
+import { totalOutstanding } from '../qada/qadaLogic';
 
 const PRAYER_NAMES: PrayerName[] = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
 
@@ -123,6 +129,14 @@ export default function StatsScreen() {
   const totalCompletions = completions.length;
   const weeklyRate = weeklyData.reduce((sum, d) => sum + d.count, 0) / 35; // max 7×5
 
+  // Cross-feature summary (read-only) — fasting streak + Qada outstanding.
+  const fastingLogs = useFastingStore((s) => s.logs);
+  const qadaCounts = useQadaStore((s) => s.counts);
+  const mondayStreak = useMemo(() => getWeeklyStreak(fastingLogs, 'Monday'), [fastingLogs]);
+  const thursdayStreak = useMemo(() => getWeeklyStreak(fastingLogs, 'Thursday'), [fastingLogs]);
+  const fastingStreak = Math.max(mondayStreak, thursdayStreak);
+  const qadaOutstanding = useMemo(() => totalOutstanding(qadaCounts), [qadaCounts]);
+
   if (totalCompletions === 0) {
     return (
       <EmptyState
@@ -160,6 +174,28 @@ export default function StatsScreen() {
             <Text style={styles.statNumber}>{totalCompletions}</Text>
             <Text style={styles.statLabel}>{t('screens.stats.totalLogged')}</Text>
           </View>
+        </View>
+
+        {/* Cross-feature summary — fasting streak + Qada outstanding */}
+        <View style={styles.statsRow}>
+          <TouchableOpacity
+            style={styles.summaryCard}
+            onPress={() => router.push('/fasting')}
+            accessibilityRole="button"
+            accessibilityLabel={`Fasting streak: ${fastingStreak} weeks. Tap to open fasting tracker.`}
+          >
+            <Text style={styles.summaryNumber}>{fastingStreak}</Text>
+            <Text style={styles.summaryLabel}>{t('screens.stats.fastingStreak')}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.summaryCard}
+            onPress={() => router.push('/qada')}
+            accessibilityRole="button"
+            accessibilityLabel={`Qada prayers outstanding: ${qadaOutstanding}. Tap to open Qada tracker.`}
+          >
+            <Text style={styles.summaryNumber}>{qadaOutstanding}</Text>
+            <Text style={styles.summaryLabel}>{t('screens.stats.qadaOutstanding')}</Text>
+          </TouchableOpacity>
         </View>
 
         {/* Chart toggle */}
@@ -227,6 +263,19 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
   },
   statNumber: { fontSize: 24, fontWeight: '800', color: colors.brand.light },
   statLabel: { fontSize: 11, color: colors.brand.light + 'BB', marginTop: 2, textAlign: 'center' },
+  summaryCard: {
+    flex: 1,
+    backgroundColor: colors.background.secondary,
+    borderRadius: 12,
+    padding: 14,
+    alignItems: 'center',
+    minHeight: 72,
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: colors.brand.mid + '55',
+  },
+  summaryNumber: { fontSize: 22, fontWeight: '800', color: colors.brand.dark },
+  summaryLabel: { fontSize: 11, color: colors.text.muted, marginTop: 2, textAlign: 'center' },
   toggleRow: {
     flexDirection: 'row',
     gap: 8,
