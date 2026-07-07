@@ -446,6 +446,16 @@ function Dashboard({
         <p className="dashboard-settings-row">Manage your profile, preferences, and home city.</p>
       </div>
 
+      <div className="dashboard-card">
+        <h2 className="dashboard-card-title">My TVs</h2>
+        <p className="dashboard-settings-row">
+          Manage TVs paired to your account.{' '}
+          <a href="/account/tvs" className="dashboard-tvs-link">
+            View my TVs →
+          </a>
+        </p>
+      </div>
+
       {!isPlus && (
         <div className="dashboard-plus-card">
           <div className="dashboard-plus-header">

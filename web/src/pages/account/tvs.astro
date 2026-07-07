@@ -1,0 +1,36 @@
+---
+/**
+ * account/tvs.astro — "My TVs" management page.
+ *
+ * PURPOSE: Server-guarded page hosting the TvManagerClient island. Unlike
+ *   account.astro (which always renders and lets the AccountClient island
+ *   decide signed-in vs signed-out client-side), this page's content is
+ *   useless without a session — so it redirects to /account server-side when
+ *   there is no httpOnly access-token cookie at all, instead of flashing the
+ *   manager UI first. A present-but-expired cookie is still let through: the
+ *   island's own billing-status fetch (which forwards the cookie) will 401
+ *   and the client refresh flow (src/lib/auth/client.ts) takes over, matching
+ *   how the rest of the account surface treats token expiry.
+ * CONSTRAINTS: noindex (private surface). Island pattern for the CRUD UI.
+ * REF: src/pages/account.astro · src/islands/account/TvManagerClient.tsx
+ */
+
+import RootLayout from '@/layouts/RootLayout.astro';
+import TvManagerClient from '@/islands/account/TvManagerClient';
+import { readAccessToken } from '@/lib/auth/cookies.server';
+
+const hasSession = Boolean(readAccessToken(Astro.cookies));
+if (!hasSession) {
+  return Astro.redirect('/account');
+}
+---
+
+<RootLayout title="My TVs | PrayCalc" description="Manage your paired PrayCalc TVs" noIndex={true}>
+  <main id="main-content" class="account-main">
+    <div class="dashboard-page">
+      <a href="/account" class="account-back" aria-label="Back to account">← Account</a>
+      <h1 class="account-title">My TVs</h1>
+      <TvManagerClient client:load />
+    </div>
+  </main>
+</RootLayout>
