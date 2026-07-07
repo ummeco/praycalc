@@ -20,6 +20,11 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.praycalc.praycalcApp",
+      "entitlements": {
+        "com.apple.security.application-groups": [
+          "group.com.praycalc.praycalcApp"
+        ]
+      },
       "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "Allow Prayer Times to access your location to calculate accurate prayer times.",
         "NSLocationAlwaysAndWhenInUseUsageDescription": "Allow Prayer Times to access your location to calculate accurate prayer times.",
@@ -108,7 +113,8 @@
             }
           ]
         }
-      ]
+      ],
+      "@bacons/apple-targets"
     ],
     "experiments": {
       "typedRoutes": true

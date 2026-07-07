@@ -34,14 +34,47 @@ export interface NextPrayerResult {
   cityName: string | null;
 }
 
+/** A single prayer occurrence used to build the iOS widget timeline. */
+export interface WidgetPrayerEntry {
+  /** Prayer name (e.g. "Fajr"). */
+  name: PrayerName;
+  /** Epoch milliseconds of this prayer's time. */
+  timestamp: number;
+}
+
 /**
- * Compute the next upcoming prayer (today, or tomorrow's Fajr if all of today's
- * have passed), using the same settings precedence as PrayerNotificationService:
- * travel location while musafir mode is on, else home location.
- * Exported so both the widget task handler and any caller that wants an immediate
- * repaint (PrayerNotificationService, HomeWidgetStub) share one implementation.
+ * Full data payload the iOS WidgetKit extension reads from App Group UserDefaults.
+ * Carries the current next prayer PLUS every remaining prayer today (and tomorrow's
+ * Fajr) so the Swift TimelineProvider can advance the displayed entry locally at each
+ * prayer time without waking the RN app for a recompute.
  */
-export async function computeNextPrayer(): Promise<NextPrayerResult | null> {
+export interface IosWidgetPayload {
+  /** City label under the time, or null if the location has no city name. */
+  cityName: string | null;
+  /**
+   * Ordered future-prayer occurrences (soonest first): today's not-yet-passed
+   * prayers, then tomorrow's Fajr as the terminal entry. Empty only if the engine
+   * produced no valid times.
+   */
+  entries: WidgetPrayerEntry[];
+  /** When this payload was computed (epoch ms) — lets Swift detect staleness. */
+  generatedAt: number;
+}
+
+/** Resolved settings + a same-day/other-day compute closure, shared by all widget calcs. */
+interface ResolvedWidgetContext {
+  cityName: string | null;
+  now: Date;
+  computeFor: (date: Date) => Record<PrayerName, Date>;
+}
+
+/**
+ * Rehydrate settings and build the compute closure using the SAME settings precedence
+ * as PrayerNotificationService (travel location while musafir mode is on, else home).
+ * Returns null when no location is configured. Single source of truth for both the
+ * single-next-prayer path and the full iOS timeline payload so neither can drift.
+ */
+async function resolveWidgetContext(): Promise<ResolvedWidgetContext | null> {
   // Headless task context — cold start may run before AsyncStorage rehydration completes.
   await useSettingsStore.persist.rehydrate();
   const settings = useSettingsStore.getState();
@@ -55,7 +88,6 @@ export async function computeNextPrayer(): Promise<NextPrayerResult | null> {
     ? { fajr: settings.customFajrAngle, isha: settings.customIshaAngle }
     : undefined;
 
-  const now = new Date();
   const computeFor = (date: Date) => calculatePrayerTimes(
     date,
     location.latitude,
@@ -68,6 +100,21 @@ export async function computeNextPrayer(): Promise<NextPrayerResult | null> {
     settings.prayerMinuteAdjustments,
   );
 
+  return { cityName: location.city ?? null, now: new Date(), computeFor };
+}
+
+/**
+ * Compute the next upcoming prayer (today, or tomorrow's Fajr if all of today's
+ * have passed), using the same settings precedence as PrayerNotificationService:
+ * travel location while musafir mode is on, else home location.
+ * Exported so both the widget task handler and any caller that wants an immediate
+ * repaint (PrayerNotificationService, HomeWidgetStub) share one implementation.
+ */
+export async function computeNextPrayer(): Promise<NextPrayerResult | null> {
+  const ctx = await resolveWidgetContext();
+  if (!ctx) return null;
+  const { cityName, now, computeFor } = ctx;
+
   const today = new Date(now);
   today.setHours(0, 0, 0, 0);
   const todayTimes = computeFor(today);
@@ -75,7 +122,7 @@ export async function computeNextPrayer(): Promise<NextPrayerResult | null> {
   for (const name of NEXT_PRAYER_CANDIDATES) {
     const t = todayTimes[name];
     if (t instanceof Date && !Number.isNaN(t.getTime()) && t.getTime() > now.getTime()) {
-      return { name, time: t, cityName: location.city ?? null };
+      return { name, time: t, cityName };
     }
   }
 
@@ -85,10 +132,47 @@ export async function computeNextPrayer(): Promise<NextPrayerResult | null> {
   const tomorrowTimes = computeFor(tomorrow);
   const fajr = tomorrowTimes.Fajr;
   if (fajr instanceof Date && !Number.isNaN(fajr.getTime())) {
-    return { name: 'Fajr', time: fajr, cityName: location.city ?? null };
+    return { name: 'Fajr', time: fajr, cityName };
   }
 
   return null;
+}
+
+/**
+ * Build the full iOS widget payload: every remaining prayer today (soonest first)
+ * plus tomorrow's Fajr as the terminal entry. Reuses resolveWidgetContext so the
+ * location/method/madhab/high-lat/custom-angle/minute-adjust path is identical to
+ * computeNextPrayer and PrayerNotificationService — no duplicated engine wiring.
+ * Returns null when no location is configured (widget then shows "Open PrayCalc").
+ */
+export async function computeIosWidgetPayload(): Promise<IosWidgetPayload | null> {
+  const ctx = await resolveWidgetContext();
+  if (!ctx) return null;
+  const { cityName, now, computeFor } = ctx;
+
+  const today = new Date(now);
+  today.setHours(0, 0, 0, 0);
+  const todayTimes = computeFor(today);
+
+  const entries: WidgetPrayerEntry[] = [];
+  for (const name of NEXT_PRAYER_CANDIDATES) {
+    const t = todayTimes[name];
+    if (t instanceof Date && !Number.isNaN(t.getTime()) && t.getTime() > now.getTime()) {
+      entries.push({ name, timestamp: t.getTime() });
+    }
+  }
+
+  // Always append tomorrow's Fajr as the terminal timeline entry so the widget still
+  // shows a valid "next prayer" after Isha passes, without waking the app overnight.
+  const tomorrow = new Date(today);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const fajr = computeFor(tomorrow).Fajr;
+  if (fajr instanceof Date && !Number.isNaN(fajr.getTime())) {
+    entries.push({ name: 'Fajr', timestamp: fajr.getTime() });
+  }
+
+  if (entries.length === 0) return null;
+  return { cityName, entries, generatedAt: now.getTime() };
 }
 
 /** Exported for reuse by callers that need to build the same widget-visible time string. */

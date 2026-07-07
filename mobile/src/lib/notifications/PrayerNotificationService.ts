@@ -43,13 +43,25 @@ const NEXT_PRAYER_WIDGET_NAME = 'NextPrayer';
 
 /**
  * Best-effort home-screen widget repaint after (re)scheduling notifications, so the
- * Android "Next Prayer" widget reflects a settings/schedule change immediately
- * instead of waiting for its 30-minute updatePeriodMillis tick. Lazily imports the
- * Android-only library behind a Platform check so iOS never loads this module, and
- * swallows all errors — a widget-refresh failure must never break notification
+ * "Next Prayer" widget reflects a settings/schedule change immediately instead of
+ * waiting for its periodic OS update tick. Handles BOTH platforms behind a lazy,
+ * platform-guarded import so neither loads the other's native code:
+ *   - Android: react-native-android-widget requestWidgetUpdate (re-renders the tree).
+ *   - iOS: refreshIosHomeWidget (writes the day's remaining prayers into App Group
+ *     UserDefaults via ExtensionStorage, then reloads the WidgetKit timeline).
+ * Swallows all errors — a widget-refresh failure must never break notification
  * scheduling, which is the caller's actual job.
  */
 async function refreshHomeScreenWidget(): Promise<void> {
+  if (Platform.OS === 'ios') {
+    try {
+      const { refreshIosHomeWidget } = await import('../../features/home-widget/iosWidgetWriter');
+      await refreshIosHomeWidget();
+    } catch {
+      // Best-effort only — never let a widget-refresh failure surface to the caller.
+    }
+    return;
+  }
   if (Platform.OS !== 'android') return;
   try {
     const { requestWidgetUpdate } = await import('react-native-android-widget');

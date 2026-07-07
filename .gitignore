@@ -117,3 +117,4 @@ ehthumbs.db
 
 # Flutter macOS Pods (generated, not committed)
 flutter/macos/Pods/
+mobile/.expo/

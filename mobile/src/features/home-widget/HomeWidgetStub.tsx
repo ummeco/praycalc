@@ -1,6 +1,7 @@
 /**
- * Purpose: Home screen widget setup screen + refresh trigger for Android (real,
- *   shipped via react-native-android-widget) and iOS (WidgetKit, still pending).
+ * Purpose: Home screen widget setup screen + refresh trigger for BOTH Android (real,
+ *   shipped via react-native-android-widget) and iOS (real, WidgetKit via
+ *   @bacons/apple-targets — code-complete, pending an EAS/native build).
  * Inputs: Next prayer time from prayer-calc, MMKV city setting.
  * Outputs: HomeWidgetStub — Feature 16 of 20.
  * Constraints: Ummat+ gated (isPlus) — widgets are a paid feature; the preview below
@@ -9,11 +10,15 @@
  *   widgetTaskHandler.ts, registered in index.js) — writeWidgetData below triggers an
  *   immediate repaint via requestWidgetUpdate so the home-screen widget doesn't wait
  *   for its 30-minute updatePeriodMillis after settings/notifications change.
- *   iOS: WidgetKit (Swift extension) is NOT implemented — remains a documented no-op.
- *   PCI pci-praycalc-home-widgets-native tracks the iOS WidgetKit extension.
+ *   iOS: the WidgetKit extension is a `widget` Apple Target
+ *   (targets/next-prayer-widget/ — Swift TimelineProvider + expo-target.config.js).
+ *   writeWidgetData's iOS branch delegates to refreshIosHomeWidget, which computes the
+ *   full day's remaining prayers (shared widgetTaskHandler helper), writes them as a
+ *   JSON payload into App Group UserDefaults (ExtensionStorage) and reloads the widget
+ *   timeline; the Swift side then advances entries locally so the widget flips at each
+ *   prayer time without waking the app. Code-complete in-repo (JS + Swift + config);
+ *   only a native build binds them. Closes PCI pci-praycalc-home-widgets-native.
  * SPORT: REGISTRY-APPS.md#praycalc-mobile-feature-16-home-widgets
- *
- * PCI filed: pci-praycalc-home-widgets-native — tracks native iOS WidgetKit extension development.
  */
 
 import React, { useMemo } from 'react';
@@ -38,19 +43,26 @@ const NEXT_PRAYER_WIDGET_NAME = 'NextPrayer';
  * re-renders NextPrayerWidget for every instance of the widget on the home screen.
  * Lazily imports the library and widget tree so iOS never loads Android-only code.
  *
- * iOS: documented no-op — WidgetKit requires a native Swift extension that does not
- * exist yet (PCI pci-praycalc-home-widgets-native). Nothing to trigger until then.
+ * iOS: real — delegates to refreshIosHomeWidget (App Group UserDefaults via
+ * ExtensionStorage + WidgetKit reload). Lazily imported so Android never loads
+ * the iOS-only @bacons/apple-targets path.
  */
 export async function writeWidgetData(nextPrayer: {
   name: string;
   time: string;
   timestamp: number;
 }): Promise<void> {
-  void nextPrayer; // widget recomputes from live settings — see renderCurrentNextPrayerWidget
-  if (Platform.OS !== 'android') {
-    // iOS WidgetKit not implemented yet — see PCI pci-praycalc-home-widgets-native.
+  void nextPrayer; // widget recomputes from live settings — see computeIosWidgetPayload / renderCurrentNextPrayerWidget
+  if (Platform.OS === 'ios') {
+    try {
+      const { refreshIosHomeWidget } = await import('./iosWidgetWriter');
+      await refreshIosHomeWidget();
+    } catch {
+      // Best-effort refresh — a widget-update failure must never break the caller.
+    }
     return;
   }
+  if (Platform.OS !== 'android') return; // web / other — no home-screen widget host.
   try {
     const { requestWidgetUpdate } = await import('react-native-android-widget');
     const { renderCurrentNextPrayerWidget } = await import('../../widgets/widgetTaskHandler');
@@ -158,8 +170,8 @@ export default function HomeWidgetScreen() {
             (and immediately after you change settings or notifications).
           </Text>
           <Text style={styles.statusText}>
-            iOS WidgetKit extension: not yet implemented — requires a native Swift
-            extension. PCI pci-praycalc-home-widgets-native tracks this work.
+            iOS: live — the "Next Prayer" WidgetKit widget updates whenever you change
+            settings or notifications and advances at each prayer time on its own.
           </Text>
         </View>
       </ScrollView>

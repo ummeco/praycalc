@@ -70,6 +70,14 @@ jest.mock('../../../widgets/widgetTaskHandler', () => ({
   renderCurrentNextPrayerWidget: jest.fn(),
 }));
 
+// jest-expo runs with Platform.OS === 'ios', so refreshHomeScreenWidget takes the iOS
+// branch and dynamically imports the WidgetKit writer (which pulls @bacons/apple-targets'
+// native ExtensionStorage). Mock it defensively — the widget refresh is best-effort and
+// irrelevant to the scheduling assertions here.
+jest.mock('../../../features/home-widget/iosWidgetWriter', () => ({
+  refreshIosHomeWidget: jest.fn().mockResolvedValue(undefined),
+}));
+
 // The i18n module pulls in expo-localization + react-native-mmkv + 21 bundled locale
 // catalogs at import time, none of which are relevant to this service's scheduling
 // logic (only `t()` is used, for notification title/body strings). Mock it to a plain
