@@ -203,3 +203,37 @@ these strings are user-visible on the lock screen, so ar/ur priority applies.
 
 Note: scheduled notification text is frozen in the locale active at scheduling time; it
 refreshes on the next reschedule after a language change.
+
+## Added 2026-07-07 — `screens.tvManager.*` + `menu.tvManager.*` (needs translation)
+
+"My TVs" management screen (list/rename/recolor/stream/rotation/weather/location/delete
+for paired pc_tv_settings rows). All keys en-only for now (fallback covers other locales);
+plain UI chrome, no religious content — safe for a future machine-translation pass like the
+rest of `screens.*`.
+
+| Key | en value |
+|---|---|
+| `menu.tvManager.label` | My TVs |
+| `menu.tvManager.subtitle` | Manage paired TV displays |
+| `screens.tvManager.upsellBadge` | Ummat+ |
+| `screens.tvManager.unlockTitle` | Unlock TV Management |
+| `screens.tvManager.unlockDesc` | Ummat+ $9.99/yr — unlocks TV app & Smart Home |
+| `screens.tvManager.emptyTitle` | No TVs paired yet |
+| `screens.tvManager.emptySubtitle` | Pair a TV to see it here and manage its display settings. |
+| `screens.tvManager.pairACta` | Pair a TV |
+| `screens.tvManager.noCity` | No location set |
+| `screens.tvManager.nameLabel` | Name |
+| `screens.tvManager.colorLabel` | Accent Color |
+| `screens.tvManager.streamLabel` | Stream Source |
+| `screens.tvManager.streamMakkah` / `streamSaudiQuran` / `streamMedina` | Makkah TV / Saudi Quran / Medina |
+| `screens.tvManager.rotateLabel` | Screen Rotation |
+| `screens.tvManager.decreaseRotate` / `increaseRotate` | Decrease/Increase rotation minutes |
+| `screens.tvManager.weatherLabel` | Show Weather |
+| `screens.tvManager.updateLocationAction` | Update location to my current location |
+| `screens.tvManager.updateLocationHint` | The TV picks up location changes the next time it's re-paired — this updates the saved location now. |
+| `screens.tvManager.noLocationTitle` / `noLocationBody` | No Location Set / Set your location in Settings before updating a TV's location. |
+| `screens.tvManager.locationUpdatedTitle` / `locationUpdatedBody` | Location Updated / Saved. The TV will use this location next time it's re-paired. |
+| `screens.tvManager.deleteAction` | Remove This TV |
+| `screens.tvManager.deleteConfirmTitle` | Remove TV? |
+| `screens.tvManager.deleteConfirmBody` | This will unpair "{{name}}" and remove its saved settings. This can't be undone. |
+| `screens.tvManager.deleteConfirmAction` | Remove |

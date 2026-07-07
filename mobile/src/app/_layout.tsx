@@ -49,10 +49,10 @@ function usePairingDeepLink() {
 
 /**
  * Play the user's selected adhan voice when a prayer notification is tapped.
- * Notification SOUNDS are still the system default (bundled native sound assets
- * are tracked in PCI pci-praycalc-adhan-notification-sound) — this handler is the
- * honest in-between: tapping the notification opens the app and the chosen
- * reciter's adhan plays. Dedupes cold-start getLastNotificationResponseAsync
+ * The notification itself plays the bundled 26.6s takbir cut (iOS caps
+ * notification audio at 30s) — this handler is the full-length follow-through:
+ * tapping the notification opens the app and the chosen reciter's complete
+ * adhan plays. Dedupes cold-start getLastNotificationResponseAsync
  * against the live listener via the notification request id.
  */
 function useAdhanOnNotificationTap() {
@@ -137,6 +137,7 @@ export default function RootLayout() {
         <Stack.Screen name="timetable" options={{ headerShown: true, title: t('menu.timetable.label') }} />
         <Stack.Screen name="mosques" options={{ headerShown: true, title: t('menu.mosques.label') }} />
         <Stack.Screen name="pair-tv" options={{ headerShown: true, title: t('menu.pairTv.label') }} />
+        <Stack.Screen name="tvs" options={{ headerShown: true, title: t('menu.tvManager.label') }} />
         <Stack.Screen name="onboarding" options={{ presentation: 'modal', headerShown: false }} />
         <Stack.Screen name="+not-found" />
       </Stack>

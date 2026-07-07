@@ -37,6 +37,7 @@ const MENU_ITEMS: MenuItem[] = [
   { labelKey: 'menu.homeWidget.label', subtitleKey: 'menu.homeWidget.subtitle', route: '/home-widget', icon: '🪟' },
   { labelKey: 'menu.smartHome.label', subtitleKey: 'menu.smartHome.subtitle', route: '/smart-home', icon: '🏠' },
   { labelKey: 'menu.pairTv.label', subtitleKey: 'menu.pairTv.subtitle', route: '/pair-tv', icon: '📺' },
+  { labelKey: 'menu.tvManager.label', subtitleKey: 'menu.tvManager.subtitle', route: '/tvs', icon: '📺' },
   { labelKey: 'menu.agendas.label', subtitleKey: 'menu.agendas.subtitle', route: '/agendas', icon: '📅' },
   { labelKey: 'menu.timetable.label', subtitleKey: 'menu.timetable.subtitle', route: '/timetable', icon: '🗓️' },
   { labelKey: 'menu.mosques.label', subtitleKey: 'menu.mosques.subtitle', route: '/mosques', icon: '🕌' },

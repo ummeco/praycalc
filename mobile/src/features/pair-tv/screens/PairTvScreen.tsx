@@ -25,9 +25,18 @@ import { useTranslation } from '../../../i18n';
 import { useThemeColors } from '../../../hooks/useThemeColors';
 import type { ThemeColors } from '../../../constants/colors';
 import { useAuthStore } from '../../auth/store/useAuthStore';
-import { PAIR_TV_MUTATION, buildPairTvRequest, isValidPin } from '../../../lib/pairing/pairingMutation';
+import {
+  PAIR_TV_MUTATION,
+  SEED_TV_SETTINGS_MUTATION,
+  buildPairTvRequest,
+  buildSeedTvSettingsRequest,
+  isValidPin,
+  type PairTvVariables,
+  type SeedTvSettingsVariables,
+} from '../../../lib/pairing/pairingMutation';
 import { getOrCreateDeviceId } from '../../../lib/pairing/deviceId';
 import { ErrorState } from '../../../components/states';
+import { useActiveLocation } from '../../settings/store/useSettingsStore';
 
 const UPGRADE_URL = 'https://praycalc.com/upgrade';
 
@@ -37,11 +46,13 @@ export default function PairTvScreen() {
   const styles = useMemo(() => createStyles(colors), [colors]);
   const params = useLocalSearchParams<{ pin?: string }>();
   const isPlus = useAuthStore((s) => s.isPlus);
+  const activeLocation = useActiveLocation();
   const [pin, setPin] = useState('');
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [, pairMutation] = useMutation<unknown, { pin: string; deviceId: string }>(
-    PAIR_TV_MUTATION,
+  const [, pairMutation] = useMutation<unknown, PairTvVariables>(PAIR_TV_MUTATION);
+  const [, seedTvSettingsMutation] = useMutation<unknown, SeedTvSettingsVariables>(
+    SEED_TV_SETTINGS_MUTATION,
   );
 
   // Deep link praycalc://pair?pin=123456 pre-fills the field
@@ -59,11 +70,23 @@ export default function PairTvScreen() {
     }
     try {
       const deviceId = await getOrCreateDeviceId();
-      const { variables } = buildPairTvRequest(pin, deviceId);
+      const location = activeLocation
+        ? {
+            latitude: activeLocation.latitude,
+            longitude: activeLocation.longitude,
+            city: activeLocation.city,
+            timezone: activeLocation.timezone,
+          }
+        : null;
+      const { variables } = buildPairTvRequest(pin, deviceId, location);
       const result = await pairMutation(variables);
       if (result.error) {
         throw new Error(result.error.message);
       }
+      // Seed the pc_tv_settings management row (best-effort — pairing itself already
+      // succeeded above, so a failure here shouldn't block the success screen).
+      const { variables: seedVariables } = buildSeedTvSettingsRequest(deviceId, location);
+      await seedTvSettingsMutation(seedVariables).catch(() => undefined);
       setSuccess(true);
     } catch (err) {
       setError(err instanceof Error ? err.message : t('screens.pairTv.pairFailed'));
