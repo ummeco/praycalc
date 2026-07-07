@@ -54,12 +54,14 @@ export const DEFAULT_SETTINGS: Settings = {
 };
 
 // Values match pray-calc's Methods map keys (KNOWN_METHOD_IDS in web/src/lib/prayers.server.ts) —
-// passed as-is to GET /api/prayers?method=. '' = PrayCalc Dynamic Method (server default).
+// passed as-is to GET /api/prayers?method=. '' omits the param entirely, which yields DPC
+// (Dynamic Prayer Calculation) — PrayCalc's flagship recommended default (see
+// web/src/lib/prayers.server.ts DPC_METHOD_ID/METHOD_LABELS).
 // Tehran/Jafari (Shia fiqh method) is intentionally not offered — it is not in pray-calc's
 // Methods map (D-P3-19). IGUT (Institute of Geophysics, Univ. of Tehran) is a distinct
 // Sunni-published fixed-angle method and is offered normally.
 export const METHODS = [
-  { value: '', label: 'PrayCalc Dynamic Method (default)' },
+  { value: '', label: 'Dynamic (PrayCalc DPC) — Recommended' },
   { value: 'ISNA', label: 'ISNA — Islamic Society of North America' },
   { value: 'MWL', label: 'Muslim World League' },
   { value: 'Egypt', label: 'Egyptian General Authority of Survey' },

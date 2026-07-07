@@ -1,4 +1,5 @@
 use tauri::{AppHandle, Emitter, Manager};
+use tauri_plugin_notification::NotificationExt;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::sync::Mutex;
@@ -21,6 +22,19 @@ struct PrayerState {
 
 struct AppState {
     prayer: Mutex<PrayerState>,
+}
+
+/// Arabic name shown in the OS notification body, matching AdhanOverlay's labels.
+fn prayer_arabic(name: &str) -> &str {
+    match name {
+        "Fajr" => "الفجر",
+        "Sunrise" => "الشروق",
+        "Dhuhr" => "الظهر",
+        "Asr" => "العصر",
+        "Maghrib" => "المغرب",
+        "Isha" => "العشاء",
+        _ => name,
+    }
 }
 
 fn prayer_abbrev(name: &str) -> &str {
@@ -224,8 +238,6 @@ fn get_today_date() -> String {
 async fn update_tray_title(_app: AppHandle, _label: String) -> Result<(), String> { Ok(()) }
 #[tauri::command]
 async fn update_tray_tooltip(_app: AppHandle, _label: String) -> Result<(), String> { Ok(()) }
-#[tauri::command]
-async fn notify_prayer(_app: AppHandle, _name: String) -> Result<(), String> { Ok(()) }
 
 pub fn run() {
     tauri::Builder::default()
@@ -245,6 +257,16 @@ pub fn run() {
             tray::setup_tray(app)?;
             if let Some(win) = app.get_webview_window("main") {
                 win.hide()?;
+            }
+
+            // Request OS notification permission up front so the background timer's
+            // adhan notifications aren't silently dropped the first time they fire.
+            // No-op if already granted/denied by a prior run.
+            {
+                let handle = app.handle().clone();
+                if let Ok(false) = handle.notification().permission_state().map(|s| s == tauri_plugin_notification::PermissionState::Granted) {
+                    let _ = handle.notification().request_permission();
+                }
             }
 
             // Native 1-second timer — runs regardless of window visibility
@@ -284,6 +306,18 @@ pub fn run() {
                             let mut p = state.prayer.lock().unwrap();
                             p.adhan_triggered = true;
                         }
+                        // Native OS notification — fires from this background timer, which
+                        // runs independent of window visibility, so it reaches the user even
+                        // when the window is closed/hidden and only the tray icon is alive.
+                        // The in-window AdhanOverlay (driven by the "prayer-time" event below)
+                        // additionally plays audio + full-screen visuals when the window is open.
+                        let title = format!("{} — {}", snapshot.next_name, prayer_arabic(&snapshot.next_name));
+                        let _ = handle
+                            .notification()
+                            .builder()
+                            .title(title)
+                            .body("It's time to pray.")
+                            .show();
                         let _ = handle.emit("prayer-time", &snapshot.next_name);
                     }
 
@@ -306,7 +340,6 @@ pub fn run() {
             update_tray_tooltip,
             update_tray_title,
             get_today_date,
-            notify_prayer,
             quit_app,
         ])
         .run(tauri::generate_context!())
