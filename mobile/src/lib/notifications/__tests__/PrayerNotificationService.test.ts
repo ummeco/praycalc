@@ -105,10 +105,12 @@ function resetSettingsToDefaultsWithLocation() {
 }
 
 describe('schedulePrayerNotifications', () => {
-  // Freeze "now" well before the test-fixture's scheduled prayer times so every
-  // computed trigger for the 3-day window is in the future (deterministic pass-time
-  // filtering) — mid-January, mid-morning UTC (before all US Eastern prayer times).
-  const FIXED_NOW = new Date('2026-01-15T06:00:00Z');
+  // Freeze "now" just after local midnight of the base day. The service renders
+  // computed prayer times onto the HOST-LOCAL clock (hoursToDate uses setHours),
+  // so the anchor must be host-tz-independent: the local-tz Date constructor puts
+  // "now" before day-0's Fajr in EVERY host timezone (a UTC-constructed instant
+  // passed locally but filtered day-0 Fajr away on UTC CI runners).
+  const FIXED_NOW = new Date(2026, 0, 15, 0, 5, 0);
 
   beforeEach(() => {
     jest.useFakeTimers().setSystemTime(FIXED_NOW);
@@ -216,10 +218,11 @@ describe('schedulePrayerNotifications', () => {
   });
 
   it('filters out prayers whose trigger time has already passed today', async () => {
-    // Push "now" to just before midnight so day 0's prayers (Fajr..Isha, all earlier
-    // that day) are all in the past -> only days 1 and 2 contribute for day-0's prayers,
-    // i.e. fewer than the full 15 (5 x 3) adhan rows.
-    jest.setSystemTime(new Date('2026-01-15T23:50:00Z'));
+    // Push "now" to just before LOCAL midnight so day 0's prayers (Fajr..Isha, all
+    // earlier that local day) are all in the past -> only days 1 and 2 contribute,
+    // i.e. fewer than the full 15 (5 x 3) adhan rows. Local-tz constructor keeps
+    // this meaning identical on every host timezone (see FIXED_NOW note above).
+    jest.setSystemTime(new Date(2026, 0, 15, 23, 50, 0));
 
     await schedulePrayerNotifications();
 
