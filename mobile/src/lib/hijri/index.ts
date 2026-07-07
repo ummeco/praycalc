@@ -49,7 +49,8 @@ export const ISLAMIC_EVENTS: IslamicEvent[] = [
   { name: 'Eid al-Adha', hijriMonth: 12, hijriDay: 10 },
   { name: 'Islamic New Year', hijriMonth: 1, hijriDay: 1 },
   { name: 'Ashura', hijriMonth: 1, hijriDay: 10 },
-  { name: 'Mawlid al-Nabi', hijriMonth: 3, hijriDay: 12 },
+  // Mawlid al-Nabi INTENTIONALLY EXCLUDED from all PrayCalc surfaces (user directive
+  // 2026-07-07): ahl us-sunnah content gate — not observed as a celebrated event here.
   { name: "Isra and Mi'raj", hijriMonth: 7, hijriDay: 27 },
   { name: 'Start of Ramadan', hijriMonth: 9, hijriDay: 1 },
 ];

@@ -172,6 +172,8 @@ export function calculatePrayerTimes(
     const methodAngles = METHOD_ANGLES[methodKey] ?? { fajr: raw.angles.fajrAngle, isha: raw.angles.ishaAngle };
     fajrAngle = methodAngles.fajr;
     ishaAngle = methodAngles.isha;
+    // DPC (flagship): no METHOD_ID mapping, so methodEntry is undefined and we use the
+    // engine's dynamic raw.Fajr/raw.Isha (PrayCalc Dynamic Method) with its dynamic angles.
     fajr = methodEntry?.[0] ?? raw.Fajr;
     isha = methodEntry?.[1] ?? raw.Isha;
   }

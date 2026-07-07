@@ -2,11 +2,16 @@
  * Purpose: Prayer time calculation method definitions (D-P3-19 — Tehran/Jafari excluded)
  * Inputs: none
  * Outputs: CALC_METHODS array, CalcMethod type
- * Constraints: Exactly 7 methods. Tehran and Jafari MUST NOT appear (D-P3-19).
+ * Constraints: DPC (Dynamic Prayer Calculation) is the flagship default — the
+ *   pray-calc engine's dynamic twilight-angle model (getTimesAll's raw output),
+ *   a physics-based improvement over fixed-angle methods and the Moonsighting
+ *   Committee seasonal model. Fixed methods remain user-selectable. Tehran/Jafari
+ *   MUST NOT appear (D-P3-19).
  * SPORT: REGISTRY-FUNCTIONS.md#praycalc-mobile-methods
  */
 
 export type CalcMethodKey =
+  | 'DPC'
   | 'MWL'
   | 'ISNA'
   | 'Egypt'
@@ -23,8 +28,11 @@ export interface CalcMethod {
   ishaMinutes?: number;
 }
 
-/** 7 allowed methods — Tehran/Jafari excluded per D-P3-19 */
+/** DPC (flagship, default) + 6 fixed methods + Custom — Tehran/Jafari excluded per D-P3-19.
+ *  DPC has no METHOD_ID mapping in the engine wrapper, so it uses the engine's dynamic
+ *  raw.Fajr/raw.Isha (the PrayCalc Dynamic Method); its angles vary by date/latitude. */
 export const CALC_METHODS: CalcMethod[] = [
+  { key: 'DPC', label: 'Dynamic (PrayCalc DPC) — Recommended', fajrAngle: 18, ishaAngle: 17 },
   { key: 'MWL', label: 'Muslim World League', fajrAngle: 18, ishaAngle: 17 },
   { key: 'ISNA', label: 'Islamic Society of North America', fajrAngle: 15, ishaAngle: 15 },
   { key: 'Egypt', label: 'Egyptian General Authority of Survey', fajrAngle: 19.5, ishaAngle: 17.5 },
@@ -34,4 +42,4 @@ export const CALC_METHODS: CalcMethod[] = [
   { key: 'Custom', label: 'Custom', fajrAngle: 15, ishaAngle: 15 },
 ];
 
-export const DEFAULT_METHOD: CalcMethodKey = 'ISNA';
+export const DEFAULT_METHOD: CalcMethodKey = 'DPC';
