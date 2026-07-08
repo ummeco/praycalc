@@ -104,6 +104,44 @@ const { navigation, currentPath } = Astro.props;
   </div>
 </header>
 
+<!-- No-JS navigation fallback (<lg only) — the desktop sidebar is `hidden lg:block`
+     and the mobile drawer is a `client:idle` React island, so a visitor with
+     JavaScript disabled otherwise has zero navigation below the lg breakpoint.
+     Browsers only parse/render <noscript> contents when scripting is disabled,
+     so this <details> menu never appears (and never flashes) for anyone whose
+     JS runs — MobileNavToggle owns mobile nav for everyone else. -->
+<noscript>
+  <details class="border-b border-zinc-900/10 px-4 py-2 lg:hidden dark:border-white/10">
+    <summary class="cursor-pointer list-none px-2 py-1.5 text-sm font-medium text-zinc-700 dark:text-zinc-300">
+      Menu
+    </summary>
+    <nav aria-label="Navigation (no-script fallback)" class="mt-2 pb-3">
+      <ul class="space-y-6">
+        {navigation.map((group) => (
+          <li>
+            <p class="mb-1.5 px-2 text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+              {group.title}
+            </p>
+            <ul class="space-y-0.5">
+              {group.links.map((link) => (
+                <li>
+                  <a
+                    href={link.href}
+                    aria-current={currentPath === link.href ? 'page' : undefined}
+                    class="block rounded-md px-3 py-1 text-sm text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white"
+                  >
+                    {link.title}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  </details>
+</noscript>
+
 <!-- Search trigger wiring + scroll-driven header background -->
 <script is:inline>
   (function () {

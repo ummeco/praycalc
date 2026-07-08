@@ -20,7 +20,7 @@ export const navigation: NavGroup[] = [
     title: 'Getting Started',
     links: [
       { title: 'Introduction', href: '/' },
-      { title: 'How DPC Works', href: '/how-dpc-works', tag: 'Default' },
+      { title: 'How DPC Works', href: '/how-dpc-works' },
       { title: 'Installation', href: '/installation' },
     ],
   },
@@ -30,6 +30,16 @@ export const navigation: NavGroup[] = [
       { title: 'Progressive Web App', href: '/features/pwa' },
       { title: 'Internationalization', href: '/features/i18n' },
       { title: 'PDF Calendar Export', href: '/features/calendar-export' },
+    ],
+  },
+  {
+    title: 'Platforms',
+    links: [
+      { title: 'Desktop App', href: '/features/desktop' },
+      { title: 'Watch Apps', href: '/features/watch' },
+      { title: 'TV Display Mode', href: '/features/tv-display' },
+      { title: 'Smart Home Integration', href: '/features/smart-home' },
+      { title: 'REST API', href: '/features/api' },
     ],
   },
   {

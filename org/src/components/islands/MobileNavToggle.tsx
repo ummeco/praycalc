@@ -8,11 +8,13 @@
 // CONSTRAINTS:
 //   - client:load — hydrates immediately for mobile UX
 //   - No framer-motion; CSS transitions only for bundle size
+//   - Focus trap: Tab/Shift+Tab cycle within the open panel only; focus moves
+//     into the panel on open and returns to the trigger button on close.
 // REF: T-01 (P2-E3-W01-S01) · D-P2-REACT19 · Protocol re-skin (MobileNavigation.tsx)
 
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import type { NavGroup } from '../../lib/navigation';
 
@@ -26,8 +28,15 @@ function isActive(href: string, path: string): boolean {
   return path === href || path.startsWith(href + '/');
 }
 
+const FOCUSABLE_SELECTOR =
+  'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
 export default function MobileNavToggle({ navigation, currentPath }: Props) {
   const [open, setOpen] = useState(false);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const previouslyFocused = useRef<HTMLElement | null>(null);
 
   // Lock body scroll while the drawer is open.
   useEffect(() => {
@@ -41,20 +50,60 @@ export default function MobileNavToggle({ navigation, currentPath }: Props) {
     };
   }, [open]);
 
-  // Close on Escape.
+  // Close on Escape; focus trap for Tab/Shift+Tab within the panel.
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setOpen(false);
+      if (e.key === 'Escape') {
+        setOpen(false);
+        return;
+      }
+      if (e.key !== 'Tab') return;
+
+      const panel = panelRef.current;
+      if (!panel) return;
+      const focusable = Array.from(
+        panel.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR),
+      );
+      if (focusable.length === 0) return;
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      const active = document.activeElement;
+
+      if (e.shiftKey) {
+        if (active === first || !panel.contains(active)) {
+          e.preventDefault();
+          last.focus();
+        }
+      } else {
+        if (active === last || !panel.contains(active)) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
     };
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
+  }, [open]);
+
+  // Move focus into the panel on open; restore it to the trigger on close.
+  useEffect(() => {
+    if (open) {
+      previouslyFocused.current = document.activeElement as HTMLElement | null;
+      // Defer to the next tick so the portalled panel exists in the DOM.
+      const id = window.setTimeout(() => closeButtonRef.current?.focus(), 0);
+      return () => window.clearTimeout(id);
+    }
+    previouslyFocused.current?.focus();
+    previouslyFocused.current = null;
   }, [open]);
 
   return (
     <>
       {/* Hamburger button — sits in the site header */}
       <button
+        ref={triggerRef}
         type="button"
         onClick={() => setOpen(true)}
         aria-expanded={open}
@@ -76,6 +125,7 @@ export default function MobileNavToggle({ navigation, currentPath }: Props) {
       {open && typeof document !== 'undefined' && createPortal(
         <div
           id="mobile-nav"
+          ref={panelRef}
           className="fixed inset-0 z-50 lg:hidden"
           role="dialog"
           aria-modal="true"
@@ -102,6 +152,7 @@ export default function MobileNavToggle({ navigation, currentPath }: Props) {
                 </span>
               </a>
               <button
+                ref={closeButtonRef}
                 type="button"
                 onClick={() => setOpen(false)}
                 aria-label="Close navigation"

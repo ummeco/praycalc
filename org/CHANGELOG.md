@@ -1,158 +1,62 @@
 # Changelog
 
-## 2025-07-29
+All notable changes to the praycalc.org docs site are documented here.
+Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-- Update to React 19 and Next.js 15.4
+## 2026-07-08
 
-## 2025-04-28
+- Fixed accessibility issues and deprecated API usage; added hreflang alternates for translated locale routes; expanded REST API docs page.
 
-- Update template to Tailwind CSS v4.1.4
+## 2026-07-07
 
-## 2025-04-17
+- Reached Lighthouse Accessibility/Best-Practices/SEO 100 and Performance 99 (conditional Sentry loading, image/asset tuning).
+- Restored the Tailwind Protocol theme (green-tuned) across the docs site.
+- Added DPC (Dynamic Prayer Calculation) hero + JSON-LD structured data and a live Qibla compass.
 
-- Fix header opacity
-- Organize imports
-- Fix scrolling issues when navigating from the mobile nav ([#1387](https://github.com/tailwindlabs/tailwind-plus-issues/issues/1387), [#1666](https://github.com/tailwindlabs/tailwind-plus-issues/issues/1666))
+## 2026-07-06
 
-## 2025-04-10
+- Recorded final deep-QA pass findings (charter updates, mistake log).
 
-- Update template to Tailwind CSS v4.1.3
+## 2026-07-03 — 2026-07-04
 
-## 2025-03-22
+- Synced `pnpm-lock.yaml` after cumulative Dependabot bumps (`@types/node`, `@astrojs/vercel`, `@astrojs/react`, and grouped minor/patch updates).
 
-- Update template to Tailwind CSS v4.0.15
+## 2026-06-27
 
-## 2025-02-18
+- **Migrated the docs site from Next.js to Astro 5** (MDX content, React 19 islands for interactive widgets, static output via the Vercel adapter).
 
-- Fix responsive design issue in footer
+## 2026-06-23 — 2026-06-25
 
-## 2025-02-10
+- Landed the P2-E3 Astro 5 migration groundwork and Hijri date helpers; briefly restored the legacy Next.js Vercel config to unblock a production deploy during the cutover.
 
-- Update template to Tailwind CSS v4.0.6
+## 2026-06-13
 
-## 2025-01-23
+- Patched transitive `@grpc/grpc-js` and `fast-uri` dependencies (security).
 
-- Update template to Tailwind CSS v4.0
+## 2026-05-20
 
-## 2024-11-01
+- Moved `SECURITY.md` to `.github/docs/SECURITY.md` (repo hygiene).
 
-- Fix code block rendering when no snippet language is specified ([#1643](https://github.com/tailwindlabs/tailwind-plus-issues/issues/1643))
+## 2026-05-05 — 2026-05-07
 
-## 2024-08-08
+- Legacy Next.js era: pinned `next`/`@next/mdx` to 16.1.7 (16.2.4 broke MDX metadata exports), removed `next/link` and `next/dynamic` usage from MDX components to eliminate client-boundary taint, and regenerated the workspace lockfile after a vendor consent sync.
 
-- Configure experimental `outputFileTracingIncludes` for hosting on Vercel
+## 2026-04-27 — 2026-04-29
 
-## 2024-06-21
+- Patched CVEs; delivered IAP/subscription gating, TV dashboard, and an SSRF guard (shared work across `praycalc/web` and `praycalc/org`).
 
-- Bump Headless UI dependency to v2.1
-- Update to new data-attribute-based transition API
+## 2026-03-22
 
-## 2024-06-18
+- Removed the legacy `.eslintrc`, added a flat ESLint config for `org/`, fixed flaky rate-limit tests, resolved Flutter compile errors, and updated lint/contact pages.
 
-- Update `prettier` and `prettier-plugin-tailwindcss` dependencies
+## 2026-03-16
 
-## 2024-05-31
+- Updated the desktop and TV feature docs pages for the v1.2.0 app release.
 
-- Fix `npm audit` warnings
+## 2026-03-12
 
-## 2024-05-07
+- v1.0 release notes: TV display, desktop, mobile, smart home, and web dashboard features documented.
 
-- Bump Headless UI dependency to v2.0
+## 2026-03-03 — 2026-03-06
 
-## 2024-01-17
-
-- Fix `sharp` dependency issues ([#1549](https://github.com/tailwindlabs/tailwind-plus-issues/issues/1549))
-
-## 2024-01-16
-
-- Replace Twitter with X
-
-## 2024-01-10
-
-- Update Tailwind CSS, Next.js, Prettier, TypeScript, ESLint, and other dependencies
-- Update Tailwind `darkMode` setting to new `selector` option
-- Fix `not-prose` typography alignment issues
-- Add name to MDX search function
-- Sort classes
-
-## 2023-10-03
-
-- Add missing `@types/mdx` dependency ([#1512](https://github.com/tailwindlabs/tailwind-plus-issues/issues/1512))
-
-## 2023-09-07
-
-- Added TypeScript version of template
-
-## 2023-08-15
-
-- Bump Next.js dependency
-
-## 2023-07-31
-
-- Port template to Next.js app router
-
-## 2023-07-24
-
-- Fix search rendering bug in Safari ([#1470](https://github.com/tailwindlabs/tailwind-plus-issues/issues/1470))
-
-## 2023-07-18
-
-- Add 404 page
-- Sort imports and other formatting
-
-## 2023-05-16
-
-- Bump Next.js dependency
-
-## 2023-05-15
-
-- Replace Algolia DocSearch with basic built-in search ([#1395](https://github.com/tailwindlabs/tailwind-plus-issues/issues/1395))
-
-## 2023-04-11
-
-- Bump Next.js dependency
-
-## 2023-03-29
-
-- Bump Tailwind CSS and Prettier dependencies
-- Sort classes
-
-## 2023-03-22
-
-- Bump Headless UI dependency
-
-## 2023-02-15
-
-- Fix scroll restoration bug ([#1387](https://github.com/tailwindlabs/tailwind-plus-issues/issues/1387))
-
-## 2023-02-02
-
-- Bump Headless UI dependency
-
-## 2023-01-16
-
-- Fixes yarn compatibility ([#1403](https://github.com/tailwindlabs/tailwind-plus-issues/issues/1403))
-- Bump `zustand` dependency
-
-## 2023-01-07
-
-- Enable markdown table support in using `remark-gfm` plugin ([#1398](https://github.com/tailwindlabs/tailwind-plus-issues/issues/1398))
-- Fix SVG attribute casing ([#1402](https://github.com/tailwindlabs/tailwind-plus-issues/issues/1402))
-
-## 2023-01-03
-
-- Fix header disappearing in Safari ([#1392](https://github.com/tailwindlabs/tailwind-plus-issues/issues/1392))
-
-## 2022-12-17
-
-- Bump `mdx-annotations` dependency
-
-## 2022-12-16
-
-- Fix scroll jumping issue with Dialog in Safari ([#1387](https://github.com/tailwindlabs/tailwind-plus-issues/issues/1387))
-- Update "API" item in header navigation link to home page
-- Bump Headless UI dependency
-
-## 2022-12-15
-
-- Initial release
+- Initial standalone `praycalc.org` repo split out from the monorepo; early Flutter-era build fixes (tolerant child lookup replacing `Children.only`).
