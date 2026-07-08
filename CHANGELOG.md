@@ -1,3 +1,17 @@
+## [Unreleased] — 2026-07-08 — Account-linked TV control
+
+### Added
+- TV: unpaired TVs show a 6-digit code on launch; a paired TV syncs settings from `pc_tv_settings` on a ~5s poll instead of only reading local storage
+- Web, desktop, mobile: each surface can now add a TV by entering its code (web: account page; desktop: menu-bar app "My TVs" tab; mobile: Pair TV screen) and edit its full settings, including deep display settings — countdown takeover, per-prayer iqama times, prayer-name-only mode
+- Backend: `pc_tv_pairing` claim-by-PIN preserves the TV's own `device_id`; `pc_tv_settings` is the single control plane per TV, public-read by `device_id` for the TV, user-owned writes for the account surfaces
+- Web: `/api/tvs` proxies all TV data through a server-side Ummat+ check, no direct Hasura calls from the browser
+
+### Notes
+- Multiple TVs per account are supported (masjids running several screens manage them all from one place)
+- Mawlid is intentionally excluded from all TV content
+
+---
+
 ## [Unreleased] — 2026-07-02 — P4: Ummat Accounts + Ummat+
 
 ### Added

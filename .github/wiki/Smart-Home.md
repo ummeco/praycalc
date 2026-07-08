@@ -42,9 +42,9 @@ Automations are created and managed in the PrayCalc app — not in the home plat
 
 ## TV Command Center
 
-The TV Command Center is a separate Ummat+ feature that manages PrayCalc apps on Android TV and Fire TV devices from your phone. See the TV section in [[Features]] for the full feature list.
+The TV Command Center is a separate Ummat+ feature that manages PrayCalc apps on Android TV and Fire TV devices from your phone. See the TV Control section in [[Features]] for the full feature list, including per-TV deep display settings (iqama times, countdown takeover, prayer-name-only mode).
 
-Pair a TV by going to Settings > Connect TV in the mobile app and scanning the QR code on screen.
+Pair a TV by entering the 6-digit code shown on the TV screen from the web account page, the desktop menu-bar app's "My TVs" tab, or Settings > Connect TV in the mobile app.
 
 ## Troubleshooting
 

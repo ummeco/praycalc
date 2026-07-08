@@ -1,5 +1,16 @@
 # PrayCalc TV — Changelog
 
+## [0.2.0] — 2026-07-08
+
+### Account-linked settings sync + display modes
+
+- Launch flow now gates on `pc_tv_pairing`: an unpaired TV shows its 6-digit code and waits, a paired TV goes straight to the dashboard
+- `tvSettingsSync`: polls `pc_tv_settings` by the TV's own `device_id` every ~5s via the public Hasura role, applies changes made from web/desktop/mobile without a restart
+- `PrayerTakeover`: full-screen countdown in the final N minutes before adhan
+- Per-prayer iqama offsets (minutes after adhan, no sunrise iqama) rendered on `PrayerRail`
+- Prayer-name-only full-screen mode for N minutes after adhan/iqama, hides the Mecca stream during that window
+- Mawlid intentionally excluded from all TV content
+
 ## [0.1.0] — 2026-06-21
 
 ### Initial scaffold: 15 TV screens + D-pad focus + pairing flow (P2-E4-W03-S03-T05)

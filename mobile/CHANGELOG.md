@@ -1,5 +1,12 @@
 # praycalc/mobile Changelog
 
+## [0.3.0] — 2026-07-08
+
+### Added — TV manager deep settings
+
+- `TvManagerScreen`: rewritten to list every paired TV with a `TvCardBody` summary and a `TvDeepSettings` editor per TV (name, accent color, stream source, content-rotation minutes, weather toggle, per-TV location, countdown takeover, iqama times, prayer-name-only mode, calculation method, madhab, time format)
+- `pairingMutation`: claim-by-PIN update no longer sends `device_id` — the TV's own `device_id` from the pairing row is preserved through the claim, matching the same rule enforced server-side
+
 ## [0.1.0] — 2026-06-21 (P2-E4-W03-S03-T01)
 
 ### Added — Initial scaffold

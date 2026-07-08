@@ -85,3 +85,17 @@ Entitlement checks happen server-side, not in the client:
 - `/billing/checkout` returns `503 billing_disabled` while Stripe is unprovisioned for this account — no live charges happen yet.
 
 This keeps the client dumb: the web account island, the mobile "Pair TV" screen, and the desktop Account tab all just call the same endpoints and show whatever the backend says, instead of each surface re-implementing its own gate.
+
+## TV Control Data Flow
+
+Two tables drive account-linked TV control, both in the shared Ummat backend:
+
+- **`pc_tv_pairing`** — pre-registered when the TV app boots unpaired. It writes its own `device_id` and a public 6-digit PIN, then polls this row waiting to be claimed. When an Ummat+ user submits the PIN from web, desktop, or mobile, the claim is a single `UPDATE ... WHERE pin = $pin` that sets `user_id` — it never touches `device_id`, so the TV's identity is stable across the whole pairing lifecycle.
+- **`pc_tv_settings`** — the single control plane. One row per paired TV, owned by the user. Every setting (name, accent color, stream source, rotation interval, weather toggle, per-TV location, countdown takeover window, per-prayer iqama offsets, prayer-name-only mode, calculation method, madhab, time format) lives here.
+
+Flow: TV pre-registers PIN → Ummat+ user claims by PIN (device_id preserved) → any surface writes to `pc_tv_settings` → TV polls its own `device_id` row on `pc_tv_settings` every ~5s via the public Hasura role (read-only, scoped to display columns) → changes render on screen within one poll cycle.
+
+Write access is asymmetric by design:
+- The TV only ever reads `pc_tv_settings` (public role, by `device_id`) and writes its own `pc_tv_pairing` row.
+- Web, desktop, and mobile write `pc_tv_settings` under the authenticated `user` role, scoped to rows they own.
+- The web app never calls Hasura directly for TV data — it proxies through `/api/tvs`, which does a server-side Ummat+ check before touching the database (same ADR-010 server-side-token pattern used for auth elsewhere in the app).

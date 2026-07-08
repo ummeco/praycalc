@@ -16,10 +16,49 @@ Ummat+ status is checked server-side wherever it matters — the client never de
 | Web (praycalc.com) | Sign in/up, saved settings, calculator | Plus badge on the account island, `/upgrade` checkout flow |
 | Mobile (RN) | Sign in/up, calculator, notifications | Pair a TV from Settings > Connect TV |
 | Desktop (Tauri) | Sign in/up from the Account tab, calculator | Entitlement badge, link out to `/upgrade` |
-| TV | — | TV app pairing and access are Plus-only |
+| TV | — | TV app pairing, account-linked control, and deep display settings are Plus-only |
 | Smart Home | — | Google Home / Alexa account linking, device + token routes |
 
 **Note:** Stripe is not yet provisioned for this account. Until then, `/upgrade` shows a "launching soon" state instead of a live checkout — nothing charges. Signing in, syncing settings, and using the calculator work today on every surface regardless of tier.
+
+## TV Control (account-linked)
+
+An unpaired PrayCalc TV shows a 6-digit code on launch. A signed-in Ummat+ user adds that TV to their account from any surface, then controls it remotely. No remote control needed after setup — masjids running several TVs manage all of them from one phone or laptop.
+
+**Add a TV**
+
+- Web: praycalc.com account page, "Add TV" — enter the code shown on the TV screen
+- Desktop: menu-bar app, "My TVs" tab — enter the code
+- Mobile: Pair TV screen — enter the code
+
+**What syncs, and how fast**
+
+Once paired, every setting change made from web, desktop, or mobile reaches the TV in about 5 seconds. The TV polls its own settings row on that interval, so there's nothing to refresh or reboot.
+
+**Per-TV settings**
+
+| Setting | Description |
+| --- | --- |
+| Name | Custom label per TV (e.g. "Main Hall", "Musalla") |
+| Accent color | Defaults to green, customizable per TV |
+| Stream source | The background video/stream shown on the TV |
+| Content rotation | Minutes between rotating content panels |
+| Weather | Toggle the weather panel on/off |
+| Location | Per-TV city/lat/lng, independent of the account owner's own location |
+| Countdown takeover | Full-screen countdown in the final N minutes before adhan |
+| Iqama times | Per-prayer minutes-after-adhan offset (no sunrise iqama) |
+| Prayer-name-only mode | Full-screen prayer name for N minutes after adhan/iqama; hides the stream during this window |
+| Calculation method | Same method options as the other apps |
+| Madhab | Hanafi/Shafi Asr setting |
+| Time format | 12h or 24h |
+
+**Multiple TVs**
+
+One account can pair and manage any number of TVs. Each TV keeps its own independent settings.
+
+Mawlid content is excluded from all TV displays.
+
+See also [[Smart-Home]] for the TV Command Center on Android TV/Fire TV, which is a separate feature.
 
 ## Web App (praycalc.com)
 
