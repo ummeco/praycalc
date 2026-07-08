@@ -33,7 +33,6 @@ import {
   Text,
   ScrollView,
   TouchableOpacity,
-  StyleSheet,
   Linking,
   Share,
 } from 'react-native';
@@ -41,41 +40,15 @@ import { router } from 'expo-router';
 import i18next, { useTranslation } from '../../i18n';
 import { useThemeColors } from '../../hooks/useThemeColors';
 import { useResponsiveLayout } from '../../hooks/useResponsiveLayout';
-import type { ThemeColors } from '../../constants/colors';
 import { useSettingsStore, useActiveLocation } from '../settings/store/useSettingsStore';
 import { calculatePrayerTimes } from '../../lib/prayer-calc';
 import { resolveTimezoneOffset } from '../../lib/timezone';
 import { PRAYER_LABEL_KEYS, DISPLAY_PRAYERS } from '../../constants/prayers';
 import type { CalcMethodKey } from '../../constants/methods';
-import type { PrayerTimes } from '../../types/prayer';
 import { EmptyState } from '../../components/states';
 import { buildPrayerTimesShareText } from '../../lib/share';
-
-/** praycalc.com's real calendar export — verified against web/src/pages/api/calendar.ics.ts. */
-const ICS_EXPORT_BASE = 'https://praycalc.com/api/calendar.ics';
-
-function daysInMonth(year: number, month0: number): number {
-  return new Date(year, month0 + 1, 0).getDate();
-}
-
-/** Locale-aware month name, driven by the active i18next language (not a catalog key —
- *  Gregorian month names are locale data, not translatable UI copy). */
-function getMonthName(year: number, month0: number, locale: string): string {
-  return new Date(year, month0, 1).toLocaleDateString(locale, { month: 'long' });
-}
-
-function formatTime(date: Date, format: '12h' | '24h', locale: string): string {
-  if (format === '24h') {
-    return date.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit', hour12: false });
-  }
-  return date.toLocaleTimeString(locale, { hour: 'numeric', minute: '2-digit', hour12: true });
-}
-
-interface DayRow {
-  day: number;
-  isToday: boolean;
-  times: PrayerTimes;
-}
+import { createStyles } from './TimetableScreen.styles';
+import { ICS_EXPORT_BASE, daysInMonth, getMonthName, formatTime, type DayRow } from './TimetableScreen.helpers';
 
 export default function TimetableScreen() {
   const { t } = useTranslation();
@@ -269,75 +242,3 @@ export default function TimetableScreen() {
     </View>
   );
 }
-
-const createStyles = (colors: ThemeColors) => StyleSheet.create({
-  outer: { flex: 1, backgroundColor: colors.background.primary },
-  container: { flex: 1, padding: 16, gap: 12 },
-  monthNav: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 24,
-  },
-  navButton: { minWidth: 44, minHeight: 44, alignItems: 'center', justifyContent: 'center' },
-  navArrow: { fontSize: 28, color: colors.brand.dark, fontWeight: '700' },
-  monthLabel: { fontSize: 18, fontWeight: '700', color: colors.text.primary, minWidth: 140, textAlign: 'center' },
-  locationLabel: { fontSize: 13, color: colors.text.muted, textAlign: 'center' },
-  scroll: { flex: 1 },
-  scrollContent: { paddingBottom: 12 },
-  tableRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.background.card,
-    minHeight: 36,
-  },
-  tableRowToday: {
-    backgroundColor: colors.brand.light + '33',
-    borderRadius: 8,
-  },
-  tableCell: {
-    flex: 1,
-    fontSize: 12,
-    color: colors.text.secondary,
-    textAlign: 'center',
-  },
-  tableCellDay: {
-    flex: 0.5,
-    fontWeight: '600',
-    color: colors.text.primary,
-  },
-  tableCellToday: {
-    color: colors.brand.dark,
-    fontWeight: '700',
-  },
-  tableHeaderText: {
-    fontSize: 11,
-    fontWeight: '700',
-    color: colors.text.muted,
-    textTransform: 'uppercase',
-  },
-  actionRow: { flexDirection: 'row', gap: 8 },
-  actionButton: { flex: 1 },
-  exportButton: {
-    backgroundColor: colors.brand.dark,
-    borderRadius: 10,
-    paddingVertical: 14,
-    alignItems: 'center',
-    minHeight: 48,
-    justifyContent: 'center',
-  },
-  exportButtonText: { color: colors.text.inverse, fontWeight: '700', fontSize: 15 },
-  shareButton: {
-    backgroundColor: colors.background.secondary,
-    borderRadius: 10,
-    paddingVertical: 14,
-    alignItems: 'center',
-    minHeight: 48,
-    justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: colors.brand.mid,
-  },
-  shareButtonText: { color: colors.brand.dark, fontWeight: '700', fontSize: 15 },
-});

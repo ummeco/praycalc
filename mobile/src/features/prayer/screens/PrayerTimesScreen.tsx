@@ -14,7 +14,6 @@ import {
   View,
   Text,
   ScrollView,
-  StyleSheet,
   TouchableOpacity,
   Share,
 } from 'react-native';
@@ -24,18 +23,14 @@ import { router } from 'expo-router';
 import i18next, { useTranslation } from '../../../i18n';
 import { useThemeColors } from '../../../hooks/useThemeColors';
 import { useResponsiveLayout } from '../../../hooks/useResponsiveLayout';
-import type { ThemeColors } from '../../../constants/colors';
 import { CALC_METHODS } from '../../../constants/methods';
 import { useSettingsStore, useActiveLocation } from '../../settings/store/useSettingsStore';
-import type { SettingsState } from '../../settings/store/useSettingsStore';
 import { usePrayerTimes } from '../hooks/usePrayerTimes';
-import type { PrayerName, Madhab } from '../../../types/prayer';
+import type { Madhab } from '../../../types/prayer';
 import type { CalcMethodKey } from '../../../constants/methods';
 import { gregorianToHijri } from '../../../lib/hijri';
-import { isPrayerCompleted, togglePrayerCompletion } from '../../../lib/completions';
 import { resolveTimezoneOffset } from '../../../lib/timezone';
-import { PRAYER_LABEL_KEYS, DISPLAY_PRAYERS as PRAYER_ORDER } from '../../../constants/prayers';
-import { recordSuccessAndMaybeRequestReview } from '../../../lib/review';
+import { PRAYER_LABEL_KEYS } from '../../../constants/prayers';
 import { buildPrayerTimesShareText } from '../../../lib/share';
 import {
   SkeletonCard,
@@ -44,26 +39,9 @@ import {
   OfflineState,
   PermissionDeniedState,
 } from '../../../components/states';
-
-function formatTime(date: Date, format: '12h' | '24h', locale: string): string {
-  if (format === '24h') {
-    return date.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit', hour12: false });
-  }
-  return date.toLocaleTimeString(locale, { hour: 'numeric', minute: '2-digit', hour12: true });
-}
-
-function formatCountdown(seconds: number): string {
-  const h = Math.floor(seconds / 3600);
-  const m = Math.floor((seconds % 3600) / 60);
-  const s = seconds % 60;
-  if (h > 0) return `${h}h ${m}m ${s}s`;
-  if (m > 0) return `${m}m ${s}s`;
-  return `${s}s`;
-}
-
-function getTimezoneOffset(): number {
-  return -(new Date().getTimezoneOffset() / 60);
-}
+import { PrayerList } from './components/PrayerList';
+import { formatCountdown, getTimezoneOffset } from './prayerTimesScreen.helpers';
+import { createStyles } from './PrayerTimesScreen.styles';
 
 export default function PrayerTimesScreen() {
   const { t } = useTranslation();
@@ -302,112 +280,3 @@ export default function PrayerTimesScreen() {
     </ScrollView>
   );
 }
-
-interface PrayerListProps {
-  times: ReturnType<typeof usePrayerTimes>['times'];
-  nextPrayer: PrayerName | null;
-  secondsToNextPrayer: number;
-  settings: SettingsState;
-  colors: ThemeColors;
-  styles: ReturnType<typeof createStyles>;
-  t: (key: string, options?: Record<string, unknown>) => string;
-}
-
-function PrayerList({ times, nextPrayer, settings, colors, styles, t }: PrayerListProps) {
-  const [completedTick, setCompletedTick] = useState(0);
-  if (!times) return null;
-
-  const canLog = (name: PrayerName) => name !== 'Sunrise';
-
-  return (
-    <View key={completedTick} style={styles.prayerList}>
-      {PRAYER_ORDER.map((name) => {
-        const isNext = name === nextPrayer;
-        const completed = canLog(name) && isPrayerCompleted(name);
-        const muted = canLog(name) && settings.perPrayerNotificationEnabled[name] === false;
-        const label = t(PRAYER_LABEL_KEYS[name]);
-        return (
-          <TouchableOpacity
-            key={name}
-            style={[styles.prayerRow, isNext && styles.prayerRowNext]}
-            disabled={!canLog(name)}
-            onPress={() => {
-              const nowCompleted = togglePrayerCompletion(name);
-              setCompletedTick((tick) => tick + 1);
-              // Growth: natural success moment. Only counts forward completions
-              // (not un-marking) toward the rate-us gate — never nags, fires at most once.
-              if (nowCompleted) {
-                void recordSuccessAndMaybeRequestReview().catch(() => undefined);
-              }
-            }}
-            accessibilityRole={canLog(name) ? 'checkbox' : undefined}
-            accessibilityState={canLog(name) ? { checked: completed } : undefined}
-            accessibilityLabel={canLog(name) ? `${label}, ${completed ? t('screens.prayerTimes.markedPrayed') : t('screens.prayerTimes.notMarkedPrayed')}. ${t('screens.prayerTimes.doubleTapToggle')}` : undefined}
-          >
-            <View style={[styles.prayerDot, { backgroundColor: colors.prayer[name.toLowerCase() as keyof typeof colors.prayer] ?? colors.brand.mid }]} />
-            <Text style={[styles.prayerName, isNext && styles.prayerNameNext]}>
-              {label}
-            </Text>
-            {muted && <Text style={styles.muteIcon}>🔕</Text>}
-            <Text style={[styles.prayerTime, isNext && styles.prayerTimeNext]}>
-              {formatTime(times[name], settings.timeFormat, i18next.language)}
-            </Text>
-            {canLog(name) && (
-              <Text style={[styles.completedCheck, completed && styles.completedCheckActive]}>
-                {completed ? '✓' : '○'}
-              </Text>
-            )}
-          </TouchableOpacity>
-        );
-      })}
-    </View>
-  );
-}
-
-const createStyles = (colors: ThemeColors) => StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.background.primary },
-  content: { padding: 16, gap: 16 },
-  dateHeader: { alignItems: 'center', gap: 2 },
-  hijriDate: { fontSize: 15, fontWeight: '600', color: colors.brand.dark },
-  gregorianDate: { fontSize: 13, color: colors.text.muted },
-  locationName: { fontSize: 13, color: colors.text.secondary, marginTop: 4, fontWeight: '500' },
-  shareButton: { marginTop: 8, minHeight: 44, paddingHorizontal: 12, justifyContent: 'center', alignItems: 'center' },
-  shareButtonText: { fontSize: 13, color: colors.brand.dark, fontWeight: '600' },
-  muteIcon: { fontSize: 13, marginRight: 6 },
-  completedCheck: { fontSize: 18, color: colors.text.muted, marginLeft: 10, width: 22, textAlign: 'center' },
-  completedCheckActive: { color: colors.brand.mid, fontWeight: '700' },
-  countdownCard: {
-    backgroundColor: colors.brand.dark,
-    borderRadius: 16,
-    padding: 20,
-    alignItems: 'center',
-  },
-  countdownLabel: { color: colors.brand.light, fontSize: 14, fontWeight: '500' },
-  countdownTimer: { color: colors.text.inverse, fontSize: 36, fontWeight: '700', marginTop: 4 },
-  prayerList: { gap: 4 },
-  prayerRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 14,
-    borderRadius: 12,
-    backgroundColor: colors.background.secondary,
-    gap: 12,
-  },
-  prayerRowNext: { backgroundColor: colors.brand.deep, borderWidth: 2, borderColor: colors.brand.mid },
-  prayerDot: { width: 10, height: 10, borderRadius: 5 },
-  prayerName: { flex: 1, fontSize: 16, color: colors.text.primary, fontWeight: '500' },
-  prayerNameNext: { color: colors.brand.light },
-  prayerTime: { fontSize: 16, color: colors.text.secondary, fontWeight: '600' },
-  prayerTimeNext: { color: colors.brand.light },
-  section: { gap: 8 },
-  sectionTitle: { fontSize: 13, color: colors.text.muted, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 0.5 },
-  toggle: { flexDirection: 'row', borderRadius: 8, overflow: 'hidden', backgroundColor: colors.background.card },
-  toggleOption: { flex: 1, padding: 12, alignItems: 'center' },
-  toggleOptionActive: { backgroundColor: colors.brand.dark },
-  toggleText: { fontSize: 14, color: colors.text.primary },
-  toggleTextActive: { color: colors.text.inverse, fontWeight: '600' },
-  methodRow: { padding: 14, borderRadius: 8, backgroundColor: colors.background.secondary },
-  methodRowActive: { backgroundColor: colors.brand.dark },
-  methodText: { fontSize: 14, color: colors.text.primary },
-  methodTextActive: { color: colors.text.inverse, fontWeight: '600' },
-});
