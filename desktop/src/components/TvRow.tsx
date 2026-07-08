@@ -55,7 +55,7 @@ export default function TvRow({
           className="flex-1 min-w-0 bg-transparent border-b border-brand-dark text-sm text-green-100 font-medium focus:outline-none focus:border-brand-mid px-0.5 py-0.5"
           placeholder="TV name"
         />
-        {saving && <span className="text-[10px] text-green-300/40 flex-shrink-0">Saving…</span>}
+        {saving && <span className="text-[10px] text-green-300/60 flex-shrink-0">Saving…</span>}
       </div>
 
       <div>
@@ -125,7 +125,7 @@ export default function TvRow({
             <div className="flex gap-2">
               <button
                 onClick={onDeleteCancel}
-                className="text-white/40 hover:text-white/70 text-xs font-medium transition-colors"
+                className="text-white/55 hover:text-white/70 text-xs font-medium transition-colors"
               >
                 Cancel
               </button>
@@ -140,7 +140,7 @@ export default function TvRow({
         ) : (
           <button
             onClick={onDeleteRequest}
-            className="text-white/30 hover:text-red-400 text-xs transition-colors"
+            className="text-white/55 hover:text-red-400 text-xs transition-colors"
           >
             Remove TV
           </button>

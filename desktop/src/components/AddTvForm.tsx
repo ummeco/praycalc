@@ -9,7 +9,7 @@
  *   input filtering mirrors mobile's onChangeText replace(/[^0-9]/g, '').
  * SPORT: praycalc desktop — TV management (add-TV form).
  */
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { isValidPin } from '../lib/tvSettings';
 
 export default function AddTvForm({
@@ -22,25 +22,35 @@ export default function AddTvForm({
   onCancel: () => void;
 }) {
   const [pin, setPin] = useState('');
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  // Focus the PIN field when the form appears (user just clicked "Add TV").
+  // Done imperatively rather than the `autoFocus` prop — jsx-a11y/no-autofocus
+  // flags the JSX attribute since it can disorient screen-reader users on
+  // unexpected mounts, but this form only mounts in direct response to an
+  // explicit user action, so an immediate focus is the expected behavior here.
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
 
   return (
     <div className="bg-brand-deep border border-brand-dark rounded px-3 py-2.5 space-y-2.5">
       <div className="text-sm text-green-100 font-medium">Enter the code shown on your TV</div>
       <input
+        ref={inputRef}
         type="text"
         inputMode="numeric"
         value={pin}
         onChange={(e) => setPin(e.target.value.replace(/[^0-9]/g, '').slice(0, 6))}
         placeholder="000000"
         maxLength={6}
-        autoFocus
         className="w-full bg-transparent border border-brand-dark rounded px-2 py-1.5 text-lg tracking-[0.3em] text-center text-green-100 focus:outline-none focus:border-brand-mid"
       />
       <div className="flex items-center justify-end gap-3">
         <button
           onClick={onCancel}
           disabled={submitting}
-          className="text-white/40 hover:text-white/70 text-xs font-medium transition-colors disabled:opacity-50"
+          className="text-white/55 hover:text-white/70 text-xs font-medium transition-colors disabled:opacity-50"
         >
           Cancel
         </button>

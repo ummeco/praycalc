@@ -81,7 +81,7 @@ export default function AccountTab() {
   }, []);
 
   if (loading) {
-    return <div className="text-[11px] text-green-300/50">Loading account…</div>;
+    return <div className="text-[11px] text-green-300/60">Loading account…</div>;
   }
 
   if (session) {
@@ -111,7 +111,7 @@ export default function AccountTab() {
 
         <button
           onClick={() => void handleSignOut()}
-          className="text-white/40 hover:text-red-400 text-xs font-medium transition-colors"
+          className="text-white/55 hover:text-red-400 text-xs font-medium transition-colors"
         >
           Sign Out
         </button>
@@ -125,7 +125,7 @@ export default function AccountTab() {
         <button
           onClick={() => setMode('signin')}
           className={`px-2 py-1 rounded transition-colors ${
-            mode === 'signin' ? 'text-brand-light bg-brand-dark/40' : 'text-green-300/50 hover:text-green-300/80'
+            mode === 'signin' ? 'text-brand-light bg-brand-dark/40' : 'text-green-300/60 hover:text-green-300/80'
           }`}
         >
           Sign in
@@ -133,7 +133,7 @@ export default function AccountTab() {
         <button
           onClick={() => setMode('signup')}
           className={`px-2 py-1 rounded transition-colors ${
-            mode === 'signup' ? 'text-brand-light bg-brand-dark/40' : 'text-green-300/50 hover:text-green-300/80'
+            mode === 'signup' ? 'text-brand-light bg-brand-dark/40' : 'text-green-300/60 hover:text-green-300/80'
           }`}
         >
           Create account

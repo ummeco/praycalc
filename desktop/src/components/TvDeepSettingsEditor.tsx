@@ -72,7 +72,7 @@ export default function TvDeepSettingsEditor({
 
   return (
     <div className="space-y-2.5 pt-2 border-t border-brand-dark/40">
-      <div className="text-[11px] text-green-300/50 uppercase tracking-wide">Deep settings</div>
+      <div className="text-[11px] text-green-300/60 uppercase tracking-wide">Deep settings</div>
 
       <label className="flex items-center gap-2 cursor-pointer">
         <input

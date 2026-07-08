@@ -15,6 +15,7 @@ import type {
   HasuraAuthRefreshSuccess,
 } from './auth-types';
 import { loadPersistedSession, persistSession, clearPersistedSession } from './auth-store';
+import { loadCachedEntitlement, saveCachedEntitlement, isCacheFresh } from './entitlement-store';
 
 const AUTH_URL: string =
   (import.meta.env.VITE_AUTH_URL as string | undefined) ?? 'https://auth.ummat.dev';
@@ -146,22 +147,39 @@ export function scheduleRefresh(
 }
 
 /**
- * Check Ummat+ entitlement for the signed-in user. Parses defensively — any
- * network error, non-2xx status (including 404), or malformed body resolves to
- * `{ isPlus: false }` rather than throwing, so the UI never crashes on this call.
+ * Check Ummat+ entitlement for the signed-in user. Parses defensively and never
+ * throws. On a *transient* failure (network error, non-2xx status, or a
+ * malformed body — anything that isn't a clean "yes"/"no" answer from the
+ * server) this falls back to the last network-confirmed ("last-known-good")
+ * entitlement instead of assuming `{ isPlus: false }`, so a paying Ummat+ user
+ * is never wrongly downgraded to the free upsell by a billing-API blip or a
+ * brief offline stretch. The fallback itself expires after
+ * `ENTITLEMENT_CACHE_MAX_AGE_MS` so a lapsed/cancelled subscription still
+ * eventually reverts to free once the cache goes stale. A genuine 2xx response
+ * (even one that says `isPlus: false`) always wins and refreshes the cache —
+ * only failures fall back to it.
  */
 export async function checkEntitlement(accessToken: string): Promise<EntitlementStatus> {
   try {
     const res = await fetch(`${BILLING_URL}/status`, {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
-    if (!res.ok) return { isPlus: false };
+    if (!res.ok) return await fallbackToCachedEntitlement();
     const data: unknown = await res.json().catch(() => null);
     if (data && typeof data === 'object' && 'isPlus' in data) {
-      return { isPlus: Boolean((data as { isPlus: unknown }).isPlus) };
+      const status: EntitlementStatus = { isPlus: Boolean((data as { isPlus: unknown }).isPlus) };
+      await saveCachedEntitlement(status);
+      return status;
     }
-    return { isPlus: false };
+    return await fallbackToCachedEntitlement();
   } catch {
-    return { isPlus: false };
+    return await fallbackToCachedEntitlement();
   }
+}
+
+/** Shared fallback for checkEntitlement's failure paths — see its doc comment. */
+async function fallbackToCachedEntitlement(): Promise<EntitlementStatus> {
+  const cached = await loadCachedEntitlement();
+  if (cached && isCacheFresh(cached)) return cached.status;
+  return { isPlus: false };
 }

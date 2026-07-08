@@ -22,7 +22,7 @@ export default function Countdown({ next, seconds, displayMode, arabicMode, show
   if (seconds <= 0) {
     return (
       <div className="px-5 pt-5 pb-4 border-b border-white/5">
-        <div className="text-[10px] uppercase tracking-widest text-green-400/50 mb-1.5">
+        <div className="text-[10px] uppercase tracking-widest text-green-400/65 mb-1.5">
           {prayerName}
         </div>
         <div
@@ -31,7 +31,7 @@ export default function Countdown({ next, seconds, displayMode, arabicMode, show
         >
           Now
         </div>
-        <div className="text-green-400/55 text-sm">
+        <div className="text-green-400/65 text-sm">
           Prayer time · {formatTime12(next.time)}
         </div>
       </div>
@@ -60,7 +60,7 @@ export default function Countdown({ next, seconds, displayMode, arabicMode, show
 
   return (
     <div className="px-5 pt-5 pb-4 border-b border-white/5">
-      <div className="text-[10px] uppercase tracking-widest text-green-400/50 mb-1.5">
+      <div className="text-[10px] uppercase tracking-widest text-green-400/65 mb-1.5">
         {`${prayerName}${labelSuffix}`}
       </div>
 
@@ -92,7 +92,7 @@ export default function Countdown({ next, seconds, displayMode, arabicMode, show
         </div>
       )}
 
-      <div className="text-green-400/55 text-sm">
+      <div className="text-green-400/65 text-sm">
         at {formatTime12(next.time)}
       </div>
     </div>

@@ -85,8 +85,8 @@ export function formatTrayLabel(
   return `${label} ${m}:${String(s).padStart(2, '0')}`;
 }
 
-export function getCurrentPrayer(prayers: PrayerEntry[]): PrayerName | null {
-  const now = nowMinutes();
+export function getCurrentPrayer(prayers: PrayerEntry[], tz: string): PrayerName | null {
+  const now = nowMinutesInTz(tz);
   let current: PrayerName | null = null;
   for (const p of prayers) {
     if (toMinutes(p.time) <= now) current = p.name as PrayerName;
@@ -95,8 +95,8 @@ export function getCurrentPrayer(prayers: PrayerEntry[]): PrayerName | null {
   return current;
 }
 
-export function getNextPrayer(prayers: PrayerEntry[]): PrayerEntry | null {
-  const now = nowMinutes();
+export function getNextPrayer(prayers: PrayerEntry[], tz: string): PrayerEntry | null {
+  const now = nowMinutesInTz(tz);
   return prayers.find((p) => toMinutes(p.time) > now) ?? null;
 }
 
@@ -111,8 +111,10 @@ export function formatTime12(time24: string): string {
 // Day-aware: after Isha the next target is tomorrow's Fajr, whose HH:MM lies far in
 // "today's" past. Prayers are never >6h apart, so beyond -6h means "tomorrow" —
 // shift by 24h so the countdown rolls over midnight. Mirrors Rust seconds_until.
-export function secondsUntil(time24: string): number {
-  const nowSec = nowSeconds();
+// `tz` is the *configured location's* IANA timezone — required so the countdown
+// is anchored to that clock, not the device's own timezone (see nowSecondsInTz).
+export function secondsUntil(time24: string, tz: string): number {
+  const nowSec = nowSecondsInTz(tz);
   const target = toMinutes(time24) * 60;
   const secs = target - nowSec;
   return secs < -21_600 ? secs + 86_400 : secs;
@@ -127,12 +129,40 @@ export function formatCountdown(seconds: number): string {
   return `${s}s`;
 }
 
-function nowMinutes(): number {
-  const d = new Date();
-  return d.getHours() * 60 + d.getMinutes();
+/**
+ * Current wall-clock time in `tz` (an IANA zone, e.g. "Asia/Dubai"), as seconds
+ * since local midnight. Uses `Intl.DateTimeFormat` (no extra dependency) so the
+ * countdown is anchored to the *configured location's* clock rather than the
+ * device's own timezone — fixes the cross-timezone countdown bug (mirrors
+ * Rust's `now_naive_in_tz` in src-tauri/src/timer.rs). Falls back to the
+ * device's local clock if `tz` is empty/invalid, matching the pre-fix behavior
+ * rather than throwing.
+ */
+function nowSecondsInTz(tz: string): number {
+  if (!tz) return nowSecondsLocal();
+  try {
+    const parts = new Intl.DateTimeFormat('en-US', {
+      timeZone: tz,
+      hour: 'numeric',
+      minute: 'numeric',
+      second: 'numeric',
+      hourCycle: 'h23',
+    }).formatToParts(new Date());
+    const get = (type: string) => Number(parts.find((p) => p.type === type)?.value ?? 0);
+    const hours = get('hour') % 24; // some engines emit "24" for midnight under h23
+    return hours * 3600 + get('minute') * 60 + get('second');
+  } catch {
+    // Invalid/unknown IANA tz string (e.g. stale settings) — degrade to device-local
+    // time instead of throwing, so a bad tz value never crashes the countdown.
+    return nowSecondsLocal();
+  }
 }
 
-function nowSeconds(): number {
+function nowMinutesInTz(tz: string): number {
+  return Math.floor(nowSecondsInTz(tz) / 60);
+}
+
+function nowSecondsLocal(): number {
   const d = new Date();
   return d.getHours() * 3600 + d.getMinutes() * 60 + d.getSeconds();
 }

@@ -122,7 +122,7 @@ export default function TvManager() {
   );
 
   if (loading) {
-    return <div className="text-[11px] text-green-300/50">Loading TVs…</div>;
+    return <div className="text-[11px] text-green-300/60">Loading TVs…</div>;
   }
 
   if (!session) {

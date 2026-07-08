@@ -55,7 +55,7 @@ export default function PrayerList({ prayers, nextPrayer, currentPrayer, arabicM
             </div>
             <span
               className={`text-sm tabular-nums ${
-                isNext ? 'text-white font-semibold' : 'text-white/40'
+                isNext ? 'text-white font-semibold' : 'text-white/55'
               }`}
             >
               {formatTime12(p.time)}
