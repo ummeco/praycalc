@@ -113,8 +113,9 @@ export function getPrayerTimes(
     const allTimes = calcTimesAll(date, lat, lng, tzOffset, 0, undefined, undefined, hanafi) as FormattedPrayerTimesAll;
     // calcTimesAll returns a `Methods` map keyed by string method ID (e.g. 'MWL', 'Karachi') —
     // NOT numeric indices. Using the string ID is required; numeric string keys ('5') are undefined.
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- pray-calc CJS types do not expose Methods shape
-    const methodEntry = (allTimes as any).Methods?.[method] as [string, string] | undefined;
+    // pray-calc's FormattedPrayerTimesAll.Methods is typed Record<string, [TimeString, TimeString]>,
+    // so no cast is needed here.
+    const methodEntry = allTimes.Methods?.[method];
     return {
       Fajr:    (methodEntry?.[0] ?? allTimes.Fajr)    ?? 'N/A',
       Sunrise: allTimes.Sunrise ?? 'N/A',
@@ -128,8 +129,8 @@ export function getPrayerTimes(
 
   if (hanafi && hanafiAngles) {
     const allTimes = calcTimesAll(date, lat, lng, tzOffset, 0, undefined, undefined, hanafi) as FormattedPrayerTimesAll;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- pray-calc CJS types do not expose Methods shape
-    const hanafiEntry = (allTimes as any).Methods?.[_HANAFI_ANGLES_METHOD_ID] as [string, string] | undefined;
+    // pray-calc's FormattedPrayerTimesAll.Methods is typed Record<string, [TimeString, TimeString]>.
+    const hanafiEntry = allTimes.Methods?.[_HANAFI_ANGLES_METHOD_ID];
     return {
       Fajr:    (hanafiEntry?.[0]  ?? allTimes.Fajr)    ?? 'N/A',
       Sunrise: allTimes.Sunrise ?? 'N/A',

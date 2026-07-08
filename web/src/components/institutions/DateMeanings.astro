@@ -1,0 +1,61 @@
+---
+/**
+ * DateMeanings.astro — "What Each Date Means" + calendar-explainer sections.
+ *
+ * PURPOSE: Plain-language explanation of each Islamic date in the table above
+ *   (Ramadan, Last 10 Nights, the two Eids, Day of Arafah, Ashura) plus a short
+ *   explainer of why the lunar calendar shifts each Gregorian year.
+ * CONSTRAINTS: Pure static content, no props, no interactivity. Extracted from
+ *   institutions.astro (2026-07 file-size split) — content unchanged.
+ * REF: restored from git ecc0a7c^ (Next.js era) · D-P2-STACK-CANON (Astro)
+ */
+---
+
+<section class="info-section">
+  <h2 class="text-xl font-semibold text-ummat-light">What Each Date Means</h2>
+  <div class="grid sm:grid-cols-2 gap-4">
+    <div class="rounded-xl border border-white/10 bg-white/[0.03] p-4">
+      <h3 class="font-semibold text-white/90 mb-2">Ramadan (29–30 days)</h3>
+      <p class="text-white/60 text-sm leading-relaxed">The ninth month of the Islamic calendar. Muslims fast from the pre-dawn prayer (Fajr) until sunset (Maghrib) each day — no food, drink, or smoking during daylight hours. Fasting Ramadan is one of the five pillars of Islam and is obligatory for every adult Muslim who is physically able. Exemptions exist for those who are ill, pregnant, nursing, traveling, or elderly, but for most Muslims this is a non-negotiable religious duty, not an optional practice.</p>
+    </div>
+    <div class="rounded-xl border border-white/10 bg-white/[0.03] p-4">
+      <h3 class="font-semibold text-white/90 mb-2">Last 10 Nights</h3>
+      <p class="text-white/60 text-sm leading-relaxed">The final 10 nights of Ramadan hold special significance. They include Laylatul Qadr (the Night of Power), considered the holiest night of the year. Muslims increase worship during these nights with extended prayers (Taraweeh and Qiyam), and some perform I'tikaf (a spiritual retreat in the mosque for the last 10 days). Schedule flexibility during these final days is especially appreciated.</p>
+    </div>
+    <div class="rounded-xl border border-white/10 bg-white/[0.03] p-4">
+      <h3 class="font-semibold text-white/90 mb-2">Eid al-Fitr</h3>
+      <p class="text-white/60 text-sm leading-relaxed">Marks the end of Ramadan on the 1st of Shawwal. Muslims attend a special morning congregational prayer (typically 8–10 AM), then celebrate with family and community gatherings. The Eid prayer is an obligation for every Muslim, and this is one of the two most important holidays in Islam. Many families celebrate for 2–3 days. It is comparable in significance to major holidays in other faith traditions.</p>
+    </div>
+    <div class="rounded-xl border border-white/10 bg-white/[0.03] p-4">
+      <h3 class="font-semibold text-white/90 mb-2">Day of Arafah</h3>
+      <p class="text-white/60 text-sm leading-relaxed">The 9th of Dhul Hijjah. Millions of Muslims perform the Hajj pilgrimage in Mecca on this day. Muslims not on Hajj fast this day, as it is considered one of the most virtuous fasts of the year. Some may be traveling for Hajj during the first 10 days of Dhul Hijjah (roughly 2–3 weeks including travel). The fast of Arafah is highly recommended rather than obligatory, but widely observed.</p>
+    </div>
+    <div class="rounded-xl border border-white/10 bg-white/[0.03] p-4">
+      <h3 class="font-semibold text-white/90 mb-2">Eid al-Adha (1 + 3 days)</h3>
+      <p class="text-white/60 text-sm leading-relaxed">The 10th of Dhul Hijjah, the day after Arafah. The second major holiday in Islam, commemorating Prophet Ibrahim's (Abraham's) willingness to sacrifice his son in obedience to God. The Eid day is followed by 3 Days of Tashreeq (11th–13th Dhul Hijjah), during which celebrations continue. Fasting is prohibited on Eid day and the Days of Tashreeq. The Eid prayer is an obligation. Many families distribute meat to the poor during these days as an act of charity.</p>
+    </div>
+    <div class="rounded-xl border border-white/10 bg-white/[0.03] p-4">
+      <h3 class="font-semibold text-white/90 mb-2">Ashura</h3>
+      <p class="text-white/60 text-sm leading-relaxed">The 10th of Muharram, the first month of the Islamic year. Muslims fast on this day (and the day before or after it), commemorating the day God saved the Children of Israel from Pharaoh. The fast of Ashura is highly recommended rather than obligatory. It is a single day and generally does not require institutional accommodation beyond awareness.</p>
+    </div>
+  </div>
+  <p class="text-white/60 leading-relaxed">
+    Of these dates, Ramadan and the two Eid holidays are the ones most likely to require
+    institutional accommodation. Ramadan affects daily schedules for an entire month, while
+    the Eid holidays carry the same religious weight as major holidays in any faith tradition.
+    The Eid prayers on both holidays are obligatory and take place in the morning. Just as
+    institutions would not schedule a mandatory event during a major religious holiday, they
+    should avoid doing so on Eid. The Day of Arafah and Ashura involve a single day of fasting
+    and are highly recommended rather than obligatory, but awareness and flexibility are always
+    appreciated.
+  </p>
+  <p class="text-white/40 text-xs">* Technically Ashura falls in the next Hijri year but is listed here for convenience, as it typically occurs weeks after Eid al-Adha.</p>
+</section>
+
+<!-- Understanding the calendar -->
+<section class="info-section">
+  <h2 class="text-xl font-semibold text-ummat-light">Understanding the Islamic Calendar</h2>
+  <p class="text-white/60 leading-relaxed">The Islamic (Hijri) calendar is a purely lunar calendar with 12 months of 29 or 30 days each. A Hijri year is about 354 days, roughly 11 days shorter than the Gregorian (solar) year. This is why Ramadan and the Eid holidays shift earlier by about 11 days each year, cycling through all four seasons over a period of about 33 years. Islamic dates cannot be memorized as fixed calendar dates — institutions need to consult the table above (or a resource like this page) each year to plan ahead.</p>
+  <p class="text-white/60 leading-relaxed">The dates in the table are calculated astronomically. Traditionally, some communities begin each lunar month based on physical sighting of the new crescent moon after sunset, which can cause the actual observed date to shift by one day from the calculated date. For planning purposes, the calculated calendar provides the certainty institutions need, and any shift from moon sighting would only be by a single day.</p>
+  <p class="text-white/60 leading-relaxed">Because the calendar shifts every year, institutions should bookmark this page or print the table above and distribute it to scheduling staff, chaplains, dietary coordinators, and human resources departments at the start of each academic or fiscal year.</p>
+</section>

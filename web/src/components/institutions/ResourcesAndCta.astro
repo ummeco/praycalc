@@ -1,0 +1,42 @@
+---
+/**
+ * ResourcesAndCta.astro — institutions.astro resources list, CTA, and footer nav.
+ *
+ * PURPOSE: Links to authoritative government/civil-rights-org guidance, a CTA
+ *   pointing back to PrayCalc's prayer-time lookup, and the page footer nav.
+ * CONSTRAINTS: Pure static content, no props, no interactivity. Extracted from
+ *   institutions.astro (2026-07 file-size split) — content unchanged.
+ * REF: restored from git ecc0a7c^ (Next.js era) · D-P2-STACK-CANON (Astro)
+ */
+---
+
+<!-- Resources -->
+<section class="info-section">
+  <h2 class="text-xl font-semibold text-ummat-light">Additional Resources</h2>
+  <p class="text-white/60 leading-relaxed">The following organizations and government agencies provide detailed guidance on religious accommodation in institutional settings, including specific references to Islamic practices, template accommodation request letters, and the legal standards institutions are required to meet.</p>
+  <ul class="text-white/60 text-sm leading-relaxed space-y-3">
+    <li><a href="https://www.eeoc.gov/laws/guidance/section-12-religious-discrimination" target="_blank" rel="noopener noreferrer" class="text-ummat-light/80 hover:text-ummat-light underline">U.S. Equal Employment Opportunity Commission (EEOC)</a> — Section 12: Religious Discrimination. Covers employer obligations for reasonable accommodation, including prayer breaks, religious dress, dietary needs, and holiday observance. Applies to employers with 15+ employees.</li>
+    <li><a href="https://www2.ed.gov/policy/gen/guid/religionandschools/prayer_guidance.html" target="_blank" rel="noopener noreferrer" class="text-ummat-light/80 hover:text-ummat-light underline">U.S. Department of Education</a> — Guidance on constitutionally protected prayer and religious expression in public schools. Clarifies that students may pray individually or in groups during non-instructional time, wear religious clothing, and be absent for religious observances.</li>
+    <li><a href="https://www.cair.com/know-your-rights/" target="_blank" rel="noopener noreferrer" class="text-ummat-light/80 hover:text-ummat-light underline">Council on American-Islamic Relations (CAIR)</a> — Know Your Rights guides for Muslim employees, students, travelers, and community members, including template accommodation request letters, legal fact sheets, and how to report discrimination.</li>
+    <li><a href="https://www.justice.gov/crt/religious-land-use-and-institutionalized-persons-act" target="_blank" rel="noopener noreferrer" class="text-ummat-light/80 hover:text-ummat-light underline">U.S. Department of Justice — RLUIPA</a> — Religious Land Use and Institutionalized Persons Act. Protects the religious exercise of persons confined to correctional facilities, psychiatric hospitals, and other government institutions.</li>
+    <li><a href="https://www.bop.gov/policy/progstat/5360.009_cn-1.pdf" target="_blank" rel="noopener noreferrer" class="text-ummat-light/80 hover:text-ummat-light underline">Federal Bureau of Prisons (BOP) — P5360.09</a> — Religious Beliefs and Practices policy. Lists authorized religious property, dietary accommodation (including halal and Ramadan meal adjustments), holy day observance, and religious programming requirements.</li>
+    <li><a href="https://www.esd.whs.mil/Portals/54/Documents/DD/issuances/dodi/130017p.pdf" target="_blank" rel="noopener noreferrer" class="text-ummat-light/80 hover:text-ummat-light underline">DoD Instruction 1300.17</a> — Accommodation of Religious Practices Within the Military Services. Establishes policy and procedures for requesting accommodation of dietary needs, grooming standards, prayer, holy days, and religious dress.</li>
+    <li><a href="https://www.interfaithalliance.org/" target="_blank" rel="noopener noreferrer" class="text-ummat-light/80 hover:text-ummat-light underline">Interfaith Alliance</a> — Resources for understanding religious diversity in schools, workplaces, and communities, with guides for educators and administrators on creating inclusive environments.</li>
+  </ul>
+</section>
+
+<!-- CTA -->
+<section class="info-section rounded-2xl border border-ummat-light/20 bg-ummat-light/[0.06] p-6 text-center">
+  <h2 class="text-xl font-semibold text-ummat-light">Need Prayer Times for Your Location?</h2>
+  <p class="text-white/60 leading-relaxed">PrayCalc provides accurate prayer times for any city worldwide, including the exact Fajr (pre-dawn) and Maghrib (sunset) times needed for Suhoor and Iftar meal scheduling during Ramadan. Correctional facilities, hospitals, and military installations can generate a full month of prayer times for their coordinates, making it easy for chaplains, dietary coordinators, and unit leaders to plan Ramadan meal schedules and daily prayer accommodation in advance.</p>
+  <a href="/" class="inline-block mt-2 rounded-lg bg-ummat-light text-ummat-deep font-semibold px-5 py-2.5 hover:bg-ummat-light/90 transition-colors">Find Prayer Times</a>
+</section>
+
+<!-- Footer -->
+<div class="flex flex-wrap gap-3 pt-4 border-t border-white/10">
+  <a href="/" class="text-white/40 hover:text-white text-sm">Home</a>
+  <a href="/about" class="text-white/40 hover:text-white text-sm">About</a>
+  <a href="https://praycalc.org" class="text-ummat-light/60 hover:text-ummat-light text-sm" target="_blank" rel="noopener">praycalc.org →</a>
+  <a href="/legal/privacy" class="text-white/40 hover:text-white text-sm">Privacy Policy</a>
+  <a href="/legal/terms" class="text-white/40 hover:text-white text-sm">Terms</a>
+</div>

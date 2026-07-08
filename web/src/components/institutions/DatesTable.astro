@@ -1,0 +1,77 @@
+---
+/**
+ * DatesTable.astro — multi-year Islamic dates table for institutions.astro.
+ *
+ * PURPOSE: Renders the forward-looking (current Hijri year + N ahead) table of
+ *   Ramadan/Eid/Arafah/Ashura dates computed at build time by the parent page.
+ * INPUTS: yearData (IslamicYearDates[]), currentHijriYear (number)
+ * CONSTRAINTS: Pure presentational — all date math happens in the parent
+ *   (institutions.astro) via lib/islamic-dates.ts. Extracted from
+ *   institutions.astro (2026-07 file-size split) — content/markup unchanged.
+ * REF: restored from git ecc0a7c^ (Next.js era) · D-P2-STACK-CANON (Astro)
+ */
+import type { IslamicYearDates } from '@/lib/islamic-dates';
+import { formatDateShort, formatWeekday } from '@/lib/islamic-dates';
+
+interface Props {
+  yearData: IslamicYearDates[];
+  currentHijriYear: number;
+}
+
+const { yearData, currentHijriYear } = Astro.props;
+
+const cellDate = (d: Date) => ({ day: formatWeekday(d), date: formatDateShort(d) });
+---
+
+<section class="info-section">
+  <h2 class="text-xl font-semibold text-ummat-light">
+    Key Islamic Dates ({yearData[0].gregorianYear}&ndash;{yearData[yearData.length - 1].gregorianYear})
+  </h2>
+  <div class="overflow-x-auto -mx-4 px-4">
+    <table class="w-full text-sm border-collapse min-w-[640px]">
+      <thead>
+        <tr class="text-left text-white/50 border-b border-white/15">
+          <th class="py-2 pr-3 font-medium">Hijri Year</th>
+          <th class="py-2 pr-3 font-medium">Ramadan Begins</th>
+          <th class="py-2 pr-3 font-medium">Last 10 Nights</th>
+          <th class="py-2 pr-3 font-medium">Eid al-Fitr</th>
+          <th class="py-2 pr-3 font-medium">Day of Arafah</th>
+          <th class="py-2 pr-3 font-medium">Eid al-Adha</th>
+          <th class="py-2 pr-3 font-medium">Ashura*</th>
+        </tr>
+      </thead>
+      <tbody>
+        {yearData.map((yr) => {
+          const isCurrent = yr.hijriYear === currentHijriYear;
+          const cells = [
+            cellDate(yr.ramadanStart),
+            cellDate(yr.last10Start),
+            cellDate(yr.eidAlFitr),
+            cellDate(yr.dayOfArafah),
+            cellDate(yr.eidAlAdha),
+            cellDate(yr.ashura),
+          ];
+          return (
+            <tr class={`border-b border-white/5 ${isCurrent ? 'bg-ummat-light/10' : ''}`}>
+              <td class="py-2 pr-3 font-medium text-white/80 whitespace-nowrap">
+                {yr.hijriYear}
+                {isCurrent && (
+                  <span class="ml-2 text-[0.65rem] uppercase tracking-wide text-ummat-light bg-ummat-light/15 rounded px-1.5 py-0.5">current</span>
+                )}
+              </td>
+              {cells.map((c) => (
+                <td class="py-2 pr-3 text-white/70 whitespace-nowrap">
+                  <span class="text-white/40 mr-1">{c.day}</span>{c.date}
+                </td>
+              ))}
+            </tr>
+          );
+        })}
+      </tbody>
+    </table>
+  </div>
+  <p class="text-white/40 text-xs">
+    Source: <a href="https://fiqhcouncil.org/calendar/" target="_blank" rel="noopener noreferrer" class="text-ummat-light/70 hover:text-ummat-light underline">Fiqh Council of North America</a>.
+    Computed via the Umm al-Qura calendar; local moon sighting may shift a date by ±1 day.
+  </p>
+</section>
