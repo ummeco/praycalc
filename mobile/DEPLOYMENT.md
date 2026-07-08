@@ -87,6 +87,34 @@ See `eas.json` for build profiles:
 - `preview`: internal APK for QA
 - `production`: App Store + Play Store submission
 
+## OTA (Over-The-Air) Updates — expo-updates
+
+Code-complete as of 2026-07-07. `expo-updates@~0.28.18` is installed;
+`app.config.js` layers `updates` (`enabled: true`, `checkAutomatically: "ON_LOAD"`,
+`fallbackToCacheTimeout: 0`) and `runtimeVersion: { policy: "appVersion" }` on
+top of `app.json`. `src/lib/updates/otaUpdates.ts` re-checks on every
+foreground transition (`useOtaUpdates()`, wired in `src/app/_layout.tsx`) so a
+long-lived session still picks up new JS without a force-quit. Updates never
+force a mid-session reload — a fetched update applies automatically on the
+next natural app launch (seamless, no user-facing prompt).
+
+**User-gated before OTA is live (cannot be done by an agent):**
+
+- [ ] Create the real EAS project (`eas init` or Expo dashboard) and replace
+      `UD-PENDING-EAS-PROJECT-ID` in `app.json` → `expo.extra.eas.projectId`
+      (the `updates.url` in `app.config.js` derives from this automatically —
+      one edit, nothing else to change).
+- [ ] Confirm `eas.json` build-profile channels (`development` / `preview` /
+      `production`) match the channels you intend to `eas update --branch <x>`
+      into — they're pre-wired but unverified against the real project.
+- [ ] Run `eas build` at least once per platform/profile AFTER the real
+      projectId is set, so the installed binary embeds the correct update URL
+      + channel (an OTA-eligible build cannot be retrofitted after the fact).
+- [ ] Publish the first OTA update: `eas update --branch production --message "..."`.
+- [ ] Verify on a real device: install the build, publish a trivial OTA change,
+      background/foreground the app (or cold-restart), confirm the change
+      appears without a store update.
+
 ## Pre-Submit Checklist
 
 - [ ] Bundle ID matches `com.praycalc.praycalcApp` in app.json

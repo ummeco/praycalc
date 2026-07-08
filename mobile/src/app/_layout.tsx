@@ -22,6 +22,7 @@ import i18next, { useTranslation } from '../i18n';
 import { GqlClientProvider } from '../lib/graphql';
 import { parseDeepLink } from '../lib/deepLinkRoutes';
 import { registerIAPListener } from '../lib/iap/IAPListener';
+import { useOtaUpdates } from '../lib/updates/otaUpdates';
 import {
   registerRescheduleTask,
   schedulePrayerNotifications,
@@ -29,6 +30,14 @@ import {
 import { playAdhan } from '../features/adhan/services/AdhanAudioService';
 import { useSettingsStore } from '../features/settings/store/useSettingsStore';
 import type { PrayerName } from '../types/prayer';
+import { initSentry } from '../lib/sentry';
+
+// Crash reporting: no-ops when EXPO_PUBLIC_SENTRY_DSN is unset (see sentry.ts).
+// Runs at module scope, immediately after the RTL side-effect import above,
+// so it activates as early as possible — before the React tree renders and
+// before any of the effects below (IAP listener, notification scheduling)
+// can throw. Never throws itself even when Sentry is disabled.
+initSentry();
 
 /**
  * Route praycalc:// deep links (cold start + foreground) to the matching screen.
@@ -103,6 +112,7 @@ export default function RootLayout() {
   const { t } = useTranslation();
   useDeepLinkRouting();
   useAdhanOnNotificationTap();
+  useOtaUpdates();
 
   // Same resolution rule as useThemeColors(): 'system' follows the OS, else forced.
   // Duplicated here (rather than calling useThemeColors) so the root layout doesn't

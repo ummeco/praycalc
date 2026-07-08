@@ -47,6 +47,7 @@
     "expo-store-review": "~8.0.0",
     "expo-system-ui": "~4.0.0",
     "expo-task-manager": "~12.0.0",
+    "expo-updates": "~0.28.18",
     "geomagnetism": "^0.2.0",
     "graphql": "^16.10.0",
     "i18next": "^23.15.2",
