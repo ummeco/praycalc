@@ -22,7 +22,7 @@ import { useTranslation } from '../../../i18n';
 import { useThemeColors } from '../../../hooks/useThemeColors';
 import type { ThemeColors } from '../../../constants/colors';
 import {
-  LoadingState, ErrorState, EmptyState, OfflineState, SkeletonState,
+  ErrorState, EmptyState, SkeletonState,
 } from '../../../components/states';
 import { playAdhan, stopAdhan } from '../services/AdhanAudioService';
 import { useSettingsStore } from '../../settings/store/useSettingsStore';

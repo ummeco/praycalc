@@ -90,7 +90,7 @@ export function ErrorState({
           style={styles.button}
           onPress={onRetry}
           accessibilityRole="button"
-          accessibilityLabel="Retry"
+          accessibilityLabel={t('common.retry')}
         >
           <Text style={styles.buttonText}>{t('common.retry')}</Text>
         </TouchableOpacity>
@@ -191,7 +191,7 @@ export function PermissionDeniedState({
           style={styles.button}
           onPress={onOpenSettings}
           accessibilityRole="button"
-          accessibilityLabel="Open system settings"
+          accessibilityLabel={t('common.openSettings')}
         >
           <Text style={styles.buttonText}>{t('common.openSettings')}</Text>
         </TouchableOpacity>
@@ -221,7 +221,7 @@ export function RateLimitedState({ retryAfter, onRetry }: {
           style={styles.button}
           onPress={onRetry}
           accessibilityRole="button"
-          accessibilityLabel="Retry request"
+          accessibilityLabel={t('common.retry')}
         >
           <Text style={styles.buttonText}>{t('common.retry')}</Text>
         </TouchableOpacity>

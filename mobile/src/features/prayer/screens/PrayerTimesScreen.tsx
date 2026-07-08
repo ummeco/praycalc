@@ -16,7 +16,6 @@ import {
   ScrollView,
   StyleSheet,
   TouchableOpacity,
-  I18nManager,
   Share,
 } from 'react-native';
 import * as Location from 'expo-location';
@@ -39,7 +38,6 @@ import { PRAYER_LABEL_KEYS, DISPLAY_PRAYERS as PRAYER_ORDER } from '../../../con
 import { recordSuccessAndMaybeRequestReview } from '../../../lib/review';
 import { buildPrayerTimesShareText } from '../../../lib/share';
 import {
-  LoadingState,
   SkeletonCard,
   EmptyState,
   ErrorState,

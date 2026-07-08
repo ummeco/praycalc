@@ -21,7 +21,7 @@ import * as Location from 'expo-location';
 import { useTranslation } from '../../i18n';
 import { useThemeColors } from '../../hooks/useThemeColors';
 import type { ThemeColors } from '../../constants/colors';
-import { LoadingState, ErrorState, EmptyState, OfflineState } from '../../components/states';
+import { LoadingState, EmptyState, OfflineState } from '../../components/states';
 import { useSettingsStore } from '../settings/store/useSettingsStore';
 import type { CityCoords } from '../../types/prayer';
 

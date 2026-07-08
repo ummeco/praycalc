@@ -55,7 +55,6 @@ export default function IslamicCalendarScreen() {
     gregorianDate,
     hijriDate,
     currentMonth,
-    islamicEvents,
     eventsThisMonth,
     navigateMonth,
     setDate,
@@ -99,20 +98,30 @@ export default function IslamicCalendarScreen() {
 
       {/* Month Navigation */}
       <View style={styles.navigation}>
-        <TouchableOpacity style={styles.navButton} onPress={() => navigateMonth(-1)}>
+        <TouchableOpacity
+          style={styles.navButton}
+          onPress={() => navigateMonth(-1)}
+          accessibilityRole="button"
+          accessibilityLabel={t('screens.timetable.previousMonth')}
+        >
           <Text style={styles.navButtonText}>‹</Text>
         </TouchableOpacity>
         <View style={styles.monthTitle}>
           <Text style={styles.monthTitleText}>{`${monthName} ${year}`}</Text>
           <Text style={styles.monthHijriText}>{hijriDate.monthName}</Text>
         </View>
-        <TouchableOpacity style={styles.navButton} onPress={() => navigateMonth(1)}>
+        <TouchableOpacity
+          style={styles.navButton}
+          onPress={() => navigateMonth(1)}
+          accessibilityRole="button"
+          accessibilityLabel={t('screens.timetable.nextMonth')}
+        >
           <Text style={styles.navButtonText}>›</Text>
         </TouchableOpacity>
       </View>
 
       {/* Weekday Labels — Friday (index 5) highlighted for Jumu'ah */}
-      <View style={styles.weekdayRow}>
+      <View style={styles.weekdayRow} accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
         {weekdayLabels.map((d, i) => (
           <Text key={`${d}-${i}`} style={[styles.weekdayLabel, i === 5 && styles.jumuah]}>
             {d}
@@ -135,6 +144,9 @@ export default function IslamicCalendarScreen() {
               key={day}
               style={[styles.cell, isToday && styles.cellToday, isSelected && styles.cellSelected]}
               onPress={() => setDate(new Date(year, month, day))}
+              accessibilityRole="button"
+              accessibilityLabel={`${monthName} ${day}, ${year}`}
+              accessibilityState={{ selected: isSelected }}
             >
               <Text style={[styles.cellText, isToday && styles.cellTodayText, isSelected && styles.cellSelectedText]}>
                 {day}
@@ -179,9 +191,9 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
   gregorianDate: { fontSize: 14, color: colors.text.inverse, opacity: 0.8 },
   navigation: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   navButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 44,
+    height: 44,
+    borderRadius: 22,
     backgroundColor: colors.background.secondary,
     alignItems: 'center',
     justifyContent: 'center',

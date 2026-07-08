@@ -21,7 +21,7 @@ import {
 import { useTranslation } from '../../i18n';
 import { useThemeColors } from '../../hooks/useThemeColors';
 import type { ThemeColors } from '../../constants/colors';
-import { SkeletonState, EmptyState } from '../../components/states';
+import { EmptyState } from '../../components/states';
 import { mmkv } from '../../lib/storage/mmkv';
 import SURAH_META from './data/surahs.json';
 import { loadAyahs, AYAT_AL_KURSI_VERSE, type Ayah } from './data/verses';

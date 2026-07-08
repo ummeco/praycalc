@@ -114,6 +114,9 @@ export default function AuthScreen() {
               key={tab}
               style={[styles.tab, activeTab === tab && styles.tabActive]}
               onPress={() => setActiveTab(tab)}
+              accessibilityRole="tab"
+              accessibilityState={{ selected: activeTab === tab }}
+              accessibilityLabel={tab === 'anonymous' ? t('screens.auth.tabSkip') : tab.charAt(0).toUpperCase() + tab.slice(1)}
             >
               <Text style={[styles.tabText, activeTab === tab && styles.tabTextActive]}>
                 {tab === 'anonymous' ? t('screens.auth.tabSkip') : tab.charAt(0).toUpperCase() + tab.slice(1)}
@@ -138,7 +141,12 @@ export default function AuthScreen() {
                 <Text key={f} style={styles.featureItem}>✓ {f}</Text>
               ))}
             </View>
-            <TouchableOpacity style={styles.primaryButton} onPress={handleAnonymous}>
+            <TouchableOpacity
+              style={styles.primaryButton}
+              onPress={handleAnonymous}
+              accessibilityRole="button"
+              accessibilityLabel={t('screens.auth.continueAnonymously')}
+            >
               <Text style={styles.primaryButtonText}>{t('screens.auth.continueAnonymously')}</Text>
             </TouchableOpacity>
           </View>
@@ -157,6 +165,7 @@ export default function AuthScreen() {
               autoCapitalize="none"
               autoCorrect={false}
               placeholderTextColor={colors.text.muted}
+              accessibilityLabel={t('screens.auth.emailPlaceholder')}
             />
             <TextInput
               style={styles.input}
@@ -165,8 +174,14 @@ export default function AuthScreen() {
               onChangeText={setPassword}
               secureTextEntry
               placeholderTextColor={colors.text.muted}
+              accessibilityLabel={t('screens.auth.passwordPlaceholder')}
             />
-            <TouchableOpacity style={styles.primaryButton} onPress={handleAccountLogin}>
+            <TouchableOpacity
+              style={styles.primaryButton}
+              onPress={handleAccountLogin}
+              accessibilityRole="button"
+              accessibilityLabel={t('common.signIn')}
+            >
               <Text style={styles.primaryButtonText}>{t('common.signIn')}</Text>
             </TouchableOpacity>
             <Text style={styles.switchHint}>
@@ -186,6 +201,7 @@ export default function AuthScreen() {
               onChangeText={setDisplayName}
               autoCapitalize="words"
               placeholderTextColor={colors.text.muted}
+              accessibilityLabel={t('screens.auth.namePlaceholder')}
             />
             <TextInput
               style={styles.input}
@@ -196,6 +212,7 @@ export default function AuthScreen() {
               autoCapitalize="none"
               autoCorrect={false}
               placeholderTextColor={colors.text.muted}
+              accessibilityLabel={t('screens.auth.emailPlaceholder')}
             />
             <TextInput
               style={styles.input}
@@ -204,8 +221,14 @@ export default function AuthScreen() {
               onChangeText={setPassword}
               secureTextEntry
               placeholderTextColor={colors.text.muted}
+              accessibilityLabel={t('screens.auth.passwordPlaceholder')}
             />
-            <TouchableOpacity style={styles.primaryButton} onPress={handleAccountRegister}>
+            <TouchableOpacity
+              style={styles.primaryButton}
+              onPress={handleAccountRegister}
+              accessibilityRole="button"
+              accessibilityLabel={t('common.createAccount')}
+            >
               <Text style={styles.primaryButtonText}>{t('common.createAccount')}</Text>
             </TouchableOpacity>
           </View>

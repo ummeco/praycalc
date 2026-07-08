@@ -274,11 +274,23 @@ function Stepper({
 }) {
   return (
     <View style={styles.stepper}>
-      <TouchableOpacity style={styles.stepperButton} onPress={onDecrease} accessibilityLabel={decreaseLabel}>
+      <TouchableOpacity
+        style={styles.stepperButton}
+        onPress={onDecrease}
+        accessibilityRole="button"
+        accessibilityLabel={decreaseLabel}
+        hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
+      >
         <Text style={styles.stepperButtonText}>−</Text>
       </TouchableOpacity>
       <Text style={styles.stepperValue}>{value} {unit}</Text>
-      <TouchableOpacity style={styles.stepperButton} onPress={onIncrease} accessibilityLabel={increaseLabel}>
+      <TouchableOpacity
+        style={styles.stepperButton}
+        onPress={onIncrease}
+        accessibilityRole="button"
+        accessibilityLabel={increaseLabel}
+        hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
+      >
         <Text style={styles.stepperButtonText}>+</Text>
       </TouchableOpacity>
     </View>
