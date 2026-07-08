@@ -17,6 +17,14 @@ export type DisplayMode = 'countdown' | 'time';
 export type NameFormat = 'abbrev' | 'full';
 export type CountdownPrefix = 'minus' | 'none' | 'in';
 
+/** Result of a geo-IP "Detect Location" lookup — feeds Settings location form. */
+export interface DetectedLocation {
+  city: string;
+  lat: number;
+  lng: number;
+  tz?: string;
+}
+
 export interface Settings {
   lat: number;
   lng: number;

@@ -1,8 +1,9 @@
 /**
  * Purpose: Typed Hasura GraphQL client for the "My TVs" feature (pc_tv_settings, role
- *   `user`) — list/update/delete the signed-in user's paired TVs from the desktop app.
+ *   `user`) — list/update/delete the signed-in user's paired TVs, plus claim a new TV by
+ *   PIN (pc_tv_pairing) from the desktop app.
  * Inputs: an AuthSession (from lib/auth-store.ts) for the Bearer token; TvSettingsPatch
- *   objects for updates.
+ *   objects for updates; a 6-digit PIN string for pairing.
  * Outputs: TvSettings[] / TvSettings on success; throws a short Error message on failure
  *   (mirrors auth.ts's signIn/signUp contract) so callers can show it in the UI.
  * Constraints: no `any`; per-app CORS endpoint (api.praycalc.com, NOT admin api.ummat.dev)
@@ -11,7 +12,12 @@
  *   scheduleRefresh pattern already used for the proactive 60s-before-expiry refresh.
  *   Rows are scoped to the signed-in user by Hasura's `user` role permissions
  *   (session variable), not by a client-supplied where-clause, so no user_id filter is
- *   sent from here.
+ *   sent from here. Pairing claims an EXISTING pc_tv_pairing row by PIN via UPDATE (never
+ *   INSERT/on_conflict) so the TV's own server-assigned device_id is never overwritten by
+ *   a client-generated id — the physical TV polls its settings/paired-state by that stable
+ *   device_id, so clobbering it breaks sync and makes the TV look unpaired after reboot.
+ *   Then best-effort seeds pc_tv_settings for the returned device_id (on_conflict never
+ *   overwrites an existing `name`).
  * SPORT: praycalc desktop — TV management (GraphQL client).
  */
 import type { AuthSession } from './auth-types';
@@ -87,6 +93,15 @@ const TV_FIELDS = `
   longitude
   city
   timezone
+  countdown_takeover_enabled
+  countdown_minutes
+  iqama_enabled
+  iqama_offsets
+  name_only_enabled
+  name_only_minutes
+  calc_method
+  madhab
+  time_format
 `;
 
 const LIST_TVS_QUERY = `
@@ -153,4 +168,78 @@ export async function deleteTvSettings(
 /** Convenience: load the persisted session (used by TvManager to avoid re-reading auth-store). */
 export async function loadSessionForTvs(): Promise<AuthSession | null> {
   return loadPersistedSession();
+}
+
+const PIN_PATTERN = /^\d{6}$/;
+
+/** Validate a 6-digit PIN string (matches mobile's pairingMutation.ts isValidPin). */
+export function isValidPin(pin: string): boolean {
+  return PIN_PATTERN.test(pin);
+}
+
+// Claims an EXISTING pc_tv_pairing row by PIN via UPDATE — never INSERT/on_conflict, and
+// never sends a device_id. The TV pre-registers its own row (with its stable device_id)
+// when it boots into pairing mode; the desktop client only flips paired:true on the row
+// matching the PIN the TV is displaying. Hasura's `user` role sets user_id via a session
+// variable preset on this mutation (never sent from the client). Verified live against
+// prod api.praycalc.com under the `user` role — do not deviate from this shape.
+const CLAIM_TV_MUTATION = `
+  mutation ClaimTv($pin: String!) {
+    update_pc_tv_pairing(
+      where: { pin: { _eq: $pin }, is_active: { _eq: true }, paired: { _eq: false } }
+      _set: { paired: true }
+    ) {
+      affected_rows
+      returning {
+        device_id
+      }
+    }
+  }
+`;
+
+// Seeds the pc_tv_settings management row for a freshly-claimed device. `name` is only
+// set on INSERT (on_conflict update_columns omits it) so re-pairing never clobbers a
+// name the user already customized here.
+const SEED_TV_SETTINGS_MUTATION = `
+  mutation SeedTvSettings($deviceId: String!, $name: String!) {
+    insert_pc_tv_settings_one(
+      object: { device_id: $deviceId, name: $name }
+      on_conflict: { constraint: pc_tv_settings_device_key, update_columns: [] }
+    ) {
+      id
+      device_id
+      name
+    }
+  }
+`;
+
+export const DEFAULT_CLAIMED_TV_NAME = 'My TV';
+
+/**
+ * Claim a pc_tv_pairing PIN for this account (Plus-gated by Hasura permission) by
+ * UPDATE-ing the existing pending row, then best-effort seed the pc_tv_settings row so
+ * the new TV appears in the list immediately. The claimed row's own device_id (assigned
+ * by the TV, never the client) is used for the seed. Claim failure (no matching row —
+ * wrong/expired/already-claimed PIN) throws; seed failure is swallowed since the claim
+ * itself already succeeded.
+ */
+export async function claimTvPairing(
+  session: AuthSession,
+  pin: string,
+): Promise<{ session: AuthSession }> {
+  if (!isValidPin(pin)) throw new Error('PIN must be exactly 6 digits.');
+
+  const { data, session: next } = await requestWithRefresh<{
+    update_pc_tv_pairing: { affected_rows: number; returning: { device_id: string }[] };
+  }>(session, CLAIM_TV_MUTATION, { pin });
+  if (data.update_pc_tv_pairing.affected_rows === 0) throw new Error('Invalid or expired PIN.');
+  const deviceId = data.update_pc_tv_pairing.returning[0]?.device_id;
+  if (!deviceId) throw new Error('Invalid or expired PIN.');
+
+  await requestWithRefresh(next, SEED_TV_SETTINGS_MUTATION, {
+    deviceId,
+    name: DEFAULT_CLAIMED_TV_NAME,
+  }).catch(() => undefined);
+
+  return { session: next };
 }
