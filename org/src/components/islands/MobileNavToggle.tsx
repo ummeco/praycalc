@@ -1,17 +1,19 @@
 // FILE: src/components/islands/MobileNavToggle.tsx
 // PURPOSE: Astro island — mobile navigation drawer toggle.
-//   Client-side React 19 component that renders a hamburger button
-//   and slide-out nav drawer for mobile viewports.
+//   Renders ONLY a hamburger button in the header; opening it shows a full-screen
+//   overlay drawer (Protocol mobile-nav style). The site header already provides
+//   the top bar + logo, so this no longer renders its own header row.
 // INPUTS: navigation (NavGroup[]), currentPath (string)
-// OUTPUTS: Accessible mobile nav trigger + drawer
+// OUTPUTS: Accessible hamburger trigger + full-screen overlay nav drawer
 // CONSTRAINTS:
-//   - client:load directive — hydrates immediately for mobile UX
+//   - client:load — hydrates immediately for mobile UX
 //   - No framer-motion; CSS transitions only for bundle size
-// REF: T-01 (P2-E3-W01-S01) · D-P2-REACT19
+// REF: T-01 (P2-E3-W01-S01) · D-P2-REACT19 · Protocol re-skin (MobileNavigation.tsx)
 
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import type { NavGroup } from '../../lib/navigation';
 
 interface Props {
@@ -27,76 +29,129 @@ function isActive(href: string, path: string): boolean {
 export default function MobileNavToggle({ navigation, currentPath }: Props) {
   const [open, setOpen] = useState(false);
 
+  // Lock body scroll while the drawer is open.
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [open]);
+
+  // Close on Escape.
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setOpen(false);
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [open]);
+
   return (
     <>
-      {/* Mobile header bar */}
-      <div className="flex items-center justify-between border-b border-zinc-200 px-4 py-3 dark:border-zinc-800">
-        <a href="/" className="flex items-center gap-2 font-semibold text-zinc-900 dark:text-white">
-          <span>PrayCalc</span>
-          <span className="rounded bg-green-100 px-1.5 py-0.5 text-xs font-medium text-green-800 dark:bg-green-900 dark:text-green-200">
-            docs
-          </span>
-        </a>
-        <button
-          type="button"
-          onClick={() => setOpen(!open)}
-          aria-expanded={open}
-          aria-controls="mobile-nav"
-          aria-label={open ? 'Close navigation' : 'Open navigation'}
-          className="rounded-md p-2 text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800"
-        >
-          {open ? (
-            <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-              <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
-            </svg>
-          ) : (
-            <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-              <path fillRule="evenodd" d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10zm0 5.25a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75a.75.75 0 01-.75-.75z" clipRule="evenodd" />
-            </svg>
-          )}
-        </button>
-      </div>
+      {/* Hamburger button — sits in the site header */}
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        aria-expanded={open}
+        aria-controls="mobile-nav"
+        aria-label="Open navigation"
+        className="flex h-8 w-8 items-center justify-center rounded-md text-zinc-600 transition hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-white/5"
+      >
+        <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+          <path
+            fillRule="evenodd"
+            d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10zm0 5.25a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75a.75.75 0 01-.75-.75z"
+            clipRule="evenodd"
+          />
+        </svg>
+      </button>
 
-      {/* Drawer */}
-      {open && (
+      {/* Full-screen overlay drawer — portalled to <body> so the sticky header's
+          backdrop-blur (which forms a containing block for `fixed`) can't trap it. */}
+      {open && typeof document !== 'undefined' && createPortal(
         <div
           id="mobile-nav"
-          className="border-b border-zinc-200 bg-white px-4 pb-6 dark:border-zinc-800 dark:bg-zinc-950"
+          className="fixed inset-0 z-50 lg:hidden"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Navigation"
         >
-          <nav aria-label="Mobile navigation">
-            <ul className="space-y-6 pt-4">
-              {navigation.map((group) => (
-                <li key={group.title}>
-                  <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-                    {group.title}
-                  </p>
-                  <ul className="space-y-1">
-                    {group.links.map((link) => {
-                      const active = isActive(link.href, currentPath);
-                      return (
-                        <li key={link.href}>
-                          <a
-                            href={link.href}
-                            aria-current={active ? 'page' : undefined}
-                            onClick={() => setOpen(false)}
-                            className={[
-                              'block rounded-md px-3 py-1.5 text-sm transition-colors',
-                              active
-                                ? 'bg-green-50 font-medium text-green-800 dark:bg-green-950 dark:text-green-300'
-                                : 'text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-900 dark:hover:text-white',
-                            ].join(' ')}
-                          >
-                            {link.title}
-                          </a>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                </li>
-              ))}
-            </ul>
-          </nav>
-        </div>
+          {/* Backdrop */}
+          <div
+            className="absolute inset-0 bg-zinc-900/40 backdrop-blur-sm"
+            onClick={() => setOpen(false)}
+            aria-hidden="true"
+          />
+
+          {/* Panel */}
+          <div className="absolute inset-y-0 left-0 w-full max-w-xs overflow-y-auto bg-white px-5 pb-8 pt-4 ring-1 ring-zinc-900/10 dark:bg-zinc-900 dark:ring-white/10">
+            <div className="flex items-center justify-between">
+              <a
+                href="/"
+                className="flex items-center gap-2 font-semibold text-zinc-900 dark:text-white"
+                onClick={() => setOpen(false)}
+              >
+                <span>PrayCalc</span>
+                <span className="rounded bg-emerald-500/10 px-1.5 py-0.5 text-[0.7rem] font-medium text-emerald-700 ring-1 ring-inset ring-emerald-500/20 dark:bg-emerald-400/10 dark:text-emerald-300 dark:ring-emerald-400/20">
+                  docs
+                </span>
+              </a>
+              <button
+                type="button"
+                onClick={() => setOpen(false)}
+                aria-label="Close navigation"
+                className="flex h-8 w-8 items-center justify-center rounded-md text-zinc-600 transition hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-white/5"
+              >
+                <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                  <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
+                </svg>
+              </button>
+            </div>
+
+            <nav aria-label="Mobile navigation" className="mt-6">
+              <ul className="space-y-7">
+                {navigation.map((group) => (
+                  <li key={group.title}>
+                    <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+                      {group.title}
+                    </p>
+                    <div className="relative pl-2">
+                      <div className="absolute inset-y-0 left-0 w-px bg-zinc-900/10 dark:bg-white/10" />
+                      <ul className="space-y-0.5">
+                        {group.links.map((link) => {
+                          const active = isActive(link.href, currentPath);
+                          return (
+                            <li key={link.href}>
+                              <a
+                                href={link.href}
+                                aria-current={active ? 'page' : undefined}
+                                onClick={() => setOpen(false)}
+                                className={[
+                                  'block rounded-md px-3 py-1.5 text-sm transition-colors',
+                                  active
+                                    ? 'font-medium text-emerald-700 dark:text-emerald-400'
+                                    : 'text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white',
+                                ].join(' ')}
+                              >
+                                {link.title}
+                              </a>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          </div>
+        </div>,
+        document.body,
       )}
     </>
   );

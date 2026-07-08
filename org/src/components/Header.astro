@@ -1,17 +1,18 @@
 ---
 // FILE: src/components/Header.astro
-// PURPOSE: Sticky top-bar parity with original Header.tsx.
-//   Left: PrayCalc docs logo/wordmark (link to /).
-//   Right: search trigger (dispatches 'open-search' custom event + Cmd/Ctrl+K),
-//          ThemeToggle island, MobileNavToggle trigger slot.
+// PURPOSE: Sticky top-bar — Protocol parity, green-tuned.
+//   Left: PrayCalc logo mark + wordmark (link to /).
+//   Right: top-level nav (Science / Packages / GitHub), divider, search trigger
+//          (dispatches 'open-search' + Cmd/Ctrl+K), ThemeToggle island,
+//          MobileNavToggle trigger.
+//   Scroll-driven background: transparent-ish at top, blurs + gains a hairline
+//   bottom border once the page scrolls (Protocol's scroll opacity behaviour).
 // INPUTS: navigation (NavGroup[]), currentPath (string)
 // OUTPUTS: <header> element with sticky positioning and scroll-driven blur
-// CONSTRAINTS:
-//   - No next.js / next-themes imports
-//   - Search modal is a later epic — only wire the trigger here
-//   - Scroll bg/blur via tiny inline script + .header-scrolled CSS class
-// REF: Epic B-1
+// CONSTRAINTS: no next.js imports; scroll bg via inline script + .header-scrolled
+// REF: Epic B-1 · Protocol re-skin (36996b7~1: Header.tsx, Logo.tsx)
 
+import Logo from './Logo.astro';
 import ThemeToggle from './islands/ThemeToggle';
 import MobileNavToggle from './islands/MobileNavToggle';
 import type { NavGroup } from '../lib/navigation';
@@ -26,78 +27,105 @@ const { navigation, currentPath } = Astro.props;
 
 <header
   id="site-header"
-  class="sticky top-0 z-40 flex h-14 w-full items-center justify-between gap-4 border-b border-transparent bg-white/80 px-4 backdrop-blur-sm transition-all dark:bg-zinc-950/80 sm:px-6"
+  class="sticky top-0 z-40 flex h-14 w-full items-center justify-between gap-8 border-b border-transparent px-4 backdrop-blur-sm transition-all sm:px-6"
 >
-  <!-- Left: logo wordmark -->
+  <!-- Left: logo mark + wordmark -->
   <a
     href="/"
-    class="flex shrink-0 items-center gap-2 font-semibold text-zinc-900 dark:text-white"
+    class="flex shrink-0 items-center gap-2"
     aria-label="PrayCalc docs home"
   >
-    <span class="text-base leading-none">PrayCalc</span>
-    <span class="rounded bg-green-100 px-1.5 py-0.5 text-xs font-medium text-green-800 dark:bg-green-900 dark:text-green-200">
+    <Logo class="h-6 w-auto" />
+    <span class="rounded bg-emerald-500/10 px-1.5 py-0.5 text-[0.7rem] font-medium text-emerald-700 ring-1 ring-inset ring-emerald-500/20 dark:bg-emerald-400/10 dark:text-emerald-300 dark:ring-emerald-400/20">
       docs
     </span>
   </a>
 
   <!-- Right controls -->
-  <div class="flex items-center gap-1">
-    <!-- Search trigger — actual modal wired by a later epic via 'open-search' event -->
-    <button
-      id="search-trigger"
-      type="button"
-      aria-label="Search docs"
-      class="hidden items-center gap-2 rounded-lg border border-zinc-200 bg-white px-3 py-1.5 text-sm text-zinc-500 shadow-sm transition hover:border-zinc-300 hover:text-zinc-700 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-400 dark:hover:border-zinc-600 dark:hover:text-zinc-200 sm:flex"
-    >
-      <svg class="h-4 w-4 shrink-0" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M6.5 11a4.5 4.5 0 100-9 4.5 4.5 0 000 9zM14 14l-3-3" />
-      </svg>
-      <span>Search</span>
-      <kbd class="ml-1 hidden rounded border border-zinc-200 bg-zinc-100 px-1 py-0.5 font-mono text-xs text-zinc-400 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-500 lg:inline">
-        ⌘K
-      </kbd>
-    </button>
+  <div class="flex items-center gap-5">
+    <!-- Top-level nav (desktop) — Protocol parity -->
+    <nav class="hidden md:block">
+      <ul class="flex items-center gap-8">
+        <li>
+          <a href="/science/solar-position" class="text-sm/5 text-zinc-600 transition hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white">Science</a>
+        </li>
+        <li>
+          <a href="/packages/pray-calc" class="text-sm/5 text-zinc-600 transition hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white">Packages</a>
+        </li>
+        <li>
+          <a href="https://github.com/acamarata" class="text-sm/5 text-zinc-600 transition hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white">GitHub</a>
+        </li>
+      </ul>
+    </nav>
 
-    <!-- Mobile search icon-only button -->
-    <button
-      id="search-trigger-mobile"
-      type="button"
-      aria-label="Search docs"
-      class="flex items-center justify-center rounded-md p-1.5 text-zinc-600 transition hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800 sm:hidden"
-    >
-      <svg class="h-5 w-5" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M6.5 11a4.5 4.5 0 100-9 4.5 4.5 0 000 9zM14 14l-3-3" />
-      </svg>
-    </button>
+    <div class="hidden md:block md:h-5 md:w-px md:bg-zinc-900/10 md:dark:bg-white/15"></div>
 
-    <!-- Theme toggle island -->
-    <ThemeToggle client:load />
+    <div class="flex items-center gap-1">
+      <!-- Search trigger (desktop) -->
+      <button
+        id="search-trigger"
+        type="button"
+        aria-label="Search docs"
+        class="hidden items-center gap-2 rounded-lg bg-zinc-100 px-3 py-1.5 text-sm text-zinc-500 ring-1 ring-zinc-900/10 transition hover:ring-zinc-900/20 dark:bg-white/5 dark:text-zinc-400 dark:ring-inset dark:ring-white/10 dark:hover:ring-white/20 sm:flex"
+      >
+        <svg class="h-4 w-4 shrink-0" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6.5 11a4.5 4.5 0 100-9 4.5 4.5 0 000 9zM14 14l-3-3" />
+        </svg>
+        <span>Search docs...</span>
+        <kbd class="ml-2 hidden rounded border border-zinc-300 bg-white px-1 py-0.5 font-mono text-[0.65rem] text-zinc-400 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-500 lg:inline">
+          ⌘K
+        </kbd>
+      </button>
 
-    <!-- Mobile nav toggle (hidden on desktop — desktop uses sidebar) -->
-    <div class="lg:hidden">
-      <MobileNavToggle navigation={navigation} currentPath={currentPath} client:load />
+      <!-- Mobile search icon-only button -->
+      <button
+        id="search-trigger-mobile"
+        type="button"
+        aria-label="Search docs"
+        class="flex items-center justify-center rounded-md p-1.5 text-zinc-600 transition hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-white/5 sm:hidden"
+      >
+        <svg class="h-5 w-5" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6.5 11a4.5 4.5 0 100-9 4.5 4.5 0 000 9zM14 14l-3-3" />
+        </svg>
+      </button>
+
+      <!-- Theme toggle island -->
+      <ThemeToggle client:load />
+
+      <!-- Mobile nav toggle (hidden on desktop — desktop uses sidebar) -->
+      <div class="lg:hidden">
+        <MobileNavToggle navigation={navigation} currentPath={currentPath} client:load />
+      </div>
     </div>
   </div>
 </header>
 
-<!-- Search trigger wiring: click + Cmd/Ctrl+K dispatches 'open-search' custom event -->
+<!-- Search trigger wiring + scroll-driven header background -->
 <script is:inline>
   (function () {
     function openSearch() {
       window.dispatchEvent(new CustomEvent('open-search'));
     }
-
-    var btns = ['search-trigger', 'search-trigger-mobile'];
-    btns.forEach(function (id) {
+    ['search-trigger', 'search-trigger-mobile'].forEach(function (id) {
       var el = document.getElementById(id);
       if (el) el.addEventListener('click', openSearch);
     });
-
     document.addEventListener('keydown', function (e) {
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
         e.preventDefault();
         openSearch();
       }
     });
+
+    // Protocol scroll-blur: solidify header background once scrolled past 32px.
+    var header = document.getElementById('site-header');
+    if (header) {
+      var onScroll = function () {
+        if (window.scrollY > 32) header.classList.add('header-scrolled');
+        else header.classList.remove('header-scrolled');
+      };
+      onScroll();
+      window.addEventListener('scroll', onScroll, { passive: true });
+    }
   })();
 </script>

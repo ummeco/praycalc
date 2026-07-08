@@ -1,0 +1,57 @@
+---
+// FILE: src/components/HeroPattern.astro
+// PURPOSE: Protocol's signature hero background — a skewed emerald→lime radial
+//   gradient panel overlaid with a subtle SVG grid, green-tuned to the PrayCalc
+//   brand. Ported from the original Protocol HeroPattern.tsx + GridPattern.tsx
+//   (Next.js/framer-motion) to a pure static Astro/SVG component (no JS).
+// INPUTS: none — sits behind hero content at -z-10 (see .hero-pattern in global.css)
+// OUTPUTS: absolutely-positioned decorative background div (aria-hidden)
+// CONSTRAINTS: no framer-motion; pure CSS/SVG. Colors from CSS vars/tokens.
+// REF: Protocol re-skin (36996b7~1: HeroPattern.tsx, GridPattern.tsx)
+
+// Grid geometry — mirrors the original GridPattern props.
+const width = 72;
+const height = 56;
+const squares: Array<[number, number]> = [
+  [4, 3],
+  [2, 1],
+  [7, 3],
+  [10, 6],
+];
+const patternId = 'hero-grid';
+---
+
+<div class="hero-pattern" aria-hidden="true">
+  <!-- Skewed brand gradient panel -->
+  <div class="hero-pattern__gradient"></div>
+
+  <!-- Overlaid grid, masked to fade at the top like the original -->
+  <svg class="hero-pattern__grid" fill="none">
+    <defs>
+      <pattern
+        id={patternId}
+        width={width}
+        height={height}
+        patternUnits="userSpaceOnUse"
+        x="-12"
+        y="4"
+      >
+        <path d={`M.5 ${height}V.5H${width}`} fill="none" stroke="currentColor" stroke-width="1" />
+      </pattern>
+    </defs>
+    <rect width="100%" height="100%" stroke-width="0" fill={`url(#${patternId})`}></rect>
+    <svg x="-12" y="4" class="overflow-visible">
+      {squares.map(([sx, sy]) => (
+        <rect
+          stroke-width="0"
+          width={width + 1}
+          height={height + 1}
+          x={sx * width}
+          y={sy * height}
+          fill="currentColor"
+          opacity="0.5"
+        />
+      ))}
+    </svg>
+  </svg>
+</div>

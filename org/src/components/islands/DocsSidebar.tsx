@@ -139,7 +139,7 @@ export default function DocsSidebar({ navigation, currentPath }: Props) {
                           {active && (
                             <motion.div
                               layoutId="active-page-marker"
-                              className="absolute -left-2 top-1.5 h-5 w-0.5 rounded-full bg-green-600 dark:bg-green-500"
+                              className="absolute -left-2 top-1.5 h-5 w-0.5 rounded-full bg-emerald-500 dark:bg-emerald-400"
                               initial={{ opacity: 0 }}
                               animate={{ opacity: 1 }}
                               exit={{ opacity: 0 }}

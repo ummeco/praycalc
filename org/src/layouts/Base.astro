@@ -92,7 +92,7 @@ const isRtl = ['ar', 'ur', 'fa'].includes(locale);
 
     <slot name="head" />
   </head>
-  <body class="flex min-h-full bg-white text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100">
+  <body class="flex min-h-full bg-white text-zinc-900 dark:bg-zinc-900 dark:text-zinc-100">
     <slot />
     <!-- Search modal island — listens for 'open-search' CustomEvent from Header.astro -->
     <Search client:only="react" />

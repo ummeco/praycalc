@@ -1,8 +1,10 @@
 /* FILE: src/styles/global.css
- * PURPOSE: Global styles for praycalc.org Astro 5 site.
- *   Tailwind 4 base layer + typography utilities + RTL support.
- *   Brand tokens are injected by astroUmmatInline (astro.config.ts) into <head>.
- * REF: T-01 (P2-E3-W01-S01) · D-P2-STACK-CANON
+ * PURPOSE: Global styles for praycalc.org Astro 5 site — Tailwind UI "Protocol"
+ *   theme, retuned to PrayCalc's green brand. Restores the original Protocol
+ *   design system (ported Next.js → Astro): green-tuned emerald palette, refined
+ *   slate dark theme, HeroPattern-ready gradients, Protocol prose typography,
+ *   inset-ring inline code, and shiki token colors.
+ * REF: T-01 (P2-E3-W01-S01) · D-P2-STACK-CANON · Protocol re-skin (36996b7~1)
  */
 
 @import "tailwindcss";
@@ -10,6 +12,44 @@
 
 /* Tailwind v4 dark variant — keys off .dark class on <html> */
 @custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  /* ── PrayCalc brand green palette ──────────────────────────────────────────
+   * Protocol ships indigo; PrayCalc is green. We override Tailwind's emerald
+   * scale so every Protocol `emerald-*` accent (links, active markers, gradients)
+   * renders in the PrayCalc brand greens (#C9F27A / #79C24C / #1E5E2F / #0D2F17).
+   * ────────────────────────────────────────────────────────────────────────── */
+  --color-emerald-300: #93CD24;
+  --color-emerald-400: #79C24C;
+  --color-emerald-500: #4A8C2A;
+  --color-emerald-600: #1E5E2F;
+
+  /* Protocol text scale (from the original tailwind.css @theme) */
+  --text-2xs: 0.75rem;
+  --text-2xs--line-height: 1.25rem;
+  --text-xs: 0.8125rem;
+  --text-xs--line-height: 1.5rem;
+  --text-sm: 0.875rem;
+  --text-sm--line-height: 1.5rem;
+  --text-base: 1rem;
+  --text-base--line-height: 1.75rem;
+  --text-lg: 1.125rem;
+  --text-lg--line-height: 1.75rem;
+  --text-xl: 1.25rem;
+  --text-xl--line-height: 1.75rem;
+  --text-2xl: 1.5rem;
+  --text-2xl--line-height: 2rem;
+  --text-3xl: 1.875rem;
+  --text-3xl--line-height: 2.25rem;
+  --text-4xl: 2.25rem;
+  --text-4xl--line-height: 2.5rem;
+  --text-5xl: 3rem;
+  --text-5xl--line-height: 1;
+  --text-6xl: 3.75rem;
+  --text-6xl--line-height: 1;
+
+  --shadow-glow: 0 0 4px rgb(0 0 0 / 0.1);
+}
 
 @layer base {
   :root {
@@ -19,7 +59,7 @@
     --pc-green-dark: #1E5E2F;
     --pc-green-deep: #0D2F17;
 
-    /* @ummat/brand semantic aliases (previously injected by astroUmmatInline) */
+    /* @ummat/brand semantic aliases */
     --brand-green-light: var(--pc-green-light);
     --brand-green-mid: var(--pc-green-mid);
     --brand-green-dark: var(--pc-green-dark);
@@ -28,6 +68,17 @@
     --brand-primary-hover: var(--pc-green-dark);
     --brand-accent: var(--pc-green-light);
     --brand-focus-ring: 0 0 0 3px rgba(121, 194, 76, 0.45);
+
+    /* Protocol shiki token palette (green-tuned) */
+    --shiki-color-text: #ffffff;
+    --shiki-token-constant: var(--color-emerald-300);
+    --shiki-token-string: var(--color-emerald-300);
+    --shiki-token-comment: #71717a;
+    --shiki-token-keyword: #7dd3fc;
+    --shiki-token-parameter: #f9a8d4;
+    --shiki-token-function: #c4b5fd;
+    --shiki-token-string-expression: var(--color-emerald-300);
+    --shiki-token-punctuation: #e4e4e7;
   }
 
   html {
@@ -35,7 +86,7 @@
     -webkit-text-size-adjust: 100%;
   }
 
-  /* RTL baseline — dir="rtl" is set by astroUmmatInline (astro.config.ts) per locale */
+  /* RTL baseline — dir="rtl" is set per locale in Base.astro */
   [dir="rtl"] {
     text-align: right;
   }
@@ -47,10 +98,13 @@
     border-radius: 2px;
   }
 
-  /* Code block base */
   pre {
     overflow-x: auto;
     border-radius: 0.5rem;
+  }
+
+  [inert] ::-webkit-scrollbar {
+    display: none;
   }
 }
 
@@ -60,35 +114,162 @@
   }
 }
 
-/* ── Brand prose overrides (ported from typography.ts; v4-compatible) ─────────
- * @tailwindcss/typography default is zinc; PrayCalc brand links are green.
- * DocPage also sets prose-a utilities, but these cover all prose surfaces.
+/* ── Header scroll-driven background (Protocol behaviour) ─────────────────────
+ * Base: translucent so the HeroPattern shows through at the top of the page.
+ * Scrolled (.header-scrolled): more opaque + hairline bottom border.
  * ─────────────────────────────────────────────────────────────────────────── */
-.prose {
-  --tw-prose-links: var(--pc-green-dark);
-  --tw-prose-invert-links: var(--pc-green-light);
+#site-header {
+  background-color: color-mix(in srgb, white 55%, transparent);
 }
-.dark .prose {
-  --tw-prose-links: var(--pc-green-light);
+.dark #site-header {
+  background-color: color-mix(in srgb, #18181b 30%, transparent);
 }
-
-/* Header scroll-driven background */
-.header-scrolled {
+#site-header.header-scrolled {
   background-color: color-mix(in srgb, white 90%, transparent);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border-bottom-width: 1px;
+  border-bottom-color: rgb(24 24 27 / 0.075);
+}
+.dark #site-header.header-scrolled {
+  background-color: color-mix(in srgb, #18181b 80%, transparent);
+  border-bottom-color: rgb(255 255 255 / 0.075);
 }
 
-.dark .header-scrolled {
-  background-color: color-mix(in srgb, #09090b 85%, transparent);
+/* ══════════════════════════════════════════════════════════════════════════════
+ * PROTOCOL PROSE TYPOGRAPHY
+ * Ported from the original typography.ts (Tailwind UI Protocol). Retuned so links
+ * use the PrayCalc greens. Applied on top of @tailwindcss/typography defaults.
+ * ══════════════════════════════════════════════════════════════════════════════ */
+.prose {
+  /* Light mode prose vars */
+  --tw-prose-body: #3f3f46;            /* zinc-700 */
+  --tw-prose-headings: #18181b;        /* zinc-900 */
+  --tw-prose-links: var(--pc-green-dark);
+  --tw-prose-bold: #18181b;
+  --tw-prose-counters: #71717a;        /* zinc-500 */
+  --tw-prose-bullets: #d4d4d8;         /* zinc-300 */
+  --tw-prose-hr: rgb(24 24 27 / 0.05);
+  --tw-prose-quotes: #18181b;
+  --tw-prose-quote-borders: #e4e4e7;   /* zinc-200 */
+  --tw-prose-captions: #71717a;
+  --tw-prose-code: #18181b;
+  --tw-prose-code-bg: #f4f4f5;         /* zinc-100 */
+  --tw-prose-code-ring: #d4d4d8;       /* zinc-300 */
+  --tw-prose-th-borders: #d4d4d8;
+  --tw-prose-td-borders: #e4e4e7;
+
+  font-size: 0.875rem;
+  line-height: 1.75rem;
 }
 
-/* ── Shiki dual-theme: dark variant ─────────────────────────────────────────
- * Astro 5 dual-theme emits --shiki-light/--shiki-dark CSS vars on each span.
- * Under .dark, swap to the dark token colors and dark background.
- * REF: https://docs.astro.build/en/guides/syntax-highlighting/#dual-theme
- * ─────────────────────────────────────────────────────────────────────────── */
+.dark .prose {
+  --tw-prose-body: #a1a1aa;            /* zinc-400 */
+  --tw-prose-headings: #ffffff;
+  --tw-prose-links: var(--pc-green-light);
+  --tw-prose-bold: #ffffff;
+  --tw-prose-counters: #a1a1aa;
+  --tw-prose-bullets: #52525b;         /* zinc-600 */
+  --tw-prose-hr: rgb(255 255 255 / 0.05);
+  --tw-prose-quotes: #f4f4f5;
+  --tw-prose-quote-borders: #3f3f46;   /* zinc-700 */
+  --tw-prose-captions: #a1a1aa;
+  --tw-prose-code: #ffffff;
+  --tw-prose-code-bg: rgb(63 63 70 / 0.15);
+  --tw-prose-code-ring: rgb(255 255 255 / 0.1);
+  --tw-prose-th-borders: #52525b;      /* zinc-600 */
+  --tw-prose-td-borders: #3f3f46;
+}
+
+/* Protocol heading scale — tighter than typography default */
+.prose :where(h1):not(:where([class~="not-prose"] *)) {
+  font-weight: 700;
+  font-size: 1.5rem;      /* 2xl */
+  line-height: 2rem;
+  margin-bottom: 0.5rem;
+}
+.prose :where(h2):not(:where([class~="not-prose"] *)) {
+  font-weight: 600;
+  font-size: 1.125rem;    /* lg */
+  line-height: 1.75rem;
+  margin-top: 4rem;
+  margin-bottom: 0.5rem;
+}
+.prose :where(h3):not(:where([class~="not-prose"] *)) {
+  font-weight: 600;
+  font-size: 1rem;        /* base */
+  line-height: 1.75rem;
+  margin-top: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+.prose :where(:is(h1, h2, h3) + *):not(:where([class~="not-prose"] *)) {
+  margin-top: 0;
+}
+
+/* Protocol link underline-on-hover treatment */
+.prose :where(a):not(:where([class~="not-prose"] *)) {
+  color: var(--tw-prose-links);
+  font-weight: 500;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 2px;
+  transition-property: color, text-decoration-color;
+  transition-duration: 150ms;
+}
+.prose :where(a):not(:where([class~="not-prose"] *)):hover {
+  text-decoration-color: color-mix(in srgb, var(--tw-prose-links) 40%, transparent);
+}
+
+/* Protocol inline code — inset ring + subtle bg, no back-tick pseudo content */
+.prose :where(code):not(:where([class~="not-prose"] *)) {
+  color: var(--tw-prose-code);
+  font-size: 0.75rem;
+  border-radius: 0.5rem;
+  padding: 0.125rem 0.375rem;
+  background-color: var(--tw-prose-code-bg);
+  box-shadow: inset 0 0 0 1px var(--tw-prose-code-ring);
+  font-weight: 500;
+}
+.prose :where(code):not(:where([class~="not-prose"] *))::before,
+.prose :where(code):not(:where([class~="not-prose"] *))::after {
+  content: none;
+}
+/* code inside a link/heading inherits color */
+.prose :where(a, h1, h2, h3, blockquote, thead th) code {
+  color: inherit;
+}
+/* fenced code blocks: no ring/bg on the inner code (handled by pre.astro-code) */
+.prose :where(pre code):not(:where([class~="not-prose"] *)) {
+  background-color: transparent;
+  box-shadow: none;
+  padding: 0;
+  font-size: inherit;
+  font-weight: inherit;
+  border-radius: 0;
+}
+
+/* Protocol table treatment */
+.prose :where(thead th):not(:where([class~="not-prose"] *)) {
+  font-weight: 600;
+}
+
+/* Full-bleed horizontal rules like Protocol */
+.prose :where(hr):not(:where([class~="not-prose"] *)) {
+  margin-top: 4rem;
+  margin-bottom: 4rem;
+}
+
+/* ── Brand-tuned code block (fenced) — deep slate panel ──────────────────────── */
+pre.astro-code {
+  position: relative;
+  border-radius: 0.75rem;
+  padding: 1rem 1.25rem;
+  font-size: 0.8125rem;
+  line-height: 1.5rem;
+  box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.06);
+}
+.dark pre.astro-code {
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.06);
+}
+
+/* ── Shiki dual-theme: dark variant ─────────────────────────────────────────── */
 .dark .astro-code,
 .dark .astro-code span {
   color: var(--shiki-dark) !important;
@@ -98,14 +279,10 @@
   text-decoration: var(--shiki-dark-text-decoration) !important;
 }
 
-/* ── Heading anchor links ────────────────────────────────────────────────────
- * rehype-autolink-headings appends a .heading-anchor <a> to h2/h3.
- * Hidden until the heading is hovered; keyboard-focusable.
- * ─────────────────────────────────────────────────────────────────────────── */
+/* ── Heading anchor links ────────────────────────────────────────────────────── */
 .prose :is(h2, h3) {
   position: relative;
 }
-
 .prose :is(h2, h3) a.heading-anchor {
   margin-inline-start: 0.4em;
   color: var(--pc-green-mid);
@@ -115,19 +292,12 @@
   transition: opacity 150ms ease;
   font-size: 0.9em;
 }
-
 .prose :is(h2, h3):hover a.heading-anchor,
 .prose :is(h2, h3) a.heading-anchor:focus {
   opacity: 1;
 }
 
-/* ── Code block copy button ─────────────────────────────────────────────────
- * Injected by astroUmmatInline injectScript; positioned inside pre.astro-code.
- * ─────────────────────────────────────────────────────────────────────────── */
-pre.astro-code {
-  position: relative;
-}
-
+/* ── Code block copy button ─────────────────────────────────────────────────── */
 .code-copy-btn {
   position: absolute;
   top: 0.5rem;
@@ -145,36 +315,82 @@ pre.astro-code {
   transition: opacity 150ms ease, background-color 150ms ease;
   user-select: none;
 }
-
 pre.astro-code:hover .code-copy-btn {
   opacity: 1;
 }
-
 .code-copy-btn:hover {
   background-color: rgba(255, 255, 255, 0.18);
   color: #fff;
 }
-
 .code-copy-btn--copied {
   border-color: var(--pc-green-mid);
   color: var(--pc-green-light);
   background-color: rgba(121, 194, 76, 0.15);
 }
-
-/* Light theme: adjust button colors against lighter background */
 :not(.dark) .code-copy-btn {
   border-color: rgba(0, 0, 0, 0.12);
   background-color: rgba(0, 0, 0, 0.04);
   color: rgba(0, 0, 0, 0.5);
 }
-
 :not(.dark) pre.astro-code:hover .code-copy-btn {
   background-color: rgba(0, 0, 0, 0.08);
   color: rgba(0, 0, 0, 0.8);
 }
-
 :not(.dark) .code-copy-btn--copied {
   border-color: var(--pc-green-dark);
   color: var(--pc-green-dark);
   background-color: rgba(30, 94, 47, 0.08);
+}
+
+/* ══════════════════════════════════════════════════════════════════════════════
+ * HERO PATTERN — Protocol's signature gradient + grid, green-tuned.
+ * Pure CSS/SVG (no framer-motion). A subtle emerald→lime radial gradient panel,
+ * skewed, with an overlaid grid mask. Sits behind the homepage hero (-z-10).
+ * ══════════════════════════════════════════════════════════════════════════════ */
+.hero-pattern {
+  position: absolute;
+  top: -3.5rem;                 /* extend up under the sticky header */
+  left: -1rem;
+  right: -1rem;
+  height: 30rem;
+  z-index: -10;
+  overflow: hidden;
+  pointer-events: none;
+  /* Fade the whole pattern out toward the bottom so it never has a hard edge. */
+  -webkit-mask-image: linear-gradient(to bottom, white 40%, transparent);
+  mask-image: linear-gradient(to bottom, white 40%, transparent);
+}
+.hero-pattern__gradient {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  height: 25rem;
+  width: 90rem;
+  margin-left: -45rem;
+  transform: skewY(-18deg);
+  transform-origin: top;
+  background-image: linear-gradient(to right, #36b49f, var(--pc-green-light));
+  -webkit-mask-image: radial-gradient(farthest-side at top, white, transparent);
+  mask-image: radial-gradient(farthest-side at top, white, transparent);
+  opacity: 0.16;
+}
+.dark .hero-pattern__gradient {
+  background-image: linear-gradient(to right, rgba(54, 180, 159, 0.30), rgba(201, 242, 122, 0.25));
+  opacity: 0.9;
+}
+.hero-pattern__grid {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  height: 25rem;
+  width: 90rem;
+  margin-left: -45rem;
+  transform: skewY(-18deg);
+  transform-origin: top;
+  color: rgb(0 0 0 / 0.08);
+  -webkit-mask-image: radial-gradient(farthest-side at top, white, transparent);
+  mask-image: radial-gradient(farthest-side at top, white, transparent);
+}
+.dark .hero-pattern__grid {
+  color: rgb(255 255 255 / 0.04);
 }
