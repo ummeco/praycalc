@@ -1,0 +1,167 @@
+/**
+ * Purpose: Shared StyleSheet factory for the "My TVs" manager screen and its
+ *   TvDeepSettings subcomponent — kept in one file so both consumers render
+ *   identical spacing/typography instead of duplicating StyleSheet.create blocks.
+ * Inputs: colors (ThemeColors, from useThemeColors())
+ * Outputs: createStyles(colors) — memoized by each caller via useMemo.
+ * Constraints: Any style key referenced by TvManagerScreen.tsx or TvDeepSettings.tsx
+ *   MUST live here — do not re-declare a local StyleSheet.create in either file.
+ * SPORT: REGISTRY-COMPONENTS.md#praycalc-mobile-tv-manager-styles
+ */
+
+import { StyleSheet } from 'react-native';
+import type { ThemeColors } from '../../constants/colors';
+
+export const createStyles = (colors: ThemeColors) => StyleSheet.create({
+  container: { flex: 1, backgroundColor: colors.background.primary },
+  scroll: { padding: 16, paddingBottom: 40, gap: 12 },
+  card: {
+    backgroundColor: colors.background.secondary,
+    borderRadius: 14,
+    overflow: 'hidden',
+  },
+  cardHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 16,
+    gap: 12,
+    minHeight: 64,
+  },
+  swatch: { width: 24, height: 24, borderRadius: 12, borderWidth: 1, borderColor: '#00000022' },
+  cardHeaderText: { flex: 1 },
+  cardName: { fontSize: 16, fontWeight: '700', color: colors.text.primary },
+  cardMeta: { fontSize: 13, color: colors.text.muted, marginTop: 2 },
+  chevron: { fontSize: 16, color: colors.text.muted },
+  cardBody: { padding: 16, paddingTop: 0, gap: 8 },
+  fieldLabel: { fontSize: 13, fontWeight: '600', color: colors.text.muted, marginTop: 8 },
+  nameInput: {
+    borderWidth: 1,
+    borderColor: colors.background.card,
+    borderRadius: 10,
+    padding: 12,
+    fontSize: 16,
+    color: colors.text.primary,
+    backgroundColor: colors.background.primary,
+    minHeight: 44,
+  },
+  swatchRow: { flexDirection: 'row', gap: 10 },
+  swatchOption: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    borderWidth: 2,
+    borderColor: 'transparent',
+  },
+  swatchOptionSelected: { borderColor: colors.brand.dark },
+  optionRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
+  optionChip: {
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: colors.brand.mid,
+    minHeight: 36,
+    justifyContent: 'center',
+  },
+  optionChipSelected: { backgroundColor: colors.brand.mid },
+  optionChipText: { fontSize: 13, color: colors.brand.dark, fontWeight: '600' },
+  optionChipTextSelected: { color: colors.text.inverse },
+  row: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 8 },
+  stepper: { flexDirection: 'row', alignItems: 'center', gap: 10 },
+  stepperButton: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: colors.background.primary,
+    borderWidth: 1,
+    borderColor: colors.brand.mid,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  stepperButtonText: { fontSize: 18, fontWeight: '700', color: colors.brand.dark, lineHeight: 20 },
+  stepperValue: { fontSize: 14, color: colors.text.primary, minWidth: 56, textAlign: 'center', fontVariant: ['tabular-nums'] },
+  secondaryButton: {
+    marginTop: 12,
+    padding: 12,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: colors.brand.mid,
+    alignItems: 'center',
+    minHeight: 44,
+    justifyContent: 'center',
+  },
+  secondaryButtonText: { fontSize: 14, fontWeight: '600', color: colors.brand.dark },
+  hint: { fontSize: 12, color: colors.text.muted, fontStyle: 'italic', marginTop: 4, lineHeight: 18 },
+  deleteButton: {
+    marginTop: 12,
+    padding: 12,
+    borderRadius: 10,
+    alignItems: 'center',
+    minHeight: 44,
+    justifyContent: 'center',
+  },
+  deleteButtonText: { fontSize: 14, fontWeight: '600', color: colors.state.error },
+  upsellCard: { gap: 12, alignItems: 'center', padding: 8 },
+  upsellBadge: {
+    backgroundColor: colors.brand.mid,
+    color: colors.text.inverse,
+    fontWeight: '700',
+    fontSize: 12,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 8,
+    overflow: 'hidden',
+  },
+  upsellTitle: { fontSize: 20, fontWeight: '700', color: colors.text.primary },
+  upsellDesc: { fontSize: 14, color: colors.text.muted, textAlign: 'center', lineHeight: 20 },
+  primaryButton: {
+    backgroundColor: colors.brand.dark,
+    borderRadius: 12,
+    padding: 16,
+    alignItems: 'center',
+  },
+  primaryButtonText: { color: colors.text.inverse, fontWeight: '700', fontSize: 16 },
+
+  // ── Deep settings (TvDeepSettings.tsx) ──────────────────────────────────────
+  deepToggle: {
+    marginTop: 12,
+    padding: 12,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: colors.background.card,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    minHeight: 44,
+  },
+  deepToggleText: { fontSize: 14, fontWeight: '600', color: colors.text.primary },
+  deepSection: {
+    marginTop: 12,
+    gap: 4,
+    borderTopWidth: 1,
+    borderTopColor: colors.background.card,
+    paddingTop: 12,
+  },
+  subSectionRow: {
+    flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 12,
+  },
+  subLabel: { fontSize: 13, fontWeight: '600', color: colors.text.primary },
+  prayerStepperRow: {
+    flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 8,
+  },
+  prayerLabel: { fontSize: 13, color: colors.text.primary, minWidth: 64 },
+  linkButton: { marginTop: 8, minHeight: 32, justifyContent: 'center' },
+  linkButtonText: { fontSize: 13, fontWeight: '600', color: colors.brand.dark, textDecorationLine: 'underline' },
+  coordRow: { flexDirection: 'row', gap: 10, marginTop: 8 },
+  coordField: { flex: 1, gap: 4 },
+  coordInput: {
+    borderWidth: 1,
+    borderColor: colors.background.card,
+    borderRadius: 10,
+    padding: 10,
+    fontSize: 14,
+    color: colors.text.primary,
+    backgroundColor: colors.background.primary,
+    minHeight: 40,
+  },
+});

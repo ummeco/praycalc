@@ -1,12 +1,18 @@
 /**
  * Purpose: Settings → "Pair TV" screen. User enters (or deep-links) the 6-digit PIN
- *   shown on the TV app and submits a GraphQL mutation to pair this account/device.
+ *   shown on the TV app and submits a GraphQL mutation to claim this account against
+ *   the TV's pre-inserted pc_tv_pairing row.
  * Inputs: useLocalSearchParams `pin` (from praycalc://pair?pin=NNNNNN deep link),
  *   manual PIN entry, useAuthStore (isPlus gate + JWT via urql client)
- * Outputs: pc_tv_pairing row insert/update; success/error UI
+ * Outputs: pc_tv_pairing row update (claim by PIN) + pc_tv_settings row seed; success/error UI
  * Constraints: Column names must match tv/src/lib/graphql/queries.ts CHECK_PRAYCALC_PAIRING
- *   exactly (pin, is_active, paired, user_id, device_id). Server (Hasura perms) also enforces
- *   Ummat+ entitlement — client shows the upsell instead of the form when !isPlus.
+ *   exactly (pin, is_active, paired, user_id, device_id). The claim mutation is an UPDATE
+ *   keyed on `pin` — it never sends a device_id, since the TV owns its own stable
+ *   device_id (see pairingMutation.ts header for the full rationale). The device_id used
+ *   to seed pc_tv_settings comes from the claim mutation's `returning[0].device_id`, not
+ *   from this device. `affected_rows === 0` means the PIN is invalid, already claimed, or
+ *   expired. Server (Hasura perms) also enforces Ummat+ entitlement — client shows the
+ *   upsell instead of the form when !isPlus.
  * SPORT: REGISTRY-COMPONENTS.md#praycalc-mobile-pair-tv-screen
  */
 
@@ -26,15 +32,15 @@ import { useThemeColors } from '../../../hooks/useThemeColors';
 import type { ThemeColors } from '../../../constants/colors';
 import { useAuthStore } from '../../auth/store/useAuthStore';
 import {
-  PAIR_TV_MUTATION,
+  CLAIM_TV_MUTATION,
   SEED_TV_SETTINGS_MUTATION,
   buildPairTvRequest,
   buildSeedTvSettingsRequest,
   isValidPin,
-  type PairTvVariables,
+  type ClaimTvResult,
+  type ClaimTvVariables,
   type SeedTvSettingsVariables,
 } from '../../../lib/pairing/pairingMutation';
-import { getOrCreateDeviceId } from '../../../lib/pairing/deviceId';
 import { ErrorState } from '../../../components/states';
 import { useActiveLocation } from '../../settings/store/useSettingsStore';
 
@@ -50,7 +56,7 @@ export default function PairTvScreen() {
   const [pin, setPin] = useState('');
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [, pairMutation] = useMutation<unknown, PairTvVariables>(PAIR_TV_MUTATION);
+  const [, claimMutation] = useMutation<ClaimTvResult, ClaimTvVariables>(CLAIM_TV_MUTATION);
   const [, seedTvSettingsMutation] = useMutation<unknown, SeedTvSettingsVariables>(
     SEED_TV_SETTINGS_MUTATION,
   );
@@ -69,7 +75,6 @@ export default function PairTvScreen() {
       return;
     }
     try {
-      const deviceId = await getOrCreateDeviceId();
       const location = activeLocation
         ? {
             latitude: activeLocation.latitude,
@@ -78,13 +83,19 @@ export default function PairTvScreen() {
             timezone: activeLocation.timezone,
           }
         : null;
-      const { variables } = buildPairTvRequest(pin, deviceId, location);
-      const result = await pairMutation(variables);
+      const { variables } = buildPairTvRequest(pin, location);
+      const result = await claimMutation(variables);
       if (result.error) {
         throw new Error(result.error.message);
       }
-      // Seed the pc_tv_settings management row (best-effort — pairing itself already
-      // succeeded above, so a failure here shouldn't block the success screen).
+      const claim = result.data?.update_pc_tv_pairing;
+      const deviceId = claim?.returning?.[0]?.device_id;
+      if (!claim || claim.affected_rows === 0 || !deviceId) {
+        throw new Error(t('screens.pairTv.invalidOrExpiredPin'));
+      }
+      // Seed the pc_tv_settings management row (best-effort — the claim itself already
+      // succeeded above, so a failure here shouldn't block the success screen). Uses the
+      // TV's real device_id returned by the claim, never a phone-generated one.
       const { variables: seedVariables } = buildSeedTvSettingsRequest(deviceId, location);
       await seedTvSettingsMutation(seedVariables).catch(() => undefined);
       setSuccess(true);
