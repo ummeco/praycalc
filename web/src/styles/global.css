@@ -98,16 +98,36 @@ html, body {
   inset-inline-start: 16px;
 }
 
-/* --- Logo sunrise --- */
+/* --- Logo sunrise (animated: the wordmark rises from behind the horizon) --- */
 .logo-sunrise-outer { position: relative; width: 100%; }
 .logo-sunrise {
   position: relative; width: 100%; display: flex; justify-content: center;
-  height: 215px; overflow: hidden;
+  align-items: flex-end; /* logo bottom rests on the horizon; no vertical stretch */
+  height: 215px; overflow: hidden; /* bottom edge IS the horizon */
+}
+.logo-sunrise img {
+  width: 100%; max-width: 420px; height: auto;
+  /* Rise from y=215 (fully hidden below the horizon) to resting at y=0. */
+  animation: sunrise-rise 6s cubic-bezier(0.25, 0.1, 0.25, 1) 0.1s both;
 }
 .logo-sunrise-glow {
   position: absolute; top: -60px; left: 0; right: 0; bottom: 0;
   pointer-events: none;
   background: radial-gradient(ellipse 80% 80% at 50% 100%, rgba(121, 194, 76, 0.22) 0%, transparent 70%);
+  /* Glow blooms in as the sun rises. */
+  animation: sunrise-glow 6s ease-out both;
+}
+@keyframes sunrise-rise {
+  from { transform: translateY(215px); }
+  to   { transform: translateY(0); }
+}
+@keyframes sunrise-glow {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .logo-sunrise img { animation: none; transform: translateY(0); }
+  .logo-sunrise-glow { animation: none; opacity: 1; }
 }
 
 /* --- Home layout --- */

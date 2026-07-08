@@ -99,16 +99,30 @@ export default function LocationSearch({ compact = false, autoFocus = false }: P
     setGeoError('');
     navigator.geolocation.getCurrentPosition(
       async (pos) => {
-        const geo = await reverseGeocode(pos.coords.latitude, pos.coords.longitude);
-        setGeoLoading(false);
-        if (geo) navigateToCity(geo.slug);
-        else setGeoError('Could not determine your city. Try searching by name.');
+        try {
+          const geo = await reverseGeocode(pos.coords.latitude, pos.coords.longitude);
+          setGeoLoading(false);
+          if (geo) navigateToCity(geo.slug);
+          else setGeoError('Could not determine your city. Try searching by name.');
+        } catch {
+          setGeoLoading(false);
+          setGeoError('Could not look up your location. Try searching by name.');
+        }
       },
-      () => {
+      (err) => {
         setGeoLoading(false);
-        setGeoError('Location access denied. Search by city name instead.');
+        // Only PERMISSION_DENIED (1) is an actual denial — TIMEOUT (3) and
+        // POSITION_UNAVAILABLE (2) previously showed a misleading "denied" even
+        // when the browser had granted access.
+        if (err.code === err.PERMISSION_DENIED) {
+          setGeoError('Location access denied. Search by city name instead.');
+        } else if (err.code === err.TIMEOUT) {
+          setGeoError('Locating timed out. Try again or search by name.');
+        } else {
+          setGeoError('Your location is unavailable right now. Try searching by name.');
+        }
       },
-      { timeout: 10_000, maximumAge: 60_000 },
+      { enableHighAccuracy: false, timeout: 15_000, maximumAge: 300_000 },
     );
   }, []);
 
