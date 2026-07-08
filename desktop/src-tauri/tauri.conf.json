@@ -25,7 +25,7 @@
       }
     ],
     "security": {
-      "csp": "default-src 'self'; connect-src https://praycalc.com https://auth.ummat.dev https://api.praycalc.com https://smart.praycalc.com ipc: http://ipc.localhost; img-src 'self' data:; style-src 'self' 'unsafe-inline'"
+      "csp": "default-src 'self'; connect-src https://praycalc.com https://auth.ummat.dev https://api.praycalc.com https://smart.praycalc.com https://ipapi.co ipc: http://ipc.localhost; img-src 'self' data:; style-src 'self' 'unsafe-inline'"
     }
   },
   "bundle": {

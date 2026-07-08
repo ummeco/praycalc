@@ -92,7 +92,20 @@ export default function AdhanOverlay({ prayerName, adhan, onDone }: Props) {
     audio.play().catch(() => {});
     const handleEnd = () => onDoneRef.current();
     audio.addEventListener('ended', handleEnd);
-    return () => { audio.removeEventListener('ended', handleEnd); audio.pause(); audio.src = ''; };
+    // If the file fails to load/decode (missing asset, unsupported codec, autoplay
+    // block that never resolves), 'ended' never fires and the overlay would sit
+    // open until the user finds the small "Stop" button. Auto-dismiss on 'error'
+    // too, and add a hard ceiling well past the longest adhan recording so a
+    // silently-stuck playback still self-closes.
+    audio.addEventListener('error', handleEnd);
+    const maxDurationId = setTimeout(handleEnd, 6 * 60 * 1000);
+    return () => {
+      audio.removeEventListener('ended', handleEnd);
+      audio.removeEventListener('error', handleEnd);
+      clearTimeout(maxDurationId);
+      audio.pause();
+      audio.src = '';
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [adhan]);
 

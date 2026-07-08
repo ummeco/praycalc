@@ -15,7 +15,7 @@
 import { useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import type { TvSettings, TvSettingsPatch, TvStreamSource } from '../lib/tv-types';
-import { ACCENT_COLOR_PRESETS, STREAM_SOURCE_OPTIONS, MIN_ROTATE_MINUTES, MAX_ROTATE_MINUTES } from '../lib/tv-types';
+import { ACCENT_COLOR_PRESETS, ACCENT_COLOR_NAMES, STREAM_SOURCE_OPTIONS, MIN_ROTATE_MINUTES, MAX_ROTATE_MINUTES } from '../lib/tv-types';
 
 export default function TvRow({
   tv,
@@ -69,7 +69,8 @@ export default function TvRow({
                 tv.accent_color === color ? 'ring-2 ring-offset-1 ring-offset-brand-deep ring-brand-light scale-110' : ''
               }`}
               style={{ backgroundColor: color }}
-              aria-label={color}
+              aria-label={ACCENT_COLOR_NAMES[color] ?? color}
+              aria-pressed={tv.accent_color === color}
             />
           ))}
         </div>

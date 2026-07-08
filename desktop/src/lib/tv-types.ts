@@ -85,6 +85,16 @@ export const ACCENT_COLOR_PRESETS: string[] = [
   '#C2A34C', // gold
 ];
 
+/** Screen-reader-friendly names for ACCENT_COLOR_PRESETS, keyed by hex value. */
+export const ACCENT_COLOR_NAMES: Record<string, string> = {
+  '#79C24C': 'Brand green',
+  '#1E5E2F': 'Forest green',
+  '#C9F27A': 'Light green',
+  '#4C9BC2': 'Blue',
+  '#C24C79': 'Rose',
+  '#C2A34C': 'Gold',
+};
+
 export const STREAM_SOURCE_OPTIONS: { value: TvStreamSource; label: string }[] = [
   { value: 'makkah-tv', label: 'Makkah Live (Haramain)' },
   { value: 'saudi-quran', label: 'Saudi Quran Channel' },
