@@ -10,10 +10,23 @@
  *   TvManagerClient island can render inline errors without a try/catch at
  *   every call site.
  * CONSTRAINTS: No next/* imports. credentials: 'same-origin' on every call.
+ *   pairTv() never sends device_id — the TV owns that id; claiming only
+ *   flips `paired` on the pc_tv_pairing row matching the code.
  * REF: src/pages/api/tvs/index.ts · src/lib/billing.ts pattern
  */
 
 export type TvStreamSource = 'makkah-tv' | 'saudi-quran' | 'medina';
+export type TvMadhab = 'shafii' | 'hanafi';
+export type TvTimeFormat = '12h' | '24h';
+
+/** Minutes-after-adhan iqama offsets. No sunrise key — sunrise has no iqama. */
+export interface IqamaOffsets {
+  fajr: number;
+  dhuhr: number;
+  asr: number;
+  maghrib: number;
+  isha: number;
+}
 
 export interface TvSetting {
   id: string;
@@ -27,6 +40,15 @@ export interface TvSetting {
   longitude: number | null;
   city: string | null;
   timezone: string | null;
+  countdown_takeover_enabled: boolean;
+  countdown_minutes: number;
+  iqama_enabled: boolean;
+  iqama_offsets: IqamaOffsets;
+  name_only_enabled: boolean;
+  name_only_minutes: number;
+  calc_method: string;
+  madhab: TvMadhab;
+  time_format: TvTimeFormat;
 }
 
 export interface TvSettingPatch {
@@ -35,6 +57,19 @@ export interface TvSettingPatch {
   stream_source?: TvStreamSource;
   rotate_minutes?: number;
   show_weather?: boolean;
+  latitude?: number | null;
+  longitude?: number | null;
+  city?: string | null;
+  timezone?: string | null;
+  countdown_takeover_enabled?: boolean;
+  countdown_minutes?: number;
+  iqama_enabled?: boolean;
+  iqama_offsets?: IqamaOffsets;
+  name_only_enabled?: boolean;
+  name_only_minutes?: number;
+  calc_method?: string;
+  madhab?: TvMadhab;
+  time_format?: TvTimeFormat;
 }
 
 export type TvListResult = { ok: true; tvs: TvSetting[] } | { ok: false; error: string };
@@ -42,6 +77,7 @@ export type TvActionResult =
   | { ok: true; tv: TvSetting }
   | { ok: true }
   | { ok: false; error: string };
+export type TvPairResult = { ok: true } | { ok: false; error: string };
 
 /** List every TV paired to the signed-in user. Never throws. */
 export async function listTvs(): Promise<TvListResult> {
@@ -86,5 +122,22 @@ export async function deleteTv(id: string): Promise<TvActionResult> {
     return { ok: true };
   } catch {
     return { ok: false, error: 'Network error — could not remove this TV.' };
+  }
+}
+
+/** Claim a TV by the 6-digit code shown on its pairing screen. Never throws. */
+export async function pairTv(code: string): Promise<TvPairResult> {
+  try {
+    const res = await fetch('/api/tvs', {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'pair', code }),
+    });
+    const body = await res.json().catch(() => ({}));
+    if (!res.ok) return { ok: false, error: (body as { error?: string }).error || 'Failed to add TV.' };
+    return { ok: true };
+  } catch {
+    return { ok: false, error: 'Network error — could not add this TV.' };
   }
 }

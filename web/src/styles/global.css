@@ -644,6 +644,13 @@ html, body {
 .dashboard-signout-btn:hover { background: rgba(255,120,120,0.14); }
 
 /* --- Account: My TVs manager (/account/tvs) --- */
+.dashboard-tvs-wrapper { display: flex; flex-direction: column; gap: 14px; }
+.dashboard-add-tv-form { display: flex; flex-direction: column; gap: 6px; }
+.dashboard-add-tv-row { display: flex; gap: 10px; }
+.dashboard-add-tv-input {
+  flex: 1; min-width: 0; letter-spacing: 0.2em; text-align: center; font-variant-numeric: tabular-nums;
+}
+.dashboard-add-tv-btn { flex-shrink: 0; width: auto; padding: 0 20px; }
 .dashboard-tvs-list { display: flex; flex-direction: column; gap: 14px; }
 .dashboard-tv-card {
   padding: 18px; border-radius: 18px;
@@ -693,6 +700,14 @@ html, body {
   color: #fff; background: rgba(220,60,60,0.85); border: none; transition: background 0.15s;
 }
 .dashboard-tv-confirm-btn:hover { background: rgba(220,60,60,1); }
+.dashboard-tv-deep-toggle {
+  align-self: flex-start; padding: 6px 0; font-size: 0.8rem; font-weight: 600; cursor: pointer;
+  color: #C9F27A; background: none; border: none;
+}
+.dashboard-tv-deep-toggle:hover { text-decoration: underline; }
+.dashboard-tv-deep { display: flex; flex-direction: column; gap: 10px; padding-top: 4px; border-top: 1px solid rgba(255,255,255,0.08); }
+.dashboard-tv-iqama-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+.dashboard-tv-location-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 8px; }
 
 /* --- Info page (about, legal, etc.) --- */
 .info-page { max-width: 720px; margin: 0 auto; padding: 32px 16px 80px; }

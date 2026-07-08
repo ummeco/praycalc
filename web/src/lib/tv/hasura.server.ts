@@ -15,11 +15,27 @@
  *   { ok: false, status, message } on failure (GraphQL errors or transport
  *   errors). Never throws.
  * CONSTRAINTS: Server-only — never imported by client-bundled code.
- * REF: PR #67 hasura.server.ts pattern · pc_tv_settings (Hasura `user` role)
+ *   claimTvPairing() NEVER sends/overwrites pc_tv_pairing.device_id — the TV
+ *   owns that id; the claim mutation only flips `paired` on the row matching
+ *   the pin (verified live against prod under the Hasura `user` role).
+ * REF: PR #67 hasura.server.ts pattern · pc_tv_settings (Hasura `user` role) ·
+ *   mobile/src/lib/pairing/pairingMutation.ts (pc_tv_pairing column contract)
  */
 
 const HASURA_URL: string =
   (import.meta.env.PUBLIC_HASURA_URL as string | undefined) || 'https://api.praycalc.com/v1/graphql';
+
+export type TvMadhab = 'shafii' | 'hanafi';
+export type TvTimeFormat = '12h' | '24h';
+
+/** Minutes-after-adhan iqama offsets. No sunrise key — sunrise has no iqama. */
+export interface IqamaOffsets {
+  fajr: number;
+  dhuhr: number;
+  asr: number;
+  maghrib: number;
+  isha: number;
+}
 
 export interface TvSetting {
   id: string;
@@ -34,6 +50,15 @@ export interface TvSetting {
   longitude: number | null;
   city: string | null;
   timezone: string | null;
+  countdown_takeover_enabled: boolean;
+  countdown_minutes: number;
+  iqama_enabled: boolean;
+  iqama_offsets: IqamaOffsets;
+  name_only_enabled: boolean;
+  name_only_minutes: number;
+  calc_method: string;
+  madhab: TvMadhab;
+  time_format: TvTimeFormat;
 }
 
 export type HasuraGraphqlResult<T> =
@@ -93,6 +118,15 @@ const LIST_QUERY = /* GraphQL */ `
       longitude
       city
       timezone
+      countdown_takeover_enabled
+      countdown_minutes
+      iqama_enabled
+      iqama_offsets
+      name_only_enabled
+      name_only_minutes
+      calc_method
+      madhab
+      time_format
     }
   }
 `;
@@ -121,6 +155,15 @@ const UPDATE_MUTATION = /* GraphQL */ `
       longitude
       city
       timezone
+      countdown_takeover_enabled
+      countdown_minutes
+      iqama_enabled
+      iqama_offsets
+      name_only_enabled
+      name_only_minutes
+      calc_method
+      madhab
+      time_format
     }
   }
 `;
@@ -135,6 +178,15 @@ export interface TvSettingPatch {
   longitude?: number | null;
   city?: string | null;
   timezone?: string | null;
+  countdown_takeover_enabled?: boolean;
+  countdown_minutes?: number;
+  iqama_enabled?: boolean;
+  iqama_offsets?: IqamaOffsets;
+  name_only_enabled?: boolean;
+  name_only_minutes?: number;
+  calc_method?: string;
+  madhab?: TvMadhab;
+  time_format?: TvTimeFormat;
 }
 
 /** Update one of the signed-in user's TVs. Hasura's `user` role restricts this to rows the caller owns. */
@@ -178,4 +230,59 @@ export async function deleteTvSetting(
     return { ok: false, status: 404, message: 'TV not found.' };
   }
   return { ok: true, data: result.data.delete_pc_tv_settings_by_pk };
+}
+
+const CLAIM_PAIRING_MUTATION = /* GraphQL */ `
+  mutation ClaimTvPairing($pin: String!) {
+    update_pc_tv_pairing(
+      where: { pin: { _eq: $pin }, is_active: { _eq: true }, paired: { _eq: false } }
+      _set: { paired: true }
+    ) {
+      affected_rows
+      returning {
+        device_id
+      }
+    }
+  }
+`;
+
+const SEED_TV_SETTINGS_MUTATION = /* GraphQL */ `
+  mutation SeedTvSettings($deviceId: String!, $name: String!) {
+    insert_pc_tv_settings_one(
+      object: { device_id: $deviceId, name: $name }
+      on_conflict: { constraint: pc_tv_settings_device_key, update_columns: [] }
+    ) {
+      id
+      device_id
+      name
+    }
+  }
+`;
+
+/**
+ * Claim a TV by its 6-digit pairing code. Flips `paired` on the matching,
+ * still-unpaired pc_tv_pairing row — never writes device_id (server-owned,
+ * set by the TV itself at boot). Then best-effort seeds a pc_tv_settings row
+ * for the claimed device_id so "My TVs" has data immediately; a seed failure
+ * does not undo an already-successful claim.
+ */
+export async function claimTvPairing(
+  accessToken: string,
+  pin: string,
+): Promise<HasuraGraphqlResult<{ device_id: string }>> {
+  const claimResult = await callHasura<{
+    update_pc_tv_pairing: { affected_rows: number; returning: { device_id: string }[] };
+  }>(accessToken, CLAIM_PAIRING_MUTATION, { pin });
+  if (!claimResult.ok) return claimResult;
+
+  const { affected_rows, returning } = claimResult.data.update_pc_tv_pairing;
+  if (affected_rows === 0 || !returning[0]) {
+    return { ok: false, status: 404, message: 'Invalid or expired code.' };
+  }
+  const deviceId = returning[0].device_id;
+
+  // Best-effort seed — the claim already succeeded even if this fails.
+  await callHasura(accessToken, SEED_TV_SETTINGS_MUTATION, { deviceId, name: 'My TV' });
+
+  return { ok: true, data: { device_id: deviceId } };
 }
