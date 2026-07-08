@@ -91,7 +91,10 @@ jobs:
           TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
         with:
           projectPath: desktop
-          args: --target ${{ matrix.targets }}
+          # Base config keeps createUpdaterArtifacts off so the on-push CI smoke build
+          # (which has no signing key) stays green; releases turn it back on here so the
+          # signed .sig + latest.json are produced for the auto-updater.
+          args: '--target ${{ matrix.targets }} --config {"bundle":{"createUpdaterArtifacts":true}}'
           tagName: ${{ github.ref_name }}
           releaseName: 'PrayCalc Desktop ${{ github.ref_name }}'
           releaseBody: 'Menu bar / system tray prayer-time app for macOS, Windows, and Linux. Download the installer for your platform below.'
