@@ -16,6 +16,14 @@ test.describe("Homepage", () => {
     await page.goto("/");
     await page.evaluate(() => localStorage.setItem("pc_geo_prompt_dismissed", "1"));
     await page.reload();
+    // Hydration barrier: LocationSearch is a *controlled* input, so a fill() that lands
+    // before hydration is reset to '' when React mounts (dropping the query and its
+    // /api/search request). The island autofocuses on mount, so waiting for focus is a
+    // deterministic "island is interactive" signal. (Needed since the perf pass sped up
+    // `load`, which previously covered this timing incidentally.)
+    await expect(page.locator('[data-testid="city-search-input"]')).toBeFocused({
+      timeout: 10_000,
+    });
   });
 
   test("loads and renders core elements", async ({ page }) => {
