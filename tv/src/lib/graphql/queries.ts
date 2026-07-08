@@ -102,10 +102,12 @@ export const CHECK_PRAYCALC_PAIRING = `
 `;
 
 /**
- * TV cosmetic settings sync (public role). Selected by device_id — the same persisted
- * TV device id used for pairing. Columns are the four cosmetic fields the dashboard
- * consumes; the phone/backend writes them, the TV only reads. When no row exists the
- * caller falls back to store defaults.
+ * TV full settings sync (public role). Selected by device_id — the same persisted
+ * TV device id used for pairing. Covers cosmetic, deep-settings, and location columns;
+ * the account (user role) writes them, the TV only reads. Location is included so a
+ * post-pair edit from the account managers (web/mobile/desktop) reaches the TV on the
+ * next sync, not just at pair time. When no row exists the caller falls back to store
+ * defaults.
  */
 export const GET_TV_SETTINGS = `
   query GetTvSettings($deviceId: String!) {
@@ -114,6 +116,19 @@ export const GET_TV_SETTINGS = `
       stream_source
       rotate_minutes
       show_weather
+      countdown_takeover_enabled
+      countdown_minutes
+      iqama_enabled
+      iqama_offsets
+      name_only_enabled
+      name_only_minutes
+      calc_method
+      madhab
+      time_format
+      latitude
+      longitude
+      city
+      timezone
     }
   }
 `;

@@ -1,9 +1,10 @@
 /**
- * Purpose: Poll pc_tv_settings (public role) for this TV's cosmetic settings and merge
- *   them into the local settings store. Runs on boot and every 5 minutes.
+ * Purpose: Poll pc_tv_settings (public role) for this TV's full settings (cosmetic,
+ *   deep-settings, and location) and merge them into the local settings store. Runs on
+ *   boot and every ~5 seconds so account-side changes reflect near-instantly.
  * Inputs: urql client, device id, a store-updater callback.
- * Outputs: side-effect — applies { accentColor, streamSource, rotateMinutes, showWeather }
- *   to the store when a row exists. No row → leaves current (default) values untouched.
+ * Outputs: side-effect — applies the mapped TvSettings patch to the store when a row
+ *   exists. No row → leaves current (default) values untouched.
  * Constraints: read-only, public role, api.praycalc.com. Never throws — network errors
  *   are swallowed so the dashboard keeps running on the last-known settings.
  * SPORT: praycalc/tv lib/settings
@@ -11,14 +12,61 @@
 
 import { Client } from 'urql';
 import { GET_TV_SETTINGS } from '../graphql/queries';
-import { TvRemoteSettings, TvSettings } from '../../types';
+import { IqamaOffsets, Madhab, TimeFormat, TvRemoteSettings, TvSettings } from '../../types';
 
-const POLL_INTERVAL_MS = 5 * 60 * 1000; // 5 minutes
+/** ~5s so account-side edits (web/mobile/desktop) reach the TV near-instantly. */
+const POLL_INTERVAL_MS = 5 * 1000;
+
+/** Default iqama offsets matching the pc_tv_settings column default. No sunrise key. */
+export const DEFAULT_IQAMA_OFFSETS: IqamaOffsets = {
+  fajr: 20,
+  dhuhr: 10,
+  asr: 10,
+  maghrib: 5,
+  isha: 10,
+};
 
 /** rotate_minutes is clamped to the supported 1–30 range. */
 export function clampRotateMinutes(value: number): number {
   if (!Number.isFinite(value)) return 10;
   return Math.min(30, Math.max(1, Math.round(value)));
+}
+
+/** countdown_minutes / name_only_minutes are clamped to the supported 1–60 range. */
+export function clampMinutes1to60(value: number, fallback: number): number {
+  if (!Number.isFinite(value)) return fallback;
+  return Math.min(60, Math.max(1, Math.round(value)));
+}
+
+/**
+ * Maps a remote iqama_offsets jsonb value to the typed IqamaOffsets shape, filling any
+ * missing/non-numeric key from the default. Postgres does not preserve key order, so
+ * every key is read by name, never positionally.
+ */
+export function mapIqamaOffsets(value: unknown): IqamaOffsets {
+  const raw = (value && typeof value === 'object' ? value : {}) as Record<string, unknown>;
+  const pick = (key: keyof IqamaOffsets): number =>
+    typeof raw[key] === 'number' && Number.isFinite(raw[key] as number)
+      ? (raw[key] as number)
+      : DEFAULT_IQAMA_OFFSETS[key];
+  return {
+    fajr: pick('fajr'),
+    dhuhr: pick('dhuhr'),
+    asr: pick('asr'),
+    maghrib: pick('maghrib'),
+    isha: pick('isha'),
+  };
+}
+
+/** DB stores 'shafii'|'hanafi'; local Madhab type is 'shafi'|'hanafi'. */
+function mapMadhab(value: string): Madhab | undefined {
+  if (value === 'shafii') return 'shafi';
+  if (value === 'hanafi') return 'hanafi';
+  return undefined;
+}
+
+function mapTimeFormat(value: string): TimeFormat | undefined {
+  return value === '12h' || value === '24h' ? value : undefined;
 }
 
 /**
@@ -39,6 +87,47 @@ export function mapRemoteSettings(row: TvRemoteSettings): Partial<TvSettings> {
   }
   if (typeof row.show_weather === 'boolean') {
     patch.showWeather = row.show_weather;
+  }
+  if (typeof row.countdown_takeover_enabled === 'boolean') {
+    patch.countdownTakeoverEnabled = row.countdown_takeover_enabled;
+  }
+  if (typeof row.countdown_minutes === 'number') {
+    patch.countdownMinutes = clampMinutes1to60(row.countdown_minutes, 5);
+  }
+  if (typeof row.iqama_enabled === 'boolean') {
+    patch.iqamaEnabled = row.iqama_enabled;
+  }
+  if (row.iqama_offsets && typeof row.iqama_offsets === 'object') {
+    patch.iqamaOffsets = mapIqamaOffsets(row.iqama_offsets);
+  }
+  if (typeof row.name_only_enabled === 'boolean') {
+    patch.nameOnlyEnabled = row.name_only_enabled;
+  }
+  if (typeof row.name_only_minutes === 'number') {
+    patch.nameOnlyMinutes = clampMinutes1to60(row.name_only_minutes, 10);
+  }
+  if (typeof row.calc_method === 'string' && row.calc_method) {
+    patch.calculationMethodId = row.calc_method;
+  }
+  if (typeof row.madhab === 'string' && row.madhab) {
+    const mapped = mapMadhab(row.madhab);
+    if (mapped) patch.madhab = mapped;
+  }
+  if (typeof row.time_format === 'string' && row.time_format) {
+    const mapped = mapTimeFormat(row.time_format);
+    if (mapped) patch.timeFormat = mapped;
+  }
+  if (typeof row.latitude === 'number') {
+    patch.latitude = row.latitude;
+  }
+  if (typeof row.longitude === 'number') {
+    patch.longitude = row.longitude;
+  }
+  if (typeof row.city === 'string' && row.city) {
+    patch.cityName = row.city;
+  }
+  if (typeof row.timezone === 'string' && row.timezone) {
+    patch.timezone = row.timezone;
   }
   return patch;
 }
@@ -63,7 +152,7 @@ export class TvSettingsSync {
     this.applyPatch = applyPatch;
   }
 
-  /** Runs an immediate fetch, then schedules a 5-minute poll. */
+  /** Runs an immediate fetch, then schedules a ~5-second poll. */
   async start(): Promise<void> {
     await this.poll();
     if (this.timer) return;
@@ -72,11 +161,14 @@ export class TvSettingsSync {
     }, POLL_INTERVAL_MS);
   }
 
-  /** One fetch → map → apply. Errors are swallowed. */
+  /**
+   * One fetch → map → apply. Errors are swallowed. Uses 'network-only' so the client's
+   * cacheExchange never serves a stale row on the fast poll cadence.
+   */
   async poll(): Promise<void> {
     try {
       const result = await this.client
-        .query(GET_TV_SETTINGS, { deviceId: this.deviceId })
+        .query(GET_TV_SETTINGS, { deviceId: this.deviceId }, { requestPolicy: 'network-only' })
         .toPromise();
       const row = result.data?.pc_tv_settings?.[0] as TvRemoteSettings | undefined;
       if (!row) return; // No row → keep defaults.

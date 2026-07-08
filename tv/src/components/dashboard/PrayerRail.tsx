@@ -10,7 +10,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { PrayerName, PrayerTime } from '../../types';
+import { IqamaOffsets, PrayerName, PrayerTime } from '../../types';
 
 const PRAYER_LABELS: Record<PrayerName, { en: string; ar: string }> = {
   fajr: { en: 'Fajr', ar: 'الفجر' },
@@ -21,11 +21,22 @@ const PRAYER_LABELS: Record<PrayerName, { en: string; ar: string }> = {
   isha: { en: 'Isha', ar: 'العشاء' },
 };
 
+/** Adds `minutes` to a "HH:MM" 24h time string, wrapping across midnight. */
+function addMinutesToTime(hhmm: string, minutes: number): string {
+  const [h, m] = hhmm.split(':').map(Number);
+  const total = (((h * 60 + m + minutes) % 1440) + 1440) % 1440;
+  const hh = Math.floor(total / 60);
+  const mm = total % 60;
+  return `${String(hh).padStart(2, '0')}:${String(mm).padStart(2, '0')}`;
+}
+
 interface PrayerRailProps {
   cityName: string;
   prayerTimes: PrayerTime[];
   nextPrayer: PrayerName | null;
   accentColor: string;
+  iqamaEnabled: boolean;
+  iqamaOffsets: IqamaOffsets;
 }
 
 export default function PrayerRail({
@@ -33,6 +44,8 @@ export default function PrayerRail({
   prayerTimes,
   nextPrayer,
   accentColor,
+  iqamaEnabled,
+  iqamaOffsets,
 }: PrayerRailProps): React.JSX.Element {
   const [now, setNow] = useState(new Date());
 
@@ -59,13 +72,17 @@ export default function PrayerRail({
       <View style={styles.list}>
         {prayerTimes.map((p) => {
           const isNext = p.name === nextPrayer;
+          const iqamaTime =
+            iqamaEnabled && p.name !== 'sunrise'
+              ? addMinutesToTime(p.time, iqamaOffsets[p.name])
+              : null;
           return (
             <View
               key={p.name}
               accessible={true}
               accessibilityLabel={`${PRAYER_LABELS[p.name].en} at ${p.time}${
-                isNext ? ', next prayer' : ''
-              }`}
+                iqamaTime ? `, iqama at ${iqamaTime}` : ''
+              }${isNext ? ', next prayer' : ''}`}
               style={[
                 styles.row,
                 isNext && { borderColor: accentColor, backgroundColor: '#2a7a3d' },
@@ -75,9 +92,14 @@ export default function PrayerRail({
                 <Text style={styles.nameAr}>{PRAYER_LABELS[p.name].ar}</Text>
                 <Text style={styles.nameEn}>{PRAYER_LABELS[p.name].en}</Text>
               </View>
-              <Text style={[styles.time, isNext && { color: accentColor }]}>
-                {p.time}
-              </Text>
+              <View style={styles.timeCol}>
+                <Text style={[styles.time, isNext && { color: accentColor }]}>
+                  {p.time}
+                </Text>
+                {iqamaTime ? (
+                  <Text style={styles.iqamaText}>Iqama {iqamaTime}</Text>
+                ) : null}
+              </View>
             </View>
           );
         })}
@@ -193,10 +215,19 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 28,
   },
+  timeCol: {
+    alignItems: 'flex-end',
+  },
   time: {
     color: '#79C24C',
     fontSize: 32,
     fontWeight: '700',
+  },
+  iqamaText: {
+    color: '#5a9a6a',
+    fontSize: 18,
+    fontWeight: '400',
+    marginTop: 2,
   },
   countdownBar: {
     alignItems: 'center',

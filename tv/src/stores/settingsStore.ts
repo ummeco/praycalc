@@ -10,6 +10,7 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { TvSettings, Madhab } from '../types';
+import { DEFAULT_IQAMA_OFFSETS } from '../lib/settings/tvSettingsSync';
 
 interface SettingsStore {
   settings: TvSettings;
@@ -36,7 +37,34 @@ const DEFAULT_SETTINGS: TvSettings = {
   streamSource: 'makkah-tv',
   rotateMinutes: 10,
   showWeather: true,
+  // Deep-settings defaults (overridden by pc_tv_settings when a row exists).
+  countdownTakeoverEnabled: false,
+  countdownMinutes: 5,
+  iqamaEnabled: false,
+  iqamaOffsets: DEFAULT_IQAMA_OFFSETS,
+  nameOnlyEnabled: false,
+  nameOnlyMinutes: 10,
+  timeFormat: '24h',
 };
+
+/**
+ * Effective TV location, sourced from settings (which pc_tv_settings keeps in sync on
+ * every poll, not just at pair time) — so an account-side location edit reaches the
+ * prayer calculation without a re-pair.
+ */
+export function selectEffectiveLocation(settings: TvSettings): {
+  latitude: number;
+  longitude: number;
+  city: string;
+  timezone: string;
+} {
+  return {
+    latitude: settings.latitude,
+    longitude: settings.longitude,
+    city: settings.cityName,
+    timezone: settings.timezone,
+  };
+}
 
 /** Storage key — namespaced so it never collides with other AsyncStorage consumers. */
 export const SETTINGS_STORAGE_KEY = 'praycalc-tv-settings';

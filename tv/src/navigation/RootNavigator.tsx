@@ -31,11 +31,20 @@ import TvSystemScreen from '../screens/TvSystemScreen';
 
 const Stack = createStackNavigator<RootStackParamList>();
 
-export default function RootNavigator(): React.JSX.Element {
+interface RootNavigatorProps {
+  /** Boot-resolved starting screen — 'Pairing' for an unclaimed device, 'Dashboard'
+   *  once this TV's device id maps to a claimed pc_tv_pairing row. Resolved in App.tsx
+   *  before this navigator mounts so an unpaired TV never flashes Dashboard first. */
+  initialRouteName: keyof RootStackParamList;
+}
+
+export default function RootNavigator({
+  initialRouteName,
+}: RootNavigatorProps): React.JSX.Element {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="Dashboard"
+        initialRouteName={initialRouteName}
         screenOptions={{
           headerShown: false,
           animationEnabled: true,

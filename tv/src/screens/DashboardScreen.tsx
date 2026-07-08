@@ -24,6 +24,7 @@ import { updateAmbientLine1 } from '../lib/native/tvSystem';
 import { buildAmbientLine1 } from '../lib/native/ambientLines';
 import DisplayPane from '../components/dashboard/DisplayPane';
 import PrayerRail from '../components/dashboard/PrayerRail';
+import PrayerTakeover from '../components/dashboard/PrayerTakeover';
 import BottomBar from '../components/dashboard/BottomBar';
 import DashboardMenu from '../components/dashboard/DashboardMenu';
 
@@ -143,8 +144,13 @@ export default function DashboardScreen(): React.JSX.Element {
           prayerTimes={prayerTimes}
           nextPrayer={nextPrayer}
           accentColor={settings.accentColor}
+          iqamaEnabled={settings.iqamaEnabled}
+          iqamaOffsets={settings.iqamaOffsets}
         />
       </View>
+
+      {/* Full-screen takeover overlay (countdown / name-only) — renders null when inactive. */}
+      <PrayerTakeover settings={settings} prayerDay={prayerDay} nextPrayer={nextPrayer} />
     </View>
   );
 }

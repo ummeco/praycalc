@@ -37,8 +37,10 @@ export default function PairingScreen(): React.JSX.Element {
   const handlePairingStateChange = useCallback((state: PairingState) => {
     setPairingState(state);
     if (state.isPaired) {
-      // Navigate to Home on successful pairing
-      setTimeout(() => navigation.navigate('Home'), 1500);
+      // Claim detected by the existing poll — replace the stack with Dashboard (the
+      // boot-gate's paired destination) rather than push, so Back can never return
+      // to the pairing code once this device is claimed.
+      setTimeout(() => navigation.reset({ index: 0, routes: [{ name: 'Dashboard' }] }), 1500);
     }
   }, [navigation]);
 

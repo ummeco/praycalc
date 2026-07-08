@@ -48,6 +48,18 @@ export interface CalculationMethod {
 
 export type Madhab = 'shafi' | 'hanafi';
 
+/** Per-prayer minutes-after-adhan offsets for iqama times. No sunrise key (matches DB contract). */
+export interface IqamaOffsets {
+  fajr: number;
+  dhuhr: number;
+  asr: number;
+  maghrib: number;
+  isha: number;
+}
+
+/** '12h' | '24h' display format for on-screen clocks. */
+export type TimeFormat = '12h' | '24h';
+
 export interface TvSettings {
   cityId: string;
   cityName: string;
@@ -71,14 +83,54 @@ export interface TvSettings {
   rotateMinutes: number;
   /** Whether the bottom weather/special-day bar is shown. */
   showWeather: boolean;
+  // --- Deep settings (synced from pc_tv_settings, public role) ---
+  /** Whether the full-screen countdown takeover shows N minutes before adhan. */
+  countdownTakeoverEnabled: boolean;
+  /** Minutes before adhan the countdown takeover activates. Clamped 1–60. */
+  countdownMinutes: number;
+  /** Whether iqama times are shown on the TV. */
+  iqamaEnabled: boolean;
+  /** Minutes after adhan per prayer that iqama is held. No sunrise. */
+  iqamaOffsets: IqamaOffsets;
+  /** Whether the full-screen prayer-name-only mode shows after adhan/iqama. */
+  nameOnlyEnabled: boolean;
+  /** Duration (minutes) of the name-only full-screen mode. Clamped 1–60. */
+  nameOnlyMinutes: number;
+  /** Display time format for on-screen clocks. */
+  timeFormat: TimeFormat;
 }
 
-/** Cosmetic settings row shape from pc_tv_settings (public-role selectable columns). */
+/** Per-prayer iqama offsets row shape from pc_tv_settings.iqama_offsets (jsonb). */
+export interface TvRemoteIqamaOffsets {
+  fajr?: number;
+  dhuhr?: number;
+  asr?: number;
+  maghrib?: number;
+  isha?: number;
+}
+
+/** Full settings row shape from pc_tv_settings (public-role selectable columns). */
 export interface TvRemoteSettings {
   accent_color?: string | null;
   stream_source?: string | null;
   rotate_minutes?: number | null;
   show_weather?: boolean | null;
+  // Deep settings
+  countdown_takeover_enabled?: boolean | null;
+  countdown_minutes?: number | null;
+  iqama_enabled?: boolean | null;
+  iqama_offsets?: TvRemoteIqamaOffsets | null;
+  name_only_enabled?: boolean | null;
+  name_only_minutes?: number | null;
+  calc_method?: string | null;
+  /** DB values are 'shafii'|'hanafi' — mapped to local Madhab ('shafi'|'hanafi') on read. */
+  madhab?: string | null;
+  time_format?: string | null;
+  // Location (editable post-pair from account managers; TV re-reads every sync)
+  latitude?: number | null;
+  longitude?: number | null;
+  city?: string | null;
+  timezone?: string | null;
 }
 
 export interface HadithEntry {
