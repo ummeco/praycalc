@@ -19,9 +19,11 @@ function tabIcon(
   name: IoniconsName,
   focusedName: IoniconsName,
 ): (props: { focused: boolean; color: string; size: number }) => React.ReactElement {
-  return ({ focused, color, size }) => (
-    <Ionicons name={focused ? focusedName : name} size={size} color={color} />
-  );
+  // Named function expression (not an anonymous arrow) so the component has a
+  // displayName for react/display-name and shows up correctly in DevTools/traces.
+  return function TabIcon({ focused, color, size }) {
+    return <Ionicons name={focused ? focusedName : name} size={size} color={color} />;
+  };
 }
 
 export default function TabLayout() {

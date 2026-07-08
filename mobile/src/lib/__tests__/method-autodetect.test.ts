@@ -8,7 +8,7 @@
 import { detectFallbackMethod, DEFAULT_FALLBACK_METHOD } from '../method-autodetect';
 
 describe('detectFallbackMethod — country mapping', () => {
-  const cases: Array<[string, string]> = [
+  const cases: [string, string][] = [
     ['US', 'ISNA'],
     ['CA', 'ISNA'],
     ['EG', 'Egypt'],

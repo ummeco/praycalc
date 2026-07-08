@@ -16,7 +16,7 @@ import { BUNDLED_AYAHS, loadAyahs } from '../data/verses';
 
 describe('QuranScreen data contract — Islam.Wiki fallback coverage', () => {
   it('every surah either has bundled verified text or a valid number for the Islam.Wiki deep link', () => {
-    (SURAH_META as Array<{ number: number }>).forEach((s) => {
+    (SURAH_META as { number: number }[]).forEach((s) => {
       const bundled = loadAyahs(s.number) !== null;
       const hasDeepLinkableNumber = Number.isInteger(s.number) && s.number >= 1 && s.number <= 114;
       // At least one path to content must be true — never neither.
@@ -25,7 +25,7 @@ describe('QuranScreen data contract — Islam.Wiki fallback coverage', () => {
   });
 
   it('no surah number appears in BUNDLED_AYAHS that is absent from the 114-surah metadata', () => {
-    const metaNumbers = new Set((SURAH_META as Array<{ number: number }>).map((s) => s.number));
+    const metaNumbers = new Set((SURAH_META as { number: number }[]).map((s) => s.number));
     Object.keys(BUNDLED_AYAHS).map(Number).forEach((num) => {
       expect(metaNumbers.has(num)).toBe(true);
     });
@@ -38,13 +38,13 @@ describe('Surah metadata (data/surahs.json)', () => {
   });
 
   it('every surah number 1-114 is present exactly once, in order', () => {
-    const numbers = (SURAH_META as Array<{ number: number }>).map((s) => s.number);
+    const numbers = (SURAH_META as { number: number }[]).map((s) => s.number);
     expect(numbers).toEqual(Array.from({ length: 114 }, (_, i) => i + 1));
   });
 
   it('every bundled surah (data/verses.ts) exists in the metadata and its ayah count matches totalAyahs', () => {
     const byNumber = new Map(
-      (SURAH_META as Array<{ number: number; totalAyahs: number }>).map((s) => [s.number, s]),
+      (SURAH_META as { number: number; totalAyahs: number }[]).map((s) => [s.number, s]),
     );
     for (const [numStr, ayahs] of Object.entries(BUNDLED_AYAHS)) {
       const num = Number(numStr);

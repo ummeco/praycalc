@@ -20,6 +20,7 @@ import {
 } from 'react-native';
 import { useTranslation } from '../../i18n';
 import { useThemeColors } from '../../hooks/useThemeColors';
+import { useResponsiveLayout } from '../../hooks/useResponsiveLayout';
 import type { ThemeColors } from '../../constants/colors';
 import { EmptyState } from '../../components/states';
 import { mmkv } from '../../lib/storage/mmkv';
@@ -80,6 +81,7 @@ function SurahDetailView({
 }: { surah: Surah; onBack: () => void; singleAyah?: Ayah }) {
   const { t } = useTranslation();
   const colors = useThemeColors();
+  const { isWide, maxContentWidth } = useResponsiveLayout();
   const styles = useMemo(() => createStyles(colors), [colors]);
   const ayahs = singleAyah ? [singleAyah] : loadAyahs(surah.number);
   const rawBookmarks = mmkv.getString(BOOKMARKS_KEY);
@@ -118,7 +120,9 @@ function SurahDetailView({
           <Text style={styles.surahNameEn}>{surah.englishName}</Text>
         </View>
       </View>
-      <ScrollView contentContainerStyle={styles.scroll}>
+      <ScrollView
+        contentContainerStyle={[styles.scroll, isWide && { alignSelf: 'center', width: '100%', maxWidth: maxContentWidth }]}
+      >
         {/* Bismillah (except At-Tawba 9, Al-Fatiha 1 which has its own, and mid-surah
             single-verse views like Ayat al-Kursi) */}
         {ayahs && !singleAyah && surah.number !== 1 && surah.number !== 9 && (
@@ -199,6 +203,7 @@ const AYAT_AL_KURSI_CARD: Surah = {
 export default function QuranScreen() {
   const { t } = useTranslation();
   const colors = useThemeColors();
+  const { isWide, maxContentWidth } = useResponsiveLayout();
   const styles = useMemo(() => createStyles(colors), [colors]);
   const [selectedSurah, setSelectedSurah] = useState<Surah | null>(null);
   const [showKursi, setShowKursi] = useState(false);
@@ -266,7 +271,7 @@ export default function QuranScreen() {
             </TouchableOpacity>
           );
         }}
-        contentContainerStyle={{ paddingBottom: 32 }}
+        contentContainerStyle={[{ paddingBottom: 32 }, isWide && { alignSelf: 'center', width: '100%', maxWidth: maxContentWidth }]}
         accessible
         accessibilityLabel={t('screens.quran.surahList')}
         ListFooterComponent={() => (

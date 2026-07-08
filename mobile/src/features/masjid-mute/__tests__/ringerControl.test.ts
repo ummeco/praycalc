@@ -42,7 +42,7 @@ describe('ringerControl on Android', () => {
 
   it('getCurrentRingerMode reads and maps the numeric mode to a string', async () => {
     mockGetRingerMode.mockResolvedValue(2);
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    // eslint-disable-next-line @typescript-eslint/no-require-imports -- resetModules()-driven fresh require, not a static dep
     const { getCurrentRingerMode } = require('../lib/ringerControl') as typeof import('../lib/ringerControl');
     await expect(getCurrentRingerMode()).resolves.toBe('normal');
   });
@@ -50,7 +50,7 @@ describe('ringerControl on Android', () => {
   it('muteDevice captures the previous mode and sets vibrate', async () => {
     mockGetRingerMode.mockResolvedValue(2); // was 'normal'
     mockSetRingerMode.mockResolvedValue(1);
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    // eslint-disable-next-line @typescript-eslint/no-require-imports -- resetModules()-driven fresh require, not a static dep
     const { muteDevice } = require('../lib/ringerControl') as typeof import('../lib/ringerControl');
     const result = await muteDevice();
     expect(result).toEqual({ muted: true, previousMode: 'normal' });
@@ -59,7 +59,7 @@ describe('ringerControl on Android', () => {
 
   it('restoreDevice sets the ringer back to the given mode', async () => {
     mockSetRingerMode.mockResolvedValue(2);
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    // eslint-disable-next-line @typescript-eslint/no-require-imports -- resetModules()-driven fresh require, not a static dep
     const { restoreDevice } = require('../lib/ringerControl') as typeof import('../lib/ringerControl');
     const ok = await restoreDevice('normal');
     expect(ok).toBe(true);
@@ -67,7 +67,7 @@ describe('ringerControl on Android', () => {
   });
 
   it('restoreDevice is a no-op when previousMode is null', async () => {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    // eslint-disable-next-line @typescript-eslint/no-require-imports -- resetModules()-driven fresh require, not a static dep
     const { restoreDevice } = require('../lib/ringerControl') as typeof import('../lib/ringerControl');
     const ok = await restoreDevice(null);
     expect(ok).toBe(false);
@@ -76,7 +76,7 @@ describe('ringerControl on Android', () => {
 
   it('muteDevice resolves gracefully (never throws) when the native call rejects', async () => {
     mockGetRingerMode.mockRejectedValue(new Error('native module unavailable'));
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    // eslint-disable-next-line @typescript-eslint/no-require-imports -- resetModules()-driven fresh require, not a static dep
     const { muteDevice } = require('../lib/ringerControl') as typeof import('../lib/ringerControl');
     await expect(muteDevice()).resolves.toEqual({ muted: false, previousMode: null });
   });
@@ -91,21 +91,21 @@ describe('ringerControl on iOS (Apple forbids programmatic ringer control)', () 
   });
 
   it('getCurrentRingerMode resolves to null without calling the native module', async () => {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    // eslint-disable-next-line @typescript-eslint/no-require-imports -- resetModules()-driven fresh require, not a static dep
     const { getCurrentRingerMode } = require('../lib/ringerControl') as typeof import('../lib/ringerControl');
     await expect(getCurrentRingerMode()).resolves.toBeNull();
     expect(mockGetRingerMode).not.toHaveBeenCalled();
   });
 
   it('muteDevice is a documented no-op on iOS', async () => {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    // eslint-disable-next-line @typescript-eslint/no-require-imports -- resetModules()-driven fresh require, not a static dep
     const { muteDevice } = require('../lib/ringerControl') as typeof import('../lib/ringerControl');
     await expect(muteDevice()).resolves.toEqual({ muted: false, previousMode: null });
     expect(mockSetRingerMode).not.toHaveBeenCalled();
   });
 
   it('restoreDevice is a documented no-op on iOS', async () => {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    // eslint-disable-next-line @typescript-eslint/no-require-imports -- resetModules()-driven fresh require, not a static dep
     const { restoreDevice } = require('../lib/ringerControl') as typeof import('../lib/ringerControl');
     await expect(restoreDevice('normal')).resolves.toBe(false);
     expect(mockSetRingerMode).not.toHaveBeenCalled();

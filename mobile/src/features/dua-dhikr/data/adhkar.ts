@@ -225,7 +225,7 @@ export const ALL_DUAS: Dua[] = [
 export type CategoryFilter = 'all' | DuaCategory;
 
 /** Category display order + i18n label keys, consumed by DuaDhikrScreen tabs. */
-export const CATEGORIES: Array<{ key: CategoryFilter; labelKey: string }> = [
+export const CATEGORIES: { key: CategoryFilter; labelKey: string }[] = [
   { key: 'all', labelKey: 'screens.duaDhikr.categoryAll' },
   { key: 'afterAdhan', labelKey: 'screens.duaDhikr.categoryAfterAdhan' },
   { key: 'afterPrayer', labelKey: 'screens.duaDhikr.categoryAfterPrayer' },

@@ -61,7 +61,7 @@ export default function SmartHomeScreen() {
     }
     setBiometricError(false);
     setLockOnSalah(value);
-  }, []);
+  }, [t]);
 
   const handleDeviceToggle = useCallback(async (device: SmartHomeDevice, value: boolean) => {
     setDeviceStates((prev) => ({ ...prev, [device.id]: value }));

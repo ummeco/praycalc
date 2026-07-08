@@ -82,6 +82,9 @@ export default function SubscriptionScreen() {
       }
     })();
     return () => { mounted = false; };
+    // Intentional mount-once IAP connect+fetch; `t` is only read for error copy and must
+    // not re-trigger connectAsync() on language change.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handlePurchase = useCallback(async (productId: string) => {

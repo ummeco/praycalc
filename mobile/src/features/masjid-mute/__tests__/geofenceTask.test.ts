@@ -90,12 +90,12 @@ function setPlatform(os: 'ios' | 'android') {
 // require() rather than dynamic import() — this project's Babel/CJS Jest transform
 // does not reliably support dynamic import() inside a test body (see reporter.test.ts).
 function requireMuteStore(): typeof import('../store/useMuteStore') {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  // eslint-disable-next-line @typescript-eslint/no-require-imports -- resetModules()-driven fresh require, not a static dep
   return require('../store/useMuteStore') as typeof import('../store/useMuteStore');
 }
 
 function requireGeofenceTask(): void {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  // eslint-disable-next-line @typescript-eslint/no-require-imports -- resetModules()-driven fresh require, not a static dep
   require('../lib/geofenceTask');
 }
 

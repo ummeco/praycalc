@@ -20,6 +20,7 @@ import * as Haptics from 'expo-haptics';
 import { mmkv } from '../../lib/storage/mmkv';
 import { useTranslation } from '../../i18n';
 import { useThemeColors } from '../../hooks/useThemeColors';
+import { useResponsiveLayout } from '../../hooks/useResponsiveLayout';
 import type { ThemeColors } from '../../constants/colors';
 import { loadTasbeehHistory, appendTasbeehHistory, getTodayTasbeehTotal, type TasbeehHistoryEntry } from './tasbeehHistory';
 
@@ -99,6 +100,7 @@ interface TasbeehSession {
 export default function TasbeehScreen() {
   const { t } = useTranslation();
   const colors = useThemeColors();
+  const { isWide, maxContentWidth } = useResponsiveLayout();
   const styles = useMemo(() => createStyles(colors), [colors]);
   const [selectedPreset, setSelectedPreset] = useState<DhikrPreset>(DHIKR_PRESETS[0]!);
   const [count, setCount] = useState<number>(0);
@@ -151,7 +153,7 @@ export default function TasbeehScreen() {
       // Light impact on each tap
       await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     }
-  }, [count, isComplete, selectedPreset.targetCount]);
+  }, [count, isComplete, selectedPreset.id, selectedPreset.targetCount, selectedPreset.transliteration]);
 
   const handleReset = useCallback(async () => {
     setCount(0);
@@ -171,7 +173,10 @@ export default function TasbeehScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scroll} bounces={false}>
+      <ScrollView
+        contentContainerStyle={[styles.scroll, isWide && { alignSelf: 'center', width: '100%', maxWidth: maxContentWidth }]}
+        bounces={false}
+      >
         {/* Arabic text — RTL, tashkeel preserved */}
         <View style={styles.arabicContainer}>
           <Text

@@ -17,6 +17,11 @@
  *     passthrough avoids pulling in expo-localization's native module.
  */
 
+import type { useConsentStore as UseConsentStoreType } from '../../features/consent/store/useConsentStore';
+import type * as AnalyticsModule from '../analytics';
+
+// type-only imports above are erased at compile time (no runtime footprint), so
+// moving them ahead of the jest.mock() calls below cannot affect mock timing.
 jest.mock('@react-native-async-storage/async-storage', () => {
   const store = new Map<string, string>();
   return {
@@ -44,9 +49,6 @@ jest.mock('../../i18n/index', () => ({
   default: { language: 'en' },
 }));
 
-import type { useConsentStore as UseConsentStoreType } from '../../features/consent/store/useConsentStore';
-import type * as AnalyticsModule from '../analytics';
-
 function mockFetchOnce() {
   globalThis.fetch = jest.fn().mockResolvedValue({ ok: true }) as unknown as typeof fetch;
 }
@@ -67,9 +69,9 @@ function loadAnalyticsWithEnv(): {
   jest.resetModules();
   process.env.EXPO_PUBLIC_UMAMI_URL = 'https://umami.example.com';
   process.env.EXPO_PUBLIC_UMAMI_WEBSITE_ID = 'test-website-id';
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  // eslint-disable-next-line @typescript-eslint/no-require-imports -- resetModules()-driven fresh require, not a static dep
   const consentStore = require('../../features/consent/store/useConsentStore').useConsentStore;
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  // eslint-disable-next-line @typescript-eslint/no-require-imports -- resetModules()-driven fresh require, not a static dep
   const analytics = require('../analytics') as typeof AnalyticsModule;
   return { analytics, consentStore };
 }

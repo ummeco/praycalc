@@ -20,6 +20,7 @@ import {
 } from 'react-native';
 import { useTranslation } from '../../i18n';
 import { useThemeColors } from '../../hooks/useThemeColors';
+import { useResponsiveLayout } from '../../hooks/useResponsiveLayout';
 import type { ThemeColors } from '../../constants/colors';
 import { EmptyState } from '../../components/states';
 import { ALL_DUAS, CATEGORIES, type CategoryFilter } from './data/adhkar';
@@ -27,6 +28,7 @@ import { ALL_DUAS, CATEGORIES, type CategoryFilter } from './data/adhkar';
 export default function DuaDhikrScreen() {
   const { t } = useTranslation();
   const colors = useThemeColors();
+  const { isWide, maxContentWidth } = useResponsiveLayout();
   const styles = useMemo(() => createStyles(colors), [colors]);
   const [filter, setFilter] = useState<CategoryFilter>('all');
   const [expanded, setExpanded] = useState<string | null>(null);
@@ -39,72 +41,74 @@ export default function DuaDhikrScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Category filter tabs — horizontally scrollable to keep 5 categories uncluttered */}
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.filterRow}
-        accessibilityRole="tablist"
-      >
-        {CATEGORIES.map((cat) => {
-          const label = t(cat.labelKey);
-          return (
-            <TouchableOpacity
-              key={cat.key}
-              style={[styles.filterTab, filter === cat.key && styles.filterTabActive]}
-              onPress={() => setFilter(cat.key)}
-              accessibilityRole="tab"
-              accessibilityState={{ selected: filter === cat.key }}
-              accessibilityLabel={`${label} adhkar`}
-            >
-              <Text style={[styles.filterLabel, filter === cat.key && styles.filterLabelActive]}>
-                {label}
-              </Text>
-            </TouchableOpacity>
-          );
-        })}
-      </ScrollView>
-
-      <FlatList
-        data={filtered}
-        keyExtractor={(d) => d.id}
-        renderItem={({ item: dua, index }) => (
-          <TouchableOpacity
-            style={styles.duaCard}
-            onPress={() => setExpanded(expanded === dua.id ? null : dua.id)}
-            accessibilityRole="button"
-            accessibilityState={{ expanded: expanded === dua.id }}
-            accessibilityLabel={`Dua ${index + 1}: ${dua.transliteration}`}
-            accessibilityHint="Tap to expand or collapse"
-          >
-            <View style={styles.duaNumber}>
-              <Text style={styles.numberText}>{index + 1}</Text>
-            </View>
-            <View style={styles.duaContent}>
-              {/* Arabic — RTL, full tashkeel, no truncation */}
-              <Text
-                style={styles.arabicText}
-                accessibilityLabel={`Arabic: ${dua.transliteration}`}
+      <View style={[styles.content, isWide && { alignSelf: 'center', width: '100%', maxWidth: maxContentWidth }]}>
+        {/* Category filter tabs — horizontally scrollable to keep 5 categories uncluttered */}
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.filterRow}
+          accessibilityRole="tablist"
+        >
+          {CATEGORIES.map((cat) => {
+            const label = t(cat.labelKey);
+            return (
+              <TouchableOpacity
+                key={cat.key}
+                style={[styles.filterTab, filter === cat.key && styles.filterTabActive]}
+                onPress={() => setFilter(cat.key)}
+                accessibilityRole="tab"
+                accessibilityState={{ selected: filter === cat.key }}
+                accessibilityLabel={`${label} adhkar`}
               >
-                {dua.arabic}
-              </Text>
-              {dua.repeatCount && dua.repeatCount > 1 && (
-                <Text style={styles.repeatBadge}>× {dua.repeatCount}</Text>
-              )}
-              {expanded === dua.id && (
-                <>
-                  <Text style={styles.transliteration}>{dua.transliteration}</Text>
-                  <Text style={styles.translation}>{dua.translation}</Text>
-                  <Text style={styles.source}>{dua.source}</Text>
-                </>
-              )}
-            </View>
-          </TouchableOpacity>
-        )}
-        contentContainerStyle={{ paddingBottom: 32 }}
-        accessible
-        accessibilityLabel={`${filter === 'all' ? 'All' : filter} adhkar list`}
-      />
+                <Text style={[styles.filterLabel, filter === cat.key && styles.filterLabelActive]}>
+                  {label}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
+        </ScrollView>
+
+        <FlatList
+          data={filtered}
+          keyExtractor={(d) => d.id}
+          renderItem={({ item: dua, index }) => (
+            <TouchableOpacity
+              style={styles.duaCard}
+              onPress={() => setExpanded(expanded === dua.id ? null : dua.id)}
+              accessibilityRole="button"
+              accessibilityState={{ expanded: expanded === dua.id }}
+              accessibilityLabel={`Dua ${index + 1}: ${dua.transliteration}`}
+              accessibilityHint="Tap to expand or collapse"
+            >
+              <View style={styles.duaNumber}>
+                <Text style={styles.numberText}>{index + 1}</Text>
+              </View>
+              <View style={styles.duaContent}>
+                {/* Arabic — RTL, full tashkeel, no truncation */}
+                <Text
+                  style={styles.arabicText}
+                  accessibilityLabel={`Arabic: ${dua.transliteration}`}
+                >
+                  {dua.arabic}
+                </Text>
+                {dua.repeatCount && dua.repeatCount > 1 && (
+                  <Text style={styles.repeatBadge}>× {dua.repeatCount}</Text>
+                )}
+                {expanded === dua.id && (
+                  <>
+                    <Text style={styles.transliteration}>{dua.transliteration}</Text>
+                    <Text style={styles.translation}>{dua.translation}</Text>
+                    <Text style={styles.source}>{dua.source}</Text>
+                  </>
+                )}
+              </View>
+            </TouchableOpacity>
+          )}
+          contentContainerStyle={{ paddingBottom: 32 }}
+          accessible
+          accessibilityLabel={`${filter === 'all' ? 'All' : filter} adhkar list`}
+        />
+      </View>
     </SafeAreaView>
   );
 }
@@ -113,6 +117,7 @@ export default function DuaDhikrScreen() {
 
 const createStyles = (colors: ThemeColors) => StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background.primary },
+  content: { flex: 1 },
   filterRow: {
     flexDirection: 'row',
     padding: 12,

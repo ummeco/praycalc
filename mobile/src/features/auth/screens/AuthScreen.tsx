@@ -21,6 +21,7 @@ import {
 } from 'react-native';
 import { useTranslation } from '../../../i18n';
 import { useThemeColors } from '../../../hooks/useThemeColors';
+import { useResponsiveLayout } from '../../../hooks/useResponsiveLayout';
 import type { ThemeColors } from '../../../constants/colors';
 import { useAuthStore } from '../store/useAuthStore';
 import { signin, signup } from '../../../lib/auth/authClient';
@@ -34,6 +35,7 @@ type AuthTab = 'anonymous' | 'login' | 'register';
 export default function AuthScreen() {
   const { t } = useTranslation();
   const colors = useThemeColors();
+  const { isWide, maxContentWidth } = useResponsiveLayout();
   const styles = useMemo(() => createStyles(colors), [colors]);
   const auth = useAuthStore();
   const [activeTab, setActiveTab] = useState<AuthTab>('anonymous');
@@ -100,7 +102,9 @@ export default function AuthScreen() {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={styles.container}
     >
-      <ScrollView contentContainerStyle={styles.content}>
+      <ScrollView
+        contentContainerStyle={[styles.content, isWide && { alignSelf: 'center', width: '100%', maxWidth: maxContentWidth }]}
+      >
         {/* Header */}
         <View style={styles.header}>
           <Text style={styles.appName}>{t('app.name')}</Text>

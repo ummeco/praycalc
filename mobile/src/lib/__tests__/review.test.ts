@@ -8,6 +8,18 @@
  *   expo-store-review is also mocked so no real StoreReview call happens under test.
  */
 
+import {
+  shouldRequestReview,
+  REVIEW_SUCCESS_THRESHOLD,
+  getReviewSuccessCount,
+  hasAlreadyAskedForReview,
+  recordSuccessAndMaybeRequestReview,
+  resetReviewGateForTesting,
+} from '../review';
+
+// babel-plugin-jest-hoist hoists the jest.mock() calls below (and their `mock`-prefixed
+// const dependencies) above the import's compiled require() regardless of textual order,
+// so reordering here for import/first is a no-op at runtime.
 // In-memory MMKV mock — same shape as react-native-mmkv's API surface this module uses.
 jest.mock('../storage/mmkv', () => {
   const store = new Map<string, string | boolean>();
@@ -37,15 +49,6 @@ jest.mock('expo-store-review', () => ({
   isAvailableAsync: (...args: unknown[]) => mockIsAvailableAsync(...args),
   requestReview: (...args: unknown[]) => mockRequestReview(...args),
 }));
-
-import {
-  shouldRequestReview,
-  REVIEW_SUCCESS_THRESHOLD,
-  getReviewSuccessCount,
-  hasAlreadyAskedForReview,
-  recordSuccessAndMaybeRequestReview,
-  resetReviewGateForTesting,
-} from '../review';
 
 describe('shouldRequestReview (pure gate logic)', () => {
   it('does not request below the threshold', () => {

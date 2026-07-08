@@ -6,6 +6,17 @@
  *   third-party community native modules.
  */
 
+import {
+  useMuteStore,
+  clampRadius,
+  MIN_RADIUS_METERS,
+  MAX_RADIUS_METERS,
+  DEFAULT_RADIUS_METERS,
+} from '../store/useMuteStore';
+
+// babel-plugin-jest-hoist hoists this above the import above at eval time, so the
+// mock is in place before useMuteStore's module body (and its AsyncStorage import)
+// ever runs — textual order here doesn't change behavior, only readability.
 jest.mock('@react-native-async-storage/async-storage', () => {
   const store = new Map<string, string>();
   return {
@@ -27,14 +38,6 @@ jest.mock('@react-native-async-storage/async-storage', () => {
     },
   };
 });
-
-import {
-  useMuteStore,
-  clampRadius,
-  MIN_RADIUS_METERS,
-  MAX_RADIUS_METERS,
-  DEFAULT_RADIUS_METERS,
-} from '../store/useMuteStore';
 
 describe('clampRadius', () => {
   it('clamps below the minimum up to MIN_RADIUS_METERS', () => {
@@ -132,7 +135,7 @@ describe('useMuteStore', () => {
     // Give the persist middleware's async AsyncStorage.setItem a tick to flush.
     await new Promise((resolve) => setTimeout(resolve, 0));
 
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    // eslint-disable-next-line @typescript-eslint/no-require-imports -- resetModules()-driven fresh require, not a static dep
     const AsyncStorage = require('@react-native-async-storage/async-storage').default;
     const raw = await AsyncStorage.getItem('praycalc-masjid-mute');
     expect(raw).toBeTruthy();

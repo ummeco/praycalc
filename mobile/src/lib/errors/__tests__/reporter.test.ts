@@ -14,7 +14,7 @@
 type ReporterModule = typeof import('../reporter');
 
 function requireReporter(): ReporterModule {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  // eslint-disable-next-line @typescript-eslint/no-require-imports -- resetModules()-driven fresh require, not a static dep
   return require('../reporter') as ReporterModule;
 }
 

@@ -94,7 +94,7 @@ export default function AgendasScreen() {
     } finally {
       setSyncing(false);
     }
-  }, [location, enabledPrayers, method, madhab, highLatRule, customFajrAngle, customIshaAngle, t]);
+  }, [location, enabledPrayers, method, madhab, highLatRule, customFajrAngle, customIshaAngle, prayerMinuteAdjustments, t]);
 
   if (permissionStatus === 'unknown') return <LoadingState message={t('screens.agendas.checkingPermission')} />;
   if (permissionStatus === 'denied') {

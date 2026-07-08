@@ -20,6 +20,7 @@ import {
 } from 'react-native';
 import { useTranslation } from '../../i18n';
 import { useThemeColors } from '../../hooks/useThemeColors';
+import { useResponsiveLayout } from '../../hooks/useResponsiveLayout';
 import type { ThemeColors } from '../../constants/colors';
 import { useSettingsStore } from '../settings/store/useSettingsStore';
 import CitySearchScreen from '../city-search/CitySearchScreen';
@@ -41,6 +42,7 @@ const QASR_RAKAT: Record<PrayerName, { normal: number; qasr: number }> = {
 export default function TravelScreen() {
   const { t } = useTranslation();
   const colors = useThemeColors();
+  const { isWide, maxContentWidth } = useResponsiveLayout();
   const styles = useMemo(() => createStyles(colors), [colors]);
   const { location, travelLocation, musafirMode, setTravelLocation, setMusafirMode } = useSettingsStore();
   const [showCitySearch, setShowCitySearch] = useState(false);
@@ -80,7 +82,9 @@ export default function TravelScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scroll}>
+      <ScrollView
+        contentContainerStyle={[styles.scroll, isWide && { alignSelf: 'center', width: '100%', maxWidth: maxContentWidth }]}
+      >
         {/* Musafir toggle */}
         <View style={styles.musafirCard}>
           <View style={styles.cardLeft}>

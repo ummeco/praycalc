@@ -20,6 +20,7 @@ import { router } from 'expo-router';
 import { useQuery } from 'urql';
 import { useTranslation } from '../../../i18n';
 import { useThemeColors } from '../../../hooks/useThemeColors';
+import { useResponsiveLayout } from '../../../hooks/useResponsiveLayout';
 import type { ThemeColors } from '../../../constants/colors';
 import {
   ErrorState, EmptyState, SkeletonState,
@@ -60,6 +61,7 @@ interface AdhanVoice {
 export default function AdhanScreen() {
   const { t } = useTranslation();
   const colors = useThemeColors();
+  const { isWide, maxContentWidth } = useResponsiveLayout();
   const styles = useMemo(() => createStyles(colors), [colors]);
   const [{ data, fetching, error }, reexecuteQuery] = useQuery({ query: GET_ADHAN_LIBRARY });
   const [playingId, setPlayingId] = useState<string | null>(null);
@@ -97,7 +99,7 @@ export default function AdhanScreen() {
     // the chosen voice without a network round-trip.
     setAdhanVoice(voice.id, voice.audio_url, `${voice.name} — ${voice.reciter}`);
     rescheduleIfEnabled();
-  }, [isPlus, setAdhanVoice]);
+  }, [isPlus, setAdhanVoice, t]);
 
   const handlePlay = useCallback(async (voice: AdhanVoice) => {
     if (playingId === voice.id) {
@@ -124,58 +126,60 @@ export default function AdhanScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Per-prayer enable toggles */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle} accessibilityRole="header">{t('screens.adhan.enablePerPrayer')}</Text>
-        {PRAYER_NAMES.map((name) => (
-          <View key={name} style={styles.toggleRow}>
-            <Text style={styles.toggleLabel}>{t(PRAYER_LABEL_KEYS[name])}</Text>
-            <Switch
-              value={enabledPrayers[name]}
-              onValueChange={() => togglePrayer(name)}
-              trackColor={{ false: colors.background.card, true: colors.brand.mid }}
-              thumbColor={colors.brand.light}
-              accessibilityLabel={`Enable ${t(PRAYER_LABEL_KEYS[name])} adhan`}
-            />
-          </View>
-        ))}
-      </View>
-
-      {/* Voice library */}
-      <Text style={styles.sectionTitle} accessibilityRole="header">{t('screens.adhan.library')}</Text>
-      <FlatList
-        data={voices}
-        keyExtractor={(v) => v.id}
-        renderItem={({ item: voice }) => (
-          <TouchableOpacity
-            style={[styles.voiceCard, selectedId === voice.id && styles.voiceCardSelected]}
-            onPress={() => handleSelect(voice)}
-            accessibilityRole="radio"
-            accessibilityState={{ selected: selectedId === voice.id }}
-            accessibilityLabel={`${voice.name} by ${voice.reciter}${voice.is_pro ? ' (Pro, upgrade required to select)' : ''}`}
-          >
-            <View style={styles.voiceInfo}>
-              <Text style={styles.voiceName}>{voice.name}</Text>
-              <Text style={styles.voiceReciter}>{voice.reciter}</Text>
-              {voice.is_pro && (
-                <Text style={styles.proBadge} accessibilityLabel={t('screens.adhan.proFeature')}>PRO</Text>
-              )}
+      <View style={[styles.content, isWide && { alignSelf: 'center', width: '100%', maxWidth: maxContentWidth }]}>
+        {/* Per-prayer enable toggles */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle} accessibilityRole="header">{t('screens.adhan.enablePerPrayer')}</Text>
+          {PRAYER_NAMES.map((name) => (
+            <View key={name} style={styles.toggleRow}>
+              <Text style={styles.toggleLabel}>{t(PRAYER_LABEL_KEYS[name])}</Text>
+              <Switch
+                value={enabledPrayers[name]}
+                onValueChange={() => togglePrayer(name)}
+                trackColor={{ false: colors.background.card, true: colors.brand.mid }}
+                thumbColor={colors.brand.light}
+                accessibilityLabel={`Enable ${t(PRAYER_LABEL_KEYS[name])} adhan`}
+              />
             </View>
+          ))}
+        </View>
+
+        {/* Voice library */}
+        <Text style={styles.sectionTitle} accessibilityRole="header">{t('screens.adhan.library')}</Text>
+        <FlatList
+          data={voices}
+          keyExtractor={(v) => v.id}
+          renderItem={({ item: voice }) => (
             <TouchableOpacity
-              onPress={() => handlePlay(voice)}
-              style={styles.playButton}
-              accessibilityRole="button"
-              accessibilityLabel={playingId === voice.id ? t('screens.adhan.stopPreview') : t('screens.adhan.playPreview')}
-              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+              style={[styles.voiceCard, selectedId === voice.id && styles.voiceCardSelected]}
+              onPress={() => handleSelect(voice)}
+              accessibilityRole="radio"
+              accessibilityState={{ selected: selectedId === voice.id }}
+              accessibilityLabel={`${voice.name} by ${voice.reciter}${voice.is_pro ? ' (Pro, upgrade required to select)' : ''}`}
             >
-              <Text style={styles.playIcon}>{playingId === voice.id ? '■' : '▶'}</Text>
+              <View style={styles.voiceInfo}>
+                <Text style={styles.voiceName}>{voice.name}</Text>
+                <Text style={styles.voiceReciter}>{voice.reciter}</Text>
+                {voice.is_pro && (
+                  <Text style={styles.proBadge} accessibilityLabel={t('screens.adhan.proFeature')}>PRO</Text>
+                )}
+              </View>
+              <TouchableOpacity
+                onPress={() => handlePlay(voice)}
+                style={styles.playButton}
+                accessibilityRole="button"
+                accessibilityLabel={playingId === voice.id ? t('screens.adhan.stopPreview') : t('screens.adhan.playPreview')}
+                hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+              >
+                <Text style={styles.playIcon}>{playingId === voice.id ? '■' : '▶'}</Text>
+              </TouchableOpacity>
             </TouchableOpacity>
-          </TouchableOpacity>
-        )}
-        contentContainerStyle={{ paddingBottom: 24 }}
-        accessible
-        accessibilityLabel={t('screens.adhan.voiceListLabel')}
-      />
+          )}
+          contentContainerStyle={{ paddingBottom: 24 }}
+          accessible
+          accessibilityLabel={t('screens.adhan.voiceListLabel')}
+        />
+      </View>
     </SafeAreaView>
   );
 }
@@ -184,6 +188,7 @@ export default function AdhanScreen() {
 
 const createStyles = (colors: ThemeColors) => StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background.primary },
+  content: { flex: 1 },
   section: { padding: 16, backgroundColor: colors.background.secondary },
   sectionTitle: {
     fontSize: 16,

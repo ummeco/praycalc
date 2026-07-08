@@ -30,7 +30,9 @@ import type { CapturedRingerMode } from '../store/useMuteStore';
  *  gives the same lazy-load behavior at runtime (Metro/Hermes also resolve it eagerly
  *  into the bundle either way, so there is no real bundle-size tradeoff here). */
 function getVolumeManager() {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  // Intentional lazy require() — not a stale rule name; see the block comment above
+  // for why this can't be a static import.
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
   const mod = require('react-native-volume-manager') as typeof import('react-native-volume-manager');
   return { VolumeManager: mod.VolumeManager, RINGER_MODE: mod.RINGER_MODE };
 }

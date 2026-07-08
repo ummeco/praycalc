@@ -16,6 +16,7 @@ import {
 import { useFocusEffect, router } from 'expo-router';
 import i18next, { useTranslation } from '../../i18n';
 import { useThemeColors } from '../../hooks/useThemeColors';
+import { useResponsiveLayout } from '../../hooks/useResponsiveLayout';
 import type { ThemeColors } from '../../constants/colors';
 import { EmptyState } from '../../components/states';
 import { loadCompletions, type PrayerCompletion } from '../../lib/completions';
@@ -48,8 +49,8 @@ function getStreak(completions: PrayerCompletion[]): number {
   return streak;
 }
 
-function getWeeklyData(completions: PrayerCompletion[], locale: string): Array<{ day: string; count: number }> {
-  const result: Array<{ day: string; count: number }> = [];
+function getWeeklyData(completions: PrayerCompletion[], locale: string): { day: string; count: number }[] {
+  const result: { day: string; count: number }[] = [];
   for (let i = 6; i >= 0; i--) {
     const d = new Date();
     d.setDate(d.getDate() - i);
@@ -65,7 +66,7 @@ function getWeeklyData(completions: PrayerCompletion[], locale: string): Array<{
 
 // ── Inline bar chart (no extra deps) ─────────────────────────────────────────
 
-function BarChart({ data, colors, t }: { data: Array<{ day: string; count: number }>; colors: ThemeColors; t: (key: string, opts?: Record<string, unknown>) => string }) {
+function BarChart({ data, colors, t }: { data: { day: string; count: number }[]; colors: ThemeColors; t: (key: string, opts?: Record<string, unknown>) => string }) {
   const max = 5;
   const chart = useMemo(() => createChartStyles(colors), [colors]);
   return (
@@ -111,6 +112,7 @@ type ViewMode = 'weekly' | 'monthly';
 export default function StatsScreen() {
   const { t } = useTranslation();
   const colors = useThemeColors();
+  const { isWide, maxContentWidth } = useResponsiveLayout();
   const styles = useMemo(() => createStyles(colors), [colors]);
   const [mode, setMode] = useState<ViewMode>('weekly');
   const [completions, setCompletions] = useState<PrayerCompletion[]>(loadCompletions);
@@ -147,7 +149,9 @@ export default function StatsScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scroll}>
+      <ScrollView
+        contentContainerStyle={[styles.scroll, isWide && { alignSelf: 'center', width: '100%', maxWidth: maxContentWidth }]}
+      >
         {/* Streak cards */}
         <View style={styles.statsRow}>
           <View

@@ -18,6 +18,7 @@ import {
 } from 'react-native';
 import i18next, { useTranslation } from '../../i18n';
 import { useThemeColors } from '../../hooks/useThemeColors';
+import { useResponsiveLayout } from '../../hooks/useResponsiveLayout';
 import type { ThemeColors } from '../../constants/colors';
 import { useSettingsStore, useActiveLocation } from '../settings/store/useSettingsStore';
 import { calculatePrayerTimes } from '../../lib/prayer-calc';
@@ -58,6 +59,7 @@ const RAMADAN_DUAS = [
 export default function RamadanScreen() {
   const { t } = useTranslation();
   const colors = useThemeColors();
+  const { isWide, maxContentWidth } = useResponsiveLayout();
   const styles = useMemo(() => createStyles(colors), [colors]);
   const settings = useSettingsStore();
   const location = useActiveLocation();
@@ -111,7 +113,7 @@ export default function RamadanScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scroll}>
+      <ScrollView contentContainerStyle={[styles.scroll, isWide && { alignSelf: 'center', width: '100%', maxWidth: maxContentWidth }]}>
         {/* Month status */}
         <View style={styles.statusCard}>
           {isRamadan ? (

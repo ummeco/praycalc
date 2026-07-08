@@ -20,6 +20,7 @@ import {
 } from 'react-native';
 import i18next, { useTranslation } from '../../../i18n';
 import { useThemeColors } from '../../../hooks/useThemeColors';
+import { useResponsiveLayout } from '../../../hooks/useResponsiveLayout';
 import type { ThemeColors } from '../../../constants/colors';
 import { useIslamicCalendar } from '../hooks/useIslamicCalendar';
 
@@ -50,6 +51,7 @@ function getMonthName(year: number, month: number, locale: string): string {
 export default function IslamicCalendarScreen() {
   const { t } = useTranslation();
   const colors = useThemeColors();
+  const { isWide, maxContentWidth } = useResponsiveLayout();
   const styles = useMemo(() => createStyles(colors), [colors]);
   const {
     gregorianDate,
@@ -80,7 +82,10 @@ export default function IslamicCalendarScreen() {
   ];
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={[styles.content, isWide && { alignSelf: 'center', width: '100%', maxWidth: maxContentWidth }]}
+    >
       {/* Dual Date Header */}
       <View style={styles.dateHeader}>
         <Text style={styles.hijriDate}>

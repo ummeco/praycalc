@@ -132,7 +132,11 @@ export function usePrayerTimes({
       setError(err instanceof Error ? err.message : 'Calculation error');
       setStatus('error');
     }
-  }, [date, latitude, longitude, timezone, method, madhab, highLatRule, customAngles, minuteAdjustments, isOffline, isPermissionDenied]);
+    // `times` is intentionally excluded: calculatePrayerTimes returns a new object each
+    // call, so depending on `times` would recreate `calculate` every time it sets `times`,
+    // re-running the effect below and causing an infinite recalculation loop.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [date, latitude, longitude, timezone, method, madhab, highLatRule, customAngles, minuteAdjustments, isOffline, isPermissionDenied, computeNextPrayer]);
 
   // Recalculate on inputs change
   useEffect(() => {

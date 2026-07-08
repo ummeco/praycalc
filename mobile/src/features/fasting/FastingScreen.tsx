@@ -18,6 +18,7 @@ import {
 import * as Haptics from 'expo-haptics';
 import { useTranslation } from '../../i18n';
 import { useThemeColors } from '../../hooks/useThemeColors';
+import { useResponsiveLayout } from '../../hooks/useResponsiveLayout';
 import type { ThemeColors } from '../../constants/colors';
 import { useSettingsStore } from '../settings/store/useSettingsStore';
 import { useFastingStore } from './store/useFastingStore';
@@ -44,6 +45,7 @@ const FAST_TYPE_LABELS: Record<FastType, string> = {
 export default function FastingScreen() {
   const { t } = useTranslation();
   const colors = useThemeColors();
+  const { isWide, maxContentWidth } = useResponsiveLayout();
   const styles = useMemo(() => createStyles(colors), [colors]);
   const hijriDayAdjustment = useSettingsStore((s) => s.hijriDayAdjustment);
   const logs = useFastingStore((s) => s.logs);
@@ -91,7 +93,7 @@ export default function FastingScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scroll}>
+      <ScrollView contentContainerStyle={[styles.scroll, isWide && { alignSelf: 'center', width: '100%', maxWidth: maxContentWidth }]}>
         {/* Ramadan progress banner — only shown during Ramadan */}
         {ramadanProgress && (
           <View style={styles.ramadanBanner} accessibilityRole="text"

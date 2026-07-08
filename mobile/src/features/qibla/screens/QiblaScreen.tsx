@@ -14,6 +14,7 @@ import { router } from 'expo-router';
 import geomagnetism from 'geomagnetism';
 import { useTranslation } from '../../../i18n';
 import { useThemeColors } from '../../../hooks/useThemeColors';
+import { useResponsiveLayout } from '../../../hooks/useResponsiveLayout';
 import type { ThemeColors } from '../../../constants/colors';
 import { useActiveLocation } from '../../settings/store/useSettingsStore';
 import { useQibla } from '../hooks/useQibla';
@@ -34,6 +35,7 @@ const ACCURACY_LABEL_KEYS = [
 export default function QiblaScreen() {
   const { t } = useTranslation();
   const colors = useThemeColors();
+  const { isWide, maxContentWidth } = useResponsiveLayout();
   const styles = useMemo(() => createStyles(colors), [colors]);
   const accuracyColors = useMemo(
     () => [colors.state.error, colors.state.warning, colors.brand.mid, colors.brand.dark],
@@ -115,7 +117,8 @@ export default function QiblaScreen() {
   const accuracyLevelLabel = ACCURACY_LABEL_KEYS[accuracy] ? t(ACCURACY_LABEL_KEYS[accuracy]!) : t('screens.qibla.accuracyUnknown');
 
   return (
-    <View style={styles.container}>
+    <View style={styles.outer}>
+      <View style={[styles.container, isWide && { alignSelf: 'center', width: '100%', maxWidth: maxContentWidth }]}>
       {/* Bearing info */}
       <View style={styles.bearingInfo} accessible accessibilityLabel={`${t('screens.qibla.bearingLabel')}: ${bearing !== null ? `${Math.round(bearing)} degrees` : 'unavailable'}`}>
         <Text style={styles.bearingValue}>
@@ -172,14 +175,15 @@ export default function QiblaScreen() {
       <Text style={styles.note} allowFontScaling minimumFontScale={0.85}>
         {t('screens.qibla.headingNote', { degrees: Math.round(heading) })}
       </Text>
+      </View>
     </View>
   );
 }
 
 const createStyles = (colors: ThemeColors) => StyleSheet.create({
+  outer: { flex: 1, backgroundColor: colors.background.primary },
   container: {
     flex: 1,
-    backgroundColor: colors.background.primary,
     alignItems: 'center',
     justifyContent: 'center',
     padding: 24,
