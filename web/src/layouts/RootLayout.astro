@@ -19,6 +19,18 @@ import ConsentGate from '@/islands/ConsentGate';
 
 import '../styles/global.css';
 
+// Self-hosted fonts (replaces render-blocking Google Fonts <link>).
+// Inter: variable weight axis 100-900, all Fontsource-bundled subsets (unicode-range
+//   scoped, so browsers only fetch the subset matching the rendered text).
+// Noto Naskh Arabic: static 400/700, Arabic subset only (Latin subset is unused —
+//   Arabic text is the only consumer of --font-arabic).
+import '@fontsource-variable/inter/wght.css';
+import '@fontsource/noto-naskh-arabic/arabic-400.css';
+import '@fontsource/noto-naskh-arabic/arabic-700.css';
+// Preload the Latin subset of the primary (variable) weight — the file almost every
+// page needs first-paint, since default locale is English.
+import interLatinPreloadUrl from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
+
 interface Props {
   title?: string;
   description?: string;
@@ -34,6 +46,13 @@ interface Props {
    * or an array. Already-serialized strings are passed through untouched.
    */
   jsonLd?: Record<string, unknown> | Record<string, unknown>[] | string;
+  /**
+   * Preload an above-the-fold image that is this page's LCP element (as="image").
+   * Page-specific, not a default — an unconditional preload on every page would
+   * waste bandwidth (and trip Lighthouse's unused-preload warning) on pages that
+   * never render that image. Pass the exact src used by the page's <img>.
+   */
+  preloadLcpImage?: string;
 }
 
 const {
@@ -46,6 +65,7 @@ const {
   noIndex = false,
   hideFooter = false,
   jsonLd,
+  preloadLcpImage,
 } = Astro.props;
 
 // Normalize jsonLd into an array of JSON strings for <head> injection.
@@ -102,13 +122,22 @@ const umamiSiteId = import.meta.env.UMAMI_WEBSITE_ID;
     <link rel="apple-touch-icon" href="/icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
 
-    <!-- Fonts: Inter (Latin) + Noto Naskh Arabic (self-hosted via Google Fonts proxy) -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+    <!-- Fonts: Inter (Latin) + Noto Naskh Arabic, self-hosted via @fontsource (no
+         third-party request, no render-blocking round trip to fonts.googleapis.com).
+         CSS is imported in frontmatter above; this preloads the first-paint file. -->
     <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Noto+Naskh+Arabic:wght@400;700&display=swap"
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href={interLatinPreloadUrl}
+      crossorigin="anonymous"
     />
+
+    <!-- Preload this page's LCP image (opt-in per page, see preloadLcpImage prop) —
+         same effect as fetchpriority="high" on the <img> itself, but declared in
+         <head> so the browser's preload scanner discovers it before body parsing
+         reaches it. -->
+    {preloadLcpImage && <link rel="preload" as="image" href={preloadLcpImage} />}
 
     <!-- PWA service worker (sw.js — vanilla, no build step) -->
     <script is:inline>
@@ -125,6 +154,22 @@ const umamiSiteId = import.meta.env.UMAMI_WEBSITE_ID;
 
     <slot />
     {!hideFooter && <Footer />}
-    <ConsentGate client:load umamiSiteId={umamiSiteId} />
+    <ConsentGate client:idle umamiSiteId={umamiSiteId} />
+
+    {/* Lazy-load Sentry client monitoring off the critical rendering path — see
+        src/lib/sentry-client-init.ts for the full rationale. This is a tiny
+        Vite-bundled bootstrap (not is:inline); the dynamic import() below is what
+        Vite code-splits into its own chunk, fetched only once the browser is idle
+        (or on `load` as a fallback), never competing with LCP-critical bytes. */}
+    <script>
+      function loadSentry() {
+        import('@/lib/sentry-client-init');
+      }
+      if ('requestIdleCallback' in window) {
+        requestIdleCallback(loadSentry, { timeout: 4000 });
+      } else {
+        window.addEventListener('load', loadSentry, { once: true });
+      }
+    </script>
   </body>
 </html>

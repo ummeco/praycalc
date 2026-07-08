@@ -57,8 +57,17 @@ export default defineConfig({
         !page.includes('/404') &&
         !page.includes('/500'),
     }),
-    // Sentry: DSN is configured in sentry.client.config.ts / sentry.server.config.ts
+    // Sentry: server init from sentry.server.config.ts (auto-injected into every
+    // SSR response as usual). Client init is intentionally NOT auto-injected —
+    // `enabled.client: false` stops @sentry/astro's injectScript("page", ...) hook,
+    // which otherwise glues the full browser SDK (core + browserTracing + Replay,
+    // ~75 KiB brotli) into every page's eager entry bundle and was the single
+    // largest contributor to homepage FCP/LCP. src/lib/sentry-client-init.ts holds
+    // the equivalent Sentry.init() call; RootLayout.astro dynamically imports it on
+    // requestIdleCallback/load so monitoring still initializes, just off the
+    // critical rendering path. See src/lib/sentry-client-init.ts for the full why.
     sentry({
+      enabled: { client: false, server: true },
       sourceMapsUploadOptions: {
         project: 'praycalc-web',
         authToken: process.env.SENTRY_AUTH_TOKEN,

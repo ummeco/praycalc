@@ -20,13 +20,13 @@ const links = [
 ---
 
 <footer class="w-full max-w-2xl mx-auto px-4 py-8 mt-8">
-  <nav class="flex flex-wrap justify-center gap-x-4 gap-y-2 text-white/55 text-xs" aria-label="Footer">
+  <nav class="flex flex-wrap justify-center gap-x-2 gap-y-1 text-white/55 text-xs" aria-label="Footer">
     {links.map((l) => (
-      <a href={l.href} class="hover:text-white transition-colors">{l.label}</a>
+      <a href={l.href} class="inline-block px-2 py-2.5 hover:text-white transition-colors">{l.label}</a>
     ))}
     <a
       href="https://praycalc.org"
-      class="hover:text-ummat-light text-ummat-light/70 transition-colors"
+      class="inline-block px-2 py-2.5 hover:text-ummat-light text-ummat-light/70 transition-colors"
       target="_blank"
       rel="noopener"
     >praycalc.org</a>

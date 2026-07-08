@@ -43,7 +43,7 @@
   --color-error:              #f87171;
   --color-warning:            #e8c84a;
 
-  --font-latin:  'Inter', 'Helvetica Neue', Arial, sans-serif;
+  --font-latin:  'Inter Variable', 'Inter', 'Helvetica Neue', Arial, sans-serif;
   --font-arabic: 'Noto Naskh Arabic', 'Traditional Arabic', serif;
   --font-urdu:   'Noto Nastaliq Urdu', 'Nastaliq', serif;
 }
@@ -107,7 +107,16 @@ html, body {
 }
 .logo-sunrise img {
   width: 100%; max-width: 420px; height: auto;
-  /* Rise from y=215 (fully hidden below the horizon) to resting at y=0. */
+  /* Rise from y=215 (fully hidden below the horizon) to resting at y=0.
+   * NOTE (Lighthouse perf pass): this transform animation running past first
+   * paint is what the CLS metric now attributes ~0.069 to (paint got fast
+   * enough — FCP ~1.1s — to land mid-animation; previously a slower FCP hid
+   * it). Tried shortening/softening the travel distance to cut that; it fixed
+   * CLS but tanked Speed Index (4.6-4.8s vs 1.7s) for reasons that didn't
+   * pay down further investigation in this pass. 0.069 is comfortably under
+   * the 0.1 "good" CLS threshold and the lighthouserc gate, so the original
+   * animation stays as-is — net Performance score is higher with it.
+   */
   animation: sunrise-rise 6s cubic-bezier(0.25, 0.1, 0.25, 1) 0.1s both;
 }
 .logo-sunrise-glow {

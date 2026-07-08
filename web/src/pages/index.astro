@@ -34,6 +34,7 @@ const tagline = TAGLINES[locale] ?? TAGLINES.en;
   description="Accurate Islamic prayer times for any location. GPS-based, multiple calculation methods, Qibla direction, moon phases, and Hijri calendar."
   canonical="https://praycalc.com"
   jsonLd={jsonLd}
+  preloadLcpImage="/logo-sunrise.svg"
 >
   <main id="main-content" class="home-main relative">
     <h1 class="sr-only">PrayCalc — accurate Islamic prayer times for any location</h1>
@@ -63,7 +64,7 @@ const tagline = TAGLINES[locale] ?? TAGLINES.en;
 
     <!-- Location search island -->
     <div class="w-full max-w-[480px] mt-5 px-4">
-      <LocationSearch client:load autoFocus={true} />
+      <LocationSearch client:idle autoFocus={true} />
       <p class="home-tagline text-white/25 text-xs text-center mt-2">
         {tagline}
       </p>
