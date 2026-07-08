@@ -64,7 +64,7 @@ const tagline = TAGLINES[locale] ?? TAGLINES.en;
 
     <!-- Location search island -->
     <div class="w-full max-w-[480px] mt-5 px-4">
-      <LocationSearch client:idle autoFocus={true} />
+      <LocationSearch client:load autoFocus={true} />
       <p class="home-tagline text-white/25 text-xs text-center mt-2">
         {tagline}
       </p>
