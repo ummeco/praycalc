@@ -2,6 +2,22 @@
 
 All notable changes to PrayCalc are documented here.
 
+## 2026-07-07 — Competitive gap-closure campaign (Waves 1-3)
+
+After a market gap analysis vs Muslim Pro, Athan, Pillars and Sajda, closed the itemized gaps across every surface in three waves.
+
+**DPC is now the flagship.** Dynamic Prayer Calculation — the engine's physics-based dynamic-angle model (an improvement on the Moonsighting method) — is the default and headline method everywhere, with a "How DPC Works" hero on praycalc.org. Fixed methods stay selectable. Mawlid is excluded from all apps.
+
+**Fixed a production defect:** the TV app had been showing fabricated placeholder prayer times to every user; it now computes real times with the same engine as mobile and web.
+
+**Prayer & notification depth:** multiple full-adhan notification sounds, snooze, Suhoor/Tahajjud/Qiyam smart alarms, an Android battery-optimization reliability guide, and a "test my adhan" button.
+
+**New features:** a Jumu'ah suite (khutbah + Surah al-Kahf reminders, Sunnah checklist), user-defined geofence auto-mute near a masjid, fasting and missed-prayer (qada) trackers, a readable mushaf plus post-adhan/post-prayer adhkar, a monthly timetable, and a nearby-mosque finder.
+
+**Platform polish:** iOS lock-screen widgets + Live Activities + Dynamic Island, watchOS phone-sync + complications, Wear OS tiles, animated onboarding, an analytics consent control, share and rate prompts, tablet layouts, accessibility improvements, JSON-LD SEO, a live-compass web Qibla, and offline PWA caching. Desktop notifications now fire when the app is closed.
+
+All religious content is cited (Bukhari/Muslim/Hisn al-Muslim); no fabrication.
+
 ## 2026-07-07 — TV dashboard epic + every remaining surface executed
 
 **TV (Android TV):** new two-pane dashboard as the default experience — 2/3 display pane with the Makkah live stream (Saudi Quran and Medina options), rotating cited Ayat/Hadith/Dua on a configurable 1-30 minute timer, and a bottom strip showing weather, Ramadan day-progress, or special-day banners (strict allowlist: Ramadan, both Eids, Arafah — Mawlid deliberately excluded); 1/3 prayer-times rail in the brand green gradient with a remotely-controlled accent color. Plus native extras: launch-on-TV-startup, opt-in kiosk mode (default launcher, for masjid/institution displays), and the "PrayCalc Ambient" screensaver selectable in Android TV settings. Full debug APK build-validated locally.

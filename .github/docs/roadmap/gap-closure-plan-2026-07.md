@@ -15,7 +15,7 @@ raised is addressed here, assigned, or explicitly deferred with an owner project
 
 ---
 
-## WAVE 1 (parallel, disjoint file domains — in flight)
+## WAVE 1 — SHIPPED (2026-07-07, CI-green)
 
 | # | Workstream | Domain | Gap refs |
 |---|---|---|---|
@@ -26,7 +26,7 @@ raised is addressed here, assigned, or explicitly deferred with an owner project
 
 (Foundation already shipped: DPC default + Mawlid removal in mobile/tv.)
 
-## WAVE 2 (mobile store/native — serialized to avoid file corruption)
+## WAVE 2 — SHIPPED (2026-07-07, CI-green)
 
 | # | Workstream | Gap refs |
 |---|---|---|
@@ -36,7 +36,7 @@ raised is addressed here, assigned, or explicitly deferred with an owner project
 | W2.4 | **Jumu'ah suite** (category-first): khutbah reminder, Surah al-Kahf Friday reminder, Ghusl/Sunnah checklist | C1 |
 | W2.5 | **Onboarding + method auto-select**: animated permission-priming multi-step onboarding; auto-pick DPC (already default) and detect country for the fixed-method fallback; mobile analytics **consent UI** | B6, A11, A15 |
 
-## WAVE 3 (widgets, platform depth, polish)
+## WAVE 3 — SHIPPED (2026-07-07)
 
 | # | Workstream | Gap refs |
 |---|---|---|
