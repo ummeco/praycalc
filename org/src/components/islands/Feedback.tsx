@@ -8,7 +8,7 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, type SyntheticEvent } from 'react';
 import { Transition } from '@headlessui/react';
 
 function CheckIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
@@ -29,7 +29,7 @@ function CheckIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
 export default function Feedback() {
   const [submitted, setSubmitted] = useState(false);
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  function handleSubmit(e: SyntheticEvent<HTMLFormElement>) {
     e.preventDefault();
     setSubmitted(true);
   }

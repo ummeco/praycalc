@@ -1,46 +1,51 @@
-# Protocol
+# praycalc.org
 
-Protocol is a [Tailwind Plus](https://tailwindcss.com/plus) site template built using [Tailwind CSS](https://tailwindcss.com) and [Next.js](https://nextjs.org).
+Scientific documentation site for [PrayCalc](https://praycalc.com) — solar physics, twilight optics, orbital mechanics, calculation methods, and the npm packages that power prayer time calculation. Built with [Astro 5](https://astro.build), MDX, React 19 islands, and Tailwind CSS v4.
 
 ## Getting started
 
-To get started with this template, first install the npm dependencies:
+Install dependencies with pnpm (this repo is pnpm-only):
 
 ```bash
-npm install
+pnpm install
 ```
 
-Next, run the development server:
+Run the dev server:
 
 ```bash
-npm run dev
+pnpm dev
 ```
 
-Finally, open [http://localhost:3000](http://localhost:3000) in your browser to view the website.
+Open [http://localhost:3041](http://localhost:3041) in your browser.
 
-## Customizing
+## Scripts
 
-You can start editing this template by modifying the files in the `/src` folder. The site will auto-update as you edit these files.
+| Script | Purpose |
+| --- | --- |
+| `pnpm dev` | Start the Astro dev server on port 3041 |
+| `pnpm build` | Build the static search index, then build the site to `dist/` |
+| `pnpm preview` | Preview the production build on port 3041 |
+| `pnpm typecheck` | Run `astro check` + `tsc --noEmit` |
+| `pnpm lint` | Run ESLint |
 
-## Global search
+## Content
 
-This template includes a global search that's powered by the [FlexSearch](https://github.com/nextapps-de/flexsearch) library. It's available by clicking the search input or by using the `⌘K` shortcut.
+Docs pages live under `src/pages/` as `.mdx` files (Getting Started, Features, Science, Research, Packages, Advanced) plus a small set of translated landing pages (`src/pages/{ar,fa,ur,id}/index.astro`). Sidebar navigation is the single source of truth at `src/lib/navigation.ts`.
 
-This feature requires no configuration, and works out of the box by automatically scanning your documentation pages to build its index. You can adjust the search parameters by editing the `/src/mdx/search.mjs` file.
+## Search
+
+Site search is powered by [FlexSearch](https://github.com/nextapps-de/flexsearch), lazily loaded on first interaction (click the search trigger or press `⌘K`/`Ctrl+K`). The index is generated at build time from the English MDX pages by `src/scripts/build-search-index.mjs` into `public/search-index.json` — no manual configuration needed when adding a new doc page.
+
+## Stack
+
+- [Astro 5](https://astro.build/) — static site generation, MDX pages, islands architecture
+- [React 19](https://react.dev/) — interactive islands (search, sidebar, table of contents, theme toggle, feedback widget)
+- [Tailwind CSS v4](https://tailwindcss.com/) — styling
+- [Headless UI](https://headlessui.com/) — accessible dialog/transition primitives
+- [Algolia Autocomplete](https://www.algolia.com/doc/ui-libraries/autocomplete/introduction/what-is-autocomplete/) — search UI/keyboard behavior
+- [FlexSearch](https://github.com/nextapps-de/flexsearch) — client-side search index
+- [Framer Motion](https://www.framer.com/motion/) — sidebar/TOC animations
 
 ## License
 
-This site template is a commercial product and is licensed under the [Tailwind Plus license](https://tailwindcss.com/plus/license).
-
-## Learn more
-
-To learn more about the technologies used in this site template, see the following resources:
-
-- [Tailwind CSS](https://tailwindcss.com/docs) - the official Tailwind CSS documentation
-- [Next.js](https://nextjs.org/docs) - the official Next.js documentation
-- [Headless UI](https://headlessui.dev) - the official Headless UI documentation
-- [Framer Motion](https://www.framer.com/docs/) - the official Framer Motion documentation
-- [MDX](https://mdxjs.com/) - the official MDX documentation
-- [Algolia Autocomplete](https://www.algolia.com/doc/ui-libraries/autocomplete/introduction/what-is-autocomplete/) - the official Algolia Autocomplete documentation
-- [FlexSearch](https://github.com/nextapps-de/flexsearch) - the official FlexSearch documentation
-- [Zustand](https://docs.pmnd.rs/zustand/getting-started/introduction) - the official Zustand documentation
+See [LICENSE.md](./LICENSE.md).

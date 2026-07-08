@@ -43,6 +43,17 @@ const isRtl = ['ar', 'ur', 'fa'].includes(locale);
 const siteUrl = Astro.site?.toString() ?? 'https://praycalc.org/';
 const isRootIndex = ['/', '/ar/', '/ur/', '/fa/', '/id/'].includes(Astro.url.pathname);
 
+// hreflang alternates — only the homepage is translated (ar/ur/fa/id are
+// landing-page stubs, not full doc translations), so alternates are only
+// emitted for the root index set. See src/pages/{ar,ur,fa,id}/index.astro.
+const localeRootPaths: Record<string, string> = {
+  en: '/',
+  ar: '/ar/',
+  ur: '/ur/',
+  fa: '/fa/',
+  id: '/id/',
+};
+
 const organizationNode = {
   '@type': 'Organization',
   '@id': `${siteUrl}#organization`,
@@ -89,6 +100,16 @@ const jsonLd = { '@context': 'https://schema.org', '@graph': jsonLdGraph };
 
     <!-- Canonical -->
     <link rel="canonical" href={canonicalUrl} />
+
+    <!-- hreflang alternates (root index only — see localeRootPaths above) -->
+    {isRootIndex && (
+      <>
+        {Object.entries(localeRootPaths).map(([hreflang, path]) => (
+          <link rel="alternate" hreflang={hreflang} href={new URL(path, Astro.site).toString()} />
+        ))}
+        <link rel="alternate" hreflang="x-default" href={new URL('/', Astro.site).toString()} />
+      </>
+    )}
 
     <!-- Open Graph -->
     <meta property="og:title" content={`${title} — PrayCalc Docs`} />
