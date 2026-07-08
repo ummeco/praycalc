@@ -16,8 +16,11 @@ import SettingsPanel, { type SettingsPanelHandle } from './components/Settings';
 import AdhanOverlay from './components/AdhanOverlay';
 import { invoke } from '@tauri-apps/api/core';
 import { listen } from '@tauri-apps/api/event';
+import { checkForUpdate, relaunchApp } from './lib/updater';
 
 type View = 'prayers' | 'settings';
+
+const UPDATE_CHECK_INTERVAL_MS = 60 * 60 * 1000; // hourly
 
 export default function App() {
   const [view, setView] = useState<View>('prayers');
@@ -30,6 +33,7 @@ export default function App() {
   const [hijri, setHijri] = useState(() => getHijriDate());
   const [seconds, setSeconds] = useState(0);
   const [adhanActive, setAdhanActive] = useState<string | null>(null);
+  const [updateReady, setUpdateReady] = useState<string | null>(null);
   const settingsRef = useRef<Settings>(DEFAULT_SETTINGS);
   const adhanActiveRef = useRef<string | null>(null);
   const settingsPanelRef = useRef<SettingsPanelHandle>(null);
@@ -134,6 +138,23 @@ export default function App() {
     (window as unknown as Record<string, unknown>).__showSettings = () => setView('settings');
   }, []);
 
+  // Seamless background auto-update: check on launch, then hourly. Downloads +
+  // installs silently; only surfaces once the install is ready for a restart.
+  useEffect(() => {
+    let cancelled = false;
+    const run = () => {
+      checkForUpdate().then((outcome) => {
+        if (!cancelled && outcome.status === 'ready') setUpdateReady(outcome.version);
+      });
+    };
+    run();
+    const id = setInterval(run, UPDATE_CHECK_INTERVAL_MS);
+    return () => {
+      cancelled = true;
+      clearInterval(id);
+    };
+  }, []);
+
   // Hide window on blur/ESC — suppressed while adhan plays.
   // ESC in settings cancels (navigates back) instead of hiding.
   useEffect(() => {
@@ -224,6 +245,23 @@ export default function App() {
               displayMode={settings.displayMode}
             />
           </div>
+        </div>
+      )}
+
+      {/* Update-ready banner — appears once a newer signed build has finished
+          downloading in the background; restart is user-initiated, never forced. */}
+      {updateReady && (
+        <div
+          className="flex items-center justify-between px-5 py-2 flex-shrink-0 text-[11px]"
+          style={{ borderTop: '1px solid rgba(255,255,255,0.07)', background: 'rgba(121,194,76,0.12)' }}
+        >
+          <span className="text-green-200/80">Update ready — v{updateReady}</span>
+          <button
+            onClick={() => void relaunchApp()}
+            className="text-brand-light hover:text-white font-semibold transition-colors"
+          >
+            Restart
+          </button>
         </div>
       )}
 

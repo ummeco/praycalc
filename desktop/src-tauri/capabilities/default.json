@@ -24,6 +24,8 @@
     "autostart:allow-enable",
     "autostart:allow-disable",
     "autostart:allow-is-enabled",
-    "opener:allow-open-url"
+    "opener:allow-open-url",
+    "updater:default",
+    "process:allow-restart"
   ]
 }
