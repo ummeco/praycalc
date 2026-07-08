@@ -10,7 +10,6 @@
 
 import RootLayout from '@/layouts/RootLayout.astro';
 import LocationSearch from '@/islands/LocationSearch';
-import GeoPrompt from '@/islands/home/GeoPrompt';
 import { getMoonPhase } from '@/lib/moon';
 import { webApplicationSchema, organizationSchema } from '@/lib/structured-data';
 
@@ -63,7 +62,7 @@ const tagline = TAGLINES[locale] ?? TAGLINES.en;
     </div>
 
     <!-- Location search island -->
-    <div class="w-full max-w-[480px] mt-[-25px] px-4">
+    <div class="w-full max-w-[480px] mt-5 px-4">
       <LocationSearch client:load autoFocus={true} />
       <p class="home-tagline text-white/25 text-xs text-center mt-2">
         {tagline}
@@ -79,9 +78,5 @@ const tagline = TAGLINES[locale] ?? TAGLINES.en;
       </div>
     </div>
 
-    <div class="flex-1"></div>
-
-    <!-- Delayed geolocation prompt island -->
-    <GeoPrompt client:load />
   </main>
 </RootLayout>

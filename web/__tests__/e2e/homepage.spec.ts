@@ -4,7 +4,7 @@ import { test, expect } from "@playwright/test";
  * Homepage E2E tests.
  *
  * The homepage shows a logo, city search input, GPS pill, location pills,
- * and a moon phase card. GeoPrompt appears after 1.5s unless dismissed before.
+ * and a moon phase card. A single "Use my location" pill handles geolocation.
  *
  * We pre-set localStorage to dismiss the geo prompt in tests that don't need it,
  * keeping tests focused and fast.
@@ -120,54 +120,7 @@ test.describe("Homepage", () => {
   });
 });
 
-test.describe("Homepage — geolocation prompt", () => {
-  // Clear geolocation permission so the prompt actually shows
-  // (the global config grants geolocation, which suppresses the prompt)
-  test.use({ permissions: [] });
-
-  test("geo prompt appears after delay when not dismissed", async ({ page }) => {
-    // Navigate fresh — do NOT dismiss the prompt
-    await page.goto("/");
-
-    // GeoPrompt fires after DELAY_MS=1500ms
-    const geoPrompt = page.locator('[role="dialog"][aria-label="Location permission prompt"]');
-    await expect(geoPrompt).toBeVisible({ timeout: 5_000 });
-
-    // Prompt contains the expected text
-    await expect(geoPrompt).toContainText("Find prayer times for your location?");
-    await expect(geoPrompt.locator(".geo-prompt-btn")).toBeVisible();
-  });
-
-  test("geo prompt can be dismissed by clicking X", async ({ page }) => {
-    await page.goto("/");
-
-    const geoPrompt = page.locator('[role="dialog"][aria-label="Location permission prompt"]');
-    await expect(geoPrompt).toBeVisible({ timeout: 5_000 });
-
-    // Click the dismiss button
-    const dismissBtn = geoPrompt.locator(".geo-prompt-close");
-    await dismissBtn.click();
-
-    // Prompt should disappear
-    await expect(geoPrompt).not.toBeVisible();
-  });
-
-  test("geo prompt does not reappear after dismissal (localStorage key set)", async ({
-    page,
-  }) => {
-    await page.goto("/");
-
-    const geoPrompt = page.locator('[role="dialog"][aria-label="Location permission prompt"]');
-    await expect(geoPrompt).toBeVisible({ timeout: 5_000 });
-
-    // Dismiss it
-    await geoPrompt.locator(".geo-prompt-close").click();
-    await expect(geoPrompt).not.toBeVisible();
-
-    // Check the dismissal flag was persisted
-    const dismissed = await page.evaluate(() =>
-      localStorage.getItem("pc_geo_prompt_dismissed"),
-    );
-    expect(dismissed).toBe("1");
-  });
-});
+// NOTE: The delayed floating "geolocation prompt" island was removed from the
+// homepage (declutter + de-duplicate the location CTA — the always-visible
+// "Use my location" pill covers the same action, now with an IP-geolocation
+// fallback). Its tests were removed with it.

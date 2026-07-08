@@ -115,6 +115,33 @@ export const GET: APIRoute = async ({ url, request }) => {
 
   // IP geolocation
   if (ipFlag) {
+    // 1) Prefer Vercel's edge geo headers — present on every production request,
+    //    instant, and no external API/rate-limit. Coords give the nearest city.
+    const vLat = request.headers.get('x-vercel-ip-latitude');
+    const vLng = request.headers.get('x-vercel-ip-longitude');
+    if (vLat && vLng) {
+      const latNum = parseFloat(vLat);
+      const lngNum = parseFloat(vLng);
+      if (!isNaN(latNum) && !isNaN(lngNum)) {
+        const record = lookupGeoByCoords(latNum, lngNum);
+        if (record) {
+          return new Response(JSON.stringify(geoRecordToResult(record)), {
+            headers: { 'Content-Type': 'application/json' },
+          });
+        }
+      }
+    }
+    const vCity = request.headers.get('x-vercel-ip-city');
+    if (vCity) {
+      const record = lookupGeoByName(decodeURIComponent(vCity));
+      if (record) {
+        return new Response(JSON.stringify(geoRecordToResult(record)), {
+          headers: { 'Content-Type': 'application/json' },
+        });
+      }
+    }
+
+    // 2) Fall back to ipapi.co by client IP (non-Vercel hosts / local dev).
     const ip = getClientIp(request);
     if (!ip) {
       return new Response(JSON.stringify(null), { headers: { 'Content-Type': 'application/json' } });

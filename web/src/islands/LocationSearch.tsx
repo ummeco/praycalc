@@ -27,9 +27,6 @@ const POPULAR: { name: string; slug: string }[] = [
   { name: 'Mecca', slug: 'sa/makkah/mecca' },
   { name: 'Medina', slug: 'sa/madinah/medina' },
   { name: 'Istanbul', slug: 'tr/istanbul/istanbul' },
-  { name: 'Cairo', slug: 'eg/cairo/cairo' },
-  { name: 'New York', slug: 'us/ny/new-york' },
-  { name: 'London', slug: 'gb/england/london' },
 ];
 
 function navigateToCity(slug: string) {
@@ -90,41 +87,73 @@ export default function LocationSearch({ compact = false, autoFocus = false }: P
     [results, handleSelect],
   );
 
-  const handleGeoLocate = useCallback(() => {
-    if (!navigator.geolocation) {
-      setGeoError('Geolocation is not supported by your browser.');
-      return;
+  /**
+   * IP-based geolocation fallback. When the browser can't give a precise fix
+   * (permission denied, unavailable, timeout, or unsupported), ask the server
+   * to geolocate by IP (Vercel edge geo headers, then ipapi). Returns true if
+   * it navigated. This is what makes "Use my location" actually work on
+   * desktops where OS location services are off.
+   */
+  const tryIpFallback = useCallback(async (): Promise<boolean> => {
+    try {
+      const res = await fetch('/api/geo?ip=1');
+      if (!res.ok) return false;
+      const geo = (await res.json()) as GeoResult | null;
+      if (geo && geo.slug) {
+        navigateToCity(geo.slug);
+        return true;
+      }
+    } catch {
+      /* fall through to error message */
     }
+    return false;
+  }, []);
+
+  const handleGeoLocate = useCallback(() => {
     setGeoLoading(true);
     setGeoError('');
+
+    const failWith = async (msg: string) => {
+      // Try IP geolocation before giving up so the button still resolves.
+      const navigated = await tryIpFallback();
+      if (!navigated) {
+        setGeoLoading(false);
+        setGeoError(msg);
+      }
+    };
+
+    if (!navigator.geolocation) {
+      void failWith('Could not detect your location. Search by city name instead.');
+      return;
+    }
+
     navigator.geolocation.getCurrentPosition(
       async (pos) => {
         try {
           const geo = await reverseGeocode(pos.coords.latitude, pos.coords.longitude);
-          setGeoLoading(false);
-          if (geo) navigateToCity(geo.slug);
-          else setGeoError('Could not determine your city. Try searching by name.');
+          if (geo) {
+            navigateToCity(geo.slug);
+            return;
+          }
         } catch {
-          setGeoLoading(false);
-          setGeoError('Could not look up your location. Try searching by name.');
+          /* fall through to IP fallback */
         }
+        await failWith('Could not determine your city. Try searching by name.');
       },
       (err) => {
-        setGeoLoading(false);
-        // Only PERMISSION_DENIED (1) is an actual denial — TIMEOUT (3) and
-        // POSITION_UNAVAILABLE (2) previously showed a misleading "denied" even
-        // when the browser had granted access.
-        if (err.code === err.PERMISSION_DENIED) {
-          setGeoError('Location access denied. Search by city name instead.');
-        } else if (err.code === err.TIMEOUT) {
-          setGeoError('Locating timed out. Try again or search by name.');
-        } else {
-          setGeoError('Your location is unavailable right now. Try searching by name.');
-        }
+        // Only PERMISSION_DENIED (1) is an actual denial. For any error we still
+        // attempt the IP fallback first; the message only shows if that fails.
+        const msg =
+          err.code === err.PERMISSION_DENIED
+            ? 'Location access denied. Search by city name instead.'
+            : err.code === err.TIMEOUT
+              ? 'Locating timed out. Try again or search by name.'
+              : 'Your location is unavailable right now. Try searching by name.';
+        void failWith(msg);
       },
       { enableHighAccuracy: false, timeout: 15_000, maximumAge: 300_000 },
     );
-  }, []);
+  }, [tryIpFallback]);
 
   const visible = results.slice(0, 8);
 
