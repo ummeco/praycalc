@@ -1,6 +1,8 @@
 /**
  * Purpose: Prayer Times screen — displays 6 daily prayer times, next-prayer countdown,
  *   Hanafi/Shafi Asr toggle, and method selector. All 7 UI states implemented.
+ *   Also the natural "success moment" that drives the rate-us gate (a few prayers
+ *   logged) and hosts the "Share today's times" action.
  * Inputs: Settings from useSettingsStore (method, madhab, location), GPS coords
  * Outputs: Prayer card fan with live next-prayer countdown (1s tick)
  * Constraints: Tehran/Jafari absent from method list (D-P3-19). RTL layout prepared.
@@ -15,12 +17,14 @@ import {
   StyleSheet,
   TouchableOpacity,
   I18nManager,
+  Share,
 } from 'react-native';
 import * as Location from 'expo-location';
 import * as Network from 'expo-network';
 import { router } from 'expo-router';
 import i18next, { useTranslation } from '../../../i18n';
 import { useThemeColors } from '../../../hooks/useThemeColors';
+import { useResponsiveLayout } from '../../../hooks/useResponsiveLayout';
 import type { ThemeColors } from '../../../constants/colors';
 import { CALC_METHODS } from '../../../constants/methods';
 import { useSettingsStore, useActiveLocation } from '../../settings/store/useSettingsStore';
@@ -32,6 +36,8 @@ import { gregorianToHijri } from '../../../lib/hijri';
 import { isPrayerCompleted, togglePrayerCompletion } from '../../../lib/completions';
 import { resolveTimezoneOffset } from '../../../lib/timezone';
 import { PRAYER_LABEL_KEYS, DISPLAY_PRAYERS as PRAYER_ORDER } from '../../../constants/prayers';
+import { recordSuccessAndMaybeRequestReview } from '../../../lib/review';
+import { buildPrayerTimesShareText } from '../../../lib/share';
 import {
   LoadingState,
   SkeletonCard,
@@ -64,6 +70,7 @@ function getTimezoneOffset(): number {
 export default function PrayerTimesScreen() {
   const { t } = useTranslation();
   const colors = useThemeColors();
+  const { isWide, maxContentWidth } = useResponsiveLayout();
   const styles = useMemo(() => createStyles(colors), [colors]);
   const settings = useSettingsStore();
   const activeLocation = useActiveLocation();
@@ -183,14 +190,30 @@ export default function PrayerTimesScreen() {
   }
 
   // success
+  function handleShareTimes() {
+    if (!times || !activeLocation) return;
+    const message = buildPrayerTimesShareText({
+      times,
+      city: activeLocation.city,
+      country: activeLocation.country,
+      timeFormat: settings.timeFormat,
+      locale: i18next.language,
+      translatePrayerLabel: (name) => t(PRAYER_LABEL_KEYS[name]),
+    });
+    void Share.share({ message }).catch(() => undefined);
+  }
+
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={[styles.content, isWide && { alignSelf: 'center', width: '100%', maxWidth: maxContentWidth }]}
+    >
       {/* Date header — Hijri + Gregorian, active location name */}
-      <View style={styles.dateHeader}>
-        <Text style={styles.hijriDate}>
+      <View style={styles.dateHeader} accessibilityRole="header">
+        <Text style={styles.hijriDate} minimumFontScale={0.8}>
           {hijriDate.day} {hijriDate.monthName} {hijriDate.year} AH
         </Text>
-        <Text style={styles.gregorianDate}>
+        <Text style={styles.gregorianDate} minimumFontScale={0.8}>
           {today.toLocaleDateString(i18next.language, { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}
         </Text>
         {activeLocation && (
@@ -199,13 +222,28 @@ export default function PrayerTimesScreen() {
             {activeLocation.city}, {activeLocation.country}
           </Text>
         )}
+        {activeLocation && times && (
+          <TouchableOpacity
+            style={styles.shareButton}
+            onPress={handleShareTimes}
+            accessibilityRole="button"
+            accessibilityLabel={t('screens.prayerTimes.shareAccessibilityLabel')}
+            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+          >
+            <Text style={styles.shareButtonText}>{t('screens.prayerTimes.shareTimes')}</Text>
+          </TouchableOpacity>
+        )}
       </View>
 
       {/* Next Prayer Countdown */}
       {nextPrayer && (
-        <View style={styles.countdownCard}>
-          <Text style={styles.countdownLabel}>{t('screens.prayerTimes.next', { prayer: t(PRAYER_LABEL_KEYS[nextPrayer]) })}</Text>
-          <Text style={styles.countdownTimer}>{formatCountdown(secondsToNextPrayer)}</Text>
+        <View
+          style={styles.countdownCard}
+          accessible
+          accessibilityLabel={`${t('screens.prayerTimes.next', { prayer: t(PRAYER_LABEL_KEYS[nextPrayer]) })}, ${formatCountdown(secondsToNextPrayer)}`}
+        >
+          <Text style={styles.countdownLabel} minimumFontScale={0.8}>{t('screens.prayerTimes.next', { prayer: t(PRAYER_LABEL_KEYS[nextPrayer]) })}</Text>
+          <Text style={styles.countdownTimer} minimumFontScale={0.6} numberOfLines={1}>{formatCountdown(secondsToNextPrayer)}</Text>
         </View>
       )}
 
@@ -224,13 +262,16 @@ export default function PrayerTimesScreen() {
 
       {/* Madhab Toggle */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>{t('screens.prayerTimes.asrCalculation')}</Text>
-        <View style={styles.toggle}>
+        <Text style={styles.sectionTitle} accessibilityRole="header">{t('screens.prayerTimes.asrCalculation')}</Text>
+        <View style={styles.toggle} accessibilityRole="radiogroup">
           {(['Shafi', 'Hanafi'] as Madhab[]).map((m) => (
             <TouchableOpacity
               key={m}
               style={[styles.toggleOption, settings.madhab === m && styles.toggleOptionActive]}
               onPress={() => settings.setMadhab(m)}
+              accessibilityRole="radio"
+              accessibilityState={{ checked: settings.madhab === m }}
+              accessibilityLabel={m}
             >
               <Text style={[styles.toggleText, settings.madhab === m && styles.toggleTextActive]}>
                 {m}
@@ -242,18 +283,23 @@ export default function PrayerTimesScreen() {
 
       {/* Method Selector (7 methods, no Tehran) */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>{t('settings.calculation.title')}</Text>
-        {CALC_METHODS.map((method) => (
-          <TouchableOpacity
-            key={method.key}
-            style={[styles.methodRow, settings.method === method.key && styles.methodRowActive]}
-            onPress={() => settings.setMethod(method.key)}
-          >
-            <Text style={[styles.methodText, settings.method === method.key && styles.methodTextActive]}>
-              {method.label}
-            </Text>
-          </TouchableOpacity>
-        ))}
+        <Text style={styles.sectionTitle} accessibilityRole="header">{t('settings.calculation.title')}</Text>
+        <View accessibilityRole="radiogroup">
+          {CALC_METHODS.map((method) => (
+            <TouchableOpacity
+              key={method.key}
+              style={[styles.methodRow, settings.method === method.key && styles.methodRowActive]}
+              onPress={() => settings.setMethod(method.key)}
+              accessibilityRole="radio"
+              accessibilityState={{ checked: settings.method === method.key }}
+              accessibilityLabel={method.label}
+            >
+              <Text style={[styles.methodText, settings.method === method.key && styles.methodTextActive]}>
+                {method.label}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
       </View>
     </ScrollView>
   );
@@ -288,8 +334,13 @@ function PrayerList({ times, nextPrayer, settings, colors, styles, t }: PrayerLi
             style={[styles.prayerRow, isNext && styles.prayerRowNext]}
             disabled={!canLog(name)}
             onPress={() => {
-              togglePrayerCompletion(name);
+              const nowCompleted = togglePrayerCompletion(name);
               setCompletedTick((tick) => tick + 1);
+              // Growth: natural success moment. Only counts forward completions
+              // (not un-marking) toward the rate-us gate — never nags, fires at most once.
+              if (nowCompleted) {
+                void recordSuccessAndMaybeRequestReview().catch(() => undefined);
+              }
             }}
             accessibilityRole={canLog(name) ? 'checkbox' : undefined}
             accessibilityState={canLog(name) ? { checked: completed } : undefined}
@@ -322,6 +373,8 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
   hijriDate: { fontSize: 15, fontWeight: '600', color: colors.brand.dark },
   gregorianDate: { fontSize: 13, color: colors.text.muted },
   locationName: { fontSize: 13, color: colors.text.secondary, marginTop: 4, fontWeight: '500' },
+  shareButton: { marginTop: 8, minHeight: 44, paddingHorizontal: 12, justifyContent: 'center', alignItems: 'center' },
+  shareButtonText: { fontSize: 13, color: colors.brand.dark, fontWeight: '600' },
   muteIcon: { fontSize: 13, marginRight: 6 },
   completedCheck: { fontSize: 18, color: colors.text.muted, marginLeft: 10, width: 22, textAlign: 'center' },
   completedCheckActive: { color: colors.brand.mid, fontWeight: '700' },

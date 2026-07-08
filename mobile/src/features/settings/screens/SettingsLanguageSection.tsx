@@ -34,29 +34,43 @@ export function SettingsLanguageSection({
     <>
       <SectionHeader title={t('settings.language.title')} styles={styles} />
       <View style={styles.card}>
-        <TouchableOpacity style={styles.row} onPress={onToggleShowLanguages}>
+        <TouchableOpacity
+          style={styles.row}
+          onPress={onToggleShowLanguages}
+          accessibilityRole="button"
+          accessibilityLabel={t('settings.appLanguage')}
+          accessibilityHint={LOCALE_NAMES[locale as SupportedLocale] ?? 'English'}
+          accessibilityState={{ expanded: showLanguages }}
+        >
           <Text style={styles.rowLabel}>{t('settings.appLanguage')}</Text>
           <Text style={styles.rowValue}>
             {LOCALE_NAMES[locale as SupportedLocale] ?? 'English'} {showLanguages ? '▴' : '▾'}
           </Text>
         </TouchableOpacity>
-        {showLanguages && SUPPORTED_LOCALES.map((loc) => {
-          const isSelected = locale === loc;
-          return (
-            <TouchableOpacity
-              key={loc}
-              style={[styles.optionRow, isSelected && styles.optionRowSelected]}
-              onPress={() => onSelectLocale(loc)}
-            >
-              <View style={[styles.radio, isSelected && styles.radioSelected]}>
-                {isSelected && <View style={styles.radioInner} />}
-              </View>
-              <Text style={[styles.optionLabel, isSelected && styles.optionLabelSelected]}>
-                {LOCALE_NAMES[loc]}
-              </Text>
-            </TouchableOpacity>
-          );
-        })}
+        {showLanguages && (
+          <View accessibilityRole="radiogroup">
+            {SUPPORTED_LOCALES.map((loc) => {
+              const isSelected = locale === loc;
+              return (
+                <TouchableOpacity
+                  key={loc}
+                  style={[styles.optionRow, isSelected && styles.optionRowSelected]}
+                  onPress={() => onSelectLocale(loc)}
+                  accessibilityRole="radio"
+                  accessibilityState={{ checked: isSelected }}
+                  accessibilityLabel={LOCALE_NAMES[loc]}
+                >
+                  <View style={[styles.radio, isSelected && styles.radioSelected]}>
+                    {isSelected && <View style={styles.radioInner} />}
+                  </View>
+                  <Text style={[styles.optionLabel, isSelected && styles.optionLabelSelected]}>
+                    {LOCALE_NAMES[loc]}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+        )}
       </View>
     </>
   );

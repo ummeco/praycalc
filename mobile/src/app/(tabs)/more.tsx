@@ -11,16 +11,19 @@ import {
   TouchableOpacity,
   ScrollView,
   StyleSheet,
+  Share,
 } from 'react-native';
 import { router } from 'expo-router';
 import { useTranslation } from '../../i18n';
 import { useThemeColors } from '../../hooks/useThemeColors';
 import type { ThemeColors } from '../../constants/colors';
+import { buildAppShareText } from '../../lib/share';
 
 interface MenuItem {
   labelKey: string;
   subtitleKey: string;
-  route: string;
+  /** Either a route to push, or an 'action' for a non-navigation row (e.g. Share). */
+  route: string | 'action:share';
   icon: string;
 }
 
@@ -47,12 +50,22 @@ const MENU_ITEMS: MenuItem[] = [
   { labelKey: 'menu.fasting.label', subtitleKey: 'menu.fasting.subtitle', route: '/fasting', icon: '🍽️' },
   { labelKey: 'menu.qada.label', subtitleKey: 'menu.qada.subtitle', route: '/qada', icon: '📝' },
   { labelKey: 'menu.travel.label', subtitleKey: 'menu.travel.subtitle', route: '/travel', icon: '✈️' },
+  { labelKey: 'menu.shareApp.label', subtitleKey: 'menu.shareApp.subtitle', route: 'action:share', icon: '📤' },
 ];
 
 export default function MoreScreen() {
   const { t } = useTranslation();
   const colors = useThemeColors();
   const styles = useMemo(() => createStyles(colors), [colors]);
+
+  function handlePress(route: MenuItem['route']) {
+    if (route === 'action:share') {
+      void Share.share({ message: buildAppShareText() }).catch(() => undefined);
+      return;
+    }
+    router.push(route as Parameters<typeof router.push>[0]);
+  }
+
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       <Text style={styles.heading} accessibilityRole="header">{t('screens.more.title')}</Text>
@@ -63,7 +76,7 @@ export default function MoreScreen() {
           <TouchableOpacity
             key={item.labelKey}
             style={styles.menuRow}
-            onPress={() => router.push(item.route as Parameters<typeof router.push>[0])}
+            onPress={() => handlePress(item.route)}
             accessibilityRole="menuitem"
             accessibilityLabel={label}
             accessibilityHint={subtitle}

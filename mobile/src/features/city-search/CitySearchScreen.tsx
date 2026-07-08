@@ -16,6 +16,7 @@ import {
   View, Text, FlatList, TouchableOpacity, StyleSheet, SafeAreaView, TextInput,
 } from 'react-native';
 import { useQuery } from 'urql';
+import { useLocalSearchParams } from 'expo-router';
 import * as Location from 'expo-location';
 import { useTranslation } from '../../i18n';
 import { useThemeColors } from '../../hooks/useThemeColors';
@@ -103,7 +104,10 @@ export default function CitySearchScreen({ onSelectCity, mode = 'home' }: CitySe
   const { t } = useTranslation();
   const colors = useThemeColors();
   const styles = useMemo(() => createStyles(colors), [colors]);
-  const [query, setQuery] = useState('');
+  // Pre-fill from a praycalc://city/<name> deep link (route param `q`) — optional,
+  // most navigations to this screen don't pass one and query stays ''.
+  const { q: initialQuery } = useLocalSearchParams<{ q?: string }>();
+  const [query, setQuery] = useState(initialQuery ?? '');
   const debouncedQuery = useDebouncedValue(query, 300);
   const [isOffline, setIsOffline] = useState(false);
   const [locating, setLocating] = useState(false);

@@ -184,6 +184,10 @@
     "privacy": {
       "label": "Privacy & Data",
       "subtitle": "Control analytics consent"
+    },
+    "shareApp": {
+      "label": "Share PrayCalc",
+      "subtitle": "Tell a friend or family member"
     }
   },
   "settings": {
@@ -484,7 +488,9 @@
       "asrCalculation": "Asr Calculation",
       "markedPrayed": "marked prayed",
       "notMarkedPrayed": "not marked prayed",
-      "doubleTapToggle": "Double-tap to toggle."
+      "doubleTapToggle": "Double-tap to toggle.",
+      "shareTimes": "Share today's times",
+      "shareAccessibilityLabel": "Share today's prayer times"
     },
     "quran": {
       "loading": "Quran data loading...",
@@ -625,7 +631,9 @@
       "previousMonth": "Previous month",
       "nextMonth": "Next month",
       "exportCalendar": "Export Calendar (.ics)",
-      "exportAccessibilityLabel": "Export this month's prayer times as a calendar file"
+      "exportAccessibilityLabel": "Export this month's prayer times as a calendar file",
+      "shareTimes": "Share this month",
+      "shareAccessibilityLabel": "Share this month's prayer timetable"
     },
     "travel": {
       "musafirModeTitle": "Musafir Mode",
@@ -647,6 +655,7 @@
       "locationRequiredTitle": "Location Required",
       "locationRequiredSubtitle": "Set your location in Settings to find the Qibla direction.",
       "bearingLabel": "Qibla Bearing",
+      "compassAccessibilityLabel": "Qibla compass, current heading {{degrees}} degrees",
       "accuracyLabel": "Accuracy: {{level}}",
       "accuracyUnknown": "Unknown",
       "accuracyUnreliable": "Unreliable",

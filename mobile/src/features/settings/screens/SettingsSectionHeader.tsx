@@ -18,5 +18,9 @@ interface SectionHeaderStyles {
 }
 
 export function SectionHeader({ title, styles }: { title: string; styles: SectionHeaderStyles }) {
-  return <Text style={styles.sectionHeader}>{title}</Text>;
+  return (
+    <Text style={styles.sectionHeader} accessibilityRole="header">
+      {title}
+    </Text>
+  );
 }

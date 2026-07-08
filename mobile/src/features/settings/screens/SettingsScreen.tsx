@@ -24,6 +24,7 @@ import {
 import { router } from 'expo-router';
 import * as Location from 'expo-location';
 import { useThemeColors } from '../../../hooks/useThemeColors';
+import { useResponsiveLayout } from '../../../hooks/useResponsiveLayout';
 import type { ThemeColors } from '../../../constants/colors';
 import { useSettingsStore } from '../store/useSettingsStore';
 import { useAuthStore } from '../../auth/store/useAuthStore';
@@ -44,6 +45,7 @@ const UPGRADE_URL = 'https://praycalc.com/upgrade';
 export default function SettingsScreen() {
   const { t } = useTranslation();
   const colors = useThemeColors();
+  const { isWide, maxContentWidth } = useResponsiveLayout();
   const styles = useMemo(() => createStyles(colors), [colors]);
   const settings = useSettingsStore();
   const auth = useAuthStore();
@@ -133,7 +135,10 @@ export default function SettingsScreen() {
   }
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={[styles.content, isWide && { alignSelf: 'center', width: '100%', maxWidth: maxContentWidth }]}
+    >
 
       {/* Account / Ummat+ */}
       <SectionHeader title={t('settings.account.title')} styles={styles} />
@@ -156,6 +161,8 @@ export default function SettingsScreen() {
             <TouchableOpacity
               style={[styles.button, styles.buttonSecondary]}
               onPress={() => Linking.openURL(UPGRADE_URL)}
+              accessibilityRole="button"
+              accessibilityLabel={t('settings.upsell.upgradeButton')}
             >
               <Text style={styles.buttonSecondaryText}>{t('settings.upsell.upgradeButton')}</Text>
             </TouchableOpacity>
@@ -176,12 +183,19 @@ export default function SettingsScreen() {
         ) : (
           <Text style={styles.hint}>{t('settings.location.noneSet')}</Text>
         )}
-        <TouchableOpacity style={styles.button} onPress={handleGPSLocation}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={handleGPSLocation}
+          accessibilityRole="button"
+          accessibilityLabel={t('settings.location.useGps')}
+        >
           <Text style={styles.buttonText}>{t('settings.location.useGps')}</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.button, styles.buttonSecondary]}
           onPress={() => router.push('/city-search')}
+          accessibilityRole="button"
+          accessibilityLabel={t('settings.location.searchManually')}
         >
           <Text style={styles.buttonSecondaryText}>{t('settings.location.searchManually')}</Text>
         </TouchableOpacity>
@@ -231,6 +245,8 @@ export default function SettingsScreen() {
         <TouchableOpacity
           style={[styles.button, styles.buttonSecondary]}
           onPress={() => router.push('/settings/notifications')}
+          accessibilityRole="button"
+          accessibilityLabel={t('settings.manageNotifications')}
         >
           <Text style={styles.buttonSecondaryText}>{t('settings.manageNotifications')}</Text>
         </TouchableOpacity>

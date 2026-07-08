@@ -72,6 +72,13 @@ async function refreshHomeScreenWidget(): Promise<void> {
     } catch {
       // Best-effort only — never let a widget-refresh failure surface to the caller.
     }
+    try {
+      // Also refresh the Dynamic Island / lock-screen Live Activity (iOS 16.1+).
+      const { refreshNextPrayerLiveActivity } = await import('../../lib/live-activity');
+      await refreshNextPrayerLiveActivity();
+    } catch {
+      // Best-effort — a Live Activity failure must never break scheduling.
+    }
     return;
   }
   if (Platform.OS !== 'android') return;

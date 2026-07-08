@@ -51,7 +51,7 @@ export function SettingsCalculationSection({
     <>
       {/* Calculation Method */}
       <SectionHeader title={t('settings.calculation.title')} styles={styles} />
-      <View style={styles.card}>
+      <View style={styles.card} accessibilityRole="radiogroup">
         {CALC_METHODS.map((m) => {
           const isSelected = method === m.key;
           return (
@@ -59,6 +59,9 @@ export function SettingsCalculationSection({
               key={m.key}
               style={[styles.optionRow, isSelected && styles.optionRowSelected]}
               onPress={() => onSetMethod(m.key)}
+              accessibilityRole="radio"
+              accessibilityState={{ checked: isSelected }}
+              accessibilityLabel={m.label}
             >
               <View style={[styles.radio, isSelected && styles.radioSelected]}>
                 {isSelected && <View style={styles.radioInner} />}
@@ -72,7 +75,7 @@ export function SettingsCalculationSection({
         {method === 'Custom' && (
           <View style={styles.customAnglesRow}>
             <View style={styles.angleField}>
-              <Text style={styles.hint}>{t('settings.customAngles.fajr')}</Text>
+              <Text style={styles.hint} nativeID="fajr-angle-label">{t('settings.customAngles.fajr')}</Text>
               <TextInput
                 style={styles.angleInput}
                 keyboardType="decimal-pad"
@@ -82,10 +85,11 @@ export function SettingsCalculationSection({
                   if (!Number.isNaN(fajr)) onSetCustomAngles(fajr, customIshaAngle);
                 }}
                 accessibilityLabel="Custom Fajr angle in degrees"
+                accessibilityLabelledBy="fajr-angle-label"
               />
             </View>
             <View style={styles.angleField}>
-              <Text style={styles.hint}>{t('settings.customAngles.isha')}</Text>
+              <Text style={styles.hint} nativeID="isha-angle-label">{t('settings.customAngles.isha')}</Text>
               <TextInput
                 style={styles.angleInput}
                 keyboardType="decimal-pad"
@@ -95,6 +99,7 @@ export function SettingsCalculationSection({
                   if (!Number.isNaN(isha)) onSetCustomAngles(customFajrAngle, isha);
                 }}
                 accessibilityLabel="Custom Isha angle in degrees"
+                accessibilityLabelledBy="isha-angle-label"
               />
             </View>
           </View>
@@ -103,23 +108,27 @@ export function SettingsCalculationSection({
 
       {/* High-latitude rule */}
       <SectionHeader title={t('settings.highLatitude.title')} styles={styles} />
-      <View style={styles.card}>
+      <View style={styles.card} accessibilityRole="radiogroup">
         <Text style={styles.hint}>
           {t('settings.highLatitude.hint')}
         </Text>
         {HIGH_LAT_RULES.map((rule) => {
           const isSelected = highLatRule === rule.key;
+          const label = t(rule.labelKey);
           return (
             <TouchableOpacity
               key={rule.key}
               style={[styles.optionRow, isSelected && styles.optionRowSelected]}
               onPress={() => onSetHighLatRule(rule.key)}
+              accessibilityRole="radio"
+              accessibilityState={{ checked: isSelected }}
+              accessibilityLabel={label}
             >
               <View style={[styles.radio, isSelected && styles.radioSelected]}>
                 {isSelected && <View style={styles.radioInner} />}
               </View>
               <Text style={[styles.optionLabel, isSelected && styles.optionLabelSelected]}>
-                {t(rule.labelKey)}
+                {label}
               </Text>
             </TouchableOpacity>
           );
@@ -129,12 +138,15 @@ export function SettingsCalculationSection({
       {/* Madhab (Asr shadow factor) */}
       <SectionHeader title={t('settings.madhab.title')} styles={styles} />
       <View style={styles.card}>
-        <View style={styles.toggle}>
+        <View style={styles.toggle} accessibilityRole="radiogroup">
           {(['Shafi', 'Hanafi'] as Madhab[]).map((m) => (
             <TouchableOpacity
               key={m}
               style={[styles.toggleOption, madhab === m && styles.toggleOptionActive]}
               onPress={() => onSetMadhab(m)}
+              accessibilityRole="radio"
+              accessibilityState={{ checked: madhab === m }}
+              accessibilityLabel={m}
             >
               <Text style={[styles.toggleText, madhab === m && styles.toggleTextActive]}>
                 {m}

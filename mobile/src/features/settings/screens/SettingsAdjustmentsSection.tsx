@@ -51,17 +51,21 @@ export function SettingsAdjustmentsSection({
                 <TouchableOpacity
                   style={styles.stepperButton}
                   onPress={() => onAdjustPrayerMinutes(prayer, -1)}
+                  accessibilityRole="button"
                   accessibilityLabel={`Decrease ${prayer} adjustment`}
+                  hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
                 >
                   <Text style={styles.stepperButtonText}>−</Text>
                 </TouchableOpacity>
-                <Text style={styles.stepperValue}>
+                <Text style={styles.stepperValue} accessibilityLabel={`${prayer} adjustment: ${value} minutes`}>
                   {value > 0 ? `+${value}` : value} min
                 </Text>
                 <TouchableOpacity
                   style={styles.stepperButton}
                   onPress={() => onAdjustPrayerMinutes(prayer, 1)}
+                  accessibilityRole="button"
                   accessibilityLabel={`Increase ${prayer} adjustment`}
+                  hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
                 >
                   <Text style={styles.stepperButtonText}>+</Text>
                 </TouchableOpacity>
@@ -83,17 +87,21 @@ export function SettingsAdjustmentsSection({
             <TouchableOpacity
               style={styles.stepperButton}
               onPress={() => onAdjustHijriDay(hijriDayAdjustment - 1)}
+              accessibilityRole="button"
               accessibilityLabel="Decrease Hijri offset"
+              hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
             >
               <Text style={styles.stepperButtonText}>−</Text>
             </TouchableOpacity>
-            <Text style={styles.stepperValue}>
+            <Text style={styles.stepperValue} accessibilityLabel={`Hijri offset: ${hijriDayAdjustment} days`}>
               {hijriDayAdjustment > 0 ? `+${hijriDayAdjustment}` : hijriDayAdjustment} d
             </Text>
             <TouchableOpacity
               style={styles.stepperButton}
               onPress={() => onAdjustHijriDay(hijriDayAdjustment + 1)}
+              accessibilityRole="button"
               accessibilityLabel="Increase Hijri offset"
+              hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
             >
               <Text style={styles.stepperButtonText}>+</Text>
             </TouchableOpacity>

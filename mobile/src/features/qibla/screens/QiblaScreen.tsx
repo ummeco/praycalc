@@ -112,18 +112,27 @@ export default function QiblaScreen() {
   }
 
   // success
+  const accuracyLevelLabel = ACCURACY_LABEL_KEYS[accuracy] ? t(ACCURACY_LABEL_KEYS[accuracy]!) : t('screens.qibla.accuracyUnknown');
+
   return (
     <View style={styles.container}>
       {/* Bearing info */}
-      <View style={styles.bearingInfo}>
+      <View style={styles.bearingInfo} accessible accessibilityLabel={`${t('screens.qibla.bearingLabel')}: ${bearing !== null ? `${Math.round(bearing)} degrees` : 'unavailable'}`}>
         <Text style={styles.bearingValue}>
           {bearing !== null ? `${Math.round(bearing)}°` : '—'}
         </Text>
         <Text style={styles.bearingLabel}>{t('screens.qibla.bearingLabel')}</Text>
       </View>
 
-      {/* Compass rose */}
-      <View style={styles.compassContainer}>
+      {/* Compass rose — one accessible group describing the live needle angle,
+          since the individual N/S/E/W labels + rotating needle don't map to
+          discrete screen-reader-navigable elements. */}
+      <View
+        style={styles.compassContainer}
+        accessible
+        accessibilityRole="image"
+        accessibilityLabel={t('screens.qibla.compassAccessibilityLabel', { degrees: Math.round(heading) })}
+      >
         {/* Outer ring with N/S/E/W labels */}
         <View style={styles.compassOuter}>
           <Text style={[styles.compassDir, styles.compassN]}>N</Text>
@@ -143,7 +152,11 @@ export default function QiblaScreen() {
       </View>
 
       {/* Accuracy indicator */}
-      <View style={styles.accuracyRow}>
+      <View
+        style={styles.accuracyRow}
+        accessible
+        accessibilityLabel={t('screens.qibla.accuracyLabel', { level: accuracyLevelLabel })}
+      >
         <View
           style={[
             styles.accuracyDot,
@@ -151,14 +164,12 @@ export default function QiblaScreen() {
           ]}
         />
         <Text style={styles.accuracyLabel}>
-          {t('screens.qibla.accuracyLabel', {
-            level: ACCURACY_LABEL_KEYS[accuracy] ? t(ACCURACY_LABEL_KEYS[accuracy]!) : t('screens.qibla.accuracyUnknown'),
-          })}
+          {t('screens.qibla.accuracyLabel', { level: accuracyLevelLabel })}
         </Text>
       </View>
 
       {/* Declination note */}
-      <Text style={styles.note}>
+      <Text style={styles.note} allowFontScaling minimumFontScale={0.85}>
         {t('screens.qibla.headingNote', { degrees: Math.round(heading) })}
       </Text>
     </View>

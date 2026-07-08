@@ -7,8 +7,11 @@
  * Inputs: the resolved ExpoConfig (for the main app's App Group entitlement).
  * Outputs: a target config object (type "widget") — see @bacons/apple-targets Config.
  * Constraints: The App Group MUST match app.json ios.entitlements — it is derived
- *   from there rather than re-typed so the two can never drift. deploymentTarget 16.0
- *   is the floor for the SwiftUI/WidgetKit APIs used (accessoryWidget/StaticConfig).
+ *   from there rather than re-typed so the two can never drift. deploymentTarget 16.1
+ *   is the floor for the ActivityConfiguration (Live Activity) API; the accessory
+ *   lock-screen families and StaticConfiguration are available from 16.0. The `widget`
+ *   target type auto-links ActivityKit + AppIntents, but it is declared explicitly here
+ *   so the Live Activity's needs are visible at the config surface.
  * SPORT: REGISTRY-APPS.md#praycalc-mobile-feature-16-home-widgets
  */
 
@@ -23,8 +26,10 @@ module.exports = (config) => {
     type: 'widget',
     name: 'NextPrayerWidget',
     displayName: 'Next Prayer',
-    deploymentTarget: '16.0',
-    frameworks: ['SwiftUI', 'WidgetKit'],
+    deploymentTarget: '16.1',
+    // WidgetKit + SwiftUI for the home/lock-screen/StandBy widgets; ActivityKit for the
+    // Live Activity's ActivityConfiguration (Dynamic Island + banner).
+    frameworks: ['SwiftUI', 'WidgetKit', 'ActivityKit'],
     // Brand palette (src/constants/colors.ts DarkColors) exposed to Swift as Color("…").
     colors: {
       WidgetBackground: '#0D2F17', // brand.deep

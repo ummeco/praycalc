@@ -20,7 +20,7 @@ import * as Notifications from 'expo-notifications';
 import * as Linking from 'expo-linking';
 import i18next, { useTranslation } from '../i18n';
 import { GqlClientProvider } from '../lib/graphql';
-import { extractPinFromDeepLink } from '../lib/pairing/pairingMutation';
+import { parseDeepLink } from '../lib/deepLinkRoutes';
 import { registerIAPListener } from '../lib/iap/IAPListener';
 import {
   registerRescheduleTask,
@@ -30,14 +30,31 @@ import { playAdhan } from '../features/adhan/services/AdhanAudioService';
 import { useSettingsStore } from '../features/settings/store/useSettingsStore';
 import type { PrayerName } from '../types/prayer';
 
-/** Route praycalc://pair?pin=NNNNNN deep links (cold start + foreground) to /pair-tv. */
-function usePairingDeepLink() {
+/**
+ * Route praycalc:// deep links (cold start + foreground) to the matching screen.
+ * praycalc://pair?pin=NNNNNN -> /pair-tv (original handler, behavior unchanged —
+ * only the parsing moved into the shared parseDeepLink() so new routes can reuse
+ * the same URL-parsing rules instead of duplicating them).
+ * praycalc://city/<name> -> /city-search prefilled with that name.
+ * praycalc://times -> /timetable.
+ */
+function useDeepLinkRouting() {
   useEffect(() => {
     function handleUrl(url: string | null) {
       if (!url) return;
-      const pin = extractPinFromDeepLink(url);
-      if (pin) {
-        router.push({ pathname: '/pair-tv', params: { pin } });
+      const route = parseDeepLink(url);
+      if (!route) return;
+
+      switch (route.kind) {
+        case 'pair':
+          router.push({ pathname: '/pair-tv', params: { pin: route.pin } });
+          break;
+        case 'city':
+          router.push({ pathname: '/city-search', params: { q: route.name } });
+          break;
+        case 'times':
+          router.push('/timetable');
+          break;
       }
     }
 
@@ -84,7 +101,7 @@ function useAdhanOnNotificationTap() {
 
 export default function RootLayout() {
   const { t } = useTranslation();
-  usePairingDeepLink();
+  useDeepLinkRouting();
   useAdhanOnNotificationTap();
 
   // Same resolution rule as useThemeColors(): 'system' follows the OS, else forced.

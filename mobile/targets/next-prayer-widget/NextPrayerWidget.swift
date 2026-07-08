@@ -1,15 +1,20 @@
-// Purpose: iOS WidgetKit home-screen widget for PrayCalc — reads a JSON payload
-//   (city + the full day's remaining prayer occurrences) written by the RN app into
-//   App Group UserDefaults, and renders the next prayer. The TimelineProvider emits
+// Purpose: iOS WidgetKit home-screen + lock-screen widget for PrayCalc — reads a JSON
+//   payload (city + the full day's remaining prayer occurrences) written by the RN app
+//   into App Group UserDefaults, and renders the next prayer. The TimelineProvider emits
 //   ONE entry per remaining prayer so the widget advances at each prayer time locally
-//   (refresh policy .atEnd) without waking the app between refreshes.
+//   (refresh policy .atEnd) without waking the app between refreshes. Supports the two
+//   home-screen families (small/medium) PLUS the three lock-screen accessory families
+//   (.accessoryCircular/.accessoryRectangular/.accessoryInline), which also power the
+//   iOS 17+ StandBy nightstand widget stack.
 // Inputs: UserDefaults(suiteName: appGroup)["nextPrayerWidget"] — a JSON string of
 //   PrayerPayload (see the RN IosWidgetPayload type in src/widgets/widgetTaskHandler.ts).
-// Outputs: NextPrayerWidgetBundle (the @main entry) with small + medium families.
+// Outputs: NextPrayerWidgetBundle (the @main entry) with home + accessory families and
+//   the NextPrayerLiveActivity (see NextPrayerLiveActivity.swift).
 // Constraints: appGroup MUST match app.json ios.entitlements + expo-target.config.js.
 //   Brand colors are pulled from the generated asset catalog (Color("WidgetBackground"),
 //   Color("WidgetAccent")) with hardcoded fallbacks so a missing asset never blanks the
-//   widget. No-data / no-location state shows "Open PrayCalc".
+//   widget. No-data / no-location state shows "Open PrayCalc". Accessory families render
+//   monochrome (the system tints them) so they stay legible on any lock-screen wallpaper.
 // SPORT: REGISTRY-APPS.md#praycalc-mobile-feature-16-home-widgets
 
 import WidgetKit
@@ -163,13 +168,87 @@ struct NextPrayerWidgetView: View {
     }
 
     var body: some View {
-        ZStack {
-            Color.widgetBackground
-            content
-                .padding(family == .systemSmall ? 12 : 16)
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+        switch family {
+        // Lock-screen + StandBy accessory families render monochrome; the system applies
+        // its own vibrancy/tint so we must NOT paint a brand background here.
+        case .accessoryCircular:
+            accessoryCircular
+        case .accessoryRectangular:
+            accessoryRectangular
+        case .accessoryInline:
+            accessoryInline
+        default:
+            ZStack {
+                Color.widgetBackground
+                content
+                    .padding(family == .systemSmall ? 12 : 16)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+            }
+            .widgetBackgroundCompat(Color.widgetBackground)
         }
-        .widgetBackgroundCompat(Color.widgetBackground)
+    }
+
+    // MARK: Lock-screen / StandBy accessory presentations
+
+    /// Circular gauge-style: prayer initial + a live relative countdown beneath it.
+    @ViewBuilder
+    private var accessoryCircular: some View {
+        AccessoryWidgetBackgroundCompat {
+            VStack(spacing: 0) {
+                if let name = entry.prayerName, !entry.isPlaceholder {
+                    Text(String(name.prefix(1)))
+                        .font(.system(size: 15, weight: .heavy))
+                    if let t = entry.prayerTime {
+                        Text(t, style: .timer)
+                            .font(.system(size: 9, weight: .semibold))
+                            .monospacedDigit()
+                            .multilineTextAlignment(.center)
+                            .minimumScaleFactor(0.5)
+                    }
+                } else {
+                    Image(systemName: "moon.stars.fill").font(.system(size: 15))
+                }
+            }
+        }
+    }
+
+    /// Rectangular: prayer name on top, big time, and a relative countdown line — the
+    /// richest lock-screen family and the one StandBy shows in its widget stack.
+    @ViewBuilder
+    private var accessoryRectangular: some View {
+        if let name = entry.prayerName, !entry.isPlaceholder {
+            VStack(alignment: .leading, spacing: 1) {
+                HStack(spacing: 3) {
+                    Image(systemName: "moon.stars.fill").font(.system(size: 11, weight: .bold))
+                    Text(name).font(.system(size: 14, weight: .heavy)).lineLimit(1)
+                }
+                Text(timeString).font(.system(size: 13, weight: .semibold)).lineLimit(1)
+                if let t = entry.prayerTime {
+                    Text(t, style: .relative)
+                        .font(.system(size: 12))
+                        .foregroundStyle(.secondary)
+                        .lineLimit(1)
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .widgetAccentableCompat()
+        } else {
+            Label("Open PrayCalc", systemImage: "moon.stars.fill")
+                .font(.system(size: 13, weight: .semibold))
+        }
+    }
+
+    /// Inline: a single line above the lock-screen clock ("Fajr in 12m" style).
+    @ViewBuilder
+    private var accessoryInline: some View {
+        if let name = entry.prayerName, !entry.isPlaceholder, let t = entry.prayerTime {
+            // The `\(name) \(Text(...))` interpolation keeps the countdown live.
+            Text("\(name) \(Text(t, style: .relative))")
+        } else if let name = entry.prayerName, !entry.isPlaceholder {
+            Text("\(name) \(timeString)")
+        } else {
+            Label("PrayCalc", systemImage: "moon.stars.fill")
+        }
     }
 
     @ViewBuilder
@@ -226,6 +305,30 @@ private extension View {
             self
         }
     }
+
+    /// widgetAccentable (iOS 16+) — lets the system tint the accented portion of an
+    /// accessory widget while keeping the rest at default vibrancy.
+    @ViewBuilder
+    func widgetAccentableCompat() -> some View {
+        if #available(iOS 16.0, *) {
+            widgetAccentable()
+        } else {
+            self
+        }
+    }
+}
+
+/// The standard translucent capsule behind an `.accessoryCircular` gauge, with a plain
+/// fallback if the API is unavailable. Keeps the circular family legible on the lock screen.
+private struct AccessoryWidgetBackgroundCompat<Content: View>: View {
+    @ViewBuilder let content: () -> Content
+    var body: some View {
+        if #available(iOS 16.0, *) {
+            content().background(AccessoryWidgetBackground())
+        } else {
+            content()
+        }
+    }
 }
 
 // MARK: - Widget
@@ -239,7 +342,18 @@ struct NextPrayerWidget: Widget {
         }
         .configurationDisplayName("Next Prayer")
         .description("Shows the next prayer time and city at a glance.")
-        .supportedFamilies([.systemSmall, .systemMedium])
+        // Home-screen families PLUS the three lock-screen accessory families (iOS 16+),
+        // which also surface in the iOS 17+ StandBy nightstand widget stack.
+        .supportedFamilies(Self.supportedFamilies)
+    }
+
+    /// Home families always; accessory (lock-screen + StandBy) families on iOS 16+.
+    private static var supportedFamilies: [WidgetFamily] {
+        var families: [WidgetFamily] = [.systemSmall, .systemMedium]
+        if #available(iOS 16.0, *) {
+            families += [.accessoryCircular, .accessoryRectangular, .accessoryInline]
+        }
+        return families
     }
 }
 
@@ -247,5 +361,10 @@ struct NextPrayerWidget: Widget {
 struct NextPrayerWidgetBundle: WidgetBundle {
     var body: some Widget {
         NextPrayerWidget()
+        // ActivityKit Live Activity (Dynamic Island + lock-screen banner). Guarded to
+        // iOS 16.1+ where ActivityConfiguration exists.
+        if #available(iOS 16.1, *) {
+            NextPrayerLiveActivity()
+        }
     }
 }

@@ -44,12 +44,15 @@ export function SettingsAppearanceSection({
       {/* Time Format */}
       <SectionHeader title={t('settings.timeFormat.title')} styles={styles} />
       <View style={styles.card}>
-        <View style={styles.toggle}>
+        <View style={styles.toggle} accessibilityRole="radiogroup">
           {(['12h', '24h'] as TimeFormat[]).map((f) => (
             <TouchableOpacity
               key={f}
               style={[styles.toggleOption, timeFormat === f && styles.toggleOptionActive]}
               onPress={() => onSetTimeFormat(f)}
+              accessibilityRole="radio"
+              accessibilityState={{ checked: timeFormat === f }}
+              accessibilityLabel={f === '12h' ? '12-hour format' : '24-hour format'}
             >
               <Text style={[styles.toggleText, timeFormat === f && styles.toggleTextActive]}>
                 {f}
@@ -62,7 +65,7 @@ export function SettingsAppearanceSection({
       {/* Appearance — theme mode: System follows the OS, Light/Dark force a palette */}
       <SectionHeader title={t('settings.appearance.title')} styles={styles} />
       <View style={styles.card}>
-        <View style={styles.toggle}>
+        <View style={styles.toggle} accessibilityRole="radiogroup">
           {THEME_OPTIONS.map((opt) => {
             const label = t(opt.labelKey);
             return (
@@ -70,9 +73,9 @@ export function SettingsAppearanceSection({
                 key={opt.key}
                 style={[styles.toggleOption, themeMode === opt.key && styles.toggleOptionActive]}
                 onPress={() => onSetThemeMode(opt.key)}
-                accessibilityRole="button"
+                accessibilityRole="radio"
                 accessibilityLabel={`${label} theme`}
-                accessibilityState={{ selected: themeMode === opt.key }}
+                accessibilityState={{ checked: themeMode === opt.key }}
               >
                 <Text style={[styles.toggleText, themeMode === opt.key && styles.toggleTextActive]}>
                   {label}

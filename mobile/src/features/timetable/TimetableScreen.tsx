@@ -35,10 +35,12 @@ import {
   TouchableOpacity,
   StyleSheet,
   Linking,
+  Share,
 } from 'react-native';
 import { router } from 'expo-router';
 import i18next, { useTranslation } from '../../i18n';
 import { useThemeColors } from '../../hooks/useThemeColors';
+import { useResponsiveLayout } from '../../hooks/useResponsiveLayout';
 import type { ThemeColors } from '../../constants/colors';
 import { useSettingsStore, useActiveLocation } from '../settings/store/useSettingsStore';
 import { calculatePrayerTimes } from '../../lib/prayer-calc';
@@ -47,6 +49,7 @@ import { PRAYER_LABEL_KEYS, DISPLAY_PRAYERS } from '../../constants/prayers';
 import type { CalcMethodKey } from '../../constants/methods';
 import type { PrayerTimes } from '../../types/prayer';
 import { EmptyState } from '../../components/states';
+import { buildPrayerTimesShareText } from '../../lib/share';
 
 /** praycalc.com's real calendar export — verified against web/src/pages/api/calendar.ics.ts. */
 const ICS_EXPORT_BASE = 'https://praycalc.com/api/calendar.ics';
@@ -77,6 +80,7 @@ interface DayRow {
 export default function TimetableScreen() {
   const { t } = useTranslation();
   const colors = useThemeColors();
+  const { isWide, maxContentWidth } = useResponsiveLayout();
   const styles = useMemo(() => createStyles(colors), [colors]);
   const settings = useSettingsStore();
   const activeLocation = useActiveLocation();
@@ -154,6 +158,23 @@ export default function TimetableScreen() {
     void Linking.openURL(`${ICS_EXPORT_BASE}?${params.toString()}`);
   }
 
+  /** Share today's row from the currently-viewed month (not the whole table —
+   *  keeps the shared text short and matches the Home screen's share format). */
+  function handleShareMonth() {
+    if (!activeLocation) return;
+    const todayRow = rows.find((r) => r.isToday) ?? rows[0];
+    if (!todayRow) return;
+    const message = buildPrayerTimesShareText({
+      times: todayRow.times,
+      city: activeLocation.city,
+      country: activeLocation.country,
+      timeFormat: settings.timeFormat,
+      locale: i18next.language,
+      translatePrayerLabel: (name) => t(PRAYER_LABEL_KEYS[name]),
+    });
+    void Share.share({ message }).catch(() => undefined);
+  }
+
   if (!activeLocation) {
     return (
       <EmptyState
@@ -166,7 +187,8 @@ export default function TimetableScreen() {
   }
 
   return (
-    <View style={styles.container}>
+    <View style={styles.outer}>
+      <View style={[styles.container, isWide && { alignSelf: 'center', width: '100%', maxWidth: maxContentWidth }]}>
       {/* Month navigation */}
       <View style={styles.monthNav} accessibilityRole="header">
         <TouchableOpacity
@@ -224,21 +246,33 @@ export default function TimetableScreen() {
         ))}
       </ScrollView>
 
-      {/* Export — honest label: real .ics calendar file, not a PDF (no PDF endpoint exists) */}
-      <TouchableOpacity
-        style={styles.exportButton}
-        onPress={handleExportCalendar}
-        accessibilityRole="button"
-        accessibilityLabel={t('screens.timetable.exportAccessibilityLabel')}
-      >
-        <Text style={styles.exportButtonText}>{t('screens.timetable.exportCalendar')}</Text>
-      </TouchableOpacity>
+      <View style={styles.actionRow}>
+        {/* Export — honest label: real .ics calendar file, not a PDF (no PDF endpoint exists) */}
+        <TouchableOpacity
+          style={[styles.exportButton, styles.actionButton]}
+          onPress={handleExportCalendar}
+          accessibilityRole="button"
+          accessibilityLabel={t('screens.timetable.exportAccessibilityLabel')}
+        >
+          <Text style={styles.exportButtonText}>{t('screens.timetable.exportCalendar')}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.shareButton, styles.actionButton]}
+          onPress={handleShareMonth}
+          accessibilityRole="button"
+          accessibilityLabel={t('screens.timetable.shareAccessibilityLabel')}
+        >
+          <Text style={styles.shareButtonText}>{t('screens.timetable.shareTimes')}</Text>
+        </TouchableOpacity>
+      </View>
+      </View>
     </View>
   );
 }
 
 const createStyles = (colors: ThemeColors) => StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.background.primary, padding: 16, gap: 12 },
+  outer: { flex: 1, backgroundColor: colors.background.primary },
+  container: { flex: 1, padding: 16, gap: 12 },
   monthNav: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -284,6 +318,8 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
     color: colors.text.muted,
     textTransform: 'uppercase',
   },
+  actionRow: { flexDirection: 'row', gap: 8 },
+  actionButton: { flex: 1 },
   exportButton: {
     backgroundColor: colors.brand.dark,
     borderRadius: 10,
@@ -293,4 +329,15 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
     justifyContent: 'center',
   },
   exportButtonText: { color: colors.text.inverse, fontWeight: '700', fontSize: 15 },
+  shareButton: {
+    backgroundColor: colors.background.secondary,
+    borderRadius: 10,
+    paddingVertical: 14,
+    alignItems: 'center',
+    minHeight: 48,
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: colors.brand.mid,
+  },
+  shareButtonText: { color: colors.brand.dark, fontWeight: '700', fontSize: 15 },
 });
