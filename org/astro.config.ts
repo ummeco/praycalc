@@ -7,7 +7,13 @@
 // CONSTRAINTS:
 //   - Target stack: Astro 5 + TS + Tailwind (D-P2-STACK-CANON)
 //   - No Next.js imports — fully migrated
-//   - Sentry DSN sourced from SENTRY_DSN_PRAYCALC env var (vault)
+//   - Sentry DSN sourced from SENTRY_DSN_PRAYCALC env var (vault). The
+//     @sentry/astro integration ships the full browser SDK (~87KB gzip) as a
+//     blocking module script on every page, so it is only registered when a
+//     DSN is actually configured — the common case for this static docs site
+//     is no DSN, meaning zero Sentry bytes ship at all (PageSpeed/Lighthouse
+//     audit fix). When a DSN IS present, sampling stays low so the SDK cost
+//     is bounded rather than eliminated.
 //   - Brand tokens + RTL from inlined astroUmmatInline integration (mirrors @ummat/astro-preset logic)
 // REF: T-01 (P2-E3-W01-S01) · D-P2-STACK-CANON · D-P2-REACT19
 
@@ -101,27 +107,45 @@ function astroUmmatInline(): AstroIntegration {
 }
 // ────────────────────────────────────────────────────────────────────────────────────────────────
 
+// Only register the Sentry integration when a DSN is actually configured.
+// Without this gate, @sentry/astro injects its full browser SDK as a
+// blocking module script on every single page regardless of whether error
+// tracking is wired up — the biggest perf blocker found in the PageSpeed
+// audit. Sampling is kept low + replays off so that even when a DSN is
+// present, the SDK's runtime cost stays bounded.
+const sentryDsn = import.meta.env.SENTRY_DSN_PRAYCALC;
+
+const integrations: AstroIntegration[] = [
+  astroUmmatInline(),
+  react(),
+  mdx(),
+  sitemap({
+    filter: (page) => !page.includes('/404'),
+  }),
+];
+
+if (sentryDsn) {
+  integrations.push(
+    sentry({
+      dsn: sentryDsn,
+      tracesSampleRate: 0.1,
+      replaysSessionSampleRate: 0,
+      replaysOnErrorSampleRate: 0,
+      sourceMapsUploadOptions: {
+        project: 'praycalc-org',
+        authToken: import.meta.env.SENTRY_AUTH_TOKEN,
+      },
+    }),
+  );
+}
+
 export default defineConfig({
   site: 'https://praycalc.org',
   output: 'static',
   adapter: vercel({
     webAnalytics: { enabled: false }, // Umami handles analytics (D-P3-21)
   }),
-  integrations: [
-    astroUmmatInline(),
-    react(),
-    mdx(),
-    sitemap({
-      filter: (page) => !page.includes('/404'),
-    }),
-    sentry({
-      dsn: import.meta.env.SENTRY_DSN_PRAYCALC,
-      sourceMapsUploadOptions: {
-        project: 'praycalc-org',
-        authToken: import.meta.env.SENTRY_AUTH_TOKEN,
-      },
-    }),
-  ],
+  integrations,
   i18n: {
     // P2-E6-W01-S01-T01: expanded to 5 required locales (AC-01)
     defaultLocale: 'en',
@@ -132,9 +156,12 @@ export default defineConfig({
   },
   markdown: {
     shikiConfig: {
+      // High-contrast variants (not the plain github-light/github-dark) —
+      // the standard themes' comment/muted tokens fail WCAG AA (~3:1) against
+      // their own code-block background (Lighthouse color-contrast audit).
       themes: {
-        light: 'github-light',
-        dark: 'github-dark',
+        light: 'github-light-high-contrast',
+        dark: 'github-dark-high-contrast',
       },
       wrap: true,
     },

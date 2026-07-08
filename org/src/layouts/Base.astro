@@ -12,7 +12,6 @@
 // REF: T-01 (P2-E3-W01-S01)
 
 import '../styles/global.css';
-import Search from '../components/islands/Search';
 
 interface Props {
   title: string;
@@ -35,6 +34,49 @@ const umamiSrc = import.meta.env.UMAMI_SRC ?? 'https://analytics.umami.is/script
 
 // P2-E6-W01-S01-T01: RTL for ar/ur/fa (AC-02)
 const isRtl = ['ar', 'ur', 'fa'].includes(locale);
+
+// ── JSON-LD structured data ─────────────────────────────────────────────────
+// WebSite + Organization are sitewide (every page); doc/content pages (i.e.
+// anything past the locale-root index) additionally describe themselves as a
+// TechArticle so search engines can surface the specific page, not just the
+// site shell.
+const siteUrl = Astro.site?.toString() ?? 'https://praycalc.org/';
+const isRootIndex = ['/', '/ar/', '/ur/', '/fa/', '/id/'].includes(Astro.url.pathname);
+
+const organizationNode = {
+  '@type': 'Organization',
+  '@id': `${siteUrl}#organization`,
+  name: 'PrayCalc',
+  url: 'https://praycalc.com',
+  logo: new URL('/logo.svg', siteUrl).toString(),
+};
+
+const websiteNode = {
+  '@type': 'WebSite',
+  '@id': `${siteUrl}#website`,
+  name: 'PrayCalc Docs',
+  url: siteUrl,
+  description,
+  publisher: { '@id': `${siteUrl}#organization` },
+  inLanguage: locale,
+};
+
+const jsonLdGraph: Record<string, unknown>[] = [organizationNode, websiteNode];
+
+if (!isRootIndex) {
+  jsonLdGraph.push({
+    '@type': 'TechArticle',
+    '@id': `${canonicalUrl}#article`,
+    headline: title,
+    description,
+    url: canonicalUrl,
+    inLanguage: locale,
+    isPartOf: { '@id': `${siteUrl}#website` },
+    publisher: { '@id': `${siteUrl}#organization` },
+  });
+}
+
+const jsonLd = { '@context': 'https://schema.org', '@graph': jsonLdGraph };
 ---
 
 <!doctype html>
@@ -69,6 +111,9 @@ const isRtl = ['ar', 'ur', 'fa'].includes(locale);
     <!-- Sitemap -->
     <link rel="sitemap" href="/sitemap-index.xml" />
 
+    <!-- Structured data: Organization + WebSite sitewide, TechArticle per doc page -->
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} is:inline />
+
     <!-- No-flash theme init: runs before first paint to prevent FOUC -->
     <script is:inline>
       (function () {
@@ -94,7 +139,13 @@ const isRtl = ['ar', 'ur', 'fa'].includes(locale);
   </head>
   <body class="flex min-h-full bg-white text-zinc-900 dark:bg-zinc-900 dark:text-zinc-100">
     <slot />
-    <!-- Search modal island — listens for 'open-search' CustomEvent from Header.astro -->
-    <Search client:only="react" />
+    <!-- Search modal island root — lazily mounted on first interaction (click
+         search trigger or Cmd/Ctrl+K) by search-loader.ts, so the search
+         bundle (React + FlexSearch + Headless UI + Algolia autocomplete) is
+         never downloaded by visitors who never open search. -->
+    <div id="search-island-root"></div>
+    <script>
+      import '../scripts/search-loader';
+    </script>
   </body>
 </html>

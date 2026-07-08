@@ -65,14 +65,16 @@ const { navigation, currentPath } = Astro.props;
       <button
         id="search-trigger"
         type="button"
-        aria-label="Search docs"
-        class="hidden items-center gap-2 rounded-lg bg-zinc-100 px-3 py-1.5 text-sm text-zinc-500 ring-1 ring-zinc-900/10 transition hover:ring-zinc-900/20 dark:bg-white/5 dark:text-zinc-400 dark:ring-inset dark:ring-white/10 dark:hover:ring-white/20 sm:flex"
+        class="hidden items-center gap-2 rounded-lg bg-zinc-100 px-3 py-1.5 text-sm text-zinc-600 ring-1 ring-zinc-900/10 transition hover:ring-zinc-900/20 dark:bg-white/5 dark:text-zinc-400 dark:ring-inset dark:ring-white/10 dark:hover:ring-white/20 sm:flex"
       >
         <svg class="h-4 w-4 shrink-0" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
           <path stroke-linecap="round" stroke-linejoin="round" d="M6.5 11a4.5 4.5 0 100-9 4.5 4.5 0 000 9zM14 14l-3-3" />
         </svg>
         <span>Search docs...</span>
-        <kbd class="ml-2 hidden rounded border border-zinc-300 bg-white px-1 py-0.5 font-mono text-[0.65rem] text-zinc-400 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-500 lg:inline">
+        <kbd
+          aria-hidden="true"
+          class="ml-2 hidden rounded border border-zinc-300 bg-white px-1 py-0.5 font-mono text-[0.65rem] text-zinc-600 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-400 lg:inline"
+        >
           ⌘K
         </kbd>
       </button>
@@ -89,12 +91,14 @@ const { navigation, currentPath } = Astro.props;
         </svg>
       </button>
 
-      <!-- Theme toggle island -->
-      <ThemeToggle client:load />
+      <!-- Theme toggle island (deferred — pre-hydration CSS already reflects the
+           persisted theme via Base.astro's no-flash script, so idle hydration
+           causes no visual change, only a lower TBT contribution) -->
+      <ThemeToggle client:idle />
 
       <!-- Mobile nav toggle (hidden on desktop — desktop uses sidebar) -->
       <div class="lg:hidden">
-        <MobileNavToggle navigation={navigation} currentPath={currentPath} client:load />
+        <MobileNavToggle navigation={navigation} currentPath={currentPath} client:idle />
       </div>
     </div>
   </div>

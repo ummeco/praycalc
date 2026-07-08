@@ -41,7 +41,7 @@ const { title, description, locale = 'en' } = Astro.props;
       >
         <div class="sticky top-14 h-[calc(100vh-3.5rem)] overflow-y-auto px-4 py-8">
           <DocsSidebar
-            client:load
+            client:idle
             navigation={navigation}
             currentPath={Astro.url.pathname}
           />
@@ -65,7 +65,7 @@ const { title, description, locale = 'en' } = Astro.props;
 
       <!-- On-page TOC right rail (Epic B-2, xl only) -->
       <div class="hidden xl:block xl:w-56 xl:shrink-0">
-        <TableOfContents client:load />
+        <TableOfContents client:idle />
       </div>
     </div>
   </div>
