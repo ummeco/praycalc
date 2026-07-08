@@ -354,7 +354,7 @@ export default function MasjidMuteScreen() {
               style={styles.stepperBtn}
               onPress={() => adjustRadius(-25)}
               accessibilityRole="button"
-              accessibilityLabel="Decrease radius by 25 meters"
+              accessibilityLabel={t('screens.masjidMute.decreaseRadiusAccessibilityLabel')}
             >
               <Text style={styles.stepperBtnText}>−</Text>
             </TouchableOpacity>
@@ -363,7 +363,7 @@ export default function MasjidMuteScreen() {
               style={styles.stepperBtn}
               onPress={() => adjustRadius(25)}
               accessibilityRole="button"
-              accessibilityLabel="Increase radius by 25 meters"
+              accessibilityLabel={t('screens.masjidMute.increaseRadiusAccessibilityLabel')}
             >
               <Text style={styles.stepperBtnText}>+</Text>
             </TouchableOpacity>

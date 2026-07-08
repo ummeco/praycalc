@@ -183,7 +183,7 @@ export default function CitySearchScreen({ onSelectCity, mode = 'home' }: CitySe
           onChangeText={setQuery}
           placeholder={t('screens.citySearch.placeholder')}
           placeholderTextColor={colors.text.muted}
-          accessibilityLabel="City search input"
+          accessibilityLabel={t('screens.citySearch.searchInputAccessibilityLabel')}
           accessibilityHint="Type a city name to search"
           returnKeyType="search"
           clearButtonMode="while-editing"
@@ -195,7 +195,7 @@ export default function CitySearchScreen({ onSelectCity, mode = 'home' }: CitySe
           onPress={handleUseCurrentLocation}
           disabled={locating}
           accessibilityRole="button"
-          accessibilityLabel="Use current location"
+          accessibilityLabel={t('screens.citySearch.useCurrentLocationAccessibilityLabel')}
         >
           <Text style={styles.currentLocationText}>
             {locating ? t('screens.citySearch.locating') : `📍 ${t('screens.citySearch.useCurrentLocation')}`}
@@ -240,7 +240,7 @@ export default function CitySearchScreen({ onSelectCity, mode = 'home' }: CitySe
           )}
           contentContainerStyle={{ paddingBottom: 32 }}
           accessible
-          accessibilityLabel="City search results"
+          accessibilityLabel={t('screens.citySearch.resultsAccessibilityLabel')}
         />
       )}
     </SafeAreaView>

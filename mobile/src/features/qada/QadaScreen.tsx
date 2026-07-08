@@ -129,7 +129,7 @@ export default function QadaScreen() {
             <TouchableOpacity
               onPress={() => removeExcusedRange(r.id)}
               accessibilityRole="button"
-              accessibilityLabel="Remove excused range"
+              accessibilityLabel={t('screens.qada.removeExcusedRangeAccessibilityLabel')}
               style={styles.removeButton}
             >
               <Text style={styles.removeButtonText}>{t('common.close')}</Text>

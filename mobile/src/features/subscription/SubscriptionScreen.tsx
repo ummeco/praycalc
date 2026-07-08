@@ -196,7 +196,7 @@ export default function SubscriptionScreen() {
           onPress={handleRestore}
           disabled={purchasing}
           accessibilityRole="button"
-          accessibilityLabel="Restore previous purchase"
+          accessibilityLabel={t('screens.subscription.restorePurchaseAccessibilityLabel')}
         >
           <Text style={styles.restoreText}>{t('screens.subscription.restorePurchase')}</Text>
         </TouchableOpacity>

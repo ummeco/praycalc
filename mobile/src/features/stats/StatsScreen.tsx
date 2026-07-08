@@ -65,14 +65,14 @@ function getWeeklyData(completions: PrayerCompletion[], locale: string): Array<{
 
 // ── Inline bar chart (no extra deps) ─────────────────────────────────────────
 
-function BarChart({ data, colors }: { data: Array<{ day: string; count: number }>; colors: ThemeColors }) {
+function BarChart({ data, colors, t }: { data: Array<{ day: string; count: number }>; colors: ThemeColors; t: (key: string, opts?: Record<string, unknown>) => string }) {
   const max = 5;
   const chart = useMemo(() => createChartStyles(colors), [colors]);
   return (
     <View
       style={chart.container}
       accessibilityRole="image"
-      accessibilityLabel="Weekly prayer completion chart"
+      accessibilityLabel={t('screens.stats.chartAccessibilityLabel')}
     >
       {data.map((d, i) => (
         <View key={i} style={chart.bar}>
@@ -220,7 +220,7 @@ export default function StatsScreen() {
           <Text style={styles.sectionTitle} accessibilityRole="header">
             {mode === 'weekly' ? t('screens.stats.last7Days') : t('screens.stats.thisMonth')}
           </Text>
-          <BarChart data={weeklyData} colors={colors} />
+          <BarChart data={weeklyData} colors={colors} t={t} />
         </View>
 
         {/* Per-prayer breakdown */}

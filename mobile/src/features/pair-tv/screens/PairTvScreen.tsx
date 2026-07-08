@@ -160,7 +160,7 @@ export default function PairTvScreen() {
           keyboardType="number-pad"
           maxLength={6}
           placeholderTextColor={colors.text.muted}
-          accessibilityLabel="TV pairing PIN"
+          accessibilityLabel={t('screens.pairTv.pinInputAccessibilityLabel')}
         />
         <TouchableOpacity
           style={[styles.primaryButton, !isValidPin(pin) && styles.primaryButtonDisabled]}

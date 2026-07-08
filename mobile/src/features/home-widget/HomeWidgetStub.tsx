@@ -24,6 +24,7 @@
 import React, { useMemo } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, ScrollView, Platform } from 'react-native';
 import { router } from 'expo-router';
+import { useTranslation } from '../../i18n';
 import { useThemeColors } from '../../hooks/useThemeColors';
 import type { ThemeColors } from '../../constants/colors';
 import { EmptyState } from '../../components/states';
@@ -85,6 +86,7 @@ function formatCountdown(seconds: number): string {
 // ── Widget setup screen ───────────────────────────────────────────────────────
 
 export default function HomeWidgetScreen() {
+  const { t } = useTranslation();
   const colors = useThemeColors();
   const styles = useMemo(() => createStyles(colors), [colors]);
   const isPlus = useAuthStore((s) => s.isPlus);
@@ -128,7 +130,7 @@ export default function HomeWidgetScreen() {
 
         <View style={styles.card}>
           <Text style={styles.cardTitle}>Widget Preview</Text>
-          <View style={styles.widgetPreview} accessibilityRole="image" accessibilityLabel="Widget preview showing next prayer time">
+          <View style={styles.widgetPreview} accessibilityRole="image" accessibilityLabel={t('screens.homeWidget.widgetPreviewAccessibilityLabel')}>
             <Text style={styles.widgetTitle}>Next Prayer</Text>
             {hasPreview ? (
               <>

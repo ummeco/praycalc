@@ -136,7 +136,7 @@ export default function AgendasScreen() {
           onPress={handleAddToCalendar}
           disabled={!location || syncing}
           accessibilityRole="button"
-          accessibilityLabel="Add today's prayer times to calendar"
+          accessibilityLabel={t('screens.agendas.addButtonAccessibilityLabel')}
           accessibilityState={{ disabled: !location || syncing }}
         >
           <Text style={styles.syncBtnText}>

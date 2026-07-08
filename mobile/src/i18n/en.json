@@ -244,7 +244,9 @@
     "hijriAdjustment": {
       "title": "Hijri Date Adjustment",
       "hint": "Shift the Hijri date by ±2 days if your local moon sighting differs from the Umm al-Qura calendar.",
-      "offset": "Offset"
+      "offset": "Offset",
+      "decreaseAccessibilityLabel": "Decrease Hijri offset",
+      "increaseAccessibilityLabel": "Increase Hijri offset"
     },
     "timeFormat": {
       "title": "Time Format"
@@ -257,7 +259,9 @@
     },
     "customAngles": {
       "fajr": "Fajr angle (°)",
-      "isha": "Isha angle (°)"
+      "isha": "Isha angle (°)",
+      "fajrAccessibilityLabel": "Custom Fajr angle in degrees",
+      "ishaAccessibilityLabel": "Custom Isha angle in degrees"
     },
     "upsell": {
       "priceLine": "Ummat+ $9.99/yr — unlocks TV app & Smart Home",
@@ -334,6 +338,7 @@
       "noCalendarFoundBody": "No writable calendar found on this device.",
       "setLocationHint": "Set your city in Settings to enable calendar sync.",
       "addButton": "Add Today's Prayers to Calendar",
+      "addButtonAccessibilityLabel": "Add today's prayer times to calendar",
       "adding": "Adding...",
       "done": "Done",
       "addedCount": "Added {{count}} prayer times to your calendar.",
@@ -352,7 +357,10 @@
       "searching": "Searching cities...",
       "noResults": "No cities found for \"{{query}}\".",
       "popularHint": "Popular cities shown. Type to search.",
-      "searchError": "Search error: {{message}}"
+      "searchError": "Search error: {{message}}",
+      "searchInputAccessibilityLabel": "City search input",
+      "useCurrentLocationAccessibilityLabel": "Use current location",
+      "resultsAccessibilityLabel": "City search results"
     },
     "duaDhikr": {
       "noResults": "No duas found for this category.",
@@ -421,6 +429,8 @@
       "longitudeLabel": "Longitude",
       "radiusLabel": "Radius: {{radius}} m",
       "radiusHint": "Between {{min}} m and {{max}} m — covers the masjid and its parking area.",
+      "decreaseRadiusAccessibilityLabel": "Decrease radius by 25 meters",
+      "increaseRadiusAccessibilityLabel": "Increase radius by 25 meters",
       "saveZone": "Save Zone",
       "deleteZone": "Delete Zone",
       "deleteConfirmTitle": "Delete this zone?",
@@ -447,6 +457,7 @@
       "title": "Pair with TV",
       "desc": "Open PrayCalc on your TV, then enter the 6-digit PIN shown on screen.",
       "enterPin": "Enter the 6-digit PIN shown on your TV.",
+      "pinInputAccessibilityLabel": "TV pairing PIN",
       "pairFailed": "Pairing failed. Try again.",
       "pairDevice": "Pair Device",
       "invalidOrExpiredPin": "That PIN is invalid or has expired. Check the TV screen and try again."
@@ -560,6 +571,8 @@
       "masterSub": "Receive alerts before each prayer time",
       "androidExactAlarm": "On Android 12+, allow \"Alarms & Reminders\" in system settings for exact prayer time alerts.",
       "openSystemSettings": "Open System Settings",
+      "masterAccessibilityLabel": "Enable prayer notifications",
+      "openSystemSettingsAccessibilityLabel": "Open system settings for alarms",
       "perPrayerAlerts": "Per-Prayer Alerts",
       "minutesBefore_one": "{{count}}m before",
       "minutesBefore_other": "{{count}}m before",
@@ -600,18 +613,23 @@
       "testAdhanScheduled": "A test adhan will play in about 5 seconds. Lock or background the app to hear it as a notification.",
       "dismiss": "Dismiss"
     },
+    "homeWidget": {
+      "widgetPreviewAccessibilityLabel": "Widget preview showing next prayer time"
+    },
     "smartHome": {
       "proOnly": "Smart Home (lock-on-salah + device control) is an Ummat+ feature.",
       "upgradeAction": "Upgrade to Ummat+",
       "lockDuringPrayer": "Lock During Prayer",
       "lockDesc": "Automatically dim screen and mute media when prayer time begins. Requires authentication to configure.",
       "lockOnSalah": "Lock on Salah",
+      "lockOnSalahAccessibilityLabel": "Lock on salah mode",
       "activeNote": "Screen will dim and media will be paused at prayer times.\nAndroid: media focus released. iOS: silent mode reminder shown.",
       "smartDevices": "Smart Devices",
       "noDevices": "No devices added yet. Device discovery isn't built yet — add one manually below.",
       "online": "Online",
       "offline": "Offline",
       "addDevice": "+ Add Device",
+      "addDeviceAccessibilityLabel": "Add smart device",
       "comingSoonTitle": "Coming soon",
       "comingSoonBody": "Smart device discovery will be available in a future update.",
       "unreachableTitle": "Device unreachable",
@@ -620,6 +638,7 @@
       "useFallback": "Use passcode"
     },
     "stats": {
+      "chartAccessibilityLabel": "Weekly prayer completion chart",
       "noLogs": "No prayer logs yet. Start completing prayers to see your stats.",
       "dayStreak": "Day Streak 🔥",
       "weeklyRate": "Weekly Rate",
@@ -646,6 +665,7 @@
       "proSub": "Thank you for supporting PrayCalc!",
       "noProducts": "Subscription products unavailable. Configure in App Store Connect / Google Play Console.",
       "restorePurchase": "Restore Purchase",
+      "restorePurchaseAccessibilityLabel": "Restore previous purchase",
       "legal": "Subscriptions auto-renew unless cancelled at least 24 hours before the end of the current period. Manage in your App Store / Google Play account settings.",
       "featurePremiumAdhan": "Premium adhan voices — additional reciters",
       "featureHomeWidget": "Home screen widget (next prayer)",
@@ -672,6 +692,7 @@
     "travel": {
       "musafirModeTitle": "Musafir Mode",
       "musafirModeDesc": "I am a traveller (musafir). Apply qasr to applicable prayers.",
+      "musafirModeAccessibilityLabel": "Musafir travel mode",
       "musafirAlertTitle": "Musafir (Traveller) Mode",
       "musafirAlertBody": "Qasr (shortening) reduces Dhuhr, Asr, and Isha from 4 to 2 rakat.\n\nNote: Jama (combining prayers) is not automatically applied due to scholarly differences. Please follow your local scholar or madhab regarding combining prayers during travel.",
       "understood": "Understood",
@@ -679,7 +700,9 @@
       "fiqhNote": "Fajr and Maghrib are not shortened (qasr applies to 4-rakat prayers only). Jama (combining prayers) requires following your local scholar or madhab ruling.",
       "travelDestination": "Travel Destination",
       "changeCity": "Change",
+      "changeCityAccessibilityLabel": "Change travel city",
       "selectTravelCity": "Select Travel City",
+      "selectTravelCityAccessibilityLabel": "Select travel city",
       "recalcNote": "Prayer times will be recalculated for your travel destination.",
       "homeCity": "Home City",
       "notSet": "Not set"
@@ -728,7 +751,8 @@
       "startDate": "Start Date",
       "endDate": "End Date",
       "noteOptional": "Note (optional)",
-      "notePlaceholder": "e.g. menses, illness"
+      "notePlaceholder": "e.g. menses, illness",
+      "removeExcusedRangeAccessibilityLabel": "Remove excused range"
     },
     "jumuah": {
       "intro": "Friday is the best day of the week. Set gentle reminders and prepare for Jumu'ah with its sunnahs.",

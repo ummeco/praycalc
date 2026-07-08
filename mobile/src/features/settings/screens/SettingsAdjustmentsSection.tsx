@@ -88,7 +88,7 @@ export function SettingsAdjustmentsSection({
               style={styles.stepperButton}
               onPress={() => onAdjustHijriDay(hijriDayAdjustment - 1)}
               accessibilityRole="button"
-              accessibilityLabel="Decrease Hijri offset"
+              accessibilityLabel={t('settings.hijriAdjustment.decreaseAccessibilityLabel')}
               hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
             >
               <Text style={styles.stepperButtonText}>−</Text>
@@ -100,7 +100,7 @@ export function SettingsAdjustmentsSection({
               style={styles.stepperButton}
               onPress={() => onAdjustHijriDay(hijriDayAdjustment + 1)}
               accessibilityRole="button"
-              accessibilityLabel="Increase Hijri offset"
+              accessibilityLabel={t('settings.hijriAdjustment.increaseAccessibilityLabel')}
               hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
             >
               <Text style={styles.stepperButtonText}>+</Text>

@@ -94,7 +94,7 @@ export default function TravelScreen() {
             onValueChange={handleMusafirToggle}
             trackColor={{ false: colors.background.card, true: colors.brand.mid }}
             thumbColor={colors.brand.light}
-            accessibilityLabel="Musafir travel mode"
+            accessibilityLabel={t('screens.travel.musafirModeAccessibilityLabel')}
           />
         </View>
 
@@ -143,7 +143,7 @@ export default function TravelScreen() {
                 onPress={() => setShowCitySearch(true)}
                 style={styles.changeBtn}
                 accessibilityRole="button"
-                accessibilityLabel="Change travel city"
+                accessibilityLabel={t('screens.travel.changeCityAccessibilityLabel')}
               >
                 <Text style={styles.changeBtnText}>{t('screens.travel.changeCity')}</Text>
               </TouchableOpacity>
@@ -153,7 +153,7 @@ export default function TravelScreen() {
               style={styles.selectCityBtn}
               onPress={() => setShowCitySearch(true)}
               accessibilityRole="button"
-              accessibilityLabel="Select travel city"
+              accessibilityLabel={t('screens.travel.selectTravelCityAccessibilityLabel')}
             >
               <Text style={styles.selectCityText}>{t('screens.travel.selectTravelCity')}</Text>
             </TouchableOpacity>

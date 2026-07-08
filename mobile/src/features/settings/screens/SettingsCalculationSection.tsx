@@ -84,7 +84,7 @@ export function SettingsCalculationSection({
                   const fajr = parseFloat(v);
                   if (!Number.isNaN(fajr)) onSetCustomAngles(fajr, customIshaAngle);
                 }}
-                accessibilityLabel="Custom Fajr angle in degrees"
+                accessibilityLabel={t('settings.customAngles.fajrAccessibilityLabel')}
                 accessibilityLabelledBy="fajr-angle-label"
               />
             </View>
@@ -98,7 +98,7 @@ export function SettingsCalculationSection({
                   const isha = parseFloat(v);
                   if (!Number.isNaN(isha)) onSetCustomAngles(customFajrAngle, isha);
                 }}
-                accessibilityLabel="Custom Isha angle in degrees"
+                accessibilityLabel={t('settings.customAngles.ishaAccessibilityLabel')}
                 accessibilityLabelledBy="isha-angle-label"
               />
             </View>

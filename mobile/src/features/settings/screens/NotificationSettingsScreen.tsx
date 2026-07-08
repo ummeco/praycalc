@@ -226,7 +226,7 @@ export default function NotificationSettingsScreen() {
             onValueChange={handleMasterToggle}
             trackColor={{ false: colors.background.card, true: colors.brand.mid }}
             thumbColor={colors.brand.light}
-            accessibilityLabel="Enable prayer notifications"
+            accessibilityLabel={t('screens.notifications.masterAccessibilityLabel')}
           />
         </View>
 
@@ -240,7 +240,7 @@ export default function NotificationSettingsScreen() {
               style={styles.linkBtn}
               onPress={openSystemSettings}
               accessibilityRole="button"
-              accessibilityLabel="Open system settings for alarms"
+              accessibilityLabel={t('screens.notifications.openSystemSettingsAccessibilityLabel')}
             >
               <Text style={styles.linkText}>{t('screens.notifications.openSystemSettings')}</Text>
             </TouchableOpacity>

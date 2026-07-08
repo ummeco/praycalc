@@ -114,7 +114,7 @@ export default function SmartHomeScreen() {
               onValueChange={handleLockOnSalah}
               trackColor={{ false: colors.background.card, true: colors.brand.mid }}
               thumbColor={colors.brand.light}
-              accessibilityLabel="Lock on salah mode"
+              accessibilityLabel={t('screens.smartHome.lockOnSalahAccessibilityLabel')}
             />
           </View>
           {lockOnSalah && (
@@ -160,7 +160,7 @@ export default function SmartHomeScreen() {
           style={styles.addBtn}
           onPress={() => Alert.alert(t('screens.smartHome.comingSoonTitle'), t('screens.smartHome.comingSoonBody'))}
           accessibilityRole="button"
-          accessibilityLabel="Add smart device"
+          accessibilityLabel={t('screens.smartHome.addDeviceAccessibilityLabel')}
         >
           <Text style={styles.addBtnText}>{t('screens.smartHome.addDevice')}</Text>
         </TouchableOpacity>
