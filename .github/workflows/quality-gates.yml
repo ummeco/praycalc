@@ -1,4 +1,4 @@
-# Quality Gates — praycalc/web
+# Quality Gates — praycalc/web + praycalc/org
 # Sprint B9 DR-B9-PERF-01 + DR-B9-A11Y-01 | Ticket TB9-17
 # Enforces Lighthouse performance budgets and axe WCAG 2.1 AA on every PR and push to main.
 
@@ -27,3 +27,17 @@ jobs:
     with:
       project_path: web
       port: 3040
+
+  lighthouse-org:
+    name: Lighthouse CI (org)
+    uses: ./.github/workflows/_reusable-lighthouse.yml
+    with:
+      project_path: org
+
+  axe-org:
+    name: axe WCAG 2.1 AA (org)
+    uses: ./.github/workflows/_reusable-axe.yml
+    with:
+      project_path: org
+      port: 3041
+      extra_urls: /hijri/

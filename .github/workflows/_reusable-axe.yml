@@ -53,7 +53,9 @@ jobs:
 
       - name: Start dev server
         working-directory: ${{ inputs.project_path }}
-        # Astro + @astrojs/vercel adapter has no `astro preview`; serve via dev (port 3040).
+        # `pnpm dev` works for both project_path variants: web (output: 'server' +
+        # @astrojs/vercel, which has no `astro preview`) and org (output: 'static',
+        # where `astro preview` would also work, but dev keeps this step uniform).
         run: pnpm dev &
 
       - name: Wait for server
