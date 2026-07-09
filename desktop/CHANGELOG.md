@@ -4,6 +4,11 @@
 
 All notable changes to the PrayCalc desktop app are documented here.
 
+## [1.2.3] - 2026-07-09
+
+### Added
+- Seamless auto-update is now live: signed release ships `.sig` updater artifacts + `latest.json`; the installed app checks on launch and hourly, downloads in the background, and shows a "Restart to update" banner when a new version is ready.
+
 ## [1.2.2] - 2026-07-09
 
 ### Added

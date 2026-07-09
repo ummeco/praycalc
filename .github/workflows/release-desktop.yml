@@ -91,12 +91,12 @@ jobs:
           TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
         with:
           projectPath: desktop
-          # Releases ship installers only. Auto-updater artifacts (.sig + latest.json)
-          # require TAURI_SIGNING_PRIVATE_KEY; until that secret is configured, we do NOT
-          # force createUpdaterArtifacts (base config keeps it off) so the release builds
-          # succeed unsigned. Re-add --config '{"bundle":{"createUpdaterArtifacts":true}}'
-          # here once the signing secret is set to enable seamless auto-update.
-          args: --target ${{ matrix.targets }}
+          # TAURI_SIGNING_PRIVATE_KEY is configured, so releases build SIGNED updater
+          # artifacts (.sig per installer + latest.json) that the in-app auto-updater
+          # verifies against the pubkey in tauri.conf.json — enabling seamless auto-update.
+          # Base config keeps createUpdaterArtifacts off (so the unsigned on-push CI smoke
+          # build stays green); this override turns it on for signed releases only.
+          args: '--target ${{ matrix.targets }} --config {"bundle":{"createUpdaterArtifacts":true}}'
           tagName: ${{ github.ref_name }}
           releaseName: 'PrayCalc Desktop ${{ github.ref_name }}'
           releaseBody: 'Menu bar / system tray prayer-time app for macOS, Windows, and Linux. Download the installer for your platform below.'
