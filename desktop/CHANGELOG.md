@@ -4,7 +4,7 @@
 
 All notable changes to the PrayCalc desktop app are documented here.
 
-## [Unreleased]
+## [1.2.2] - 2026-07-09
 
 ### Added
 - "My TVs" tab: `AddTvForm` to pair a TV by entering its 6-digit code, `TvRow` list of paired TVs, and `TvDeepSettingsEditor` for per-TV countdown takeover, iqama times, prayer-name-only mode, calculation method, madhab, and time format
