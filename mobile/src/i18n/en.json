@@ -614,7 +614,14 @@
       "dismiss": "Dismiss"
     },
     "homeWidget": {
-      "widgetPreviewAccessibilityLabel": "Widget preview showing next prayer time"
+      "widgetPreviewAccessibilityLabel": "Widget preview showing next prayer time",
+      "title": "Home Screen Widget",
+      "subtitle": "See the next prayer time on your home screen",
+      "widgetPreviewTitle": "Widget Preview",
+      "nextPrayer": "Next Prayer",
+      "setLocationToPreview": "Set your location to preview",
+      "setupInstructions": "Setup Instructions",
+      "integrationStatus": "Integration Status"
     },
     "smartHome": {
       "proOnly": "Smart Home (lock-on-salah + device control) is an Ummat+ feature.",

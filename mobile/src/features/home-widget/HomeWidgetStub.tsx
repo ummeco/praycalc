@@ -124,14 +124,14 @@ export default function HomeWidgetScreen() {
       <ScrollView contentContainerStyle={styles.scroll}>
         <View style={styles.header}>
           <Text style={styles.icon}>📱</Text>
-          <Text style={styles.title} accessibilityRole="header">Home Screen Widget</Text>
-          <Text style={styles.subtitle}>See the next prayer time on your home screen</Text>
+          <Text style={styles.title} accessibilityRole="header">{t('screens.homeWidget.title')}</Text>
+          <Text style={styles.subtitle}>{t('screens.homeWidget.subtitle')}</Text>
         </View>
 
         <View style={styles.card}>
-          <Text style={styles.cardTitle}>Widget Preview</Text>
+          <Text style={styles.cardTitle}>{t('screens.homeWidget.widgetPreviewTitle')}</Text>
           <View style={styles.widgetPreview} accessibilityRole="image" accessibilityLabel={t('screens.homeWidget.widgetPreviewAccessibilityLabel')}>
-            <Text style={styles.widgetTitle}>Next Prayer</Text>
+            <Text style={styles.widgetTitle}>{t('screens.homeWidget.nextPrayer')}</Text>
             {hasPreview ? (
               <>
                 <Text style={styles.widgetPrayer}>{nextPrayer}</Text>
@@ -141,13 +141,13 @@ export default function HomeWidgetScreen() {
                 <Text style={styles.widgetCountdown}>in {formatCountdown(secondsToNextPrayer)}</Text>
               </>
             ) : (
-              <Text style={styles.widgetTime}>Set your location to preview</Text>
+              <Text style={styles.widgetTime}>{t('screens.homeWidget.setLocationToPreview')}</Text>
             )}
           </View>
         </View>
 
         <View style={styles.card}>
-          <Text style={styles.cardTitle}>Setup Instructions</Text>
+          <Text style={styles.cardTitle}>{t('screens.homeWidget.setupInstructions')}</Text>
           {[
             'Long-press your home screen',
             'Tap the + button (iOS) or Widgets menu (Android)',
@@ -165,7 +165,7 @@ export default function HomeWidgetScreen() {
         </View>
 
         <View style={styles.statusCard}>
-          <Text style={styles.statusTitle}>Integration Status</Text>
+          <Text style={styles.statusTitle}>{t('screens.homeWidget.integrationStatus')}</Text>
           <Text style={styles.statusText}>
             Android: live — the "Next Prayer" home-screen widget ships via
             react-native-android-widget and refreshes automatically every 30 minutes

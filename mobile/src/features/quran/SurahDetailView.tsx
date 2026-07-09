@@ -2,7 +2,9 @@
  * Purpose: Readable mini-mushaf view for a single surah (or a single standalone
  *   ayah, e.g. Ayat al-Kursi) — Arabic + transliteration + translation per verse,
  *   with per-verse bookmarks persisted via MMKV.
- * Inputs: surah (Surah metadata), onBack callback, optional singleAyah override.
+ * Inputs: surah (Surah metadata), onBack callback, optional singleAyah override,
+ *   parent-owned colors/styles/t (computed once by QuranScreen, per the same
+ *   prop-passing convention as every other split screen child, e.g. PrayerList).
  * Outputs: SurahDetailView component, used by QuranScreen for both a regular
  *   surah and the featured Ayat al-Kursi card.
  * Constraints: Arabic ayat MUST use Uthmani script, RTL, tashkeel preserved.
@@ -13,27 +15,34 @@
  * ./data/verses.ts for the verified corpus and per-surah source notes.
  */
 
-import React, { useMemo, useState, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   View, Text, TouchableOpacity, SafeAreaView, ScrollView, Linking,
 } from 'react-native';
-import { useTranslation } from '../../i18n';
-import { useThemeColors } from '../../hooks/useThemeColors';
 import { useResponsiveLayout } from '../../hooks/useResponsiveLayout';
 import { mmkv } from '../../lib/storage/mmkv';
 import { loadAyahs, type Ayah } from './data/verses';
-import { createStyles } from './QuranScreen.styles';
+import type { QuranScreenStyles } from './QuranScreen.styles';
 import type { Surah } from './quran.types';
+import type { ThemeColors } from '../../constants/colors';
 
 const BOOKMARKS_KEY = 'pc:quran:bookmarks';
 
+interface SurahDetailViewProps {
+  surah: Surah;
+  onBack: () => void;
+  singleAyah?: Ayah;
+  /** Accepted for parity with the sibling props-passing convention (e.g. PrayerList) —
+   *  not read directly here since every visual value already flows through `styles`. */
+  colors: ThemeColors;
+  styles: QuranScreenStyles;
+  t: (key: string, options?: Record<string, unknown>) => string;
+}
+
 export function SurahDetailView({
-  surah, onBack, singleAyah,
-}: { surah: Surah; onBack: () => void; singleAyah?: Ayah }) {
-  const { t } = useTranslation();
-  const colors = useThemeColors();
+  surah, onBack, singleAyah, styles, t,
+}: SurahDetailViewProps) {
   const { isWide, maxContentWidth } = useResponsiveLayout();
-  const styles = useMemo(() => createStyles(colors), [colors]);
   const ayahs = singleAyah ? [singleAyah] : loadAyahs(surah.number);
   const rawBookmarks = mmkv.getString(BOOKMARKS_KEY);
   const [bookmarks, setBookmarks] = useState<string[]>(() => {

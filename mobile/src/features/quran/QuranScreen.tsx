@@ -88,12 +88,23 @@ export default function QuranScreen() {
         surah={AYAT_AL_KURSI_CARD}
         onBack={() => setShowKursi(false)}
         singleAyah={AYAT_AL_KURSI_VERSE}
+        colors={colors}
+        styles={styles}
+        t={t}
       />
     );
   }
 
   if (selectedSurah) {
-    return <SurahDetailView surah={selectedSurah} onBack={() => setSelectedSurah(null)} />;
+    return (
+      <SurahDetailView
+        surah={selectedSurah}
+        onBack={() => setSelectedSurah(null)}
+        colors={colors}
+        styles={styles}
+        t={t}
+      />
+    );
   }
 
   if (SURAHS.length === 0) {

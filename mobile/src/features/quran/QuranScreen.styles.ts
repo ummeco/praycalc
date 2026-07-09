@@ -171,3 +171,5 @@ export const createStyles = (colors: ThemeColors) => StyleSheet.create({
   },
   wikiFooterText: { color: colors.brand.dark, fontWeight: '600', fontSize: 14, textAlign: 'center', lineHeight: 21 },
 });
+
+export type QuranScreenStyles = ReturnType<typeof createStyles>;
