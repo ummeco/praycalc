@@ -2,7 +2,8 @@
 // FILE: src/layouts/Base.astro
 // PURPOSE: Root HTML shell for praycalc.org.
 //   Injects Umami analytics, canonical URLs, and Open Graph tags.
-//   @ummat/astro-preset handles brand tokens + RTL dir injection.
+//   RTL dir injection is hand-rolled here via the isRtl check below —
+//   there is no @ummat/astro-preset dependency.
 // INPUTS: title, description, locale (default 'en'), canonicalUrl
 // OUTPUTS: Full HTML document with proper SEO head + Umami analytics
 // CONSTRAINTS:
@@ -34,6 +35,17 @@ const umamiSrc = import.meta.env.UMAMI_SRC ?? 'https://analytics.umami.is/script
 
 // P2-E6-W01-S01-T01: RTL for ar/ur/fa (AC-02)
 const isRtl = ['ar', 'ur', 'fa'].includes(locale);
+
+// og:locale expects language_TERRITORY (underscore) format, not a bare
+// BCP-47 tag — map each supported site locale to its canonical OG code.
+const ogLocaleMap: Record<string, string> = {
+  en: 'en_US',
+  ar: 'ar_AR',
+  ur: 'ur_PK',
+  fa: 'fa_IR',
+  id: 'id_ID',
+};
+const ogLocale = ogLocaleMap[locale] ?? 'en_US';
 
 // ── JSON-LD structured data ─────────────────────────────────────────────────
 // WebSite + Organization are sitewide (every page); doc/content pages (i.e.
@@ -117,7 +129,7 @@ const jsonLd = { '@context': 'https://schema.org', '@graph': jsonLdGraph };
     <meta property="og:url" content={canonicalUrl} />
     <meta property="og:type" content="website" />
     <meta property="og:image" content={new URL(ogImage, Astro.site).toString()} />
-    <meta property="og:locale" content={locale === 'ar' ? 'ar_SA' : 'en_US'} />
+    <meta property="og:locale" content={ogLocale} />
 
     <!-- Twitter/X Card -->
     <meta name="twitter:card" content="summary_large_image" />

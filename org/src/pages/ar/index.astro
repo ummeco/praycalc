@@ -2,10 +2,11 @@
 // FILE: src/pages/ar/index.astro
 // PURPOSE: Arabic language homepage for praycalc.org.
 //   RTL layout — html dir="rtl" set via locale='ar' in Base layout.
-//   @ummat/astro-preset handles the dir="rtl" injection.
+//   Base.astro's isRtl check handles the dir="rtl" injection (hand-rolled,
+//   no @ummat/astro-preset dependency).
 //   Content: Arabic introduction to PrayCalc documentation.
 // CONSTRAINTS:
-//   - locale='ar' triggers RTL in Base.astro and @ummat/astro-preset
+//   - locale='ar' triggers RTL in Base.astro (isRtl check covers ar/ur/fa)
 //   - All Arabic text rendered with Tailwind RTL utilities
 //   - Hijri via @ummat/shared/hijri — not via Intl (T-01 AC)
 // REF: T-01 (P2-E3-W01-S01) · RTL acceptance criteria
