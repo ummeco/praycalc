@@ -16,9 +16,6 @@
 # testing
 /coverage
 
-# Lighthouse CI report output (quality-gates.yml lighthouse-org job)
-/.lighthouseci
-
 # misc
 .DS_Store
 *.pem
