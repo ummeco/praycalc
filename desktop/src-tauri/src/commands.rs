@@ -121,11 +121,6 @@ pub fn quit_app(app: AppHandle) {
     app.exit(0);
 }
 
-#[tauri::command]
-pub fn get_today_date() -> String {
-    chrono::Local::now().format("%Y-%m-%d").to_string()
-}
-
 // Legacy stubs so old JS invocations don't error
 #[tauri::command]
 pub async fn update_tray_title(_app: AppHandle, _label: String) -> Result<(), String> {

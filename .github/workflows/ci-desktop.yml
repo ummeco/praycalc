@@ -82,6 +82,9 @@ jobs:
       - name: Type check
         run: pnpm tsc --noEmit
 
+      - name: Lint (ESLint)
+        run: pnpm exec eslint .
+
       - name: Build Vite frontend
         run: pnpm build
 

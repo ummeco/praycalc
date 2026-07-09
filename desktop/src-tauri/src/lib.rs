@@ -54,7 +54,6 @@ pub fn run() {
             commands::set_next_prayer,
             commands::update_tray_tooltip,
             commands::update_tray_title,
-            commands::get_today_date,
             commands::quit_app,
         ])
         .run(tauri::generate_context!())
