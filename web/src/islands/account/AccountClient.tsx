@@ -38,13 +38,23 @@ import {
 import { refreshSession, signOut } from '@/lib/auth/client';
 import SignIn from './SignIn';
 import Dashboard from './Dashboard';
+import ErrorBoundary from '@/islands/ErrorBoundary';
 
 /** Milliseconds before expiry to trigger a token refresh. */
 const REFRESH_LEAD_MS = 60_000;
 /** Minimum delay before scheduling a refresh (avoid tight refresh loops). */
 const MIN_REFRESH_DELAY_MS = 5_000;
 
+/** Public entry point — wraps the island body in an error boundary. */
 export default function AccountClient() {
+  return (
+    <ErrorBoundary>
+      <AccountClientInner />
+    </ErrorBoundary>
+  );
+}
+
+function AccountClientInner() {
   const [ready, setReady] = useState(false);
   const [session, setSession] = useState<PrayCalcSession | null>(null);
   const refreshTimer = useRef<ReturnType<typeof setTimeout> | null>(null);

@@ -18,6 +18,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import type { FormEvent } from 'react';
 import { ConsentProvider, useConsent } from '@ummat/consent/hooks';
+import ErrorBoundary from '@/islands/ErrorBoundary';
 
 interface ToggleRowProps {
   id: string;
@@ -226,10 +227,13 @@ function PreferencesForm() {
   );
 }
 
+/** Public entry point — wraps the island body in an error boundary. */
 export default function PreferencesClient() {
   return (
-    <ConsentProvider>
-      <PreferencesForm />
-    </ConsentProvider>
+    <ErrorBoundary>
+      <ConsentProvider>
+        <PreferencesForm />
+      </ConsentProvider>
+    </ErrorBoundary>
   );
 }

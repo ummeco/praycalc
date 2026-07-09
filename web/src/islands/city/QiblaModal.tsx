@@ -18,6 +18,7 @@
 
 import { useEffect, useState } from 'react';
 import { KAABA_LAT, KAABA_LNG, distanceKm } from '@/lib/qibla';
+import { useFocusTrap } from '@/hooks/useFocusTrap';
 
 interface Props {
   locationName: string;
@@ -57,6 +58,7 @@ export default function QiblaModal({ locationName, lat, lng, qiblaDeg, qiblaComp
   const [heading, setHeading] = useState<number | null>(null);
   // Feature-detected once on mount so we can show/hide the "Enable live compass" button.
   const [supported, setSupported] = useState(false);
+  const dialogRef = useFocusTrap<HTMLDivElement>(true);
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
@@ -123,6 +125,7 @@ export default function QiblaModal({ locationName, lat, lng, qiblaDeg, qiblaComp
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div
+        ref={dialogRef}
         className="qibla-modal"
         role="dialog"
         aria-modal="true"

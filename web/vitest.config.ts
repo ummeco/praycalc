@@ -20,8 +20,6 @@ export default defineConfig({
       '__tests__/e2e/**',
       // astro-preset vendored package ships its own tsconfig/test setup — out of app scope.
       'vendor/astro-preset/**',
-      // Legacy pre-migration root lib/ (Next.js) — excluded from tsconfig/eslint too.
-      'lib/**',
     ],
     coverage: {
       provider: 'v8',

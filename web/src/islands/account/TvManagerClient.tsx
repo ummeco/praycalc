@@ -22,11 +22,21 @@ import { getBillingStatus } from '@/lib/billing';
 import { listTvs, type TvSetting } from '@/lib/tv/client';
 import AddTvForm from './AddTvForm';
 import TvCard from './TvCard';
+import ErrorBoundary from '@/islands/ErrorBoundary';
 
 type LoadState = 'loading' | 'ready' | 'error';
 type PlusState = 'checking' | 'plus' | 'free';
 
+/** Public entry point — wraps the island body in an error boundary. */
 export default function TvManagerClient() {
+  return (
+    <ErrorBoundary>
+      <TvManagerClientInner />
+    </ErrorBoundary>
+  );
+}
+
+function TvManagerClientInner() {
   const [plusState, setPlusState] = useState<PlusState>('checking');
   const [loadState, setLoadState] = useState<LoadState>('loading');
   const [tvs, setTvs] = useState<TvSetting[]>([]);

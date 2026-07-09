@@ -15,6 +15,7 @@
 import type { PrayCalcSettings } from '@/lib/settings';
 import type { PrayCalcSession } from '@/lib/session';
 import { CALC_METHOD_OPTIONS } from '@/lib/prayer-utils';
+import { useFocusTrap } from '@/hooks/useFocusTrap';
 
 interface Props {
   settings: PrayCalcSettings;
@@ -70,8 +71,11 @@ const ADHAN_VOICES: { value: 'makkah' | 'mishari'; label: string }[] = [
 ];
 
 export default function SettingsPanel({ settings: s, onChange, session, onSignOut, panelRef }: Props) {
+  // Merge the caller's outside-click ref with the focus-trap's own ref — both
+  // need the same DOM node (CityClient uses panelRef for outside-click detection).
+  const trapRef = useFocusTrap<HTMLDivElement>(true, panelRef);
   return (
-    <div className="settings-panel" ref={panelRef} role="dialog" aria-label="Settings">
+    <div className="settings-panel" ref={trapRef} role="dialog" aria-modal="true" aria-label="Settings">
       {session ? (
         <div className="settings-account">
           <button type="button" className="settings-auth-btn settings-auth-btn--account">

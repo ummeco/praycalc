@@ -14,6 +14,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import { gregorianToHijri } from '@/lib/hijri';
+import { useFocusTrap } from '@/hooks/useFocusTrap';
 import type { PrayerResult } from '@/lib/prayer-utils';
 
 interface DayRow {
@@ -80,6 +81,7 @@ export default function CalendarModal({
   const [month0, setMonth0] = useState(now.getMonth());
   const [days, setDays] = useState<DayRow[]>([]);
   const [loading, setLoading] = useState(false);
+  const dialogRef = useFocusTrap<HTMLDivElement>(true);
 
   // Escape closes
   useEffect(() => {
@@ -132,6 +134,7 @@ export default function CalendarModal({
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div
+        ref={dialogRef}
         className="cal-modal"
         role="dialog"
         aria-modal="true"

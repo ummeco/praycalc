@@ -517,31 +517,6 @@ html, body {
 }
 .settings-signout-link:hover { color: #ff9b9b; }
 
-/* --- Home geolocation prompt (top-right floating card) --- */
-.geo-prompt {
-  position: fixed; top: 16px; right: 16px; z-index: 60;
-  width: min(280px, calc(100vw - 32px));
-  padding: 14px 16px; border-radius: 16px;
-  background: rgba(6, 24, 12, 0.96); border: 1px solid rgba(121,194,76,0.25);
-  box-shadow: 0 12px 40px rgba(0,0,0,0.45);
-  -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
-  animation: geo-prompt-in 0.35s ease both;
-}
-@keyframes geo-prompt-in { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
-.geo-prompt-close {
-  position: absolute; top: 8px; right: 8px;
-  width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center;
-  border-radius: 999px; font-size: 0.75rem; cursor: pointer;
-  color: rgba(255,255,255,0.5); background: none; border: none; transition: color 0.15s;
-}
-.geo-prompt-close:hover { color: #fff; }
-.geo-prompt-text { font-size: 0.85rem; color: rgba(255,255,255,0.8); margin: 0 20px 12px 0; line-height: 1.4; }
-.geo-prompt-btn {
-  width: 100%; padding: 9px; border-radius: 10px; font-size: 0.85rem; font-weight: 600; cursor: pointer;
-  color: #0D2F17; background: #C9F27A; border: none; transition: background 0.15s;
-}
-.geo-prompt-btn:hover { background: #d6f68f; }
-
 /* --- Account: sign-in card --- */
 .account-main { min-height: 100dvh; display: flex; align-items: flex-start; justify-content: center; padding: 48px 16px 80px; }
 .account-loading { min-height: 40vh; }
@@ -725,6 +700,13 @@ html, body {
 .info-page-back { color: rgba(255,255,255,0.6); text-decoration: none; font-size: 0.875rem; }
 .info-page-back:hover { color: #fff; }
 .info-section { display: flex; flex-direction: column; gap: 16px; }
+
+/* --- Island error boundary fallback --- */
+.island-error-fallback {
+  padding: 16px; border-radius: 12px; margin: 16px;
+  background: rgba(255, 90, 90, 0.08); border: 1px solid rgba(255, 90, 90, 0.25);
+  color: rgba(255, 255, 255, 0.85); font-size: 0.875rem; text-align: center;
+}
 
 /* --- Print: calendar modal export (window.print → save-as-PDF) --- */
 @media print {

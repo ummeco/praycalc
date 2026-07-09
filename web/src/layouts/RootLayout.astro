@@ -76,7 +76,9 @@ const jsonLdBlocks: string[] = jsonLd == null
     );
 
 // Active locale: NEXT_LOCALE cookie (via middleware) wins over the prop default.
-const RTL_LOCALES = new Set(['ar', 'ur', 'fa', 'he', 'ckb', 'ps']);
+// Kept in sync with src/middleware.ts SUPPORTED/RTL_LOCALES — only locales with
+// real translated content (en/ar/ur) are declared RTL-eligible here.
+const RTL_LOCALES = new Set(['ar', 'ur']);
 const effectiveLocale = Astro.locals?.locale ?? locale;
 const textDir = dir ?? (RTL_LOCALES.has(effectiveLocale.split('-')[0] ?? '') ? 'rtl' : 'ltr');
 

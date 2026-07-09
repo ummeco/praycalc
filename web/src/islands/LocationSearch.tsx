@@ -17,6 +17,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { searchLocation, reverseGeocode, type GeoResult } from '@/lib/geo';
+import ErrorBoundary from '@/islands/ErrorBoundary';
 
 interface Props {
   compact?: boolean;
@@ -33,7 +34,16 @@ function navigateToCity(slug: string) {
   window.location.href = `/${slug}`;
 }
 
-export default function LocationSearch({ compact = false, autoFocus = false }: Props) {
+/** Public entry point — wraps the island body in an error boundary. */
+export default function LocationSearch(props: Props) {
+  return (
+    <ErrorBoundary>
+      <LocationSearchInner {...props} />
+    </ErrorBoundary>
+  );
+}
+
+function LocationSearchInner({ compact = false, autoFocus = false }: Props) {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<GeoResult[]>([]);
   const [open, setOpen] = useState(false);

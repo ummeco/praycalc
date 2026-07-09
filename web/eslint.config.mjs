@@ -51,8 +51,6 @@ export default [
       'dist/**',
       '.vercel/**',    // @astrojs/vercel build output (nested dist/ copy)
       'node_modules/**',
-      // Root-level lib/ is legacy (pre-migration stubs); Astro source is under src/
-      'lib/**',
       // vendor/ contains vendored packages (@ummat/astro-preset etc.) — not source
       'vendor/**',
     ],

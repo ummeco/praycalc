@@ -10,10 +10,15 @@
 
 import { defineMiddleware } from 'astro:middleware';
 
-const RTL_LOCALES = new Set(['ar', 'ur', 'fa', 'he', 'ckb', 'ps']);
-const SUPPORTED = new Set([
-  'en', 'ar', 'ur', 'fa', 'id', 'tr', 'ms', 'bn', 'fr', 'es', 'de', 'ru',
-]);
+// RTL/SUPPORTED are intentionally scoped to locales with REAL translated content
+// (verified 2026-07-08: index.astro TAGLINES + PrayerGrid/PRAYER_META inline dicts).
+// The previous set advertised 12 locales (incl. fa/id/tr/ms/bn/fr/es/de/ru) with zero
+// translated strings behind them — silently falling back to English while claiming
+// support. Per the Islamic-content theology gate, we do not machine-translate to fill
+// the gap; we keep the declared surface honest until real translations land. Add a
+// locale here only alongside its actual dict entries.
+const RTL_LOCALES = new Set(['ar', 'ur']);
+const SUPPORTED = new Set(['en', 'ar', 'ur']);
 
 export const onRequest = defineMiddleware((context, next) => {
   const raw = context.cookies.get('NEXT_LOCALE')?.value?.toLowerCase() ?? '';

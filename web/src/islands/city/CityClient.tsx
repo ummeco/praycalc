@@ -19,6 +19,7 @@ import FeatureTiles from './FeatureTiles';
 import SettingsPanel from './SettingsPanel';
 import QiblaModal from './QiblaModal';
 import CalendarModal from './CalendarModal';
+import ErrorBoundary from '@/islands/ErrorBoundary';
 
 interface Props {
   shafiPrayers: PrayerResult;
@@ -57,7 +58,16 @@ function todayISODate(): string {
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 }
 
-export default function CityClient({
+/** Public entry point — wraps the island body in an error boundary. */
+export default function CityClient(props: Props) {
+  return (
+    <ErrorBoundary>
+      <CityClientInner {...props} />
+    </ErrorBoundary>
+  );
+}
+
+function CityClientInner({
   shafiPrayers,
   hanafiPrayers,
   locationName,

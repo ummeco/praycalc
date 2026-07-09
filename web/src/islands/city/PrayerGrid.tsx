@@ -20,7 +20,9 @@ import {
   type PrayerResult,
 } from '@/lib/prayer-utils';
 
-const RTL_LOCALES = new Set(['ar', 'ur', 'fa', 'he', 'ckb', 'ps']);
+// Kept in sync with src/middleware.ts SUPPORTED/RTL_LOCALES — only locales with
+// real translated content (en/ar/ur) are declared RTL-eligible here.
+const RTL_LOCALES = new Set(['ar', 'ur']);
 
 interface Props {
   prayers: PrayerResult;
