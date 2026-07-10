@@ -21,6 +21,9 @@ pub struct PrayerState {
     pub name_format: String,  // "abbrev" | "full"
     pub show_seconds: bool,
     pub countdown_prefix: String, // "minus" | "none" | "in"
+    /// "Display next prayer in menu bar" setting. When false the tray shows
+    /// the icon alone (no countdown text) — DT-02.
+    pub show_icon: bool,
     pub adhan_triggered: bool,
     pub refresh_triggered: bool, // auto-advance to next prayer after 60s
 }

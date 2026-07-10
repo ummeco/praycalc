@@ -99,13 +99,36 @@ pub fn format_tray_label(
     format!("{}{}{}", label, sep, value)
 }
 
+/// True if `prayer_name` should fire an OS notification / adhan overlay when
+/// its countdown hits zero. Sunrise is not a salah — mirrors mobile's
+/// notifications/adhan exclusion (`PrayerNotificationService`) while still
+/// showing it normally in the prayer list and tray label (DT-03).
+fn should_notify_for(prayer_name: &str) -> bool {
+    prayer_name != "Sunrise"
+}
+
+/// Decides what to push to the tray's title/tooltip. "Display next prayer in
+/// menu bar" (`show_icon`) off means icon-only — no countdown text in either
+/// slot (DT-02). `None` for the title clears macOS's menu-bar text; Windows/
+/// Linux never render `set_title` so the tooltip is what those platforms
+/// actually show on hover either way.
+fn tray_display(show_icon: bool, label: &str) -> (Option<String>, String) {
+    if show_icon {
+        (Some(label.to_string()), label.to_string())
+    } else {
+        (None, "PrayCalc".to_string())
+    }
+}
+
 /// Current wall-clock time in the given IANA timezone (e.g. "Asia/Dubai"), as a
 /// `NaiveDateTime` (no attached offset) so plain date/time arithmetic against a
 /// prayer time's naive "HH:MM" works regardless of the machine's own timezone.
 /// Falls back to the device's local time if `tz_name` fails to parse (e.g. an
 /// empty/legacy settings value) rather than erroring — preserves the pre-fix
 /// behavior as a safety net instead of silently defaulting to UTC.
-fn now_naive_in_tz(tz_name: &str) -> chrono::NaiveDateTime {
+/// `pub(crate)` so `commands::today_and_tomorrow` can anchor the prayer-times
+/// fetch date to this same configured-location "now" (DT-04).
+pub(crate) fn now_naive_in_tz(tz_name: &str) -> chrono::NaiveDateTime {
     match tz_name.parse::<chrono_tz::Tz>() {
         Ok(tz) => chrono::Utc::now().with_timezone(&tz).naive_local(),
         Err(_) => chrono::Local::now().naive_local(),
@@ -162,8 +185,11 @@ pub fn spawn(handle: AppHandle) {
                 // macOS shows this text in the menu bar. set_title is a no-op on
                 // Windows and hidden on Linux, so mirror the label into the tooltip
                 // — hover then gives Win/Linux users the same live countdown.
-                let _ = tray.set_title(Some(&label));
-                let _ = tray.set_tooltip(Some(&label));
+                // When "Display next prayer in menu bar" is off, show the icon
+                // alone instead (DT-02).
+                let (title, tooltip) = tray_display(snapshot.show_icon, &label);
+                let _ = tray.set_title(title.as_deref());
+                let _ = tray.set_tooltip(Some(&tooltip));
             }
 
             if remaining <= 0 && !snapshot.adhan_triggered && snapshot.notifications {
@@ -171,19 +197,23 @@ pub fn spawn(handle: AppHandle) {
                     let mut p = state.prayer.lock().unwrap();
                     p.adhan_triggered = true;
                 }
-                // Native OS notification — fires from this background timer, which
-                // runs independent of window visibility, so it reaches the user even
-                // when the window is closed/hidden and only the tray icon is alive.
-                // The in-window AdhanOverlay (driven by the "prayer-time" event below)
-                // additionally plays audio + full-screen visuals when the window is open.
-                let title = format!("{} — {}", snapshot.next_name, prayer_arabic(&snapshot.next_name));
-                let _ = handle
-                    .notification()
-                    .builder()
-                    .title(title)
-                    .body("It's time to pray.")
-                    .show();
-                let _ = handle.emit("prayer-time", &snapshot.next_name);
+                // Sunrise (shuruq) is not a salah — no adhan/notification for it,
+                // though it stays visible in the prayer list/tray (DT-03).
+                if should_notify_for(&snapshot.next_name) {
+                    // Native OS notification — fires from this background timer, which
+                    // runs independent of window visibility, so it reaches the user even
+                    // when the window is closed/hidden and only the tray icon is alive.
+                    // The in-window AdhanOverlay (driven by the "prayer-time" event below)
+                    // additionally plays audio + full-screen visuals when the window is open.
+                    let title = format!("{} — {}", snapshot.next_name, prayer_arabic(&snapshot.next_name));
+                    let _ = handle
+                        .notification()
+                        .builder()
+                        .title(title)
+                        .body("It's time to pray.")
+                        .show();
+                    let _ = handle.emit("prayer-time", &snapshot.next_name);
+                }
             }
 
             // Auto-advance: tell JS to reload prayers 60s after prayer time
@@ -235,5 +265,31 @@ mod tests {
     #[test]
     fn format_tray_label_shows_bang_at_prayer_time() {
         assert_eq!(format_tray_label("Fajr", "05:00", 0, "countdown", "abbrev", false, "minus"), "Fajr!");
+    }
+
+    #[test]
+    fn should_notify_for_excludes_sunrise() {
+        // DT-03: Sunrise is not a salah — no adhan/notification, though it
+        // still appears normally in the prayer list/tray label.
+        assert!(!should_notify_for("Sunrise"));
+        assert!(should_notify_for("Fajr"));
+        assert!(should_notify_for("Dhuhr"));
+        assert!(should_notify_for("Asr"));
+        assert!(should_notify_for("Maghrib"));
+        assert!(should_notify_for("Isha"));
+    }
+
+    #[test]
+    fn tray_display_hides_countdown_text_when_show_icon_is_false() {
+        let (title, tooltip) = tray_display(false, "Fajr −3:24");
+        assert_eq!(title, None);
+        assert_eq!(tooltip, "PrayCalc");
+    }
+
+    #[test]
+    fn tray_display_shows_countdown_text_when_show_icon_is_true() {
+        let (title, tooltip) = tray_display(true, "Fajr −3:24");
+        assert_eq!(title, Some("Fajr −3:24".to_string()));
+        assert_eq!(tooltip, "Fajr −3:24".to_string());
     }
 }

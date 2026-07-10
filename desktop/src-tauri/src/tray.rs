@@ -1,8 +1,26 @@
 use tauri::{
     image::Image,
+    menu::{Menu, MenuBuilder},
     tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent},
-    App, Manager,
+    App, AppHandle, Emitter, Manager, Runtime,
 };
+
+/// Builds the tray's right-click/fallback menu: "Open PrayCalc", "Check for
+/// Updates", and "Quit". DT-01: libappindicator (the tray backend on most
+/// Linux desktop environments) only supports menu-driven tray icons — raw
+/// `TrayIconEvent::Click` events used for the macOS/Windows toggle-on-click
+/// behavior below frequently never fire there at all, which would leave
+/// Linux users with no way to open the app. A menu is therefore built and
+/// attached on every platform; only *which* click shows it differs by OS
+/// (see `setup_tray`'s `show_menu_on_left_click` cfg block).
+fn build_menu<R: Runtime>(app: &AppHandle<R>) -> tauri::Result<Menu<R>> {
+    MenuBuilder::new(app)
+        .text("open", "Open PrayCalc")
+        .text("check_updates", "Check for Updates")
+        .separator()
+        .text("quit", "Quit")
+        .build()
+}
 
 pub fn setup_tray(app: &mut App) -> tauri::Result<()> {
     #[cfg(target_os = "macos")]
@@ -10,9 +28,35 @@ pub fn setup_tray(app: &mut App) -> tauri::Result<()> {
     #[cfg(not(target_os = "macos"))]
     let icon = Image::from_bytes(include_bytes!("../icons/tray-icon.png"))?;
 
+    let menu = build_menu(app.handle())?;
+
     let mut builder = TrayIconBuilder::with_id("main")
         .icon(icon)
         .tooltip("PrayCalc — click to open")
+        .menu(&menu)
+        .on_menu_event(|app, event| match event.id().as_ref() {
+            "open" => {
+                if let Some(win) = app.get_webview_window("main") {
+                    let _ = win.show();
+                    let _ = win.set_focus();
+                }
+            }
+            "check_updates" => {
+                if let Some(win) = app.get_webview_window("main") {
+                    let _ = win.show();
+                    let _ = win.set_focus();
+                }
+                // JS (hooks/useUpdater.ts) listens for this and runs an
+                // immediate check, bypassing the hourly poll — this is the
+                // "Check for Updates" menu item's only platform-independent
+                // entry point since there is no other way in from Rust here.
+                let _ = app.emit("menu-check-for-updates", ());
+            }
+            "quit" => {
+                app.exit(0);
+            }
+            _ => {}
+        })
         .on_tray_icon_event(|tray, event| {
             if let TrayIconEvent::Click {
                 button: MouseButton::Left,
@@ -35,6 +79,21 @@ pub fn setup_tray(app: &mut App) -> tauri::Result<()> {
             }
         });
 
+    // macOS/Windows: left click keeps the existing toggle-the-window
+    // behavior above; the menu only appears on right click (the platform
+    // default when a menu is attached but `show_menu_on_left_click` is off).
+    #[cfg(any(target_os = "macos", target_os = "windows"))]
+    {
+        builder = builder.show_menu_on_left_click(false);
+    }
+    // Linux: left click shows the menu (explicit — this is also the crate's
+    // default — because `TrayIconEvent::Click` above is not a reliable way
+    // to open the window here; the menu is the only dependable entry point).
+    #[cfg(target_os = "linux")]
+    {
+        builder = builder.show_menu_on_left_click(true);
+    }
+
     #[cfg(target_os = "macos")]
     {
         builder = builder.icon_as_template(true);
@@ -51,6 +110,14 @@ pub fn setup_tray(app: &mut App) -> tauri::Result<()> {
 /// bottom, so opening below would push the window off-screen — there we open
 /// above the icon instead. The decision is made per-monitor from the icon's
 /// position, and X is clamped so the window always stays on-screen.
+///
+/// DT-06: monitor bounds are looked up via `monitor_from_point` at the tray
+/// icon/cursor's own physical position, not `current_monitor()` (which
+/// reports the *window's* monitor — for this always-on-top, normally-hidden
+/// window that can be stale/wrong on a multi-monitor setup, e.g. still
+/// reporting the primary display after the user opened the tray from a
+/// secondary one). Positioning must be relative to where the user actually
+/// clicked, not wherever the window last happened to be.
 fn position_window_near_tray(
     win: &tauri::WebviewWindow,
     rect: &tauri::Rect,
@@ -69,8 +136,12 @@ fn position_window_near_tray(
     let win_h = size.height as f64;
     let gap = 8.0 * scale;
 
-    // Monitor bounds (physical). Fall back to unbounded if unavailable.
-    let (mon_top, mon_bottom, mon_left, mon_right) = match win.current_monitor() {
+    // Monitor bounds (physical), looked up at the icon's own position rather
+    // than the window's — see the DT-06 note above. Falls back to unbounded
+    // if the platform can't resolve a monitor at that point.
+    let (mon_top, mon_bottom, mon_left, mon_right) = match win
+        .monitor_from_point(icon_center_x, icon_top_y)
+    {
         Ok(Some(m)) => {
             let p = m.position();
             let s = m.size();

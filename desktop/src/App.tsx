@@ -4,7 +4,7 @@ import { DEFAULT_SETTINGS } from './lib/ipc-types';
 import type { Settings } from './lib/ipc-types';
 import { loadSettings } from './lib/store';
 import { fetchPrayerTimes, quitApp } from './lib/api';
-import { getNextPrayer, getCurrentPrayer, secondsUntil, getHijriDate } from './lib/prayers';
+import { getNextPrayer, getCurrentPrayer, secondsUntil, getHijriDate, msUntilMidnightInTz } from './lib/prayers';
 import PrayerList from './components/PrayerList';
 import Countdown from './components/Countdown';
 import SettingsPanel, { type SettingsPanelHandle } from './components/Settings';
@@ -76,14 +76,15 @@ export default function App() {
     return () => clearInterval(id);
   }, [next]);
 
-  // Refresh prayers at midnight
+  // Refresh prayers at the *configured location's* midnight, not the
+  // device's own (DT-04) — only re-arms when the tz actually changes, so an
+  // unrelated settings save (e.g. toggling arabicMode) doesn't reset an
+  // already-scheduled midnight refresh.
   useEffect(() => {
-    const now = new Date();
-    const msToMidnight =
-      new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1).getTime() - now.getTime();
-    const id = setTimeout(() => loadPrayers(settings), msToMidnight + 1000);
+    const msToMidnight = msUntilMidnightInTz(settings.tz);
+    const id = setTimeout(() => loadPrayers(settingsRef.current), msToMidnight + 1000);
     return () => clearTimeout(id);
-  }, [settings, loadPrayers]);
+  }, [settings.tz, loadPrayers]);
 
   useEffect(() => {
     (window as unknown as Record<string, unknown>).__showSettings = () => setView('settings');

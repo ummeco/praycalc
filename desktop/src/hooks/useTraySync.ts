@@ -26,6 +26,7 @@ export function useTraySync(next: PrayerEntry | null, settings: Settings): void 
       nameFormat: settings.nameFormat,
       showSeconds: settings.showSeconds,
       countdownPrefix: settings.countdownPrefix,
+      showIcon: settings.showIcon,
     }).catch(() => {});
   }, [next, settings]);
 }

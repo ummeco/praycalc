@@ -6,7 +6,7 @@
  * Constraints: no `any`; pure presentational — SettingsPanel owns save/state.
  * SPORT: praycalc desktop — settings panel (Location tab).
  */
-import { useState, useCallback } from 'react';
+import { useState, useCallback, type ChangeEvent } from 'react';
 import type { Settings, DetectedLocation } from '../../lib/ipc-types';
 import { PRESET_CITIES } from '../../lib/ipc-types';
 import { detectLocationByIp } from '../../lib/geo';
@@ -15,6 +15,20 @@ import { SelectField } from './FormFields';
 interface Props {
   form: Settings;
   setForm: (updater: (f: Settings) => Settings) => void;
+}
+
+/**
+ * Parses a coordinate input's raw text and clamps it to a valid range
+ * (DT-05). Returns `null` for incomplete/invalid input (e.g. "-" mid-typing
+ * a negative number, or an empty field) so the caller can leave the current
+ * value untouched instead of falling back with a falsy check — the previous
+ * `parseFloat(v) || fallback` pattern silently discarded a deliberately
+ * entered `0`, since `0` is falsy in JS.
+ */
+function parseClampedCoord(raw: string, min: number, max: number): number | null {
+  const v = parseFloat(raw);
+  if (Number.isNaN(v)) return null;
+  return Math.min(max, Math.max(min, v));
 }
 
 export default function LocationTab({ form, setForm }: Props) {
@@ -30,8 +44,14 @@ export default function LocationTab({ form, setForm }: Props) {
           <input
             type="number"
             step="0.0001"
+            min={-90}
+            max={90}
             value={form.lat}
-            onChange={(e) => setForm((f) => ({ ...f, lat: parseFloat(e.target.value) || f.lat }))}
+            onChange={(e: ChangeEvent<HTMLInputElement>) => {
+              const lat = parseClampedCoord(e.target.value, -90, 90);
+              if (lat === null) return;
+              setForm((f) => ({ ...f, lat }));
+            }}
             className="w-full bg-brand-deep border border-brand-dark rounded px-2 py-1.5 text-sm text-green-100 focus:outline-none focus:border-brand-mid"
           />
         </label>
@@ -40,8 +60,14 @@ export default function LocationTab({ form, setForm }: Props) {
           <input
             type="number"
             step="0.0001"
+            min={-180}
+            max={180}
             value={form.lng}
-            onChange={(e) => setForm((f) => ({ ...f, lng: parseFloat(e.target.value) || f.lng }))}
+            onChange={(e: ChangeEvent<HTMLInputElement>) => {
+              const lng = parseClampedCoord(e.target.value, -180, 180);
+              if (lng === null) return;
+              setForm((f) => ({ ...f, lng }));
+            }}
             className="w-full bg-brand-deep border border-brand-dark rounded px-2 py-1.5 text-sm text-green-100 focus:outline-none focus:border-brand-mid"
           />
         </label>

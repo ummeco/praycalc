@@ -15,7 +15,12 @@ import type {
   HasuraAuthRefreshSuccess,
 } from './auth-types';
 import { loadPersistedSession, persistSession, clearPersistedSession } from './auth-store';
-import { loadCachedEntitlement, saveCachedEntitlement, isCacheFresh } from './entitlement-store';
+import {
+  loadCachedEntitlement,
+  saveCachedEntitlement,
+  isCacheFresh,
+  clearCachedEntitlement,
+} from './entitlement-store';
 
 const AUTH_URL: string =
   (import.meta.env.VITE_AUTH_URL as string | undefined) ?? 'https://auth.ummat.dev';
@@ -93,7 +98,17 @@ export async function refreshToken(
   return session;
 }
 
-/** Best-effort sign-out — clears local session regardless of network outcome. */
+/** Clears both the persisted session and the cached entitlement (DT-07) —
+ * every path that ends a signed-in session must go through this so no
+ * previous account's cached "Ummat+ active" state can survive into whatever
+ * signs in next. */
+async function clearAllLocalAuthState(): Promise<void> {
+  await clearPersistedSession();
+  await clearCachedEntitlement();
+}
+
+/** Best-effort sign-out — clears local session (and cached entitlement)
+ * regardless of network outcome. */
 export async function signOut(refreshTokenValue: string): Promise<void> {
   try {
     await fetch(`${AUTH_URL}/signout`, {
@@ -104,18 +119,18 @@ export async function signOut(refreshTokenValue: string): Promise<void> {
   } catch {
     // best-effort — ignore network errors, still clear local state below
   }
-  await clearPersistedSession();
+  await clearAllLocalAuthState();
 }
 
 /** Clear local session state only (no network call). */
 export async function clearAuth(): Promise<void> {
-  await clearPersistedSession();
+  await clearAllLocalAuthState();
 }
 
 /**
  * Restore a persisted session on startup. If it has already expired, attempts a
  * refresh immediately. Returns null if there is no session or the refresh fails
- * (in which case the stale local session is also cleared).
+ * (in which case the stale local session and cached entitlement are also cleared).
  */
 export async function loadAuthState(): Promise<AuthSession | null> {
   const saved = await loadPersistedSession();
@@ -124,7 +139,7 @@ export async function loadAuthState(): Promise<AuthSession | null> {
   try {
     return await refreshToken(saved.refreshToken, saved.email, saved.displayName);
   } catch {
-    await clearPersistedSession();
+    await clearAllLocalAuthState();
     return null;
   }
 }
@@ -147,39 +162,41 @@ export function scheduleRefresh(
 }
 
 /**
- * Check Ummat+ entitlement for the signed-in user. Parses defensively and never
- * throws. On a *transient* failure (network error, non-2xx status, or a
- * malformed body — anything that isn't a clean "yes"/"no" answer from the
- * server) this falls back to the last network-confirmed ("last-known-good")
- * entitlement instead of assuming `{ isPlus: false }`, so a paying Ummat+ user
- * is never wrongly downgraded to the free upsell by a billing-API blip or a
- * brief offline stretch. The fallback itself expires after
- * `ENTITLEMENT_CACHE_MAX_AGE_MS` so a lapsed/cancelled subscription still
- * eventually reverts to free once the cache goes stale. A genuine 2xx response
- * (even one that says `isPlus: false`) always wins and refreshes the cache —
- * only failures fall back to it.
+ * Check Ummat+ entitlement for the signed-in user (identified by `userKey`,
+ * their email — used only to scope the last-known-good cache to this account,
+ * DT-07). Parses defensively and never throws. On a *transient* failure
+ * (network error, non-2xx status, or a malformed body — anything that isn't a
+ * clean "yes"/"no" answer from the server) this falls back to the last
+ * network-confirmed ("last-known-good") entitlement instead of assuming
+ * `{ isPlus: false }`, so a paying Ummat+ user is never wrongly downgraded to
+ * the free upsell by a billing-API blip or a brief offline stretch. The
+ * fallback itself expires after `ENTITLEMENT_CACHE_MAX_AGE_MS` so a lapsed/
+ * cancelled subscription still eventually reverts to free once the cache goes
+ * stale, and it is never trusted for a *different* account than the one that
+ * wrote it. A genuine 2xx response (even one that says `isPlus: false`)
+ * always wins and refreshes the cache — only failures fall back to it.
  */
-export async function checkEntitlement(accessToken: string): Promise<EntitlementStatus> {
+export async function checkEntitlement(accessToken: string, userKey: string): Promise<EntitlementStatus> {
   try {
     const res = await fetch(`${BILLING_URL}/status`, {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
-    if (!res.ok) return await fallbackToCachedEntitlement();
+    if (!res.ok) return await fallbackToCachedEntitlement(userKey);
     const data: unknown = await res.json().catch(() => null);
     if (data && typeof data === 'object' && 'isPlus' in data) {
       const status: EntitlementStatus = { isPlus: Boolean((data as { isPlus: unknown }).isPlus) };
-      await saveCachedEntitlement(status);
+      await saveCachedEntitlement(status, userKey);
       return status;
     }
-    return await fallbackToCachedEntitlement();
+    return await fallbackToCachedEntitlement(userKey);
   } catch {
-    return await fallbackToCachedEntitlement();
+    return await fallbackToCachedEntitlement(userKey);
   }
 }
 
 /** Shared fallback for checkEntitlement's failure paths — see its doc comment. */
-async function fallbackToCachedEntitlement(): Promise<EntitlementStatus> {
-  const cached = await loadCachedEntitlement();
+async function fallbackToCachedEntitlement(userKey: string): Promise<EntitlementStatus> {
+  const cached = await loadCachedEntitlement(userKey);
   if (cached && isCacheFresh(cached)) return cached.status;
   return { isPlus: false };
 }

@@ -27,7 +27,7 @@ export default function AccountTab() {
   const [error, setError] = useState<string | null>(null);
 
   const refreshEntitlement = useCallback(async (s: AuthSession) => {
-    const status = await checkEntitlement(s.accessToken);
+    const status = await checkEntitlement(s.accessToken, s.email);
     setEntitlement(status);
   }, []);
 

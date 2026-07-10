@@ -162,6 +162,19 @@ function nowMinutesInTz(tz: string): number {
   return Math.floor(nowSecondsInTz(tz) / 60);
 }
 
+/**
+ * Milliseconds until the next local midnight in `tz` (the *configured
+ * location's* IANA timezone), so the prayer-list refresh timer rolls over at
+ * that location's midnight rather than the device's own (DT-04) — mirrors
+ * `nowSecondsInTz`/`secondsUntil`'s tz-aware date math and Rust's
+ * `timer::now_naive_in_tz`. Falls back to the device's local clock if `tz`
+ * is empty/invalid, same as `nowSecondsInTz`.
+ */
+export function msUntilMidnightInTz(tz: string): number {
+  const secsSinceMidnight = nowSecondsInTz(tz);
+  return (86_400 - secsSinceMidnight) * 1000;
+}
+
 function nowSecondsLocal(): number {
   const d = new Date();
   return d.getHours() * 3600 + d.getMinutes() * 60 + d.getSeconds();

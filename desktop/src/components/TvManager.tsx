@@ -41,7 +41,7 @@ export default function TvManager() {
       const s = await loadAuthState();
       setSession(s);
       if (!s) return;
-      const ent = await checkEntitlement(s.accessToken);
+      const ent = await checkEntitlement(s.accessToken, s.email);
       setEntitlement(ent);
       if (!ent.isPlus) return;
       const { tvs: rows, session: next } = await listTvSettings(s);

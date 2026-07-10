@@ -55,6 +55,7 @@ pub fn run() {
             commands::update_tray_tooltip,
             commands::update_tray_title,
             commands::quit_app,
+            commands::get_platform,
         ])
         .run(tauri::generate_context!())
         .expect("error while running praycalc desktop");

@@ -4,9 +4,16 @@
  *   user to the free upsell — mirrors auth-store.ts's own dedicated-file pattern
  *   (kept separate from auth.json so entitlement caching never mingles with
  *   session tokens).
- * Inputs: an `EntitlementStatus` to cache (`saveCachedEntitlement`).
+ * Inputs: an `EntitlementStatus` to cache (`saveCachedEntitlement`), keyed to a
+ *   `userKey` (the signed-in account's email) so the cache can never be read
+ *   back for a *different* account (DT-07) — otherwise Account A's paying
+ *   "Ummat+ active" state would leak to Account B signing in on the same
+ *   machine afterward, since the fallback path only ever sees the last
+ *   network-confirmed value with no per-account scoping.
  * Outputs: the cached status + when it was last confirmed via a real network
- *   success (`loadCachedEntitlement`), or null if there is no cache yet.
+ *   success (`loadCachedEntitlement`), or null if there is no cache yet or it
+ *   belongs to a different account; `clearCachedEntitlement` wipes it outright
+ *   (called from auth.ts on sign-out).
  * Constraints: no `any`; module-level cache like store.ts/auth-store.ts's `_store`.
  * SPORT: praycalc desktop — account sign-in (entitlement cache).
  */
@@ -32,13 +39,22 @@ async function getEntitlementStore() {
   return _store;
 }
 
-/** Loads the last-known-good entitlement, or null if none has ever been cached. */
-export async function loadCachedEntitlement(): Promise<CachedEntitlement | null> {
+/**
+ * Loads the last-known-good entitlement for `userKey` (the signed-in
+ * account's email), or null if none has ever been cached — or if the cache
+ * on disk belongs to a *different* account (DT-07), which must never be
+ * trusted as a fallback for the current sign-in.
+ */
+export async function loadCachedEntitlement(userKey: string): Promise<CachedEntitlement | null> {
   try {
     const store = await getEntitlementStore();
     const isPlus = await store.get<boolean>('isPlus');
     const checkedAt = await store.get<number>('checkedAt');
-    if (typeof isPlus !== 'boolean' || typeof checkedAt !== 'number') return null;
+    const savedKey = await store.get<string>('userKey');
+    if (typeof isPlus !== 'boolean' || typeof checkedAt !== 'number' || typeof savedKey !== 'string') {
+      return null;
+    }
+    if (savedKey !== userKey) return null;
     return { status: { isPlus }, checkedAt };
   } catch {
     // Store unavailable (e.g. disk error) — no cache to fall back on.
@@ -46,15 +62,31 @@ export async function loadCachedEntitlement(): Promise<CachedEntitlement | null>
   }
 }
 
-/** Persists a fresh, network-confirmed entitlement as the new last-known-good value. */
-export async function saveCachedEntitlement(status: EntitlementStatus): Promise<void> {
+/** Persists a fresh, network-confirmed entitlement as the new last-known-good
+ * value for `userKey` (the signed-in account's email). */
+export async function saveCachedEntitlement(status: EntitlementStatus, userKey: string): Promise<void> {
   try {
     const store = await getEntitlementStore();
     await store.set('isPlus', status.isPlus);
     await store.set('checkedAt', Date.now());
+    await store.set('userKey', userKey);
     await store.save();
   } catch {
     // Best-effort — a failed cache write must never block the entitlement check itself.
+  }
+}
+
+/** Wipes the cached entitlement outright — called on sign-out (DT-07) so a
+ * subsequent sign-in (same or different account) never sees a stale value. */
+export async function clearCachedEntitlement(): Promise<void> {
+  try {
+    const store = await getEntitlementStore();
+    await store.delete('isPlus');
+    await store.delete('checkedAt');
+    await store.delete('userKey');
+    await store.save();
+  } catch {
+    // Best-effort — a failed cache clear must never block sign-out itself.
   }
 }
 
