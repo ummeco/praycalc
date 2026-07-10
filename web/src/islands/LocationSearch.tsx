@@ -51,6 +51,11 @@ function LocationSearchInner({ compact = false, autoFocus = false }: Props) {
   const [geoError, setGeoError] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
   const rootRef = useRef<HTMLDivElement>(null);
+  // Exposed as data-hydrated on the input: a deterministic "this controlled input is
+  // now interactive" signal for E2E (focus can no longer serve — RESP-09 skips
+  // autofocus on touch devices, so a focus-wait would hang on mobile viewports).
+  const [hydrated, setHydrated] = useState(false);
+  useEffect(() => setHydrated(true), []);
 
   useEffect(() => {
     if (!autoFocus) return;
@@ -182,6 +187,7 @@ function LocationSearchInner({ compact = false, autoFocus = false }: Props) {
         <input
           ref={inputRef}
           data-testid="city-search-input"
+          data-hydrated={hydrated ? 'true' : undefined}
           type="search"
           role="combobox"
           aria-expanded={open}

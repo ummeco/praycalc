@@ -18,12 +18,12 @@ test.describe("Homepage", () => {
     await page.reload();
     // Hydration barrier: LocationSearch is a *controlled* input, so a fill() that lands
     // before hydration is reset to '' when React mounts (dropping the query and its
-    // /api/search request). The island autofocuses on mount, so waiting for focus is a
-    // deterministic "island is interactive" signal. (Needed since the perf pass sped up
-    // `load`, which previously covered this timing incidentally.)
-    await expect(page.locator('[data-testid="city-search-input"]')).toBeFocused({
-      timeout: 10_000,
-    });
+    // /api/search request). The island stamps data-hydrated on its input from a mount
+    // effect — a deterministic "interactive now" signal on every viewport. (A focus-wait
+    // can't serve: RESP-09 intentionally skips autofocus on touch/mobile projects.)
+    await expect(
+      page.locator('[data-testid="city-search-input"][data-hydrated="true"]'),
+    ).toBeVisible({ timeout: 10_000 });
   });
 
   test("loads and renders core elements", async ({ page }) => {
