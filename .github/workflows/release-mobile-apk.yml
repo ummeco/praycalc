@@ -88,7 +88,11 @@ jobs:
           GRADLE_OPTS: -Xmx4g -Dorg.gradle.daemon=false
         run: |
           cd android
-          ./gradlew :app:assembleRelease \
+          # --no-parallel: :app's CMake configure races the per-library codegen tasks
+          # (async-storage's generated jni dir) under parallel project execution —
+          # nondeterministic CMake "not an existing directory" failures. Serial is
+          # slower but deterministic.
+          ./gradlew :app:assembleRelease --no-parallel \
             -Pandroid.injected.signing.store.file="$PWD/app/release.keystore" \
             -Pandroid.injected.signing.store.password="$KEYSTORE_PASSWORD" \
             -Pandroid.injected.signing.key.alias=praycalc \
