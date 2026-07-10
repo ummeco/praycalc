@@ -1,0 +1,113 @@
+/*
+ * modals.css — Modal shell + Qibla and Calendar modals (incl. calendar grids).
+ * Split from global.css (ASI 300-line cap); imported by global.css in cascade order.
+ */
+
+/* --- Modal shell (Qibla + Calendar) --- */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 300;
+  display: flex; align-items: center; justify-content: center;
+  padding: 16px;
+  background: rgba(3, 10, 6, 0.72);
+  -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px);
+}
+.modal-header {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  margin-bottom: 4px;
+}
+.modal-title { font-size: 1.1rem; font-weight: 700; color: #fff; margin: 0; }
+.modal-close {
+  flex-shrink: 0;
+  /* 44px touch target (RESP-06) — was 32px. */
+  width: 44px; height: 44px; display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 999px; font-size: 0.95rem; line-height: 1; cursor: pointer;
+  color: rgba(255,255,255,0.6);
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+  transition: background 0.15s, color 0.15s;
+}
+.modal-close:hover { background: rgba(255,255,255,0.12); color: #fff; }
+
+/* --- Qibla modal --- */
+.qibla-modal {
+  width: 100%; max-width: 360px;
+  background: #0b1f13; border: 1px solid rgba(121,194,76,0.22);
+  border-radius: 20px; padding: 20px;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.5);
+}
+
+/* --- Calendar modal --- */
+.cal-modal {
+  width: 100%; max-width: 560px; max-height: 88vh; overflow-y: auto;
+  /* RESP-05: contain overscroll so hitting the top/bottom of the internal
+   * scroll doesn't chain into a scroll of the page behind the overlay. */
+  overscroll-behavior: contain;
+  background: #0b1f13; border: 1px solid rgba(121,194,76,0.22);
+  border-radius: 20px; padding: 20px;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.5);
+}
+.cal-location { text-align: center; font-size: 0.85rem; color: rgba(201,242,122,0.7); margin: 2px 0 14px; }
+.cal-toolbar { display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 12px; }
+.cal-nav-btn, .cal-back-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  /* 44px touch target (RESP-06) — the prev/next month buttons are tapped repeatedly. */
+  min-width: 44px; height: 44px; padding: 0 12px;
+  border-radius: 10px; font-size: 1rem; cursor: pointer; color: #C9F27A;
+  background: rgba(121,194,76,0.1); border: 1px solid rgba(121,194,76,0.28);
+  transition: background 0.15s;
+}
+.cal-nav-btn:hover, .cal-back-btn:hover { background: rgba(121,194,76,0.2); }
+.cal-period { font-size: 1rem; font-weight: 600; color: #fff; min-width: 140px; text-align: center; }
+.cal-modes { display: flex; justify-content: center; gap: 8px; margin-bottom: 14px; }
+.cal-mode-btn {
+  padding: 6px 16px; border-radius: 999px; font-size: 0.82rem; cursor: pointer;
+  color: rgba(255,255,255,0.55);
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+  transition: color 0.15s, background 0.15s, border-color 0.15s;
+}
+.cal-mode-btn:hover { color: rgba(255,255,255,0.85); }
+.cal-mode-btn--on { color: #C9F27A; background: rgba(121,194,76,0.14); border-color: rgba(121,194,76,0.35); }
+.cal-loading { text-align: center; padding: 40px 0; color: rgba(255,255,255,0.5); font-size: 0.9rem; }
+
+/* Calendar table (CSS grid so the div-based table aligns into 6 columns) */
+.cal-table { display: flex; flex-direction: column; border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.08); }
+.cal-tr {
+  display: grid; grid-template-columns: 0.6fr repeat(5, 1fr);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.cal-tr:last-child { border-bottom: none; }
+.cal-tr:not(.cal-thead):nth-child(even) { background: rgba(255,255,255,0.02); }
+.cal-thead { background: rgba(121,194,76,0.1); }
+.cal-th { padding: 10px 6px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: rgba(201,242,122,0.75); text-align: center; }
+.cal-td { padding: 9px 6px; font-size: 0.8rem; color: rgba(255,255,255,0.82); text-align: center; font-variant-numeric: tabular-nums; }
+.cal-td:first-child, .cal-th:first-child { font-weight: 600; color: rgba(255,255,255,0.55); }
+
+/* Year overview: 12 month cards */
+.cal-year-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.cal-year-month-card {
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  padding: 16px 8px; cursor: pointer;
+  border-radius: 14px; border: 1px solid rgba(121,194,76,0.15); background: rgba(121,194,76,0.04);
+  transition: background 0.15s, border-color 0.15s, transform 0.12s;
+}
+.cal-year-month-card:hover { background: rgba(121,194,76,0.1); border-color: rgba(121,194,76,0.35); transform: translateY(-2px); }
+.cal-year-month-name { font-size: 0.9rem; font-weight: 600; color: #fff; }
+.cal-year-month-year { font-size: 0.72rem; color: rgba(255,255,255,0.4); }
+
+/* Month drill-down grid (day + fajr) */
+.month-cal-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(72px, 1fr)); gap: 8px; }
+.month-cal-cell {
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  padding: 10px 4px; border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.07); background: rgba(255,255,255,0.03);
+}
+.month-cal-day { font-size: 0.9rem; font-weight: 700; color: #fff; }
+.month-cal-fajr { font-size: 0.75rem; color: rgba(201,242,122,0.7); font-variant-numeric: tabular-nums; }
+
+.cal-footer { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 16px; }
+.cal-pdf-btn {
+  padding: 8px 18px; border-radius: 999px; font-size: 0.82rem; cursor: pointer; color: #C9F27A;
+  background: rgba(121,194,76,0.1); border: 1px solid rgba(121,194,76,0.3); transition: background 0.15s;
+}
+.cal-pdf-btn:hover:not(:disabled) { background: rgba(121,194,76,0.2); }
+.cal-pdf-btn:disabled { opacity: 0.5; cursor: default; }
+

@@ -1,0 +1,108 @@
+/*
+ * settings-panel.css — Settings panel: fixed top-right, mobile full-screen takeover, toggles, Ummat+ upsell section.
+ * Split from global.css (ASI 300-line cap); imported by global.css in cascade order.
+ */
+
+/* --- Settings panel: fixed top-right of the viewport (not anchored to the
+   gear button) so it never forces page scroll — RESP-03/A3. Slides in on
+   open; below 640px it becomes a full-screen takeover. --- */
+.settings-panel {
+  position: fixed; top: 72px; right: 16px; z-index: 500;
+  width: min(320px, calc(100vw - 32px));
+  max-height: calc(100dvh - 96px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 16px; border-radius: 18px;
+  background: rgba(6, 24, 12, 0.98);
+  border: 1px solid rgba(121, 194, 76, 0.2);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.55);
+  -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px);
+  display: flex; flex-direction: column; gap: 4px;
+  animation: settings-panel-in 0.2s ease-out both;
+}
+@keyframes settings-panel-in {
+  from { opacity: 0; transform: translateY(-8px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .settings-panel { animation: none; }
+}
+/* Full-screen takeover on small screens — no partial card, no page scroll. */
+@media (max-width: 640px) {
+  .settings-panel {
+    top: 0; right: 0; left: 0; bottom: 0;
+    width: 100%; max-width: none; max-height: none;
+    border-radius: 0;
+    padding: 20px 16px calc(20px + env(safe-area-inset-bottom, 0px));
+  }
+}
+.settings-panel-header {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  margin-bottom: 8px;
+}
+.settings-panel-title { font-size: 1rem; font-weight: 700; color: #fff; margin: 0; }
+.settings-panel-close {
+  position: relative; flex-shrink: 0;
+  width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 999px; font-size: 0.95rem; line-height: 1; cursor: pointer;
+  color: rgba(255,255,255,0.65);
+  background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);
+  transition: background 0.15s, color 0.15s;
+}
+.settings-panel-close:hover { background: rgba(255,255,255,0.14); color: #fff; }
+/* RESP-06: expand the tap target to 44px+ without growing the visible 32px circle. */
+.settings-panel-close::after { content: ''; position: absolute; inset: -6px; }
+.settings-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 6px 0; }
+.settings-row-label { font-size: 0.875rem; color: rgba(255,255,255,0.75); }
+.settings-section { margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.06); }
+.settings-section:first-child { border-top: none; margin-top: 0; padding-top: 0; }
+.settings-section-title { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: rgba(201,242,122,0.6); margin: 0 0 8px; }
+.settings-section-note { font-size: 0.75rem; color: rgba(255,255,255,0.45); margin: 4px 0 0; line-height: 1.4; }
+/* Toggle switch — RESP-06: 44px-tall invisible hit-area extension without
+ * growing the visible 24px-tall switch track. */
+.settings-toggle { position: relative; }
+.settings-toggle::before { content: ''; position: absolute; inset: -10px; }
+/* --- Settings panel: Ummat+ section (upsell / active state) --- */
+.settings-plus-upsell {
+  padding: 14px; border-radius: 14px;
+  background: linear-gradient(135deg, rgba(121,194,76,0.12), rgba(30,94,47,0.12));
+  border: 1px solid rgba(121,194,76,0.3);
+}
+.settings-plus-header { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+.settings-plus-name { font-size: 1rem; font-weight: 700; color: #C9F27A; }
+.settings-plus-price { font-size: 0.8rem; color: rgba(255,255,255,0.6); }
+.settings-plus-tagline { font-size: 0.8rem; color: rgba(255,255,255,0.7); line-height: 1.5; margin: 8px 0 10px; }
+.settings-plus-benefits { list-style: none; margin: 0 0 12px; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+.settings-plus-benefits li { font-size: 0.78rem; color: rgba(255,255,255,0.6); padding-left: 14px; position: relative; }
+.settings-plus-benefits li::before { content: '✓'; position: absolute; left: 0; color: #C9F27A; }
+.settings-plus-btn {
+  display: block; width: 100%; text-align: center; padding: 10px; border-radius: 10px;
+  font-size: 0.85rem; font-weight: 600; cursor: pointer; text-decoration: none;
+  color: #0D2F17; background: #C9F27A; border: none; transition: background 0.15s;
+}
+.settings-plus-btn:hover { background: #d6f68f; }
+.settings-plus-active { display: flex; flex-direction: column; gap: 6px; }
+.settings-method-select { border: 1px solid rgba(255,255,255,0.12); }
+.settings-method-select option { background: #0b1f13; color: #fff; }
+.settings-sound-opts, .settings-voice-opts { display: flex; gap: 6px; margin-top: 8px; }
+.settings-sound-opt {
+  flex: 1; padding: 6px 0; border-radius: 8px; font-size: 0.8rem; cursor: pointer;
+  color: rgba(255,255,255,0.5);
+  background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+  transition: color 0.15s, background 0.15s, border-color 0.15s;
+}
+.settings-sound-opt:hover { color: rgba(255,255,255,0.85); background: rgba(255,255,255,0.06); }
+.settings-sound-opt--on { color: #C9F27A; background: rgba(121,194,76,0.12); border-color: rgba(121,194,76,0.35); }
+.settings-account { display: flex; flex-direction: column; gap: 8px; }
+.settings-auth-btn {
+  width: 100%; padding: 10px; border-radius: 10px; font-size: 0.9rem; font-weight: 600; cursor: pointer;
+  color: #C9F27A; background: rgba(121,194,76,0.1); border: 1px solid rgba(121,194,76,0.3);
+}
+.settings-manage-link { font-size: 0.8rem; color: #C9F27A; text-decoration: none; }
+.settings-manage-link:hover { text-decoration: underline; }
+.settings-signout-link {
+  align-self: flex-start; font-size: 0.8rem; color: rgba(255,120,120,0.85);
+  background: none; border: none; cursor: pointer; padding: 4px 0;
+}
+.settings-signout-link:hover { color: #ff9b9b; }
+

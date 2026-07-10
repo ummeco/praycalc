@@ -1,0 +1,144 @@
+/*
+ * city-page.css — City page: prayer grid/rows, qibla compass, page shell, feature tiles, mobile text floor.
+ * Split from global.css (ASI 300-line cap); imported by global.css in cascade order.
+ */
+
+/* --- Prayer grid (city page): a rounded container of full-width prayer rows.
+   PrayerGrid renders `.prayer-grid > .prayer-row` — a vertical list, NOT a
+   3-column grid. (The old Next.js design was a stacked row list.) --- */
+.prayer-grid {
+  width: 100%; max-width: 480px;
+  border-radius: 16px; overflow: hidden;
+  border: 1px solid rgba(121, 194, 76, 0.18);
+  background: rgba(13, 47, 23, 0.5);
+}
+
+/* --- Prayer rows (city page list layout) --- */
+.prayer-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 16px;
+  background: rgba(255,255,255,0.03);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  transition: background 0.2s;
+}
+.prayer-row:last-child { border-bottom: none; }
+.prayer-row.next-prayer { background: rgba(121,194,76,0.13); border-left: 3px solid #79C24C; }
+.prayer-name { font-size: 0.95rem; color: rgba(255,255,255,0.75); font-weight: 500; }
+.prayer-row.next-prayer .prayer-name { color: #C9F27A; font-weight: 600; }
+.prayer-time-col { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+.prayer-time { font-size: 1.05rem; font-weight: 700; color: #fff; }
+.prayer-period { font-size: 0.7rem; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.05em; }
+.prayer-countdown {
+  font-size: 0.7rem; color: #C9F27A; font-variant-numeric: tabular-nums;
+  letter-spacing: 0.03em;
+}
+
+/* --- Qibla modal compass --- */
+.qibla-compass {
+  position: relative; width: 160px; height: 160px;
+  margin: 16px auto;
+}
+.qibla-rose {
+  position: absolute; inset: 0; border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.12);
+}
+.qibla-rose-circle {
+  position: absolute; inset: 8px; border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.06);
+}
+.qibla-rose-n, .qibla-rose-e, .qibla-rose-s, .qibla-rose-w {
+  position: absolute; font-size: 0.7rem; font-weight: 600;
+  color: rgba(255,255,255,0.5); line-height: 1;
+}
+.qibla-rose-n { top: 4px; left: 50%; transform: translateX(-50%); }
+.qibla-rose-e { right: 4px; top: 50%; transform: translateY(-50%); }
+.qibla-rose-s { bottom: 4px; left: 50%; transform: translateX(-50%); }
+.qibla-rose-w { left: 4px; top: 50%; transform: translateY(-50%); }
+.qibla-needle {
+  position: absolute; top: 50%; left: 50%;
+  width: 0; height: 0;
+  /* needle emoji centered at pivot */
+  display: flex; align-items: center; justify-content: center;
+  transform-origin: center center;
+  font-size: 1.5rem;
+  /* center the emoji at the compass center */
+  margin-top: -12px; margin-left: -12px;
+  transition: transform 0.6s ease;
+}
+.qibla-bearing {
+  text-align: center; font-size: 1.4rem; margin: 8px 0 2px;
+  color: #fff;
+}
+.qibla-from {
+  text-align: center; font-size: 0.8rem; color: rgba(255,255,255,0.5); margin: 0 0 8px;
+}
+.qibla-distance {
+  text-align: center; font-size: 0.875rem; color: rgba(201,242,122,0.85); margin: 0;
+}
+.qibla-live-btn {
+  display: block; margin: 14px auto 0; padding: 8px 16px;
+  border: 1px solid rgba(201,242,122,0.4); border-radius: 999px;
+  background: rgba(201,242,122,0.08); color: #C9F27A;
+  font-size: 0.85rem; cursor: pointer; transition: background 0.15s ease;
+}
+.qibla-live-btn:hover { background: rgba(201,242,122,0.16); }
+.qibla-live-status {
+  text-align: center; font-size: 0.8rem; color: rgba(255,255,255,0.65); margin: 12px 0 0;
+}
+.qibla-live-status--denied { color: rgba(255,180,120,0.85); }
+
+/* --- City page --- */
+.city-page-main { min-height: 100dvh; padding: 24px 16px 80px; display: flex; flex-direction: column; align-items: center; gap: 24px; }
+
+/* City client shell — header, compact search, grid, tiles stacked centered. */
+.city-client {
+  width: 100%; max-width: 480px; margin: 0 auto;
+  display: flex; flex-direction: column; align-items: stretch; gap: 20px;
+}
+.city-header {
+  position: relative; /* anchors the absolute settings panel */
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+}
+.city-name { font-size: 1.5rem; font-weight: 700; color: #fff; margin: 0; line-height: 1.2; }
+.city-search { width: 100%; }
+.settings-gear-btn {
+  flex-shrink: 0;
+  /* 44px: Apple HIG / Android touch-target norm (RESP-06) — was 40px. */
+  width: 44px; height: 44px; display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 999px; font-size: 1.2rem; line-height: 1; cursor: pointer;
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+  transition: background 0.15s, border-color 0.15s;
+}
+.settings-gear-btn:hover { background: rgba(121,194,76,0.12); border-color: rgba(121,194,76,0.3); }
+
+/* --- Feature tiles (Qibla / Monthly / Yearly) --- */
+.ftile-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; width: 100%;
+}
+.ftile {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 6px; text-align: center; cursor: pointer;
+  min-height: 120px; padding: 16px 10px;
+  border-radius: 18px;
+  border: 1px solid rgba(121, 194, 76, 0.18);
+  background: rgba(121, 194, 76, 0.04);
+  color: inherit;
+  transition: background 180ms, border-color 180ms, box-shadow 180ms, transform 120ms;
+}
+.ftile:hover {
+  background: rgba(121, 194, 76, 0.1);
+  border-color: rgba(121, 194, 76, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(0,0,0,0.35), 0 0 20px rgba(121,194,76,0.08);
+}
+.ftile:active { transform: translateY(0); transition-duration: 60ms; }
+.ftile:focus-visible { outline: none; border-color: rgba(121,194,76,0.6); box-shadow: 0 0 0 2px rgba(121,194,76,0.35); }
+.ftile-icon { font-size: 1.75rem; line-height: 1; }
+.ftile-title { font-size: 0.82rem; font-weight: 600; color: rgba(255,255,255,0.85); line-height: 1.25; }
+/* RESP-11: 0.75rem (12px) is the readable floor for arm's-length mobile text. */
+.ftile-sub { font-size: 0.75rem; color: rgba(255,255,255,0.4); line-height: 1.2; }
+.ftile-bearing {
+  font-size: 0.72rem; font-variant-numeric: tabular-nums;
+  color: rgba(201, 242, 122, 0.75); line-height: 1;
+}
+

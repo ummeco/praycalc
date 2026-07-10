@@ -1,0 +1,30 @@
+/*
+ * misc.css — Info pages, island error-boundary fallback, calendar print export.
+ * Split from global.css (ASI 300-line cap); imported by global.css in cascade order.
+ */
+
+/* --- Info page (about, legal, etc.) --- */
+.info-page { max-width: 720px; margin: 0 auto; padding: 32px 16px 80px; }
+.info-page-inner { display: flex; flex-direction: column; gap: 32px; }
+.info-page-header { display: flex; align-items: center; gap: 16px; }
+.info-page-back { color: rgba(255,255,255,0.6); text-decoration: none; font-size: 0.875rem; }
+.info-page-back:hover { color: #fff; }
+.info-section { display: flex; flex-direction: column; gap: 16px; }
+
+/* --- Island error boundary fallback --- */
+.island-error-fallback {
+  padding: 16px; border-radius: 12px; margin: 16px;
+  background: rgba(255, 90, 90, 0.08); border: 1px solid rgba(255, 90, 90, 0.25);
+  color: rgba(255, 255, 255, 0.85); font-size: 0.875rem; text-align: center;
+}
+
+/* --- Print: calendar modal export (window.print → save-as-PDF) --- */
+@media print {
+  body * { visibility: hidden; }
+  .cal-modal, .cal-modal * { visibility: visible; }
+  .cal-modal {
+    position: absolute; inset: 0; margin: 0; max-height: none;
+    width: 100%; box-shadow: none; overflow: visible; background: #fff; color: #000;
+  }
+  .modal-close, .cal-pdf-btn, .cal-nav-btn, .cal-back-btn { display: none !important; }
+}

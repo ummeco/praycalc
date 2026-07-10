@@ -1,0 +1,189 @@
+/*
+ * account.css — Account: sign-in card, dashboard, My TVs manager.
+ * Split from global.css (ASI 300-line cap); imported by global.css in cascade order.
+ */
+
+/* --- Account: sign-in card --- */
+.account-main { min-height: 100dvh; display: flex; align-items: flex-start; justify-content: center; padding: 48px 16px 80px; }
+.account-loading { min-height: 40vh; }
+.account-card {
+  position: relative; width: 100%; max-width: 400px; margin: 0 auto;
+  padding: 28px 24px 24px; border-radius: 20px;
+  background: rgba(15, 36, 24, 0.6); border: 1px solid rgba(121, 194, 76, 0.18);
+  box-shadow: 0 16px 48px rgba(0,0,0,0.4);
+  display: flex; flex-direction: column; gap: 16px;
+}
+.account-logo-back {
+  display: inline-flex; align-items: center; gap: 8px; align-self: flex-start;
+  color: rgba(255,255,255,0.6); text-decoration: none; font-size: 0.85rem;
+}
+.account-logo-back:hover { color: #fff; }
+.account-title { font-size: 1.35rem; font-weight: 700; color: #fff; margin: 0; }
+.account-mode-tabs {
+  display: flex; gap: 4px; padding: 4px; border-radius: 12px;
+  background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+}
+.account-mode-tab {
+  flex: 1; padding: 8px 0; border-radius: 9px; font-size: 0.85rem; cursor: pointer;
+  color: rgba(255,255,255,0.55); background: none; border: none; transition: color 0.15s, background 0.15s;
+}
+.account-mode-tab:hover { color: rgba(255,255,255,0.85); }
+.account-mode-tab--active { color: #0D2F17; background: #C9F27A; font-weight: 600; }
+.account-form { display: flex; flex-direction: column; gap: 12px; }
+.account-input {
+  width: 100%; padding: 12px 14px; border-radius: 12px; font-size: 0.95rem; color: #fff;
+  background: rgba(255,255,255,0.06); border: 1.5px solid rgba(255,255,255,0.12); outline: none;
+  transition: border-color 0.15s, background 0.15s;
+}
+.account-input::placeholder { color: rgba(255,255,255,0.35); }
+.account-input:focus { border-color: rgba(121,194,76,0.6); background: rgba(255,255,255,0.09); }
+.account-submit-btn {
+  width: 100%; padding: 12px; border-radius: 12px; font-size: 0.95rem; font-weight: 600; cursor: pointer;
+  color: #0D2F17; background: #C9F27A; border: none; transition: background 0.15s, opacity 0.15s;
+}
+.account-submit-btn:hover:not(:disabled) { background: #d6f68f; }
+.account-submit-btn:disabled { opacity: 0.5; cursor: default; }
+.account-error { color: #ff9b9b; font-size: 0.82rem; margin: 0; }
+.account-magic-sent { font-size: 0.9rem; color: rgba(255,255,255,0.75); line-height: 1.5; margin: 0; }
+.account-back { display: inline-flex; align-self: flex-start; color: rgba(255,255,255,0.6); text-decoration: none; font-size: 0.875rem; }
+.account-back:hover { color: #fff; }
+
+/* --- Account: dashboard --- */
+.dashboard-page {
+  width: 100%; max-width: 480px; margin: 0 auto;
+  display: flex; flex-direction: column; gap: 16px;
+}
+.dashboard-profile-card {
+  display: flex; align-items: center; gap: 14px;
+  padding: 18px; border-radius: 18px;
+  background: rgba(121,194,76,0.06); border: 1px solid rgba(121,194,76,0.18);
+}
+.dashboard-avatar {
+  flex-shrink: 0; width: 48px; height: 48px; border-radius: 999px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem; font-weight: 700; color: #0D2F17; background: #C9F27A;
+}
+.dashboard-profile-info { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.dashboard-display-name { display: flex; align-items: center; gap: 8px; font-size: 1.05rem; font-weight: 600; color: #fff; }
+.dashboard-owner-badge {
+  font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
+  padding: 2px 8px; border-radius: 999px; color: #C9F27A; background: rgba(121,194,76,0.15);
+}
+.dashboard-email { font-size: 0.85rem; color: rgba(255,255,255,0.5); }
+.dashboard-card {
+  padding: 18px; border-radius: 18px;
+  background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
+}
+.dashboard-card-title { font-size: 0.95rem; font-weight: 600; color: #fff; margin: 0 0 10px; }
+.dashboard-settings-row { font-size: 0.85rem; color: rgba(255,255,255,0.55); margin: 0; line-height: 1.5; }
+.dashboard-tvs-link { color: #C9F27A; text-decoration: none; }
+.dashboard-tvs-link:hover { text-decoration: underline; }
+.dashboard-cities-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.dashboard-city-row {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 10px 12px; border-radius: 12px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
+}
+.dashboard-city-link { color: rgba(255,255,255,0.85); text-decoration: none; font-size: 0.9rem; }
+.dashboard-city-link:hover { color: #C9F27A; }
+.dashboard-city-remove {
+  position: relative; /* anchors the ::after hit-area expansion below */
+  flex-shrink: 0; width: 26px; height: 26px; border-radius: 999px; cursor: pointer; font-size: 0.75rem;
+  color: rgba(255,255,255,0.5); background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+  transition: color 0.15s, background 0.15s;
+}
+/* RESP-06: expand the tap target to ~44px without growing the visible 26px
+ * circle — an invisible hit-area extension is preferable here to enlarging
+ * every small icon button in a dense list. */
+.dashboard-city-remove::after { content: ''; position: absolute; inset: -9px; }
+.dashboard-city-remove:hover { color: #ff9b9b; background: rgba(255,120,120,0.12); }
+.dashboard-plus-card {
+  padding: 20px; border-radius: 18px;
+  background: linear-gradient(135deg, rgba(121,194,76,0.12), rgba(30,94,47,0.12));
+  border: 1px solid rgba(121,194,76,0.3);
+}
+.dashboard-plus-header { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+.dashboard-plus-name { font-size: 1.2rem; font-weight: 700; color: #C9F27A; }
+.dashboard-plus-price { font-size: 0.9rem; color: rgba(255,255,255,0.6); }
+.dashboard-plus-tagline { font-size: 0.85rem; color: rgba(255,255,255,0.7); line-height: 1.5; margin: 8px 0 14px; }
+.dashboard-plus-btn {
+  width: 100%; padding: 11px; border-radius: 12px; font-size: 0.9rem; font-weight: 600; cursor: pointer;
+  color: #0D2F17; background: #C9F27A; border: none; transition: background 0.15s, opacity 0.15s;
+}
+.dashboard-plus-btn:hover:not(:disabled) { background: #d6f68f; }
+.dashboard-plus-btn:disabled { opacity: 0.6; cursor: default; }
+.dashboard-signout-btn {
+  align-self: center; padding: 10px 24px; border-radius: 999px; font-size: 0.85rem; cursor: pointer;
+  color: rgba(255,120,120,0.9); background: rgba(255,120,120,0.06); border: 1px solid rgba(255,120,120,0.2);
+  transition: background 0.15s;
+}
+.dashboard-signout-btn:hover { background: rgba(255,120,120,0.14); }
+
+/* --- Account: My TVs manager (/account/tvs) --- */
+.dashboard-tvs-wrapper { display: flex; flex-direction: column; gap: 14px; }
+.dashboard-add-tv-form { display: flex; flex-direction: column; gap: 6px; }
+.dashboard-add-tv-row { display: flex; gap: 10px; }
+.dashboard-add-tv-input {
+  flex: 1; min-width: 0; letter-spacing: 0.2em; text-align: center; font-variant-numeric: tabular-nums;
+}
+.dashboard-add-tv-btn { flex-shrink: 0; width: auto; padding: 0 20px; }
+.dashboard-tvs-list { display: flex; flex-direction: column; gap: 14px; }
+.dashboard-tv-card {
+  padding: 18px; border-radius: 18px;
+  background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
+  display: flex; flex-direction: column; gap: 12px;
+}
+.dashboard-tv-header { display: flex; align-items: center; gap: 10px; }
+.dashboard-tv-swatch { flex-shrink: 0; width: 16px; height: 16px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.2); }
+.dashboard-tv-name-input {
+  flex: 1; min-width: 0; padding: 8px 10px; border-radius: 10px; font-size: 0.95rem; font-weight: 600; color: #fff;
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); outline: none;
+}
+.dashboard-tv-name-input:focus { border-color: rgba(121,194,76,0.5); }
+.dashboard-tv-city { font-size: 0.8rem; color: rgba(255,255,255,0.5); margin: 0; }
+.dashboard-tv-field { display: flex; flex-direction: column; gap: 6px; }
+.dashboard-tv-label { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: rgba(201,242,122,0.6); }
+.dashboard-tv-rotate-input, .dashboard-tv-field select {
+  padding: 8px 10px; border-radius: 10px; font-size: 0.9rem; color: #fff;
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12); outline: none;
+}
+.dashboard-tv-swatches { display: flex; flex-wrap: wrap; gap: 8px; }
+.dashboard-tv-swatches button {
+  position: relative; /* anchors the ::after hit-area expansion below */
+  width: 26px; height: 26px; border-radius: 999px; cursor: pointer;
+  border: 2px solid transparent; transition: border-color 0.15s, transform 0.12s;
+}
+/* RESP-06: expand the tap target without growing the visible color swatch. */
+.dashboard-tv-swatches button::after { content: ''; position: absolute; inset: -9px; }
+.dashboard-tv-swatches button:hover { transform: scale(1.1); }
+.dashboard-tv-swatches button[aria-checked="true"] { border-color: #fff; }
+.dashboard-tv-checkbox-row { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: rgba(255,255,255,0.75); cursor: pointer; }
+.dashboard-tv-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 2px; }
+.dashboard-tv-save-btn {
+  padding: 8px 18px; border-radius: 999px; font-size: 0.82rem; font-weight: 600; cursor: pointer;
+  color: #0D2F17; background: #C9F27A; border: none; transition: background 0.15s, opacity 0.15s;
+}
+.dashboard-tv-save-btn:hover:not(:disabled) { background: #d6f68f; }
+.dashboard-tv-save-btn:disabled { opacity: 0.5; cursor: default; }
+.dashboard-tv-remove-btn, .dashboard-tv-cancel-btn {
+  padding: 8px 16px; border-radius: 999px; font-size: 0.82rem; cursor: pointer;
+  color: rgba(255,255,255,0.6); background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12);
+  transition: background 0.15s, color 0.15s;
+}
+.dashboard-tv-remove-btn:hover { color: #ff9b9b; background: rgba(255,120,120,0.1); border-color: rgba(255,120,120,0.25); }
+.dashboard-tv-cancel-btn:hover { color: #fff; }
+.dashboard-tv-confirm-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.dashboard-tv-confirm-text { font-size: 0.85rem; color: rgba(255,180,120,0.9); }
+.dashboard-tv-confirm-btn {
+  padding: 8px 16px; border-radius: 999px; font-size: 0.82rem; font-weight: 600; cursor: pointer;
+  color: #fff; background: rgba(220,60,60,0.85); border: none; transition: background 0.15s;
+}
+.dashboard-tv-confirm-btn:hover { background: rgba(220,60,60,1); }
+.dashboard-tv-deep-toggle {
+  align-self: flex-start; padding: 6px 0; font-size: 0.8rem; font-weight: 600; cursor: pointer;
+  color: #C9F27A; background: none; border: none;
+}
+.dashboard-tv-deep-toggle:hover { text-decoration: underline; }
+.dashboard-tv-deep { display: flex; flex-direction: column; gap: 10px; padding-top: 4px; border-top: 1px solid rgba(255,255,255,0.08); }
+.dashboard-tv-iqama-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+.dashboard-tv-location-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 8px; }
+

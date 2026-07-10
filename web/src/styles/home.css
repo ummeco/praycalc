@@ -1,0 +1,97 @@
+/*
+ * home.css — Homepage: animated logo sunrise, hero/lower bands with straddling search card, moon indicator.
+ * Split from global.css (ASI 300-line cap); imported by global.css in cascade order.
+ */
+
+/* --- Logo sunrise (animated: the wordmark rises from behind the horizon) --- */
+.logo-sunrise-outer { position: relative; width: 100%; }
+.logo-sunrise {
+  position: relative; width: 100%; display: flex; justify-content: center;
+  align-items: flex-end; /* logo bottom rests on the horizon; no vertical stretch */
+  height: 215px; overflow: hidden; /* bottom edge IS the horizon */
+}
+.logo-sunrise img {
+  width: 100%; max-width: 420px; height: auto;
+  /* Rise from y=215 (fully hidden below the horizon) to resting at y=0.
+   * NOTE (Lighthouse perf pass): this transform animation running past first
+   * paint is what the CLS metric now attributes ~0.069 to (paint got fast
+   * enough — FCP ~1.1s — to land mid-animation; previously a slower FCP hid
+   * it). Tried shortening/softening the travel distance to cut that; it fixed
+   * CLS but tanked Speed Index (4.6-4.8s vs 1.7s) for reasons that didn't
+   * pay down further investigation in this pass. 0.069 is comfortably under
+   * the 0.1 "good" CLS threshold and the lighthouserc gate, so the original
+   * animation stays as-is — net Performance score is higher with it.
+   */
+  animation: sunrise-rise 6s cubic-bezier(0.25, 0.1, 0.25, 1) 0.1s both;
+}
+.logo-sunrise-glow {
+  position: absolute; top: -60px; left: 0; right: 0; bottom: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse 80% 80% at 50% 100%, rgba(121, 194, 76, 0.22) 0%, transparent 70%);
+  /* Glow blooms in as the sun rises. */
+  animation: sunrise-glow 6s ease-out both;
+}
+@keyframes sunrise-rise {
+  from { transform: translateY(215px); }
+  to   { transform: translateY(0); }
+}
+@keyframes sunrise-glow {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .logo-sunrise img { animation: none; transform: translateY(0); }
+  .logo-sunrise-glow { animation: none; opacity: 1; }
+}
+
+/* --- Home layout: two bands (hero + lower) with the search card straddling
+   the seam between them — the classic "overlapping hero card" pattern. --- */
+.home-main {
+  display: flex; flex-direction: column; align-items: stretch;
+  min-height: 100dvh; gap: 0; overflow: hidden;
+}
+.home-hero {
+  position: relative; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  padding: 48px 0 88px; /* extra bottom room for the overlapping search card */
+}
+.home-lower {
+  position: relative; flex: 1;
+  display: flex; flex-direction: column; align-items: center;
+  padding: 0 0 48px;
+  background: #050b07;
+  border-top: 1px solid rgba(255,255,255,0.07);
+}
+/* Pulls the search card up ~40px so it straddles the hero/lower boundary —
+ * roughly half the card sits above the line, half below it. */
+.home-search-group {
+  position: relative; z-index: 5;
+  width: 100%; max-width: 480px; padding: 0 16px;
+  margin-top: -40px;
+}
+.home-divider { width: 100%; height: 1px; background: rgba(255,255,255,0.06); margin: 20px 0; }
+/* Compact centered moon indicator (was a big empty full-width card). */
+.home-moon-card {
+  display: inline-flex; align-items: center; gap: 12px;
+  width: auto; margin-top: 28px;
+  background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 999px; padding: 9px 20px 9px 16px;
+}
+.home-moon-emoji { font-size: 1.5rem; line-height: 1; }
+.home-moon-info { display: flex; flex-direction: column; gap: 1px; text-align: left; }
+.home-moon-name { font-size: 0.875rem; font-weight: 600; color: rgba(255,255,255,0.9); }
+.home-moon-illum { font-size: 0.72rem; color: rgba(255,255,255,0.45); }
+.home-top-right-cards {
+  position: fixed; top: 16px; right: 16px;
+  display: flex; flex-direction: column; gap: 8px; z-index: 50;
+}
+.about-pill {
+  position: fixed; top: 12px; left: 12px; z-index: 50;
+  background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 20px; padding: 6px 14px;
+  font-size: 0.75rem; color: rgba(255,255,255,0.7);
+  text-decoration: none;
+  transition: background 0.2s;
+}
+.about-pill:hover { background: rgba(255,255,255,0.14); }
+

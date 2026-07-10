@@ -1,0 +1,115 @@
+/*
+ * base.css — Brand palette, CSS custom properties, ambient glow, iOS form-font floor, RTL typography, skip-link.
+ * Split from global.css (ASI 300-line cap); imported by global.css in cascade order.
+ */
+
+/* --- Ummat green palette --- */
+@theme {
+  --color-ummat-light:    #C9F27A;
+  --color-ummat-mid:      #79C24C;
+  --color-ummat-light-bg: #5A9438;
+  --color-ummat-dark:     #1E5E2F;
+  --color-ummat-deep:     #0D2F17;
+  --color-ummat-wash:     #F4FBE8;
+  --color-ummat-on-dark:  #C9F27A;
+  --color-ummat-on-light: #0D2F17;
+}
+
+/* --- CSS custom properties --- */
+:root {
+  --brand-green-light:  #C9F27A;
+  --brand-green-mid:    #79C24C;
+  --brand-green-dark:   #1E5E2F;
+  --brand-green-deep:   #0D2F17;
+
+  --color-primary:            #79C24C;
+  --color-primary-hover:      #1E5E2F;
+  --color-accent:             #C9F27A;
+  --color-bg:                 #07180d;
+  --color-bg-subtle:          #0a1a0f;
+  --color-surface:            #0f2418;
+  --color-surface-hover:      #172e1f;
+  --color-elevated:           #1a3326;
+  --color-fg:                 #f0fce8;
+  --color-fg-secondary:       #c8f0b0;
+  --color-fg-muted:           rgba(201, 242, 122, 0.55);
+  --color-border:             #1f4a2e;
+  --color-border-subtle:      #162e1d;
+  --color-error:              #f87171;
+  --color-warning:            #e8c84a;
+
+  --font-latin:  'Inter Variable', 'Inter', 'Helvetica Neue', Arial, sans-serif;
+  --font-arabic: 'Noto Naskh Arabic', 'Traditional Arabic', serif;
+  --font-urdu:   'Noto Nastaliq Urdu', 'Nastaliq', serif;
+}
+
+html, body {
+  background-color: #060806;
+  color: #fff;
+  min-height: 100dvh;
+  font-family: var(--font-latin);
+}
+/* Ambient brand-glow gradient, as a fixed pseudo-element behind all content
+ * rather than `background-attachment: fixed` on html/body (RESP-10) — iOS
+ * Safari does not honor fixed background-attachment on a scrolling body, so
+ * it either scrolls the gradient (visual jump) or forces repaints during
+ * scroll on long pages (/times, city pages). A `position: fixed` element is
+ * honored correctly on iOS. */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    radial-gradient(ellipse 55% 70% at 105% 10%, rgba(30, 94, 47, 0.45) 0%, rgba(121, 194, 76, 0.04) 45%, transparent 65%);
+}
+
+/* RESP-01: iOS Safari zooms the page when focusing a form control with a
+ * computed font-size under 16px, and stays zoomed after blur. Force every
+ * text input/select/textarea to the 16px floor on touch/small viewports
+ * (desktop keeps each control's own smaller size). */
+@media (max-width: 640px), (pointer: coarse) {
+  input, select, textarea { font-size: 16px; }
+}
+
+/* --- RTL typography --- */
+[dir="rtl"],
+[lang="ar"] { font-family: var(--font-arabic); line-height: 1.8; }
+[lang="ur"] { font-family: var(--font-urdu); line-height: 2.0; }
+
+.arabic {
+  font-family: var(--font-arabic);
+  direction: rtl;
+}
+
+/* --- Skip to content (accessibility) --- */
+.skip-to-content {
+  /* Visually hidden but focusable. Uses the clip technique (not left:-9999px,
+     which flips to the far side in RTL and creates horizontal overflow). */
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  top: 0;
+  inset-inline-start: 0;
+  z-index: 9999;
+  padding: 8px 16px;
+  background: var(--color-primary);
+  color: #fff;
+  border-radius: 0 0 4px 4px;
+  font-weight: 600;
+  text-decoration: none;
+}
+.skip-to-content:focus {
+  width: auto;
+  height: auto;
+  overflow: visible;
+  clip: auto;
+  clip-path: none;
+  inset-inline-start: 16px;
+}
+
