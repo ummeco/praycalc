@@ -150,7 +150,7 @@ export default function IslamicCalendarScreen() {
               style={[styles.cell, isToday && styles.cellToday, isSelected && styles.cellSelected]}
               onPress={() => setDate(new Date(year, month, day))}
               accessibilityRole="button"
-              accessibilityLabel={`${monthName} ${day}, ${year}`}
+              accessibilityLabel={new Date(year, month, day).toLocaleDateString(locale, { month: 'long', day: 'numeric', year: 'numeric' })}
               accessibilityState={{ selected: isSelected }}
             >
               <Text style={[styles.cellText, isToday && styles.cellTodayText, isSelected && styles.cellSelectedText]}>

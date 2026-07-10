@@ -22,6 +22,12 @@ import i18next, { useTranslation } from '../i18n';
 import { GqlClientProvider } from '../lib/graphql';
 import { parseDeepLink } from '../lib/deepLinkRoutes';
 import { registerIAPListener } from '../lib/iap/IAPListener';
+// Side-effect import: registers TaskManager.defineTask(GEOFENCE_TASK_NAME, ...) at
+// module scope so masjid-mute geofence ENTER/EXIT events are handled even when the
+// OS launches the app headlessly (app killed, no screen mounted) — see MOB-4. The
+// task's only other importers (MasjidMuteScreen, useGeofenceSync) do not run until
+// the user opens that screen, which is too late for a headless background wake.
+import '../features/masjid-mute/lib/geofenceTask';
 import { useOtaUpdates } from '../lib/updates/otaUpdates';
 import {
   registerRescheduleTask,

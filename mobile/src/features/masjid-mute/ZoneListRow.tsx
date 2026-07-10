@@ -25,7 +25,7 @@ export interface ZoneListRowProps {
 
 export default function ZoneListRow({ zone, isActive, onEdit, onDelete, styles, t }: ZoneListRowProps) {
   return (
-    <View style={styles.zoneRow} accessible accessibilityLabel={`${zone.label}, ${zone.radiusMeters} meter radius`}>
+    <View style={styles.zoneRow} accessible accessibilityLabel={t('screens.masjidMute.zoneRowAccessibilityLabel', { label: zone.label, radius: zone.radiusMeters })}>
       <TouchableOpacity style={styles.zoneInfo} onPress={() => onEdit(zone)} accessibilityRole="button">
         <Text style={styles.zoneLabel}>{zone.label}</Text>
         <Text style={styles.zoneSub}>{t('screens.masjidMute.radiusValue', { radius: zone.radiusMeters })}</Text>

@@ -1,5 +1,20 @@
 # praycalc/mobile Changelog
 
+## [2.1.0] — 2026-07-10
+
+### Fixed — Version sync + dependency coherence (W5 gap closure)
+
+- `package.json` version brought into lockstep with `app.json` `expo.version`
+  (the store-shipping, OTA-`runtimeVersion`-keying number) — was drifted to
+  `0.2.0`. Earlier `0.x` CHANGELOG entries below predate store versioning and
+  track internal feature-scaffold milestones, not shipped App Store/Play
+  Store builds; `2.1.0` is the first entry aligned to the real release number.
+- Dependency matrix realigned to Expo SDK 53's bundled native module versions
+  (`react-native` 0.79.6, `react` 19.0.0, `expo-router` ~5.1.11, and 20 more
+  `expo-*`/`react-native-*` packages) — see PR/commit notes for full diff.
+- `expo-in-app-purchases` (abandoned since 2022) replaced with
+  `react-native-iap@13.0.4` behind the same `src/lib/iap` wrapper interface.
+
 ## [0.3.0] — 2026-07-08
 
 ### Added — TV manager deep settings

@@ -25,6 +25,10 @@ export const UMAMI_ID =
 export const APP_ENV =
   (process.env['EXPO_PUBLIC_ENV'] ?? 'development') as 'development' | 'staging' | 'production';
 
+/** Display name shown in-app and in store/widget setup instructions — must match
+ *  app.json `expo.name` (the name the OS widget gallery / app switcher shows). */
+export const APP_NAME = 'PrayCalc';
+
 // IAP product IDs
 export const IAP_PRODUCT_IDS_IOS = ['praycalc_pro_monthly', 'praycalc_pro_annual'];
 export const IAP_PRODUCT_IDS_ANDROID = ['praycalc_pro_monthly', 'praycalc_pro_annual'];

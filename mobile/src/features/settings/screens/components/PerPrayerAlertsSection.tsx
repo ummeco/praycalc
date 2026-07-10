@@ -72,14 +72,21 @@ export function PerPrayerAlertsSection({
             <TouchableOpacity
               onPress={() => onAdvanceCycle(name)}
               accessibilityRole="button"
-              accessibilityLabel={`${name} notification lead time, ${notificationAdvanceMinutes[name] ?? 0} minutes before. Tap to change.`}
+              accessibilityLabel={t('screens.notifications.leadTimeAccessibilityLabel', {
+                prayer: t(PRAYER_LABEL_KEYS[name]), minutes: notificationAdvanceMinutes[name] ?? 0,
+              })}
             >
               <Text style={styles.advanceLabel}>{t('screens.notifications.minutesBefore', { count: notificationAdvanceMinutes[name] ?? 0 })}</Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => onIqamahCycle(name)}
               accessibilityRole="button"
-              accessibilityLabel={`${name} iqamah reminder, ${(iqamahOffsetMinutes[name] ?? 0) === 0 ? 'off' : `${iqamahOffsetMinutes[name]} minutes after adhan`}. Tap to change.`}
+              accessibilityLabel={t('screens.notifications.iqamahAccessibilityLabel', {
+                prayer: t(PRAYER_LABEL_KEYS[name]),
+                status: (iqamahOffsetMinutes[name] ?? 0) === 0
+                  ? t('screens.notifications.iqamahOff')
+                  : t('screens.notifications.iqamahAfter', { count: iqamahOffsetMinutes[name] }),
+              })}
             >
               <Text style={styles.advanceLabel}>
                 {(iqamahOffsetMinutes[name] ?? 0) === 0 ? t('screens.notifications.iqamahOff') : t('screens.notifications.iqamahAfter', { count: iqamahOffsetMinutes[name] })}
@@ -90,7 +97,7 @@ export function PerPrayerAlertsSection({
               onValueChange={(v) => onPrayerToggle(name, v)}
               trackColor={{ false: colors.background.card, true: colors.brand.mid }}
               thumbColor={colors.brand.light}
-              accessibilityLabel={`Enable ${name} notification`}
+              accessibilityLabel={t('screens.notifications.enableAccessibilityLabel', { prayer: t(PRAYER_LABEL_KEYS[name]) })}
             />
           </View>
         </View>

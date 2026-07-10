@@ -1,9 +1,10 @@
 /**
- * Purpose: In-app purchase screen for PrayCalc Pro / Ummat+ tier.
- *   expo-in-app-purchases; the global IAPListener (src/lib/iap/IAPListener.ts) handles
- *   receipt validation + entitlement flip — this screen only initiates purchases and
- *   reflects useAuthStore().isPlus, the single unified entitlement flag for both the
- *   IAP purchase and the web Ummat+ subscription (previously two incompatible systems).
+ * Purpose: In-app purchase screen for PrayCalc Pro / Ummat+ tier. Backed by
+ *   react-native-iap via the iapClient adapter (src/lib/iap/iapClient.ts); the global
+ *   IAPListener (src/lib/iap/IAPListener.ts) handles receipt validation + entitlement
+ *   flip — this screen only initiates purchases and reflects useAuthStore().isPlus,
+ *   the single unified entitlement flag for both the IAP purchase and the web Ummat+
+ *   subscription (previously two incompatible systems).
  * Inputs: IAP product IDs from constants, useAuthStore (mode + isPlus).
  * Outputs: SubscriptionScreen — Feature 13 of 20.
  * Constraints: Anonymous users are prompted to create an account before purchase —
@@ -18,7 +19,7 @@ import {
   View, Text, TouchableOpacity, StyleSheet, SafeAreaView, ScrollView, ActivityIndicator, Alert,
 } from 'react-native';
 import { router } from 'expo-router';
-import * as InAppPurchases from 'expo-in-app-purchases';
+import * as InAppPurchases from '../../lib/iap/iapClient';
 import { useTranslation } from '../../i18n';
 import { useThemeColors } from '../../hooks/useThemeColors';
 import type { ThemeColors } from '../../constants/colors';
@@ -170,7 +171,7 @@ export default function SubscriptionScreen() {
               onPress={() => handlePurchase(product.productId)}
               disabled={purchasing}
               accessibilityRole="button"
-              accessibilityLabel={`Subscribe ${product.title} for ${product.price}`}
+              accessibilityLabel={t('screens.subscription.subscribeAccessibilityLabel', { title: product.title, price: product.price })}
               accessibilityState={{ disabled: purchasing }}
             >
               {purchasing ? (

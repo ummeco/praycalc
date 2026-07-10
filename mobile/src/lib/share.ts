@@ -13,15 +13,9 @@
 
 import type { PrayerTimes, TimeFormat } from '../types/prayer';
 import { PRAYER_LABEL_KEYS, DISPLAY_PRAYERS } from '../constants/prayers';
+import { formatTime } from './formatTime';
 
 export const PRAYCALC_SHARE_URL = 'https://praycalc.com';
-
-function formatTime(date: Date, format: TimeFormat, locale: string): string {
-  if (format === '24h') {
-    return date.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit', hour12: false });
-  }
-  return date.toLocaleTimeString(locale, { hour: 'numeric', minute: '2-digit', hour12: true });
-}
 
 export interface BuildPrayerTimesShareTextOptions {
   times: PrayerTimes;

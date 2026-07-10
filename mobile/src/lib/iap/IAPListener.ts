@@ -1,9 +1,10 @@
 /**
  * Purpose: Global IAP purchase listener — previously referenced by SubscriptionScreen's
  *   header comment but never implemented, so purchases never unlocked anything. Must be
- *   registered once, globally (per expo-in-app-purchases' own docs), before any
+ *   registered once, globally (per the iapClient adapter's own docs), before any
  *   purchaseItemAsync call — wired from the root layout, not a specific screen.
- * Inputs: expo-in-app-purchases purchase-updated events, useAuthStore (account mode / JWT).
+ * Inputs: iapClient (react-native-iap-backed) purchase-updated events, useAuthStore
+ *   (account mode / JWT).
  * Outputs: Finishes each transaction; for account-mode users, records the receipt via
  *   RECORD_IAP_RECEIPT_MUTATION and reconciles useAuthStore.isPlus from the server.
  * Constraints: Anonymous users make ZERO API calls (useAuthStore invariant) — an anonymous
@@ -15,7 +16,7 @@
  * SPORT: REGISTRY-FUNCTIONS.md#praycalc-mobile-iap-listener
  */
 
-import * as InAppPurchases from 'expo-in-app-purchases';
+import * as InAppPurchases from './iapClient';
 import { Platform } from 'react-native';
 import { getToken } from '../graphql';
 import { API_URL } from '../../constants';

@@ -73,7 +73,7 @@ export function SurahDetailView({
           {/* Surah name — RTL, full tashkeel */}
           <Text
             style={styles.surahNameArabic}
-            accessibilityLabel={`Surah ${surah.transliteratedName}`}
+            accessibilityLabel={t('screens.quran.surahNameAccessibilityLabel', { name: surah.transliteratedName })}
           >
             {surah.arabicName}
           </Text>
@@ -103,7 +103,7 @@ export function SurahDetailView({
               style={styles.wikiBtn}
               onPress={() => Linking.openURL(`https://islam.wiki/quran/${surah.number}`)}
               accessibilityRole="link"
-              accessibilityLabel={`Read Surah ${surah.transliteratedName} on Islam.Wiki`}
+              accessibilityLabel={t('screens.quran.readOnWikiAccessibilityLabel', { name: surah.transliteratedName })}
             >
               <Text style={styles.wikiBtnText}>{t('screens.quran.readOnWiki')}</Text>
             </TouchableOpacity>
@@ -117,7 +117,7 @@ export function SurahDetailView({
               key={ayah.number}
               style={styles.ayahCard}
               accessible
-              accessibilityLabel={`Verse ${ayah.number}: ${ayah.transliteration}`}
+              accessibilityLabel={t('screens.quran.verseAccessibilityLabel', { number: ayah.number, transliteration: ayah.transliteration })}
             >
               {/* Verse number */}
               <View style={styles.ayahMeta}>

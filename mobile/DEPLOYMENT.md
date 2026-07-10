@@ -107,6 +107,13 @@ next natural app launch (seamless, no user-facing prompt).
 - [ ] Confirm `eas.json` build-profile channels (`development` / `preview` /
       `production`) match the channels you intend to `eas update --branch <x>`
       into — they're pre-wired but unverified against the real project.
+- [ ] `eas.json` `cli.appVersionSource` is `"remote"` (required: this project
+      uses a dynamic `app.config.js`, and EAS CLI cannot write an
+      auto-incremented `versionCode`/`buildNumber` back into a `.js` config —
+      only a static `app.json`. Remote mode stores the build-number counter on
+      EAS's servers instead, so it also survives ephemeral CI runners across
+      reruns of the same commit.) No manual `versionCode`/`buildNumber` is set
+      in `app.json` — remote mode manages both automatically per build.
 - [ ] Run `eas build` at least once per platform/profile AFTER the real
       projectId is set, so the installed binary embeds the correct update URL
       + channel (an OTA-eligible build cannot be retrofitted after the fact).
@@ -114,6 +121,16 @@ next natural app launch (seamless, no user-facing prompt).
 - [ ] Verify on a real device: install the build, publish a trivial OTA change,
       background/foreground the app (or cold-restart), confirm the change
       appears without a store update.
+
+## Play Console Background Location Declaration
+
+Masjid Mute geofencing (`src/features/masjid-mute/lib/geofenceTask.ts`) requires
+`ACCESS_BACKGROUND_LOCATION` (declared via the `expo-location` plugin's
+`isAndroidBackgroundLocationEnabled: true` in `app.json`). Google Play requires a
+**Background Location permission declaration form** in Play Console (App content
+→ Sensitive permissions) before a build requesting this permission can be
+published — explain the masjid-proximity auto-mute use case there before the
+first submission that includes this permission.
 
 ## Pre-Submit Checklist
 

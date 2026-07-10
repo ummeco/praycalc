@@ -41,7 +41,9 @@ export function DhikrPicker({
           onPress={() => onSelect(preset)}
           accessibilityRole="radio"
           accessibilityState={{ selected: selectedPresetId === preset.id }}
-          accessibilityLabel={`${preset.transliteration}, target ${preset.targetCount}, source ${preset.source}`}
+          accessibilityLabel={t('screens.tasbeeh.presetAccessibilityLabel', {
+            transliteration: preset.transliteration, target: preset.targetCount, source: preset.source,
+          })}
         >
           <Text style={styles.presetArabic}>{preset.arabic}</Text>
           <Text style={styles.presetTranslit}>{preset.transliteration} × {preset.targetCount}</Text>

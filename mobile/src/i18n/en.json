@@ -269,7 +269,13 @@
     },
     "prayerAlerts": "Prayer Time Alerts",
     "manageNotifications": "Manage Notifications",
-    "appLanguage": "App Language"
+    "appLanguage": "App Language",
+    "decreaseAccessibilityLabel": "Decrease {{prayer}} adjustment",
+    "increaseAccessibilityLabel": "Increase {{prayer}} adjustment",
+    "valueAccessibilityLabel": "Hijri offset: {{value}} days",
+    "label12h": "12-hour format",
+    "label24h": "24-hour format",
+    "themeAccessibilityLabel": "{{theme}} theme"
   },
   "errors": {
     "location_permission": "Please allow location access to calculate prayer times",
@@ -621,7 +627,17 @@
       "nextPrayer": "Next Prayer",
       "setLocationToPreview": "Set your location to preview",
       "setupInstructions": "Setup Instructions",
-      "integrationStatus": "Integration Status"
+      "integrationStatus": "Integration Status",
+      "upsellMessage": "The home screen widget is an Ummat+ feature.",
+      "upsellAction": "Upgrade to Ummat+",
+      "countdownPrefix": "in {{countdown}}",
+      "setupStep1": "Long-press your home screen",
+      "setupStep2": "Tap the + button (iOS) or Widgets menu (Android)",
+      "setupStep3": "Search for \"{{appName}}\"",
+      "setupStep4": "Choose your preferred widget size",
+      "setupStep5": "Tap Add Widget",
+      "statusAndroid": "Android: live — the \"Next Prayer\" home-screen widget ships via react-native-android-widget and refreshes automatically every 30 minutes (and immediately after you change settings or notifications).",
+      "statusIos": "iOS: live — the \"Next Prayer\" WidgetKit widget updates whenever you change settings or notifications and advances at each prayer time on its own."
     },
     "smartHome": {
       "proOnly": "Smart Home (lock-on-salah + device control) is an Ummat+ feature.",
@@ -677,7 +693,8 @@
       "featurePremiumAdhan": "Premium adhan voices — additional reciters",
       "featureHomeWidget": "Home screen widget (next prayer)",
       "featureTvPairing": "PrayCalc TV app pairing",
-      "featureSmartHome": "Smart Home — lock devices during salah"
+      "featureSmartHome": "Smart Home — lock devices during salah",
+      "subscribeAccessibilityLabel": "Subscribe {{title}} for {{price}}"
     },
     "tasbeeh": {
       "chooseDhikr": "Choose Dhikr",
@@ -792,7 +809,31 @@
         "dua": "Seek the hour of response in du'a",
         "duaCitation": "Sahih al-Bukhari 935 · Sahih Muslim 852"
       }
-    }
+    },
+    "leadTimeAccessibilityLabel": "{{prayer}} notification lead time, {{minutes}} minutes before. Tap to change.",
+    "iqamahAccessibilityLabel": "{{prayer}} iqamah reminder, {{status}}. Tap to change.",
+    "enableAccessibilityLabel": "Enable {{prayer}} adhan",
+    "rowAccessibilityLabel": "{{name}}, {{distance}} away",
+    "directionsAccessibilityLabel": "Open directions to {{name}} in Maps",
+    "accentColorAccessibilityLabel": "Accent color {{hex}}",
+    "todayTotalAccessibilityLabel": "Today's dhikr total: {{total}}",
+    "historyEntryAccessibilityLabel": "{{name}}: {{count}}, {{date}}",
+    "arabicTextAccessibilityLabel": "Arabic: {{transliteration}}",
+    "counterAccessibilityLabel": "Count: {{count}} of {{target}}. {{status}}",
+    "tapToIncrement": "Tap to increment",
+    "presetAccessibilityLabel": "{{transliteration}}, target {{target}}, source {{source}}",
+    "zoneRowAccessibilityLabel": "{{label}}, {{radius}} meter radius",
+    "phaseAccessibilityLabel": "Moon phase: {{phase}}, {{illumination}}",
+    "voiceAccessibilityLabel": "{{name}} by {{reciter}}",
+    "voiceAccessibilityLabelPro": "{{name}} by {{reciter}} (Pro, upgrade required to select)",
+    "surahNameAccessibilityLabel": "Surah {{name}}",
+    "readOnWikiAccessibilityLabel": "Read Surah {{name}} on Islam.Wiki",
+    "verseAccessibilityLabel": "Verse {{number}}: {{transliteration}}",
+    "featuredVerseAccessibilityLabel": "{{label}}: Ayat al-Kursi",
+    "surahRowAccessibilityLabel": "Surah {{number}}, {{name}}, {{count}} verses, {{type}}",
+    "fullTextAvailableSuffix": ", full text available",
+    "revelationMeccan": "Meccan",
+    "revelationMedinan": "Medinan"
   },
   "onboarding": {
     "skip": "Skip",

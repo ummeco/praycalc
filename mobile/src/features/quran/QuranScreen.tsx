@@ -125,7 +125,7 @@ export default function QuranScreen() {
               style={styles.featuredCard}
               onPress={() => setShowKursi(true)}
               accessibilityRole="button"
-              accessibilityLabel={`${t('screens.quran.featuredVerse')}: Ayat al-Kursi`}
+              accessibilityLabel={t('screens.quran.featuredVerseAccessibilityLabel', { label: t('screens.quran.featuredVerse') })}
             >
               <Text style={styles.featuredArabic}>آيَةُ الْكُرْسِيِّ</Text>
               <Text style={styles.featuredLabel}>{t('screens.quran.featuredVerse')} · 2:255</Text>
@@ -139,7 +139,14 @@ export default function QuranScreen() {
               style={styles.surahRow}
               onPress={() => setSelectedSurah(surah)}
               accessibilityRole="button"
-              accessibilityLabel={`Surah ${surah.number}, ${surah.transliteratedName}, ${surah.verseCount} verses, ${surah.revelationType}${hasText ? ', full text available' : ''}`}
+              accessibilityLabel={t('screens.quran.surahRowAccessibilityLabel', {
+                number: surah.number,
+                name: surah.transliteratedName,
+                count: surah.verseCount,
+                type: surah.revelationType === 'medinan'
+                  ? t('screens.quran.revelationMedinan')
+                  : t('screens.quran.revelationMeccan'),
+              }) + (hasText ? t('screens.quran.fullTextAvailableSuffix') : '')}
             >
               <View style={styles.numberBadge}>
                 <Text style={styles.numberText}>{surah.number}</Text>

@@ -52,19 +52,19 @@ export function SettingsAdjustmentsSection({
                   style={styles.stepperButton}
                   onPress={() => onAdjustPrayerMinutes(prayer, -1)}
                   accessibilityRole="button"
-                  accessibilityLabel={`Decrease ${prayer} adjustment`}
+                  accessibilityLabel={t('settings.prayerAdjustments.decreaseAccessibilityLabel', { prayer: t(PRAYER_LABEL_KEYS[prayer]) })}
                   hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
                 >
                   <Text style={styles.stepperButtonText}>−</Text>
                 </TouchableOpacity>
-                <Text style={styles.stepperValue} accessibilityLabel={`${prayer} adjustment: ${value} minutes`}>
+                <Text style={styles.stepperValue} accessibilityLabel={t('settings.prayerAdjustments.valueAccessibilityLabel', { prayer: t(PRAYER_LABEL_KEYS[prayer]), value })}>
                   {value > 0 ? `+${value}` : value} min
                 </Text>
                 <TouchableOpacity
                   style={styles.stepperButton}
                   onPress={() => onAdjustPrayerMinutes(prayer, 1)}
                   accessibilityRole="button"
-                  accessibilityLabel={`Increase ${prayer} adjustment`}
+                  accessibilityLabel={t('settings.prayerAdjustments.increaseAccessibilityLabel', { prayer: t(PRAYER_LABEL_KEYS[prayer]) })}
                   hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
                 >
                   <Text style={styles.stepperButtonText}>+</Text>
@@ -93,7 +93,7 @@ export function SettingsAdjustmentsSection({
             >
               <Text style={styles.stepperButtonText}>−</Text>
             </TouchableOpacity>
-            <Text style={styles.stepperValue} accessibilityLabel={`Hijri offset: ${hijriDayAdjustment} days`}>
+            <Text style={styles.stepperValue} accessibilityLabel={t('settings.hijriAdjustment.valueAccessibilityLabel', { value: hijriDayAdjustment })}>
               {hijriDayAdjustment > 0 ? `+${hijriDayAdjustment}` : hijriDayAdjustment} d
             </Text>
             <TouchableOpacity

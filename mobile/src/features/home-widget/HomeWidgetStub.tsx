@@ -32,6 +32,8 @@ import { useAuthStore } from '../auth/store/useAuthStore';
 import { useSettingsStore, useActiveLocation } from '../settings/store/useSettingsStore';
 import { usePrayerTimes } from '../prayer/hooks/usePrayerTimes';
 import type { CalcMethodKey } from '../../constants/methods';
+import { formatTime } from '../../lib/formatTime';
+import { APP_NAME } from '../../constants';
 
 /** Must match the `name` in app.json's react-native-android-widget plugin config. */
 const NEXT_PRAYER_WIDGET_NAME = 'NextPrayer';
@@ -110,8 +112,8 @@ export default function HomeWidgetScreen() {
   if (!isPlus) {
     return (
       <EmptyState
-        message="The home screen widget is an Ummat+ feature."
-        action="Upgrade to Ummat+"
+        message={t('screens.homeWidget.upsellMessage')}
+        action={t('screens.homeWidget.upsellAction')}
         onAction={() => router.push('/subscription')}
       />
     );
@@ -136,9 +138,11 @@ export default function HomeWidgetScreen() {
               <>
                 <Text style={styles.widgetPrayer}>{nextPrayer}</Text>
                 <Text style={styles.widgetTime}>
-                  {times[nextPrayer].toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })}
+                  {formatTime(times[nextPrayer], settings.timeFormat, settings.locale)}
                 </Text>
-                <Text style={styles.widgetCountdown}>in {formatCountdown(secondsToNextPrayer)}</Text>
+                <Text style={styles.widgetCountdown}>
+                  {t('screens.homeWidget.countdownPrefix', { countdown: formatCountdown(secondsToNextPrayer) })}
+                </Text>
               </>
             ) : (
               <Text style={styles.widgetTime}>{t('screens.homeWidget.setLocationToPreview')}</Text>
@@ -149,11 +153,11 @@ export default function HomeWidgetScreen() {
         <View style={styles.card}>
           <Text style={styles.cardTitle}>{t('screens.homeWidget.setupInstructions')}</Text>
           {[
-            'Long-press your home screen',
-            'Tap the + button (iOS) or Widgets menu (Android)',
-            'Search for "Prayer Times"',
-            'Choose your preferred widget size',
-            'Tap Add Widget',
+            t('screens.homeWidget.setupStep1'),
+            t('screens.homeWidget.setupStep2'),
+            t('screens.homeWidget.setupStep3', { appName: APP_NAME }),
+            t('screens.homeWidget.setupStep4'),
+            t('screens.homeWidget.setupStep5'),
           ].map((step, i) => (
             <View key={i} style={styles.step}>
               <View style={styles.stepNum}>
@@ -166,15 +170,8 @@ export default function HomeWidgetScreen() {
 
         <View style={styles.statusCard}>
           <Text style={styles.statusTitle}>{t('screens.homeWidget.integrationStatus')}</Text>
-          <Text style={styles.statusText}>
-            Android: live — the "Next Prayer" home-screen widget ships via
-            react-native-android-widget and refreshes automatically every 30 minutes
-            (and immediately after you change settings or notifications).
-          </Text>
-          <Text style={styles.statusText}>
-            iOS: live — the "Next Prayer" WidgetKit widget updates whenever you change
-            settings or notifications and advances at each prayer time on its own.
-          </Text>
+          <Text style={styles.statusText}>{t('screens.homeWidget.statusAndroid')}</Text>
+          <Text style={styles.statusText}>{t('screens.homeWidget.statusIos')}</Text>
         </View>
       </ScrollView>
     </SafeAreaView>

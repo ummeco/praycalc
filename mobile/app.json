@@ -66,7 +66,8 @@
       [
         "expo-location",
         {
-          "locationAlwaysAndWhenInUsePermission": "Allow Prayer Times to access your location to calculate accurate prayer times."
+          "locationAlwaysAndWhenInUsePermission": "Allow Prayer Times to access your location to calculate accurate prayer times.",
+          "isAndroidBackgroundLocationEnabled": true
         }
       ],
       [
@@ -125,27 +126,27 @@
       "typedRoutes": true
     },
     "locales": {
-      "en": "./src/i18n/en.json",
-      "ar": "./src/i18n/ar.json",
-      "fr": "./src/i18n/fr.json",
-      "ur": "./src/i18n/ur.json",
-      "tr": "./src/i18n/tr.json",
-      "id": "./src/i18n/id.json",
-      "ms": "./src/i18n/ms.json",
-      "bn": "./src/i18n/bn.json",
-      "sw": "./src/i18n/sw.json",
-      "es": "./src/i18n/es.json",
-      "de": "./src/i18n/de.json",
-      "nl": "./src/i18n/nl.json",
-      "pt": "./src/i18n/pt.json",
-      "it": "./src/i18n/it.json",
-      "ru": "./src/i18n/ru.json",
-      "hi": "./src/i18n/hi.json",
-      "ps": "./src/i18n/ps.json",
-      "fa": "./src/i18n/fa.json",
-      "so": "./src/i18n/so.json",
-      "ha": "./src/i18n/ha.json",
-      "yo": "./src/i18n/yo.json"
+      "en": "./locales/native/en.json",
+      "ar": "./locales/native/ar.json",
+      "fr": "./locales/native/fr.json",
+      "ur": "./locales/native/ur.json",
+      "tr": "./locales/native/tr.json",
+      "id": "./locales/native/id.json",
+      "ms": "./locales/native/ms.json",
+      "bn": "./locales/native/bn.json",
+      "sw": "./locales/native/sw.json",
+      "es": "./locales/native/es.json",
+      "de": "./locales/native/de.json",
+      "nl": "./locales/native/nl.json",
+      "pt": "./locales/native/pt.json",
+      "it": "./locales/native/it.json",
+      "ru": "./locales/native/ru.json",
+      "hi": "./locales/native/hi.json",
+      "ps": "./locales/native/ps.json",
+      "fa": "./locales/native/fa.json",
+      "so": "./locales/native/so.json",
+      "ha": "./locales/native/ha.json",
+      "yo": "./locales/native/yo.json"
     },
     "extra": {
       "eas": {

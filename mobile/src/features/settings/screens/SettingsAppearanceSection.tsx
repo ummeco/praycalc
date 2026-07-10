@@ -52,7 +52,7 @@ export function SettingsAppearanceSection({
               onPress={() => onSetTimeFormat(f)}
               accessibilityRole="radio"
               accessibilityState={{ checked: timeFormat === f }}
-              accessibilityLabel={f === '12h' ? '12-hour format' : '24-hour format'}
+              accessibilityLabel={f === '12h' ? t('settings.timeFormat.label12h') : t('settings.timeFormat.label24h')}
             >
               <Text style={[styles.toggleText, timeFormat === f && styles.toggleTextActive]}>
                 {f}
@@ -74,7 +74,7 @@ export function SettingsAppearanceSection({
                 style={[styles.toggleOption, themeMode === opt.key && styles.toggleOptionActive]}
                 onPress={() => onSetThemeMode(opt.key)}
                 accessibilityRole="radio"
-                accessibilityLabel={`${label} theme`}
+                accessibilityLabel={t('settings.appearance.themeAccessibilityLabel', { theme: label })}
                 accessibilityState={{ checked: themeMode === opt.key }}
               >
                 <Text style={[styles.toggleText, themeMode === opt.key && styles.toggleTextActive]}>

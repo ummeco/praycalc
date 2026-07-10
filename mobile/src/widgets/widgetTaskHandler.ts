@@ -24,6 +24,7 @@ import { useSettingsStore } from '../features/settings/store/useSettingsStore';
 import type { CalcMethodKey } from '../constants/methods';
 import type { PrayerName } from '../types/prayer';
 import { NextPrayerWidget } from './NextPrayerWidget';
+import { formatTime as formatTimeWithSettings } from '../lib/formatTime';
 
 /** Prayers eligible to be shown as "next" — Sunrise is not a salah. */
 const NEXT_PRAYER_CANDIDATES: PrayerName[] = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
@@ -175,9 +176,13 @@ export async function computeIosWidgetPayload(): Promise<IosWidgetPayload | null
   return { cityName, entries, generatedAt: now.getTime() };
 }
 
-/** Exported for reuse by callers that need to build the same widget-visible time string. */
+/** Exported for reuse by callers that need to build the same widget-visible time string.
+ *  Respects the user's timeFormat (12h/24h) + locale settings (MOB-6) — kept as a
+ *  single-Date-argument function so existing callers (liveActivity.ts,
+ *  HomeWidgetStub.tsx) do not need to change. */
 export function formatTime(date: Date): string {
-  return date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+  const { timeFormat, locale } = useSettingsStore.getState();
+  return formatTimeWithSettings(date, timeFormat, locale);
 }
 
 /**

@@ -39,7 +39,7 @@ export function DhikrCounter({
         <Text
           style={styles.arabicText}
           accessibilityRole="text"
-          accessibilityLabel={`Arabic: ${preset.transliteration}`}
+          accessibilityLabel={t('screens.tasbeeh.arabicTextAccessibilityLabel', { transliteration: preset.transliteration })}
         >
           {preset.arabic}
         </Text>
@@ -54,7 +54,10 @@ export function DhikrCounter({
         onPress={onIncrement}
         disabled={isComplete}
         accessibilityRole="button"
-        accessibilityLabel={`Count: ${count} of ${preset.targetCount}. ${isComplete ? 'Complete' : 'Tap to increment'}`}
+        accessibilityLabel={t('screens.tasbeeh.counterAccessibilityLabel', {
+          count, target: preset.targetCount,
+          status: isComplete ? t('common.complete') : t('screens.tasbeeh.tapToIncrement'),
+        })}
         activeOpacity={0.8}
       >
         <Text style={styles.countNumber}>{count}</Text>

@@ -138,7 +138,7 @@ export default function AdhanScreen() {
                 onValueChange={() => togglePrayer(name)}
                 trackColor={{ false: colors.background.card, true: colors.brand.mid }}
                 thumbColor={colors.brand.light}
-                accessibilityLabel={`Enable ${t(PRAYER_LABEL_KEYS[name])} adhan`}
+                accessibilityLabel={t('screens.adhan.enableAccessibilityLabel', { prayer: t(PRAYER_LABEL_KEYS[name]) })}
               />
             </View>
           ))}
@@ -155,7 +155,9 @@ export default function AdhanScreen() {
               onPress={() => handleSelect(voice)}
               accessibilityRole="radio"
               accessibilityState={{ selected: selectedId === voice.id }}
-              accessibilityLabel={`${voice.name} by ${voice.reciter}${voice.is_pro ? ' (Pro, upgrade required to select)' : ''}`}
+              accessibilityLabel={voice.is_pro
+                ? t('screens.adhan.voiceAccessibilityLabelPro', { name: voice.name, reciter: voice.reciter })
+                : t('screens.adhan.voiceAccessibilityLabel', { name: voice.name, reciter: voice.reciter })}
             >
               <View style={styles.voiceInfo}>
                 <Text style={styles.voiceName}>{voice.name}</Text>

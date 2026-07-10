@@ -134,7 +134,7 @@ export default function MosqueFinderScreen() {
           <View
             style={styles.row}
             accessible
-            accessibilityLabel={`${item.name}, ${formatDistance(item.distanceKm)} away`}
+            accessibilityLabel={t('screens.mosques.rowAccessibilityLabel', { name: item.name, distance: formatDistance(item.distanceKm) })}
           >
             <View style={styles.rowInfo}>
               <Text style={styles.mosqueName}>{item.name}</Text>
@@ -144,7 +144,7 @@ export default function MosqueFinderScreen() {
               style={styles.directionsBtn}
               onPress={() => handleOpenMaps(item)}
               accessibilityRole="button"
-              accessibilityLabel={`Open directions to ${item.name} in Maps`}
+              accessibilityLabel={t('screens.mosques.directionsAccessibilityLabel', { name: item.name })}
             >
               <Text style={styles.directionsBtnText}>{t('common.openInMaps')}</Text>
             </TouchableOpacity>

@@ -82,7 +82,7 @@ export function TvCardBody({
             ]}
             onPress={() => applyPatch(row, { accent_color: hex })}
             accessibilityRole="radio"
-            accessibilityLabel={`Accent color ${hex}`}
+            accessibilityLabel={t('screens.tvManager.accentColorAccessibilityLabel', { hex })}
             accessibilityState={{ selected: row.accent_color === hex }}
             hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
           />

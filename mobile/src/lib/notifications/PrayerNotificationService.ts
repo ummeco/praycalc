@@ -40,6 +40,7 @@ import { ADHAN_CATEGORY_ID, SNOOZE_ACTION_ID, SNOOZE_MINUTES } from './channelSe
 import { scheduleSmartAlarms } from './smartAlarms';
 import { scheduleJumuahReminders } from './jumuahReminders';
 import { refreshHomeScreenWidget } from './widgetRefresh';
+import { formatTime } from '../formatTime';
 
 const PRAYER_NAMES: PrayerName[] = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
 
@@ -119,9 +120,7 @@ async function getUpcomingPrayerNotifications(): Promise<ScheduledPrayer[]> {
 
       const advanceMinutes = settings.notificationAdvanceMinutes[name] ?? 0;
       const triggerTime = new Date(t.getTime() - advanceMinutes * 60_000);
-      const formattedTime = t.toLocaleTimeString('en-US', {
-        hour: '2-digit', minute: '2-digit', hour12: true,
-      });
+      const formattedTime = formatTime(t, settings.timeFormat, settings.locale);
       if (triggerTime.getTime() > now.getTime()) {
         result.push({
           name,

@@ -15,6 +15,7 @@
 import React from 'react';
 import { View, Text } from 'react-native';
 import type { TFunction } from 'i18next';
+import i18next from '../../../i18n';
 import type { TasbeehHistoryEntry } from '../tasbeehHistory';
 import type { TasbeehStyles } from '../TasbeehScreen.styles';
 
@@ -33,7 +34,7 @@ export function TasbeehHistoryPanel({
 
   return (
     <>
-      <View style={styles.todayTotalCard} accessibilityLabel={`Today's dhikr total: ${todayTotal}`}>
+      <View style={styles.todayTotalCard} accessibilityLabel={t('screens.tasbeeh.todayTotalAccessibilityLabel', { total: todayTotal })}>
         <Text style={styles.todayTotalNumber}>{todayTotal}</Text>
         <Text style={styles.todayTotalLabel}>{t('screens.tasbeeh.todayTotal')}</Text>
       </View>
@@ -42,12 +43,16 @@ export function TasbeehHistoryPanel({
         <View
           key={`${entry.completedAt}-${i}`}
           style={styles.historyRow}
-          accessibilityLabel={`${entry.dhikrName}: ${entry.count}, ${new Date(entry.completedAt).toLocaleString()}`}
+          accessibilityLabel={t('screens.tasbeeh.historyEntryAccessibilityLabel', {
+            name: entry.dhikrName,
+            count: entry.count,
+            date: new Date(entry.completedAt).toLocaleString(i18next.language),
+          })}
         >
           <Text style={styles.historyName}>{entry.dhikrName}</Text>
           <Text style={styles.historyCount}>× {entry.count}</Text>
           <Text style={styles.historyTime}>
-            {new Date(entry.completedAt).toLocaleDateString()}
+            {new Date(entry.completedAt).toLocaleDateString(i18next.language)}
           </Text>
         </View>
       ))}

@@ -135,7 +135,10 @@ export default function MoonScreen() {
         <View
           style={styles.moonContainer}
           accessibilityRole="image"
-          accessibilityLabel={`Moon phase: ${phaseLabel}, ${t('screens.moon.illuminatedPct', { pct: illuminationPct })}`}
+          accessibilityLabel={t('screens.moon.phaseAccessibilityLabel', {
+            phase: phaseLabel,
+            illumination: t('screens.moon.illuminatedPct', { pct: illuminationPct }),
+          })}
         >
           <Text style={styles.moonEmoji}>{moonData.phaseEmoji}</Text>
           <Text style={styles.phaseName}>{phaseLabel}</Text>
