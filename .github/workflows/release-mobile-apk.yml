@@ -92,6 +92,10 @@ jobs:
           # (async-storage's generated jni dir) under parallel project execution —
           # nondeterministic CMake "not an existing directory" failures. Serial is
           # slower but deterministic.
+          # Generate every library's codegen artifacts BEFORE :app's CMake configure
+          # references their jni output dirs (async-storage etc.) — the ordering is not
+          # reliably enforced by task deps in this autolinked tree.
+          ./gradlew generateCodegenArtifactsFromSchema --no-parallel
           ./gradlew :app:assembleRelease --no-parallel \
             -Pandroid.injected.signing.store.file="$PWD/app/release.keystore" \
             -Pandroid.injected.signing.store.password="$KEYSTORE_PASSWORD" \
