@@ -9,7 +9,8 @@ surface has its own tag prefix and its own workflow:
 | Mobile (iOS + Android phone/tablet) | `release-mobile.yml` | `mobile-v*` | React Native + Expo SDK 53, EAS Build + Submit |
 | TV (Apple TV + Android TV + Fire TV) | `release-tv.yml` | `tv-v*` | react-native-tvos (bare), EAS Build + Submit |
 | Desktop (macOS/Windows/Linux) | `release-desktop.yml` | `desktop-v*` | Tauri 2 |
-| Web | Vercel auto-deploy on push to `main` | — | Next.js (migrating to Astro per D-P2-STACK-CANON) |
+| Web | Vercel auto-deploy on push to `main` | — | Astro (D-P2-STACK-CANON) |
+| Docs (praycalc.org) | Vercel auto-deploy on push to `main` | — | Astro (static) |
 
 `flutter/` is an archived reference only (ADR-P8-09 superseded 2026-06-28) — its old
 `release.yml` pipeline is disabled and does not run. watchOS (`watchos/`) and Wear OS

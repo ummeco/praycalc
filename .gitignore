@@ -118,3 +118,6 @@ ehthumbs.db
 # Flutter macOS Pods (generated, not committed)
 flutter/macos/Pods/
 mobile/.expo/
+
+# Lighthouse CI report output (quality-gates.yml lighthouse/lighthouse-org jobs)
+.lighthouseci/

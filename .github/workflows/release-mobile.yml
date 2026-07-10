@@ -9,8 +9,8 @@ name: Release PrayCalc Mobile (EAS Build + Submit)
 # `eas credentials` — see .github/docs/runbooks/mobile-tv-release-provisioning.md). This workflow
 # only needs EXPO_TOKEN plus the two store-submission secrets. No .p12/.keystore ever touches GitHub.
 on:
-  push:
-    tags: ['mobile-v*']
+  # Manual-only until the team provisions EXPO_TOKEN + store credentials.
+  # GitHub direct-install APK releases are handled by release-mobile-apk.yml (mobile-v* tags).
   workflow_dispatch:
     inputs:
       platform:
@@ -46,6 +46,19 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v7
+
+      - name: Verify tag matches app.json version
+        # Only meaningful for tag-triggered runs — a manual workflow_dispatch run has no
+        # tag and always builds whatever app.json currently says (REL-06).
+        if: github.ref_type == 'tag'
+        run: |
+          TAG_VERSION="${GITHUB_REF_NAME#mobile-v}"
+          APP_VERSION=$(node -p "require('./app.json').expo.version")
+          if [ "$TAG_VERSION" != "$APP_VERSION" ]; then
+            echo "::error::Tag version ($TAG_VERSION) does not match mobile/app.json expo.version ($APP_VERSION)"
+            exit 1
+          fi
+          echo "Version check passed: tag=$TAG_VERSION app.json=$APP_VERSION"
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4

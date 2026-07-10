@@ -11,7 +11,7 @@ on:
       project_path:
         required: true
         type: string
-        description: 'Path to the Next.js project (relative to repo root)'
+        description: 'Path to the Astro project (relative to repo root)'
       build_command:
         required: false
         type: string
@@ -46,4 +46,9 @@ jobs:
         with:
           name: lighthouse-${{ inputs.project_path }}
           path: ${{ inputs.project_path }}/.lighthouseci
+          # upload-artifact@v7 defaults include-hidden-files to false, which silently
+          # drops the dot-directory .lighthouseci every time — the run then reports
+          # 0 uploaded files with no error, exactly when a failing gate needs the
+          # debugging artifact most (LH-05).
+          include-hidden-files: true
           retention-days: 30

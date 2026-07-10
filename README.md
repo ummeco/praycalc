@@ -50,7 +50,7 @@ PrayCalc is a free, GPS-accurate Islamic prayer time calculator for web and mobi
 | API | Hasura GraphQL Engine (all data access via GraphQL, no direct SQL) |
 | Auth | Hasura Auth — shared SSO at auth.ummat.dev |
 | Docs site | Astro + MDX |
-| i18n | next-intl (8 locales) |
+| i18n | Astro built-in i18n routing (12 locales) |
 | PWA | Serwist (service worker, offline caching) |
 | Testing | Vitest (unit), Playwright (E2E, 3-viewport matrix) |
 | Deploy | Vercel (projects: ummat-praycalc, ummat-praycalc-org) |
@@ -62,7 +62,12 @@ praycalc/
 ├── web/        praycalc.com — Astro web app
 ├── org/        praycalc.org — documentation site
 ├── desktop/    menu bar / tray app — Tauri 2 + Vite + React 19 (macOS, Windows, Linux)
-└── flutter/    iOS + Android + macOS + Windows + Linux + TV + Watch + Smart Display
+├── mobile/     iOS + Android phone/tablet — React Native + Expo SDK 53
+├── tv/         Apple TV + Android TV + Fire TV — react-native-tvos
+├── watchos/    watchOS companion — Swift + SwiftUI (scaffold)
+├── wearos/     Wear OS companion — Kotlin + Jetpack Compose (scaffold)
+├── smart/      Smart Home backend (Google Home + Alexa fulfillment)
+└── flutter/    ARCHIVED reference only — do not add features here (see Tech Stack)
 ```
 
 ## Quick Start
@@ -98,23 +103,36 @@ pnpm install
 pnpm tauri dev
 ```
 
-**Flutter app:**
+**Mobile app:**
 
 ```bash
-cd flutter
-flutter pub get
-flutter run
+cd mobile
+pnpm install
+pnpm start
 ```
+
+**TV app:**
+
+```bash
+cd tv
+pnpm install
+pnpm start
+```
+
+`flutter/` is an archived reference only (superseded by `mobile/` + `tv/` per D-P2-PRAYCALC-RN) — do not run or extend it.
 
 ## Desktop Downloads
 
-Latest release: [desktop-v1.1.1](https://github.com/ummeco/praycalc/releases/tag/desktop-v1.1.1)
+Latest release: [ummeco/praycalc releases](https://github.com/ummeco/praycalc/releases?q=desktop-v) (filter to `desktop-v*` tags — the repo also cuts mobile/TV/whole-platform releases, so `/releases/latest` is not reliable for desktop specifically).
+
+The app ships with seamless auto-update (signed installers + in-app updater) since `desktop-v1.2.3` — install once and future versions install themselves.
 
 | Platform | Installers |
 | --- | --- |
 | macOS (arm64) | `.dmg`, `.app.tar.gz` |
+| macOS (Intel/x64) | `.dmg`, `.app.tar.gz` |
 | Windows (x64) | `.msi`, `.exe` |
-| Linux (x64) | `.deb`, `.AppImage`, `.rpm` |
+| Linux (x64) | `.deb`, `.AppImage` |
 
 ## Backend
 

@@ -93,6 +93,15 @@ jobs:
         working-directory: desktop/src-tauri
         run: cargo check --all-targets
 
+      - name: Cargo test (Rust)
+        # Linux leg only — this is the flagship cross-timezone countdown regression
+        # suite (timer.rs) plus commands.rs coverage; running once is enough to catch
+        # a regression and keeps the matrix fast. Was never run in CI at all before
+        # this (DT-09): a chrono::Local regression would have shipped green.
+        if: matrix.platform == 'ubuntu-22.04'
+        working-directory: desktop/src-tauri
+        run: cargo test --all-targets
+
       - name: Build Tauri app
         uses: tauri-apps/tauri-action@v0
         env:

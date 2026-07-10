@@ -1,0 +1,96 @@
+name: Release Android APK (GitHub direct-install)
+
+# Push a `mobile-v*` tag (e.g. mobile-v2.1.0) → build a SIGNED Android APK from the
+# Expo managed app (expo prebuild → Gradle) and publish it to a GitHub Release for
+# direct installation — no EAS account or store credentials required.
+#
+# Signing uses the Android Gradle Plugin's official "injected signing" properties
+# (-Pandroid.injected.signing.*), which override whatever signingConfig the
+# prebuild-generated build.gradle declares — so no build.gradle patching is needed.
+# The keystore lives only in GitHub secrets (PRAYCALC_ANDROID_KEYSTORE_B64 +
+# PRAYCALC_ANDROID_KEYSTORE_PASSWORD, alias `praycalc`).
+#
+# Store submission is a separate, human-triggered path: release-mobile.yml (EAS,
+# workflow_dispatch) once the team provisions EXPO_TOKEN + store credentials.
+on:
+  push:
+    tags: ['mobile-v*']
+
+permissions:
+  contents: write
+
+jobs:
+  build-apk:
+    name: Build signed APK
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    defaults:
+      run:
+        working-directory: mobile
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Verify tag matches app.json version
+        run: |
+          TAG_VERSION="${GITHUB_REF_NAME#mobile-v}"
+          APP_VERSION=$(node -p "require('./app.json').expo.version")
+          if [ "$TAG_VERSION" != "$APP_VERSION" ]; then
+            echo "::error::Tag version ($TAG_VERSION) does not match mobile/app.json expo.version ($APP_VERSION)"
+            exit 1
+          fi
+          echo "Version check passed: $TAG_VERSION"
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          cache: 'pnpm'
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Install JS dependencies
+        run: pnpm install --frozen-lockfile
+        working-directory: .
+
+      - name: Expo prebuild (generate android/)
+        run: npx expo prebuild --platform android --no-install
+
+      - name: Decode release keystore
+        run: echo "${{ secrets.PRAYCALC_ANDROID_KEYSTORE_B64 }}" | base64 -d > android/app/release.keystore
+
+      - name: Gradle assembleRelease (injected signing)
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.PRAYCALC_ANDROID_KEYSTORE_PASSWORD }}
+          # RN/Expo Gradle builds are memory-hungry on 7GB runners.
+          GRADLE_OPTS: -Xmx4g -Dorg.gradle.daemon=false
+        run: |
+          cd android
+          ./gradlew :app:assembleRelease \
+            -Pandroid.injected.signing.store.file="$PWD/app/release.keystore" \
+            -Pandroid.injected.signing.store.password="$KEYSTORE_PASSWORD" \
+            -Pandroid.injected.signing.key.alias=praycalc \
+            -Pandroid.injected.signing.key.password="$KEYSTORE_PASSWORD"
+
+      - name: Collect + checksum artifact
+        run: |
+          VERSION="${GITHUB_REF_NAME#mobile-v}"
+          APK=$(find android/app/build/outputs/apk/release -name '*.apk' | head -1)
+          if [ -z "$APK" ]; then echo "::error::No APK produced"; exit 1; fi
+          cp "$APK" "/tmp/PrayCalc-${VERSION}.apk"
+          cd /tmp && shasum -a 256 "PrayCalc-${VERSION}.apk" > "PrayCalc-${VERSION}.apk.sha256"
+
+      - name: Publish GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION="${GITHUB_REF_NAME#mobile-v}"
+          gh release create "$GITHUB_REF_NAME" \
+            --repo "$GITHUB_REPOSITORY" \
+            --title "PrayCalc Android $VERSION" \
+            --notes "Direct-install Android APK (signed). Download, open on your device, and allow the install prompt. Store builds (Play/App Store) ship separately once store credentials are provisioned." \
+            --latest=false \
+            "/tmp/PrayCalc-${VERSION}.apk" "/tmp/PrayCalc-${VERSION}.apk.sha256"

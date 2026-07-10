@@ -3,18 +3,73 @@ name: Release Tauri Desktop App
 # Push a `desktop-v*` tag (e.g. desktop-v1.1.0) → build every platform and
 # publish ONE GitHub release with all installers attached:
 #   macOS  .dmg + .app.tar.gz     Windows  .msi + .exe     Linux  .deb + .AppImage
+#
+# Three-job pipeline (the official tauri-action multi-platform pattern — see
+# tauri-apps/tauri-action's examples/publish-to-manual-release.yml):
+#   1. create-release  — creates ONE draft release up front, outputs its release_id.
+#   2. release-tauri-desktop (matrix) — each platform leg uploads installers to that
+#      SAME release via `releaseId` (no per-leg get-or-create, so there is no creation
+#      race and no last-writer-wins clobbering of latest.json while it's still assembling
+#      — see incident: run 29056489413 (desktop-v1.2.3) went live ~12 minutes before its
+#      final latest.json had all platforms merged in, because a failed+rerun macOS leg
+#      republished the manifest mid-flight under the old single-job design).
+#   3. publish-release — after every leg succeeds, flips the release from draft to
+#      published, then republishes latest.json to the rolling `desktop-latest` release
+#      (a stable, non-"latest"-marked alias the in-app updater polls — see UPD-1 —
+#      so a future non-desktop GitHub release, e.g. a whole-platform "v3.x" marker
+#      release, can never steal GitHub's global "latest" slug out from under the
+#      updater feed the way `releases/latest/download/latest.json` could).
 on:
   push:
     tags: ['desktop-v*']
 
-# The release is created once and every matrix leg uploads its own installers
-# to the same tag, so they must not race on creation — tauri-action handles this.
 permissions:
   contents: write
 
 jobs:
+  create-release:
+    name: Create draft release
+    runs-on: ubuntu-latest
+    outputs:
+      release_id: ${{ steps.create-release.outputs.result }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Verify tag matches tauri.conf.json version
+        # Tagging desktop-v1.3.0 without bumping tauri.conf.json would otherwise publish
+        # a release named 1.3.0 containing 1.2.x installers and a latest.json that lies
+        # about its own version — fail fast instead (REL-06).
+        run: |
+          TAG_VERSION="${GITHUB_REF_NAME#desktop-v}"
+          CONF_VERSION=$(node -p "require('./src-tauri/tauri.conf.json').version")
+          if [ "$TAG_VERSION" != "$CONF_VERSION" ]; then
+            echo "::error::Tag version ($TAG_VERSION) does not match desktop/src-tauri/tauri.conf.json version ($CONF_VERSION)"
+            exit 1
+          fi
+          echo "Version check passed: tag=$TAG_VERSION conf=$CONF_VERSION"
+        working-directory: desktop
+
+      - name: Create draft release
+        id: create-release
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const tag = context.ref.replace('refs/tags/', '');
+            const displayVersion = tag.replace(/^desktop-/, '');
+            const { data } = await github.rest.repos.createRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              tag_name: tag,
+              name: `PrayCalc Desktop ${displayVersion}`,
+              body: 'Menu bar / system tray prayer-time app for macOS, Windows, and Linux. Download the installer for your platform below.',
+              draft: true,
+              prerelease: false,
+            });
+            return data.id;
+
   release-tauri-desktop:
     name: Release (${{ matrix.label }})
+    needs: create-release
     strategy:
       fail-fast: false
       matrix:
@@ -83,7 +138,7 @@ jobs:
       - name: Install JS dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build Tauri app + publish to release
+      - name: Build Tauri app + upload to the draft release
         uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -97,9 +152,62 @@ jobs:
           # Base config keeps createUpdaterArtifacts off (so the unsigned on-push CI smoke
           # build stays green); this override turns it on for signed releases only.
           args: '--target ${{ matrix.targets }} --config {"bundle":{"createUpdaterArtifacts":true}}'
-          tagName: ${{ github.ref_name }}
-          releaseName: 'PrayCalc Desktop ${{ github.ref_name }}'
-          releaseBody: 'Menu bar / system tray prayer-time app for macOS, Windows, and Linux. Download the installer for your platform below.'
-          releaseDraft: false
-          prerelease: false
+          # releaseId (not tagName/releaseDraft) — every leg uploads assets to the SAME
+          # draft release created above instead of each independently finding-or-creating
+          # one, which is what caused the creation/merge race this pipeline used to have.
+          releaseId: ${{ needs.create-release.outputs.release_id }}
           includeUpdaterJson: true
+
+  publish-release:
+    name: Publish release + update desktop-latest
+    needs: [create-release, release-tauri-desktop]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Flip the draft release to published
+        uses: actions/github-script@v7
+        env:
+          release_id: ${{ needs.create-release.outputs.release_id }}
+        with:
+          script: |
+            await github.rest.repos.updateRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              release_id: process.env.release_id,
+              draft: false,
+              prerelease: false,
+            });
+
+      - name: Download latest.json from the versioned release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          mkdir -p /tmp/desktop-latest
+          gh release download "${{ github.ref_name }}" \
+            --repo "${{ github.repository }}" \
+            --pattern latest.json \
+            --dir /tmp/desktop-latest \
+            --clobber
+
+      - name: Ensure the rolling desktop-latest release exists
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if ! gh release view desktop-latest --repo "${{ github.repository }}" >/dev/null 2>&1; then
+            gh release create desktop-latest \
+              --repo "${{ github.repository }}" \
+              --title 'Desktop auto-update manifest (rolling)' \
+              --notes 'Rolling alias, not a downloadable release. Hosts only the stable
+          latest.json the in-app updater polls at
+          releases/download/desktop-latest/latest.json — immune to GitHub repo-wide
+          "latest release" reassignment from unrelated (non-desktop) releases. Get
+          installers from the versioned desktop-v* release instead.' \
+              --latest=false
+          fi
+
+      - name: Publish latest.json to the desktop-latest rolling release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release upload desktop-latest /tmp/desktop-latest/latest.json \
+            --repo "${{ github.repository }}" \
+            --clobber

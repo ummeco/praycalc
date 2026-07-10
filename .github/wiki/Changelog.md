@@ -2,6 +2,17 @@
 
 All notable changes to PrayCalc are documented here.
 
+## 2026-07-09 — Desktop 1.2.3: seamless auto-update
+
+Signed release artifacts (`.sig` per installer + `latest.json`) ship for the first time — the installed desktop app now checks for updates on launch and hourly, downloads in the background, and shows a "Restart to update" banner when a new version is ready. No more manual re-download for macOS/Windows/Linux users.
+
+## 2026-07-09 — Desktop 1.2.2: TV account control + hardening
+
+- "My TVs" tab: pair a TV by 6-digit code, manage per-TV countdown takeover, iqama times, prayer-name-only mode, calculation method, madhab, and time format from the desktop app.
+- ESLint flat config wired into desktop CI; billing status now caches the last-known-good response so a transient network blip doesn't drop a valid Ummat+ entitlement.
+- Split 4 oversized source files into smaller modules; tray icon/text contrast fixed for WCAG AA; Tauri capabilities trimmed to least-privilege.
+- Fixed a cross-timezone countdown bug: the next-prayer timer now computes against the configured prayer timezone instead of the host machine's local timezone.
+
 ## 2026-07-07 — Competitive gap-closure campaign (Waves 1-3)
 
 After a market gap analysis vs Muslim Pro, Athan, Pillars and Sajda, closed the itemized gaps across every surface in three waves.
