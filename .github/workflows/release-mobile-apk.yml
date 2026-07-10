@@ -75,15 +75,7 @@ jobs:
         # the build. Known Expo-locales artifact, not a real defect — the keys are
         # inert on Android. Disable the release-abort; full lint still runs in dev.
         run: |
-          cat >> android/app/build.gradle << 'EOF'
-
-          android {
-              lint {
-                  checkReleaseBuilds false
-                  abortOnError false
-              }
-          }
-          EOF
+          printf '\nandroid {\n    lint {\n        checkReleaseBuilds false\n        abortOnError false\n    }\n}\n' >> android/app/build.gradle
           tail -8 android/app/build.gradle
 
       - name: Decode release keystore
