@@ -128,15 +128,30 @@ importers:
       '@acamarata/pray-calc':
         specifier: workspace:*
         version: link:../packages/pray-calc
+      '@babel/runtime':
+        specifier: ^7.29.2
+        version: 7.29.2
       '@bacons/apple-targets':
         specifier: ^4.0.7
         version: 4.0.7(expo@53.0.27(@babel/core@7.29.0)(@expo/metro-runtime@5.0.5(react-native@0.79.6(@babel/core@7.29.0)(@react-native-community/cli@13.6.9)(@types/react@19.2.14)(react@19.0.0)))(graphql@16.14.2)(react-native@0.79.6(@babel/core@7.29.0)(@react-native-community/cli@13.6.9)(@types/react@19.2.14)(react@19.0.0))(react@19.0.0))
+      '@expo/metro-runtime':
+        specifier: ~5.0.5
+        version: 5.0.5(react-native@0.79.6(@babel/core@7.29.0)(@react-native-community/cli@13.6.9)(@types/react@19.2.14)(react@19.0.0))
       '@expo/vector-icons':
         specifier: ^14.0.2
         version: 14.1.0(expo-font@13.3.2(expo@53.0.27(@babel/core@7.29.0)(@expo/metro-runtime@5.0.5(react-native@0.79.6(@babel/core@7.29.0)(@react-native-community/cli@13.6.9)(@types/react@19.2.14)(react@19.0.0)))(graphql@16.14.2)(react-native@0.79.6(@babel/core@7.29.0)(@react-native-community/cli@13.6.9)(@types/react@19.2.14)(react@19.0.0))(react@19.0.0))(react@19.0.0))(react-native@0.79.6(@babel/core@7.29.0)(@react-native-community/cli@13.6.9)(@types/react@19.2.14)(react@19.0.0))(react@19.0.0)
       '@react-native-async-storage/async-storage':
         specifier: ^2.1.2
         version: 2.2.0(react-native@0.79.6(@babel/core@7.29.0)(@react-native-community/cli@13.6.9)(@types/react@19.2.14)(react@19.0.0))
+      '@react-native/virtualized-lists':
+        specifier: 0.79.6
+        version: 0.79.6(@types/react@19.2.14)(react-native@0.79.6(@babel/core@7.29.0)(@react-native-community/cli@13.6.9)(@types/react@19.2.14)(react@19.0.0))(react@19.0.0)
+      '@react-navigation/elements':
+        specifier: ^1.3.31
+        version: 1.3.31(@react-navigation/native@6.1.18(react-native@0.79.6(@babel/core@7.29.0)(@react-native-community/cli@13.6.9)(@types/react@19.2.14)(react@19.0.0))(react@19.0.0))(react-native-safe-area-context@5.4.0(react-native@0.79.6(@babel/core@7.29.0)(@react-native-community/cli@13.6.9)(@types/react@19.2.14)(react@19.0.0))(react@19.0.0))(react-native@0.79.6(@babel/core@7.29.0)(@react-native-community/cli@13.6.9)(@types/react@19.2.14)(react@19.0.0))(react@19.0.0)
+      '@react-navigation/native':
+        specifier: ^6.1.18
+        version: 6.1.18(react-native@0.79.6(@babel/core@7.29.0)(@react-native-community/cli@13.6.9)(@types/react@19.2.14)(react@19.0.0))(react@19.0.0)
       '@sentry/react-native':
         specifier: ^6.3.0
         version: 6.22.0(expo@53.0.27(@babel/core@7.29.0)(@expo/metro-runtime@5.0.5(react-native@0.79.6(@babel/core@7.29.0)(@react-native-community/cli@13.6.9)(@types/react@19.2.14)(react@19.0.0)))(graphql@16.14.2)(react-native@0.79.6(@babel/core@7.29.0)(@react-native-community/cli@13.6.9)(@types/react@19.2.14)(react@19.0.0))(react@19.0.0))(react-native@0.79.6(@babel/core@7.29.0)(@react-native-community/cli@13.6.9)(@types/react@19.2.14)(react@19.0.0))(react@19.0.0)
@@ -146,6 +161,18 @@ importers:
       '@urql/exchange-auth':
         specifier: ^3.0.0
         version: 3.0.0(@urql/core@5.2.0(graphql@16.14.2))
+      abort-controller:
+        specifier: ^3.0.0
+        version: 3.0.0
+      ansi-regex:
+        specifier: ^4.1.1
+        version: 4.1.1
+      base64-js:
+        specifier: ^1.5.1
+        version: 1.5.1
+      event-target-shim:
+        specifier: ^5.0.1
+        version: 5.0.1
       expo:
         specifier: ~53.0.0
         version: 53.0.27(@babel/core@7.29.0)(@expo/metro-runtime@5.0.5(react-native@0.79.6(@babel/core@7.29.0)(@react-native-community/cli@13.6.9)(@types/react@19.2.14)(react@19.0.0)))(graphql@16.14.2)(react-native@0.79.6(@babel/core@7.29.0)(@react-native-community/cli@13.6.9)(@types/react@19.2.14)(react@19.0.0))(react@19.0.0)
@@ -221,9 +248,24 @@ importers:
       i18next:
         specifier: ^23.15.2
         version: 23.16.8
+      invariant:
+        specifier: ^2.2.4
+        version: 2.2.4
+      memoize-one:
+        specifier: ^4.0.3
+        version: 4.0.3
+      nrel-spa:
+        specifier: ^2.0.1
+        version: 2.0.1
+      nullthrows:
+        specifier: ^1.1.1
+        version: 1.1.1
       pray-calc:
         specifier: ^2.1.2
         version: 2.1.2
+      promise:
+        specifier: ^8.3.0
+        version: 8.3.0
       react:
         specifier: 19.0.0
         version: 19.0.0
@@ -242,6 +284,9 @@ importers:
       react-native-iap:
         specifier: 13.0.4
         version: 13.0.4(expo@53.0.27(@babel/core@7.29.0)(@expo/metro-runtime@5.0.5(react-native@0.79.6(@babel/core@7.29.0)(@react-native-community/cli@13.6.9)(@types/react@19.2.14)(react@19.0.0)))(graphql@16.14.2)(react-native@0.79.6(@babel/core@7.29.0)(@react-native-community/cli@13.6.9)(@types/react@19.2.14)(react@19.0.0))(react@19.0.0))(react-native@0.79.6(@babel/core@7.29.0)(@react-native-community/cli@13.6.9)(@types/react@19.2.14)(react@19.0.0))(react@19.0.0)
+      react-native-is-edge-to-edge:
+        specifier: ^1.1.7
+        version: 1.3.1(react-native@0.79.6(@babel/core@7.29.0)(@react-native-community/cli@13.6.9)(@types/react@19.2.14)(react@19.0.0))(react@19.0.0)
       react-native-mmkv:
         specifier: ^3.2.0
         version: 3.3.3(react-native@0.79.6(@babel/core@7.29.0)(@react-native-community/cli@13.6.9)(@types/react@19.2.14)(react@19.0.0))(react@19.0.0)
@@ -260,9 +305,18 @@ importers:
       react-native-volume-manager:
         specifier: ^2.0.8
         version: 2.0.8(react-native@0.79.6(@babel/core@7.29.0)(@react-native-community/cli@13.6.9)(@types/react@19.2.14)(react@19.0.0))(react@19.0.0)
+      regenerator-runtime:
+        specifier: ^0.13.11
+        version: 0.13.11
+      stacktrace-parser:
+        specifier: ^0.1.11
+        version: 0.1.11
       urql:
         specifier: ^4.1.0
         version: 4.2.2(@urql/core@5.2.0(graphql@16.14.2))(react@19.0.0)
+      whatwg-fetch:
+        specifier: ^3.6.20
+        version: 3.6.20
       zustand:
         specifier: ^5.0.0
         version: 5.0.12(@types/react@19.2.14)(react@19.0.0)(use-sync-external-store@1.6.0(react@19.0.0))
@@ -514,7 +568,7 @@ importers:
         version: 3.7.3
       '@astrojs/vercel':
         specifier: ^8.1.4
-        version: 8.2.11(astro@5.18.2(@types/node@26.1.0)(@vercel/functions@2.2.13)(ioredis@5.10.1)(jiti@2.7.0)(rollup@4.60.3)(terser@5.46.2)(typescript@5.9.3)(yaml@2.9.0))(next@16.2.7(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(@playwright/test@1.59.1)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react@19.2.7)(rollup@4.60.3)
+        version: 8.2.11(astro@5.18.2(@types/node@26.1.0)(@vercel/functions@2.2.13)(ioredis@5.10.1)(jiti@2.7.0)(rollup@4.60.3)(terser@5.46.2)(typescript@5.9.3)(yaml@2.9.0))(next@16.2.7(@opentelemetry/api@1.9.1)(@playwright/test@1.59.1)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react@19.2.7)(rollup@4.60.3)
       '@fontsource-variable/inter':
         specifier: ^5.2.8
         version: 5.2.8
@@ -10533,10 +10587,10 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@astrojs/vercel@8.2.11(astro@5.18.2(@types/node@26.1.0)(@vercel/functions@2.2.13)(ioredis@5.10.1)(jiti@2.7.0)(rollup@4.60.3)(terser@5.46.2)(typescript@5.9.3)(yaml@2.9.0))(next@16.2.7(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(@playwright/test@1.59.1)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react@19.2.7)(rollup@4.60.3)':
+  '@astrojs/vercel@8.2.11(astro@5.18.2(@types/node@26.1.0)(@vercel/functions@2.2.13)(ioredis@5.10.1)(jiti@2.7.0)(rollup@4.60.3)(terser@5.46.2)(typescript@5.9.3)(yaml@2.9.0))(next@16.2.7(@opentelemetry/api@1.9.1)(@playwright/test@1.59.1)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react@19.2.7)(rollup@4.60.3)':
     dependencies:
       '@astrojs/internal-helpers': 0.7.4
-      '@vercel/analytics': 1.6.1(next@16.2.7(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(@playwright/test@1.59.1)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react@19.2.7)
+      '@vercel/analytics': 1.6.1(next@16.2.7(@opentelemetry/api@1.9.1)(@playwright/test@1.59.1)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react@19.2.7)
       '@vercel/functions': 2.2.13
       '@vercel/nft': 0.30.3(rollup@4.60.3)
       '@vercel/routing-utils': 5.3.3
@@ -13225,6 +13279,13 @@ snapshots:
       react-native: react-native-tvos@0.74.5-0(patch_hash=d392e7e2b58a6a68b4fd977b0474c708c62959f8f3f6c6f0b98d86062dbfd8fe)(@babel/core@7.29.0)(@babel/preset-env@7.29.7(@babel/core@7.29.0))(@types/react@19.2.14)(react-native-tvos@0.74.5-0)(react@19.0.0)
       react-native-safe-area-context: 5.4.0(react-native-tvos@0.74.5-0)(react@19.0.0)
 
+  '@react-navigation/elements@1.3.31(@react-navigation/native@6.1.18(react-native@0.79.6(@babel/core@7.29.0)(@react-native-community/cli@13.6.9)(@types/react@19.2.14)(react@19.0.0))(react@19.0.0))(react-native-safe-area-context@5.4.0(react-native@0.79.6(@babel/core@7.29.0)(@react-native-community/cli@13.6.9)(@types/react@19.2.14)(react@19.0.0))(react@19.0.0))(react-native@0.79.6(@babel/core@7.29.0)(@react-native-community/cli@13.6.9)(@types/react@19.2.14)(react@19.0.0))(react@19.0.0)':
+    dependencies:
+      '@react-navigation/native': 6.1.18(react-native@0.79.6(@babel/core@7.29.0)(@react-native-community/cli@13.6.9)(@types/react@19.2.14)(react@19.0.0))(react@19.0.0)
+      react: 19.0.0
+      react-native: 0.79.6(@babel/core@7.29.0)(@react-native-community/cli@13.6.9)(@types/react@19.2.14)(react@19.0.0)
+      react-native-safe-area-context: 5.4.0(react-native@0.79.6(@babel/core@7.29.0)(@react-native-community/cli@13.6.9)(@types/react@19.2.14)(react@19.0.0))(react@19.0.0)
+
   '@react-navigation/elements@2.9.25(@react-navigation/native@7.3.3(react-native@0.79.6(@babel/core@7.29.0)(@react-native-community/cli@13.6.9)(@types/react@19.2.14)(react@19.0.0))(react@19.0.0))(react-native-safe-area-context@5.4.0(react-native@0.79.6(@babel/core@7.29.0)(@react-native-community/cli@13.6.9)(@types/react@19.2.14)(react@19.0.0))(react@19.0.0))(react-native@0.79.6(@babel/core@7.29.0)(@react-native-community/cli@13.6.9)(@types/react@19.2.14)(react@19.0.0))(react@19.0.0)':
     dependencies:
       '@react-navigation/native': 7.3.3(react-native@0.79.6(@babel/core@7.29.0)(@react-native-community/cli@13.6.9)(@types/react@19.2.14)(react@19.0.0))(react@19.0.0)
@@ -13257,6 +13318,15 @@ snapshots:
       nanoid: 3.3.12
       react: 19.0.0
       react-native: react-native-tvos@0.74.5-0(patch_hash=d392e7e2b58a6a68b4fd977b0474c708c62959f8f3f6c6f0b98d86062dbfd8fe)(@babel/core@7.29.0)(@babel/preset-env@7.29.7(@babel/core@7.29.0))(@types/react@19.2.14)(react-native-tvos@0.74.5-0)(react@19.0.0)
+
+  '@react-navigation/native@6.1.18(react-native@0.79.6(@babel/core@7.29.0)(@react-native-community/cli@13.6.9)(@types/react@19.2.14)(react@19.0.0))(react@19.0.0)':
+    dependencies:
+      '@react-navigation/core': 6.4.17(react@19.0.0)
+      escape-string-regexp: 4.0.0
+      fast-deep-equal: 3.1.3
+      nanoid: 3.3.12
+      react: 19.0.0
+      react-native: 0.79.6(@babel/core@7.29.0)(@react-native-community/cli@13.6.9)(@types/react@19.2.14)(react@19.0.0)
 
   '@react-navigation/native@7.3.3(react-native@0.79.6(@babel/core@7.29.0)(@react-native-community/cli@13.6.9)(@types/react@19.2.14)(react@19.0.0))(react@19.0.0)':
     dependencies:
@@ -14602,9 +14672,9 @@ snapshots:
       next: 16.2.7(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(@playwright/test@1.59.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       react: 19.2.4
 
-  '@vercel/analytics@1.6.1(next@16.2.7(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(@playwright/test@1.59.1)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react@19.2.7)':
+  '@vercel/analytics@1.6.1(next@16.2.7(@opentelemetry/api@1.9.1)(@playwright/test@1.59.1)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react@19.2.7)':
     optionalDependencies:
-      next: 16.2.7(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(@playwright/test@1.59.1)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      next: 16.2.7(@opentelemetry/api@1.9.1)(@playwright/test@1.59.1)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       react: 19.2.7
 
   '@vercel/functions@2.2.13':
@@ -19483,7 +19553,7 @@ snapshots:
       - babel-plugin-macros
     optional: true
 
-  next@16.2.7(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(@playwright/test@1.59.1)(react-dom@19.2.7(react@19.2.7))(react@19.2.7):
+  next@16.2.7(@opentelemetry/api@1.9.1)(@playwright/test@1.59.1)(react-dom@19.2.7(react@19.2.7))(react@19.2.7):
     dependencies:
       '@next/env': 16.2.7
       '@swc/helpers': 0.5.15
@@ -19492,7 +19562,7 @@ snapshots:
       postcss: 8.5.14
       react: 19.2.7
       react-dom: 19.2.7(react@19.2.7)
-      styled-jsx: 5.1.6(@babel/core@7.29.0)(react@19.2.7)
+      styled-jsx: 5.1.6(react@19.2.7)
     optionalDependencies:
       '@next/swc-darwin-arm64': 16.2.7
       '@next/swc-darwin-x64': 16.2.7
@@ -21182,12 +21252,10 @@ snapshots:
       '@babel/core': 7.29.0
     optional: true
 
-  styled-jsx@5.1.6(@babel/core@7.29.0)(react@19.2.7):
+  styled-jsx@5.1.6(react@19.2.7):
     dependencies:
       client-only: 0.0.1
       react: 19.2.7
-    optionalDependencies:
-      '@babel/core': 7.29.0
     optional: true
 
   sucrase@3.35.0:
