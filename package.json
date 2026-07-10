@@ -2,7 +2,7 @@
   "name": "praycalc",
   "private": true,
   "version": "0.0.0",
-  "description": "PrayCalc monorepo \u2014 prayer time calculator at praycalc.com",
+  "description": "PrayCalc monorepo — prayer time calculator at praycalc.com",
   "scripts": {
     "build": "pnpm -F praycalc-web build",
     "dev": "pnpm -F praycalc-web dev",
@@ -38,6 +38,13 @@
     "patchedDependencies": {
       "react-native-tvos@0.74.5-0": "patches/react-native-tvos@0.74.5-0.patch",
       "react-native-track-player@4.1.2": "patches/react-native-track-player@4.1.2.patch"
+    },
+    "packageExtensions": {
+      "@expo/metro-config": {
+        "dependencies": {
+          "metro": "~0.82.0"
+        }
+      }
     }
   },
   "packageManager": "pnpm@10.30.1"

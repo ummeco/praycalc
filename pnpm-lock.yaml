@@ -22,6 +22,8 @@ overrides:
   ws: '>=7.5.11'
   undici: '>=7.28.0'
 
+packageExtensionsChecksum: sha256-Gf83mnNeOFm4bsdkkYyZ9wx0RwPU5iAVL3Q6BE4+YOg=
+
 patchedDependencies:
   react-native-track-player@4.1.2:
     hash: 5cccd470f1addf95d5e5b2e2634134d5242396a3de4f71c75c3fa49385b29dd7
@@ -12090,11 +12092,14 @@ snapshots:
       glob: 10.5.0
       jsc-safe-url: 0.2.4
       lightningcss: 1.27.0
+      metro: 0.82.5
       minimatch: 9.0.9
       postcss: 8.5.14
       resolve-from: 5.0.0
     transitivePeerDependencies:
+      - bufferutil
       - supports-color
+      - utf-8-validate
 
   '@expo/metro-runtime@5.0.5(react-native@0.79.6(@babel/core@7.29.0)(@react-native-community/cli@13.6.9)(@types/react@19.2.14)(react@19.0.0))':
     dependencies:
