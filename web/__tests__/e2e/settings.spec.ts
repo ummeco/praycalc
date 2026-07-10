@@ -16,6 +16,17 @@ import { test, expect } from "@playwright/test";
 
 const LONDON = "/gb/england/london";
 
+
+/**
+ * Close the settings panel in a viewport-agnostic way. On <640px the panel is a
+ * full-screen takeover (nothing "outside" exists to click), so the canonical close
+ * affordance everywhere is the panel's own close button.
+ */
+async function closeSettingsPanel(page: import("@playwright/test").Page) {
+  await page.locator(".settings-panel-close").click();
+  await expect(page.locator(".settings-panel")).not.toBeVisible();
+}
+
 test.describe("Settings panel", () => {
   test.beforeEach(async ({ page }) => {
     await page.addInitScript(() => {
@@ -41,12 +52,19 @@ test.describe("Settings panel", () => {
     await expect(page.locator(".settings-panel")).toBeVisible();
   });
 
-  test("settings panel closes when clicking outside", async ({ page }) => {
+  test("settings panel closes (outside click on desktop, close button on mobile)", async ({ page }) => {
     await page.locator(".settings-gear-btn").click();
     await expect(page.locator(".settings-panel")).toBeVisible();
 
-    // Click somewhere outside the settings panel
-    await page.locator(".prayer-grid").click({ position: { x: 10, y: 10 } });
+    const width = page.viewportSize()?.width ?? 1280;
+    if (width < 640) {
+      // <640px the panel is a full-screen takeover — nothing outside exists to
+      // click, so the close button IS the canonical dismissal.
+      await page.locator(".settings-panel-close").click();
+    } else {
+      // Desktop: clicking anywhere outside dismisses.
+      await page.locator(".prayer-grid").click({ position: { x: 10, y: 10 } });
+    }
     await expect(page.locator(".settings-panel")).not.toBeVisible();
   });
 
@@ -165,8 +183,7 @@ test.describe("12h/24h time format toggle", () => {
 
     await toggle24h.click();
 
-    // Close panel
-    await page.locator(".prayer-grid").click({ position: { x: 10, y: 10 } });
+    await closeSettingsPanel(page);
 
     // In 24h mode, period spans should be gone (no am/pm)
     const periods = page.locator(".prayer-period");
@@ -181,9 +198,7 @@ test.describe("12h/24h time format toggle", () => {
     const row24h = panel.locator(".settings-row").filter({ hasText: "24-hour" });
     await row24h.locator("button").click();
 
-    // Close settings
-    await page.keyboard.press("Escape");
-    await page.locator(".prayer-grid").click({ position: { x: 10, y: 10 } });
+    await closeSettingsPanel(page);
 
     // Check times — 24h format shows hours 0–23
     const times = page.locator(".prayer-time");
@@ -241,9 +256,7 @@ test.describe("Qiyam toggle", () => {
 
     await toggle.click();
 
-    // Close panel
-    await page.locator("body").press("Escape");
-    await page.locator(".prayer-grid").click({ position: { x: 10, y: 10 } });
+    await closeSettingsPanel(page);
 
     // Qiyam row should now appear — grid has 7 rows
     const grid = page.locator(".prayer-grid");

@@ -122,10 +122,22 @@ async function seedSession(
 
 /** Clear both the current and pre-2026-07 legacy session keys. */
 async function clearAllSessionKeys(page: import("@playwright/test").Page) {
-  await page.evaluate(() => {
-    localStorage.removeItem("praycalc-profile");
-    localStorage.removeItem("praycalc-session");
-  });
+  // The page may still be settling a navigation when this runs (service-worker
+  // registration triggers a controllerchange reload on first visit) — an
+  // evaluate() mid-navigation throws "Execution context was destroyed".
+  // Settle first, then retry once if a straggler navigation still lands.
+  await page.waitForLoadState("load");
+  const clear = () =>
+    page.evaluate(() => {
+      localStorage.removeItem("praycalc-profile");
+      localStorage.removeItem("praycalc-session");
+    });
+  try {
+    await clear();
+  } catch {
+    await page.waitForLoadState("load");
+    await clear();
+  }
 }
 
 /** Switch from default magic-link tab to password tab. */
