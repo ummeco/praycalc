@@ -1,12 +1,12 @@
 ---
 layout: ../../layouts/DocPage.astro
 title: 'REST API'
-description: 'PrayCalc provides a free public REST API for prayer times, location search, geolocation, and PDF calendar generation.'
+description: 'PrayCalc provides a free public REST API for prayer times, location search, geolocation, and iCalendar export.'
 ---
 
 # REST API
 
-PrayCalc exposes a free public REST API for prayer time calculations, location lookup, and calendar generation. All endpoints accept GET requests and return JSON (or PDF for the calendar endpoint).
+PrayCalc exposes a free public REST API for prayer time calculations, location lookup, and calendar export. All endpoints accept GET requests and return JSON (or `text/calendar` for the ICS endpoint).
 
 ## Base URL
 
@@ -14,7 +14,9 @@ PrayCalc exposes a free public REST API for prayer time calculations, location l
 https://praycalc.com/api
 ```
 
-All endpoints are CORS-enabled for browser requests from any origin.
+These are same-origin endpoints for the praycalc.com web app (mobile, desktop, and the calendar export flow). There is no `Access-Control-Allow-Origin` header, so browser `fetch`/`XMLHttpRequest` calls from a different origin will be blocked by CORS — server-to-server calls (curl, backend jobs) are unaffected.
+
+There is no API key, authentication, or rate limiting on any endpoint.
 
 ---
 
@@ -23,52 +25,55 @@ All endpoints are CORS-enabled for browser requests from any origin.
 Calculate prayer times for a date range at any coordinate.
 
 ```
-GET /api/prayers?lat={lat}&lng={lng}&tz={tz}&from={date}&to={date}&hanafi={0|1}
+GET /api/prayers?lat={lat}&lng={lng}&tz={tz}&from={date}&to={date}&hanafi={0|1}&method={id}
 ```
 
 ### Parameters
 
 | Parameter | Type | Required | Description |
 | --- | --- | --- | --- |
-| `lat` | float | Yes | Latitude (-90 to 90) |
-| `lng` | float | Yes | Longitude (-180 to 180) |
-| `tz` | string | No | IANA timezone name (e.g., `America/New_York`) or numeric UTC offset (`-14`..`14`). Defaults to `UTC` |
+| `lat` | float | Yes | Latitude |
+| `lng` | float | Yes | Longitude |
+| `tz` | string | No | IANA timezone name (e.g., `America/New_York`). Defaults to `UTC` |
 | `from` | string | Yes | Start date in `YYYY-MM-DD` format |
 | `to` | string | Yes | End date in `YYYY-MM-DD` format |
 | `hanafi` | `0` or `1` | No | Use Hanafi Asr calculation. Defaults to `0` (Shafi'i) |
+| `method` | string | No | Calculation method id. Defaults to PrayCalc's dynamic method (`DPC`) when omitted. One of `DPC`, `UOIF`, `ISNACA`, `ISNA`, `SAMR`, `IGUT`, `MWL`, `DIBT`, `Karachi`, `Kuwait`, `UAQ`, `Qatar`, `Egypt`, `MUIS`, `MSC` |
 
 ### Response
 
+A bare JSON array — one entry per day in the range, **not** wrapped in a `{ "days": [...] }` object:
+
 ```json
-{
-  "days": [
-    {
-      "date": "2026-03-15",
-      "prayers": {
-        "Fajr": "05:42:17",
-        "Sunrise": "07:01:33",
-        "Dhuhr": "12:58:04",
-        "Asr": "16:22:41",
-        "Maghrib": "18:54:19",
-        "Isha": "20:13:52"
-      }
+[
+  {
+    "date": "2026-07-10",
+    "prayers": {
+      "Fajr": "03:48:18",
+      "Sunrise": "05:34:03",
+      "Dhuhr": "13:03:57",
+      "Asr": "17:00:37",
+      "Maghrib": "20:28:56",
+      "Isha": "21:43:38",
+      "Qiyam": "01:46:45"
     }
-  ]
-}
+  }
+]
 ```
+
+`prayers` always includes `Qiyam` (last third of the night) in addition to the five daily prayers and Sunrise.
 
 ### Notes
 
 - Maximum date range: 400 days
-- Coordinates are rounded to 4 decimal places
 - Times use the NREL SPA algorithm (solar position to 0.0003 degree accuracy)
-- Cache: `public, max-age=3600, stale-while-revalidate=86400`
-- An unrecognized `tz` value returns `400` (not a masked `500`)
+- Cache: `public, max-age=3600`
+- An unrecognized `method` value returns `400` with the list of valid ids in the error message
 
 ### Example
 
 ```bash
-curl "https://praycalc.com/api/prayers?lat=40.7128&lng=-74.0060&tz=America/New_York&from=2026-03-15&to=2026-03-15"
+curl "https://praycalc.com/api/prayers?lat=40.7128&lng=-74.006&tz=America/New_York&from=2026-07-10&to=2026-07-10"
 ```
 
 ---
@@ -91,27 +96,32 @@ Use one of the three modes:
 | --- | --- | --- |
 | Coordinates | `lat` + `lng` | Reverse geocode a lat/lng pair |
 | Name lookup | `q` (min 2 chars) | Look up a place by name |
-| IP detection | `ip=1` | Detect the client's IP and geolocate it |
+| IP detection | `ip=1` | Detect the client's IP (or Vercel's edge geo headers) and geolocate it |
 
 ### Response
 
 ```json
 {
+  "lat": 40.71427,
+  "lng": -74.00597,
+  "displayName": "New York, NY",
   "city": "New York",
-  "country": "United States",
-  "latitude": 40.7128,
-  "longitude": -74.006,
+  "state": "ny",
+  "country": "us",
+  "slug": "us/ny/new-york",
   "timezone": "America/New_York"
 }
 ```
 
-Returns `404` if no location found. IP mode returns `204` if the IP is private or lookup fails.
+`state` and `country` are lowercase two-letter codes (US state abbreviation / ISO country code), not full names. `slug` is the path PrayCalc uses for that location's shareable URL (e.g. `praycalc.com/us/ny/new-york`).
+
+On a miss (no match, private/unresolvable IP, or missing params), the endpoint returns HTTP `200` with a JSON `null` body — never `404`.
 
 ---
 
 ## Location search
 
-Autocomplete search across 50,000+ cities worldwide.
+Autocomplete search across cities worldwide.
 
 ```
 GET /api/search?q={query}
@@ -125,31 +135,36 @@ GET /api/search?q={query}
 
 ### Response
 
-Returns an array of matching locations, ordered by population:
+Returns an array of matching locations in the same shape as `/api/geo`, ordered by population:
 
 ```json
 [
   {
-    "city": "Istanbul",
-    "country": "Turkey",
-    "latitude": 41.0082,
-    "longitude": 28.9784,
-    "timezone": "Europe/Istanbul"
+    "lat": 51.50853,
+    "lng": -0.12574,
+    "displayName": "London, GB",
+    "city": "London",
+    "state": "gb",
+    "country": "gb",
+    "slug": "gb/london",
+    "timezone": "Europe/London"
   }
 ]
 ```
 
-Returns an empty array if the query is too short or no results are found.
+Returns an empty array (`[]`) if the query is under 2 characters or no results are found.
 
 ---
 
-## Calendar PDF
+## Calendar export (ICS)
 
-Generate a downloadable prayer times calendar as a PDF.
+Generate a subscribable iCalendar feed — one event per prayer per day.
 
 ```
-GET /api/calendar/pdf?lat={lat}&lng={lng}&tz={tz}&city={name}&year={year}&type={type}
+GET /api/calendar.ics?lat={lat}&lng={lng}&tz={tz}&days={n}&hanafi={0|1}&events={0|1}
 ```
+
+There is no PDF calendar endpoint — `/api/calendar/pdf` does not exist (`404`). PDF export, if offered, is a client-side feature of the web app, not a REST endpoint.
 
 ### Parameters
 
@@ -157,64 +172,40 @@ GET /api/calendar/pdf?lat={lat}&lng={lng}&tz={tz}&city={name}&year={year}&type={
 | --- | --- | --- | --- |
 | `lat` | float | Yes | Latitude |
 | `lng` | float | Yes | Longitude |
-| `tz` | string | Yes | IANA timezone name or numeric UTC offset (`-14`..`14`) |
-| `city` | string | Yes | City name for the PDF header |
-| `country` | string | No | Country name for the header |
-| `year` | integer | Yes | Gregorian year (1900-2200) |
-| `month` | integer | For monthly/ramadan | Gregorian month (1-12) |
-| `type` | string | Yes | `monthly`, `yearly`, or `ramadan` |
-| `madhab` | string | No | `hanafi` for Hanafi Asr. Default: Shafi'i |
-| `timeFormat` | string | No | `12h` or `24h`. Default: `12h` |
+| `tz` | string | No | IANA timezone name. Defaults to `UTC` |
+| `days` | integer | No | Number of days to export, `1`-`365`. Defaults to `30` |
+| `hanafi` | `0` or `1` | No | Use Hanafi Asr calculation. Defaults to `0` (Shafi'i) |
+| `events` | `0` or `1` | No | Include all-day events for fixed Islamic observances (Ramadan start, both Eids, Ashura, Islamic New Year, Laylat al-Qadr, Isra & Mi'raj). Defaults to `0` (off) |
 
 ### Response
 
-Returns a PDF file as a download with `Content-Type: application/pdf`.
+Returns an RFC 5545 `.ics` file:
 
-| Type | Layout | Content |
-| --- | --- | --- |
-| `monthly` | Portrait A4 | Daily timetable with Hijri dates |
-| `yearly` | Landscape A4 | 12 pages, one per month, calendar grid |
-| `ramadan` | Portrait A4 | Suhoor and Iftar times highlighted |
+```
+Content-Type: text/calendar; charset=utf-8
+Content-Disposition: attachment; filename="prayer-times-<tz>.ics"
+```
 
 ### Example
 
 ```bash
-curl -o calendar.pdf "https://praycalc.com/api/calendar/pdf?lat=40.7128&lng=-74.006&tz=America/New_York&city=New%20York&year=2026&type=monthly&month=3"
+curl -o calendar.ics "https://praycalc.com/api/calendar.ics?lat=40.7128&lng=-74.006&tz=America/New_York&days=30"
 ```
-
----
-
-## Rate limits
-
-All API endpoints are rate-limited using a token bucket algorithm:
-
-| Endpoint | Limit |
-| --- | --- |
-| `/api/prayers` | 60 requests/minute |
-| `/api/geo` | 60 requests/minute |
-| `/api/search` | 60 requests/minute |
-| `/api/calendar/pdf` | 10 requests/minute |
-
-Authenticated users (with a valid JWT) get higher limits: 100 requests/minute.
-
-When rate-limited, the API returns `429 Too Many Requests` with `X-RateLimit-Limit`, `X-RateLimit-Remaining`, and `X-RateLimit-Reset` headers.
 
 ---
 
 ## Error responses
 
-All errors return a JSON body:
+Errors return a JSON body with just an `error` string — there is no `status` field in the body (the status is only in the HTTP response code):
 
 ```json
 {
-  "error": "Description of the error",
-  "status": 400
+  "error": "Missing or invalid params"
 }
 ```
 
 | Status | Meaning |
 | --- | --- |
-| `400` | Invalid or missing parameters |
-| `404` | Location not found |
-| `429` | Rate limit exceeded |
-| `500` | Server error (PDF generation failure, etc.) |
+| `400` | Invalid or missing parameters (bad coordinates, dates, timezone, or `method`) |
+
+`/api/geo` and `/api/search` do not return `404` for a miss — see their sections above.

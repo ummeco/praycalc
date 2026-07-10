@@ -1,0 +1,53 @@
+{
+  "id": "/",
+  "name": "PrayCalc Docs",
+  "short_name": "PC Docs",
+  "description": "Scientific documentation for PrayCalc — solar physics, twilight optics, orbital mechanics, and npm packages for Islamic prayer time calculation.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "theme_color": "#1E5E2F",
+  "background_color": "#0D2F17",
+  "lang": "en",
+  "categories": [
+    "reference",
+    "education",
+    "religion"
+  ],
+  "icons": [
+    {
+      "src": "/favicon-16x16.png",
+      "sizes": "16x16",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon-32x32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

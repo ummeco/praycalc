@@ -296,6 +296,14 @@ pre.astro-code {
 .prose :is(h2, h3) a.heading-anchor:focus {
   opacity: 1;
 }
+/* RESP-07: touch devices have no :hover, so a hover-only reveal leaves the
+ * anchor link permanently invisible (but still tappable — a hidden target).
+ * Keep it visible whenever the pointer is coarse (touch). */
+@media (hover: none) {
+  .prose :is(h2, h3) a.heading-anchor {
+    opacity: 1;
+  }
+}
 
 /* ── Code block copy button ─────────────────────────────────────────────────── */
 .code-copy-btn {
@@ -321,6 +329,16 @@ pre.astro-code:hover .code-copy-btn {
 .code-copy-btn:hover {
   background-color: rgba(255, 255, 255, 0.18);
   color: #fff;
+}
+.code-copy-btn:focus-visible {
+  opacity: 1;
+}
+/* RESP-07: touch devices have no :hover, so the copy button never appears —
+ * it remains tappable but invisible. Keep it visible on coarse pointers. */
+@media (hover: none) {
+  .code-copy-btn {
+    opacity: 1;
+  }
 }
 .code-copy-btn--copied {
   border-color: var(--pc-green-mid);

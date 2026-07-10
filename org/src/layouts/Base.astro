@@ -140,6 +140,11 @@ const jsonLd = { '@context': 'https://schema.org', '@graph': jsonLdGraph };
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    <!-- PWA manifest + theme color (PWA-02) -->
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="theme-color" content="#1E5E2F" />
 
     <!-- Sitemap -->
     <link rel="sitemap" href="/sitemap-index.xml" />
@@ -167,6 +172,15 @@ const jsonLd = { '@context': 'https://schema.org', '@graph': jsonLdGraph };
         is:inline
       />
     )}
+
+    <!-- PWA service worker (sw.js — vanilla, no build step; PWA-02) -->
+    <script is:inline>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js').catch(() => {});
+        });
+      }
+    </script>
 
     <slot name="head" />
   </head>

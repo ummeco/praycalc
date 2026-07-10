@@ -26,6 +26,7 @@ import vercel from '@astrojs/vercel';
 import sentry from '@sentry/astro';
 import tailwindcss from '@tailwindcss/vite';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
+import rehypeWrapTables from './src/lib/rehype-wrap-tables';
 
 // ─── Inlined RTL direction + docs enhancements (mirrors @ummat/astro-preset) ──────────────────
 // Brand design tokens live in src/styles/global.css (@theme / :root) — NOT injected here.
@@ -181,6 +182,10 @@ export default defineConfig({
           },
         },
       ],
+      // RESP-03: wrap every <table> in a scrollable div — overflow-x-auto
+      // on the <table> element itself (Tailwind's prose-table modifier) has
+      // no effect since overflow does not apply to display:table boxes.
+      rehypeWrapTables,
     ],
   },
   vite: {

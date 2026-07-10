@@ -15,6 +15,7 @@
 
 # testing
 /coverage
+.lighthouseci
 
 # misc
 .DS_Store
