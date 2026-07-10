@@ -59,6 +59,15 @@ jobs:
       - name: Expo prebuild (generate android/)
         run: npx expo prebuild --platform android --no-install
 
+      - name: Select Play flavor for react-native-iap
+        # react-native-iap ships play/amazon product flavors; a consuming app must pick
+        # one or Gradle fails with a variant-ambiguity error. EAS does this via the
+        # library's config plugin; for the bare prebuild path we inject the standard
+        # missingDimensionStrategy into the generated (gitignored) android project.
+        run: |
+          perl -0pi -e "s/defaultConfig \{/defaultConfig {\n        missingDimensionStrategy 'store', 'play'/" android/app/build.gradle
+          grep -n "missingDimensionStrategy" android/app/build.gradle
+
       - name: Decode release keystore
         run: echo "${{ secrets.PRAYCALC_ANDROID_KEYSTORE_B64 }}" | base64 -d > android/app/release.keystore
 
