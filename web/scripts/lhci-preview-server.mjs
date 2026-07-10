@@ -74,6 +74,20 @@ const COMPRESSIBLE_TYPE_RE =
  * transparently gzip/brotli-encoded per the request's Accept-Encoding, exactly as
  * Vercel's edge does for deployed responses. No-ops (returns `res` unchanged) when
  * the client sent no usable Accept-Encoding.
+ *
+ * Two response paths need covering, and they flush headers differently:
+ *   1. The static-asset branch below sets headers via `res.setHeader()` then relies
+ *      on Node's IMPLICIT header flush on the first `write()`/`end()` call (via
+ *      `createReadStream().pipe(res)`) — decided lazily from `res.getHeader()`.
+ *   2. Astro's NodeApp.writeResponse (the SSR document path, forwarded to `handler`
+ *      below) calls `res.writeHead(status, headersObj)` EXPLICITLY. Node's writeHead
+ *      flushes headers synchronously as part of that call in this runtime — by the
+ *      time a lazy first-write decision runs, `res.headersSent` is already true and
+ *      `res.getHeader()` no longer reflects what was passed to writeHead, so the
+ *      original implementation (deciding only on write/end) silently never fired for
+ *      the actual HTML document and Lighthouse always measured it uncompressed.
+ *      Fixed by intercepting `writeHead` itself and deciding from its `headers` arg
+ *      before the real writeHead call ever runs.
  */
 function withCompression(req, res) {
   const acceptEncoding = String(req.headers['accept-encoding'] ?? '');
@@ -81,26 +95,57 @@ function withCompression(req, res) {
   const supportsGzip = /\bgzip\b/.test(acceptEncoding);
   if (!supportsBr && !supportsGzip) return res;
 
+  const originalWriteHead = res.writeHead.bind(res);
   const originalWrite = res.write.bind(res);
   const originalEnd = res.end.bind(res);
   let compressor = null;
   let decided = false;
 
-  const decide = () => {
+  function startCompressing() {
+    compressor = supportsBr ? createBrotliCompress() : createGzip();
+    compressor.on('data', (chunk) => originalWrite(chunk));
+    compressor.on('end', () => originalEnd());
+  }
+
+  /** @param {Record<string, string | number | string[]>} headers */
+  function findHeaderKey(headers, name) {
+    return Object.keys(headers).find((k) => k.toLowerCase() === name);
+  }
+
+  // Path 2 (see header comment): explicit writeHead(status, headers) call.
+  res.writeHead = (statusCode, arg2, arg3) => {
+    decided = true;
+    const hasStatusMessage = typeof arg2 === 'string';
+    const statusMessage = hasStatusMessage ? arg2 : undefined;
+    const headers = { ...((hasStatusMessage ? arg3 : arg2) ?? {}) };
+    const contentTypeKey = findHeaderKey(headers, 'content-type');
+    const contentType = contentTypeKey ? String(headers[contentTypeKey]) : '';
+    if (COMPRESSIBLE_TYPE_RE.test(contentType)) {
+      const lengthKey = findHeaderKey(headers, 'content-length');
+      if (lengthKey) delete headers[lengthKey];
+      headers['content-encoding'] = supportsBr ? 'br' : 'gzip';
+      headers['vary'] = 'Accept-Encoding';
+      startCompressing();
+    }
+    return hasStatusMessage
+      ? originalWriteHead(statusCode, statusMessage, headers)
+      : originalWriteHead(statusCode, headers);
+  };
+
+  // Path 1 (see header comment): implicit header flush via setHeader() + write()/end().
+  const decideFromImplicitHeaders = () => {
     if (decided) return;
     decided = true;
     const contentType = String(res.getHeader('content-type') ?? '');
     if (!COMPRESSIBLE_TYPE_RE.test(contentType)) return;
-    compressor = supportsBr ? createBrotliCompress() : createGzip();
     res.removeHeader('Content-Length');
     res.setHeader('Content-Encoding', supportsBr ? 'br' : 'gzip');
     res.setHeader('Vary', 'Accept-Encoding');
-    compressor.on('data', (chunk) => originalWrite(chunk));
-    compressor.on('end', () => originalEnd());
+    startCompressing();
   };
 
   res.write = (chunk, ...args) => {
-    decide();
+    decideFromImplicitHeaders();
     if (compressor) {
       if (chunk) compressor.write(chunk);
       return true;
@@ -109,7 +154,7 @@ function withCompression(req, res) {
   };
 
   res.end = (chunk, ...args) => {
-    decide();
+    decideFromImplicitHeaders();
     if (compressor) {
       if (chunk) compressor.write(chunk);
       compressor.end();

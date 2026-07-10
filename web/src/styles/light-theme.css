@@ -1,0 +1,100 @@
+/*
+ * light-theme.css — Light palette overrides for `html.light-mode`.
+ *
+ * PURPOSE: Give the Settings panel's "Light Mode" toggle a real effect
+ *   (RESP-02 — it previously toggled a class with zero matching CSS, a
+ *   no-op). CityClient.tsx toggles `light-mode` on <html> only while a city
+ *   page is mounted, so this file scopes overrides to the surfaces that
+ *   toggle actually reaches: the city page shell (header, search, prayer
+ *   grid, feature tiles), its Qibla/Calendar modals, the Settings panel
+ *   itself, and the shared Footer (rendered on every page, including city
+ *   pages). Kept in its own file (not inlined into global.css) so the light
+ *   palette stays a single reviewable diff against the dark tokens it mirrors.
+ * CONSTRAINTS: Every rule here is `html.light-mode <selector>` — higher
+ *   specificity than the base dark-theme rule it overrides, and (being plain
+ *   unlayered CSS) it also wins against any `@layer utilities` Tailwind
+ *   classes used inline (e.g. Footer.astro's `text-white/40`) regardless of
+ *   source order, per the CSS cascade-layers spec.
+ * REF: RESP-02 (web audit gap-closure)
+ */
+
+html.light-mode,
+html.light-mode body {
+  background-color: #F4FBE8;
+  color: #0D2F17;
+}
+html.light-mode body::before {
+  background-image:
+    radial-gradient(ellipse 55% 70% at 105% 10%, rgba(121,194,76,0.16) 0%, rgba(121,194,76,0.03) 45%, transparent 65%);
+}
+
+/* --- Footer (shared, rendered on city pages too) --- */
+html.light-mode footer,
+html.light-mode footer a,
+html.light-mode footer p,
+html.light-mode footer span { color: rgba(13,47,23,0.75); }
+html.light-mode footer a:hover { color: #0D2F17; }
+html.light-mode footer { border-top-color: rgba(13,47,23,0.1); }
+
+/* --- Location search (compact, city page) --- */
+html.light-mode .location-search-input { background-color: #ffffff; color: #0D2F17; border-color: rgba(30,94,47,0.25); box-shadow: 0 4px 16px rgba(13,47,23,0.08); }
+html.light-mode .location-search-input::placeholder { color: rgba(13,47,23,0.4); }
+html.light-mode .location-search-input:focus { background-color: #ffffff; border-color: rgba(30,94,47,0.55); }
+html.light-mode .location-search-dropdown { background: #ffffff; border-color: rgba(13,47,23,0.12); }
+html.light-mode .location-search-item { color: rgba(13,47,23,0.8); }
+html.light-mode .location-search-name { color: rgba(13,47,23,0.9); }
+html.light-mode .location-search-slug { color: rgba(13,47,23,0.45); }
+html.light-mode .location-popular-pill { background: rgba(13,47,23,0.05); color: rgba(13,47,23,0.65); border-color: rgba(13,47,23,0.1); }
+
+/* --- City header / page shell --- */
+html.light-mode .city-name { color: #0D2F17; }
+html.light-mode .settings-gear-btn { background: rgba(13,47,23,0.05); border-color: rgba(13,47,23,0.12); color: #0D2F17; }
+
+/* --- Prayer grid --- */
+html.light-mode .prayer-grid { background: rgba(255,255,255,0.7); border-color: rgba(30,94,47,0.18); }
+html.light-mode .prayer-row { background: rgba(13,47,23,0.02); border-bottom-color: rgba(13,47,23,0.06); }
+html.light-mode .prayer-name { color: rgba(13,47,23,0.75); }
+html.light-mode .prayer-time { color: #0D2F17; }
+html.light-mode .prayer-period { color: rgba(13,47,23,0.45); }
+
+/* --- Feature tiles (Qibla / Monthly / Yearly) --- */
+html.light-mode .ftile-title { color: rgba(13,47,23,0.85); }
+html.light-mode .ftile-sub { color: rgba(13,47,23,0.5); }
+
+/* --- Modals (Qibla + Calendar) --- */
+html.light-mode .modal-overlay { background: rgba(244,251,232,0.85); }
+html.light-mode .modal-title { color: #0D2F17; }
+html.light-mode .modal-close { background: rgba(13,47,23,0.05); border-color: rgba(13,47,23,0.12); color: rgba(13,47,23,0.6); }
+html.light-mode .modal-close:hover { background: rgba(13,47,23,0.12); color: #0D2F17; }
+html.light-mode .qibla-modal,
+html.light-mode .cal-modal { background: #ffffff; }
+html.light-mode .qibla-rose-n, html.light-mode .qibla-rose-e,
+html.light-mode .qibla-rose-s, html.light-mode .qibla-rose-w { color: rgba(13,47,23,0.55); }
+html.light-mode .qibla-bearing { color: #0D2F17; }
+html.light-mode .qibla-from { color: rgba(13,47,23,0.55); }
+html.light-mode .cal-location { color: rgba(30,94,47,0.75); }
+html.light-mode .cal-period { color: #0D2F17; }
+html.light-mode .cal-mode-btn { color: rgba(13,47,23,0.55); background: rgba(13,47,23,0.04); border-color: rgba(13,47,23,0.1); }
+html.light-mode .cal-mode-btn:hover { color: #0D2F17; }
+html.light-mode .cal-td { color: rgba(13,47,23,0.82); }
+html.light-mode .cal-td:first-child, html.light-mode .cal-th:first-child { color: rgba(13,47,23,0.55); }
+html.light-mode .cal-tr:not(.cal-thead):nth-child(even) { background: rgba(13,47,23,0.02); }
+html.light-mode .cal-year-month-name { color: #0D2F17; }
+html.light-mode .cal-year-month-year { color: rgba(13,47,23,0.45); }
+html.light-mode .month-cal-day { color: #0D2F17; }
+html.light-mode .month-cal-cell { background: rgba(13,47,23,0.03); border-color: rgba(13,47,23,0.08); }
+
+/* --- Settings panel --- */
+html.light-mode .settings-panel { background: rgba(255,255,255,0.98); border-color: rgba(30,94,47,0.25); }
+html.light-mode .settings-panel-title { color: #0D2F17; }
+html.light-mode .settings-panel-close { background: rgba(13,47,23,0.05); border-color: rgba(13,47,23,0.12); color: rgba(13,47,23,0.6); }
+html.light-mode .settings-panel-close:hover { background: rgba(13,47,23,0.12); color: #0D2F17; }
+html.light-mode .settings-row-label { color: rgba(13,47,23,0.75); }
+html.light-mode .settings-section-note { color: rgba(13,47,23,0.5); }
+html.light-mode .settings-method-select { background: rgba(13,47,23,0.05); color: #0D2F17; border-color: rgba(13,47,23,0.15); }
+html.light-mode .settings-method-select option { background: #ffffff; color: #0D2F17; }
+html.light-mode .settings-sound-opt { color: rgba(13,47,23,0.55); background: rgba(13,47,23,0.04); border-color: rgba(13,47,23,0.1); }
+html.light-mode .settings-sound-opt:hover { color: #0D2F17; }
+html.light-mode .settings-plus-tagline { color: rgba(13,47,23,0.7); }
+html.light-mode .settings-plus-benefits li { color: rgba(13,47,23,0.6); }
+html.light-mode .settings-plus-price { color: rgba(13,47,23,0.6); }

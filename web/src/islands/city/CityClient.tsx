@@ -13,6 +13,8 @@ import { getSettings, saveSetting, type PrayCalcSettings } from '@/lib/settings'
 import { getSession, clearSession, type PrayCalcSession } from '@/lib/session';
 import { qiblaAngle, compassDir } from '@/lib/qibla';
 import { getNextPrayer, DISPLAY_PRAYERS, type PrayerResult } from '@/lib/prayer-utils';
+import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
+import { useAdhanPlayback } from '@/hooks/useAdhanPlayback';
 import LocationSearch from '@/islands/LocationSearch';
 import PrayerGrid from './PrayerGrid';
 import FeatureTiles from './FeatureTiles';
@@ -87,8 +89,6 @@ function CityClientInner({
 
   const panelRef = useRef<HTMLDivElement>(null);
   const gearRef = useRef<HTMLButtonElement>(null);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-  const lastAdhanPrayer = useRef<string>('');
 
   // Hydrate settings + session from localStorage on mount
   useEffect(() => {
@@ -138,55 +138,11 @@ function CityClientInner({
     return () => { cancelled = true; };
   }, [settings.calcMethod, settings.hanafi, lat, lng, timezone]);
 
-  // Adhan playback — fires when clock crosses a prayer time
-  useEffect(() => {
-    if (settings.soundMode === 'none' || !clockHHMMSS) return;
-    const base = settings.hanafi ? hanafiPrayers : shafiPrayers;
-    const prayers = methodOverlay
-      ? { ...base, Fajr: methodOverlay.Fajr, Isha: methodOverlay.Isha }
-      : base;
-    const hhmm = clockHHMMSS.slice(0, 5);
-    const ss = clockHHMMSS.slice(6, 8);
-    if (ss !== '00') return; // only fire at the top of the minute
+  // Adhan playback — fires when clock crosses a prayer time (extracted hook).
+  useAdhanPlayback(clockHHMMSS, settings, shafiPrayers, hanafiPrayers, methodOverlay);
 
-    const list = DISPLAY_PRAYERS;
-    for (const p of list) {
-      if (prayers[p] !== 'N/A' && prayers[p].slice(0, 5) === hhmm) {
-        if (lastAdhanPrayer.current === `${p}-${hhmm}`) break; // avoid double-trigger
-        lastAdhanPrayer.current = `${p}-${hhmm}`;
-
-        if (settings.soundMode === 'beep') {
-          try {
-            const ctx = new AudioContext();
-            const osc = ctx.createOscillator();
-            const gain = ctx.createGain();
-            osc.connect(gain);
-            gain.connect(ctx.destination);
-            osc.frequency.value = 880;
-            gain.gain.setValueAtTime(0.4, ctx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.5);
-            osc.start();
-            osc.stop(ctx.currentTime + 1.5);
-          } catch { /* AudioContext blocked by browser policy */ }
-        } else {
-          // adhan audio
-          const voice = settings.adhanVoice ?? 'makkah';
-          const src =
-            p === 'Fajr' && voice === 'mishari'
-              ? '/audio/fajr-mishari.mp3'
-              : `/audio/adhan/${voice}.mp3`;
-          if (audioRef.current) {
-            audioRef.current.pause();
-            audioRef.current.currentTime = 0;
-          }
-          const audio = new Audio(src);
-          audioRef.current = audio;
-          audio.play().catch(() => {/* autoplay blocked */});
-        }
-        break;
-      }
-    }
-  }, [clockHHMMSS, settings, shafiPrayers, hanafiPrayers, methodOverlay]);
+  // RESP-05: lock page scroll while an overlay is open (no scroll-chaining).
+  useBodyScrollLock(settingsOpen || modal !== null);
 
   // Outside-click closes the settings panel (but not when clicking the gear)
   useEffect(() => {
@@ -266,6 +222,7 @@ function CityClientInner({
           onChange={handleChange}
           session={session}
           onSignOut={handleSignOut}
+          onClose={() => setSettingsOpen(false)}
           panelRef={panelRef}
         />
       )}

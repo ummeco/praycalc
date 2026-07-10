@@ -53,7 +53,16 @@ function LocationSearchInner({ compact = false, autoFocus = false }: Props) {
   const rootRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (autoFocus) inputRef.current?.focus();
+    if (!autoFocus) return;
+    // RESP-09: autofocus is a real desktop win (search is the homepage's one
+    // job) but on touch devices it pops the soft keyboard over the hero/logo
+    // on every visit. Gate on the same signal used to detect a touch device:
+    // a coarse primary pointer, or no hover capability (covers touch laptops
+    // and tablets a bare pointer-check would miss).
+    const isTouchLike =
+      typeof window !== 'undefined' &&
+      (window.matchMedia?.('(pointer: coarse)').matches || !window.matchMedia?.('(hover: hover)').matches);
+    if (!isTouchLike) inputRef.current?.focus();
   }, [autoFocus]);
 
   // Debounced search
@@ -212,7 +221,7 @@ function LocationSearchInner({ compact = false, autoFocus = false }: Props) {
             className="location-gps-pill"
             onClick={handleGeoLocate}
             disabled={geoLoading}
-            aria-label="Use my GPS location"
+            aria-label="Use my location (GPS)"
           >
             <span aria-hidden="true">📍</span>
             {geoLoading ? 'Finding location…' : 'Use my location'}

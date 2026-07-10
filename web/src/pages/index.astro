@@ -47,37 +47,46 @@ const tagline = TAGLINES[locale] ?? TAGLINES.en;
       About PrayCalc
     </a>
 
-    <!-- Logo -->
-    <div class="logo-sunrise-outer">
-      <div class="logo-sunrise-glow" aria-hidden="true"></div>
-      <div class="logo-sunrise">
-        <img
-          src="/logo-sunrise.svg"
-          alt="PrayCalc"
-          width="420"
-          height="191"
-          loading="eager"
-          fetchpriority="high"
-        />
+    <!-- Hero band: logo + gradient. The search card below straddles the seam
+         between this band and .home-lower (overlapping-hero-card pattern). -->
+    <div class="home-hero">
+      <div class="logo-sunrise-outer">
+        <div class="logo-sunrise-glow" aria-hidden="true"></div>
+        <div class="logo-sunrise">
+          <img
+            src="/logo-sunrise.svg"
+            alt="PrayCalc"
+            width="420"
+            height="191"
+            loading="eager"
+            fetchpriority="high"
+          />
+        </div>
       </div>
     </div>
 
-    <!-- Location search island -->
-    <div class="w-full max-w-[480px] mt-5 px-4">
-      <LocationSearch client:load autoFocus={true} />
-      <p class="home-tagline text-white/25 text-xs text-center mt-2">
-        {tagline}
-      </p>
-    </div>
+    <!-- Lower band: darker surface. home-search-group's negative margin pulls
+         it up to straddle the home-hero/home-lower boundary. -->
+    <div class="home-lower">
+      <div class="home-search-group">
+        <LocationSearch client:load autoFocus={true} />
+        {/* text-white/50 (not /25) — the tagline now sits over .home-lower's
+            solid dark background (#050b07) rather than the page's ambient
+            gradient; /25 measured 2.13:1 contrast there (Lighthouse
+            color-contrast), /50 measures 5.33:1. */}
+        <p class="home-tagline text-white/50 text-xs text-center mt-2">
+          {tagline}
+        </p>
+      </div>
 
-    <!-- Moon phase card -->
-    <div class="home-moon-card" aria-label="Current moon phase">
-      <span class="home-moon-emoji" aria-hidden="true">{moon.emoji}</span>
-      <div class="home-moon-info">
-        <span class="home-moon-name">{moon.phaseName}</span>
-        <span class="home-moon-illum">{moon.illumination}% illuminated</span>
+      <!-- Moon phase card -->
+      <div class="home-moon-card" aria-label="Current moon phase">
+        <span class="home-moon-emoji" aria-hidden="true">{moon.emoji}</span>
+        <div class="home-moon-info">
+          <span class="home-moon-name">{moon.phaseName}</span>
+          <span class="home-moon-illum">{moon.illumination}% illuminated</span>
+        </div>
       </div>
     </div>
-
   </main>
 </RootLayout>

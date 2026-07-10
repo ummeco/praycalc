@@ -19,6 +19,7 @@ import vercel from '@astrojs/vercel';
 import sentry from '@sentry/astro';
 import tailwindcss from '@tailwindcss/vite';
 import { astroUmmat } from '@ummat/astro-preset';
+import { TOP_CITIES } from './src/lib/top-cities';
 
 // nrel-spa (via pray-calc) loads ../lib/spa.js through a _load() indirection that
 // Vercel's file tracing cannot follow, so the file is missing at Lambda runtime
@@ -52,10 +53,20 @@ export default defineConfig({
     }),
     react(),
     sitemap({
+      // WEB-10: exclude every noindex'd route (account/upgrade — see their
+      // noIndex={true} RootLayout prop) so the sitemap never contradicts the
+      // page's own robots meta tag.
       filter: (page) =>
         !page.includes('/api/') &&
         !page.includes('/404') &&
-        !page.includes('/500'),
+        !page.includes('/500') &&
+        !page.includes('/account') &&
+        !page.includes('/upgrade'),
+      // WEB-10: [...slug].astro city pages are SSR-only (output:'server'),
+      // so the sitemap integration never discovers them from the file tree —
+      // list the top-cities set explicitly. These are the product's SEO
+      // backbone and the only crawl path otherwise is the /times hub links.
+      customPages: TOP_CITIES.map((city) => `https://praycalc.com/${city.slug}`),
     }),
     // Sentry: server init from sentry.server.config.ts (auto-injected into every
     // SSR response as usual). Client init is intentionally NOT auto-injected —

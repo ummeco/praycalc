@@ -10,8 +10,13 @@
  *   { categories, policy_version, locale }.
  * OUTPUTS: { ok: true, recordIds, policy_version } on 200; error body otherwise.
  * CONSTRAINTS: HASURA_ADMIN_URL / HASURA_GRAPHQL_ADMIN_SECRET are server-only
- *   env vars (never PUBLIC_-prefixed) — see web/.env.local.example.
- * REF: ADR-consent-banner-astro-gate.md deferred item (S-C-S05-T05a)
+ *   env vars (never PUBLIC_-prefixed) — see web/.env.example. REQUIRED IN PROD:
+ *   both must be set on the Vercel project (ummat-praycalc) or every consent
+ *   decision silently fails to persist (WEB-02). When missing, this route no
+ *   longer 500s (the client-side call is best-effort and was masking the gap
+ *   entirely) — it logs a loud server-side error for monitoring and responds
+ *   200 with `recorded: false` so the banner UX still dismisses normally.
+ * REF: ADR-consent-banner-astro-gate.md deferred item (S-C-S05-T05a) · WEB-02
  */
 
 import type { APIRoute } from 'astro';
@@ -23,10 +28,16 @@ export const POST: APIRoute = async ({ request }) => {
   const endpoint = import.meta.env.HASURA_ADMIN_URL as string | undefined;
   const adminSecret = import.meta.env.HASURA_GRAPHQL_ADMIN_SECRET as string | undefined;
   if (!endpoint || !adminSecret) {
-    return new Response(JSON.stringify({ error: 'server_misconfigured', code: 'CONFIG' }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    // Loud server-side signal (picked up by Sentry/Vercel logs) — this is a
+    // real GDPR Art. 7 audit-trail gap, not something to swallow silently.
+    console.error(
+      '[api/consent] misconfigured: HASURA_ADMIN_URL / HASURA_GRAPHQL_ADMIN_SECRET not set — ' +
+        'consent decisions are NOT being persisted. Set both in the Vercel project env.',
+    );
+    return new Response(
+      JSON.stringify({ ok: true, recorded: false, reason: 'server_misconfigured' }),
+      { status: 200, headers: { 'Content-Type': 'application/json' } },
+    );
   }
 
   let body: unknown;

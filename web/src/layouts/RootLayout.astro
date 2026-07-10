@@ -89,10 +89,19 @@ const umamiSiteId = import.meta.env.UMAMI_WEBSITE_ID;
 <html lang={effectiveLocale} dir={textDir}>
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 
-    <!-- Theme color for mobile browsers -->
+    <!-- Theme color for mobile browsers — kept in sync with site.webmanifest theme_color
+         so the installed-app titlebar/status-bar and in-browser chrome match. -->
     <meta name="theme-color" content="#1E5E2F" />
+
+    <!-- iOS/Android standalone-install chrome — display:standalone already comes from the
+         manifest for Chromium; these cover Safari/iOS (which ignores manifest display on
+         iOS <16.4) and set the home-screen label + status-bar style. -->
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="PrayCalc" />
 
     <title>{title}</title>
     <meta name="description" content={description} />
@@ -121,7 +130,9 @@ const umamiSiteId = import.meta.env.UMAMI_WEBSITE_ID;
 
     <!-- Icons -->
     <link rel="icon" href="/favicon.ico" sizes="any" />
-    <link rel="apple-touch-icon" href="/icon.png" />
+    <link rel="icon" href="/icon-192.png" sizes="192x192" type="image/png" />
+    <link rel="icon" href="/icon-512.png" sizes="512x512" type="image/png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
     <link rel="manifest" href="/site.webmanifest" />
 
     <!-- Fonts: Inter (Latin) + Noto Naskh Arabic, self-hosted via @fontsource (no
@@ -149,6 +160,38 @@ const umamiSiteId = import.meta.env.UMAMI_WEBSITE_ID;
         });
       }
     </script>
+
+    <!-- Safe-area padding for installed/standalone display mode (notched phones).
+         is:global (not scoped to this component) so it reaches fixed-position
+         elements rendered by child pages through <slot/> below — Astro's default
+         style scoping only covers markup written directly in this file, which
+         would otherwise miss .about-pill/.home-top-right-cards/.city-page-main
+         etc. that live in src/pages/*. Uses max()/calc() to ADD the safe-area
+         inset on top of each element's existing offset rather than replace it,
+         so non-notched devices (env(...) resolves to 0) are unaffected. Only
+         applies under display-mode:standalone — in-browser (Safari/Chrome tab)
+         layout is untouched. -->
+    <style is:global>
+      @media (display-mode: standalone) {
+        body {
+          padding-bottom: env(safe-area-inset-bottom, 0px);
+        }
+        .about-pill {
+          top: max(12px, env(safe-area-inset-top, 12px)) !important;
+          left: max(12px, env(safe-area-inset-left, 12px)) !important;
+        }
+        .home-top-right-cards {
+          top: max(16px, env(safe-area-inset-top, 16px)) !important;
+          right: max(16px, env(safe-area-inset-right, 16px)) !important;
+        }
+        .city-page-main {
+          padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px)) !important;
+        }
+        .account-main {
+          padding-bottom: env(safe-area-inset-bottom, 0px);
+        }
+      }
+    </style>
   </head>
   <body>
     <!-- Skip-to-content for keyboard/screen-reader users (WCAG 2.1 AA) -->

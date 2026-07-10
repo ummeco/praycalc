@@ -2,37 +2,79 @@
 /**
  * Footer.astro — shared site footer.
  *
- * PURPOSE: One consistent footer across every page (was hand-rolled + drifting
- *   per-page, or absent on 8+ pages). Rendered by RootLayout unless hideFooter.
- * A11y: nav landmark; link contrast raised to meet WCAG AA (was text-white/25).
+ * PURPOSE: One consistent, app-grade footer across every page (was a bare
+ *   centered row of links). Rendered by RootLayout unless hideFooter.
+ * A11y: nav landmark per link group; link contrast meets WCAG AA.
+ * REF: A2 (web audit gap-closure — footer rebuild)
  */
 const YEAR = 2026;
-const links = [
-  { href: '/', label: 'Home' },
-  { href: '/times', label: 'All Cities' },
-  { href: '/institutions', label: 'Institutions' },
-  { href: '/about', label: 'About' },
-  { href: '/contact', label: 'Contact' },
-  { href: '/legal/privacy', label: 'Privacy' },
-  { href: '/legal/terms', label: 'Terms' },
-  { href: '/preferences', label: 'Cookie Settings' },
+
+const GROUPS: { title: string; links: { href: string; label: string; external?: boolean }[] }[] = [
+  {
+    title: 'Product',
+    links: [
+      { href: '/', label: 'Home' },
+      { href: '/times', label: 'All Cities' },
+      { href: '/institutions', label: 'Institutions' },
+    ],
+  },
+  {
+    title: 'Company',
+    links: [
+      { href: '/about', label: 'About' },
+      { href: '/contact', label: 'Contact' },
+    ],
+  },
+  {
+    title: 'Legal',
+    links: [
+      { href: '/legal/privacy', label: 'Privacy' },
+      { href: '/legal/terms', label: 'Terms' },
+      { href: '/preferences', label: 'Cookie Settings' },
+    ],
+  },
+  {
+    title: 'Resources',
+    links: [{ href: 'https://praycalc.org', label: 'Docs (praycalc.org)', external: true }],
+  },
 ];
 ---
 
-<footer class="w-full max-w-2xl mx-auto px-4 py-8 mt-8">
-  <nav class="flex flex-wrap justify-center gap-x-2 gap-y-1 text-white/55 text-xs" aria-label="Footer">
-    {links.map((l) => (
-      <a href={l.href} class="inline-block px-2 py-2.5 hover:text-white transition-colors">{l.label}</a>
-    ))}
-    <a
-      href="https://praycalc.org"
-      class="inline-block px-2 py-2.5 hover:text-ummat-light text-ummat-light/70 transition-colors"
-      target="_blank"
-      rel="noopener"
-    >praycalc.org</a>
-  </nav>
-  <p class="text-center text-white/40 text-xs mt-3">
-    Free, accurate Islamic prayer times. No ads. Privacy-friendly analytics only.
-  </p>
-  <p class="text-center text-white/30 text-[0.7rem] mt-1">© {YEAR} PrayCalc · part of the Ummat ecosystem</p>
+<footer class="footer-shell w-full mt-12 border-t border-white/[0.07]">
+  <div class="max-w-4xl mx-auto px-4 py-10">
+    <div class="footer-groups grid grid-cols-2 sm:grid-cols-4 gap-x-6 gap-y-8">
+      {GROUPS.map((group) => (
+        <nav aria-label={group.title}>
+          <h2 class="text-xs font-bold uppercase tracking-wider text-ummat-light/60 mb-3">
+            {group.title}
+          </h2>
+          <ul class="flex flex-col gap-2">
+            {group.links.map((l) => (
+              <li>
+                <a
+                  href={l.href}
+                  class="text-sm text-white/55 hover:text-white transition-colors"
+                  target={l.external ? '_blank' : undefined}
+                  rel={l.external ? 'noopener noreferrer' : undefined}
+                >
+                  {l.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      ))}
+    </div>
+
+    <div class="footer-brand mt-9 pt-6 border-t border-white/[0.06] flex flex-col items-center gap-2 text-center">
+      <span class="text-base font-bold text-white/90">PrayCalc</span>
+      <!-- text-white/55 (not /40 or /30) — measured via Lighthouse color-contrast
+           against this footer's dark background; matches the link contrast
+           already established above. -->
+      <p class="text-white/55 text-xs max-w-md">
+        Free, accurate Islamic prayer times. No ads. Privacy-friendly analytics only.
+      </p>
+      <p class="text-white/55 text-xs">© {YEAR} PrayCalc · part of the Ummat ecosystem</p>
+    </div>
+  </div>
 </footer>

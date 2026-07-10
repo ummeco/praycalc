@@ -23,6 +23,10 @@ const SW_SOURCE = fs.readFileSync(
   "utf-8",
 );
 
+// Derive the live cache version from sw.js so version bumps never break these tests.
+const SW_VERSION = (SW_SOURCE.match(/const CACHE_VERSION = ['"](v\d+)['"]/) ?? [])[1] ?? "v0";
+const OLD_VERSION = `v${Number(SW_VERSION.slice(1)) - 1}`;
+
 /** In-memory Cache/CacheStorage mock sufficient for sw.js's usage surface. */
 function createCacheStorage() {
   const buckets = new Map<string, Map<string, Response>>();
@@ -144,7 +148,7 @@ describe("public/sw.js — service worker", () => {
     const { waitUntilPromise } = fireEvent(ctx, "install");
     await waitUntilPromise;
 
-    const shellCache = await ctx.caches.open("praycalc-shell-v2");
+    const shellCache = await ctx.caches.open(`praycalc-shell-${SW_VERSION}`);
     const cachedRoot = await shellCache.match("/");
     const cachedAbout = await shellCache.match("/about");
     const cachedTimes = await shellCache.match("/times");
@@ -166,7 +170,7 @@ describe("public/sw.js — service worker", () => {
     // (a real cache.addAll() would reject here instead).
     await expect(waitUntilPromise).resolves.toBeUndefined();
 
-    const shellCache = await ctx.caches.open("praycalc-shell-v2");
+    const shellCache = await ctx.caches.open(`praycalc-shell-${SW_VERSION}`);
     expect(await shellCache.match("/")).toBeDefined();
     expect(await shellCache.match("/about")).toBeUndefined();
   });
@@ -174,15 +178,15 @@ describe("public/sw.js — service worker", () => {
   it("activate deletes cache buckets not matching the current CACHE_VERSION", async () => {
     const ctx = loadServiceWorker(async () => new Response("x"));
     // Seed a stale bucket from a prior SW version.
-    await ctx.caches.open("praycalc-shell-v1");
-    await ctx.caches.open("praycalc-city-v2");
+    await ctx.caches.open(`praycalc-shell-${OLD_VERSION}`);
+    await ctx.caches.open(`praycalc-city-${SW_VERSION}`);
 
     const { waitUntilPromise } = fireEvent(ctx, "activate");
     await waitUntilPromise;
 
     const remaining = await ctx.caches.keys();
-    expect(remaining).not.toContain("praycalc-shell-v1");
-    expect(remaining).toContain("praycalc-city-v2");
+    expect(remaining).not.toContain(`praycalc-shell-${OLD_VERSION}`);
+    expect(remaining).toContain(`praycalc-city-${SW_VERSION}`);
     expect(ctx.self.clients.claim).toHaveBeenCalled();
   });
 
@@ -193,7 +197,7 @@ describe("public/sw.js — service worker", () => {
     const res = (await respondWithPromise) as Response;
     expect(await res.text()).toBe("<html>london times</html>");
 
-    const cityCache = await ctx.caches.open("praycalc-city-v2");
+    const cityCache = await ctx.caches.open(`praycalc-city-${SW_VERSION}`);
     const cached = await cityCache.match(req);
     expect(cached).toBeDefined();
   });
@@ -232,7 +236,7 @@ describe("public/sw.js — service worker", () => {
       await respondWithPromise;
     }
 
-    const cityCache = await ctx.caches.open("praycalc-city-v2");
+    const cityCache = await ctx.caches.open(`praycalc-city-${SW_VERSION}`);
     const keys = await cityCache.keys();
     expect(keys.length).toBeLessThanOrEqual(25);
     // The earliest-visited city should have been evicted (FIFO).

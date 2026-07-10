@@ -7,6 +7,7 @@
  */
 
 @import "tailwindcss";
+@import "./light-theme.css";
 
 /* --- Ummat green palette --- */
 @theme {
@@ -50,12 +51,32 @@
 
 html, body {
   background-color: #060806;
-  background-image:
-    radial-gradient(ellipse 55% 70% at 105% 10%, rgba(30, 94, 47, 0.45) 0%, rgba(121, 194, 76, 0.04) 45%, transparent 65%);
-  background-attachment: fixed;
   color: #fff;
   min-height: 100dvh;
   font-family: var(--font-latin);
+}
+/* Ambient brand-glow gradient, as a fixed pseudo-element behind all content
+ * rather than `background-attachment: fixed` on html/body (RESP-10) — iOS
+ * Safari does not honor fixed background-attachment on a scrolling body, so
+ * it either scrolls the gradient (visual jump) or forces repaints during
+ * scroll on long pages (/times, city pages). A `position: fixed` element is
+ * honored correctly on iOS. */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    radial-gradient(ellipse 55% 70% at 105% 10%, rgba(30, 94, 47, 0.45) 0%, rgba(121, 194, 76, 0.04) 45%, transparent 65%);
+}
+
+/* RESP-01: iOS Safari zooms the page when focusing a form control with a
+ * computed font-size under 16px, and stays zoomed after blur. Force every
+ * text input/select/textarea to the 16px floor on touch/small viewports
+ * (desktop keeps each control's own smaller size). */
+@media (max-width: 640px), (pointer: coarse) {
+  input, select, textarea { font-size: 16px; }
 }
 
 /* --- RTL typography --- */
@@ -139,12 +160,30 @@ html, body {
   .logo-sunrise-glow { animation: none; opacity: 1; }
 }
 
-/* --- Home layout --- */
+/* --- Home layout: two bands (hero + lower) with the search card straddling
+   the seam between them — the classic "overlapping hero card" pattern. --- */
 .home-main {
-  display: flex; flex-direction: column; align-items: center;
-  justify-content: center; /* center the logo/search/moon group vertically */
+  display: flex; flex-direction: column; align-items: stretch;
   min-height: 100dvh; gap: 0; overflow: hidden;
-  padding: 32px 0 48px;
+}
+.home-hero {
+  position: relative; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  padding: 48px 0 88px; /* extra bottom room for the overlapping search card */
+}
+.home-lower {
+  position: relative; flex: 1;
+  display: flex; flex-direction: column; align-items: center;
+  padding: 0 0 48px;
+  background: #050b07;
+  border-top: 1px solid rgba(255,255,255,0.07);
+}
+/* Pulls the search card up ~40px so it straddles the hero/lower boundary —
+ * roughly half the card sits above the line, half below it. */
+.home-search-group {
+  position: relative; z-index: 5;
+  width: 100%; max-width: 480px; padding: 0 16px;
+  margin-top: -40px;
 }
 .home-divider { width: 100%; height: 1px; background: rgba(255,255,255,0.06); margin: 20px 0; }
 /* Compact centered moon indicator (was a big empty full-width card). */
@@ -176,15 +215,17 @@ html, body {
 .location-search { position: relative; width: 100%; }
 .location-search-input {
   width: 100%;
-  /* Solid dark-green surface — must NOT be see-through (it sits over the logo). */
-  background: #10241a;
-  border: 1.5px solid rgba(121, 194, 76, 0.22);
+  /* Fully opaque dark-green card — must NOT be see-through, it straddles the
+   * hero/lower seam and sits over both the gradient above and the darker
+   * surface below (.home-search-group). */
+  background-color: #12271b;
+  border: 1.5px solid rgba(121, 194, 76, 0.3);
   border-radius: 14px;
   padding: 14px 48px 14px 16px;
   font-size: 1rem; color: #fff;
   outline: none;
-  box-shadow: 0 6px 24px rgba(0,0,0,0.45);
-  transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+  box-shadow: 0 10px 32px rgba(0,0,0,0.55);
+  transition: border-color 0.2s, background-color 0.2s, box-shadow 0.2s;
 }
 .location-search-input::placeholder { color: rgba(255,255,255,0.4); }
 .location-search-input:focus {
@@ -337,7 +378,8 @@ html, body {
 .city-search { width: 100%; }
 .settings-gear-btn {
   flex-shrink: 0;
-  width: 40px; height: 40px; display: inline-flex; align-items: center; justify-content: center;
+  /* 44px: Apple HIG / Android touch-target norm (RESP-06) — was 40px. */
+  width: 44px; height: 44px; display: inline-flex; align-items: center; justify-content: center;
   border-radius: 999px; font-size: 1.2rem; line-height: 1; cursor: pointer;
   background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
   transition: background 0.15s, border-color 0.15s;
@@ -368,7 +410,8 @@ html, body {
 .ftile:focus-visible { outline: none; border-color: rgba(121,194,76,0.6); box-shadow: 0 0 0 2px rgba(121,194,76,0.35); }
 .ftile-icon { font-size: 1.75rem; line-height: 1; }
 .ftile-title { font-size: 0.82rem; font-weight: 600; color: rgba(255,255,255,0.85); line-height: 1.25; }
-.ftile-sub { font-size: 0.68rem; color: rgba(255,255,255,0.4); line-height: 1.2; }
+/* RESP-11: 0.75rem (12px) is the readable floor for arm's-length mobile text. */
+.ftile-sub { font-size: 0.75rem; color: rgba(255,255,255,0.4); line-height: 1.2; }
 .ftile-bearing {
   font-size: 0.72rem; font-variant-numeric: tabular-nums;
   color: rgba(201, 242, 122, 0.75); line-height: 1;
@@ -388,7 +431,9 @@ html, body {
 }
 .modal-title { font-size: 1.1rem; font-weight: 700; color: #fff; margin: 0; }
 .modal-close {
-  flex-shrink: 0; width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  /* 44px touch target (RESP-06) — was 32px. */
+  width: 44px; height: 44px; display: inline-flex; align-items: center; justify-content: center;
   border-radius: 999px; font-size: 0.95rem; line-height: 1; cursor: pointer;
   color: rgba(255,255,255,0.6);
   background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
@@ -407,6 +452,9 @@ html, body {
 /* --- Calendar modal --- */
 .cal-modal {
   width: 100%; max-width: 560px; max-height: 88vh; overflow-y: auto;
+  /* RESP-05: contain overscroll so hitting the top/bottom of the internal
+   * scroll doesn't chain into a scroll of the page behind the overlay. */
+  overscroll-behavior: contain;
   background: #0b1f13; border: 1px solid rgba(121,194,76,0.22);
   border-radius: 20px; padding: 20px;
   box-shadow: 0 24px 64px rgba(0,0,0,0.5);
@@ -415,7 +463,8 @@ html, body {
 .cal-toolbar { display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 12px; }
 .cal-nav-btn, .cal-back-btn {
   display: inline-flex; align-items: center; justify-content: center;
-  min-width: 34px; height: 34px; padding: 0 12px;
+  /* 44px touch target (RESP-06) — the prev/next month buttons are tapped repeatedly. */
+  min-width: 44px; height: 44px; padding: 0 12px;
   border-radius: 10px; font-size: 1rem; cursor: pointer; color: #C9F27A;
   background: rgba(121,194,76,0.1); border: 1px solid rgba(121,194,76,0.28);
   transition: background 0.15s;
@@ -442,7 +491,7 @@ html, body {
 .cal-tr:last-child { border-bottom: none; }
 .cal-tr:not(.cal-thead):nth-child(even) { background: rgba(255,255,255,0.02); }
 .cal-thead { background: rgba(121,194,76,0.1); }
-.cal-th { padding: 10px 6px; font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: rgba(201,242,122,0.75); text-align: center; }
+.cal-th { padding: 10px 6px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: rgba(201,242,122,0.75); text-align: center; }
 .cal-td { padding: 9px 6px; font-size: 0.8rem; color: rgba(255,255,255,0.82); text-align: center; font-variant-numeric: tabular-nums; }
 .cal-td:first-child, .cal-th:first-child { font-weight: 600; color: rgba(255,255,255,0.55); }
 
@@ -466,7 +515,7 @@ html, body {
   border: 1px solid rgba(255,255,255,0.07); background: rgba(255,255,255,0.03);
 }
 .month-cal-day { font-size: 0.9rem; font-weight: 700; color: #fff; }
-.month-cal-fajr { font-size: 0.68rem; color: rgba(201,242,122,0.7); font-variant-numeric: tabular-nums; }
+.month-cal-fajr { font-size: 0.75rem; color: rgba(201,242,122,0.7); font-variant-numeric: tabular-nums; }
 
 .cal-footer { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 16px; }
 .cal-pdf-btn {
@@ -476,23 +525,85 @@ html, body {
 .cal-pdf-btn:hover:not(:disabled) { background: rgba(121,194,76,0.2); }
 .cal-pdf-btn:disabled { opacity: 0.5; cursor: default; }
 
-/* --- Settings panel (floating card anchored to the gear) --- */
+/* --- Settings panel: fixed top-right of the viewport (not anchored to the
+   gear button) so it never forces page scroll — RESP-03/A3. Slides in on
+   open; below 640px it becomes a full-screen takeover. --- */
 .settings-panel {
-  position: absolute; top: calc(100% + 8px); right: 0; z-index: 100;
-  width: min(300px, calc(100vw - 32px));
-  padding: 16px; border-radius: 16px;
+  position: fixed; top: 72px; right: 16px; z-index: 500;
+  width: min(320px, calc(100vw - 32px));
+  max-height: calc(100dvh - 96px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 16px; border-radius: 18px;
   background: rgba(6, 24, 12, 0.98);
   border: 1px solid rgba(121, 194, 76, 0.2);
-  box-shadow: 0 16px 48px rgba(0,0,0,0.5);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.55);
   -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px);
   display: flex; flex-direction: column; gap: 4px;
+  animation: settings-panel-in 0.2s ease-out both;
 }
+@keyframes settings-panel-in {
+  from { opacity: 0; transform: translateY(-8px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .settings-panel { animation: none; }
+}
+/* Full-screen takeover on small screens — no partial card, no page scroll. */
+@media (max-width: 640px) {
+  .settings-panel {
+    top: 0; right: 0; left: 0; bottom: 0;
+    width: 100%; max-width: none; max-height: none;
+    border-radius: 0;
+    padding: 20px 16px calc(20px + env(safe-area-inset-bottom, 0px));
+  }
+}
+.settings-panel-header {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  margin-bottom: 8px;
+}
+.settings-panel-title { font-size: 1rem; font-weight: 700; color: #fff; margin: 0; }
+.settings-panel-close {
+  position: relative; flex-shrink: 0;
+  width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 999px; font-size: 0.95rem; line-height: 1; cursor: pointer;
+  color: rgba(255,255,255,0.65);
+  background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);
+  transition: background 0.15s, color 0.15s;
+}
+.settings-panel-close:hover { background: rgba(255,255,255,0.14); color: #fff; }
+/* RESP-06: expand the tap target to 44px+ without growing the visible 32px circle. */
+.settings-panel-close::after { content: ''; position: absolute; inset: -6px; }
 .settings-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 6px 0; }
 .settings-row-label { font-size: 0.875rem; color: rgba(255,255,255,0.75); }
 .settings-section { margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.06); }
 .settings-section:first-child { border-top: none; margin-top: 0; padding-top: 0; }
 .settings-section-title { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: rgba(201,242,122,0.6); margin: 0 0 8px; }
 .settings-section-note { font-size: 0.75rem; color: rgba(255,255,255,0.45); margin: 4px 0 0; line-height: 1.4; }
+/* Toggle switch — RESP-06: 44px-tall invisible hit-area extension without
+ * growing the visible 24px-tall switch track. */
+.settings-toggle { position: relative; }
+.settings-toggle::before { content: ''; position: absolute; inset: -10px; }
+/* --- Settings panel: Ummat+ section (upsell / active state) --- */
+.settings-plus-upsell {
+  padding: 14px; border-radius: 14px;
+  background: linear-gradient(135deg, rgba(121,194,76,0.12), rgba(30,94,47,0.12));
+  border: 1px solid rgba(121,194,76,0.3);
+}
+.settings-plus-header { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+.settings-plus-name { font-size: 1rem; font-weight: 700; color: #C9F27A; }
+.settings-plus-price { font-size: 0.8rem; color: rgba(255,255,255,0.6); }
+.settings-plus-tagline { font-size: 0.8rem; color: rgba(255,255,255,0.7); line-height: 1.5; margin: 8px 0 10px; }
+.settings-plus-benefits { list-style: none; margin: 0 0 12px; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+.settings-plus-benefits li { font-size: 0.78rem; color: rgba(255,255,255,0.6); padding-left: 14px; position: relative; }
+.settings-plus-benefits li::before { content: '✓'; position: absolute; left: 0; color: #C9F27A; }
+.settings-plus-btn {
+  display: block; width: 100%; text-align: center; padding: 10px; border-radius: 10px;
+  font-size: 0.85rem; font-weight: 600; cursor: pointer; text-decoration: none;
+  color: #0D2F17; background: #C9F27A; border: none; transition: background 0.15s;
+}
+.settings-plus-btn:hover { background: #d6f68f; }
+.settings-plus-active { display: flex; flex-direction: column; gap: 6px; }
 .settings-method-select { border: 1px solid rgba(255,255,255,0.12); }
 .settings-method-select option { background: #0b1f13; color: #fff; }
 .settings-sound-opts, .settings-voice-opts { display: flex; gap: 6px; margin-top: 8px; }
@@ -580,7 +691,7 @@ html, body {
 .dashboard-profile-info { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 .dashboard-display-name { display: flex; align-items: center; gap: 8px; font-size: 1.05rem; font-weight: 600; color: #fff; }
 .dashboard-owner-badge {
-  font-size: 0.62rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
+  font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
   padding: 2px 8px; border-radius: 999px; color: #C9F27A; background: rgba(121,194,76,0.15);
 }
 .dashboard-email { font-size: 0.85rem; color: rgba(255,255,255,0.5); }
@@ -600,10 +711,15 @@ html, body {
 .dashboard-city-link { color: rgba(255,255,255,0.85); text-decoration: none; font-size: 0.9rem; }
 .dashboard-city-link:hover { color: #C9F27A; }
 .dashboard-city-remove {
+  position: relative; /* anchors the ::after hit-area expansion below */
   flex-shrink: 0; width: 26px; height: 26px; border-radius: 999px; cursor: pointer; font-size: 0.75rem;
   color: rgba(255,255,255,0.5); background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
   transition: color 0.15s, background 0.15s;
 }
+/* RESP-06: expand the tap target to ~44px without growing the visible 26px
+ * circle — an invisible hit-area extension is preferable here to enlarging
+ * every small icon button in a dense list. */
+.dashboard-city-remove::after { content: ''; position: absolute; inset: -9px; }
 .dashboard-city-remove:hover { color: #ff9b9b; background: rgba(255,120,120,0.12); }
 .dashboard-plus-card {
   padding: 20px; border-radius: 18px;
@@ -657,9 +773,12 @@ html, body {
 }
 .dashboard-tv-swatches { display: flex; flex-wrap: wrap; gap: 8px; }
 .dashboard-tv-swatches button {
+  position: relative; /* anchors the ::after hit-area expansion below */
   width: 26px; height: 26px; border-radius: 999px; cursor: pointer;
   border: 2px solid transparent; transition: border-color 0.15s, transform 0.12s;
 }
+/* RESP-06: expand the tap target without growing the visible color swatch. */
+.dashboard-tv-swatches button::after { content: ''; position: absolute; inset: -9px; }
 .dashboard-tv-swatches button:hover { transform: scale(1.1); }
 .dashboard-tv-swatches button[aria-checked="true"] { border-color: #fff; }
 .dashboard-tv-checkbox-row { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: rgba(255,255,255,0.75); cursor: pointer; }

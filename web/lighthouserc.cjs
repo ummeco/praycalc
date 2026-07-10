@@ -15,7 +15,11 @@ module.exports = {
       startServerCommand: 'node scripts/lhci-preview-server.mjs',
       startServerReadyPattern: 'ready on',
       startServerReadyTimeout: 30000,
-      url: ['http://localhost:4321/'],
+      // City pages (served by src/pages/[...slug].astro) are the core product surface —
+      // gate them too, not just the homepage, so a CityClient hydration regression
+      // doesn't ship unnoticed (LH-06). 'new-york' is a top-cities.ts entry, always
+      // resolvable without a live geocode lookup.
+      url: ['http://localhost:4321/', 'http://localhost:4321/new-york'],
       numberOfRuns: 3,
     },
     assert: {

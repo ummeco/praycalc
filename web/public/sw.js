@@ -9,13 +9,28 @@
 // CONSTRAINTS: Hand-written, intentionally small (no Workbox/Serwist). Bump
 //   CACHE_VERSION on any change to the caching strategy so old caches are
 //   pruned on activate — versions are shared across all three cache buckets
-//   so a single bump invalidates everything at once.
+//   so a single bump invalidates everything at once. This is a manual bump
+//   (no build step exists to inject a real content/commit hash) — content
+//   inside ASSET_CACHE is additionally guarded by per-bucket entry-count
+//   trimming (see ASSET_CACHE_MAX_ENTRIES) so unbounded growth across many
+//   deploys — WITHOUT a CACHE_VERSION bump — can't silently exhaust the
+//   origin's storage quota and evict the offline city data this SW exists
+//   to protect.
+// ASSET STRATEGY: Astro's own build output under /_astro/ is content-hashed
+//   and immutable (filename changes if content changes), so it is safe to
+//   CacheFirst forever within a bucket that is entry-count-capped. Anything
+//   else matching the static-asset extensions (self-hosted fonts, /embed/*.js,
+//   logo/og-image, etc.) has a STABLE, un-hashed URL — CacheFirst there would
+//   mean a fixed bug/update never reaches a returning visitor until a manual
+//   CACHE_VERSION bump, so those use StaleWhileRevalidate instead: serve the
+//   cached copy instantly, but always refetch in the background and update
+//   the cache for next time.
 // NOT IN SCOPE: Web-push notifications (would need VAPID keys + a push
 //   server to trigger prayer-time alerts — tracked as a future item, not
 //   implemented here).
-// REF: Wave-3 gap closure (2026-07)
+// REF: Wave-3 gap closure (2026-07) · PWA hardening pass (2026-07-10)
 
-const CACHE_VERSION = 'v2';
+const CACHE_VERSION = 'v3';
 const SHELL_CACHE = `praycalc-shell-${CACHE_VERSION}`;
 const CITY_CACHE = `praycalc-city-${CACHE_VERSION}`;
 const ASSET_CACHE = `praycalc-assets-${CACHE_VERSION}`;
@@ -25,10 +40,21 @@ const ALL_CACHES = [SHELL_CACHE, CITY_CACHE, ASSET_CACHE];
 // show offline even before the user visits a city page.
 const SHELL_URLS = ['/', '/about', '/times'];
 
-// Cap on how many distinct city pages we keep cached. Each visited city's
-// rendered response is cached on NetworkFirst success (see fetch handler);
-// without a cap a heavy multi-city user could grow this unbounded.
+// Static-asset URL shapes. HASHED_ASSET_PATTERN identifies Astro's own
+// content-hashed build output (e.g. /_astro/city-page.a1b2c3d4.js) — the
+// filename itself changes on content change, so CacheFirst is always correct
+// for it. Anything else matching STATIC_ASSET_PATTERN (fonts, /embed/*.js,
+// logo/og-image, favicons, etc.) has a stable URL and needs revalidation.
+const HASHED_ASSET_PATTERN = /^\/_astro\//;
+const STATIC_ASSET_PATTERN = /\.(woff2?|ttf|otf|svg|png|jpg|jpeg|webp|gif|ico|css|js)$/;
+
+// Caps on how many entries each cache bucket keeps. Each visited city's
+// rendered response / each fetched asset is added on a successful fetch;
+// without a cap, either bucket could grow unbounded across many deploys and
+// browser visits, until the browser's storage-quota eviction wipes ALL
+// caches at once (including the offline city data this SW exists to keep).
 const CITY_CACHE_MAX_ENTRIES = 25;
+const ASSET_CACHE_MAX_ENTRIES = 100;
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
@@ -64,6 +90,9 @@ self.addEventListener('activate', (event) => {
       )
     )
   );
+  // Take control of already-open tabs immediately — combined with skipWaiting
+  // above, a new deploy's SW activates and serves fresh content on the very
+  // next fetch instead of waiting for a full reload of every open tab.
   self.clients.claim();
 });
 
@@ -74,9 +103,17 @@ self.addEventListener('fetch', (event) => {
   // Only handle same-origin GET requests.
   if (url.origin !== self.location.origin || request.method !== 'GET') return;
 
-  // Static assets (fonts, icons, images) — CacheFirst.
-  if (/\.(woff2?|ttf|otf|svg|png|jpg|jpeg|webp|gif|ico|css|js)$/.test(url.pathname)) {
-    event.respondWith(cacheFirst(request, ASSET_CACHE));
+  // Static assets (fonts, icons, images, scripts, styles).
+  if (STATIC_ASSET_PATTERN.test(url.pathname)) {
+    if (HASHED_ASSET_PATTERN.test(url.pathname)) {
+      // Content-hashed + immutable — CacheFirst is always correct.
+      event.respondWith(cacheFirst(request, ASSET_CACHE, { trim: ASSET_CACHE_MAX_ENTRIES }));
+    } else {
+      // Stable URL (e.g. /embed/praycalc.js, /logo.png) — a fix/update to this
+      // file must reach returning visitors without waiting for a manual
+      // CACHE_VERSION bump, so revalidate in the background on every hit.
+      event.respondWith(staleWhileRevalidate(request, ASSET_CACHE, { trim: ASSET_CACHE_MAX_ENTRIES }));
+    }
     return;
   }
 
@@ -85,7 +122,7 @@ self.addEventListener('fetch', (event) => {
   // is what makes "last-viewed city offline" work: the response IS the
   // server-computed prayer times HTML, cached verbatim.
   if (request.mode === 'navigate' && !SHELL_URLS.includes(url.pathname)) {
-    event.respondWith(networkFirstWithFallback(request, CITY_CACHE, '/', { trim: true }));
+    event.respondWith(networkFirstWithFallback(request, CITY_CACHE, '/', { trim: CITY_CACHE_MAX_ENTRIES }));
     return;
   }
 
@@ -96,25 +133,70 @@ self.addEventListener('fetch', (event) => {
   }
 });
 
-async function cacheFirst(request, cacheName) {
+/** CacheFirst: serve from cache when present, else fetch + populate + (optionally) trim. */
+async function cacheFirst(request, cacheName, opts = {}) {
   const cached = await caches.match(request);
   if (cached) return cached;
   const response = await fetch(request);
   if (response.ok) {
     const cache = await caches.open(cacheName);
     cache.put(request, response.clone());
+    if (opts.trim) await trimCache(cache, opts.trim);
   }
   return response;
+}
+
+/**
+ * StaleWhileRevalidate: serve the cached copy instantly if present (never
+ * blocks on the network), while always kicking off a background refetch that
+ * updates the cache for the next visit. Falls through to the network response
+ * (or a 503) when nothing is cached yet, e.g. the very first hit.
+ */
+async function staleWhileRevalidate(request, cacheName, opts = {}) {
+  const cache = await caches.open(cacheName);
+  const cached = await cache.match(request);
+
+  const networkUpdate = fetch(request)
+    .then(async (response) => {
+      if (response.ok) {
+        await cache.put(request, response.clone());
+        if (opts.trim) await trimCache(cache, opts.trim);
+      }
+      return response;
+    })
+    .catch(() => undefined);
+
+  if (cached) return cached;
+  const networkResponse = await networkUpdate;
+  return networkResponse ?? new Response('Offline', { status: 503 });
 }
 
 async function networkFirstWithFallback(request, cacheName, fallbackUrl, opts = {}) {
   try {
     const response = await fetch(request);
+
     if (response.ok) {
       const cache = await caches.open(cacheName);
       cache.put(request, response.clone());
-      if (opts.trim) await trimCache(cache, CITY_CACHE_MAX_ENTRIES);
+      if (opts.trim) await trimCache(cache, opts.trim);
+      return response;
     }
+
+    // A response WAS received (not a network-level failure) but it's an
+    // error. For navigations, a 5xx means the backend/SSR render itself
+    // failed (praycalc is output:'server' — every city page is a live
+    // render) — this SW's stated purpose is that a returning user sees their
+    // last-computed prayer times, not a blank/error page, so treat a 5xx
+    // navigation the same as an offline/network failure and fall through to
+    // the cache. Non-5xx statuses (e.g. a genuine 404) are returned as-is —
+    // there is no reason to mask a real "not found" with stale content.
+    if (request.mode === 'navigate' && response.status >= 500) {
+      const cached = await caches.match(request);
+      if (cached) return cached;
+      const fallback = await caches.match(fallbackUrl);
+      if (fallback) return fallback;
+    }
+
     return response;
   } catch {
     // Offline (or network error) — serve the last cached response for THIS
