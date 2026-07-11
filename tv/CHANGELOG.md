@@ -1,4 +1,13 @@
-# PrayCalc TV — Changelog
+# Changelog — PrayCalc TV
+
+## [1.0.0] - 2026-07-11
+
+### Added
+- First public release (Android TV / Fire TV sideload APK via GitHub; tvOS via EAS store lane).
+- Account-linked control plane: pair by 6-digit code, then manage everything from Web/Desktop/Mobile.
+- Five selectable layouts (Classic — Mecca live 2/3 + prayer rail, Flipped, Stream Full, Times Only, Ambient) and four theme palettes, switchable per-TV from the account managers.
+- Full-screen adhan countdown takeover, per-prayer iqama times, prayer-name-only mode.
+- Update-available toast pointing at GitHub releases; store builds update via their stores.
 
 ## [0.2.0] — 2026-07-08
 
