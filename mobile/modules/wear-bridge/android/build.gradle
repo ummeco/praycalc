@@ -1,0 +1,15 @@
+plugins {
+  id 'com.android.library'
+  id 'expo-module-gradle-plugin'
+}
+
+android {
+  namespace "expo.modules.wearbridge"
+}
+
+dependencies {
+  // Wearable Data Layer API — DataClient.putDataItem must match the same GMS
+  // wearable version family the wearos/ standalone app + PrayerDataListenerService
+  // (WearableListenerService) already target.
+  implementation 'com.google.android.gms:play-services-wearable:19.0.0'
+}

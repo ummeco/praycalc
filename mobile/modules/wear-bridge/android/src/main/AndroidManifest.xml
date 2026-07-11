@@ -1,0 +1,6 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+  <!-- No custom permissions needed: DataClient.putDataItem queues locally and does not
+       require INTERNET/BLUETOOTH — Wearable Data Layer transport is managed by Play
+       Services itself, matching the receiver side (wearos/app's PrayerDataListenerService,
+       a WearableListenerService, which likewise declares no extra permissions for receipt). -->
+</manifest>

@@ -41,6 +41,7 @@ import { scheduleSmartAlarms } from './smartAlarms';
 import { scheduleJumuahReminders } from './jumuahReminders';
 import { refreshHomeScreenWidget } from './widgetRefresh';
 import { formatTime } from '../formatTime';
+import { syncPrayerDataToWatch } from '../watch/watchSync';
 
 const PRAYER_NAMES: PrayerName[] = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
 
@@ -218,6 +219,10 @@ export async function schedulePrayerNotifications(): Promise<void> {
   await scheduleSmartAlarms(settings);
   await scheduleJumuahReminders(settings);
   await refreshHomeScreenWidget();
+  // Best-effort — a paired-watch sync failure must never break notification
+  // scheduling, which is this function's actual job (see watchSync.ts's own
+  // internal try/catch for the same reasoning refreshHomeScreenWidget uses).
+  await syncPrayerDataToWatch();
 }
 
 /**

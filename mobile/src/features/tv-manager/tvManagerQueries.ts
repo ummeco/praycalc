@@ -10,7 +10,7 @@
  * SPORT: REGISTRY-FUNCTIONS.md#praycalc-mobile-tv-manager-queries
  */
 
-import type { IqamaOffsets, TvMadhab, TvTimeFormat } from '../../lib/pairing/pairingMutation';
+import type { IqamaOffsets, TvMadhab, TvTimeFormat, TvLayout, TvTheme } from '../../lib/pairing/pairingMutation';
 
 export const GET_TV_SETTINGS = `
   query GetTvSettings {
@@ -35,6 +35,8 @@ export const GET_TV_SETTINGS = `
       calc_method
       madhab
       time_format
+      layout
+      theme
       created_at
       updated_at
     }
@@ -80,6 +82,8 @@ export interface TvSettingsRow {
   calc_method: string;
   madhab: TvMadhab;
   time_format: TvTimeFormat;
+  layout: TvLayout;
+  theme: TvTheme;
   created_at: string;
   updated_at: string;
 }

@@ -27,11 +27,13 @@
  * TvManagerScreen.tsx) covers the full pc_tv_settings column contract, incl. the deep-settings
  * columns added for the TV dashboard epic: countdown_takeover_enabled/countdown_minutes,
  * iqama_enabled/iqama_offsets, name_only_enabled/name_only_minutes, calc_method, madhab,
- * time_format. Value contract (live prod schema): calc_method is a free-form method key
- * lowercased (e.g. 'dpc'); madhab is 'shafii'|'hanafi'; time_format is '12h'|'24h';
- * iqama_offsets is a 5-key object {fajr,dhuhr,asr,maghrib,isha} in minutes after adhan
- * (no sunrise key) — always send the full object on write, never a partial patch, since
- * Hasura's jsonb _set replaces the whole column.
+ * time_format, layout, theme. Value contract (live prod schema): calc_method is a
+ * free-form method key lowercased (e.g. 'dpc'); madhab is 'shafii'|'hanafi'; time_format
+ * is '12h'|'24h'; layout is 'classic'|'flipped'|'stream-full'|'times-only'|'ambient'
+ * (default 'classic'); theme is 'ummat-green'|'midnight'|'warm-sand'|'mono' (default
+ * 'ummat-green'); iqama_offsets is a 5-key object {fajr,dhuhr,asr,maghrib,isha} in minutes
+ * after adhan (no sunrise key) — always send the full object on write, never a partial
+ * patch, since Hasura's jsonb _set replaces the whole column.
  * SPORT: REGISTRY-FUNCTIONS.md#praycalc-mobile-pairing-mutation
  */
 
@@ -126,6 +128,8 @@ export const DEFAULT_IQAMA_OFFSETS: IqamaOffsets = {
 
 export type TvMadhab = 'shafii' | 'hanafi';
 export type TvTimeFormat = '12h' | '24h';
+export type TvLayout = 'classic' | 'flipped' | 'stream-full' | 'times-only' | 'ambient';
+export type TvTheme = 'ummat-green' | 'midnight' | 'warm-sand' | 'mono';
 
 /**
  * Full pc_tv_settings editable-column patch shape (My TVs manager UPDATE_TV_SETTINGS
@@ -151,6 +155,8 @@ export interface TvSettingsPatch {
   calc_method?: string;
   madhab?: TvMadhab;
   time_format?: TvTimeFormat;
+  layout?: TvLayout;
+  theme?: TvTheme;
 }
 
 export interface ClaimTvVariables {

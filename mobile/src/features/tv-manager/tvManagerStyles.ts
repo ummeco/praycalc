@@ -4,8 +4,9 @@
  *   identical spacing/typography instead of duplicating StyleSheet.create blocks.
  * Inputs: colors (ThemeColors, from useThemeColors())
  * Outputs: createStyles(colors) — memoized by each caller via useMemo.
- * Constraints: Any style key referenced by TvManagerScreen.tsx or TvDeepSettings.tsx
- *   MUST live here — do not re-declare a local StyleSheet.create in either file.
+ * Constraints: Any style key referenced by TvManagerScreen.tsx, TvDeepSettings.tsx, or
+ *   TvLayoutThemePicker.tsx MUST live here — do not re-declare a local StyleSheet.create
+ *   in any of those files.
  * SPORT: REGISTRY-COMPONENTS.md#praycalc-mobile-tv-manager-styles
  */
 
@@ -163,5 +164,71 @@ export const createStyles = (colors: ThemeColors) => StyleSheet.create({
     color: colors.text.primary,
     backgroundColor: colors.background.primary,
     minHeight: 40,
+  },
+
+  // ── Layout & Theme picker (TvLayoutThemePicker.tsx) ─────────────────────────
+  layoutThemeSection: {
+    gap: 4,
+    paddingBottom: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.background.card,
+  },
+  layoutGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginTop: 4 },
+  layoutCard: {
+    width: '47%',
+    padding: 10,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: colors.background.card,
+    gap: 4,
+  },
+  layoutCardSelected: { borderColor: colors.brand.mid, backgroundColor: colors.background.card },
+  layoutCardTitle: { fontSize: 12, fontWeight: '700', color: colors.text.primary },
+  layoutCardDesc: { fontSize: 10, color: colors.text.muted, lineHeight: 13 },
+  themeGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginTop: 4 },
+  themeCard: {
+    width: '47%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    padding: 10,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: colors.background.card,
+  },
+  themeCardSelected: { borderColor: colors.brand.mid, backgroundColor: colors.background.card },
+  themeCardTitle: { fontSize: 12, fontWeight: '600', color: colors.text.primary },
+  themeSwatchRow: { flexDirection: 'row', gap: 3 },
+  themeSwatchDot: { width: 10, height: 10, borderRadius: 5, borderWidth: 1, borderColor: '#00000022' },
+
+  // Layout thumbnails — plain-View sketches (no react-native-svg dependency).
+  thumb: {
+    flexDirection: 'row',
+    width: '100%',
+    height: 28,
+    borderRadius: 4,
+    overflow: 'hidden',
+    backgroundColor: colors.background.primary,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 2,
+  },
+  thumbColumn: { flexDirection: 'column' },
+  thumbBlock: { backgroundColor: colors.background.card, alignSelf: 'stretch' },
+  thumbAccent: { backgroundColor: colors.brand.mid },
+  thumbStrip: { height: 6, flex: 0 },
+  thumbGrid: { flexWrap: 'wrap', alignContent: 'space-between' },
+  thumbGridCell: {
+    width: '48%',
+    height: '46%',
+    backgroundColor: colors.background.card,
+    borderRadius: 2,
+  },
+  thumbDot: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: colors.brand.mid,
+    alignSelf: 'center',
   },
 });
