@@ -4,6 +4,11 @@
 
 All notable changes to the PrayCalc desktop app are documented here.
 
+## [1.3.0] - 2026-07-11
+
+### Added
+- Minor release rollup of the 2026-07-10 campaign below (first release on the race-free draft pipeline + rolling desktop-latest updater feed).
+
 ## [1.2.4] - 2026-07-10
 
 ### Added

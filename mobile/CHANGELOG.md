@@ -1,5 +1,10 @@
 # praycalc/mobile Changelog
 
+## [2.2.0] - 2026-07-11
+
+### Added
+- First direct-install Android release line on the GitHub APK pipeline (signed, checksummed). Rolls up the 2026-07-10 fixes: SDK 53 dependency realignment, react-native-iap migration, background geofencing permissions, locale-aware time formatting, full accessibility-label i18n.
+
 ## [2.1.0] — 2026-07-10
 
 ### Fixed — Version sync + dependency coherence (W5 gap closure)
@@ -14,6 +19,10 @@
   `expo-*`/`react-native-*` packages) — see PR/commit notes for full diff.
 - `expo-in-app-purchases` (abandoned since 2022) replaced with
   `react-native-iap@13.0.4` behind the same `src/lib/iap` wrapper interface.
+- Background geofencing permission declarations fixed (Masjid Mute auto-mute
+  feature) for the Play Console background-location review requirement.
+- Native locale strings and 12/24h time formatting corrected across affected
+  screens.
 
 ## [0.3.0] — 2026-07-08
 

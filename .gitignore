@@ -121,3 +121,7 @@ mobile/.expo/
 
 # Lighthouse CI report output (quality-gates.yml lighthouse/lighthouse-org jobs)
 .lighthouseci/
+
+# web/vendor/*/dist are required at build time via file: deps (no build step) —
+# exempt them from the generic dist/ ignore so a fresh checkout can build.
+!web/vendor/*/dist
