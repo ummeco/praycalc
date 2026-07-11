@@ -4,8 +4,9 @@
 
 1. Amazon Developer account (free) — sign up at developer.amazon.com
 2. Fire TV device for testing (or Fire TV emulator via Android Studio AVD)
-3. PrayCalc TV APK built via EAS — either download the `praycalc-tv-android-apk` artifact from
-   a `release-tv.yml` GitHub Actions run, or build locally: `cd tv && eas build --platform android --profile production`
+3. PrayCalc TV signed APK — download the `PrayCalc-TV-{version}.apk` asset from the matching
+   `tv-v*` GitHub Release (built by `release-tv-apk.yml`, a plain Gradle build — no EAS account
+   needed). Verify the download against the release's `.sha256` file before installing.
 
 ## Step 1 — Test on Device
 
@@ -44,7 +45,7 @@ Place finalized assets in `assets/firetv/` before submission.
 3. **Availability & Pricing:** Free, All countries
 4. **Description:** Copy from `.github/docs/store-listing.md`
 5. **Images:** See `.github/docs/store-listing.md` § Screenshots (Android TV / Fire TV section)
-6. **APK Upload:** Upload the `praycalc-tv-android-apk` artifact downloaded from a `release-tv.yml` run
+6. **APK Upload:** Upload the `PrayCalc-TV-{version}.apk` asset downloaded from the matching `tv-v*` GitHub Release (`release-tv-apk.yml`)
 7. **Device Support:** Select "Fire TV" (all generations), optionally Fire Tablet
 
 ## Step 4 — Submit for Review

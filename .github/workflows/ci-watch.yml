@@ -1,0 +1,98 @@
+name: Watch Bridge CI
+
+# Scoped, fast sanity gate for the phone<->watch/wear data bridges. Deliberately
+# NOT a duplicate of ci-watchos.yml / ci-wearos.yml, which already build + run
+# the full watchOS/Wear OS app test suites on every watchos/**/wearos/** change
+# (real xcodebuild simulator tests, real gradle unit tests). This workflow's
+# actual added value is mobile/modules/** — the new watch-bridge (Swift) and
+# wear-bridge (Kotlin) Expo native modules, which have ZERO existing CI coverage
+# (they are not part of the watchos/wearos Xcode/Gradle projects; they only
+# compile inside a full `expo prebuild` + EAS build, which this repo does not
+# run in CI). watchos/** and wearos/** are included in the path filter too (per
+# the WTH Epic W Wave W1 spec) as a second, much cheaper insurance check —
+# syntax/lint only, no simulator/emulator boot — that fails fast before the
+# heavier dedicated workflows finish.
+
+on:
+  push:
+    branches: [main]
+    paths: ['watchos/**', 'wearos/**', 'mobile/modules/**']
+  pull_request:
+    branches: [main]
+    paths: ['watchos/**', 'wearos/**', 'mobile/modules/**']
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  swift-syntax-check:
+    name: Swift Syntax Check (watch-bridge + Sync)
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v7
+
+      # No dedicated xctest scheme covers mobile/modules/watch-bridge (it isn't part
+      # of the watchos/PrayCalcWatch.xcodeproj — it only builds inside a full Expo
+      # prebuild). watchos/PrayCalcWatch itself DOES have a real test scheme, already
+      # exercised end-to-end by ci-watchos.yml, so re-running xcodebuild here would
+      # be pure duplication — `swiftc -parse` is the pragmatic, fast, toolchain-light
+      # syntax gate for both: it catches malformed Swift (missing braces, bad
+      # signatures, invalid syntax) without needing CocoaPods/ExpoModulesCore/
+      # WatchConnectivity to actually resolve (parse-only, no semantic analysis).
+      - name: swiftc -parse every Swift source under mobile/modules + watchos
+        # Uses a `while read` loop (not `mapfile`/arrays) — macOS runners' default
+        # /bin/bash is 3.2 (no mapfile/readarray support).
+        run: |
+          set -e
+          found=0
+          status=0
+          while IFS= read -r f; do
+            found=1
+            echo "Parsing $f"
+            swiftc -parse "$f" || status=1
+          done < <(find mobile/modules watchos -type f -name '*.swift' 2>/dev/null | sort)
+          if [ "$found" -eq 0 ]; then
+            echo "No Swift sources found — nothing to check."
+            exit 0
+          fi
+          exit $status
+
+  kotlin-lint-check:
+    name: Kotlin Lint Check (wear-bridge + wearos)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      # mobile/modules/wear-bridge has no gradle wrapper of its own (it only builds
+      # inside a full Expo prebuild's generated android/ project) — a real
+      # `:app:testDebugUnitTest` isn't possible here. wearos/ DOES have a gradle
+      # wrapper and its full unit test suite already runs in ci-wearos.yml, so this
+      # lane deliberately stays a pragmatic, dependency-light ktlint pass over both
+      # trees instead of a duplicate gradle invocation.
+      - name: Check for Kotlin sources
+        id: files
+        run: |
+          count=$(find mobile/modules wearos -type f -name '*.kt' 2>/dev/null | wc -l | tr -d ' ')
+          echo "count=$count" >> "$GITHUB_OUTPUT"
+
+      - name: Set up JDK 17
+        if: steps.files.outputs.count != '0'
+        uses: actions/setup-java@v5
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Download ktlint
+        if: steps.files.outputs.count != '0'
+        run: |
+          curl -sSL --retry 3 -o ktlint \
+            "https://github.com/ktlint/ktlint/releases/download/1.4.0/ktlint"
+          chmod +x ktlint
+
+      - name: Run ktlint over mobile/modules + wearos Kotlin sources
+        if: steps.files.outputs.count != '0'
+        run: |
+          find mobile/modules wearos -type f -name '*.kt' -print0 \
+            | xargs -0 ./ktlint --relative

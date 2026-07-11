@@ -8,7 +8,8 @@ surface has its own tag prefix and its own workflow:
 | --- | --- | --- | --- |
 | Mobile — Android APK direct-install | `release-mobile-apk.yml` | `mobile-v*` tag push | React Native + Expo SDK 53, Gradle-built signed APK, no store account needed |
 | Mobile — App Store / Play Store submission | `release-mobile.yml` | Manual (`workflow_dispatch` only) | React Native + Expo SDK 53, EAS Build + Submit |
-| TV (Apple TV + Android TV + Fire TV) | `release-tv.yml` | `tv-v*` tag push, or manual | react-native-tvos (bare), EAS Build + Submit |
+| TV — Android TV / Fire TV APK direct-install | `release-tv-apk.yml` | `tv-v*` tag push | react-native-tvos (bare), Gradle-built signed APK, no store account needed |
+| TV — Play Store (TV listing) / tvOS App Store submission | `release-tv.yml` | Manual (`workflow_dispatch` only) | react-native-tvos (bare), EAS Build + Submit |
 | Desktop (macOS/Windows/Linux) | `release-desktop.yml` | `desktop-v*` tag push | Tauri 2, signed installers + rolling `desktop-latest` updater feed |
 | Web | Vercel auto-deploy on push to `main` | — | Astro (D-P2-STACK-CANON) |
 | Docs (praycalc.org) | Vercel auto-deploy on push to `main` | — | Astro (static) |
@@ -69,6 +70,10 @@ default — promote manually to production once verified).
 
 ## TV release
 
+Two separate, decoupled paths ship from the same tag/version, exactly mirroring mobile — a
+tag push only triggers the APK path below; EAS store submission is a manual step you trigger
+yourself.
+
 ### Step 1 — YOU: Verify locally
 
 ```bash
@@ -78,26 +83,38 @@ cd tv && pnpm typecheck && pnpm lint && pnpm test
 ### Step 2 — YOU: Bump version and tag
 
 ```bash
-# bump tv/app.json's "version"/"android.versionCode", commit
+# bump tv/package.json's "version" (and tv/app.json's "version"/"android.versionCode"), commit
 git tag tv-v0.2.0
 git push origin tv-v0.2.0
 ```
 
-### Step 3 — AUTO: what `release-tv.yml` does
+### Step 3 — AUTO: what pushing the tag actually triggers (`release-tv-apk.yml`)
 
-EAS Build (Apple TV via the `PrayCalcTV-tvOS` scheme + Android TV) → auto-submit to App Store
-Connect and Google Play Console, same as mobile. The Android APK is also uploaded as a
-downloadable workflow artifact (`praycalc-tv-android-apk`) for manual Fire TV submission.
+A signed Android TV / Fire TV APK is built directly (plain Gradle build against the committed
+`tv/android` project, no EAS account needed) and published to a GitHub Release
+(`PrayCalc-TV-{version}.apk` + `.sha256`) for direct-install/sideload. This is the fast,
+no-store-review path — it does **not** touch the Play Store, tvOS App Store, or Amazon
+Appstore.
 
-### Step 4 — YOU: Amazon Appstore (Fire TV)
+### Step 4 — YOU: separately, submit to the stores (`release-tv.yml`, manual dispatch only)
 
-Amazon has no EAS Submit integration. Download the `praycalc-tv-android-apk` artifact from
-the workflow run and follow `.github/docs/fire-tv-submission.md` for the manual upload +
-listing steps. Requires a free Amazon Developer account.
+`release-tv.yml` does not run on tag push — run it manually from the Actions tab
+(`workflow_dispatch`: pick platform/profile/auto-submit) once EAS/store credentials exist. It
+builds via EAS (Apple TV via the `PrayCalcTV-tvOS` scheme + Android TV) and can auto-submit to
+App Store Connect and Google Play Console (Android TV listing on the same Play Console app
+record as the phone/tablet listing — see the provisioning runbook § 3).
 
-### Step 5 — YOU: Physical device QA
+### Step 5 — YOU: Amazon Appstore (Fire TV)
 
-- [ ] Fire TV / Android TV: sideload the APK artifact, test D-pad navigation, adhan overlay, TV pairing
+Amazon has no EAS Submit integration and no automated lane at all. Download the signed APK
+from the `release-tv-apk.yml` GitHub Release (Step 3 above) and follow
+`.github/docs/fire-tv-submission.md` for the manual upload + listing steps. Requires a free
+Amazon Developer account. See also `.github/docs/store-listing-tv.md` for the short-form
+checklist covering Fire TV, Android TV, and tvOS submission mechanics together.
+
+### Step 6 — YOU: Physical device QA
+
+- [ ] Fire TV / Android TV: sideload the `release-tv-apk.yml` GitHub Release APK, test D-pad navigation, adhan overlay, TV pairing
 - [ ] Apple TV: TestFlight (once tvOS platform + simulator/device testing is set up) → full smoke test
 
 ---

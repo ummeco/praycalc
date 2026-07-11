@@ -1,24 +1,32 @@
 name: Release PrayCalc TV (EAS Build + Submit)
 
-# Two ways to ship a TV build:
-#   1. Push a `tv-v*` tag (e.g. tv-v0.2.0) → production profile, all platforms, auto-submit.
-#   2. Run manually (workflow_dispatch) → pick platform/profile/submit yourself.
+# Manual-only store submission lane: run from the Actions tab (workflow_dispatch) to build
+# via EAS and submit to the Google Play (Android TV listing) and tvOS App Store.
+#
+# GitHub direct-install APK releases (Fire TV / Android TV sideload) are handled by
+# release-tv-apk.yml (`tv-v*` tags) — a bare Gradle build, no EAS account needed. This
+# workflow used to ALSO run on `tv-v*` tag push (the "one asymmetry" vs. mobile the
+# provisioning runbook used to call out); that asymmetry is now closed — TV mirrors
+# mobile's split exactly: tag push → direct-install APK, manual dispatch → EAS/store.
 #
 # tv/ is a BARE (non-Expo) react-native-tvos project — EAS Build supports bare workflow
 # projects directly via the committed ios/ + android/ folders, no Expo config needed.
 # There is no "tvos" platform value in EAS; the Apple TV target is built via the regular
-# `ios` platform using the `PrayCalcTV-tvOS` Xcode scheme set in tv/eas.json. EAS's support
-# for tvOS schemes specifically is less battle-tested than iPhone/iPad builds — if a build
-# fails in a way that looks EAS-specific (not a project bug), the documented fallback is a
-# direct macOS-runner job using xcodebuild + fastlane instead of EAS for the iOS/tvOS leg
-# only (Android TV via EAS is the well-supported path and unaffected by this caveat).
+# `ios` platform using the `PrayCalcTV-tvOS` Xcode scheme set in tv/eas.json (the ONLY
+# scheme configured for every profile in that file) — so `platform: ios` below always
+# means "build the tvOS app," never a phone/tablet target. EAS's support for tvOS schemes
+# specifically is less battle-tested than iPhone/iPad builds — if a build fails in a way
+# that looks EAS-specific (not a project bug), the documented fallback is a direct
+# macOS-runner job using xcodebuild + fastlane instead of EAS for the iOS/tvOS leg only
+# (Android TV via EAS is the well-supported path and unaffected by this caveat).
 #
-# Amazon Appstore (Fire TV) has no EAS Submit integration — the Android job uploads the
-# built APK as a workflow artifact for manual submission via the Amazon Developer Console
-# (or scripted later with Amazon's Appstore Submission API once those credentials exist).
+# Amazon Appstore (Fire TV) has no EAS Submit integration and no automated lane in THIS
+# workflow at all — Amazon reviewers accept a plain signed APK, so use the
+# release-tv-apk.yml GitHub Release artifact for manual submission via the Amazon
+# Developer Console instead (see fire-tv-submission.md). This workflow used to fetch an
+# ad hoc EAS-built Android artifact for that purpose; see the trailing comment below for
+# why that was removed.
 on:
-  push:
-    tags: ['tv-v*']
   workflow_dispatch:
     inputs:
       platform:
@@ -96,27 +104,11 @@ jobs:
         if: always()
         run: rm -f asc-api-key.p8 google-service-account.json
 
-      # nosemgrep: yaml.github-actions.security.run-shell-injection.run-shell-injection
-      # False positive — github.event.inputs.profile is already indirected through
-      # `env: PROFILE` and referenced as a quoted "$PROFILE" shell var below, which
-      # is precisely the safe pattern the rule itself recommends.
-      - name: Fetch Android build APK for Amazon Appstore
-        if: ${{ github.event.inputs.platform != 'ios' }}
-        env:
-          PROFILE: ${{ github.event.inputs.profile || 'production' }}
-        run: |
-          BUILD_URL=$(eas build:list --platform android --profile "$PROFILE" --limit 1 --non-interactive --json | node -e "process.stdin.once('data', d => console.log(JSON.parse(d)[0]?.artifacts?.buildUrl || ''))")
-          if [ -n "$BUILD_URL" ]; then
-            curl -fsSL "$BUILD_URL" -o praycalc-tv-android.apk
-          else
-            echo "No Android build artifact URL found — skipping download" >&2
-          fi
-
-      - name: Upload Android APK as workflow artifact (for manual Amazon Appstore upload)
-        if: ${{ github.event.inputs.platform != 'ios' }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: praycalc-tv-android-apk
-          path: tv/praycalc-tv-android.apk
-          retention-days: 14
-          if-no-files-found: warn
+      # Amazon Appstore (Fire TV) submission no longer sources its APK from this workflow.
+      # It used to (a "Fetch Android build APK" step uploaded whatever EAS's android build
+      # produced as a workflow artifact), but that was unreliable — the `production` EAS
+      # profile's android.buildType is `aab` (for Play Store), not `apk`, so the fetched
+      # artifact was only actually an APK when someone ran this manually with the `preview`
+      # profile. release-tv-apk.yml now produces a real, correctly-named, checksummed,
+      # versioned signed APK on every `tv-v*` tag via a plain Gradle build — use that
+      # GitHub Release asset for Amazon submission instead (see fire-tv-submission.md).

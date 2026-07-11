@@ -148,3 +148,11 @@ continue rather than fork into new ones (see `mobile/docs/DEPLOYMENT.md` FGAP-08
 | Google Play | Mobile | `com.praycalc.praycalcApp` |
 | Google Play (Android TV) | TV | `com.ummeco.praycalc.tv` |
 | Amazon Appstore (Fire TV) | TV | `com.ummeco.praycalc.tv` |
+
+---
+
+## See also
+
+- `.github/docs/store-listing-tv.md` — Fire TV / Android TV / tvOS submission-mechanics checklists (this file is creative copy + asset specs only)
+- `.github/docs/fire-tv-submission.md` — full Fire TV manual submission walkthrough
+- `.github/docs/release-checklist.md` — per-release AUTO vs YOU steps for every surface

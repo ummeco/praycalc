@@ -5,6 +5,12 @@ This is the replacement for the retired Flutter release pipeline (`release.yml`,
 workflow can do anything useful until the accounts and secrets below exist — this doc is the
 one-time setup. Do it once; releases after that are just `git tag && git push`.
 
+Direct-install (no store account needed) sideload APKs are a SEPARATE, already-working
+pipeline for both apps — `release-mobile-apk.yml` (`mobile-v*` tags) and `release-tv-apk.yml`
+(`tv-v*` tags) — and need none of the setup below; they only need
+`PRAYCALC_ANDROID_KEYSTORE_B64` + `PRAYCALC_ANDROID_KEYSTORE_PASSWORD` (already provisioned).
+This doc covers store submission (EAS/App Store/Play Store/Amazon) only.
+
 Nothing here can be done by an AI agent on your behalf: account creation needs your identity,
 payment method, and 2FA; only you can complete it.
 
@@ -67,7 +73,7 @@ payment method, and 2FA; only you can complete it.
 
 1. Register at developer.amazon.com (free).
 2. Create an app under Apps & Services → Amazon Appstore → Add New App, package name `com.ummeco.praycalc.tv`.
-3. There is no EAS Submit integration for Amazon. `release-tv.yml`'s Android job uploads the built APK as a downloadable GitHub Actions artifact (`praycalc-tv-android-apk`) — download it from the workflow run and upload it manually via the Amazon Developer Console. See `.github/docs/fire-tv-submission.md` for the full manual submission walkthrough (store listing text, screenshots, review process).
+3. There is no EAS Submit integration for Amazon, and no automated submission lane at all. Amazon reviewers accept a plain signed APK — use the signed, checksummed, versioned APK that `release-tv-apk.yml` (a plain Gradle build, `tv-v*` tag push) publishes to the tag's GitHub Release. Download it from `github.com/ummeco/praycalc/releases` and upload it manually via the Amazon Developer Console. See `.github/docs/fire-tv-submission.md` for the full manual submission walkthrough (store listing text, screenshots, review process).
 4. If Amazon submissions become frequent enough to automate, Amazon does have an Appstore Submission API using OAuth "security profile" client credentials — that's a follow-up, not part of this pipeline yet.
 
 ---
@@ -110,9 +116,13 @@ Fill in, per app:
      APK on GitHub Releases) — it does not touch EAS or the stores. To submit to the App Store /
      Play Store, run `release-mobile.yml` manually from the Actions tab (`workflow_dispatch`) once
      you're ready; it is not tag-triggered.
-   - For **tv**, the `tv-v*` tag DOES trigger `release-tv.yml` directly (EAS Build + Submit),
-     since the TV app has no separate direct-install path — this is the one asymmetry between
-     the two apps' pipelines.
+   - For **tv**, the tag pattern mirrors mobile exactly (no more asymmetry): `tv-v*` ONLY
+     triggers `release-tv-apk.yml` (a plain Gradle build → signed direct-install APK on
+     GitHub Releases, for Android TV / Fire TV sideload — no EAS account needed). To submit
+     to the Google Play (Android TV listing) or the tvOS App Store, run `release-tv.yml`
+     manually from the Actions tab; it is not tag-triggered either. Amazon Appstore (Fire TV)
+     has no automated submission lane either way — download the `release-tv-apk.yml` GitHub
+     Release APK and follow `.github/docs/fire-tv-submission.md`.
 4. Watch the run at `github.com/ummeco/praycalc/actions`. First run of each app needs a manual Play Console pass (§ 3.4) and, for iOS, the app must be in "Prepare for Submission" state in App Store Connect with a filled-out listing (screenshots, description, age rating, privacy policy URL — see `.github/docs/store-listing.md`) before `--auto-submit` can push it to review.
 5. First-time Apple/Google review can take longer than routine updates (a few days is normal for a first submission, especially if manual human review flags anything). Budget for at least one rejection-and-resubmit cycle — this is normal for first submissions, not a sign anything is broken.
 
@@ -120,7 +130,8 @@ Fill in, per app:
 
 ## See also
 
-- `.github/docs/store-listing.md` — listing copy, screenshots, keywords (bundle IDs there need updating to the new RN package names — see that file's own note)
+- `.github/docs/store-listing.md` — listing copy, screenshots, keywords (bundle IDs already updated to the RN package names)
+- `.github/docs/store-listing-tv.md` — Fire TV / Android TV / tvOS submission-mechanics checklists
 - `.github/docs/fire-tv-submission.md` — Amazon Appstore manual submission walkthrough
 - `.github/docs/release-checklist.md` — per-release checklist (rewritten for this pipeline)
 - `mobile/docs/DEPLOYMENT.md` — mobile-specific rollout/rollback strategy, bundle ID continuity rationale
