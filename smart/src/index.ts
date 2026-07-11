@@ -34,6 +34,9 @@ app.use(cors({
     'https://praycalc.com',
     'https://www.praycalc.com',
     'https://api.praycalc.com',
+    // Tauri desktop webview (Smart Home linking panel in the desktop app)
+    'tauri://localhost',
+    'https://tauri.localhost',
     /\.google\.com$/,
     /\.amazon\.com$/,
     /\.amazonaws\.com$/,
