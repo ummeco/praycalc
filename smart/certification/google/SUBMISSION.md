@@ -1,5 +1,12 @@
 # Google Assistant Action — Submission Guide
 
+> **Strategy decision:** Google Conversational Actions has been closed to new 3P submissions
+> since June 2023. PrayCalc's voice strategy is Alexa-first. This package is retained as a
+> historical record of what `google.ts` implements and as reference for a future re-scoping
+> decision if a new Google 3P surface opens. See
+> **[`.github/docs/adr/adr-google-voice-platform-retirement.md`](../../../.github/docs/adr/adr-google-voice-platform-retirement.md)**
+> for the full decision, alternatives considered, and the revisit trigger.
+
 > **Read `CONSOLE-SETUP.md` first.** `google.ts` targets Actions on Google's Conversational
 > Actions platform (Dialogflow ES webhook + `ACTIONS_ON_GOOGLE` response format), which Google
 > sunset for consumers in June 2023 and has not, as of this writing, reopened to new submissions.
