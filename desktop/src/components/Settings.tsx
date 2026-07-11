@@ -1,8 +1,9 @@
 /**
  * Purpose: Settings panel shell — owns the draft form state, the tab bar, and
  *   the imperative `save()` handle App.tsx's footer "Save" button calls. Each
- *   tab's fields live in `./settings/*Tab.tsx`; Account/TV management are
- *   their own top-level components (AccountTab, TvManager).
+ *   tab's fields live in `./settings/*Tab.tsx`; Account/TV/Smart Home
+ *   management are their own top-level components (AccountTab, TvManager,
+ *   SmartHomeManager).
  * Inputs: `settings` (persisted Settings) + `onSave` callback.
  * Outputs: renders the full settings UI; calls `onSave(form)` after a
  *   successful save.
@@ -16,6 +17,7 @@ import { saveSettings } from '../lib/store';
 import { invoke } from '@tauri-apps/api/core';
 import AccountTab from './AccountTab';
 import TvManager from './TvManager';
+import SmartHomeManager from './SmartHomeManager';
 import GeneralTab from './settings/GeneralTab';
 import LocationTab from './settings/LocationTab';
 import NotificationsTab from './settings/NotificationsTab';
@@ -30,7 +32,7 @@ export interface SettingsPanelHandle {
   save: () => Promise<void>;
 }
 
-type Tab = 'general' | 'location' | 'notifications' | 'advanced' | 'account' | 'tvs';
+type Tab = 'general' | 'location' | 'notifications' | 'advanced' | 'account' | 'tvs' | 'smartHome';
 
 const TABS: { id: Tab; label: string }[] = [
   { id: 'general', label: 'General' },
@@ -39,6 +41,7 @@ const TABS: { id: Tab; label: string }[] = [
   { id: 'advanced', label: 'Advanced' },
   { id: 'account', label: 'Account' },
   { id: 'tvs', label: 'My TVs' },
+  { id: 'smartHome', label: 'Smart Home' },
 ];
 
 const SettingsPanel = forwardRef<SettingsPanelHandle, Props>(function SettingsPanel({ settings, onSave }, ref) {
@@ -93,6 +96,7 @@ const SettingsPanel = forwardRef<SettingsPanelHandle, Props>(function SettingsPa
         {tab === 'advanced' && <AdvancedTab form={form} setForm={setForm} />}
         {tab === 'account' && <AccountTab />}
         {tab === 'tvs' && <TvManager />}
+        {tab === 'smartHome' && <SmartHomeManager />}
       </div>
     </div>
   );

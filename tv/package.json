@@ -12,6 +12,7 @@
     "test": "jest"
   },
   "dependencies": {
+    "@babel/runtime": "^7.29.2",
     "@praycalc/ui-utils": "workspace:*",
     "@react-native-async-storage/async-storage": "^2.0.0",
     "@react-navigation/native": "^6.1.18",
@@ -20,6 +21,7 @@
     "@urql/core": "^5.0.6",
     "graphql": "^16.9.0",
     "i18next": "^23.14.0",
+    "pray-calc": "^2.1.2",
     "react": "19.0.0",
     "react-i18next": "^15.0.0",
     "react-native": "npm:react-native-tvos@0.74.5-0",
@@ -27,8 +29,7 @@
     "react-native-svg": "15.2.0",
     "react-native-video": "6.10.1",
     "urql": "^4.1.0",
-    "zustand": "^5.0.0",
-    "pray-calc": "^2.1.2"
+    "zustand": "^5.0.0"
   },
   "devDependencies": {
     "@react-native-community/cli-platform-android": "13.6.9",

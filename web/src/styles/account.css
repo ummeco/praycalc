@@ -212,3 +212,15 @@
 .dashboard-tv-theme-swatch { width: 10px; height: 10px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.15); }
 .dashboard-tv-theme-card-title { font-size: 0.8rem; font-weight: 600; color: #fff; }
 
+/* --- Account: Smart Home linking (Dashboard card) --- */
+.dashboard-smarthome-list { list-style: none; margin: 0 0 10px; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.dashboard-smarthome-row {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 10px 12px; border-radius: 12px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
+}
+.dashboard-smarthome-info { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.dashboard-smarthome-icon { font-size: 1.2rem; flex-shrink: 0; }
+.dashboard-smarthome-name { font-size: 0.9rem; font-weight: 600; color: #fff; }
+.dashboard-smarthome-date { font-size: 0.75rem; color: rgba(255,255,255,0.5); }
+.dashboard-smarthome-guidance { margin-top: 4px; }
+

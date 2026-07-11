@@ -17,6 +17,7 @@ import { useEffect, useState } from 'react';
 import { hasValidToken, type PrayCalcSession } from '@/lib/session';
 import { getBillingStatus, startCheckout, isBillingDisabled } from '@/lib/billing';
 import { getSavedCities, removeSavedCity, type SavedCity } from './saved-cities';
+import SmartHomeSection from './SmartHomeSection';
 
 export default function Dashboard({
   session,
@@ -131,6 +132,8 @@ export default function Dashboard({
           </a>
         </p>
       </div>
+
+      <SmartHomeSection isPlus={isPlus} />
 
       {!isPlus && (
         <div className="dashboard-plus-card">

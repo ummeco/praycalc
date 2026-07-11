@@ -1,22 +1,27 @@
 /**
  * Purpose: Smart home integration — local authentication lock-on-salah mode
- *   (screen dim + DND via audio focus). expo-local-authentication.
- * Inputs: expo-local-authentication biometric check, prayer times for auto-dim trigger.
+ *   (screen dim + DND via audio focus) + Smart Home account-linking status
+ *   (Alexa / Google Home / Home Assistant), matching web's Dashboard and
+ *   desktop's SmartHomeManager. expo-local-authentication for the lock.
+ * Inputs: expo-local-authentication biometric check, prayer times for auto-dim
+ *   trigger; smartHomeClient.ts (direct Bearer fetch to smart.praycalc.com —
+ *   status/unlink only; linking a NEW provider always starts from the
+ *   assistant's own app, Alexa or Google Home, never from this screen).
  * Outputs: SmartHomeScreen — Feature 17 of 20.
- * Constraints: Ummat+ gated (isPlus) — this screen's whole premise (lock-on-salah +
- *   device control) is a paid feature; it was previously reachable by free users.
- *   No real device-discovery mechanism exists yet, so the device list is honestly
- *   empty rather than showing two hardcoded fake devices as if they were the user's
- *   real hardware — "Add Device" documents that real discovery is not yet built.
+ * Constraints: Ummat+ gated (isPlus) — this screen's whole premise (lock-on-
+ *   salah + smart-home linking) is a paid feature. The linked-provider list
+ *   replaced the earlier honestly-empty ad-hoc-device placeholder (WTH Epic H
+ *   Wave H2) now that smart.praycalc.com exposes real link status.
  *   iOS DnD requires entitlement (PCI pci-praycalc-ios-critical-alerts).
  *   Android: AUDIOFOCUS_GAIN used for media interruption.
- *   Smart home REST API calls via standard fetch (no native module needed).
  * SPORT: REGISTRY-APPS.md#praycalc-mobile-feature-17-smart-home
  */
 
-import React, { useMemo, useState, useCallback } from 'react';
+import React, {
+  useMemo, useState, useCallback, useEffect,
+} from 'react';
 import {
-  View, Text, Switch, TouchableOpacity, StyleSheet, SafeAreaView, ScrollView, Alert,
+  View, Text, Switch, TouchableOpacity, StyleSheet, SafeAreaView, ScrollView, Alert, Linking,
 } from 'react-native';
 import { router } from 'expo-router';
 import * as LocalAuthentication from 'expo-local-authentication';
@@ -25,14 +30,11 @@ import { useThemeColors } from '../../hooks/useThemeColors';
 import type { ThemeColors } from '../../constants/colors';
 import { PermissionDeniedState, EmptyState } from '../../components/states';
 import { useAuthStore } from '../auth/store/useAuthStore';
+import {
+  listLinks, unlinkProvider, PROVIDER_META, type LinkedProvider, type SmartHomeProvider,
+} from './smartHomeClient';
 
-interface SmartHomeDevice {
-  id: string;
-  name: string;
-  type: 'light' | 'speaker' | 'tv' | 'other';
-  isOnline: boolean;
-  apiUrl: string;
-}
+const SMART_HOME_DOCS_URL = 'https://praycalc.org/features/smart-home';
 
 export default function SmartHomeScreen() {
   const { t } = useTranslation();
@@ -41,8 +43,28 @@ export default function SmartHomeScreen() {
   const isPlus = useAuthStore((s) => s.isPlus);
   const [lockOnSalah, setLockOnSalah] = useState(false);
   const [biometricError, setBiometricError] = useState(false);
-  const [devices] = useState<SmartHomeDevice[]>([]); // No discovery mechanism yet — honestly empty, not mocked
-  const [deviceStates, setDeviceStates] = useState<Record<string, boolean>>({});
+
+  const [links, setLinks] = useState<LinkedProvider[]>([]);
+  const [loadingLinks, setLoadingLinks] = useState(true);
+  const [linkError, setLinkError] = useState<string | null>(null);
+  const [unlinkingProvider, setUnlinkingProvider] = useState<SmartHomeProvider | null>(null);
+
+  const loadLinks = useCallback(async () => {
+    setLoadingLinks(true);
+    setLinkError(null);
+    const result = await listLinks();
+    if (result.ok) {
+      setLinks(result.links);
+    } else {
+      setLinkError(result.error);
+    }
+    setLoadingLinks(false);
+  }, []);
+
+  useEffect(() => {
+    if (!isPlus) return;
+    void loadLinks();
+  }, [isPlus, loadLinks]);
 
   const handleLockOnSalah = useCallback(async (value: boolean) => {
     if (value) {
@@ -63,20 +85,30 @@ export default function SmartHomeScreen() {
     setLockOnSalah(value);
   }, [t]);
 
-  const handleDeviceToggle = useCallback(async (device: SmartHomeDevice, value: boolean) => {
-    setDeviceStates((prev) => ({ ...prev, [device.id]: value }));
-    try {
-      // Standard fetch to local REST API — no native module needed
-      await fetch(`${device.apiUrl}/state`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ on: value }),
-        signal: AbortSignal.timeout(3000),
-      });
-    } catch {
-      // Graceful degrade — toggle still updates local UI
-      Alert.alert(t('screens.smartHome.unreachableTitle'), t('screens.smartHome.unreachableBody', { name: device.name }));
-    }
+  const handleUnlink = useCallback((provider: SmartHomeProvider) => {
+    const label = PROVIDER_META[provider]?.label ?? provider;
+    Alert.alert(
+      t('screens.smartHome.unlinkConfirmTitle', { name: label }),
+      t('screens.smartHome.unlinkConfirmBody', { name: label }),
+      [
+        { text: t('common.cancel'), style: 'cancel' },
+        {
+          text: t('screens.smartHome.unlinkConfirmAction'),
+          style: 'destructive',
+          onPress: () => {
+            setUnlinkingProvider(provider);
+            unlinkProvider(provider).then((result) => {
+              setUnlinkingProvider(null);
+              if (result.ok) {
+                setLinks((cur) => cur.filter((l) => l.provider !== provider));
+              } else {
+                Alert.alert(t('screens.smartHome.unlinkFailedTitle'), result.error);
+              }
+            });
+          },
+        },
+      ],
+    );
   }, [t]);
 
   if (!isPlus) {
@@ -101,7 +133,7 @@ export default function SmartHomeScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scroll}>
-        {/* Lock-on-salah section */}
+        {/* Lock-on-salah section — unchanged */}
         <View style={styles.sectionCard}>
           <Text style={styles.sectionTitle} accessibilityRole="header">{t('screens.smartHome.lockDuringPrayer')}</Text>
           <Text style={styles.sectionDesc}>
@@ -124,45 +156,49 @@ export default function SmartHomeScreen() {
           )}
         </View>
 
-        {/* Smart home devices — honestly empty until real discovery/pairing ships */}
-        <Text style={styles.heading} accessibilityRole="header">{t('screens.smartHome.smartDevices')}</Text>
-        {devices.length === 0 && (
-          <Text style={styles.sectionDesc}>
-            {t('screens.smartHome.noDevices')}
-          </Text>
+        {/* Linked smart-home accounts — replaces the earlier honestly-empty
+            device-list placeholder now that smart.praycalc.com exposes real
+            link status (WTH Epic H, Wave H2). */}
+        <Text style={styles.heading} accessibilityRole="header">{t('screens.smartHome.linkedAccounts')}</Text>
+
+        {linkError && <Text style={styles.errorText}>{linkError}</Text>}
+
+        {!loadingLinks && links.length === 0 && !linkError && (
+          <Text style={styles.sectionDesc}>{t('screens.smartHome.noLinks')}</Text>
         )}
-        {devices.map((device) => (
-          <View key={device.id} style={styles.deviceCard}>
-            <View style={styles.deviceLeft}>
-              <Text style={styles.deviceIcon}>
-                {device.type === 'light' ? '💡' : device.type === 'speaker' ? '🔊' : '📺'}
-              </Text>
-              <View>
-                <Text style={styles.deviceName}>{device.name}</Text>
-                <Text style={[styles.deviceStatus, { color: device.isOnline ? colors.state.success : colors.text.muted }]}>
-                  {device.isOnline ? t('screens.smartHome.online') : t('screens.smartHome.offline')}
-                </Text>
+
+        {links.map((link) => {
+          const meta = PROVIDER_META[link.provider];
+          return (
+            <View key={link.provider} style={styles.deviceCard}>
+              <View style={styles.deviceLeft}>
+                <Text style={styles.deviceIcon}>{meta?.icon ?? '🔗'}</Text>
+                <View>
+                  <Text style={styles.deviceName}>{meta?.label ?? link.provider}</Text>
+                  <Text style={styles.deviceStatus}>
+                    {t('screens.smartHome.linked', { date: new Date(link.linked_at).toLocaleDateString() })}
+                  </Text>
+                </View>
               </View>
+              <TouchableOpacity
+                onPress={() => handleUnlink(link.provider)}
+                disabled={unlinkingProvider === link.provider}
+                accessibilityRole="button"
+                accessibilityLabel={`${t('screens.smartHome.unlink')} ${meta?.label ?? link.provider}`}
+              >
+                <Text style={styles.unlinkText}>{t('screens.smartHome.unlink')}</Text>
+              </TouchableOpacity>
             </View>
-            <Switch
-              value={deviceStates[device.id] ?? false}
-              onValueChange={(v) => handleDeviceToggle(device, v)}
-              disabled={!device.isOnline}
-              trackColor={{ false: colors.background.card, true: colors.brand.mid }}
-              thumbColor={colors.brand.light}
-              accessibilityLabel={`Toggle ${device.name}`}
-              accessibilityState={{ disabled: !device.isOnline }}
-            />
-          </View>
-        ))}
+          );
+        })}
 
         <TouchableOpacity
           style={styles.addBtn}
-          onPress={() => Alert.alert(t('screens.smartHome.comingSoonTitle'), t('screens.smartHome.comingSoonBody'))}
+          onPress={() => Linking.openURL(SMART_HOME_DOCS_URL)}
           accessibilityRole="button"
-          accessibilityLabel={t('screens.smartHome.addDeviceAccessibilityLabel')}
+          accessibilityLabel={t('screens.smartHome.learnMore')}
         >
-          <Text style={styles.addBtnText}>{t('screens.smartHome.addDevice')}</Text>
+          <Text style={styles.addBtnText}>{t('screens.smartHome.learnMore')}</Text>
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
@@ -189,6 +225,7 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
   toggleLabel: { fontSize: 16, color: colors.text.primary },
   activeNote: { fontSize: 13, color: colors.brand.dark, marginTop: 10, lineHeight: 20 },
   heading: { fontSize: 16, fontWeight: '700', color: colors.text.primary, marginBottom: 10 },
+  errorText: { fontSize: 13, color: colors.state.error, marginBottom: 10, lineHeight: 20 },
   deviceCard: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -202,7 +239,8 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
   deviceLeft: { flexDirection: 'row', alignItems: 'center', gap: 12 },
   deviceIcon: { fontSize: 24 },
   deviceName: { fontSize: 15, fontWeight: '600', color: colors.text.primary },
-  deviceStatus: { fontSize: 12, marginTop: 2 },
+  deviceStatus: { fontSize: 12, marginTop: 2, color: colors.text.muted },
+  unlinkText: { fontSize: 13, fontWeight: '600', color: colors.state.error },
   addBtn: {
     marginTop: 8,
     padding: 14,

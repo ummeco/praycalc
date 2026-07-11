@@ -16,6 +16,10 @@ export const AUTH_URL =
 export const BILLING_URL =
   process.env['EXPO_PUBLIC_BILLING_URL'] ?? 'https://api.praycalc.com/billing';
 
+/** Smart Home account-linking service (Alexa/Google Home/Home Assistant link status + unlink). */
+export const SMART_HOME_URL =
+  process.env['EXPO_PUBLIC_SMART_HOME_URL'] ?? 'https://smart.praycalc.com';
+
 export const SENTRY_DSN =
   process.env['EXPO_PUBLIC_SENTRY_DSN_PRAYCALC'] ?? '';
 

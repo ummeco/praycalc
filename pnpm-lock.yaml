@@ -501,6 +501,9 @@ importers:
 
   tv:
     dependencies:
+      '@babel/runtime':
+        specifier: ^7.29.2
+        version: 7.29.2
       '@praycalc/ui-utils':
         specifier: workspace:*
         version: link:../packages/ui-utils
@@ -13212,7 +13215,9 @@ snapshots:
     transitivePeerDependencies:
       - '@babel/core'
       - '@babel/preset-env'
+      - bufferutil
       - supports-color
+      - utf-8-validate
 
   '@react-native/normalize-colors@0.74.87': {}
 
