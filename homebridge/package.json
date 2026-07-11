@@ -24,7 +24,8 @@
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w",
-    "prepublishOnly": "tsc"
+    "prepublishOnly": "tsc",
+    "test": "vitest run"
   },
   "keywords": [
     "homebridge-plugin",
@@ -45,6 +46,7 @@
   "devDependencies": {
     "@types/node": "^22.20.0",
     "homebridge": "^1.8.0",
-    "typescript": "^5.0.0"
+    "typescript": "^5.0.0",
+    "vitest": "^4.1.10"
   }
 }

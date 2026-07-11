@@ -1,0 +1,47 @@
+name: Release Home Assistant Component (HACS zip)
+
+# Push an `ha-v*` tag (e.g. ha-v1.0.0) → package the Home Assistant custom
+# component into the `praycalc.zip` release asset that smart/homeassistant/
+# hacs.json promises (`zip_release: true, filename: praycalc.zip`). HACS installs
+# the component from this asset once the repo is added (custom repository now;
+# HACS default registry after the submission in smart/homeassistant/HACS.md).
+on:
+  push:
+    tags: ['ha-v*']
+
+permissions:
+  contents: write
+
+jobs:
+  release-ha:
+    name: Package + release praycalc.zip
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Verify tag matches manifest version
+        run: |
+          TAG_VERSION="${GITHUB_REF_NAME#ha-v}"
+          MANIFEST_VERSION=$(python3 -c "import json;print(json.load(open('smart/homeassistant/custom_components/praycalc/manifest.json'))['version'])")
+          if [ "$TAG_VERSION" != "$MANIFEST_VERSION" ]; then
+            echo "::error::Tag ($TAG_VERSION) != manifest.json version ($MANIFEST_VERSION)"
+            exit 1
+          fi
+
+      - name: Build praycalc.zip (HACS zip_release layout — zip the component contents)
+        run: |
+          cd smart/homeassistant/custom_components/praycalc
+          zip -rq /tmp/praycalc.zip . -x '*__pycache__*'
+          unzip -l /tmp/praycalc.zip | head -12
+
+      - name: Publish GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION="${GITHUB_REF_NAME#ha-v}"
+          gh release create "$GITHUB_REF_NAME" \
+            --repo "$GITHUB_REPOSITORY" \
+            --title "PrayCalc Home Assistant $VERSION" \
+            --notes "Home Assistant custom component (HACS zip release). Install via HACS with this repository added, or unzip into config/custom_components/praycalc/." \
+            --latest=false \
+            /tmp/praycalc.zip

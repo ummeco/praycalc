@@ -2,6 +2,7 @@
 // Each prayer is a contact sensor: OPEN when prayer time is active (within 30 min window), CLOSED otherwise
 
 import type { API, AccessoryPlugin, AccessoryConfig, Logging, Service } from 'homebridge';
+import { isPrayerWindowActive, validateConfig } from './helpers';
 
 // PrayCalc Public API
 const PRAYCALC_API = 'https://api.praycalc.com/api/v1/public/times';
@@ -43,9 +44,7 @@ class PrayCalcPlatform implements AccessoryPlugin {
     this.config = config as PluginConfig;
     this.api = api;
 
-    if (!this.config.latitude || !this.config.longitude) {
-      throw new Error('homebridge-praycalc: latitude and longitude are required in config.json');
-    }
+    validateConfig(this.config);
 
     // Create one contact sensor service per prayer
     for (const prayer of PRAYERS) {
@@ -90,18 +89,9 @@ class PrayCalcPlatform implements AccessoryPlugin {
 
   private getPrayerState(prayer: PrayerName): number {
     const timeStr = this.prayerTimes.get(prayer);
-    if (!timeStr) return this.api.hap.Characteristic.ContactSensorState.CONTACT_DETECTED; // CLOSED
+    if (!timeStr) return this.api.hap.Characteristic.ContactSensorState.CONTACT_DETECTED;
 
-    const now = new Date();
-    const [h, m] = timeStr.split(':').map(Number);
-    const prayerDate = new Date(now);
-    prayerDate.setHours(h, m, 0, 0);
-
-    const windowMs = (this.config.windowMinutes ?? 30) * 60 * 1000;
-    const diffMs = now.getTime() - prayerDate.getTime();
-
-    // OPEN (contact NOT detected) when within prayer window
-    const isActive = diffMs >= 0 && diffMs <= windowMs;
+    const isActive = isPrayerWindowActive(timeStr, new Date(), this.config.windowMinutes ?? 30);
     return isActive
       ? this.api.hap.Characteristic.ContactSensorState.CONTACT_NOT_DETECTED
       : this.api.hap.Characteristic.ContactSensorState.CONTACT_DETECTED;
