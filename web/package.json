@@ -29,7 +29,7 @@
     "@umalqura/core": "^0.0.7",
     "@ummat/astro-preset": "file:./vendor/astro-preset",
     "@ummat/consent": "file:./vendor/consent",
-    "@praycalc/ui-utils": "workspace:*",
+    "@praycalc/ui-utils": "file:vendor/ui-utils",
     "astro": "^5.7.13",
     "clsx": "^2.1.1",
     "luxon": "^3.5.0",

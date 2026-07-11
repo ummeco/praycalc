@@ -28,6 +28,9 @@ importers:
       '@fontsource/noto-naskh-arabic':
         specifier: ^5.2.11
         version: 5.2.11
+      '@praycalc/ui-utils':
+        specifier: file:vendor/ui-utils
+        version: file:vendor/ui-utils
       '@umalqura/core':
         specifier: ^0.0.7
         version: 0.0.7
@@ -1097,6 +1100,10 @@ packages:
     resolution: {integrity: sha512-8nKv6+0RJSL9FE4jYOEGXnPeM/Hg12qZpmqzZjRh3qM0Y7c3z1mrOTfFLids72RDQYVh9WpLEfR5WdpNX4fkig==}
     engines: {node: '>=18'}
     hasBin: true
+
+  '@praycalc/ui-utils@file:vendor/ui-utils':
+    resolution: {directory: vendor/ui-utils, type: directory}
+    engines: {node: '>=18'}
 
   '@protobufjs/aspromise@1.1.2':
     resolution: {integrity: sha512-j+gKExEuLmKwvz3OgROXtrJ2UG2x8Ch2YZUxahh+s1F2HZ+wAceUNLkvy6zKCPVRkU++ZWQrdxsUeQXmcg4uoQ==}
@@ -5597,6 +5604,8 @@ snapshots:
   '@playwright/test@1.61.1':
     dependencies:
       playwright: 1.61.1
+
+  '@praycalc/ui-utils@file:vendor/ui-utils': {}
 
   '@protobufjs/aspromise@1.1.2':
     optional: true
