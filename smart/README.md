@@ -63,8 +63,13 @@ Response:
 | POST | `/api/v1/webhooks` | Register a webhook callback |
 | GET | `/api/v1/webhooks` | List your webhook registrations |
 | DELETE | `/api/v1/webhooks/:id` | Remove a webhook registration |
-| GET/POST/DELETE | `/api/v1/devices` | Smart home device registry |
+| GET/POST/DELETE | `/api/v1/devices` | Smart home device registry (`pc_smart_home_devices`) |
+| POST | `/api/v1/devices/pairings` | Companion device (watch/desktop) requests a pairing code (no auth) |
+| POST | `/api/v1/devices/pairings/:code/claim` | User claims a companion pairing code |
+| GET | `/api/v1/devices/pairings/:code` | Companion device polls pairing status (no auth) |
 | GET/POST/DELETE | `/api/v1/integrations` | Integration config (HA, Homebridge, etc.) |
+| GET | `/api/v1/links` | List linked voice/smart-home providers (WMD linking dashboard) |
+| DELETE | `/api/v1/links/:provider` | Revoke a linked provider's tokens |
 | POST | `/google` | Google Home fulfillment |
 | POST | `/alexa` | Alexa skill handler |
 | GET | `/health` | Server health check |
@@ -220,19 +225,19 @@ You can add these to your Home Screen or invoke via Siri ("Hey Siri, next prayer
 
 ---
 
-## Alexa Skill
+## Alexa Skill & Google Home Fulfillment
 
-Lambda handler at `smarthome/alexa/lambda/index.ts`. Handles Alexa Smart Home skill directives to surface prayer times as Alexa devices.
+The live implementation is `POST /alexa/fulfillment` (`src/routes/alexa.ts`) and
+`POST /google/fulfillment` (`src/routes/google.ts`) — see the API table above.
+Both run in-process on this server; there is no separate Lambda/Cloud
+Functions deployment. Set your Alexa Smart Home skill endpoint and Google
+Actions fulfillment URL to `https://smart.praycalc.com/alexa/fulfillment` and
+`https://smart.praycalc.com/google/fulfillment` respectively.
 
-Deploy via AWS Lambda (Node 18+). Set the Lambda ARN as your Alexa Smart Home skill endpoint.
-
----
-
-## Google Home Fulfillment
-
-Fulfillment handler at `smarthome/google/fulfillment/index.ts`. Handles SYNC, QUERY, and EXECUTE intents for Google Home / Google Assistant.
-
-Deploy to Cloud Functions or any HTTPS endpoint. Set the endpoint URL in the Google Home Console under your Action's fulfillment settings.
+(An earlier `smarthome/` directory prototyped a separate AWS Lambda / Cloud
+Functions deployment using `ask-sdk-core` / `@assistant/conversation`. It
+referenced a nonexistent `pc_assistant_links` table and was never wired into
+CI or deploy — removed as dead code, WTH Epic H / H1.)
 
 ---
 

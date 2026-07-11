@@ -3,10 +3,10 @@ name: Smart Home CI
 on:
   push:
     branches: [main]
-    paths: ['smart/**', 'homebridge/**', 'smarthome/**']
+    paths: ['smart/**', 'homebridge/**']
   pull_request:
     branches: [main]
-    paths: ['smart/**', 'homebridge/**', 'smarthome/**']
+    paths: ['smart/**', 'homebridge/**']
   workflow_dispatch:
 
 jobs:

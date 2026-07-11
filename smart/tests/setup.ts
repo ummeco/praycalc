@@ -8,7 +8,9 @@
  */
 
 import { vi, beforeEach } from 'vitest';
+import crypto from 'crypto';
 import { resetRateLimiter } from '../src/middleware/rate-limit.js';
+import { hashToken } from '../src/routes/oauth.js';
 
 // Set env vars before app modules are loaded — the auth middleware reads these at module init
 process.env.HASURA_GRAPHQL_JWT_SECRET = 'test-secret';
@@ -21,8 +23,30 @@ const webhookStore = new Map<string, any>();
 export const subscriptionStore = new Map<string, any>(); // userId => { plan, status, ... }
 const freeTierStore = new Map<string, number>(); // "identifier:date" => count
 const integrationStore = new Map<string, any>();
-const deviceStore = new Map<string, any>();
-const locationStore = new Map<string, any>();
+// Saved locations (pc_saved_locations) — keyed by userId. Set with
+// { latitude, longitude, timezone } to match the real column names selected
+// by lib/user-location.ts's GetUserLocation query.
+export const locationStore = new Map<string, any>();
+// Smart-home device registry (pc_smart_home_devices) — keyed by device row id.
+export const smartHomeDeviceStore = new Map<string, any>();
+// Device pairing codes (pc_device_pairings) — keyed by uppercased code.
+export const devicePairingStore = new Map<string, any>();
+// OAuth authorization codes (pc_oauth_codes) — keyed by code.
+export const oauthCodeStore = new Map<string, any>();
+// OAuth access/refresh tokens (pc_oauth_tokens) — keyed by token_hash.
+export const oauthTokenStore = new Map<string, any>();
+
+/** Seed a valid OAuth access token directly (bypasses the full authorize+exchange flow). */
+export function seedOAuthAccessToken(rawToken: string, userId: string, provider: string, ttlMs = 60 * 60 * 1000): void {
+  oauthTokenStore.set(hashToken(rawToken), {
+    user_id: userId,
+    token_type: 'access',
+    provider,
+    revoked: false,
+    expires_at: new Date(Date.now() + ttlMs).toISOString(),
+    created_at: new Date().toISOString(),
+  });
+}
 // TV device and share stores (used by SHARE-3 / SHARE-4 tests)
 export const tvDeviceStore = new Map<string, any>(); // deviceId => { id, user_id }
 export const tvShareStore = new Map<string, any>();  // `${deviceId}:${sharedUserId}` => record
@@ -34,8 +58,11 @@ beforeEach(() => {
   subscriptionStore.clear();
   freeTierStore.clear();
   integrationStore.clear();
-  deviceStore.clear();
   locationStore.clear();
+  smartHomeDeviceStore.clear();
+  devicePairingStore.clear();
+  oauthCodeStore.clear();
+  oauthTokenStore.clear();
   tvDeviceStore.clear();
   tvShareStore.clear();
   userProfileStore.clear();
@@ -147,43 +174,148 @@ function mockHasura(query: string, variables: Record<string, any>): any {
     return { data: { insert_pc_integrations_one: row } };
   }
 
-  // ─── Devices ─────────────────────────────────────────────────────────
-  if (query.includes('GetDevices')) {
+  // ─── Smart-home devices (pc_smart_home_devices) ───────────────────────
+  if (query.includes('GetSmartHomeDevices')) {
     const userId = variables.userId;
-    const rows = [...deviceStore.values()].filter(d => d.user_id === userId && d.active);
-    return { data: { pc_devices: rows } };
+    const rows = [...smartHomeDeviceStore.values()]
+      .filter(d => d.user_id === userId)
+      .sort((a, b) => (a.linked_at < b.linked_at ? 1 : -1));
+    return { data: { pc_smart_home_devices: rows } };
   }
-  if (query.includes('insert_pc_devices_one')) {
+  if (query.includes('UpsertSmartHomeDevice') || query.includes('insert_pc_smart_home_devices_one')) {
+    const { userId, platform, deviceId, deviceName } = variables;
+    const existingId = [...smartHomeDeviceStore.entries()]
+      .find(([, d]) => d.user_id === userId && d.platform === platform && d.device_id === deviceId)?.[0];
+    const now = new Date().toISOString();
+    const id = existingId || crypto.randomUUID();
     const row = {
-      id: variables.id,
-      user_id: variables.userId,
-      name: variables.name,
-      type: variables.type,
-      metadata: variables.metadata,
-      active: true,
-      created_at: new Date().toISOString(),
+      id,
+      user_id: userId,
+      platform,
+      device_id: deviceId,
+      device_name: deviceName ?? smartHomeDeviceStore.get(id)?.device_name ?? null,
+      status: 'linked',
+      linked_at: smartHomeDeviceStore.get(id)?.linked_at ?? now,
+      updated_at: now,
     };
-    deviceStore.set(variables.id, row);
-    return { data: { insert_pc_devices_one: row } };
+    smartHomeDeviceStore.set(id, row);
+    return { data: { insert_pc_smart_home_devices_one: row } };
   }
-  if (query.includes('DeleteDevice')) {
+  if (query.includes('DeleteSmartHomeDevice')) {
     const { id, userId } = variables;
-    const existing = deviceStore.get(id);
+    const existing = smartHomeDeviceStore.get(id);
     if (existing && existing.user_id === userId) {
-      deviceStore.delete(id);
-      return { data: { delete_pc_devices: { affected_rows: 1 } } };
+      smartHomeDeviceStore.delete(id);
+      return { data: { delete_pc_smart_home_devices: { affected_rows: 1 } } };
     }
-    return { data: { delete_pc_devices: { affected_rows: 0 } } };
+    return { data: { delete_pc_smart_home_devices: { affected_rows: 0 } } };
+  }
+
+  // ─── Device pairing codes (pc_device_pairings) ────────────────────────
+  if (query.includes('InsertDevicePairing')) {
+    const { code, deviceId, deviceType, expiresAt } = variables;
+    devicePairingStore.set(code, {
+      code, device_id: deviceId, device_type: deviceType, expires_at: expiresAt,
+      user_id: null, used: false,
+    });
+    return { data: { insert_pc_device_pairings_one: { code } } };
+  }
+  if (query.includes('GetDevicePairing')) {
+    const pairing = devicePairingStore.get(variables.code);
+    return { data: { pc_device_pairings: pairing ? [pairing] : [] } };
+  }
+  if (query.includes('ClaimDevicePairing')) {
+    const { code, userId } = variables;
+    const pairing = devicePairingStore.get(code);
+    if (pairing) {
+      pairing.user_id = userId;
+      pairing.used = true;
+      devicePairingStore.set(code, pairing);
+      return { data: { update_pc_device_pairings: { affected_rows: 1 } } };
+    }
+    return { data: { update_pc_device_pairings: { affected_rows: 0 } } };
+  }
+
+  // ─── OAuth authorization codes (pc_oauth_codes) ───────────────────────
+  if (query.includes('InsertOAuthCode')) {
+    const { code, userId, clientId, codeChallenge, expiresAt } = variables;
+    oauthCodeStore.set(code, { user_id: userId, client_id: clientId, code_challenge: codeChallenge, expires_at: expiresAt });
+    return { data: { insert_pc_oauth_codes_one: { code } } };
+  }
+  if (query.includes('GetOAuthCode') || query.includes('pc_oauth_codes_by_pk')) {
+    const found = oauthCodeStore.get(variables.code);
+    return { data: { pc_oauth_codes_by_pk: found ?? null } };
+  }
+  if (query.includes('DeleteOAuthCode')) {
+    oauthCodeStore.delete(variables.code);
+    return { data: { delete_pc_oauth_codes_by_pk: { code: variables.code } } };
+  }
+
+  // ─── OAuth access/refresh tokens (pc_oauth_tokens) ────────────────────
+  if (query.includes('InsertOAuthTokens')) {
+    const objects = (variables.objects as any[]) || [];
+    for (const obj of objects) {
+      oauthTokenStore.set(obj.token_hash, {
+        user_id: obj.user_id,
+        token_type: obj.token_type,
+        provider: obj.provider ?? null,
+        expires_at: obj.expires_at,
+        revoked: false,
+        created_at: new Date().toISOString(),
+      });
+    }
+    return { data: { insert_pc_oauth_tokens: { affected_rows: objects.length } } };
+  }
+  if (query.includes('InsertOAuthToken')) {
+    const { tokenHash, userId, provider, expiresAt } = variables;
+    oauthTokenStore.set(tokenHash, {
+      user_id: userId, token_type: 'access', provider: provider ?? null,
+      expires_at: expiresAt, revoked: false, created_at: new Date().toISOString(),
+    });
+    return { data: { insert_pc_oauth_tokens_one: { token_hash: tokenHash } } };
+  }
+  // NOTE: check RevokeOAuthToken (mutation) BEFORE GetOAuthToken (query) —
+  // "update_pc_oauth_tokens_by_pk" contains "pc_oauth_tokens_by_pk" as a
+  // substring, so the looser read-only check would otherwise shadow the
+  // revoke mutation and silently no-op it.
+  if (query.includes('RevokeOAuthToken')) {
+    const found = oauthTokenStore.get(variables.tokenHash);
+    if (found) { found.revoked = true; oauthTokenStore.set(variables.tokenHash, found); }
+    return { data: { update_pc_oauth_tokens_by_pk: found ? { token_hash: variables.tokenHash } : null } };
+  }
+  if (query.includes('GetOAuthToken') || query.includes('pc_oauth_tokens_by_pk')) {
+    const found = oauthTokenStore.get(variables.tokenHash);
+    return { data: { pc_oauth_tokens_by_pk: found ?? null } };
+  }
+  if (query.includes('ListLinkedProviders')) {
+    const userId = variables.userId;
+    const rows = [...oauthTokenStore.values()]
+      .filter(t => t.user_id === userId && !t.revoked && t.provider)
+      .sort((a, b) => (a.created_at < b.created_at ? 1 : -1))
+      .map(t => ({ provider: t.provider, created_at: t.created_at }));
+    return { data: { pc_oauth_tokens: rows } };
+  }
+  if (query.includes('DeleteLinkedProviderTokens')) {
+    const { userId, provider } = variables;
+    let affected = 0;
+    for (const [hash, t] of oauthTokenStore.entries()) {
+      if (t.user_id === userId && t.provider === provider) { oauthTokenStore.delete(hash); affected++; }
+    }
+    return { data: { delete_pc_oauth_tokens: { affected_rows: affected } } };
   }
 
   // ─── User location ───────────────────────────────────────────────────
   if (query.includes('pc_saved_locations')) {
     const userId = variables.userId;
     const loc = locationStore.get(userId);
-    // Default test location (New York) for all test users without an explicit location
-    const defaultLoc = { lat: 40.7128, lng: -74.006, timezone: 'America/New_York', is_home: true };
-    const rows = [loc || defaultLoc];
-    return { data: { pc_saved_locations: rows } };
+    // Mirrors real Hasura semantics: no seeded row => no rows (getUserLocation
+    // then returns null, and the caller falls back to NO_LOCATION_SPEECH).
+    // Keys must match the real column names (latitude/longitude) selected by
+    // lib/user-location.ts's GetUserLocation query — previously this used
+    // lat/lng, which getUserLocation() never reads, so any linked-account
+    // test hit NaN coordinates silently (dead code path; no existing test
+    // resolved a userId before reaching this branch).
+    return { data: { pc_saved_locations: loc ? [loc] : [] } };
   }
 
   // ─── TV devices (ownership checks for settings, share/unshare) ──────

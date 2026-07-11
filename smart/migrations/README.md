@@ -22,6 +22,8 @@ Add new migrations with the next sequential number.
 | `008_pc_sessions.sql` | 2026-03-xx | Session management |
 | `009_tv_shares.sql` | 2026-03-13 | TV device sharing |
 | `010_free_tier_usage.sql` | 2026-03-13 | Free-tier daily usage counters |
+| `011_tv_subscriptions.sql` | 2026-03-xx | Hasura user-role permissions for TV WebSocket subscriptions |
+| `012_oauth_token_provider.sql` | 2026-07-11 | `provider` column on `pc_oauth_tokens` for GET/DELETE `/api/v1/links` (WTH Epic H) |
 
 > **Gap note:** Migration 004 (`user_settings`) was created after 005 (`tv_devices`).
 > The gap existed because user settings were initially stored in-app only. Migration 004

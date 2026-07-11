@@ -45,9 +45,16 @@ export function rateLimiter(req: Request, res: Response, next: NextFunction): vo
   }
 
   if (bucket.tokens <= 0) {
+    // Honest header semantics: a 429 must carry the same X-RateLimit-* headers
+    // as a successful response (remaining=0) plus a standards-compliant
+    // Retry-After header (RFC 9110 §10.2.3) — not just a JSON body field.
+    const retryAfterSeconds = Math.ceil(INTERVAL / 1000);
+    res.setHeader('X-RateLimit-Limit', RATE.toString());
+    res.setHeader('X-RateLimit-Remaining', '0');
+    res.setHeader('Retry-After', retryAfterSeconds.toString());
     res.status(429).json({
       error: 'Too many requests',
-      retryAfter: Math.ceil(INTERVAL / 1000),
+      retryAfter: retryAfterSeconds,
     });
     return;
   }

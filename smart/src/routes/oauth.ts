@@ -8,8 +8,8 @@ const HASURA_URL = process.env.HASURA_GRAPHQL_URL || 'http://hasura:8080/v1/grap
 const HASURA_ADMIN_SECRET = process.env.HASURA_GRAPHQL_ADMIN_SECRET || '';
 const HASURA_AUTH_URL = process.env.HASURA_AUTH_URL || 'http://auth:4000';
 
-/** Hash a token for storage (never store raw tokens in the database). */
-function hashToken(token: string): string {
+/** Hash a token for storage (never store raw tokens in the database). Exported for tests. */
+export function hashToken(token: string): string {
   return crypto.createHash('sha256').update(token).digest('hex');
 }
 
@@ -179,8 +179,8 @@ oauthRouter.post('/token', async (req, res) => {
       }`,
       {
         objects: [
-          { token_hash: hashToken(accessToken), user_id: authCode.user_id, token_type: 'access', expires_at: accessExpiresAt },
-          { token_hash: hashToken(refreshTokenValue), user_id: authCode.user_id, token_type: 'refresh', expires_at: refreshExpiresAt },
+          { token_hash: hashToken(accessToken), user_id: authCode.user_id, token_type: 'access', provider: authCode.client_id, expires_at: accessExpiresAt },
+          { token_hash: hashToken(refreshTokenValue), user_id: authCode.user_id, token_type: 'refresh', provider: authCode.client_id, expires_at: refreshExpiresAt },
         ],
       },
     );
@@ -201,6 +201,7 @@ oauthRouter.post('/token', async (req, res) => {
         pc_oauth_tokens_by_pk(token_hash: $tokenHash) {
           user_id
           token_type
+          provider
           expires_at
           revoked
         }
@@ -219,15 +220,16 @@ oauthRouter.post('/token', async (req, res) => {
     const newExpiresAt = new Date(Date.now() + 60 * 60 * 1000).toISOString();
 
     await hasuraQuery(
-      `mutation InsertOAuthToken($tokenHash: String!, $userId: uuid!, $expiresAt: timestamptz!) {
+      `mutation InsertOAuthToken($tokenHash: String!, $userId: uuid!, $provider: String, $expiresAt: timestamptz!) {
         insert_pc_oauth_tokens_one(object: {
           token_hash: $tokenHash
           user_id: $userId
           token_type: "access"
+          provider: $provider
           expires_at: $expiresAt
         }) { token_hash }
       }`,
-      { tokenHash: hashToken(newAccessToken), userId: stored.user_id, expiresAt: newExpiresAt },
+      { tokenHash: hashToken(newAccessToken), userId: stored.user_id, provider: stored.provider ?? null, expiresAt: newExpiresAt },
     );
 
     res.json({

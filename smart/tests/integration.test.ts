@@ -474,6 +474,32 @@ describe('Rate limiting', () => {
     }
   });
 
+  it('rate limit response carries honest X-RateLimit-* and Retry-After headers (WTH H1)', async () => {
+    // Exhaust the bucket first
+    for (let i = 0; i < 65; i++) {
+      await request(app)
+        .post('/google/fulfillment')
+        .send({
+          queryResult: { intent: { displayName: 'NextPrayer' }, parameters: {} },
+          originalDetectIntentRequest: { payload: { user: {} } },
+        });
+    }
+
+    const res = await request(app)
+      .post('/google/fulfillment')
+      .send({
+        queryResult: { intent: { displayName: 'NextPrayer' }, parameters: {} },
+        originalDetectIntentRequest: { payload: { user: {} } },
+      });
+
+    if (res.status === 429) {
+      expect(res.headers['x-ratelimit-limit']).toBeDefined();
+      expect(res.headers['x-ratelimit-remaining']).toBe('0');
+      expect(res.headers['retry-after']).toBeDefined();
+      expect(Number(res.headers['retry-after'])).toBe(res.body.retryAfter);
+    }
+  });
+
   it('health endpoint is exempt from rate limiting', async () => {
     // Even after many requests, /health should always return 200
     for (let i = 0; i < 10; i++) {

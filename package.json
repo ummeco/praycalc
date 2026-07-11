@@ -8,11 +8,6 @@
     "dev": "pnpm -F praycalc-web dev",
     "test": "pnpm -F praycalc-web test"
   },
-  "dependencies": {
-    "@assistant/conversation": "^3.8.1",
-    "ask-sdk-core": "^2.14.0",
-    "ask-sdk-model": "^1.86.0"
-  },
   "devDependencies": {
     "typescript": "^5"
   },
