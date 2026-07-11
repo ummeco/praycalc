@@ -71,7 +71,7 @@ class PrayCalcPlatform implements AccessoryPlugin {
 
   private async fetchPrayerTimes(): Promise<void> {
     const today = new Date().toISOString().split('T')[0];
-    const { latitude, longitude, method = 'isna', madhab = 'shafi' } = this.config;
+    const { latitude, longitude, method = 'isna', madhab = 'shafii' } = this.config;
 
     const url = `${PRAYCALC_API}?lat=${latitude}&lng=${longitude}&date=${today}&method=${method}&madhab=${madhab}`;
 

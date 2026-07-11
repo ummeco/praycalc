@@ -1,0 +1,29 @@
+{
+  "_comment": "google.ts matches both 'SpecificPrayer' and 'specific_prayer' as displayName; reads params.prayer. Requires the 'prayer' developer entity (entities/prayer-entity.json).",
+  "displayName": "SpecificPrayer",
+  "webhookState": "WEBHOOK_STATE_ENABLED",
+  "parameters": [
+    {
+      "displayName": "prayer",
+      "entityTypeDisplayName": "@prayer",
+      "mandatory": false,
+      "value": "$prayer"
+    }
+  ],
+  "trainingPhrases": [
+    { "type": "EXAMPLE", "parts": [{ "text": "When is " }, { "text": "Fajr", "entityType": "@prayer", "alias": "prayer", "userDefined": true }, { "text": "?" }] },
+    { "type": "EXAMPLE", "parts": [{ "text": "What time is " }, { "text": "Dhuhr", "entityType": "@prayer", "alias": "prayer", "userDefined": true }, { "text": " today?" }] },
+    { "type": "EXAMPLE", "parts": [{ "text": "When is " }, { "text": "Zuhr", "entityType": "@prayer", "alias": "prayer", "userDefined": true }, { "text": "?" }] },
+    { "type": "EXAMPLE", "parts": [{ "text": "What time is " }, { "text": "Asr", "entityType": "@prayer", "alias": "prayer", "userDefined": true }, { "text": "?" }] },
+    { "type": "EXAMPLE", "parts": [{ "text": "When is " }, { "text": "Maghrib", "entityType": "@prayer", "alias": "prayer", "userDefined": true }, { "text": " today?" }] },
+    { "type": "EXAMPLE", "parts": [{ "text": "What time is " }, { "text": "Isha", "entityType": "@prayer", "alias": "prayer", "userDefined": true }, { "text": "?" }] },
+    { "type": "EXAMPLE", "parts": [{ "text": "Tell me when " }, { "text": "Fajr", "entityType": "@prayer", "alias": "prayer", "userDefined": true }, { "text": " is" }] },
+    { "type": "EXAMPLE", "parts": [{ "text": "Tell me the time for " }, { "text": "Isha", "entityType": "@prayer", "alias": "prayer", "userDefined": true }] },
+    { "type": "EXAMPLE", "parts": [{ "text": "When does " }, { "text": "Maghrib", "entityType": "@prayer", "alias": "prayer", "userDefined": true }, { "text": " start?" }] },
+    { "type": "EXAMPLE", "parts": [{ "text": "Give me the " }, { "text": "Asr", "entityType": "@prayer", "alias": "prayer", "userDefined": true }, { "text": " time" }] },
+    { "type": "EXAMPLE", "parts": [{ "text": "What time do I pray " }, { "text": "Dhuhr", "entityType": "@prayer", "alias": "prayer", "userDefined": true }] }
+  ],
+  "messages": [
+    { "text": { "text": ["(placeholder — the live response comes from the webhook at smart.praycalc.com/google/fulfillment)"] } }
+  ]
+}

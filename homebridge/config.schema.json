@@ -1,0 +1,62 @@
+{
+  "pluginAlias": "PrayCalcPrayers",
+  "pluginType": "accessory",
+  "singular": true,
+  "headerDisplay": "Creates one HomeKit contact sensor per daily prayer (Fajr, Dhuhr, Asr, Maghrib, Isha). Each sensor reads OPEN during the prayer's active window and CLOSED otherwise, so it can trigger HomeKit automations.",
+  "footerDisplay": "Prayer times are fetched from the public PrayCalc API (`api.praycalc.com`) and refreshed hourly. No PrayCalc account or login is required for this plugin.",
+  "schema": {
+    "type": "object",
+    "properties": {
+      "name": {
+        "title": "Name",
+        "type": "string",
+        "required": true,
+        "default": "Prayer Times"
+      },
+      "latitude": {
+        "title": "Latitude",
+        "type": "number",
+        "required": true,
+        "placeholder": "40.7128",
+        "description": "Decimal degrees, north positive."
+      },
+      "longitude": {
+        "title": "Longitude",
+        "type": "number",
+        "required": true,
+        "placeholder": "-74.0060",
+        "description": "Decimal degrees, east positive."
+      },
+      "method": {
+        "title": "Calculation Method",
+        "type": "string",
+        "default": "isna",
+        "oneOf": [
+          { "title": "ISNA (Islamic Society of North America)", "enum": ["isna"] },
+          { "title": "Muslim World League", "enum": ["mwl"] },
+          { "title": "Egyptian General Authority of Survey", "enum": ["egypt"] },
+          { "title": "Umm al-Qura, Makkah", "enum": ["umm_al_qura"] },
+          { "title": "Institute of Geophysics, Tehran", "enum": ["tehran"] },
+          { "title": "University of Islamic Sciences, Karachi", "enum": ["karachi"] }
+        ]
+      },
+      "madhab": {
+        "title": "Asr Madhab",
+        "type": "string",
+        "default": "shafii",
+        "oneOf": [
+          { "title": "Shafi'i (standard, earlier Asr)", "enum": ["shafii"] },
+          { "title": "Hanafi (double-shadow, later Asr)", "enum": ["hanafi"] }
+        ]
+      },
+      "windowMinutes": {
+        "title": "Active Window (minutes)",
+        "type": "integer",
+        "default": 30,
+        "minimum": 1,
+        "maximum": 180,
+        "description": "How long after each prayer time the sensor stays OPEN before returning to CLOSED."
+      }
+    }
+  }
+}

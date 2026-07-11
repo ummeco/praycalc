@@ -1,0 +1,5 @@
+
+# Kotlin (ktlint): @Composable functions are PascalCase by Compose convention —
+# suppress the standard function-naming rule for them (ktlint 1.x native setting).
+[*.{kt,kts}]
+ktlint_function_naming_ignore_when_annotated_with = Composable

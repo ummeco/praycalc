@@ -1,0 +1,116 @@
+{
+  "interactionModel": {
+    "languageModel": {
+      "invocationName": "pray calc",
+      "intents": [
+        {
+          "name": "AMAZON.CancelIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.HelpIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.StopIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.NavigateHomeIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.FallbackIntent",
+          "samples": []
+        },
+        {
+          "name": "NextPrayerIntent",
+          "slots": [],
+          "samples": [
+            "what time is the next prayer",
+            "when is the next prayer",
+            "when is the next salah",
+            "when is the next salat",
+            "what prayer is next",
+            "what time is the next prayer time",
+            "how long until the next prayer",
+            "how many minutes until the next prayer",
+            "what's the next prayer",
+            "tell me the next prayer time",
+            "when do i pray next",
+            "what time do i pray next"
+          ]
+        },
+        {
+          "name": "SpecificPrayerIntent",
+          "slots": [
+            {
+              "name": "prayer",
+              "type": "PRAYCALC_PRAYER"
+            }
+          ],
+          "samples": [
+            "when is {prayer}",
+            "what time is {prayer}",
+            "tell me the time for {prayer}",
+            "what time is {prayer} today",
+            "when does {prayer} start",
+            "what time do i pray {prayer}",
+            "tell me {prayer} time",
+            "when is {prayer} prayer",
+            "what's the time for {prayer}",
+            "give me the {prayer} time",
+            "when will {prayer} happen"
+          ]
+        },
+        {
+          "name": "AllPrayersIntent",
+          "slots": [],
+          "samples": [
+            "what are today's prayer times",
+            "give me all prayer times",
+            "list all salah times",
+            "read me today's prayer schedule",
+            "what are all the prayer times today",
+            "tell me all of today's prayers",
+            "give me the full prayer schedule",
+            "what time are all the prayers",
+            "read out today's prayer times",
+            "list today's prayers",
+            "give me the prayer schedule for today"
+          ]
+        },
+        {
+          "name": "QiblaIntent",
+          "slots": [],
+          "samples": [
+            "which direction is the qibla",
+            "where do i face to pray",
+            "what is the qibla bearing",
+            "point me to mecca",
+            "point me to the kaaba",
+            "what direction is mecca",
+            "which way is qibla",
+            "what's the qibla direction",
+            "tell me the qibla direction",
+            "which way should i face to pray",
+            "give me the qibla bearing"
+          ]
+        }
+      ],
+      "types": [
+        {
+          "name": "PRAYCALC_PRAYER",
+          "values": [
+            { "id": "fajr", "name": { "value": "fajr", "synonyms": ["fajr prayer", "dawn prayer", "al fajr"] } },
+            { "id": "dhuhr", "name": { "value": "dhuhr", "synonyms": ["dhuhr prayer", "noon prayer", "duhr"] } },
+            { "id": "zuhr", "name": { "value": "zuhr", "synonyms": ["zuhr prayer", "zohar"] } },
+            { "id": "asr", "name": { "value": "asr", "synonyms": ["asr prayer", "afternoon prayer"] } },
+            { "id": "maghrib", "name": { "value": "maghrib", "synonyms": ["maghrib prayer", "sunset prayer"] } },
+            { "id": "isha", "name": { "value": "isha", "synonyms": ["isha prayer", "night prayer", "esha"] } }
+          ]
+        }
+      ]
+    }
+  }
+}

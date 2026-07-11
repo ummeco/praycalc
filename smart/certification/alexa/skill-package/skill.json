@@ -1,0 +1,51 @@
+{
+  "manifest": {
+    "manifestVersion": "1.0",
+    "publishingInformation": {
+      "locales": {
+        "en-US": {
+          "name": "PrayCalc",
+          "summary": "GPS-accurate Islamic prayer times, Qibla direction, and daily prayer schedule.",
+          "description": "PrayCalc gives you accurate Islamic prayer times (Fajr, Dhuhr, Asr, Maghrib, Isha) for your location, calculated using recognized astronomical methods (ISNA, Muslim World League, Umm al-Qura, Egyptian, Tehran, Karachi) with Shafi'i or Hanafi Asr madhab options. Ask for the next prayer, a specific prayer's time, today's full schedule, or the Qibla direction toward the Kaaba.\n\nLink your free PrayCalc account (Settings > Smart Home in the app) to use your saved home location and get unlimited queries with Ummat+. Without linking, PrayCalc answers up to 5 questions per day using a default location.\n\nPrayCalc is free, ad-free for prayer times, and part of the Ummat platform for Muslim daily life.",
+          "examplePhrases": [
+            "Alexa, open PrayCalc",
+            "Alexa, ask PrayCalc when is Fajr",
+            "Alexa, ask PrayCalc for the Qibla direction"
+          ],
+          "keywords": [
+            "prayer times", "salah", "salat", "islamic prayer", "fajr", "dhuhr", "asr",
+            "maghrib", "isha", "qibla", "muslim", "islam", "azan", "adhan", "namaz"
+          ],
+          "smallIconUri": "file://assets/icon-108.png",
+          "largeIconUri": "file://assets/icon-512.png"
+        }
+      },
+      "isAvailableWorldwide": true,
+      "testingInstructions": "1. Say 'Alexa, open PrayCalc' to launch without linking (anonymous/free tier, default location, 5 queries/day).\n2. Say 'ask PrayCalc when is Fajr' for a one-shot specific-prayer query.\n3. To test the Ummat+ path: complete account linking via Alexa app > Skills > PrayCalc > Settings, sign in with an Ummat+ test account (credentials provided in the certification notes field), then ask 'what's the next prayer' — response should use the account's saved home location with no daily limit.\n4. Say 'ask PrayCalc for the Qibla direction' to test the QiblaIntent.\n5. Say 'help' to test AMAZON.HelpIntent, and 'stop' to test AMAZON.StopIntent (skill responds 'As-salamu alaykum' and ends session).",
+      "category": "RELIGION_AND_SPIRITUALITY",
+      "distributionCountries": []
+    },
+    "apis": {
+      "custom": {
+        "endpoint": {
+          "uri": "https://smart.praycalc.com/alexa/fulfillment"
+        },
+        "interfaces": []
+      }
+    },
+    "permissions": [],
+    "privacyAndCompliance": {
+      "allowsPurchases": false,
+      "usesPersonalInfo": true,
+      "isChildDirected": false,
+      "isExportCompliant": true,
+      "containsAds": false,
+      "locales": {
+        "en-US": {
+          "privacyPolicyUrl": "https://praycalc.com/privacy",
+          "termsOfUseUrl": "https://praycalc.com/terms"
+        }
+      }
+    }
+  }
+}

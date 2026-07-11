@@ -1,0 +1,12 @@
+{
+  "skipOnEnablement": true,
+  "type": "AUTH_CODE",
+  "authorizationUrl": "https://smart.praycalc.com/oauth/authorize",
+  "accessTokenUrl": "https://smart.praycalc.com/oauth/token",
+  "accessTokenScheme": "REQUEST_BODY_CREDENTIALS",
+  "clientId": "alexa-praycalc",
+  "clientSecret": "alexa-praycalc-not-validated",
+  "scopes": [],
+  "domains": [],
+  "defaultTokenExpirationInSeconds": 3600
+}

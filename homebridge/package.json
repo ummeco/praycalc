@@ -1,20 +1,45 @@
 {
   "name": "homebridge-praycalc",
+  "displayName": "PrayCalc Prayer Times",
   "version": "1.0.0",
-  "description": "Homebridge plugin for PrayCalc prayer times as HomeKit sensors",
+  "description": "Homebridge plugin for PrayCalc prayer times as HomeKit contact sensors (one per daily prayer, OPEN during the prayer window)",
+  "license": "MIT",
   "main": "dist/index.js",
+  "files": [
+    "dist",
+    "config.schema.json",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "author": "Ummeco",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ummeco/praycalc.git",
+    "directory": "homebridge"
+  },
+  "homepage": "https://github.com/ummeco/praycalc/tree/main/homebridge#readme",
+  "bugs": {
+    "url": "https://github.com/ummeco/praycalc/issues"
+  },
   "scripts": {
     "build": "tsc",
-    "watch": "tsc -w"
+    "watch": "tsc -w",
+    "prepublishOnly": "tsc"
   },
   "keywords": [
     "homebridge-plugin",
     "praycalc",
     "prayer",
+    "prayer-times",
+    "salah",
+    "salat",
+    "qibla",
     "muslim",
-    "islamic"
+    "islamic",
+    "homekit"
   ],
   "engines": {
+    "node": ">=20.0.0",
     "homebridge": ">=1.6.0"
   },
   "devDependencies": {

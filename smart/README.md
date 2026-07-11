@@ -230,9 +230,26 @@ You can add these to your Home Screen or invoke via Siri ("Hey Siri, next prayer
 The live implementation is `POST /alexa/fulfillment` (`src/routes/alexa.ts`) and
 `POST /google/fulfillment` (`src/routes/google.ts`) — see the API table above.
 Both run in-process on this server; there is no separate Lambda/Cloud
-Functions deployment. Set your Alexa Smart Home skill endpoint and Google
-Actions fulfillment URL to `https://smart.praycalc.com/alexa/fulfillment` and
+Functions deployment. Both are **custom conversational skills/actions**
+(voice Q&A — "when is Fajr", "what's the Qibla direction"), not the Alexa
+Smart Home Skill API or a Google Smart Home Action (no device
+discovery/SYNC/QUERY/EXECUTE directives are implemented). Set the Alexa
+custom skill's endpoint and the Google Assistant fulfillment webhook URL to
+`https://smart.praycalc.com/alexa/fulfillment` and
 `https://smart.praycalc.com/google/fulfillment` respectively.
+
+Account linking for both uses the OAuth 2.0 server in `src/routes/oauth.ts`
+(`GET/POST /oauth/authorize`, `POST /oauth/token`, `POST /oauth/revoke`) and is
+optional — unlinked requests fall back to a server-default location
+(`DEFAULT_LAT`/`DEFAULT_LNG`/`DEFAULT_TIMEZONE`) capped at 5 queries/day.
+
+Submission-ready certification packages (skill manifest, interaction model,
+account linking config, privacy answers, and step-by-step submission
+instructions for a human to execute) live in `certification/alexa/` and
+`certification/google/`. **Read `certification/google/CONSOLE-SETUP.md`
+before investing time in the Google package** — Google discontinued new
+submissions to the Conversational Actions platform this code targets in 2023;
+verify current platform status before assuming a submission path exists.
 
 (An earlier `smarthome/` directory prototyped a separate AWS Lambda / Cloud
 Functions deployment using `ask-sdk-core` / `@assistant/conversation`. It

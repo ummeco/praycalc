@@ -1,0 +1,21 @@
+{
+  "_comment": "google.ts matches both 'NextPrayer' and 'next_prayer' as displayName — use either; PascalCase used here as the Dialogflow ES console default convention.",
+  "displayName": "NextPrayer",
+  "webhookState": "WEBHOOK_STATE_ENABLED",
+  "trainingPhrases": [
+    { "type": "EXAMPLE", "parts": [{ "text": "What time is the next prayer?" }] },
+    { "type": "EXAMPLE", "parts": [{ "text": "When is the next salah?" }] },
+    { "type": "EXAMPLE", "parts": [{ "text": "When is the next salat?" }] },
+    { "type": "EXAMPLE", "parts": [{ "text": "What prayer is coming up?" }] },
+    { "type": "EXAMPLE", "parts": [{ "text": "Tell me the next prayer time" }] },
+    { "type": "EXAMPLE", "parts": [{ "text": "How long until the next prayer?" }] },
+    { "type": "EXAMPLE", "parts": [{ "text": "How many minutes until the next prayer?" }] },
+    { "type": "EXAMPLE", "parts": [{ "text": "What's my next prayer?" }] },
+    { "type": "EXAMPLE", "parts": [{ "text": "When do I pray next?" }] },
+    { "type": "EXAMPLE", "parts": [{ "text": "What time do I pray next?" }] },
+    { "type": "EXAMPLE", "parts": [{ "text": "Which prayer is up next?" }] }
+  ],
+  "messages": [
+    { "text": { "text": ["(placeholder — the live response comes from the webhook at smart.praycalc.com/google/fulfillment)"] } }
+  ]
+}

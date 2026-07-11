@@ -1,0 +1,15 @@
+{
+  "_comment": "Dialogflow ES agent-level settings. Set these under Dialogflow ES Console > gear icon > General, and under Fulfillment > Webhook. Matches smart/src/routes/google.ts, which is a Dialogflow ES webhook fulfillment handler (queryResult.intent.displayName / fulfillmentMessages / ACTIONS_ON_GOOGLE payload) — see CONSOLE-SETUP.md for the platform-status caveat before investing further setup time here.",
+  "displayName": "PrayCalc",
+  "defaultLanguageCode": "en",
+  "timeZone": "Etc/UTC",
+  "webhook": {
+    "url": "https://smart.praycalc.com/google/fulfillment",
+    "enabled": true,
+    "enabledForSlotFilling": false,
+    "headers": {}
+  },
+  "mlSettings": {
+    "classificationThreshold": 0.3
+  }
+}

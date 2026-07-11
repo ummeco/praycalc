@@ -1,0 +1,9 @@
+{
+  "_comment": "Dialogflow ES built-in Default Fallback Intent — google.ts's switch-default branch returns the welcome message for any unmatched intent (including this one and Default Welcome Intent), so both must have webhook fulfillment enabled rather than a static Dialogflow response.",
+  "displayName": "Default Fallback Intent",
+  "isFallback": true,
+  "webhookState": "WEBHOOK_STATE_ENABLED",
+  "messages": [
+    { "text": { "text": ["(placeholder — the live response comes from the webhook at smart.praycalc.com/google/fulfillment)"] } }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "_comment": "google.ts matches both 'QiblaDirection' and 'qibla_direction' as displayName.",
+  "displayName": "QiblaDirection",
+  "webhookState": "WEBHOOK_STATE_ENABLED",
+  "trainingPhrases": [
+    { "type": "EXAMPLE", "parts": [{ "text": "Which direction is the Qibla?" }] },
+    { "type": "EXAMPLE", "parts": [{ "text": "Where do I face to pray?" }] },
+    { "type": "EXAMPLE", "parts": [{ "text": "What is the Qibla bearing?" }] },
+    { "type": "EXAMPLE", "parts": [{ "text": "Point me to Mecca" }] },
+    { "type": "EXAMPLE", "parts": [{ "text": "Point me to the Kaaba" }] },
+    { "type": "EXAMPLE", "parts": [{ "text": "What direction is Mecca?" }] },
+    { "type": "EXAMPLE", "parts": [{ "text": "Which way is Qibla?" }] },
+    { "type": "EXAMPLE", "parts": [{ "text": "What's the Qibla direction?" }] },
+    { "type": "EXAMPLE", "parts": [{ "text": "Tell me the Qibla direction" }] },
+    { "type": "EXAMPLE", "parts": [{ "text": "Which way should I face to pray?" }] },
+    { "type": "EXAMPLE", "parts": [{ "text": "Give me the Qibla bearing" }] }
+  ],
+  "messages": [
+    { "text": { "text": ["(placeholder — the live response comes from the webhook at smart.praycalc.com/google/fulfillment)"] } }
+  ]
+}

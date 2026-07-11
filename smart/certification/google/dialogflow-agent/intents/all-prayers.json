@@ -1,0 +1,21 @@
+{
+  "_comment": "google.ts matches both 'AllPrayers' and 'all_prayers' as displayName.",
+  "displayName": "AllPrayers",
+  "webhookState": "WEBHOOK_STATE_ENABLED",
+  "trainingPhrases": [
+    { "type": "EXAMPLE", "parts": [{ "text": "What are today's prayer times?" }] },
+    { "type": "EXAMPLE", "parts": [{ "text": "Give me all prayer times" }] },
+    { "type": "EXAMPLE", "parts": [{ "text": "List all salah times" }] },
+    { "type": "EXAMPLE", "parts": [{ "text": "Read me today's prayer schedule" }] },
+    { "type": "EXAMPLE", "parts": [{ "text": "What are all the prayer times today?" }] },
+    { "type": "EXAMPLE", "parts": [{ "text": "Tell me all of today's prayers" }] },
+    { "type": "EXAMPLE", "parts": [{ "text": "Give me the full prayer schedule" }] },
+    { "type": "EXAMPLE", "parts": [{ "text": "What time are all the prayers?" }] },
+    { "type": "EXAMPLE", "parts": [{ "text": "Read out today's prayer times" }] },
+    { "type": "EXAMPLE", "parts": [{ "text": "List today's prayers" }] },
+    { "type": "EXAMPLE", "parts": [{ "text": "Give me the prayer schedule for today" }] }
+  ],
+  "messages": [
+    { "text": { "text": ["(placeholder — the live response comes from the webhook at smart.praycalc.com/google/fulfillment)"] } }
+  ]
+}

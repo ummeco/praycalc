@@ -1,0 +1,13 @@
+{
+  "_comment": "Dialogflow ES developer entity 'prayer' — the parameter read as params.prayer in smart/src/routes/google.ts's SpecificPrayer/specific_prayer handler. Kept flat entries (not synonym-grouped) because google.ts lowercases the raw slot value and looks it up directly, including 'zuhr' as an independent alias for the Dhuhr time.",
+  "displayName": "prayer",
+  "kind": "KIND_MAP",
+  "entities": [
+    { "value": "fajr", "synonyms": ["fajr", "fajr prayer", "dawn prayer", "al fajr"] },
+    { "value": "dhuhr", "synonyms": ["dhuhr", "dhuhr prayer", "noon prayer", "duhr"] },
+    { "value": "zuhr", "synonyms": ["zuhr", "zuhr prayer", "zohar"] },
+    { "value": "asr", "synonyms": ["asr", "asr prayer", "afternoon prayer"] },
+    { "value": "maghrib", "synonyms": ["maghrib", "maghrib prayer", "sunset prayer"] },
+    { "value": "isha", "synonyms": ["isha", "isha prayer", "night prayer", "esha"] }
+  ]
+}

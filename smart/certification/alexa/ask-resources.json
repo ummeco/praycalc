@@ -1,0 +1,21 @@
+{
+  "askcliResourcesVersion": "2020-03-31",
+  "profiles": {
+    "default": {
+      "skillMetadata": {
+        "src": "./skill-package"
+      },
+      "code": {
+        "default": {
+          "src": null
+        }
+      },
+      "skillInfrastructure": {
+        "userConfig": {
+          "runtime": "@ask-cli/skill-infrastructure-none",
+          "isDeployed": false
+        }
+      }
+    }
+  }
+}
