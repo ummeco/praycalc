@@ -11,6 +11,7 @@ dist/
 # Workspace packages ship committed dist (consumed via file:/workspace deps, no CI build step)
 !packages/pray-calc/dist/
 !packages/ui-utils/dist/
+!packages/bridge-types/dist/
 build/
 .vercel/
 *.tsbuildinfo

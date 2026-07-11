@@ -1,0 +1,13 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "outDir": "dist/esm",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "declaration": false,
+    "declarationMap": false,
+    "composite": false
+  },
+  "exclude": ["src/tests/**/*", "**/*.test.ts", "**/*.spec.ts"]
+}
