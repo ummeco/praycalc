@@ -14,16 +14,16 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
  * a location-error prompt) if the user denies.
  */
 class MainActivity : ComponentActivity() {
-
-    private val requestLocationPermission = registerForActivityResult(
-        ActivityResultContracts.RequestMultiplePermissions()
-    ) { _ ->
-        // Result is observed indirectly: PrayerRepository re-checks
-        // permission state on its own refresh() calls (triggered by the UI's
-        // pull-to-refresh / retry chip), so no explicit callback wiring
-        // is needed here beyond re-triggering an initial refresh.
-        onPermissionResult?.invoke()
-    }
+    private val requestLocationPermission =
+        registerForActivityResult(
+            ActivityResultContracts.RequestMultiplePermissions(),
+        ) { _ ->
+            // Result is observed indirectly: PrayerRepository re-checks
+            // permission state on its own refresh() calls (triggered by the UI's
+            // pull-to-refresh / retry chip), so no explicit callback wiring
+            // is needed here beyond re-triggering an initial refresh.
+            onPermissionResult?.invoke()
+        }
 
     private var onPermissionResult: (() -> Unit)? = null
 
@@ -34,8 +34,8 @@ class MainActivity : ComponentActivity() {
         requestLocationPermission.launch(
             arrayOf(
                 Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            )
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+            ),
         )
 
         setContent {

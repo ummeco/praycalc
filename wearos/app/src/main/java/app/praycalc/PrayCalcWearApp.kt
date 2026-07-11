@@ -1,14 +1,14 @@
 package app.praycalc
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.ui.platform.LocalContext
-import androidx.wear.compose.material.MaterialTheme
-import androidx.wear.compose.material.Colors
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.wear.compose.material.Colors
+import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.navigation.SwipeDismissableNavHost
 import androidx.wear.compose.navigation.composable
 import androidx.wear.compose.navigation.rememberSwipeDismissableNavController
@@ -27,20 +27,21 @@ object PrayCalcColors {
     val Dimmed = Color(0xFF888888)
 }
 
-private val PrayCalcColorPalette = Colors(
-    primary = PrayCalcColors.Primary,
-    primaryVariant = PrayCalcColors.Accent,
-    secondary = PrayCalcColors.Accent,
-    secondaryVariant = PrayCalcColors.Primary,
-    background = Color.Black,
-    surface = PrayCalcColors.Surface,
-    error = Color(0xFFCF6679),
-    onPrimary = PrayCalcColors.Deep,
-    onSecondary = PrayCalcColors.Deep,
-    onBackground = PrayCalcColors.OnSurface,
-    onSurface = PrayCalcColors.OnSurface,
-    onError = Color.Black
-)
+private val PrayCalcColorPalette =
+    Colors(
+        primary = PrayCalcColors.Primary,
+        primaryVariant = PrayCalcColors.Accent,
+        secondary = PrayCalcColors.Accent,
+        secondaryVariant = PrayCalcColors.Primary,
+        background = Color.Black,
+        surface = PrayCalcColors.Surface,
+        error = Color(0xFFCF6679),
+        onPrimary = PrayCalcColors.Deep,
+        onSecondary = PrayCalcColors.Deep,
+        onBackground = PrayCalcColors.OnSurface,
+        onSurface = PrayCalcColors.OnSurface,
+        onError = Color.Black,
+    )
 
 object Routes {
     const val PRAYER_LIST = "prayer_list"
@@ -68,7 +69,7 @@ fun PrayCalcWearApp(registerPermissionCallback: ((() -> Unit) -> Unit)? = null) 
     MaterialTheme(colors = PrayCalcColorPalette) {
         SwipeDismissableNavHost(
             navController = navController,
-            startDestination = Routes.PRAYER_LIST
+            startDestination = Routes.PRAYER_LIST,
         ) {
             composable(Routes.PRAYER_LIST) {
                 PrayerListScreen(
@@ -83,7 +84,7 @@ fun PrayCalcWearApp(registerPermissionCallback: ((() -> Unit) -> Unit)? = null) 
                     onQiblaClick = {
                         navController.navigate(Routes.QIBLA)
                     },
-                    onRefresh = { repository.refresh() }
+                    onRefresh = { repository.refresh() },
                 )
             }
             composable(Routes.COUNTDOWN) {
@@ -92,7 +93,7 @@ fun PrayCalcWearApp(registerPermissionCallback: ((() -> Unit) -> Unit)? = null) 
             composable(Routes.SETTINGS) {
                 SettingsScreen(
                     repository = repository,
-                    onBack = { navController.popBackStack() }
+                    onBack = { navController.popBackStack() },
                 )
             }
             composable(Routes.QIBLA) {

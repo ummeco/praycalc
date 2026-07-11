@@ -5,11 +5,8 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.util.Log
 import androidx.core.content.ContextCompat
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
-import androidx.datastore.preferences.preferencesDataStore
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.CancellationTokenSource
@@ -32,8 +29,6 @@ import java.net.URL
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-
-
 /**
  * WearOS is offline-first: prayer times are computed on-device via the
  * shared C core engine (`core/c/`) through the [PrayCalcNative] JNI bridge —
@@ -44,8 +39,9 @@ import java.time.format.DateTimeFormatter
  *      (e.g. native lib load error) and location is available.
  * The watch never requires connectivity for its core function.
  */
-class PrayerRepository(private val context: Context) {
-
+class PrayerRepository(
+    private val context: Context,
+) {
     companion object {
         private const val TAG = "PrayerRepository"
         private const val BASE_URL = "https://api.praycalc.com/api/v1/times"
@@ -66,12 +62,13 @@ class PrayerRepository(private val context: Context) {
 
     private var cachedDate: LocalDate? = null
 
-    val settingsFlow: Flow<Settings> = context.dataStore.data.map { prefs ->
-        Settings(
-            method = prefs[KEY_METHOD] ?: "isna",
-            madhab = prefs[KEY_MADHAB] ?: "shafii"
-        )
-    }
+    val settingsFlow: Flow<Settings> =
+        context.dataStore.data.map { prefs ->
+            Settings(
+                method = prefs[KEY_METHOD] ?: "isna",
+                madhab = prefs[KEY_MADHAB] ?: "shafii",
+            )
+        }
 
     init {
         refresh()
@@ -98,8 +95,9 @@ class PrayerRepository(private val context: Context) {
                 if (location != null) {
                     _locationError.value = null
                     val (lat, lng) = location
-                    val data = calculateOffline(lat, lng, today, settings)
-                        ?: fetchFromApi(lat, lng, today, settings)
+                    val data =
+                        calculateOffline(lat, lng, today, settings)
+                            ?: fetchFromApi(lat, lng, today, settings)
 
                     if (data != null) {
                         _prayerData.value = data
@@ -119,23 +117,29 @@ class PrayerRepository(private val context: Context) {
         lat: Double,
         lng: Double,
         date: LocalDate,
-        settings: Settings
-    ): PrayerData? {
-        return try {
-            val times = PrayCalcNative.calculatePrayerTimes(
-                latitude = lat,
-                longitude = lng,
-                date = date,
-                method = settings.method,
-                madhab = settings.madhab
-            )
+        settings: Settings,
+    ): PrayerData? =
+        try {
+            val times =
+                PrayCalcNative.calculatePrayerTimes(
+                    latitude = lat,
+                    longitude = lng,
+                    date = date,
+                    method = settings.method,
+                    madhab = settings.madhab,
+                )
 
             val now = java.time.LocalTime.now()
             val prayerNames = listOf("Fajr", "Sunrise", "Dhuhr", "Asr", "Maghrib", "Isha")
-            val prayerLocalTimes = listOf(
-                times.fajr, times.sunrise, times.dhuhr,
-                times.asr, times.maghrib, times.isha
-            )
+            val prayerLocalTimes =
+                listOf(
+                    times.fajr,
+                    times.sunrise,
+                    times.dhuhr,
+                    times.asr,
+                    times.maghrib,
+                    times.isha,
+                )
 
             // Find next prayer
             var nextIndex = 0
@@ -146,31 +150,35 @@ class PrayerRepository(private val context: Context) {
                 }
             }
 
-            val prayers = prayerNames.mapIndexed { index, name ->
-                PrayerTime(
-                    name = name,
-                    time = prayerLocalTimes[index],
-                    isNext = index == nextIndex
-                )
-            }
+            val prayers =
+                prayerNames.mapIndexed { index, name ->
+                    PrayerTime(
+                        name = name,
+                        time = prayerLocalTimes[index],
+                        isNext = index == nextIndex,
+                    )
+                }
 
             PrayerData(
                 prayers = prayers,
                 nextPrayer = prayers[nextIndex],
                 qibla = QiblaInfo(bearing = times.qiblaBearing, distance = 0.0),
-                meta = PrayerMeta(
-                    method = settings.method,
-                    madhab = settings.madhab,
-                    timezone = java.time.ZoneId.systemDefault().id,
-                    latitude = lat,
-                    longitude = lng
-                )
+                meta =
+                    PrayerMeta(
+                        method = settings.method,
+                        madhab = settings.madhab,
+                        timezone =
+                            java.time.ZoneId
+                                .systemDefault()
+                                .id,
+                        latitude = lat,
+                        longitude = lng,
+                    ),
             )
         } catch (e: Exception) {
             Log.w(TAG, "Offline calculation failed, falling back to API", e)
             null
         }
-    }
 
     /**
      * Fetch prayer times from the API as a fallback.
@@ -179,19 +187,19 @@ class PrayerRepository(private val context: Context) {
         lat: Double,
         lng: Double,
         date: LocalDate,
-        settings: Settings
-    ): PrayerData? {
-        return try {
+        settings: Settings,
+    ): PrayerData? =
+        try {
             val dateStr = date.format(DateTimeFormatter.ISO_LOCAL_DATE)
-            val url = "$BASE_URL?lat=$lat&lng=$lng&date=$dateStr" +
-                "&method=${settings.method}&madhab=${settings.madhab}"
+            val url =
+                "$BASE_URL?lat=$lat&lng=$lng&date=$dateStr" +
+                    "&method=${settings.method}&madhab=${settings.madhab}"
             val json = fetchJson(url)
             PrayerData.fromJson(json)
         } catch (e: Exception) {
             Log.e(TAG, "API fetch also failed", e)
             null
         }
-    }
 
     suspend fun updateMethod(method: String) {
         context.dataStore.edit { prefs -> prefs[KEY_METHOD] = method }
@@ -206,7 +214,10 @@ class PrayerRepository(private val context: Context) {
     }
 
     private suspend fun getSyncedData(): PrayerData? {
-        val prefs = context.dataStore.data.map { it[KEY_SYNCED_DATA] }.firstOrNull()
+        val prefs =
+            context.dataStore.data
+                .map { it[KEY_SYNCED_DATA] }
+                .firstOrNull()
         if (prefs == null) return null
         return try {
             PrayerData.fromJson(JSONObject(prefs))
@@ -219,26 +230,30 @@ class PrayerRepository(private val context: Context) {
         val prefs = context.dataStore.data.firstOrNull()
         return Settings(
             method = prefs?.get(KEY_METHOD) ?: "isna",
-            madhab = prefs?.get(KEY_MADHAB) ?: "shafii"
+            madhab = prefs?.get(KEY_MADHAB) ?: "shafii",
         )
     }
 
     private suspend fun getLocation(): Pair<Double, Double>? {
         if (ContextCompat.checkSelfPermission(
-                context, Manifest.permission.ACCESS_FINE_LOCATION
+                context,
+                Manifest.permission.ACCESS_FINE_LOCATION,
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            _locationError.value = "Location permission required. Grant location access in Settings or set your location in the PrayCalc app."
+            _locationError.value =
+                "Location permission required. Grant location access in Settings or set your location in the PrayCalc app."
             Log.w(TAG, "Location permission not granted")
             return null
         }
 
         return try {
             val cancellationToken = CancellationTokenSource()
-            val location = fusedLocationClient.getCurrentLocation(
-                Priority.PRIORITY_BALANCED_POWER_ACCURACY,
-                cancellationToken.token
-            ).await()
+            val location =
+                fusedLocationClient
+                    .getCurrentLocation(
+                        Priority.PRIORITY_BALANCED_POWER_ACCURACY,
+                        cancellationToken.token,
+                    ).await()
 
             if (location != null) {
                 Pair(location.latitude, location.longitude)

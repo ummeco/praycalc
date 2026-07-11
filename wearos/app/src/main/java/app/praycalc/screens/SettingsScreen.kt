@@ -24,8 +24,8 @@ import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
 import androidx.wear.compose.material.Chip
 import androidx.wear.compose.material.ChipDefaults
 import androidx.wear.compose.material.MaterialTheme
-import androidx.wear.compose.material.Text
 import androidx.wear.compose.material.RadioButton
+import androidx.wear.compose.material.Text
 import androidx.wear.compose.material.ToggleChip
 import androidx.wear.compose.material.ToggleChipDefaults
 import app.praycalc.PrayCalcColors
@@ -36,7 +36,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun SettingsScreen(
     repository: PrayerRepository,
-    onBack: () -> Unit
+    onBack: () -> Unit,
 ) {
     val settings by repository.settingsFlow.collectAsState(initial = Settings())
     val coroutineScope = rememberCoroutineScope()
@@ -45,24 +45,25 @@ fun SettingsScreen(
 
     ScalingLazyColumn(
         state = listState,
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.Black)
-            .focusRequester(focusRequester)
-            .onRotaryScrollEvent { event ->
-                coroutineScope.launch {
-                    listState.animateScrollToItem(maxOf(0, listState.centerItemIndex + if (event.verticalScrollPixels > 0) 1 else -1))
-                }
-                true
-            },
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .background(Color.Black)
+                .focusRequester(focusRequester)
+                .onRotaryScrollEvent { event ->
+                    coroutineScope.launch {
+                        listState.animateScrollToItem(maxOf(0, listState.centerItemIndex + if (event.verticalScrollPixels > 0) 1 else -1))
+                    }
+                    true
+                },
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(4.dp)
+        verticalArrangement = Arrangement.spacedBy(4.dp),
     ) {
         item {
             Text(
                 text = "Settings",
                 style = MaterialTheme.typography.title3,
-                color = PrayCalcColors.Accent
+                color = PrayCalcColors.Accent,
             )
         }
 
@@ -71,7 +72,7 @@ fun SettingsScreen(
                 text = "Calculation Method",
                 style = MaterialTheme.typography.caption1,
                 color = PrayCalcColors.Dimmed,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
             )
         }
 
@@ -84,22 +85,24 @@ fun SettingsScreen(
                 label = {
                     Text(
                         text = label,
-                        color = if (isSelected) PrayCalcColors.Deep else PrayCalcColors.OnSurface
+                        color = if (isSelected) PrayCalcColors.Deep else PrayCalcColors.OnSurface,
                     )
                 },
-                colors = if (isSelected) {
-                    ChipDefaults.chipColors(
-                        backgroundColor = PrayCalcColors.Primary
-                    )
-                } else {
-                    ChipDefaults.secondaryChipColors()
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .semantics {
-                        contentDescription = "$label calculation method" +
-                            if (isSelected) ", selected" else ""
-                    }
+                colors =
+                    if (isSelected) {
+                        ChipDefaults.chipColors(
+                            backgroundColor = PrayCalcColors.Primary,
+                        )
+                    } else {
+                        ChipDefaults.secondaryChipColors()
+                    },
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .semantics {
+                            contentDescription = "$label calculation method" +
+                                if (isSelected) ", selected" else ""
+                        },
             )
         }
 
@@ -108,7 +111,7 @@ fun SettingsScreen(
                 text = "Madhab",
                 style = MaterialTheme.typography.caption1,
                 color = PrayCalcColors.Dimmed,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
             )
         }
 
@@ -122,22 +125,24 @@ fun SettingsScreen(
                 label = {
                     Text(
                         text = label,
-                        color = if (isSelected) PrayCalcColors.Deep else PrayCalcColors.OnSurface
+                        color = if (isSelected) PrayCalcColors.Deep else PrayCalcColors.OnSurface,
                     )
                 },
                 toggleControl = {
                     RadioButton(selected = isSelected)
                 },
-                colors = ToggleChipDefaults.toggleChipColors(
-                    checkedStartBackgroundColor = PrayCalcColors.Primary,
-                    checkedEndBackgroundColor = PrayCalcColors.Primary
-                ),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .semantics {
-                        contentDescription = "$label madhab" +
-                            if (isSelected) ", selected" else ""
-                    }
+                colors =
+                    ToggleChipDefaults.toggleChipColors(
+                        checkedStartBackgroundColor = PrayCalcColors.Primary,
+                        checkedEndBackgroundColor = PrayCalcColors.Primary,
+                    ),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .semantics {
+                            contentDescription = "$label madhab" +
+                                if (isSelected) ", selected" else ""
+                        },
             )
         }
     }

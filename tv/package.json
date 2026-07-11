@@ -34,6 +34,7 @@
     "@react-native-community/cli-platform-android": "13.6.9",
     "@react-native/babel-preset": "0.74.87",
     "@react-native/gradle-plugin": "0.74.87",
+    "@react-native/metro-config": "0.74.87",
     "@tsconfig/react-native": "^3.0.0",
     "@types/jest": "^29.5.14",
     "@types/react": "^19.0.0",

@@ -25,42 +25,45 @@ import expo.modules.kotlin.modules.ModuleDefinition
  * SPORT: REGISTRY-FUNCTIONS.md#praycalc-mobile-wear-bridge-native
  */
 class WearBridgeModule : Module() {
-  override fun definition() = ModuleDefinition {
-    Name("WearBridge")
+    override fun definition() =
+        ModuleDefinition {
+            Name("WearBridge")
 
-    // Whether this module has a usable Android Context to talk to Play Services with.
-    Function("isSupported") {
-      appContext.reactContext != null
-    }
+            // Whether this module has a usable Android Context to talk to Play Services with.
+            Function("isSupported") {
+                appContext.reactContext != null
+            }
 
-    AsyncFunction("sendPrayerTimes") {
-      location: String,
-      fajr: String,
-      dhuhr: String,
-      asr: String,
-      maghrib: String,
-      isha: String,
-      promise: Promise ->
-      val context = appContext.reactContext
-      if (context == null) {
-        promise.resolve(false)
-        return@AsyncFunction
-      }
-      try {
-        val request = PutDataMapRequest.create("/prayer_times").apply {
-          dataMap.putString("location", location)
-          dataMap.putString("fajr", fajr)
-          dataMap.putString("dhuhr", dhuhr)
-          dataMap.putString("asr", asr)
-          dataMap.putString("maghrib", maghrib)
-          dataMap.putString("isha", isha)
+            AsyncFunction("sendPrayerTimes") {
+                location: String,
+                fajr: String,
+                dhuhr: String,
+                asr: String,
+                maghrib: String,
+                isha: String,
+                promise: Promise,
+                ->
+                val context = appContext.reactContext
+                if (context == null) {
+                    promise.resolve(false)
+                    return@AsyncFunction
+                }
+                try {
+                    val request =
+                        PutDataMapRequest.create("/prayer_times").apply {
+                            dataMap.putString("location", location)
+                            dataMap.putString("fajr", fajr)
+                            dataMap.putString("dhuhr", dhuhr)
+                            dataMap.putString("asr", asr)
+                            dataMap.putString("maghrib", maghrib)
+                            dataMap.putString("isha", isha)
+                        }
+                    val putRequest = request.asPutDataRequest().setUrgent()
+                    Wearable.getDataClient(context).putDataItem(putRequest)
+                    promise.resolve(true)
+                } catch (e: Exception) {
+                    promise.resolve(false)
+                }
+            }
         }
-        val putRequest = request.asPutDataRequest().setUrgent()
-        Wearable.getDataClient(context).putDataItem(putRequest)
-        promise.resolve(true)
-      } catch (e: Exception) {
-        promise.resolve(false)
-      }
-    }
-  }
 }

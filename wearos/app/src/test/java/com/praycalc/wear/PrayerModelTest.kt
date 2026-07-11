@@ -1,7 +1,6 @@
 package com.praycalc.wear
 
 import app.praycalc.data.PrayerData
-import app.praycalc.data.PrayerTime
 import org.json.JSONObject
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
@@ -10,31 +9,31 @@ import org.junit.Test
 import java.time.LocalTime
 
 class PrayerModelTest {
-
-    private val sampleJson = """
-    {
-        "prayers": {
-            "fajr": "05:30",
-            "sunrise": "06:55",
-            "dhuhr": "12:15",
-            "asr": "15:45",
-            "maghrib": "18:30",
-            "isha": "20:00"
-        },
-        "nextPrayer": "dhuhr",
-        "qibla": {
-            "bearing": 56.78,
-            "distance": 10234.5
-        },
-        "meta": {
-            "method": "isna",
-            "madhab": "shafii",
-            "timezone": "America/New_York",
-            "latitude": 40.7128,
-            "longitude": -74.006
+    private val sampleJson =
+        """
+        {
+            "prayers": {
+                "fajr": "05:30",
+                "sunrise": "06:55",
+                "dhuhr": "12:15",
+                "asr": "15:45",
+                "maghrib": "18:30",
+                "isha": "20:00"
+            },
+            "nextPrayer": "dhuhr",
+            "qibla": {
+                "bearing": 56.78,
+                "distance": 10234.5
+            },
+            "meta": {
+                "method": "isna",
+                "madhab": "shafii",
+                "timezone": "America/New_York",
+                "latitude": 40.7128,
+                "longitude": -74.006
+            }
         }
-    }
-    """.trimIndent()
+        """.trimIndent()
 
     @Test
     fun `parse JSON into PrayerData correctly`() {

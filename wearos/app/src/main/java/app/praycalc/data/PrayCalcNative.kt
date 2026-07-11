@@ -9,7 +9,6 @@ import java.time.ZoneId
  * Provides offline prayer time calculation on Wear OS.
  */
 object PrayCalcNative {
-
     init {
         System.loadLibrary("praycalc_native")
     }
@@ -31,7 +30,7 @@ object PrayCalcNative {
         timezone: Double,
         elevation: Double,
         method: Int,
-        madhab: Int
+        madhab: Int,
     ): DoubleArray
 
     /**
@@ -40,7 +39,7 @@ object PrayCalcNative {
     @JvmStatic
     private external fun nativeQiblaBearing(
         latitude: Double,
-        longitude: Double
+        longitude: Double,
     ): Double
 
     // -- Calculation method constants (must match CalcMethod enum in C) --
@@ -53,26 +52,28 @@ object PrayCalcNative {
         const val TEHRAN = 4
         const val KARACHI = 5
 
-        fun fromApiKey(key: String): Int = when (key) {
-            "isna" -> ISNA
-            "mwl" -> MWL
-            "egypt" -> EGYPT
-            "umm_al_qura", "makkah" -> UMM_AL_QURA
-            "tehran" -> TEHRAN
-            "karachi" -> KARACHI
-            else -> ISNA
-        }
+        fun fromApiKey(key: String): Int =
+            when (key) {
+                "isna" -> ISNA
+                "mwl" -> MWL
+                "egypt" -> EGYPT
+                "umm_al_qura", "makkah" -> UMM_AL_QURA
+                "tehran" -> TEHRAN
+                "karachi" -> KARACHI
+                else -> ISNA
+            }
     }
 
     object Madhab {
         const val SHAFI = 0
         const val HANAFI = 1
 
-        fun fromApiKey(key: String): Int = when (key) {
-            "shafii", "shafi" -> SHAFI
-            "hanafi" -> HANAFI
-            else -> SHAFI
-        }
+        fun fromApiKey(key: String): Int =
+            when (key) {
+                "shafii", "shafi" -> SHAFI
+                "hanafi" -> HANAFI
+                else -> SHAFI
+            }
     }
 
     // -- Public API --
@@ -84,7 +85,7 @@ object PrayCalcNative {
         val asr: LocalTime,
         val maghrib: LocalTime,
         val isha: LocalTime,
-        val qiblaBearing: Double
+        val qiblaBearing: Double,
     )
 
     /**
@@ -104,23 +105,24 @@ object PrayCalcNative {
         date: LocalDate = LocalDate.now(),
         elevation: Double = 0.0,
         method: String = "isna",
-        madhab: String = "shafii"
+        madhab: String = "shafii",
     ): OfflinePrayerTimes {
         val zone = ZoneId.systemDefault()
         val offset = zone.rules.getOffset(date.atStartOfDay())
         val timezoneHours = offset.totalSeconds / 3600.0
 
-        val result = nativeCalculateTimes(
-            latitude = latitude,
-            longitude = longitude,
-            year = date.year,
-            month = date.monthValue,
-            day = date.dayOfMonth,
-            timezone = timezoneHours,
-            elevation = elevation,
-            method = Method.fromApiKey(method),
-            madhab = Madhab.fromApiKey(madhab)
-        )
+        val result =
+            nativeCalculateTimes(
+                latitude = latitude,
+                longitude = longitude,
+                year = date.year,
+                month = date.monthValue,
+                day = date.dayOfMonth,
+                timezone = timezoneHours,
+                elevation = elevation,
+                method = Method.fromApiKey(method),
+                madhab = Madhab.fromApiKey(madhab),
+            )
 
         return OfflinePrayerTimes(
             fajr = fractionalHoursToLocalTime(result[0]),
@@ -129,7 +131,7 @@ object PrayCalcNative {
             asr = fractionalHoursToLocalTime(result[3]),
             maghrib = fractionalHoursToLocalTime(result[4]),
             isha = fractionalHoursToLocalTime(result[5]),
-            qiblaBearing = result[6]
+            qiblaBearing = result[6],
         )
     }
 
@@ -137,9 +139,10 @@ object PrayCalcNative {
      * Calculate Qibla bearing from the given coordinates.
      * Returns degrees clockwise from north (0=N, 90=E, 180=S, 270=W).
      */
-    fun getQiblaBearing(latitude: Double, longitude: Double): Double {
-        return nativeQiblaBearing(latitude, longitude)
-    }
+    fun getQiblaBearing(
+        latitude: Double,
+        longitude: Double,
+    ): Double = nativeQiblaBearing(latitude, longitude)
 
     private fun fractionalHoursToLocalTime(hours: Double): LocalTime {
         if (hours.isNaN() || hours < 0 || hours >= 24) {

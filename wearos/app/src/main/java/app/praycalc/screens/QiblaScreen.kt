@@ -18,12 +18,12 @@ fun QiblaScreen(bearing: Float) {
     Column(
         modifier = Modifier.fillMaxSize().padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Center,
     ) {
         Text(
             text = "Qibla",
             style = MaterialTheme.typography.title3,
-            color = green
+            color = green,
         )
         Spacer(Modifier.height(8.dp))
         Box(contentAlignment = Alignment.Center, modifier = Modifier.size(120.dp)) {
@@ -37,7 +37,7 @@ fun QiblaScreen(bearing: Float) {
                         color = green,
                         start = Offset(cx, cy),
                         end = Offset(cx, cy - r + 4.dp.toPx()),
-                        strokeWidth = 4.dp.toPx()
+                        strokeWidth = 4.dp.toPx(),
                     )
                 }
             }
@@ -46,12 +46,12 @@ fun QiblaScreen(bearing: Float) {
         Text(
             text = "${bearing.toInt()}°",
             fontSize = 20.sp,
-            color = Color.White
+            color = Color.White,
         )
         Text(
             text = "toward Mecca",
             style = MaterialTheme.typography.caption2,
-            color = Color(0xFF79C24C)
+            color = Color(0xFF79C24C),
         )
     }
 }
