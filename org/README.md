@@ -48,4 +48,4 @@ Site search is powered by [FlexSearch](https://github.com/nextapps-de/flexsearch
 
 ## License
 
-See [LICENSE.md](./LICENSE.md).
+MIT — see the repo root [LICENSE](../LICENSE). (A proprietary `org/LICENSE.md` was removed 2026-07-09; this public repo carries one license, at the root.)

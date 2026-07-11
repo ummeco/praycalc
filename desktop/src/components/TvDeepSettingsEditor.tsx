@@ -13,8 +13,10 @@
  *   per the live column contract). Location fields reuse ipc-types.ts PRESET_CITIES for
  *   a quick-pick plus manual lat/lng entry.
  * SPORT: praycalc desktop — TV management (deep-settings editor).
+ * REF: clamp() sourced from packages/ui-utils (shared with web's equivalent editor).
  */
 import { useState, useEffect } from 'react';
+import { clamp } from '@praycalc/ui-utils';
 import type { TvSettings, TvSettingsPatch, TvMadhab, TvTimeFormat } from '../lib/tv-types';
 import {
   MIN_COUNTDOWN_MINUTES,
@@ -32,10 +34,6 @@ import { PRESET_CITIES } from '../lib/ipc-types';
 const inputClass =
   'w-full bg-brand-deep border border-brand-dark rounded px-2 py-1.5 text-sm text-green-100 focus:outline-none focus:border-brand-mid';
 const labelClass = 'text-[11px] text-green-300/60 block mb-1';
-
-function clamp(v: number, min: number, max: number): number {
-  return Math.min(max, Math.max(min, v));
-}
 
 export default function TvDeepSettingsEditor({
   tv,

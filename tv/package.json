@@ -12,6 +12,7 @@
     "test": "jest"
   },
   "dependencies": {
+    "@praycalc/ui-utils": "workspace:*",
     "@react-native-async-storage/async-storage": "^2.0.0",
     "@react-navigation/native": "^6.1.18",
     "@react-navigation/stack": "^6.4.1",

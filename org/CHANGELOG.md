@@ -3,6 +3,13 @@
 All notable changes to the praycalc.org docs site are documented here.
 Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## 2026-07-10
+
+- PWA manifest, icons, and service worker added.
+- Live-verified API docs rewrite; AA contrast fixes including the code-copy button's resting state (now axe-gated, since it's always visible on touch); phone-width table scroll; touch-visible controls.
+- Frozen-lockfile installs in CI; dead ReDoc removal.
+- Lighthouse + axe quality gate added for praycalc.org (previously web-only).
+
 ## 2026-07-08
 
 - Fixed accessibility issues and deprecated API usage; added hreflang alternates for translated locale routes; expanded REST API docs page.

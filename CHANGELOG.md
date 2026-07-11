@@ -1,3 +1,21 @@
+## [Unreleased] — 2026-07-10 — UI overhaul, PWA hardening, gap-closure wave, releases
+
+### Added
+- Web: hero search card redesign, app-grade footer, fixed top-right settings panel with Ummat+ upsell, real light theme, PWA icon/manifest/service-worker overhaul, city sitemap, custom 500 page
+- Org: PWA manifest + icons + service worker, live-verified API docs rewrite
+- Desktop: `desktop-v1.2.4` — Linux tray context menu (fixes tray being unusable under `libappindicator`), user-initiated update installs (background download + "Restart" click, was silent auto-install), sunrise/shuruq excluded from adhan notification + overlay, per-account entitlement cache
+- Releases: rolling `desktop-latest` feed for the updater (decoupled from the repo's overall `releases/latest`), signed Android APK direct-install pipeline (`release-mobile-apk.yml`, `mobile-v*` tags, no store account needed), mobile EAS store-submission workflow moved to manual `workflow_dispatch` (APK tag-push and EAS store-submit are now two separate paths), branch protection updates, Lighthouse+axe quality gate for praycalc.org
+
+### Fixed
+- Web: 29 orphaned legacy `web/lib` files and dead residuals purged, truthful locale list, error boundary + modal focus-traps, RTL logical props, +45 server-route tests; E2E hydration barrier (`data-hydrated` marker) fixing a settings-panel flake introduced by suppressed mobile autofocus
+- Org: code-copy button AA contrast (both themes), phone-width table scroll, touch-visible controls, frozen-lockfile installs, dead ReDoc removal
+- Mobile: SDK 53 dependency realignment (`react-native` 0.79.6 and 20+ `expo-*`/`react-native-*` packages), `expo-in-app-purchases` (abandoned since 2022) replaced with `react-native-iap@13.0.4` behind the same wrapper interface, background geofencing permission fixes, native locale strings, 12/24h formatting, version unified to 2.1.0 (was drifted to 0.2.0 in `package.json` vs `app.json`)
+
+### Notes
+- Total: ~81 findings closed across web/org/mobile/desktop this pass, spanning UI, a11y, dead code, dependency hygiene, and the release pipeline rework above.
+
+---
+
 ## [Unreleased] — 2026-07-08 — Account-linked TV control
 
 ### Added

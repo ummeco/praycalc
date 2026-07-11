@@ -7,31 +7,14 @@
 import {
   mapRemoteSettings,
   mapIqamaOffsets,
-  clampRotateMinutes,
-  clampMinutes1to60,
   DEFAULT_IQAMA_OFFSETS,
   TvSettingsSync,
 } from '../tvSettingsSync';
 import type { Client } from 'urql';
 import type { TvSettings } from '../../../types';
 
-describe('clampRotateMinutes', () => {
-  it('clamps into 1..30 and rounds', () => {
-    expect(clampRotateMinutes(0)).toBe(1);
-    expect(clampRotateMinutes(50)).toBe(30);
-    expect(clampRotateMinutes(10.4)).toBe(10);
-    expect(clampRotateMinutes(NaN)).toBe(10);
-  });
-});
-
-describe('clampMinutes1to60', () => {
-  it('clamps into 1..60, rounds, falls back on NaN', () => {
-    expect(clampMinutes1to60(0, 5)).toBe(1);
-    expect(clampMinutes1to60(90, 5)).toBe(60);
-    expect(clampMinutes1to60(9.6, 5)).toBe(10);
-    expect(clampMinutes1to60(NaN, 5)).toBe(5);
-  });
-});
+// clampRotateMinutes / clampMinutes1to60 moved to @praycalc/ui-utils — see
+// packages/ui-utils/src/__tests__/clamp.test.ts for their unit tests.
 
 describe('mapIqamaOffsets', () => {
   it('reads all 5 keys by name regardless of object key order', () => {

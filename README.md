@@ -20,23 +20,23 @@ Before contributing, read [`.github/wiki/ENGINEERING-CHARTER.md`](.github/wiki/E
 
 ## What is this
 
-PrayCalc is a free, GPS-accurate Islamic prayer time calculator for web and mobile. It supports all major calculation methods (ISNA, MWL, Egypt, Umm al-Qura, Tehran, Karachi), Qibla direction, adhan reminders, and offline mode. It also powers prayer times across the Ummat app ecosystem.
+PrayCalc is a free, GPS-accurate Islamic prayer time calculator for web, mobile, desktop, and TV. Its flagship method is DPC (Dynamic Prayer Calculation), alongside fixed presets (MWL, ISNA, Egypt, Umm al-Qura, Karachi, UOIF) and Custom — Tehran and Jafari are intentionally excluded (D-P3-19). It also supports Qibla direction, adhan reminders, and offline mode, and powers prayer times across the Ummat app ecosystem.
 
 ## Features
 
-- All major calculation methods (ISNA, MWL, Egypt, Umm al-Qura, Tehran, Karachi)
+- DPC (Dynamic Prayer Calculation, default) plus fixed presets — MWL, ISNA, Egypt, Umm al-Qura, Karachi, UOIF — and Custom (Tehran/Jafari intentionally excluded, D-P3-19)
 - GPS-based location with city search
 - Qibla compass direction
-- Adhan audio notifications with multiple reciters
+- Adhan audio notifications (web: Mishari, Makkah; mobile: Makkah, Mishari, Madina)
 - Monthly/yearly prayer calendars with PDF export
-- PWA with full offline support (service worker + IndexedDB caching)
-- 8 languages (EN, AR, TR, UR, ID, FR, BN, SO) with RTL
+- PWA with full offline support (service worker + IndexedDB caching, installable to home screen)
+- Web: 12 languages (EN, AR, UR, FA, ID, TR, MS, BN, FR, ES, DE, RU) with RTL for Arabic/Urdu. Mobile: 21 languages.
 - Countdown to next prayer
 - Dark mode (WCAG 2.2 AA, system-preference-aware)
 - Accessible (WCAG 2.2 AA — axe audited, Playwright viewport matrix)
 - Ummat account sign-in on web, mobile, and desktop — one login across the ecosystem
 - Ummat+ ($9.99/yr): unlocks the TV app and Smart Home integrations (Google Home, Alexa)
-- Desktop menu bar / tray app for macOS, Windows, Linux with live countdown
+- Desktop menu bar / tray app for macOS, Windows, Linux with live countdown and seamless auto-update
 
 ## Tech Stack
 
@@ -123,9 +123,9 @@ pnpm start
 
 ## Desktop Downloads
 
-Latest release: [ummeco/praycalc releases](https://github.com/ummeco/praycalc/releases?q=desktop-v) (filter to `desktop-v*` tags — the repo also cuts mobile/TV/whole-platform releases, so `/releases/latest` is not reliable for desktop specifically).
+Current version: **v1.2.4**. Latest release: [ummeco/praycalc releases](https://github.com/ummeco/praycalc/releases?q=desktop-v) (filter to `desktop-v*` tags — the repo also cuts mobile/TV/whole-platform releases, so `/releases/latest` is not reliable for desktop specifically).
 
-The app ships with seamless auto-update (signed installers + in-app updater) since `desktop-v1.2.3` — install once and future versions install themselves.
+The app ships with seamless auto-update (signed installers + in-app updater) since `desktop-v1.2.3` — install once and future versions download in the background and prompt "Restart to update" when ready.
 
 | Platform | Installers |
 | --- | --- |
@@ -133,6 +133,10 @@ The app ships with seamless auto-update (signed installers + in-app updater) sin
 | macOS (Intel/x64) | `.dmg`, `.app.tar.gz` |
 | Windows (x64) | `.msi`, `.exe` |
 | Linux (x64) | `.deb`, `.AppImage` |
+
+## Android APK Direct Install
+
+Every `mobile-v*` tag also publishes a signed APK to [GitHub Releases](https://github.com/ummeco/praycalc/releases?q=mobile-v) for direct sideload install — no Play Store account needed. Download the `.apk` asset, enable "install unknown apps" for your browser/file manager, and open it. This is a separate path from the Play Store listing (which ships from the same version via a manual EAS Submit dispatch) — the two can be a build or two apart in practice.
 
 ## Backend
 

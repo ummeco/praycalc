@@ -11,6 +11,7 @@
  */
 
 import { Client } from 'urql';
+import { clampRotateMinutes, clampMinutes1to60 } from '@praycalc/ui-utils';
 import { GET_TV_SETTINGS } from '../graphql/queries';
 import { IqamaOffsets, Madhab, TimeFormat, TvRemoteSettings, TvSettings } from '../../types';
 
@@ -25,18 +26,6 @@ export const DEFAULT_IQAMA_OFFSETS: IqamaOffsets = {
   maghrib: 5,
   isha: 10,
 };
-
-/** rotate_minutes is clamped to the supported 1–30 range. */
-export function clampRotateMinutes(value: number): number {
-  if (!Number.isFinite(value)) return 10;
-  return Math.min(30, Math.max(1, Math.round(value)));
-}
-
-/** countdown_minutes / name_only_minutes are clamped to the supported 1–60 range. */
-export function clampMinutes1to60(value: number, fallback: number): number {
-  if (!Number.isFinite(value)) return fallback;
-  return Math.min(60, Math.max(1, Math.round(value)));
-}
 
 /**
  * Maps a remote iqama_offsets jsonb value to the typed IqamaOffsets shape, filling any

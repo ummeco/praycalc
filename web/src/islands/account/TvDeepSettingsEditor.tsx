@@ -14,10 +14,12 @@
  *   always sent as the full 5-key object — Hasura's jsonb _set replaces the
  *   whole column, so a partial patch would drop the other prayers' offsets.
  * REF: src/islands/account/TvManagerClient.tsx · src/lib/tv/client.ts ·
- *   desktop/src/components/TvDeepSettingsEditor.tsx (field parity reference)
+ *   desktop/src/components/TvDeepSettingsEditor.tsx (field parity reference) ·
+ *   packages/ui-utils (shared clamp())
  */
 
 import { useState, useEffect } from 'react';
+import { clamp } from '@praycalc/ui-utils';
 import type { TvSetting, TvSettingPatch, TvMadhab, TvTimeFormat, IqamaOffsets } from '@/lib/tv/client';
 
 const MIN_COUNTDOWN_MINUTES = 1;
@@ -62,10 +64,6 @@ const TIME_FORMAT_OPTIONS: { value: TvTimeFormat; label: string }[] = [
   { value: '24h', label: '24-hour' },
   { value: '12h', label: '12-hour (AM/PM)' },
 ];
-
-function clamp(v: number, min: number, max: number): number {
-  return Math.min(max, Math.max(min, v));
-}
 
 export default function TvDeepSettingsEditor({
   tv,

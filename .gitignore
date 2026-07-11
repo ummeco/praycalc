@@ -8,6 +8,9 @@ node_modules/
 out/
 dist/
 !smart/vendor/pray-calc/dist/
+# Workspace packages ship committed dist (consumed via file:/workspace deps, no CI build step)
+!packages/pray-calc/dist/
+!packages/ui-utils/dist/
 build/
 .vercel/
 *.tsbuildinfo
