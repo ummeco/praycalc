@@ -139,7 +139,7 @@ https://praycalc.com
 
 Bundle/package IDs below are for the current React Native apps (`mobile/`, `tv/`), not the
 archived Flutter app. Mobile keeps the Flutter app's original ID so its store listings
-continue rather than fork into new ones (see `mobile/DEPLOYMENT.md` FGAP-08).
+continue rather than fork into new ones (see `mobile/docs/DEPLOYMENT.md` FGAP-08).
 
 | Platform | App | App ID |
 | --- | --- | --- |

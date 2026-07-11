@@ -24,7 +24,7 @@ GPS-accurate Islamic prayer time calculator. Web, iOS, Android, macOS, Windows, 
 
 ## About
 
-PrayCalc gives accurate Islamic prayer times for any location worldwide. It supports 10 calculation methods, all major Asr schools, Qibla direction, adhan notifications with 9 reciters, prayer calendars, and offline support on every platform including wearables.
+PrayCalc gives accurate Islamic prayer times for any location worldwide. Its flagship method is DPC (Dynamic Prayer Calculation, a physics-based dynamic-angle model), alongside fixed presets (MWL, ISNA, Egypt, Umm al-Qura, Karachi, UOIF) and Custom — Tehran and Jafari are intentionally excluded (D-P3-19). It supports both Asr schools (Hanafi/Shafi), Qibla direction, adhan notifications, prayer calendars, and offline support on every platform including wearables.
 
 The project includes:
 - **Web app** at `web/` -- Astro, deployed to [praycalc.com](https://praycalc.com)
@@ -49,8 +49,10 @@ The project includes:
 
 ## Calculation methods
 
-ISNA, MWL, Egypt, Umm al-Qura, Tehran, Karachi, Kuwait, Qatar, Singapore, Moonsighting Committee.
+DPC (Dynamic Prayer Calculation — flagship default), MWL, ISNA, Egypt, Umm al-Qura (Makkah), Karachi, UOIF, and Custom. Tehran and Jafari are intentionally excluded (D-P3-19).
 
 ## Languages
 
-22 languages: Arabic, Bengali, Chinese, Dutch, English, Farsi, French, German, Hausa, Hindi, Indonesian, Italian, Japanese, Korean, Malay, Portuguese, Russian, Somali, Spanish, Swahili, Turkish, Urdu.
+Web (12): English, Arabic, Urdu, Farsi, Indonesian, Turkish, Malay, Bengali, French, Spanish, German, Russian — RTL for Arabic and Urdu.
+
+Mobile (21): English, Arabic, Bengali, Dutch, Farsi, French, German, Hausa, Hindi, Indonesian, Italian, Malay, Pashto, Portuguese, Russian, Somali, Spanish, Swahili, Turkish, Urdu, Yoruba.

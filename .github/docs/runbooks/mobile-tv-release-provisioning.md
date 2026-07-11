@@ -36,7 +36,7 @@ payment method, and 2FA; only you can complete it.
 1. Enroll at developer.apple.com/programs ($99/year, needs a legal name/DUNS number if enrolling as an organization rather than an individual — budget a few days if Apple needs to verify an org).
 2. Once enrolled, in App Store Connect (appstoreconnect.apple.com):
    - **Register two Bundle IDs** (Certificates, Identifiers & Profiles → Identifiers → +):
-     - `com.praycalc.praycalcApp` (mobile — must match the archived Flutter app's bundle ID exactly, per `mobile/DEPLOYMENT.md` FGAP-08, so the App Store listing continues rather than forking into a new one)
+     - `com.praycalc.praycalcApp` (mobile — must match the archived Flutter app's bundle ID exactly, per `mobile/docs/DEPLOYMENT.md` FGAP-08, so the App Store listing continues rather than forking into a new one)
      - `com.ummeco.praycalc.tv` (tv — new tvOS app record)
    - **Create two App Store Connect app records** (My Apps → +), one per bundle ID above. Each gets its own `ascAppId` (a numeric App Store Connect app ID) — copy both.
 3. **Generate an App Store Connect API key** (Users and Access → Integrations → App Store Connect API → +):
@@ -105,7 +105,14 @@ Fill in, per app:
 
 1. Complete §§ 1-5 above.
 2. Bump `mobile/app.json`'s `version` (and/or `tv/app.json`'s `version`), commit.
-3. `git tag mobile-v2.0.1 && git push origin mobile-v2.0.1` (or `tv-v0.2.0` for the TV app) — this triggers the matching release workflow.
+3. `git tag mobile-v2.1.0 && git push origin mobile-v2.1.0` (or `tv-v0.2.0` for the TV app).
+   - For **mobile**, this tag ONLY triggers `release-mobile-apk.yml` (the signed direct-install
+     APK on GitHub Releases) — it does not touch EAS or the stores. To submit to the App Store /
+     Play Store, run `release-mobile.yml` manually from the Actions tab (`workflow_dispatch`) once
+     you're ready; it is not tag-triggered.
+   - For **tv**, the `tv-v*` tag DOES trigger `release-tv.yml` directly (EAS Build + Submit),
+     since the TV app has no separate direct-install path — this is the one asymmetry between
+     the two apps' pipelines.
 4. Watch the run at `github.com/ummeco/praycalc/actions`. First run of each app needs a manual Play Console pass (§ 3.4) and, for iOS, the app must be in "Prepare for Submission" state in App Store Connect with a filled-out listing (screenshots, description, age rating, privacy policy URL — see `.github/docs/store-listing.md`) before `--auto-submit` can push it to review.
 5. First-time Apple/Google review can take longer than routine updates (a few days is normal for a first submission, especially if manual human review flags anything). Budget for at least one rejection-and-resubmit cycle — this is normal for first submissions, not a sign anything is broken.
 
@@ -116,4 +123,4 @@ Fill in, per app:
 - `.github/docs/store-listing.md` — listing copy, screenshots, keywords (bundle IDs there need updating to the new RN package names — see that file's own note)
 - `.github/docs/fire-tv-submission.md` — Amazon Appstore manual submission walkthrough
 - `.github/docs/release-checklist.md` — per-release checklist (rewritten for this pipeline)
-- `mobile/DEPLOYMENT.md` — mobile-specific rollout/rollback strategy, bundle ID continuity rationale
+- `mobile/docs/DEPLOYMENT.md` — mobile-specific rollout/rollback strategy, bundle ID continuity rationale

@@ -2,6 +2,18 @@
 
 All notable changes to PrayCalc are documented here.
 
+## 2026-07-10 — UI overhaul, PWA hardening, ~81-finding gap-closure wave, release pipeline rework
+
+**Web:** redesigned hero search card, app-grade footer, a fixed top-right settings panel with an Ummat+ upsell, a real light theme, and a full PWA overhaul (icons, manifest, service worker) so the site installs cleanly to a home screen. 29 orphaned legacy files removed, RTL logical properties applied throughout, and +45 server-route tests added.
+
+**Org:** its own PWA manifest/icons/service worker, a live-verified API docs rewrite, and AA contrast fixes (including the code-copy button, now axe-gated since it's always visible on touch).
+
+**Desktop 1.2.4:** Linux tray now shows a right-click context menu (the tray was effectively unusable on most Linux desktops without one), updates now wait for the user to click "Restart" instead of silently installing mid-use, sunrise/shuruq no longer triggers an adhan notification (it isn't a salah), and the updater moved to its own rolling `desktop-latest` release feed.
+
+**Mobile:** dependencies realigned to Expo SDK 53's bundled versions, `expo-in-app-purchases` (unmaintained since 2022) replaced with `react-native-iap`, and the `package.json`/`app.json` version numbers brought back into lockstep at 2.1.0.
+
+**Releases:** Android APK sideload installs now ship automatically from a `mobile-v*` tag push (no Play Store account needed) — separately, App Store/Play Store submission moved to a manually-triggered workflow so a tag push can no longer accidentally kick off a store review.
+
 ## 2026-07-09 — Desktop 1.2.3: seamless auto-update
 
 Signed release artifacts (`.sig` per installer + `latest.json`) ship for the first time — the installed desktop app now checks for updates on launch and hourly, downloads in the background, and shows a "Restart to update" banner when a new version is ready. No more manual re-download for macOS/Windows/Linux users.
@@ -86,7 +98,7 @@ Final verification pass against competitor adhan apps (Muslim Pro, Athan, Pillar
 - Tapping a prayer notification plays the selected reciter's adhan
 
 **Honesty corrections:**
-- PARITY-GATE.md re-audited: 6 overstated rows corrected (16 PASS, 4 tracked PARTIALs)
+- mobile/docs/PARITY-GATE.md re-audited: 6 overstated rows corrected (16 PASS, 4 tracked PARTIALs)
 - Subscription screen now lists only actually-gated Pro features
 
 ## [Unreleased — P4]

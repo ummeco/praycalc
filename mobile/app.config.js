@@ -4,7 +4,7 @@
  *   SAME `extra.eas.projectId` value that already lives in app.json (single
  *   source of truth: update the projectId in one place, this file picks it up).
  * Inputs: app.json (base config), EAS_PROJECT_ID-shaped placeholder until the
- *   real EAS project is provisioned (see mobile/DEPLOYMENT.md OTA checklist).
+ *   real EAS project is provisioned (see mobile/docs/DEPLOYMENT.md OTA checklist).
  * Outputs: Full Expo config object (app.json spread + updates + runtimeVersion).
  * Constraints: Must stay in sync with the `expo-updates` config plugin
  *   auto-linked via SDK 53 (no explicit plugin entry needed — the package's

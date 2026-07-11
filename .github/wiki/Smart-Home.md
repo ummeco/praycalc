@@ -8,12 +8,10 @@ Smart home features require an **Ummat+** subscription. See [[IAP]] for setup.
 
 | Platform | Integration type |
 | --- | --- |
-| Apple HomeKit | Native HomeKit accessory + automations |
+| Apple HomeKit | Via the `homebridge/` plugin (Homebridge accessory + automations) |
 | Google Home | Actions on Google (webhook-based) |
 | Amazon Alexa | Alexa Skills Kit (webhook-based) |
-| Home Assistant | MQTT + REST webhook |
-| IFTTT | Webhook trigger |
-| Zapier | Webhook trigger |
+| Home Assistant | Custom component + REST |
 
 ## How it works
 

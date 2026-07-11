@@ -42,7 +42,7 @@
 - Feature 3 — Islamic Calendar: Hijri/Gregorian dual display, month navigation, static Islamic events, 7 UI states
 - Feature 4 — Settings: method selector, madhab toggle, GPS+manual location, notification prefs, 12/24h format
 - Feature 5 — Auth: anonymous mode (zero API calls), account mode (JWT → SecureStore), Expo Router auth group
-- DEPLOYMENT.md: FGAP-08 phased rollout (5%→25%→50%→100%) + rollback plan
+- mobile/docs/DEPLOYMENT.md: FGAP-08 phased rollout (5%→25%→50%→100%) + rollback plan
 - pnpm workspace wired (`@ummat/praycalc-mobile`)
 - @acamarata/pray-calc workspace dependency
 - SPORT REGISTRY-APPS.md updated

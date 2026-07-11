@@ -18,22 +18,26 @@ Visit [praycalc.com](https://praycalc.com) in any browser. The site works as a P
 | iOS | [App Store](https://apps.apple.com) | iOS 16+ |
 | Android | [Google Play](https://play.google.com) | Android 8+ |
 
+**Android direct install (sideload):** every `mobile-v*` release also publishes a signed APK to [GitHub Releases](../releases?q=mobile-v) — no Play Store account needed. Download the `.apk`, enable "install unknown apps" for your browser or file manager, and open it. This ships from GitHub the moment a version tag is pushed; the Play Store listing for the same version follows separately once someone runs the store-submission workflow.
+
 ## Desktop Apps
+
+Current version: **v1.2.4**. Since v1.2.3 the app auto-updates: it checks for a new version on launch and hourly, downloads it in the background, and shows a "Restart to update" banner when it's ready — no manual re-download after the first install.
 
 | Platform | Download | Notes |
 | --- | --- | --- |
-| macOS | [Releases](../releases) | Menu bar integration, auto-start |
-| Windows | [Releases](../releases) | System tray, auto-start on login |
-| Linux | [Releases](../releases) | System tray, auto-start on login |
+| macOS | [Releases](../releases?q=desktop-v) | Menu bar integration, auto-start, seamless auto-update |
+| Windows | [Releases](../releases?q=desktop-v) | System tray, auto-start on login, seamless auto-update |
+| Linux | [Releases](../releases?q=desktop-v) | System tray, auto-start on login, seamless auto-update; right-click the tray icon for the menu |
 
 ## TV Apps
 
 | Platform | Store | Notes |
 | --- | --- | --- |
-| Android TV | Google Play (TV section) | Pair via mobile app or 6-character code |
+| Android TV | Google Play (TV section) | Pair by code or QR from any surface |
 | Fire TV | Amazon Appstore | Same pairing flow as Android TV |
 
-Pair your TV to your account using the mobile app: open PrayCalc on your phone, go to Settings, tap "Connect TV", and scan the QR code shown on the TV.
+An unpaired TV shows a 6-digit code (and a QR code) on launch. Add it to your Ummat+ account from any surface — web (account page, "Add TV"), desktop (menu-bar app, "My TVs" tab), or mobile (Pair TV screen) — by entering the code, or by scanning the QR from the mobile app. Once paired, settings changes from any surface reach the TV in about 5 seconds; a single account can pair and manage any number of TVs.
 
 ## Wearables
 

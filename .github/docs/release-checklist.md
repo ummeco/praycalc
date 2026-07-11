@@ -4,11 +4,12 @@ Everything the release workflows handle automatically is marked **AUTO**. Your r
 actions are marked **YOU**. Releases are per-surface now, not one unified pipeline — each
 surface has its own tag prefix and its own workflow:
 
-| Surface | Workflow | Tag prefix | Stack |
+| Surface | Workflow | Trigger | Stack |
 | --- | --- | --- | --- |
-| Mobile (iOS + Android phone/tablet) | `release-mobile.yml` | `mobile-v*` | React Native + Expo SDK 53, EAS Build + Submit |
-| TV (Apple TV + Android TV + Fire TV) | `release-tv.yml` | `tv-v*` | react-native-tvos (bare), EAS Build + Submit |
-| Desktop (macOS/Windows/Linux) | `release-desktop.yml` | `desktop-v*` | Tauri 2 |
+| Mobile — Android APK direct-install | `release-mobile-apk.yml` | `mobile-v*` tag push | React Native + Expo SDK 53, Gradle-built signed APK, no store account needed |
+| Mobile — App Store / Play Store submission | `release-mobile.yml` | Manual (`workflow_dispatch` only) | React Native + Expo SDK 53, EAS Build + Submit |
+| TV (Apple TV + Android TV + Fire TV) | `release-tv.yml` | `tv-v*` tag push, or manual | react-native-tvos (bare), EAS Build + Submit |
+| Desktop (macOS/Windows/Linux) | `release-desktop.yml` | `desktop-v*` tag push | Tauri 2, signed installers + rolling `desktop-latest` updater feed |
 | Web | Vercel auto-deploy on push to `main` | — | Astro (D-P2-STACK-CANON) |
 | Docs (praycalc.org) | Vercel auto-deploy on push to `main` | — | Astro (static) |
 
@@ -25,6 +26,9 @@ assumes it's done.
 
 ## Mobile release
 
+Two separate, decoupled paths ship from the same tag/version — a tag push only triggers the
+APK path below; EAS store submission is a manual step you trigger yourself.
+
 ### Step 1 — YOU: Verify locally
 
 ```bash
@@ -35,17 +39,25 @@ cd mobile && pnpm typecheck && pnpm lint && pnpm test
 
 ```bash
 # bump mobile/app.json's "version" field, commit
-git tag mobile-v2.0.1
-git push origin mobile-v2.0.1
+git tag mobile-v2.1.0
+git push origin mobile-v2.1.0
 ```
 
-### Step 3 — AUTO: what `release-mobile.yml` does
+### Step 3 — AUTO: what pushing the tag actually triggers (`release-mobile-apk.yml`)
 
-EAS Build (iOS + Android, production profile) → auto-submit to App Store Connect (TestFlight
-processing → manual release from there) and Google Play Console (internal track by default —
-promote manually to production once verified).
+A signed Android APK is built directly (Expo prebuild → Gradle, no EAS account needed) and
+published to a GitHub Release for direct-install/sideload. This is the fast, no-store-review
+path — it does **not** touch the App Store or Play Store.
 
-### Step 4 — YOU: first-release-only manual steps
+### Step 4 — YOU: separately, submit to the stores (`release-mobile.yml`, manual dispatch only)
+
+`release-mobile.yml` no longer runs on tag push — run it manually from the Actions tab
+(`workflow_dispatch`: pick platform/profile/auto-submit) once EAS/store credentials exist.
+It builds via EAS (iOS + Android, production profile) and can auto-submit to App Store Connect
+(TestFlight processing → manual release from there) and Google Play Console (internal track by
+default — promote manually to production once verified).
+
+### Step 5 — YOU: first-release-only manual steps
 
 - App Store Connect: fill out the listing (screenshots, description, age rating, privacy
   policy URL — see `.github/docs/store-listing.md`) before the build can go to review.

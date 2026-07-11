@@ -8,7 +8,7 @@ Effort classes: **S** ≤1 day · **M** 2-5 days · **L** 1-2 weeks · **XL** >2
 
 | Surface | State | Evidence |
 |---|---|---|
-| Mobile (RN/Expo) | Code-complete, 19/20 parity PASS, 1 PARTIAL (iOS widget) | `mobile/PARITY-GATE.md` rows 1-20 |
+| Mobile (RN/Expo) | Code-complete, 19/20 parity PASS, 1 PARTIAL (iOS widget) | `mobile/docs/PARITY-GATE.md` rows 1-20 |
 | iOS home widget | Not built (Android widget real) | `mobile/src/features/home-widget/HomeWidgetStub.tsx` L50-53 |
 | TV (react-native-tvos) | **~40% — scaffold, not shippable** | `tv/CHANGELOG.md` ("Initial scaffold"); stubs below |
 | watchOS (Swift) | ~55% — no Xcode project exists yet | `watchos/PrayCalcWatch/Bridge/XCODE_SETUP.md` |
@@ -51,21 +51,21 @@ Nothing ships until this exists. The runbook is written; the accounts are not. O
 | Item | Why it needs a real device | Source |
 |---|---|---|
 | Android home widget refresh | `react-native-android-widget` never run on hardware | `HomeWidgetStub.tsx` L15 "validation pending first store build" |
-| Adhan notification sound | 30s iOS cap + dedicated Android channel | `PARITY-GATE.md` row 10 |
-| Reschedule across reboot | background task registration | `PARITY-GATE.md` L51 |
-| RTL on real devices | `applyRTL` + restart prompt | `PARITY-GATE.md` row 16 |
+| Adhan notification sound | 30s iOS cap + dedicated Android channel | `mobile/docs/PARITY-GATE.md` row 10 |
+| Reschedule across reboot | background task registration | `mobile/docs/PARITY-GATE.md` L51 |
+| RTL on real devices | `applyRTL` + restart prompt | `mobile/docs/PARITY-GATE.md` row 16 |
 | Iqamah second-notification | offset options 10/15/20/30 | `NotificationSettingsScreen.tsx` L46 |
 
 **Data-safety / privacy declarations PrayCalc must file** (given its actual data touchpoints):
 
-- **Location** — approximate + precise, used for prayer-time/Qibla calc; declare "not shared, not linked to identity," processed on-device. (GPS per `PARITY-GATE.md` row 7.)
+- **Location** — approximate + precise, used for prayer-time/Qibla calc; declare "not shared, not linked to identity," processed on-device. (GPS per `mobile/docs/PARITY-GATE.md` row 7.)
 - **Notifications** — no data collected, but declare the permission.
 - **Purchases / IAP** — Ummat+ subscription (`HomeWidgetStub.tsx` L96 gating).
 - **Analytics** — anonymous only *if* Umami is enabled; today it is a no-op (`analytics.ts` L51). Declare only when a URL is set; the code already guarantees zero PII (`analytics.ts` L4-11).
 - **Crash data** — Sentry, only if DSN set, PII scrubbed (`sentry.ts` L49-68). Declare "crash logs, not linked to identity" when enabled.
 - Account-deletion URL is mandatory because the app supports account creation (`PLAY-DATA-SAFETY.md`).
 
-**Prayer-app-specific review-rejection risks:** location-permission justification (must explain prayer-time use in the purpose string or Apple rejects); IAP that gates "religious obligation" features draws scrutiny — keep free tier fully functional (it is); bundle-ID continuity with the archived Flutter listing so it reads as an update, not a clone (`runbook` §2.2, `mobile/DEPLOYMENT.md` FGAP-08); no misleading "official"/mosque-affiliation claims in the listing.
+**Prayer-app-specific review-rejection risks:** location-permission justification (must explain prayer-time use in the purpose string or Apple rejects); IAP that gates "religious obligation" features draws scrutiny — keep free tier fully functional (it is); bundle-ID continuity with the archived Flutter listing so it reads as an update, not a clone (`runbook` §2.2, `mobile/docs/DEPLOYMENT.md` FGAP-08); no misleading "official"/mosque-affiliation claims in the listing.
 
 ---
 
@@ -80,7 +80,7 @@ The only PARTIAL parity row. Android widget is real; iOS is a documented no-op (
 | 2.3 WidgetKit timeline provider (small/medium sizes) computing from shared data | M | mirror Android `NextPrayerWidget.tsx` |
 | 2.4 Wire `writeWidgetData` iOS branch (currently returns early, L50) | S | replace no-op with App Group write + `WidgetCenter.reloadTimelines` |
 
-**Acceptance:** iOS home-screen widget shows the real next prayer and refreshes after a settings change; `PARITY-GATE.md` row 20 flips to PASS; PCI closed. **Effort: M-L total.** Depends on Epic 1.3 (needs Apple Program for the App Group entitlement).
+**Acceptance:** iOS home-screen widget shows the real next prayer and refreshes after a settings change; `mobile/docs/PARITY-GATE.md` row 20 flips to PASS; PCI closed. **Effort: M-L total.** Depends on Epic 1.3 (needs Apple Program for the App Group entitlement).
 
 ---
 
@@ -149,8 +149,8 @@ Open PCIs tracked: `pci-praycalc-home-widgets-native` (Epic 2), `pci-praycalc-io
 ## Epic 7 — Non-goals (restated, do not scope-creep)
 
 - **No full Quran** in PrayCalc — that is islam.wiki (`.claude/docs/VISION.md` L24; TV/mobile keep only Al-Fatiha + citations).
-- **No Tehran / Jafari method** — excluded by decision D-P3-19 (`PARITY-GATE.md` row 5). The stale `store-listings.md` still advertises it; that is a doc bug, not a feature.
-- **No mosque-finder v2** — v1 (OSM Overpass, 10km) is the ceiling for this phase (`PARITY-GATE.md` L64); no reviews, prayer-space details, or check-ins.
+- **No Tehran / Jafari method** — excluded by decision D-P3-19 (`mobile/docs/PARITY-GATE.md` row 5). The stale `store-listings.md` still advertises it; that is a doc bug, not a feature.
+- **No mosque-finder v2** — v1 (OSM Overpass, 10km) is the ceiling for this phase (`mobile/docs/PARITY-GATE.md` L64); no reviews, prayer-space details, or check-ins.
 - No social, chat, or masjid-management (belongs to Ummat App / Chat / Pro, `VISION.md` L23-26).
 
 ---

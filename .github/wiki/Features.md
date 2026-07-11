@@ -66,14 +66,14 @@ See also [[Smart-Home]] for the TV Command Center on Android TV/Fire TV, which i
 | --- | --- |
 | GPS-based prayer times | Done |
 | City search with autocomplete | Done |
-| All calculation methods (ISNA, MWL, Egypt, Umm al-Qura, Tehran, Karachi) | Done |
+| DPC (dynamic, flagship default) + fixed presets (MWL, ISNA, Egypt, Umm al-Qura, Karachi, UOIF) + Custom — Tehran/Jafari excluded (D-P3-19) | Done |
 | Qibla compass direction | Done |
 | Next prayer countdown | Done |
 | Monthly/yearly prayer calendars | Done |
 | PDF calendar export | Done |
 | Dark mode | Done |
-| PWA with offline support | Done |
-| 8 languages (EN, AR, TR, UR, ID, FR, BN, SO) | Done |
+| PWA with offline support + install-to-home-screen (A2HS) | Done |
+| 12 languages (EN, AR, UR, FA, ID, TR, MS, BN, FR, ES, DE, RU) | Done |
 | RTL layout support | Done |
 | Adhan audio preview | Done |
 | Settings panel with method selection | Done |
@@ -100,7 +100,7 @@ A public reference page for schools, universities, correctional facilities, hosp
 | Feature | Status |
 | --- | --- |
 | Prayer times display | Done |
-| Adhan notifications (9 reciters) | Done |
+| Adhan notifications (Makkah, Mishari, Madina) | Done |
 | Qibla compass | Done |
 | Prayer time settings | Done |
 | Dark/light theme | Done |
@@ -108,7 +108,7 @@ A public reference page for schools, universities, correctional facilities, hosp
 | Ramadan countdown | Done |
 | Moon phase display | Done |
 | Persistent notification shade | Done |
-| Shorebird OTA updates | Done |
+| OTA updates (expo-updates — checks on launch + foreground, applies on next natural launch) | Done |
 
 ## Desktop App (macOS, Windows, Linux)
 
@@ -121,8 +121,9 @@ A public reference page for schools, universities, correctional facilities, hosp
 | Tray-only, no dock icon (macOS) | Done |
 | Auto-start on login | Done |
 | Native notifications | Done |
-| Unified 3-platform release (.dmg, .msi/.exe, .deb/.AppImage/.rpm) | Done |
+| Unified 3-platform release (.dmg/.app.tar.gz, .msi/.exe, .deb/.AppImage) | Done |
 | Account tab: sign in/up, entitlement badge, sign out | Done |
+| Seamless auto-update (checks on launch + hourly, downloads in background, "Restart to update" banner) — since v1.2.3 | Done |
 
 ## Documentation Site (praycalc.org)
 

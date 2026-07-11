@@ -4,53 +4,52 @@
 
 ```
 praycalc/
-├── web/                    praycalc.com (Astro)
-│   ├── app/                App Router pages and API routes
-│   │   ├── [country]/[state]/[city]/   city prayer times page
-│   │   ├── api/            API routes (prayers, search, geo, calendar PDF)
-│   │   └── account/        user account page
-│   ├── components/         React components
-│   ├── hooks/              custom hooks (useClock, useSettings, useSession)
-│   ├── lib/                shared utilities, session management
-│   ├── messages/           i18n translation files (8 languages)
-│   ├── public/             static assets (adhan audio, icons)
-│   └── tests/              Vitest unit + Playwright E2E
-├── org/                    praycalc.org (documentation, Astro + MDX)
+├── web/                    praycalc.com — Astro 5 + React 19 islands
+│   ├── src/pages/          routes + API routes (prayers, search, geo, calendar.ics,
+│   │                       auth/*, billing/*, tvs/) — city pages under [country]/[state]/[city]
+│   ├── src/islands/        interactive React islands (settings, account, TV manager)
+│   ├── src/lib/            shared utilities, GraphQL/session helpers
+│   ├── src/i18n/           i18n (12 locales, RTL for ar/ur)
+│   ├── public/             static assets (adhan audio, PWA icons/manifest)
+│   └── __tests__/          Vitest unit + Playwright E2E
+├── org/                    praycalc.org — Astro 5 + MDX + React 19 islands
 │   └── src/                docs pages and components
 ├── desktop/                menu bar / tray app (Tauri 2 + Vite + React 19)
 │   ├── src/                React frontend (tray popup UI)
-│   └── src-tauri/          Rust shell (tray, autostart, notifications)
-└── flutter/                mobile app (iOS + Android)
-    ├── lib/                Dart source
-    │   ├── core/           providers, services, theme
-    │   ├── features/       screen implementations
-    │   └── shared/         models, widgets
-    ├── packages/
-    │   └── pray_calc_dart/ pure Dart prayer time engine
-    └── test/               widget and unit tests
+│   └── src-tauri/          Rust shell (tray, autostart, notifications, updater)
+├── mobile/                 iOS + Android phone/tablet (React Native + Expo SDK 53)
+├── tv/                     Apple TV + Android TV + Fire TV (react-native-tvos, bare)
+├── watchos/                watchOS companion (Swift + SwiftUI)
+├── wearos/                 Wear OS companion (Kotlin + Jetpack Compose)
+├── smart/                  smart home backend (Home Assistant, Alexa, Google Home, Shortcuts)
+├── homebridge/             Apple HomeKit plugin (via Homebridge)
+├── packages/pray-calc/     `@acamarata/pray-calc` — canonical TS prayer-time engine
+└── flutter/                ARCHIVED reference only — superseded by mobile/ + tv/
 ```
 
 ## Tech Stack
 
 | Layer | Technology |
 | --- | --- |
-| Web frontend | Astro, TypeScript, Tailwind CSS |
-| Mobile | React Native + Expo (iOS + Android); Flutter archived (D-P2-PRAYCALC-RN) |
-| Calculation engine | `pray_calc_dart` (pure Dart, no dependencies) |
-| i18n | next-intl (EN, AR, TR, UR, ID, FR, BN, SO) |
-| PWA | Serwist (service worker, offline caching) |
-| Testing | Vitest (unit), Playwright (E2E), flutter_test |
-| Desktop | Tauri 2, Vite, React 19 (macOS, Windows, Linux) |
-| CI/CD | GitHub Actions, Shorebird (OTA patches) |
-| Hosting | Vercel (web), App Store / Play Store (mobile), GitHub Releases (desktop) |
+| Web frontend | Astro 5, React 19 islands, TypeScript, Tailwind CSS v4 |
+| Docs site | Astro 5 + MDX, React 19 islands |
+| Mobile | React Native + Expo SDK 53 (iOS + Android); Flutter archived (D-P2-PRAYCALC-RN) |
+| TV | react-native-tvos (bare) — Apple TV, Android TV, Fire TV |
+| Calculation engine | `@acamarata/pray-calc` (zero-dependency TypeScript) |
+| i18n | Astro built-in i18n routing — 12 locales on web, 21 on mobile |
+| PWA | Serwist (service worker, offline caching, install-to-home-screen) |
+| Testing | Vitest (unit), Playwright (E2E) |
+| Desktop | Tauri 2, Vite, React 19 (macOS, Windows, Linux) — signed auto-update |
+| CI/CD | GitHub Actions; mobile/TV OTA via expo-updates, desktop OTA via tauri-plugin-updater |
+| Hosting | Vercel (web, org), App Store / Play Store (mobile, TV), GitHub Releases (desktop, mobile APK) |
 
 ## Data Flow
 
-1. User opens praycalc.com or the mobile app
+1. User opens praycalc.com or a native app
 2. GPS or city search provides coordinates
-3. Prayer times calculated locally using astronomical algorithms
-4. Results cached in localStorage / SharedPreferences
-5. PWA service worker enables full offline mode
+3. Prayer times calculated locally via `@acamarata/pray-calc`
+4. Results cached in localStorage / AsyncStorage / MMKV depending on surface
+5. PWA service worker (web) enables full offline mode; native apps cache locally by default
 
 ## Desktop App
 
@@ -61,9 +60,9 @@ praycalc/
 - Popup auto-positions above or below the tray icon depending on taskbar position (top vs bottom).
 - Auto-start on login and native notifications via `tauri-plugin-autostart` and `tauri-plugin-notification`.
 
-**Release process:** pushing a `desktop-v*` tag triggers `.github/workflows/release-desktop.yml`, which builds a 3-OS matrix (macOS arm64, Windows x64, Linux x64) and publishes one GitHub release with all installers (`.dmg`/`.app.tar.gz`, `.msi`/`.exe`, `.deb`/`.AppImage`/`.rpm`). `.github/workflows/ci-desktop.yml` validates the same 3-OS build on every push to `main` touching `desktop/**`.
+**Release process:** pushing a `desktop-v*` tag triggers `.github/workflows/release-desktop.yml`, which builds a 3-OS matrix (macOS arm64, Windows x64, Linux x64) and publishes one GitHub release with all installers (`.dmg`/`.app.tar.gz`, `.msi`/`.exe`, `.deb`/`.AppImage`). The updater points at a separate rolling `desktop-latest` release tag (not the repo's overall `releases/latest`, which is shared with non-desktop tags). `.github/workflows/ci-desktop.yml` validates the same 3-OS build on every push to `main` touching `desktop/**`.
 
-Current release: [desktop-v1.1.1](https://github.com/ummeco/praycalc/releases/tag/desktop-v1.1.1) (2026-07-01).
+Current release: [desktop-v1.2.4](https://github.com/ummeco/praycalc/releases/tag/desktop-v1.2.4) (2026-07-10). Seamless auto-update (signed installers + in-app updater checking on launch and hourly) has shipped since v1.2.3.
 
 ## Backend Integration
 
