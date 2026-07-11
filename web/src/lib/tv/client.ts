@@ -18,6 +18,8 @@
 export type TvStreamSource = 'makkah-tv' | 'saudi-quran' | 'medina';
 export type TvMadhab = 'shafii' | 'hanafi';
 export type TvTimeFormat = '12h' | '24h';
+export type TvLayout = 'classic' | 'flipped' | 'stream-full' | 'times-only' | 'ambient';
+export type TvTheme = 'ummat-green' | 'midnight' | 'warm-sand' | 'mono';
 
 /** Minutes-after-adhan iqama offsets. No sunrise key — sunrise has no iqama. */
 export interface IqamaOffsets {
@@ -49,6 +51,8 @@ export interface TvSetting {
   calc_method: string;
   madhab: TvMadhab;
   time_format: TvTimeFormat;
+  layout: TvLayout;
+  theme: TvTheme;
 }
 
 export interface TvSettingPatch {
@@ -70,6 +74,8 @@ export interface TvSettingPatch {
   calc_method?: string;
   madhab?: TvMadhab;
   time_format?: TvTimeFormat;
+  layout?: TvLayout;
+  theme?: TvTheme;
 }
 
 export type TvListResult = { ok: true; tvs: TvSetting[] } | { ok: false; error: string };

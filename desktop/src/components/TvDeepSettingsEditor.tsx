@@ -30,6 +30,7 @@ import {
   TIME_FORMAT_OPTIONS,
 } from '../lib/tv-types';
 import { PRESET_CITIES } from '../lib/ipc-types';
+import TvLayoutThemePicker from './TvLayoutThemePicker';
 
 const inputClass =
   'w-full bg-brand-deep border border-brand-dark rounded px-2 py-1.5 text-sm text-green-100 focus:outline-none focus:border-brand-mid';
@@ -70,6 +71,8 @@ export default function TvDeepSettingsEditor({
 
   return (
     <div className="space-y-2.5 pt-2 border-t border-brand-dark/40">
+      <TvLayoutThemePicker tv={tv} onPatch={onPatch} />
+
       <div className="text-[11px] text-green-300/60 uppercase tracking-wide">Deep settings</div>
 
       <label className="flex items-center gap-2 cursor-pointer">

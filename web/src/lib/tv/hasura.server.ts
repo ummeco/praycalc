@@ -27,6 +27,8 @@ const HASURA_URL: string =
 
 export type TvMadhab = 'shafii' | 'hanafi';
 export type TvTimeFormat = '12h' | '24h';
+export type TvLayout = 'classic' | 'flipped' | 'stream-full' | 'times-only' | 'ambient';
+export type TvTheme = 'ummat-green' | 'midnight' | 'warm-sand' | 'mono';
 
 /** Minutes-after-adhan iqama offsets. No sunrise key — sunrise has no iqama. */
 export interface IqamaOffsets {
@@ -59,6 +61,8 @@ export interface TvSetting {
   calc_method: string;
   madhab: TvMadhab;
   time_format: TvTimeFormat;
+  layout: TvLayout;
+  theme: TvTheme;
 }
 
 export type HasuraGraphqlResult<T> =
@@ -127,6 +131,8 @@ const LIST_QUERY = /* GraphQL */ `
       calc_method
       madhab
       time_format
+      layout
+      theme
     }
   }
 `;
@@ -164,6 +170,8 @@ const UPDATE_MUTATION = /* GraphQL */ `
       calc_method
       madhab
       time_format
+      layout
+      theme
     }
   }
 `;
@@ -187,6 +195,8 @@ export interface TvSettingPatch {
   calc_method?: string;
   madhab?: TvMadhab;
   time_format?: TvTimeFormat;
+  layout?: TvLayout;
+  theme?: TvTheme;
 }
 
 /** Update one of the signed-in user's TVs. Hasura's `user` role restricts this to rows the caller owns. */

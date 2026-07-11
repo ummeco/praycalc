@@ -21,6 +21,7 @@
 import { useState, useEffect } from 'react';
 import { clamp } from '@praycalc/ui-utils';
 import type { TvSetting, TvSettingPatch, TvMadhab, TvTimeFormat, IqamaOffsets } from '@/lib/tv/client';
+import TvLayoutThemePicker from './TvLayoutThemePicker';
 
 const MIN_COUNTDOWN_MINUTES = 1;
 const MAX_COUNTDOWN_MINUTES = 60;
@@ -91,6 +92,8 @@ export default function TvDeepSettingsEditor({
 
   return (
     <div className="dashboard-tv-deep">
+      <TvLayoutThemePicker tv={tv} onPatch={onPatch} />
+
       <label className="dashboard-tv-checkbox-row">
         <input
           type="checkbox"

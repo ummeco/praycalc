@@ -53,6 +53,8 @@ interface MockTv {
   calc_method: string;
   madhab: "shafii" | "hanafi";
   time_format: "12h" | "24h";
+  layout: "classic" | "flipped" | "stream-full" | "times-only" | "ambient";
+  theme: "ummat-green" | "midnight" | "warm-sand" | "mono";
 }
 
 let tvCounter = 0;
@@ -80,6 +82,8 @@ function makeTv(overrides: Partial<MockTv> = {}): MockTv {
     calc_method: "dpc",
     madhab: "shafii",
     time_format: "24h",
+    layout: "classic",
+    theme: "ummat-green",
     ...overrides,
   };
 }
@@ -363,5 +367,67 @@ test.describe("TV Manager — deep settings edit", () => {
     // onUpdated() merges the server's returned row back into state — the
     // checkbox should reflect the now-true value from the mocked response.
     await expect(countdownCheckbox).toBeChecked();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Layout & Theme picker — immediate-apply radios (TvLayoutThemePicker)
+// ---------------------------------------------------------------------------
+
+test.describe("TV Manager — layout & theme picker", () => {
+  test("selecting a layout POSTs { action: 'update' } with the layout patch", async ({
+    page,
+    context,
+  }) => {
+    await authenticate(context);
+    await mockBilling(page, "plus");
+    const tv = makeTv({ name: "Living Room", layout: "classic" });
+    const mock = await mockTvs(page, [tv]);
+
+    await page.goto(TVS_URL);
+
+    const card = page.locator(".dashboard-tv-card").first();
+    await expect(card).toBeVisible();
+
+    await card.locator(".dashboard-tv-deep-toggle").click();
+
+    const layoutRadio = card.getByRole("radio", { name: "Stream Full" });
+    await expect(layoutRadio).toBeVisible();
+    await layoutRadio.click();
+
+    await expect.poll(() => mock.updateRequests.length, { timeout: 5_000 }).toBe(1);
+    expect(mock.updateRequests[0]).toMatchObject({
+      action: "update",
+      id: tv.id,
+      patch: { layout: "stream-full" },
+    });
+  });
+
+  test("selecting a theme POSTs { action: 'update' } with the theme patch", async ({
+    page,
+    context,
+  }) => {
+    await authenticate(context);
+    await mockBilling(page, "plus");
+    const tv = makeTv({ name: "Living Room", theme: "ummat-green" });
+    const mock = await mockTvs(page, [tv]);
+
+    await page.goto(TVS_URL);
+
+    const card = page.locator(".dashboard-tv-card").first();
+    await expect(card).toBeVisible();
+
+    await card.locator(".dashboard-tv-deep-toggle").click();
+
+    const themeRadio = card.getByRole("radio", { name: "Midnight" });
+    await expect(themeRadio).toBeVisible();
+    await themeRadio.click();
+
+    await expect.poll(() => mock.updateRequests.length, { timeout: 5_000 }).toBe(1);
+    expect(mock.updateRequests[0]).toMatchObject({
+      action: "update",
+      id: tv.id,
+      patch: { theme: "midnight" },
+    });
   });
 });

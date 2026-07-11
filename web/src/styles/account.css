@@ -187,3 +187,28 @@
 .dashboard-tv-iqama-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
 .dashboard-tv-location-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 8px; }
 
+/* --- Account: TV Layout & Theme picker (TvLayoutThemePicker.tsx) --- */
+.dashboard-tv-layout-theme { display: flex; flex-direction: column; gap: 12px; padding-bottom: 4px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+.dashboard-tv-layout-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+.dashboard-tv-layout-card {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 4px; padding: 8px;
+  border-radius: 10px; text-align: left; cursor: pointer; color: rgba(255,255,255,0.85);
+  background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); transition: border-color 0.15s, background 0.15s;
+}
+.dashboard-tv-layout-card:hover { border-color: rgba(121,194,76,0.35); }
+.dashboard-tv-layout-card--active { border-color: #79C24C; background: rgba(121,194,76,0.1); }
+.dashboard-tv-layout-card svg { color: #C9F27A; }
+.dashboard-tv-layout-card-title { font-size: 0.8rem; font-weight: 600; color: #fff; }
+.dashboard-tv-layout-card-desc { font-size: 0.7rem; color: rgba(255,255,255,0.5); line-height: 1.3; }
+.dashboard-tv-theme-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+.dashboard-tv-theme-card {
+  display: flex; align-items: center; gap: 8px; padding: 8px 10px;
+  border-radius: 10px; cursor: pointer; background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.1); transition: border-color 0.15s, background 0.15s;
+}
+.dashboard-tv-theme-card:hover { border-color: rgba(121,194,76,0.35); }
+.dashboard-tv-theme-card--active { border-color: #79C24C; background: rgba(121,194,76,0.1); }
+.dashboard-tv-theme-swatches { display: flex; gap: 3px; flex-shrink: 0; }
+.dashboard-tv-theme-swatch { width: 10px; height: 10px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.15); }
+.dashboard-tv-theme-card-title { font-size: 0.8rem; font-weight: 600; color: #fff; }
+

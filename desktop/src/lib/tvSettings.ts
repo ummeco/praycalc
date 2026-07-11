@@ -102,6 +102,8 @@ const TV_FIELDS = `
   calc_method
   madhab
   time_format
+  layout
+  theme
 `;
 
 const LIST_TVS_QUERY = `

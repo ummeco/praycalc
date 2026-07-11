@@ -45,6 +45,8 @@ function json(body: unknown, status: number): Response {
 const STREAM_SOURCES = new Set(['makkah-tv', 'saudi-quran', 'medina']);
 const MADHABS = new Set(['shafii', 'hanafi']);
 const TIME_FORMATS = new Set(['12h', '24h']);
+const LAYOUTS = new Set(['classic', 'flipped', 'stream-full', 'times-only', 'ambient']);
+const THEMES = new Set(['ummat-green', 'midnight', 'warm-sand', 'mono']);
 const PIN_PATTERN = /^\d{6}$/;
 const IQAMA_KEYS = ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha'] as const;
 
@@ -138,6 +140,12 @@ function validatePatch(patch: TvSettingPatch): string | null {
   }
   if (patch.time_format !== undefined && !TIME_FORMATS.has(patch.time_format)) {
     return 'Invalid time format.';
+  }
+  if (patch.layout !== undefined && !LAYOUTS.has(patch.layout)) {
+    return 'Invalid layout.';
+  }
+  if (patch.theme !== undefined && !THEMES.has(patch.theme)) {
+    return 'Invalid theme.';
   }
   return null;
 }

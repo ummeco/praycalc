@@ -16,6 +16,8 @@
 export type TvStreamSource = 'makkah-tv' | 'saudi-quran' | 'medina';
 export type TvMadhab = 'shafii' | 'hanafi';
 export type TvTimeFormat = '12h' | '24h';
+export type TvLayout = 'classic' | 'flipped' | 'stream-full' | 'times-only' | 'ambient';
+export type TvTheme = 'ummat-green' | 'midnight' | 'warm-sand' | 'mono';
 
 /** Minutes-after-adhan iqama offsets. No sunrise key — sunrise has no iqama. */
 export interface IqamaOffsets {
@@ -48,6 +50,8 @@ export interface TvSettings {
   calc_method: string;
   madhab: TvMadhab;
   time_format: TvTimeFormat;
+  layout: TvLayout;
+  theme: TvTheme;
 }
 
 /** Fields the desktop app is allowed to edit. id/user_id/device_id are immutable here. */
@@ -72,6 +76,8 @@ export type TvSettingsPatch = Partial<
     | 'calc_method'
     | 'madhab'
     | 'time_format'
+    | 'layout'
+    | 'theme'
   >
 >;
 
@@ -156,4 +162,23 @@ export const MADHAB_OPTIONS: { value: TvMadhab; label: string }[] = [
 export const TIME_FORMAT_OPTIONS: { value: TvTimeFormat; label: string }[] = [
   { value: '24h', label: '24-hour' },
   { value: '12h', label: '12-hour (AM/PM)' },
+];
+
+/** Mirrors web's TvLayoutThemePicker.tsx + mobile's tvManagerConstants.ts — same 5
+ *  layouts, same labels/descriptions, across all three "My TVs" surfaces. */
+export const LAYOUT_OPTIONS: { value: TvLayout; label: string; description: string }[] = [
+  { value: 'classic', label: 'Classic', description: 'Times + live stream side-by-side' },
+  { value: 'flipped', label: 'Flipped', description: 'Same split, mirrored' },
+  { value: 'stream-full', label: 'Stream Full', description: 'Full-screen stream with a times strip' },
+  { value: 'times-only', label: 'Times Only', description: 'Prayer times only, no live stream' },
+  { value: 'ambient', label: 'Ambient', description: 'Minimal ambient clock display' },
+];
+
+/** Same 4 themes + swatch hexes as web's TvLayoutThemePicker.tsx + mobile's
+ *  tvManagerConstants.ts THEME_SWATCHES. */
+export const THEME_OPTIONS: { value: TvTheme; label: string; swatches: string[] }[] = [
+  { value: 'ummat-green', label: 'Ummat Green', swatches: ['#0D2F17', '#1E5E2F', '#79C24C', '#C9F27A'] },
+  { value: 'midnight', label: 'Midnight', swatches: ['#05070a', '#0d1117', '#3fb950', '#aff5b4'] },
+  { value: 'warm-sand', label: 'Warm Sand', swatches: ['#14100b', '#241c12', '#d4a24c', '#f2dcb3'] },
+  { value: 'mono', label: 'Mono', swatches: ['#0a0a0a', '#181818', '#bdbdbd', '#f5f5f5'] },
 ];
