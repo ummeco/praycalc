@@ -125,6 +125,8 @@ export const GET_TV_SETTINGS = `
       calc_method
       madhab
       time_format
+      layout
+      theme
       latitude
       longitude
       city

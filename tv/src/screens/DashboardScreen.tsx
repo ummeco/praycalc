@@ -1,11 +1,14 @@
 /**
- * Purpose: DEFAULT screen — two-pane masjid dashboard. LEFT (~2/3): live stream + rotating
- *   Islamic content + bottom weather/special-day/Ramadan strip. RIGHT (~1/3): prayer rail.
- *   A focusable Menu button reaches every legacy screen (navigation kept intact).
- * Inputs: settingsStore (location + cosmetic settings), prayerStore.
+ * Purpose: DEFAULT screen — thin layout switch over the registered dashboard layouts
+ *   (classic/flipped/stream-full/times-only/ambient, see lib/layouts/registry). A
+ *   focusable Menu button reaches every legacy screen (navigation kept intact); the
+ *   countdown/name-only takeover overlays layer above whichever layout is active.
+ * Inputs: settingsStore (location + cosmetic + layout/theme settings), prayerStore.
  * Outputs: the full dashboard view; boots the pc_tv_settings poll (boot + every 5 min).
  * Constraints: 16:9 1080p; D-pad focus starts on the Menu button; prayer times recomputed
- *   on settings/location change and at midnight; TvSettingsSync uses the persisted device id.
+ *   on settings/location change and at midnight; TvSettingsSync uses the persisted device
+ *   id; PrayerTakeover/DashboardMenu are NOT per-layout — they render once here, above the
+ *   active layout, so they behave identically regardless of settings.layout.
  * SPORT: praycalc/tv screens
  */
 
@@ -22,11 +25,10 @@ import { getOrCreateDeviceId } from '../lib/pairing/pairingService';
 import { TvSettingsSync } from '../lib/settings/tvSettingsSync';
 import { updateAmbientLine1 } from '../lib/native/tvSystem';
 import { buildAmbientLine1 } from '../lib/native/ambientLines';
-import DisplayPane from '../components/dashboard/DisplayPane';
-import PrayerRail from '../components/dashboard/PrayerRail';
+import { getLayoutComponent } from '../lib/layouts/registry';
 import PrayerTakeover from '../components/dashboard/PrayerTakeover';
-import BottomBar from '../components/dashboard/BottomBar';
 import DashboardMenu from '../components/dashboard/DashboardMenu';
+import UpdateToast from '../components/dashboard/UpdateToast';
 
 type DashboardNav = StackNavigationProp<RootStackParamList, 'Dashboard'>;
 
@@ -117,40 +119,28 @@ export default function DashboardScreen(): React.JSX.Element {
     };
   }, [updateSettings]);
 
+  // Thin switch — resolve the active layout component from the registry (T4-2). Each
+  // layout owns its own composition/colors; DashboardScreen only supplies shared data.
+  const Layout = getLayoutComponent(settings.layout);
+
   return (
     <View style={styles.root}>
       {/* Focusable menu affordance (initial D-pad focus) — reaches all legacy screens. */}
       <DashboardMenu navigation={navigation} hasTVPreferredFocus />
 
-      {/* LEFT pane (~2/3): display + bottom strip. */}
-      <View style={styles.leftPane}>
-        <View style={styles.displayArea}>
-          <DisplayPane
-            streamSource={settings.streamSource}
-            rotateMinutes={settings.rotateMinutes}
-          />
-        </View>
-        <BottomBar
-          showWeather={settings.showWeather}
-          latitude={settings.latitude}
-          longitude={settings.longitude}
-        />
-      </View>
+      <Layout
+        settings={settings}
+        prayerTimes={prayerTimes}
+        prayerDay={prayerDay}
+        nextPrayer={nextPrayer}
+      />
 
-      {/* RIGHT pane (~1/3): prayer rail. */}
-      <View style={styles.rightPane}>
-        <PrayerRail
-          cityName={settings.cityName}
-          prayerTimes={prayerTimes}
-          nextPrayer={nextPrayer}
-          accentColor={settings.accentColor}
-          iqamaEnabled={settings.iqamaEnabled}
-          iqamaOffsets={settings.iqamaOffsets}
-        />
-      </View>
-
-      {/* Full-screen takeover overlay (countdown / name-only) — renders null when inactive. */}
+      {/* Full-screen takeover overlay (countdown / name-only) — renders null when inactive.
+          Not per-layout: it must cover whichever layout is active, unchanged. */}
       <PrayerTakeover settings={settings} prayerDay={prayerDay} nextPrayer={nextPrayer} />
+
+      {/* Dismissible corner update-available toast — renders null until a newer release exists. */}
+      <UpdateToast />
     </View>
   );
 }
@@ -158,17 +148,5 @@ export default function DashboardScreen(): React.JSX.Element {
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    flexDirection: 'row',
-    backgroundColor: '#0D2F17',
-  },
-  leftPane: {
-    flex: 2, // ~2/3
-    flexDirection: 'column',
-  },
-  displayArea: {
-    flex: 1,
-  },
-  rightPane: {
-    flex: 1, // ~1/3
   },
 });

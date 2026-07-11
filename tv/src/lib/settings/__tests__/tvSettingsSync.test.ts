@@ -104,6 +104,21 @@ describe('mapRemoteSettings', () => {
     expect(mapRemoteSettings({ madhab: 'bogus' })).toEqual({});
     expect(mapRemoteSettings({ time_format: 'bogus' })).toEqual({});
   });
+
+  it('maps valid layout and theme values', () => {
+    expect(mapRemoteSettings({ layout: 'flipped', theme: 'midnight' })).toEqual({
+      layout: 'flipped',
+      theme: 'midnight',
+    });
+    expect(mapRemoteSettings({ layout: 'times-only' })).toEqual({ layout: 'times-only' });
+    expect(mapRemoteSettings({ theme: 'mono' })).toEqual({ theme: 'mono' });
+  });
+
+  it('ignores unknown layout/theme values (falls back to caller default)', () => {
+    expect(mapRemoteSettings({ layout: 'bogus' })).toEqual({});
+    expect(mapRemoteSettings({ theme: 'bogus' })).toEqual({});
+    expect(mapRemoteSettings({ layout: null, theme: null })).toEqual({});
+  });
 });
 
 describe('TvSettingsSync.poll', () => {

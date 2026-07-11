@@ -60,6 +60,12 @@ export interface IqamaOffsets {
 /** '12h' | '24h' display format for on-screen clocks. */
 export type TimeFormat = '12h' | '24h';
 
+/** Dashboard layout id (pc_tv_settings.layout). 'classic' is the DB + store default. */
+export type TvLayoutId = 'classic' | 'flipped' | 'stream-full' | 'times-only' | 'ambient';
+
+/** Dashboard color theme id (pc_tv_settings.theme). 'ummat-green' is the DB + store default. */
+export type TvThemeId = 'ummat-green' | 'midnight' | 'warm-sand' | 'mono';
+
 export interface TvSettings {
   cityId: string;
   cityName: string;
@@ -98,6 +104,10 @@ export interface TvSettings {
   nameOnlyMinutes: number;
   /** Display time format for on-screen clocks. */
   timeFormat: TimeFormat;
+  /** Dashboard layout — drives which layout component DashboardScreen renders. */
+  layout: TvLayoutId;
+  /** Dashboard color theme — drives the token set from lib/themes/registry. */
+  theme: TvThemeId;
 }
 
 /** Per-prayer iqama offsets row shape from pc_tv_settings.iqama_offsets (jsonb). */
@@ -126,6 +136,10 @@ export interface TvRemoteSettings {
   /** DB values are 'shafii'|'hanafi' — mapped to local Madhab ('shafi'|'hanafi') on read. */
   madhab?: string | null;
   time_format?: string | null;
+  /** Dashboard layout id — validated against TvLayoutId on read, unknown values ignored. */
+  layout?: string | null;
+  /** Dashboard theme id — validated against TvThemeId on read, unknown values ignored. */
+  theme?: string | null;
   // Location (editable post-pair from account managers; TV re-reads every sync)
   latitude?: number | null;
   longitude?: number | null;

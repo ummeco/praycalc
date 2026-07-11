@@ -4,13 +4,15 @@
  * Inputs: prayerTimes + nextPrayer from prayerStore; accentColor from settings.
  * Outputs: the prayer rail view.
  * Constraints: min 28pt text; accent color drives the next-prayer highlight; a11y labels
- *   on each row; countdown ticks every second and cleans up on unmount.
+ *   on each row; countdown ticks every second and cleans up on unmount. Colors are
+ *   theme-token driven (useTheme) — 'ummat-green' renders byte-identical to pre-T4-3.
  * SPORT: praycalc/tv components/dashboard
  */
 
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { IqamaOffsets, PrayerName, PrayerTime } from '../../types';
+import { useTheme } from '../../hooks/useTheme';
 
 const PRAYER_LABELS: Record<PrayerName, { en: string; ar: string }> = {
   fajr: { en: 'Fajr', ar: 'الفجر' },
@@ -47,6 +49,7 @@ export default function PrayerRail({
   iqamaEnabled,
   iqamaOffsets,
 }: PrayerRailProps): React.JSX.Element {
+  const theme = useTheme();
   const [now, setNow] = useState(new Date());
 
   useEffect(() => {
@@ -61,9 +64,9 @@ export default function PrayerRail({
   });
 
   return (
-    <View style={styles.root}>
+    <View style={[styles.root, { backgroundColor: theme.surface, borderLeftColor: theme.border }]}>
       <View style={styles.header}>
-        <Text style={styles.city} numberOfLines={1}>
+        <Text style={[styles.city, { color: theme.textPrimary }]} numberOfLines={1}>
           {cityName}
         </Text>
         <Text style={styles.clock}>{clock}</Text>
@@ -85,15 +88,20 @@ export default function PrayerRail({
               }${isNext ? ', next prayer' : ''}`}
               style={[
                 styles.row,
+                { backgroundColor: theme.surfaceAlt },
                 isNext && { borderColor: accentColor, backgroundColor: '#2a7a3d' },
               ]}
             >
               <View style={styles.rowNames}>
-                <Text style={styles.nameAr}>{PRAYER_LABELS[p.name].ar}</Text>
+                <Text style={[styles.nameAr, { color: theme.textPrimary }]}>
+                  {PRAYER_LABELS[p.name].ar}
+                </Text>
                 <Text style={styles.nameEn}>{PRAYER_LABELS[p.name].en}</Text>
               </View>
               <View style={styles.timeCol}>
-                <Text style={[styles.time, isNext && { color: accentColor }]}>
+                <Text
+                  style={[styles.time, { color: theme.textSecondary }, isNext && { color: accentColor }]}
+                >
                   {p.time}
                 </Text>
                 {iqamaTime ? (
@@ -106,8 +114,8 @@ export default function PrayerRail({
       </View>
 
       {nextPrayer ? (
-        <View style={styles.countdownBar}>
-          <Text style={styles.countdownLabel}>
+        <View style={[styles.countdownBar, { borderTopColor: theme.border }]}>
+          <Text style={[styles.countdownLabel, { color: theme.textSecondary }]}>
             Next: {PRAYER_LABELS[nextPrayer].en}
           </Text>
           <NextPrayerCountdown
@@ -162,18 +170,15 @@ function NextPrayerCountdown({
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: '#123d1f',
     paddingHorizontal: 28,
     paddingVertical: 32,
     borderLeftWidth: 2,
-    borderLeftColor: '#1E5E2F',
   },
   header: {
     alignItems: 'center',
     marginBottom: 24,
   },
   city: {
-    color: '#C9F27A',
     fontSize: 34,
     fontWeight: '700',
     letterSpacing: 1,
@@ -193,7 +198,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: '#1E5E2F',
     borderRadius: 12,
     borderWidth: 2,
     borderColor: 'transparent',
@@ -206,7 +210,6 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   nameAr: {
-    color: '#C9F27A',
     fontSize: 30,
     fontWeight: '600',
     writingDirection: 'rtl',
@@ -219,7 +222,6 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
   },
   time: {
-    color: '#79C24C',
     fontSize: 32,
     fontWeight: '700',
   },
@@ -234,10 +236,8 @@ const styles = StyleSheet.create({
     marginTop: 24,
     paddingTop: 16,
     borderTopWidth: 1,
-    borderTopColor: '#1E5E2F',
   },
   countdownLabel: {
-    color: '#79C24C',
     fontSize: 28,
   },
   countdownValue: {

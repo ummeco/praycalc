@@ -45,6 +45,9 @@ const DEFAULT_SETTINGS: TvSettings = {
   nameOnlyEnabled: false,
   nameOnlyMinutes: 10,
   timeFormat: '24h',
+  // Layout/theme defaults (overridden by pc_tv_settings when a row exists).
+  layout: 'classic',
+  theme: 'ummat-green',
 };
 
 /**

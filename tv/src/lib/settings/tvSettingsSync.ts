@@ -13,7 +13,15 @@
 import { Client } from 'urql';
 import { clampRotateMinutes, clampMinutes1to60 } from '@praycalc/ui-utils';
 import { GET_TV_SETTINGS } from '../graphql/queries';
-import { IqamaOffsets, Madhab, TimeFormat, TvRemoteSettings, TvSettings } from '../../types';
+import {
+  IqamaOffsets,
+  Madhab,
+  TimeFormat,
+  TvLayoutId,
+  TvRemoteSettings,
+  TvSettings,
+  TvThemeId,
+} from '../../types';
 
 /** ~5s so account-side edits (web/mobile/desktop) reach the TV near-instantly. */
 const POLL_INTERVAL_MS = 5 * 1000;
@@ -56,6 +64,28 @@ function mapMadhab(value: string): Madhab | undefined {
 
 function mapTimeFormat(value: string): TimeFormat | undefined {
   return value === '12h' || value === '24h' ? value : undefined;
+}
+
+/** Valid dashboard layout ids — kept in sync with TvLayoutId in types/index.ts. */
+const VALID_LAYOUTS: readonly TvLayoutId[] = [
+  'classic',
+  'flipped',
+  'stream-full',
+  'times-only',
+  'ambient',
+];
+
+/** Unknown/legacy layout ids fall back to undefined (caller keeps the current/default value). */
+function mapLayout(value: string): TvLayoutId | undefined {
+  return (VALID_LAYOUTS as readonly string[]).includes(value) ? (value as TvLayoutId) : undefined;
+}
+
+/** Valid dashboard theme ids — kept in sync with TvThemeId in types/index.ts. */
+const VALID_THEMES: readonly TvThemeId[] = ['ummat-green', 'midnight', 'warm-sand', 'mono'];
+
+/** Unknown/legacy theme ids fall back to undefined (caller keeps the current/default value). */
+function mapTheme(value: string): TvThemeId | undefined {
+  return (VALID_THEMES as readonly string[]).includes(value) ? (value as TvThemeId) : undefined;
 }
 
 /**
@@ -117,6 +147,14 @@ export function mapRemoteSettings(row: TvRemoteSettings): Partial<TvSettings> {
   }
   if (typeof row.timezone === 'string' && row.timezone) {
     patch.timezone = row.timezone;
+  }
+  if (typeof row.layout === 'string' && row.layout) {
+    const mapped = mapLayout(row.layout);
+    if (mapped) patch.layout = mapped;
+  }
+  if (typeof row.theme === 'string' && row.theme) {
+    const mapped = mapTheme(row.theme);
+    if (mapped) patch.theme = mapped;
   }
   return patch;
 }

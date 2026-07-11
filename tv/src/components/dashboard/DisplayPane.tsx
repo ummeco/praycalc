@@ -11,6 +11,8 @@
  *     react-native-webview is NOT a dependency, so v1 shows a labeled fallback card
  *     ("Live stream available on YouTube") + content rotation full-pane.
  *   - On stream error → fall back to full-pane content rotation (no black screen).
+ *   - Colors are theme-token driven (useTheme) — 'ummat-green' renders byte-identical
+ *     to pre-T4-3.
  * SPORT: praycalc/tv components/dashboard
  */
 
@@ -18,6 +20,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import ContentRotation from './ContentRotation';
 import { getStreamById, STREAM_NONE } from '../../lib/streams/streamLibrary';
+import { useTheme } from '../../hooks/useTheme';
 
 interface DisplayPaneProps {
   streamSource: string;
@@ -43,6 +46,7 @@ export default function DisplayPane({
   streamSource,
   rotateMinutes,
 }: DisplayPaneProps): React.JSX.Element {
+  const theme = useTheme();
   const [streamFailed, setStreamFailed] = useState(false);
 
   const stream =
@@ -54,7 +58,7 @@ export default function DisplayPane({
   const canRenderVideo = isPlayableHls && VideoComponent !== null;
 
   return (
-    <View style={styles.root}>
+    <View style={[styles.root, { backgroundColor: theme.bg }]}>
       {canRenderVideo && stream && VideoComponent ? (
         <>
           <VideoComponent
@@ -74,9 +78,11 @@ export default function DisplayPane({
         <>
           {/* YouTube-only source (e.g. medina): labeled fallback card. */}
           {stream && stream.kind === 'youtube' ? (
-            <View style={styles.youtubeCard}>
+            <View style={[styles.youtubeCard, { borderColor: theme.textSecondary }]}>
               <Text style={styles.youtubeEmoji}>{stream.emoji}</Text>
-              <Text style={styles.youtubeName}>{stream.name}</Text>
+              <Text style={[styles.youtubeName, { color: theme.textPrimary }]}>
+                {stream.name}
+              </Text>
               <Text style={styles.youtubeNote}>Live stream available on YouTube</Text>
             </View>
           ) : null}
@@ -91,7 +97,6 @@ export default function DisplayPane({
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: '#0D2F17',
     overflow: 'hidden',
   },
   youtubeCard: {
@@ -102,14 +107,12 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(30, 94, 47, 0.9)',
     borderRadius: 16,
     borderWidth: 2,
-    borderColor: '#79C24C',
     padding: 28,
     alignItems: 'center',
     zIndex: 2,
   },
   youtubeEmoji: { fontSize: 48, marginBottom: 8 },
   youtubeName: {
-    color: '#C9F27A',
     fontSize: 32,
     fontWeight: '700',
     textAlign: 'center',

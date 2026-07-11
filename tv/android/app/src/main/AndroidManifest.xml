@@ -5,6 +5,16 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <!--
+      TV/Fire TV store parity (Epic T, T1): declares this as a leanback (Android TV /
+      Fire TV) app and explicitly opts out of requiring a touchscreen. Both the Google
+      Play TV catalog and the Amazon Appstore's Fire TV listing require these two
+      <uses-feature> entries — without them the app is filtered out of TV storefronts
+      even though the LEANBACK_LAUNCHER intent-filter category (below) is present.
+    -->
+    <uses-feature android:name="android.software.leanback" android:required="true" />
+    <uses-feature android:name="android.hardware.touchscreen" android:required="false" />
+
+    <!--
       android:icon is used to display launcher icon on mobile devices.
       android:banner is used to display a rectangular banned launcher icon on Android TV devices.
       -->

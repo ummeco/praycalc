@@ -8,6 +8,8 @@
  * Outputs: the bottom strip view (or an empty view when nothing to show).
  * Constraints: min 28pt text; allowlist decides banners (see lib/events/specialDays.ts).
  *   Weather fetches on mount + refreshes every 30 min; failures hide the weather line.
+ *   Colors are theme-token driven (useTheme) — 'ummat-green' renders byte-identical to
+ *   pre-T4-3.
  * SPORT: praycalc/tv components/dashboard
  */
 
@@ -20,6 +22,7 @@ import {
   RamadanProgress,
 } from '../../lib/events/specialDays';
 import { fetchCurrentWeather, CurrentWeather } from '../../lib/weather/openMeteo';
+import { useTheme } from '../../hooks/useTheme';
 
 const WEATHER_REFRESH_MS = 30 * 60 * 1000; // 30 minutes
 
@@ -36,6 +39,7 @@ export default function BottomBar({
   longitude,
   hijriDayAdjustment = 0,
 }: BottomBarProps): React.JSX.Element | null {
+  const theme = useTheme();
   const [weather, setWeather] = useState<CurrentWeather | null>(null);
 
   const now = new Date();
@@ -60,11 +64,21 @@ export default function BottomBar({
   // 1. Special-day banner (allowlist) — highest priority.
   if (special) {
     return (
-      <View style={[styles.root, styles.banner]}>
+      <View
+        style={[
+          styles.root,
+          styles.banner,
+          { backgroundColor: theme.surfaceAlt, borderTopColor: theme.border },
+        ]}
+      >
         <Text style={styles.bannerEmoji}>{special.emoji}</Text>
         <View>
-          <Text style={styles.bannerTitle}>{special.title}</Text>
-          <Text style={styles.bannerSubtitle}>{special.subtitle}</Text>
+          <Text style={[styles.bannerTitle, { color: theme.textPrimary }]}>
+            {special.title}
+          </Text>
+          <Text style={[styles.bannerSubtitle, { color: theme.textSecondary }]}>
+            {special.subtitle}
+          </Text>
         </View>
       </View>
     );
@@ -74,12 +88,14 @@ export default function BottomBar({
   if (ramadan) {
     const pct = Math.min(1, Math.max(0, ramadan.day / ramadan.total));
     return (
-      <View style={styles.root}>
-        <Text style={styles.ramadanLabel}>
+      <View style={[styles.root, { backgroundColor: theme.surface, borderTopColor: theme.border }]}>
+        <Text style={[styles.ramadanLabel, { color: theme.textPrimary }]}>
           🌙 Ramadan — Day {ramadan.day} of {ramadan.total}
         </Text>
-        <View style={styles.progressTrack}>
-          <View style={[styles.progressFill, { width: `${pct * 100}%` }]} />
+        <View style={[styles.progressTrack, { backgroundColor: theme.bg }]}>
+          <View
+            style={[styles.progressFill, { width: `${pct * 100}%`, backgroundColor: theme.textSecondary }]}
+          />
         </View>
       </View>
     );
@@ -88,7 +104,7 @@ export default function BottomBar({
   // 3. Weather.
   if (showWeather && weather) {
     return (
-      <View style={styles.root}>
+      <View style={[styles.root, { backgroundColor: theme.surface, borderTopColor: theme.border }]}>
         <Text style={styles.weather}>
           {weather.emoji}  {Math.round(weather.temperatureC)}°C  ·  {weather.label}
         </Text>
@@ -103,9 +119,7 @@ export default function BottomBar({
 const styles = StyleSheet.create({
   root: {
     minHeight: 72,
-    backgroundColor: '#123d1f',
     borderTopWidth: 2,
-    borderTopColor: '#1E5E2F',
     paddingHorizontal: 32,
     paddingVertical: 16,
     justifyContent: 'center',
@@ -114,21 +128,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 20,
-    backgroundColor: '#1E5E2F',
   },
   bannerEmoji: { fontSize: 44 },
   bannerTitle: {
-    color: '#C9F27A',
     fontSize: 36,
     fontWeight: '800',
     letterSpacing: 1,
   },
   bannerSubtitle: {
-    color: '#79C24C',
     fontSize: 26,
   },
   ramadanLabel: {
-    color: '#C9F27A',
     fontSize: 30,
     fontWeight: '700',
     marginBottom: 10,
@@ -136,12 +146,10 @@ const styles = StyleSheet.create({
   progressTrack: {
     height: 14,
     borderRadius: 7,
-    backgroundColor: '#0D2F17',
     overflow: 'hidden',
   },
   progressFill: {
     height: '100%',
-    backgroundColor: '#79C24C',
     borderRadius: 7,
   },
   weather: {
