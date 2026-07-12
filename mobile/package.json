@@ -1,6 +1,6 @@
 {
   "name": "@ummat/praycalc-mobile",
-  "version": "2.2.1",
+  "version": "2.2.2",
   "private": true,
   "description": "PrayCalc \u2014 React Native + Expo SDK 53 prayer times app",
   "main": "index.js",

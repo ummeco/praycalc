@@ -37,7 +37,7 @@ placeholder-gated: paste `EXPO_TOKEN` (repo secret) and replace
 `UD-PENDING-EAS-PROJECT-ID` in `mobile/app.json` (one find/replace — two
 occurrences) per `.github/docs/CREDENTIALS.md`. The `release-mobile-ota.yml`
 workflow no-ops with a notice until then, then publishes on every `mobile-v*` tag
-automatically. Binaries built from 2.2.1+ already contain the OTA client config.
+automatically. The first binaries built after 2026-07-12 (next mobile-v* tag / first EAS store build) embed the OTA client config; the 2.2.1 APK predates it.
 
 ## Release ritual (what a "release" is now)
 

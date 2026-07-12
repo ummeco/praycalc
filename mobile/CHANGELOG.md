@@ -1,5 +1,10 @@
 # praycalc/mobile Changelog
 
+## [2.2.2] - 2026-07-12
+
+### Added
+- Silent background OTA updates (expo-updates) are now embedded in every binary: the app checks on launch without blocking (`LAUNCH_WAIT_MS=0`), downloads new JS in the background, and applies it on the next launch — no user action, no store round-trip. Publishing activates once the team's EAS credentials land (`.github/docs/auto-update-map.md`); until then the check is inert.
+
 ## [2.2.1] - 2026-07-12
 
 ### Added
