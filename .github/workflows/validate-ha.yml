@@ -1,0 +1,58 @@
+name: Validate Home Assistant Integration
+
+# HACS submission requires hassfest + hacs/action to pass on every push/PR that touches the
+# Home Assistant custom component (per smart/homeassistant/HACS.md gap #2). Both upstream
+# actions always mount ${{ github.workspace }} (the job's checkout root) as /github/workspace
+# and expect custom_components/ + hacs.json to live there — this is a monorepo, so the
+# integration is nested under smart/homeassistant/, not at repo root. Each job stages a
+# root-relative copy of smart/homeassistant/ into its own ephemeral, isolated checkout before
+# running the action (nothing is committed or pushed; every job gets a fresh runner).
+# Manual equivalent already documented in smart/homeassistant/HACS.md § 4.
+
+on:
+  push:
+    branches: [main]
+    paths: ['smart/homeassistant/**']
+  pull_request:
+    paths: ['smart/homeassistant/**']
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  hassfest:
+    name: hassfest
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Stage integration at workspace root
+        run: |
+          cp -r smart/homeassistant /tmp/ha-staged
+          rm -rf "${GITHUB_WORKSPACE:?}"/*
+          cp -r /tmp/ha-staged/. "${GITHUB_WORKSPACE}/"
+          ls -la "${GITHUB_WORKSPACE}"
+
+      - uses: home-assistant/actions/hassfest@master
+
+  hacs:
+    name: HACS Validation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Stage integration at workspace root
+        run: |
+          cp -r smart/homeassistant /tmp/ha-staged
+          rm -rf "${GITHUB_WORKSPACE:?}"/*
+          cp -r /tmp/ha-staged/. "${GITHUB_WORKSPACE}/"
+          ls -la "${GITHUB_WORKSPACE}"
+
+      - uses: hacs/action@main
+        with:
+          category: integration
