@@ -22,13 +22,13 @@ Powered by the [PrayCalc Smart API](https://praycalc.com).
 
 1. Open HACS in Home Assistant
 2. Click the three-dot menu in the top right, then **Custom repositories**
-3. Add `https://github.com/ummeco/praycalc` with category **Integration**
+3. Add `https://github.com/ummeco/praycalc-ha` with category **Integration**
 4. Search for "PrayCalc" and click **Install**
 5. Restart Home Assistant
 
 ### Manual
 
-1. Download the latest release from the [releases page](https://github.com/ummeco/praycalc/releases)
+1. Download the latest release from the [releases page](https://github.com/ummeco/praycalc-ha/releases)
 2. Copy the `custom_components/praycalc` folder to your `config/custom_components/` directory
 3. Restart Home Assistant
 

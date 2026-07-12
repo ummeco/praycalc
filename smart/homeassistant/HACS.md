@@ -1,83 +1,56 @@
-# PrayCalc for Home Assistant — HACS Submission Checklist
+# PrayCalc for Home Assistant — HACS Distribution
 
-Target: get `ummeco/praycalc` added to HACS's **default repository list** so users don't need
-"Add custom repository" — they just search "PrayCalc" in HACS and install.
+## How this ships
 
-The integration itself lives at `smart/homeassistant/custom_components/praycalc/` (a monorepo
-subfolder, not repo root) — `hacs.json`'s `zip_release: true` + `filename: "praycalc.zip"` +
-`content_in_root: false` already accounts for this: HACS will pull the integration from a
-**GitHub Release asset** named `praycalc.zip` (containing the `custom_components/praycalc/`
-folder) rather than expecting it at repo root.
+HACS requires a dedicated repo layout (`hacs.json` + `custom_components/<domain>/` at the
+repo **root**, validated remotely against the GitHub tree), which a monorepo cannot satisfy.
+Distribution therefore lives in a mirror repo:
 
-## Current file status (verified against HACS + Home Assistant requirements)
+- **Source of truth:** this folder (`smart/homeassistant/` in `ummeco/praycalc`)
+- **HACS distribution repo:** https://github.com/ummeco/praycalc-ha
+  (repo-root layout, topics `home-assistant`/`hacs`, in-repo brand assets at
+  `custom_components/praycalc/brand/`, `Validate` workflow running hassfest + hacs/action —
+  both green as of 2026-07-12)
 
-| File | Status | Notes |
+## Validation status (2026-07-12)
+
+| Check | Where | Status |
 |---|---|---|
-| `hacs.json` | OK | `name`, `homeassistant` min version, `render_readme`, `zip_release`, `filename`, `content_in_root` all present |
-| `custom_components/praycalc/manifest.json` | OK | `domain`, `name`, `codeowners`, `config_flow`, `documentation`, `issue_tracker`, `integration_type`, `iot_class`, `version` all present |
-| `custom_components/praycalc/__init__.py` | present | not audited line-by-line in this pass — HACS/hassfest validation (§ 3) will catch issues |
-| README.md | OK | installation, sensors, automations all documented |
-| Repo `LICENSE` | OK | root-level MIT covers the whole repo including this subfolder |
+| hassfest | monorepo `validate-ha.yml` + praycalc-ha `validate.yml` | green |
+| hacs/action (9 checks incl. brands/topics/license) | praycalc-ha `validate.yml` | green |
+| Release | praycalc-ha `v0.7.0` | published |
+| HACS default-registry PR | hacs/default | see PR link in the task log |
 
-No hacs.json/manifest.json fields were changed — both were already compliant.
+The brands requirement is satisfied via HACS's **in-repo brand assets** fallback
+(`custom_components/praycalc/brand/icon.png`, `icon@2x.png`, `logo.png`) — no
+home-assistant/brands PR is required for HACS listing. (A home-assistant/brands entry is
+only needed if we later pursue Home Assistant core inclusion.)
 
-## Gaps that block default-repo submission
+## Sync procedure (source → mirror)
 
-### 1. No GitHub Release with a `praycalc.zip` asset yet
-
-`hacs.json` promises a zip release asset that doesn't exist yet. Without it, HACS (even as a
-custom repository) can't install a version. This needs a release workflow that, on a tag (e.g.
-`smart-ha-v*`), zips `custom_components/praycalc/` into `praycalc.zip` and attaches it to a
-GitHub Release. **Out of scope for this pass** (`.github/workflows/` isn't in this task's edit
-scope) — file a follow-up ticket to add this workflow before attempting submission.
-
-### 2. No HACS/hassfest validation CI
-
-HACS's own submission bot checks that a `hacs/action` + `home-assistant/actions/hassfest`
-GitHub Actions workflow exists and passes on every push/PR. Same scoping note as above — this
-is a `.github/workflows/` addition, tracked as a follow-up, not done in this pass.
-
-### 3. Repository GitHub topics
-
-HACS's default-repo review expects the repo to carry the `home-assistant` and `hacs` GitHub
-topics (Settings > General > Topics on github.com/ummeco/praycalc). This is a repo-settings
-change, not a file change — a human with repo admin access needs to add these.
-
-### 4. Manual validation pass
-
-Before opening the HACS default-repo PR, run both validators locally/in CI once:
+After changing anything under `smart/homeassistant/`:
 
 ```bash
-# hassfest (official HA manifest/structure validator)
-docker run --rm -v "$(pwd)/smart/homeassistant:/github/workspace" \
-  ghcr.io/home-assistant/hassfest --action validate
-
-# HACS action (validates hacs.json + repo structure for HACS compatibility)
-docker run --rm -e "INPUT_CATEGORY=integration" \
-  -v "$(pwd)/smart/homeassistant:/github/workspace" \
-  ghcr.io/hacs/action:main
+git clone git@github.com:ummeco/praycalc-ha.git /tmp/praycalc-ha
+rsync -a --delete smart/homeassistant/custom_components/ /tmp/praycalc-ha/custom_components/
+cp smart/homeassistant/README.md /tmp/praycalc-ha/README.md
+cp smart/homeassistant/hacs.json /tmp/praycalc-ha/hacs.json
+cd /tmp/praycalc-ha && git add -A && git commit -m "sync from ummeco/praycalc@<sha>" && git push
+# bump custom_components/praycalc/manifest.json "version" first (both repos), then:
+gh release create v<version> --repo ummeco/praycalc-ha --title "PrayCalc for Home Assistant <version>" --notes "<notes>"
 ```
 
-Both must pass with zero errors before submission.
+Keep `manifest.json` version identical in both repos. Users receive updates automatically
+through HACS when a new release is tagged in praycalc-ha.
 
-## Submission steps (once the gaps above are closed)
+## Install (users)
 
-1. Ensure at least one tagged GitHub Release exists with a `praycalc.zip` asset (§ 1) and the
-   validation workflow is green on `main` (§ 2).
-2. Add the `home-assistant` and `hacs` topics to the repo (§ 3).
-3. Fork https://github.com/hacs/default
-4. Add an entry to `integration` (the plain-text list file) for `ummeco/praycalc`, alphabetically
-   sorted.
-5. Open a PR against `hacs/default`. The HACS bot runs an automated check against the repo
-   (hacs.json validity, manifest validity, release asset presence, README, topics) and comments
-   with pass/fail — fix anything it flags before requesting human review.
-6. A HACS maintainer reviews and merges. Timeline varies (days to weeks).
+Until the default-registry PR is merged: HACS → Custom repositories →
+`https://github.com/ummeco/praycalc-ha` (Integration). After merge: search "PrayCalc" in HACS.
 
-Nothing in step 5-6 can be done by an AI agent — a human with a GitHub account must fork, PR,
-and respond to review feedback.
+## Historical note
 
-## Current install path (works today, no default-repo listing needed)
-
-Users can already install via **HACS > Custom repositories** (documented in
-`README.md` § Installation) — this works as soon as gap § 1 (a real release zip) is closed,
-independent of default-repo listing.
+The original plan (zip_release from this monorepo's `ha-v*` tags via `release-ha.yml`) was
+abandoned 2026-07-12: hacs/action validates the remote repo tree, so the monorepo could never
+pass, and HACS's release-asset lookup breaks on a repo with mixed product tags. `release-ha.yml`
+remains for producing a manual-install zip, but HACS installs come from praycalc-ha.
