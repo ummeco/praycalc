@@ -6,10 +6,14 @@
  *   geolocation (used for prayer times / Qibla direction) is classified as
  *   sensitive personal information under CPRA § 1798.121.
  * CONSTRAINTS: noIndex — DO NOT flip to indexed or remove the DRAFT banner
- *   until U-15 (counsel review of the CPRA sensitive-info classification +
- *   entity details) is resolved (TRAP-P6 do-not-publish rule). Ported as-is
- *   from the pre-Astro-migration Next.js page (git a4993c5) — U-15 was still
- *   open as of this port. See .github/docs/adr/ADR-consent-banner-astro-gate.md.
+ *   until the remaining U-15 publication checklist items (privacy-policy
+ *   cross-check, footer link, ticket closure) are resolved (TRAP-P6
+ *   do-not-publish rule). The 4 TODO(U-15) copy blocks were filled with
+ *   standard CCPA boilerplate per owner direction 2026-07-12 (attorney
+ *   review waived by owner; still welcome) — source draft at
+ *   .github/docs/legal/california-ccpa-draft.md, placeholder tracker at
+ *   .github/docs/CREDENTIALS.md. Ported as-is from the pre-Astro-migration
+ *   Next.js page (git a4993c5). See .github/docs/adr/ADR-consent-banner-astro-gate.md.
  * REF: S05-11 · U-15
  */
 import RootLayout from '@/layouts/RootLayout.astro';
@@ -37,8 +41,9 @@ const categories: Array<[string, string, string]> = [
     <div class="info-page-inner">
       <!-- Draft — do not publish until U-15 resolved -->
       <div class="rounded-lg border border-yellow-500/40 bg-yellow-500/10 px-4 py-3 text-sm text-yellow-300">
-        <strong>DRAFT — Not yet effective.</strong> Counsel copy pending (U-15). Committed
-        for development review only. Do not link from production footers until U-15 is resolved.
+        <strong>DRAFT — Not yet effective.</strong> Standard CCPA boilerplate applied per owner
+        direction (U-15); attorney review still welcome. Committed for development review only.
+        Do not link from production footers until the full U-15 checklist is resolved.
       </div>
 
       <div class="info-page-header">
@@ -52,10 +57,17 @@ const categories: Array<[string, string, string]> = [
         </p>
         <p class="text-white/70 max-w-2xl text-sm leading-relaxed">
           PrayCalc uses your location to calculate accurate prayer times and Qibla direction.
-          Under the California Consumer Privacy Rights Act,
+          Under the California Consumer Privacy Rights Act (CPRA, as amended by Prop 24),
           <strong class="text-white/90">precise geolocation is classified as sensitive personal information</strong>.
           You have the right to limit our use of this data.
-          <!-- TODO(U-15): Insert full legal entity details and confirm geolocation classification with counsel. -->
+          <!-- standard CCPA boilerplate applied per owner direction 2026-07-12; attorney review welcome -->
+        </p>
+        <p class="text-white/70 max-w-2xl text-sm leading-relaxed">
+          This page describes your rights with respect to <strong class="text-white/90">Ummeco LLC</strong>,
+          a Delaware limited liability company doing business as PrayCalc ("we," "us," or "our").
+          Our principal place of business is 1679 S. Dupont Hwy, Suite 100, Dover, DE 19901.
+          For privacy inquiries, email
+          <a href="mailto:privacy@ummat.dev" class="text-ummat-light/80 hover:text-ummat-light underline">privacy@ummat.dev</a>.
         </p>
       </div>
 
@@ -63,8 +75,12 @@ const categories: Array<[string, string, string]> = [
       <div class="rounded-xl border border-ummat-dark/40 bg-ummat-dark/10 px-6 py-6">
         <h2 class="text-base font-semibold text-white mb-2">Do Not Sell or Share My Personal Information</h2>
         <p class="text-sm text-white/60 mb-4">
-          <!-- TODO(U-15): Confirm with counsel. -->
-          Ummeco, LLC does not sell personal information, including location data, to third parties.
+          <!-- standard CCPA boilerplate applied per owner direction 2026-07-12; attorney review welcome -->
+          Ummeco LLC does not sell personal information, including location data, to third parties. We
+          do not share personal information with third parties for cross-context behavioral advertising.
+          Our analytics (Umami) is limited to anonymized, aggregated usage statistics and does not
+          disclose personal information to a third party for monetary consideration or for advertising
+          purposes, so it does not constitute a "sale" or "sharing" under CPRA § 1798.140(ad).
         </p>
         <a
           href="mailto:privacy@ummat.dev?subject=CPRA%20Opt-Out%20Request&body=Full%20name%3A%0AEmail%3A%0ARequest%3A%20Do%20not%20sell%20or%20share%20my%20personal%20information."
@@ -76,7 +92,12 @@ const categories: Array<[string, string, string]> = [
 
       <section class="info-section">
         <h2 class="text-xl font-semibold text-ummat-light">Categories of Personal Information We Collect</h2>
-        <!-- TODO(U-15): Verify location data categories — precise vs coarse — with counsel. -->
+        <p class="text-white/50 text-xs mb-2">
+          <!-- standard CCPA boilerplate applied per owner direction 2026-07-12; attorney review welcome -->
+          Precise geolocation (GPS coordinates) is treated as sensitive personal information under CPRA
+          § 1798.140(ae). IP-derived coarse location is listed separately from IP address as an
+          identifier because it serves a distinct fallback purpose in our systems.
+        </p>
         <div class="overflow-x-auto">
           <table class="w-full text-sm border-collapse">
             <thead>
@@ -102,9 +123,19 @@ const categories: Array<[string, string, string]> = [
       <section class="info-section">
         <h2 class="text-xl font-semibold text-ummat-light">Sensitive Personal Information — Location Data</h2>
         <p class="text-white/70 text-sm leading-relaxed">
-          <!-- TODO(U-15): Confirm § 1798.121 right-to-limit language for geolocation with counsel. -->
-          Under CPRA § 1798.121, precise geolocation is sensitive personal information. You have the right to
-          limit our use of your location data to purposes strictly necessary to provide the prayer time service.
+          <!-- standard CCPA boilerplate applied per owner direction 2026-07-12; attorney review welcome -->
+          Under CPRA § 1798.121, you have the right to direct us to limit the use and disclosure of your
+          sensitive personal information (including precise geolocation) to uses that are reasonably
+          necessary and proportionate to provide the prayer time calculation service you have requested.
+        </p>
+        <p class="text-white/70 text-sm leading-relaxed">
+          PrayCalc uses your precise location exclusively to calculate prayer times and Qibla direction
+          for your current or saved location. We do not use precise location for targeted advertising or
+          profiling, sale or sharing with third parties, or inferences about your interests, behavior, or
+          characteristics beyond prayer-time calculation. Because we do not use precise geolocation for
+          any purpose beyond service delivery, exercising your right to limit does not meaningfully
+          restrict any additional use. If this changes, we will update this page and provide a prominent
+          "Limit the Use of My Sensitive Personal Information" link as required by § 1798.135.
         </p>
         <p class="text-white/70 text-sm leading-relaxed">
           PrayCalc accesses precise location only within your browser session (using the Geolocation API), and
