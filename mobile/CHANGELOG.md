@@ -1,5 +1,10 @@
 # praycalc/mobile Changelog
 
+## [2.2.1] - 2026-07-12
+
+### Added
+- Complete interface translation for all 21 supported languages: every locale (ar, ur, fa, ps, tr, id, ms, bn, hi, de, fr, es, pt, it, ru, nl, so, sw, ha, yo) now carries the full 729-key catalog — previously only ~9% was translated and the rest fell back to English. Lock-screen prayer notifications, onboarding, settings, and every screen are now fully localized, including the iOS permission strings.
+
 ## [2.2.0] - 2026-07-11
 
 ### Added
