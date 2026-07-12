@@ -5,6 +5,13 @@ plugins {
 
 android {
   namespace "expo.modules.wearbridge"
+  // The release build evaluates every subproject through the com.facebook.react
+  // plugin, which requires defaultConfig.versionName on library modules too —
+  // without it `:app:assembleRelease` fails at configuration time.
+  defaultConfig {
+    versionCode 1
+    versionName "1.0.0"
+  }
 }
 
 dependencies {
