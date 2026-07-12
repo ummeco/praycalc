@@ -13,6 +13,27 @@
     "midnight": "آدھی رات",
     "lastThird": "آخری تہائی"
   },
+  "notifications": {
+    "prayerTime": "{{prayer}} کا وقت",
+    "iqamahTitle": "{{prayer}} کی اقامت",
+    "bodyNow": "{{prayer}} کی نماز کا وقت ہو گیا ہے — {{time}}",
+    "bodyAdvance_one": "{{prayer}} میں {{count}} منٹ باقی ہے — {{time}}",
+    "bodyAdvance_other": "{{prayer}} میں {{count}} منٹ باقی ہیں — {{time}}",
+    "bodyIqamah": "{{prayer}} کی اقامت کی یاددہانی (اذان {{time}} پر ہوئی تھی)",
+    "snooze_one": "{{count}} منٹ ملتوی کریں",
+    "snooze_other": "{{count}} منٹ ملتوی کریں",
+    "snoozedBody": "{{prayer}} کی نماز کے لیے ملتوی شدہ یاددہانی",
+    "suhoorTitle": "سحری",
+    "suhoorBody": "سحری کا وقت ہے — فجر سے پہلے کا کھانا۔ فجر قریب آ رہی ہے۔",
+    "tahajjudTitle": "تہجد",
+    "tahajjudBody": "رات کا آخری تہائی حصہ — قیام اور دعا کے لیے بابرکت وقت۔",
+    "jumuahKhutbahTitle": "جمعہ",
+    "jumuahKhutbahBody": "خطبہ جلد ہی شروع ہوگا۔ جمعہ کی نماز کے لیے مسجد کی طرف روانہ ہوں۔",
+    "kahfTitle": "سورۃ الکہف",
+    "kahfBody": "دونوں جمعوں کے درمیان نور کے لیے سورۃ الکہف کی تلاوت کریں۔",
+    "testTitle": "آزمائشی اذان",
+    "testBody": "اگر آپ یہ سن رہے ہیں تو آپ کی اذان کی اطلاعات کام کر رہی ہیں۔"
+  },
   "common": {
     "bismillah": "بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ",
     "salah": "نَماز",
@@ -36,6 +57,7 @@
     "search": "تلاش",
     "change": "تبدیل کریں",
     "reset": "دوبارہ ترتیب دیں",
+    "complete": "مکمل",
     "openInMaps": "نقشے میں کھولیں",
     "openSettings": "ترتیبات کھولیں",
     "upgrade": "اپ گریڈ کریں",
@@ -45,12 +67,128 @@
     "skip": "چھوڑیں",
     "nothingHereYet": "ابھی یہاں کچھ نہیں",
     "somethingWentWrong": "کچھ غلط ہو گیا",
-    "tryAgain": "دوبارہ کوشش کریں"
+    "tryAgain": "دوبارہ کوشش کریں",
+    "tooManyRequests": "بہت زیادہ درخواستیں",
+    "waitBeforeRetrying": "دوبارہ کوشش کرنے سے پہلے براہ کرم {{seconds}} سیکنڈ انتظار کریں۔",
+    "offlineCachedData": "آپ آف لائن ہیں۔ محفوظ شدہ ڈیٹا دکھایا جا رہا ہے۔",
+    "permissionRequired": "{{permission}} کی اجازت درکار ہے",
+    "permissionRequiredBody": "نماز کے اوقات کے لیے {{permission}} تک رسائی ضروری ہے۔ براہ کرم ترتیبات میں اسے فعال کریں۔",
+    "loadingContent": "مواد لوڈ ہو رہا ہے",
+    "permissionRequiredGeneric": "اجازت درکار ہے",
+    "permissionRequiredGenericBody": "اس فیچر کے لیے {{permission}} کی اجازت درکار ہے۔",
+    "openSystemSettings": "سسٹم کی ترتیبات کھولیں",
+    "retryRequest": "درخواست دوبارہ کریں",
+    "tooManyRequestsRetry": "بہت زیادہ درخواستیں۔ دوبارہ کوشش کرنے سے پہلے براہ کرم {{seconds}} سیکنڈ انتظار کریں۔",
+    "tooManyRequestsRetryGeneric": "بہت زیادہ درخواستیں۔ دوبارہ کوشش کرنے سے پہلے انتظار کریں۔",
+    "offlineShowingCachedFrom": "آپ آف لائن ہیں۔ {{cachedAt}} کا ڈیٹا دکھایا جا رہا ہے۔",
+    "offlineShowingCachedGeneric": "آپ آف لائن ہیں۔ محفوظ شدہ ڈیٹا دکھایا جا رہا ہے۔"
   },
   "greeting": {
     "assalamu_alaykum": "السَّلَامُ عَلَيْكُمْ وَرَحْمَةُ اللّٰهِ وَبَرَكَاتُهُ",
     "prayer_approaching": "نماز قریب ہے",
     "prayer_now": "نماز کا وقت"
+  },
+  "tabs": {
+    "home": "نمازیں",
+    "prayerTimes": "نماز کے اوقات",
+    "qibla": "قبلہ",
+    "calendar": "کیلنڈر",
+    "quran": "قرآن",
+    "more": "مزید"
+  },
+  "menu": {
+    "settings": {
+      "label": "ترتیبات",
+      "subtitle": "طریقہ، مقام، اطلاعات"
+    },
+    "adhan": {
+      "label": "اذان لائبریری",
+      "subtitle": "اذان کی آواز اور قاری"
+    },
+    "tasbeeh": {
+      "label": "تسبیح شمار",
+      "subtitle": "ڈیجیٹل ذکر کاؤنٹر"
+    },
+    "duaDhikr": {
+      "label": "دعا و اذکار",
+      "subtitle": "صبح و شام کے اذکار"
+    },
+    "moon": {
+      "label": "چاند کی حالت",
+      "subtitle": "قمری کیلنڈر اور ہجری تاریخ"
+    },
+    "quran": {
+      "label": "قرآن",
+      "subtitle": "عثمانی رسم الخط، نشانات کے ساتھ"
+    },
+    "stats": {
+      "label": "نماز کے اعداد و شمار",
+      "subtitle": "اپنی نمازوں اور تسلسل کو ٹریک کریں"
+    },
+    "ramadan": {
+      "label": "رمضان",
+      "subtitle": "سحری و افطار کے اوقات، ٹریکر"
+    },
+    "subscription": {
+      "label": "پرو حاصل کریں",
+      "subtitle": "پریمیم فیچرز کھولیں"
+    },
+    "homeWidget": {
+      "label": "ہوم ویجٹ",
+      "subtitle": "ہوم اسکرین پر اگلی نماز"
+    },
+    "smartHome": {
+      "label": "سمارٹ ہوم",
+      "subtitle": "نماز کے دوران آلات کو لاک کریں"
+    },
+    "pairTv": {
+      "label": "ٹی وی جوڑیں",
+      "subtitle": "پرے کیلک ٹی وی ایپ سے منسلک کریں"
+    },
+    "tvManager": {
+      "label": "میرے ٹی وی",
+      "subtitle": "منسلک ٹی وی ڈسپلے منظم کریں"
+    },
+    "agendas": {
+      "label": "نماز کیلنڈر",
+      "subtitle": "نماز کے اوقات کیلنڈر میں شامل کریں"
+    },
+    "timetable": {
+      "label": "ماہانہ ٹائم ٹیبل",
+      "subtitle": "پورے ماہ کے نماز کے اوقات + کیلنڈر ایکسپورٹ"
+    },
+    "mosques": {
+      "label": "قریبی مساجد",
+      "subtitle": "اپنے آس پاس مساجد تلاش کریں"
+    },
+    "travel": {
+      "label": "سفر کا موڈ",
+      "subtitle": "مسافروں کے لیے قصر نماز"
+    },
+    "jumuah": {
+      "label": "جمعہ",
+      "subtitle": "جمعہ کی یاددہانیاں اور سورۃ الکہف"
+    },
+    "masjidMute": {
+      "label": "مسجد آٹو میوٹ",
+      "subtitle": "مسجد کے قریب اپنا فون خاموش کریں"
+    },
+    "fasting": {
+      "label": "روزے کا ٹریکر",
+      "subtitle": "رمضان، پیر اور جمعرات، ایام بیض"
+    },
+    "qada": {
+      "label": "چھوٹی ہوئی نمازیں (قضا)",
+      "subtitle": "چھوٹی ہوئی نمازوں کو ٹریک اور ادا کریں"
+    },
+    "privacy": {
+      "label": "پرائیویسی اور ڈیٹا",
+      "subtitle": "تجزیاتی رضامندی کو کنٹرول کریں"
+    },
+    "shareApp": {
+      "label": "پرے کیلک شیئر کریں",
+      "subtitle": "کسی دوست یا خاندان کے فرد کو بتائیں"
+    }
   },
   "settings": {
     "title": "ترتیبات",
@@ -72,28 +210,692 @@
     "location": {
       "title": "مقام",
       "detect": "خودکار پتہ لگائیں",
-      "manual": "دستی درج کریں"
-    }
+      "manual": "دستی درج کریں",
+      "useGps": "جی پی ایس مقام استعمال کریں",
+      "searchManually": "شہر دستی طور پر تلاش کریں",
+      "currentCity": "موجودہ شہر",
+      "noneSet": "کوئی مقام مقرر نہیں۔ جی پی ایس یا دستی شہر درکار ہے۔",
+      "gettingLocation": "آپ کا مقام حاصل کیا جا رہا ہے...",
+      "permissionDenied": "اجازت مسترد",
+      "permissionDeniedBody": "اپنے شہر کا خودکار پتہ لگانے کے لیے ترتیبات میں مقام فعال کریں۔"
+    },
+    "account": {
+      "title": "اکاؤنٹ",
+      "signedIn": "سائن ان ہے",
+      "anonymous": "گمنام",
+      "free": "مفت"
+    },
+    "highLatitude": {
+      "title": "اعلیٰ عرض بلد ایڈجسٹمنٹ",
+      "hint": "یہ اس وقت لاگو ہوتا ہے جب فجر/عشاء مطلوبہ زاویے تک نہ پہنچ سکیں (گرمیوں میں انتہائی شمالی/جنوبی مقامات)۔",
+      "nightMiddle": "رات کا وسط",
+      "angleBased": "زاویہ پر مبنی",
+      "oneSeventh": "رات کا ساتواں حصہ",
+      "none": "کوئی نہیں (دستیاب نہیں دکھا سکتا ہے)"
+    },
+    "madhab": {
+      "title": "مذہب (عصر)",
+      "hint": "شافعی: 1× سایہ فیکٹر | حنفی: 2× سایہ فیکٹر"
+    },
+    "prayerAdjustments": {
+      "title": "نماز کے اوقات میں ترمیم",
+      "hint": "اپنی مقامی مسجد کے ٹائم ٹیبل سے مطابقت کے لیے ہر وقت میں ±30 منٹ کی ترمیم کریں۔"
+    },
+    "hijriAdjustment": {
+      "title": "ہجری تاریخ کی ترمیم",
+      "hint": "اگر آپ کی مقامی چاند دیکھنے کی رپورٹ ام القریٰ کیلنڈر سے مختلف ہو تو ہجری تاریخ کو ±2 دن تک آگے پیچھے کریں۔",
+      "offset": "شفٹ",
+      "decreaseAccessibilityLabel": "ہجری شفٹ کم کریں",
+      "increaseAccessibilityLabel": "ہجری شفٹ بڑھائیں"
+    },
+    "timeFormat": {
+      "title": "وقت کی ترتیب"
+    },
+    "appearance": {
+      "title": "ظاہری شکل",
+      "system": "سسٹم",
+      "light": "روشن",
+      "dark": "تاریک"
+    },
+    "customAngles": {
+      "fajr": "فجر زاویہ (°)",
+      "isha": "عشاء زاویہ (°)",
+      "fajrAccessibilityLabel": "ڈگری میں مخصوص فجر زاویہ",
+      "ishaAccessibilityLabel": "ڈگری میں مخصوص عشاء زاویہ"
+    },
+    "upsell": {
+      "priceLine": "امت+ $9.99/سال — ٹی وی ایپ اور سمارٹ ہوم کھولتا ہے",
+      "upgradeButton": "امت+ میں اپ گریڈ کریں"
+    },
+    "prayerAlerts": "نماز کے وقت کی اطلاعات",
+    "manageNotifications": "اطلاعات منظم کریں",
+    "appLanguage": "ایپ کی زبان",
+    "decreaseAccessibilityLabel": "{{prayer}} کی ترمیم کم کریں",
+    "increaseAccessibilityLabel": "{{prayer}} کی ترمیم بڑھائیں",
+    "valueAccessibilityLabel": "ہجری شفٹ: {{value}} دن",
+    "label12h": "12 گھنٹے کی ترتیب",
+    "label24h": "24 گھنٹے کی ترتیب",
+    "themeAccessibilityLabel": "{{theme}} تھیم"
   },
   "errors": {
     "location_permission": "نماز کے اوقات حساب کرنے کے لیے مقام تک رسائی کی اجازت دیں",
     "network": "نیٹ ورک سے جڑ نہیں سکے",
     "calculation": "نماز کے اوقات حساب نہیں کر سکے"
   },
-  "tabs": {
-    "home": "نمازیں",
-    "prayerTimes": "نماز کے اوقات",
-    "qibla": "قبلہ",
-    "calendar": "کیلنڈر",
-    "quran": "قرآن",
-    "more": "مزید"
-  },
-  "menu": {
-    "settings": {
-      "label": "ترتیبات"
+  "screens": {
+    "more": {
+      "title": "مزید"
+    },
+    "notFound": {
+      "title": "اسکرین نہیں ملی",
+      "goHome": "نماز کے اوقات پر جائیں"
+    },
+    "onboarding": {
+      "welcomeTitle": "پرے کیلک میں خوش آمدید",
+      "welcomeDesc": "درست نماز کے اوقات، قبلہ کی سمت، اور اسلامی کیلنڈر — سب ایک ہی جگہ۔",
+      "getStarted": "شروع کریں",
+      "locationTitle": "مقام فعال کریں",
+      "locationDesc": "درست حساب کے لیے نماز کے اوقات آپ کے مقام کی ضرورت ہے۔",
+      "allowLocation": "مقام کی اجازت دیں",
+      "skipManual": "چھوڑیں — میں دستی طور پر مقرر کروں گا",
+      "authTitle": "اکاؤنٹ بنائیں؟",
+      "authDesc": "اختیاری: کلاؤڈ سنک اور نماز کی تاریخ کے لیے اکاؤنٹ بنائیں۔ آپ بعد میں بھی سائن اپ کر سکتے ہیں۔",
+      "skipForNow": "ابھی چھوڑیں"
+    },
+    "auth": {
+      "appTagline": "ہر مسلمان کے لیے درست نماز کے اوقات",
+      "tabSkip": "چھوڑیں",
+      "continueTitle": "بغیر اکاؤنٹ کے جاری رکھیں",
+      "continueDesc": "نماز کے اوقات، قبلہ، اور کیلنڈر بغیر کسی اکاؤنٹ کے مکمل طور پر آف لائن کام کرتے ہیں۔ آپ کی ترتیبات مقامی طور پر محفوظ ہیں۔",
+      "featurePrayerQibla": "نماز کے اوقات اور قبلہ",
+      "featureCalendar": "اسلامی کیلنڈر",
+      "featureSettings": "ترتیبات اور اطلاعات",
+      "continueAnonymously": "گمنام طور پر جاری رکھیں",
+      "signInTitle": "سائن ان کریں",
+      "emailPlaceholder": "ای میل",
+      "passwordPlaceholder": "پاس ورڈ",
+      "namePlaceholder": "نام (اختیاری)",
+      "switchHint": "اکاؤنٹ آپ کے تمام آلات پر کلاؤڈ سنک اور نماز کی تاریخ کو ممکن بناتا ہے۔",
+      "registerTitle": "اکاؤنٹ بنائیں",
+      "signingIn": "سائن ان ہو رہا ہے...",
+      "enterEmailPassword": "براہ کرم ای میل اور پاس ورڈ درج کریں۔",
+      "loginFailed": "لاگ ان ناکام",
+      "registerFailed": "رجسٹریشن ناکام",
+      "verifyEmail": "اپنے اکاؤنٹ کی تصدیق کے لیے اپنا ای میل چیک کریں، پھر سائن ان کریں۔"
+    },
+    "adhan": {
+      "enablePerPrayer": "ہر نماز کے لیے اذان فعال کریں",
+      "library": "اذان لائبریری",
+      "noVoices": "کوئی اذان کی آواز دستیاب نہیں۔",
+      "proRequiredTitle": "امت+ درکار ہے",
+      "proRequiredBody": "{{name}} ایک پرو اذان کی آواز ہے۔ اسے اپنی فعال اذان بنانے کے لیے امت+ میں اپ گریڈ کریں۔",
+      "proFeature": "پرو فیچر",
+      "playPreview": "پیش نظارہ چلائیں",
+      "stopPreview": "پیش نظارہ روکیں",
+      "voiceListLabel": "اذان کی آوازوں کی فہرست"
+    },
+    "agendas": {
+      "title": "نماز کیلنڈر",
+      "desc": "اپنے آلے کے کیلنڈر میں نماز کے بلاکس یاددہانی کے طور پر شامل کریں۔ ہر نماز کو {{minutes}} منٹ کا واقعہ 5 منٹ کے الرٹ کے ساتھ ملتا ہے۔",
+      "whichPrayers": "کون سی نمازیں شامل کرنی ہیں",
+      "locationRequired": "مقام درکار ہے",
+      "locationRequiredBody": "کیلنڈر میں نماز کے اوقات شامل کرنے کے لیے ترتیبات میں اپنا شہر مقرر کریں۔",
+      "noCalendarFound": "کوئی کیلنڈر نہیں ملا",
+      "noCalendarFoundBody": "اس آلے پر کوئی قابل تحریر کیلنڈر نہیں ملا۔",
+      "setLocationHint": "کیلنڈر سنک فعال کرنے کے لیے ترتیبات میں اپنا شہر مقرر کریں۔",
+      "addButton": "آج کی نمازیں کیلنڈر میں شامل کریں",
+      "addButtonAccessibilityLabel": "آج کے نماز کے اوقات کیلنڈر میں شامل کریں",
+      "adding": "شامل کیا جا رہا ہے...",
+      "done": "مکمل",
+      "addedCount": "{{count}} نماز کے اوقات آپ کے کیلنڈر میں شامل کیے گئے۔",
+      "error": "خرابی",
+      "addFailed": "کیلنڈر میں شامل کرنا ناکام ہوا۔",
+      "checkingPermission": "کیلنڈر کی اجازت چیک کی جا رہی ہے..."
+    },
+    "calendar": {
+      "eventsThisMonth": "اس ماہ کے اسلامی واقعات"
+    },
+    "citySearch": {
+      "findCityTitle": "شہر تلاش کریں",
+      "placeholder": "شہر تلاش کریں...",
+      "useCurrentLocation": "موجودہ مقام استعمال کریں",
+      "locating": "مقام کا تعین کیا جا رہا ہے…",
+      "searching": "شہر تلاش کیے جا رہے ہیں...",
+      "noResults": "\"{{query}}\" کے لیے کوئی شہر نہیں ملا۔",
+      "popularHint": "مقبول شہر دکھائے گئے ہیں۔ تلاش کے لیے ٹائپ کریں۔",
+      "searchError": "تلاش کی خرابی: {{message}}",
+      "searchInputAccessibilityLabel": "شہر کی تلاش کا خانہ",
+      "useCurrentLocationAccessibilityLabel": "موجودہ مقام استعمال کریں",
+      "resultsAccessibilityLabel": "شہر کی تلاش کے نتائج"
+    },
+    "duaDhikr": {
+      "noResults": "اس زمرے کے لیے کوئی دعا نہیں ملی۔",
+      "categoryAll": "تمام",
+      "categoryAfterAdhan": "اذان کے بعد",
+      "categoryAfterPrayer": "نماز کے بعد",
+      "categoryMorning": "صبح",
+      "categoryEvening": "شام"
+    },
+    "moon": {
+      "hijriCalendar": "ہجری کیلنڈر",
+      "hijriDay": "ہجری دن",
+      "month": "مہینہ",
+      "lunarAge": "قمری عمر",
+      "daysUnit": "{{count}} دن",
+      "upcomingPhases": "آنے والی حالتیں",
+      "nextFullMoon": "اگلا بدر 🌕",
+      "nextNewMoon": "اگلا امواس 🌑",
+      "significance": "اسلامی اہمیت",
+      "illuminatedPct": "{{pct}}% روشن",
+      "phaseNewMoon": "امواس",
+      "phaseWaxingCrescent": "بڑھتا ہلال",
+      "phaseFirstQuarter": "پہلی سہ ماہی",
+      "phaseWaxingGibbous": "بڑھتا اجوف",
+      "phaseFullMoon": "بدر",
+      "phaseWaningGibbous": "گھٹتا اجوف",
+      "phaseLastQuarter": "آخری سہ ماہی",
+      "phaseWaningCrescent": "گھٹتا ہلال",
+      "ramadanNote": "یہ رمضان ہے — روزے اور لیلۃ القدر کی تلاش کا مہینہ۔",
+      "dhulHijjahNote": "{{month}} کے پہلے دس دن سال کے سب سے افضل دنوں میں سے ہیں۔"
     },
     "mosques": {
-      "label": "قریبی مساجد"
+      "setLocation": "اپنے قریب مساجد تلاش کرنے کے لیے اپنا مقام مقرر کریں۔",
+      "setLocationAction": "مقام مقرر کریں",
+      "finding": "قریبی مساجد تلاش کی جا رہی ہیں...",
+      "noResults": "10 کلومیٹر کے اندر کوئی مسجد نہیں ملی۔",
+      "retry": "دوبارہ کوشش کریں",
+      "attribution": "ڈیٹا © OpenStreetMap تعاون دہندگان",
+      "searchFailed": "مساجد تلاش کرنا ناکام ہوا۔"
+    },
+    "masjidMute": {
+      "title": "مسجد آٹو میوٹ",
+      "intro": "پرے کیلک کے پاس ابھی مسجد ڈائریکٹری نہیں ہے — نیچے اپنے خاموشی زون شامل کریں۔ ہم تجویز کرتے ہیں کہ اپنی مقامی مسجد شامل کریں تاکہ پہنچنے پر آپ کا فون خود بخود خاموش ہو جائے۔",
+      "masterToggleLabel": "آٹو میوٹ فعال ہے",
+      "masterToggleSubtitle": "نیچے کسی بھی زون میں داخل ہونے پر فون خاموش کریں",
+      "zonesHeading": "آپ کے زونز",
+      "emptyTitle": "ابھی کوئی زون نہیں",
+      "emptySubtitle": "اپنی مقامی مسجد شامل کریں تاکہ پرے کیلک پہنچنے پر آپ کا فون خود بخود خاموش کر سکے۔",
+      "addZoneAction": "اپنی مقامی مسجد شامل کریں",
+      "addZoneButton": "زون شامل کریں",
+      "addZoneTitle": "خاموشی زون شامل کریں",
+      "editZoneTitle": "خاموشی زون میں ترمیم کریں",
+      "labelFieldLabel": "لیبل",
+      "labelFieldPlaceholder": "مثلاً مسجد النور",
+      "labelRequired": "براہ کرم اس زون کے لیے لیبل درج کریں۔",
+      "coordinatesInvalid": "براہ کرم درست عرض بلد اور طول بلد درج کریں، یا تلاش کریں/موجودہ مقام استعمال کریں۔",
+      "searchAddressLabel": "پتہ تلاش کریں",
+      "searchAddressPlaceholder": "کسی پتے یا جگہ کی تلاش کریں",
+      "searching": "تلاش کیا جا رہا ہے...",
+      "searchNoResults": "کوئی مطابقت نہیں ملی۔ مختلف تلاش کریں یا دستی طور پر متناسقات درج کریں۔",
+      "useCurrentLocation": "موجودہ مقام استعمال کریں",
+      "locating": "مقام کا تعین کیا جا رہا ہے...",
+      "locationFailed": "آپ کا موجودہ مقام حاصل نہیں کیا جا سکا۔",
+      "manualEntryToggle": "متناسقات دستی طور پر درج کریں",
+      "latitudeLabel": "عرض بلد",
+      "longitudeLabel": "طول بلد",
+      "radiusLabel": "رداس: {{radius}} میٹر",
+      "radiusHint": "{{min}} میٹر اور {{max}} میٹر کے درمیان — مسجد اور اس کی پارکنگ کا احاطہ کرتا ہے۔",
+      "decreaseRadiusAccessibilityLabel": "رداس 25 میٹر کم کریں",
+      "increaseRadiusAccessibilityLabel": "رداس 25 میٹر بڑھائیں",
+      "saveZone": "زون محفوظ کریں",
+      "deleteZone": "زون حذف کریں",
+      "deleteConfirmTitle": "کیا یہ زون حذف کریں؟",
+      "deleteConfirmBody": "\"{{label}}\" اب آپ کے فون کو خود بخود خاموش نہیں کرے گا۔",
+      "mapPickerFollowUp": "بصری طور پر پن ڈراپ کرنے کے لیے نقشہ پکر کی منصوبہ بندی ہے — فی الحال، پتہ تلاش کریں یا اپنا موجودہ مقام استعمال کریں۔",
+      "permissionTitle": "مقام کی اجازت درکار ہے",
+      "permissionBody": "مسجد آٹو میوٹ کو ایپ بند ہونے کے دوران بھی کسی زون میں داخل یا خارج ہونے کا پتہ لگانے کے لیے \"ہمیشہ\" مقام تک رسائی درکار ہے۔",
+      "permissionGrant": "اجازت دیں",
+      "permissionDeniedNote": "بیک گراؤنڈ مقام کی اجازت نہیں دی گئی — زونز محفوظ ہیں لیکن جب تک آپ سسٹم ترتیبات میں \"ہمیشہ\" رسائی کی اجازت نہ دیں آٹو میوٹ فعال نہیں ہوگا۔",
+      "androidNote": "اینڈرائیڈ: پہنچنے پر آپ کا فون وائبریٹ پر منتقل ہو جائے گا اور جانے پر آپ کی سابقہ رنگر موڈ بحال ہو جائے گی۔",
+      "iosNote": "iOS: ایپل ایپس کو آپ کا خاموشی سوئچ تبدیل کرنے کی اجازت نہیں دیتا۔ اس کے بجائے، پرے کیلک آپ سے دستی طور پر اپنا فون خاموش کرنے کی درخواست کرتے ہوئے ایک یاددہانی اطلاع بھیجتا ہے۔",
+      "iosReminderTitle": "آپ پہنچ گئے ہیں",
+      "iosReminderBody": "آپ {{zone}} کے قریب ہیں — براہ کرم اپنا فون خاموش کریں۔",
+      "defaultZoneLabel": "آپ کا خاموشی زون",
+      "activeNow": "ابھی فعال — فون خاموش ہے",
+      "radiusValue": "{{radius}} میٹر رداس"
+    },
+    "pairTv": {
+      "upsellBadge": "امت+",
+      "unlockTitle": "ٹی وی جوڑنا کھولیں",
+      "unlockDesc": "امت+ $9.99/سال — ٹی وی ایپ اور سمارٹ ہوم کھولتا ہے",
+      "pairedTitle": "ٹی وی جڑ گیا",
+      "pairedDesc": "آپ کی ٹی وی ایپ اب اس اکاؤنٹ سے منسلک ہے۔",
+      "title": "ٹی وی کے ساتھ جوڑیں",
+      "desc": "اپنے ٹی وی پر پرے کیلک کھولیں، پھر اسکرین پر دکھایا گیا 6 ہندسوں کا پن درج کریں۔",
+      "enterPin": "اپنے ٹی وی پر دکھایا گیا 6 ہندسوں کا پن درج کریں۔",
+      "pinInputAccessibilityLabel": "ٹی وی جوڑنے کا پن",
+      "pairFailed": "جوڑنا ناکام ہوا۔ دوبارہ کوشش کریں۔",
+      "pairDevice": "آلہ جوڑیں",
+      "invalidOrExpiredPin": "یہ پن غلط ہے یا میعاد ختم ہو چکی ہے۔ ٹی وی اسکرین چیک کریں اور دوبارہ کوشش کریں۔"
+    },
+    "tvManager": {
+      "upsellBadge": "امت+",
+      "unlockTitle": "ٹی وی مینجمنٹ کھولیں",
+      "unlockDesc": "امت+ $9.99/سال — ٹی وی ایپ اور سمارٹ ہوم کھولتا ہے",
+      "emptyTitle": "ابھی کوئی ٹی وی جوڑا نہیں گیا",
+      "emptySubtitle": "یہاں دیکھنے اور اس کی ڈسپلے ترتیبات منظم کرنے کے لیے ٹی وی جوڑیں۔",
+      "pairACta": "ٹی وی جوڑیں",
+      "noCity": "کوئی مقام مقرر نہیں",
+      "nameLabel": "نام",
+      "colorLabel": "نمایاں رنگ",
+      "streamLabel": "اسٹریم ماخذ",
+      "streamMakkah": "مکہ ٹی وی",
+      "streamSaudiQuran": "سعودی قرآن",
+      "streamMedina": "مدینہ",
+      "rotateLabel": "اسکرین گردش",
+      "decreaseRotate": "گردش کے منٹ کم کریں",
+      "increaseRotate": "گردش کے منٹ بڑھائیں",
+      "weatherLabel": "موسم دکھائیں",
+      "updateLocationAction": "میرے موجودہ مقام پر اپ ڈیٹ کریں",
+      "updateLocationHint": "جب اگلی بار دوبارہ جوڑا جائے گا تو ٹی وی مقام کی تبدیلیوں کو حاصل کرے گا — یہ اب محفوظ شدہ مقام کو اپ ڈیٹ کرتا ہے۔",
+      "noLocationTitle": "کوئی مقام مقرر نہیں",
+      "noLocationBody": "ٹی وی کا مقام اپ ڈیٹ کرنے سے پہلے ترتیبات میں اپنا مقام مقرر کریں۔",
+      "locationUpdatedTitle": "مقام اپ ڈیٹ ہو گیا",
+      "locationUpdatedBody": "محفوظ ہو گیا۔ اگلی بار دوبارہ جوڑے جانے پر ٹی وی یہ مقام استعمال کرے گا۔",
+      "deleteAction": "یہ ٹی وی ہٹائیں",
+      "deleteConfirmTitle": "ٹی وی ہٹائیں؟",
+      "deleteConfirmBody": "اس سے \"{{name}}\" کا جوڑنا ختم ہو جائے گا اور اس کی محفوظ شدہ ترتیبات ہٹ جائیں گی۔ اسے واپس نہیں لایا جا سکتا۔",
+      "deleteConfirmAction": "ہٹائیں",
+      "prayerFajr": "فجر",
+      "prayerDhuhr": "ظہر",
+      "prayerAsr": "عصر",
+      "prayerMaghrib": "مغرب",
+      "prayerIsha": "عشاء",
+      "madhabShafii": "شافعی",
+      "madhabHanafi": "حنفی",
+      "timeFormat12h": "12 گھنٹے",
+      "timeFormat24h": "24 گھنٹے",
+      "invalidCoordsTitle": "غلط متناسقات",
+      "invalidCoordsBody": "درست عرض بلد (-90 سے 90) اور طول بلد (-180 سے 180) درج کریں۔",
+      "deepSettingsLabel": "جدید ترتیبات",
+      "countdownTakeoverLabel": "کاؤنٹ ڈاؤن ٹیک اوور",
+      "countdownTakeoverHint": "ہر نماز سے پہلے بڑے کاؤنٹ ڈاؤن کے ساتھ اسکرین سنبھال لیں۔",
+      "countdownMinutesLabel": "کاؤنٹ ڈاؤن شروع کریں",
+      "decreaseCountdown": "کاؤنٹ ڈاؤن منٹ کم کریں",
+      "increaseCountdown": "کاؤنٹ ڈاؤن منٹ بڑھائیں",
+      "iqamaLabel": "اقامت کے اوقات",
+      "iqamaHint": "اذان کے بعد اقامت کاؤنٹ ڈاؤن دکھائیں، ہر نماز کے لیے آفسیٹ کے ساتھ۔",
+      "decreaseIqama": "{{prayer}} اقامت آفسیٹ کم کریں",
+      "increaseIqama": "{{prayer}} اقامت آفسیٹ بڑھائیں",
+      "nameOnlyLabel": "صرف نام موڈ",
+      "nameOnlyHint": "اذان سے پہلے اتنے منٹ تک صرف نماز کا نام دکھائیں (اوقات کے بغیر)۔",
+      "nameOnlyMinutesLabel": "صرف نام کا دورانیہ",
+      "decreaseNameOnly": "صرف نام کے منٹ کم کریں",
+      "increaseNameOnly": "صرف نام کے منٹ بڑھائیں",
+      "madhabLabel": "مذہب",
+      "timeFormatLabel": "وقت کی ترتیب",
+      "calcMethodLabel": "حساب کا طریقہ",
+      "manualLocationToggle": "متناسقات دستی طور پر درج کریں",
+      "latitudeLabel": "عرض بلد",
+      "longitudeLabel": "طول بلد",
+      "manualLocationSave": "متناسقات محفوظ کریں",
+      "layoutThemeLabel": "لے آؤٹ اور تھیم",
+      "layoutLabel": "لے آؤٹ",
+      "themeLabel": "تھیم",
+      "layoutClassic": "کلاسیکی",
+      "layoutClassicDesc": "اوقات اور لائیو اسٹریم ساتھ ساتھ",
+      "layoutFlipped": "الٹا",
+      "layoutFlippedDesc": "وہی تقسیم، الٹی",
+      "layoutStreamFull": "مکمل اسٹریم",
+      "layoutStreamFullDesc": "اوقات کی پٹی کے ساتھ فل اسکرین اسٹریم",
+      "layoutTimesOnly": "صرف اوقات",
+      "layoutTimesOnlyDesc": "صرف نماز کے اوقات، بغیر لائیو اسٹریم کے",
+      "layoutAmbient": "ایمبیئنٹ",
+      "layoutAmbientDesc": "سادہ ایمبیئنٹ گھڑی ڈسپلے",
+      "themeUmmatGreen": "امت گرین",
+      "themeMidnight": "آدھی رات",
+      "themeWarmSand": "گرم ریت",
+      "themeMono": "مونو"
+    },
+    "prayerTimes": {
+      "setCityTitle": "اپنا شہر مقرر کریں",
+      "setCitySubtitle": "نماز کے اوقات دیکھنے کے لیے مقام فعال کریں یا دستی طور پر شہر منتخب کریں۔",
+      "setLocationAction": "مقام مقرر کریں",
+      "offlineMessage": "آخری معلوم نماز کے اوقات دکھائے جا رہے ہیں (آف لائن)",
+      "next": "اگلی: {{prayer}}",
+      "asrCalculation": "عصر کا حساب",
+      "markedPrayed": "پڑھی ہوئی نشان زد",
+      "notMarkedPrayed": "نہیں پڑھی ہوئی نشان زد",
+      "doubleTapToggle": "تبدیل کرنے کے لیے ڈبل ٹیپ کریں۔",
+      "shareTimes": "آج کے اوقات شیئر کریں",
+      "shareAccessibilityLabel": "آج کے نماز کے اوقات شیئر کریں"
+    },
+    "quran": {
+      "loading": "قرآن ڈیٹا لوڈ ہو رہا ہے...",
+      "backToList": "سورتوں کی فہرست میں واپس جائیں",
+      "back": "پیچھے",
+      "bismillah": "بسم اللہ",
+      "comingSoonBody": "Islam.Wiki پر {{name}} ({{count}} آیات) کو ترجمہ اور تلاوت کے ساتھ پڑھیں — ہمارا مکمل قرآن ریڈر۔",
+      "readOnWiki": "Islam.Wiki پر پڑھیں ←",
+      "removeBookmark": "بک مارک ہٹائیں",
+      "bookmarkVerse": "آیت کو بک مارک کریں",
+      "surahList": "سورتوں کی فہرست",
+      "wikiFooter": "📖 مکمل قرآن — تمام 114 سورتیں، ترجمے اور آڈیو Islam.Wiki پر ←",
+      "openFullQuran": "Islam.Wiki پر مکمل قرآن کھولیں",
+      "featuredVerse": "نمایاں آیت",
+      "readableBadge": "دستیاب"
+    },
+    "ramadan": {
+      "subtitle": "رمضان مبارک",
+      "dayOf": "دن {{day}} از {{total}}",
+      "iftarIn": "افطار میں",
+      "suhoorEndsIn": "سحری ختم ہونے میں",
+      "notActive": "رمضان فی الحال جاری نہیں ہے۔\nموجودہ ہجری مہینہ: {{month}} ({{monthNumber}}/12)",
+      "todaysTimes": "آج کے اوقات",
+      "suhoorEnds": "سحری کا اختتام (فجر)",
+      "iftar": "افطار (مغرب)",
+      "noLocation": "نماز کے اوقات دیکھنے کے لیے ترتیبات میں اپنا مقام مقرر کریں۔",
+      "duasTitle": "رمضان کی دعائیں",
+      "laylatAlQadrTitle": "لیلۃ القدر",
+      "laylatAlQadrBody": "ہم رمضان کی آخری دس راتوں میں ہیں۔ عبادت میں اضافہ کریں، خاص طور پر طاق راتوں (21، 23، 25، 27، 29) میں۔"
+    },
+    "notifications": {
+      "masterLabel": "نماز کی اطلاعات",
+      "masterSub": "ہر نماز کے وقت سے پہلے الرٹ حاصل کریں",
+      "androidExactAlarm": "اینڈرائیڈ 12+ پر، درست نماز کے وقت کے الرٹس کے لیے سسٹم ترتیبات میں \"الارمز اور یاددہانیاں\" کی اجازت دیں۔",
+      "openSystemSettings": "سسٹم کی ترتیبات کھولیں",
+      "masterAccessibilityLabel": "نماز کی اطلاعات فعال کریں",
+      "openSystemSettingsAccessibilityLabel": "الارمز کے لیے سسٹم ترتیبات کھولیں",
+      "perPrayerAlerts": "ہر نماز کے لیے الرٹس",
+      "minutesBefore_one": "{{count}} منٹ پہلے",
+      "minutesBefore_other": "{{count}} منٹ پہلے",
+      "iqamahOff": "اقامت آف",
+      "iqamahAfter_one": "اقامت +{{count}} منٹ",
+      "iqamahAfter_other": "اقامت +{{count}} منٹ",
+      "adhanSoundTitle": "اذان کی آواز",
+      "adhanSoundSub": "نماز کی اطلاع آنے پر کون سی اذان بجتی ہے۔",
+      "adhanSound": {
+        "takbir": "تکبیر (آغاز)",
+        "makkah": "مکہ",
+        "mishari": "مشاری راشد",
+        "madina": "مدینہ"
+      },
+      "smartAlarmsTitle": "سمارٹ الارمز",
+      "suhoorLabel": "سحری الارم",
+      "suhoorSub": "سحری کے لیے فجر سے پہلے جاگیں۔",
+      "suhoorBefore_one": "فجر سے {{count}} منٹ پہلے",
+      "suhoorBefore_other": "فجر سے {{count}} منٹ پہلے",
+      "tahajjudLabel": "تہجد / قیام",
+      "tahajjudSub": "نماز کے لیے رات کے آخری حصے میں اٹھیں۔",
+      "tahajjudLastThird": "رات کا آخری تہائی حصہ",
+      "tahajjudCustom": "مخصوص وقت",
+      "nightTimesTitle": "رات کے اوقات (آج رات)",
+      "lastThirdBegins": "آخری تہائی شروع ہوتا ہے",
+      "middleOfNight": "رات کا وسط",
+      "nightTimesUnavailable": "آج رات کے اوقات دیکھنے کے لیے اپنا مقام مقرر کریں۔",
+      "reliabilityTitle": "قابل بھروسہ اذان کی ترسیل",
+      "reliabilitySub": "یقینی بنائیں کہ الارمز وقت پر بجیں",
+      "batteryTitle": "قابل بھروسہ الارمز کی اجازت دیں",
+      "batteryIntro": "اینڈرائیڈ بیٹری بچانے کے لیے نماز کے الارمز خاموش کر سکتا ہے۔ وقت پر اذان سننے کے لیے:",
+      "batteryStepAlarms": "نماز کے اوقات کے لیے \"الارمز اور یاددہانیاں\" (درست الارمز) کی اجازت دیں۔",
+      "batteryStepOptimization": "نماز کے اوقات کے لیے بیٹری آپٹیمائزیشن بند کریں تاکہ یہ سو نہ جائے۔",
+      "batteryOemNote": "کچھ فونز (شیاومی، ہواوے، سام سنگ، ون پلس، اوپو، ویوو) میں ایک اضافی \"آٹو اسٹارٹ\" یا \"محفوظ ایپس\" ترتیب ہوتی ہے — وہاں بھی نماز کے اوقات کو فعال کریں۔",
+      "openExactAlarm": "الارمز اور یاددہانیاں کھولیں",
+      "openBatterySettings": "بیٹری کی ترتیبات کھولیں",
+      "testAdhanButton": "میری اذان آزمائیں (5 سیکنڈ)",
+      "testAdhanScheduled": "تقریباً 5 سیکنڈ میں ایک آزمائشی اذان بجے گی۔ اسے اطلاع کے طور پر سننے کے لیے ایپ کو لاک یا بیک گراؤنڈ میں کریں۔",
+      "dismiss": "ختم کریں"
+    },
+    "homeWidget": {
+      "widgetPreviewAccessibilityLabel": "اگلی نماز کا وقت دکھاتا ویجٹ پیش نظارہ",
+      "title": "ہوم اسکرین ویجٹ",
+      "subtitle": "اپنی ہوم اسکرین پر اگلی نماز کا وقت دیکھیں",
+      "widgetPreviewTitle": "ویجٹ پیش نظارہ",
+      "nextPrayer": "اگلی نماز",
+      "setLocationToPreview": "پیش نظارہ کے لیے اپنا مقام مقرر کریں",
+      "setupInstructions": "سیٹ اپ ہدایات",
+      "integrationStatus": "انضمام کی حیثیت",
+      "upsellMessage": "ہوم اسکرین ویجٹ ایک امت+ فیچر ہے۔",
+      "upsellAction": "امت+ میں اپ گریڈ کریں",
+      "countdownPrefix": "{{countdown}} میں",
+      "setupStep1": "اپنی ہوم اسکرین کو دیر تک دبائیں",
+      "setupStep2": "+ بٹن (iOS) یا ویجٹس مینو (اینڈرائیڈ) پر ٹیپ کریں",
+      "setupStep3": "\"{{appName}}\" تلاش کریں",
+      "setupStep4": "اپنا پسندیدہ ویجٹ سائز منتخب کریں",
+      "setupStep5": "ویجٹ شامل کریں پر ٹیپ کریں",
+      "statusAndroid": "اینڈرائیڈ: فعال — \"اگلی نماز\" ہوم اسکرین ویجٹ react-native-android-widget کے ذریعے فراہم کیا جاتا ہے اور ہر 30 منٹ میں خود بخود ریفریش ہوتا ہے (اور آپ کے ترتیبات یا اطلاعات تبدیل کرنے کے فوراً بعد بھی)۔",
+      "statusIos": "iOS: فعال — \"اگلی نماز\" WidgetKit ویجٹ آپ کے ترتیبات یا اطلاعات تبدیل کرنے پر اپ ڈیٹ ہوتا ہے اور ہر نماز کے وقت پر خود بخود آگے بڑھتا ہے۔"
+    },
+    "smartHome": {
+      "proOnly": "سمارٹ ہوم (نماز کے دوران لاک + آلات کا کنٹرول) ایک امت+ فیچر ہے۔",
+      "upgradeAction": "امت+ میں اپ گریڈ کریں",
+      "lockDuringPrayer": "نماز کے دوران لاک کریں",
+      "lockDesc": "نماز کا وقت شروع ہونے پر خود بخود اسکرین مدھم کریں اور میڈیا خاموش کریں۔ ترتیب کے لیے تصدیق درکار ہے۔",
+      "lockOnSalah": "نماز پر لاک کریں",
+      "lockOnSalahAccessibilityLabel": "نماز پر لاک موڈ",
+      "activeNote": "نماز کے اوقات پر اسکرین مدھم ہو جائے گی اور میڈیا روک دیا جائے گا۔\nاینڈرائیڈ: میڈیا فوکس چھوڑ دیا جاتا ہے۔ iOS: خاموشی موڈ کی یاددہانی دکھائی جاتی ہے۔",
+      "linkedAccounts": "منسلک اکاؤنٹس",
+      "noLinks": "ابھی تک کوئی سمارٹ ہوم اکاؤنٹ منسلک نہیں ہے۔ Alexa ایپ یا Google Home ایپ کھولیں، پرے کیلک اسکل یا ایکشن تلاش کریں، اور اپنا امت اکاؤنٹ منسلک کریں۔",
+      "linked": "{{date}} کو منسلک ہوا",
+      "unlink": "منسلک ختم کریں",
+      "unlinkConfirmTitle": "{{name}} کا منسلک ختم کریں؟",
+      "unlinkConfirmBody": "آپ کسی بھی وقت Alexa یا Google Home ایپ سے {{name}} کو دوبارہ منسلک کر سکتے ہیں۔",
+      "unlinkConfirmAction": "منسلک ختم کریں",
+      "unlinkFailedTitle": "منسلک ختم نہیں ہو سکا",
+      "learnMore": "مزید جانیں",
+      "authPrompt": "لاک آن سلاح فعال کرنے کے لیے تصدیق کریں",
+      "useFallback": "پاس کوڈ استعمال کریں"
+    },
+    "stats": {
+      "chartAccessibilityLabel": "ہفتہ وار نماز کی تکمیل کا چارٹ",
+      "noLogs": "ابھی تک کوئی نماز کا ریکارڈ نہیں۔ اپنے اعداد و شمار دیکھنے کے لیے نمازیں مکمل کرنا شروع کریں۔",
+      "dayStreak": "دن کا تسلسل 🔥",
+      "weeklyRate": "ہفتہ وار شرح",
+      "totalLogged": "کل ریکارڈ شدہ",
+      "last7Days": "گزشتہ 7 دن",
+      "thisMonth": "اس مہینے",
+      "byPrayer": "نماز کے حساب سے",
+      "weekly": "ہفتہ وار",
+      "monthly": "ماہانہ",
+      "fastingStreak": "روزے کا تسلسل",
+      "qadaOutstanding": "باقی قضا"
+    },
+    "subscription": {
+      "title": "پرے کیلک پرو",
+      "subtitle": "اپنی عبادت کے تجربے کو بہتر بنائیں",
+      "loadingOptions": "سبسکرپشن آپشنز لوڈ ہو رہے ہیں...",
+      "loadProductsFailed": "پروڈکٹس لوڈ نہیں ہو سکے۔ اپنا کنکشن چیک کریں اور دوبارہ کوشش کریں۔",
+      "connectFailed": "اسٹور سے جڑنا ناکام ہوا۔",
+      "createAccountTitle": "اکاؤنٹ بنائیں",
+      "createAccountBody": "پہلے سائن ان کریں تاکہ آپ کی خریداری آپ کے آلات پر سنک ہو سکے۔",
+      "purchaseFailed": "خریداری ناکام ہوئی۔ براہ کرم دوبارہ کوشش کریں۔",
+      "restoreFailed": "بحالی ناکام ہوئی۔",
+      "proTitle": "آپ پرو پر ہیں",
+      "proSub": "پرے کیلک کی حمایت کرنے کا شکریہ!",
+      "noProducts": "سبسکرپشن پروڈکٹس دستیاب نہیں۔ App Store Connect / Google Play Console میں ترتیب دیں۔",
+      "restorePurchase": "خریداری بحال کریں",
+      "restorePurchaseAccessibilityLabel": "پچھلی خریداری بحال کریں",
+      "legal": "سبسکرپشنز خود بخود تجدید ہوتی ہیں جب تک کہ موجودہ مدت ختم ہونے سے کم از کم 24 گھنٹے پہلے منسوخ نہ کی جائیں۔ اپنے App Store / Google Play اکاؤنٹ ترتیبات میں انتظام کریں۔",
+      "featurePremiumAdhan": "پریمیم اذان کی آوازیں — اضافی قاری",
+      "featureHomeWidget": "ہوم اسکرین ویجٹ (اگلی نماز)",
+      "featureTvPairing": "پرے کیلک ٹی وی ایپ جوڑنا",
+      "featureSmartHome": "سمارٹ ہوم — نماز کے دوران آلات کو لاک کریں",
+      "subscribeAccessibilityLabel": "{{price}} میں {{title}} سبسکرائب کریں"
+    },
+    "tasbeeh": {
+      "chooseDhikr": "ذکر منتخب کریں",
+      "of": "{{count}} میں سے",
+      "resetCounter": "کاؤنٹر دوبارہ ترتیب دیں",
+      "todayTotal": "آج کا کل",
+      "history": "تاریخ"
+    },
+    "timetable": {
+      "setCityTitle": "اپنا شہر مقرر کریں",
+      "setCitySubtitle": "ماہانہ نماز کا ٹائم ٹیبل دیکھنے کے لیے اپنا مقام مقرر کریں۔",
+      "previousMonth": "پچھلا مہینہ",
+      "nextMonth": "اگلا مہینہ",
+      "exportCalendar": "کیلنڈر ایکسپورٹ کریں (.ics)",
+      "exportAccessibilityLabel": "اس مہینے کے نماز کے اوقات کیلنڈر فائل کے طور پر ایکسپورٹ کریں",
+      "shareTimes": "یہ مہینہ شیئر کریں",
+      "shareAccessibilityLabel": "اس مہینے کا نماز کا ٹائم ٹیبل شیئر کریں"
+    },
+    "travel": {
+      "musafirModeTitle": "مسافر موڈ",
+      "musafirModeDesc": "میں ایک مسافر ہوں۔ متعلقہ نمازوں پر قصر لاگو کریں۔",
+      "musafirModeAccessibilityLabel": "مسافر سفر موڈ",
+      "musafirAlertTitle": "مسافر موڈ",
+      "musafirAlertBody": "قصر (کمی) ظہر، عصر اور عشاء کو 4 سے 2 رکعت تک کم کر دیتا ہے۔\n\nنوٹ: علمی اختلافات کی وجہ سے جمع (نمازیں ملانا) خود بخود لاگو نہیں ہوتا۔ براہ کرم سفر کے دوران نمازیں ملانے کے بارے میں اپنے مقامی عالم یا مذہب کی پیروی کریں۔",
+      "understood": "سمجھ گیا",
+      "qasrRakatCount": "قصر رکعت کی تعداد",
+      "fiqhNote": "فجر اور مغرب کم نہیں کیے جاتے (قصر صرف 4 رکعت والی نمازوں پر لاگو ہوتا ہے)۔ جمع (نمازیں ملانا) کے لیے اپنے مقامی عالم یا مذہب کے فیصلے کی پیروی درکار ہے۔",
+      "travelDestination": "سفر کی منزل",
+      "changeCity": "تبدیل کریں",
+      "changeCityAccessibilityLabel": "سفر کا شہر تبدیل کریں",
+      "selectTravelCity": "سفر کا شہر منتخب کریں",
+      "selectTravelCityAccessibilityLabel": "سفر کا شہر منتخب کریں",
+      "recalcNote": "آپ کی سفر کی منزل کے لیے نماز کے اوقات دوبارہ حساب کیے جائیں گے۔",
+      "homeCity": "آبائی شہر",
+      "notSet": "مقرر نہیں"
+    },
+    "qibla": {
+      "calibrating": "قطب نما کیلیبریٹ ہو رہا ہے...",
+      "locationRequiredTitle": "مقام درکار ہے",
+      "locationRequiredSubtitle": "قبلہ کی سمت تلاش کرنے کے لیے ترتیبات میں اپنا مقام مقرر کریں۔",
+      "bearingLabel": "قبلہ کی سمت",
+      "compassAccessibilityLabel": "قبلہ قطب نما، موجودہ رخ {{degrees}} ڈگری",
+      "accuracyLabel": "درستگی: {{level}}",
+      "accuracyUnknown": "نامعلوم",
+      "accuracyUnreliable": "غیر قابل بھروسہ",
+      "accuracyLow": "کم",
+      "accuracyMedium": "درمیانہ",
+      "accuracyHigh": "زیادہ",
+      "headingNote": "رخ: {{degrees}}° | کعبہ کی طرف عظیم دائرہ کی سمت"
+    },
+    "fasting": {
+      "todaysFast": "آج کا روزہ",
+      "logToday": "آج کا روزہ ریکارڈ کریں",
+      "unlogToday": "آج کا ریکارڈ ہٹائیں",
+      "loggedAs": "ریکارڈ شدہ: {{type}}",
+      "yourStreaks": "آپ کا تسلسل",
+      "mondayStreak": "پیر کا تسلسل",
+      "thursdayStreak": "جمعرات کا تسلسل",
+      "whiteDaysMonth": "اس مہینے کے ایام بیض",
+      "ramadanLogged": "رمضان کے روزے",
+      "qadaLogged": "قضا ادا شدہ",
+      "voluntaryLogged": "نفلی روزے",
+      "ramadanDayOf": "رمضان — دن {{day}} از {{total}}",
+      "upcomingSuggestions": "آنے والے تجویز کردہ روزے کے دن",
+      "logAction": "ریکارڈ کریں",
+      "sunnahSourceNote": "پیر اور جمعرات کا روزہ: صحیح مسلم 1162۔ ایام بیض (ہر ہجری مہینے کی 13ویں-15ویں): سنن النسائی 2345، سنن ابی داود 2449۔",
+      "recentLogs": "حالیہ ریکارڈز"
+    },
+    "qada": {
+      "totalOwed": "کل واجب الادا نمازیں",
+      "perPrayer": "فی نماز تعداد",
+      "makeUpOne": "ایک ادا کریں",
+      "excusedTitle": "معذوری کے ادوار",
+      "fiqhNote": "معذوری کے دور میں (جیسے حیض یا نفاس)، عورت نماز نہیں پڑھتی — اور وہ چھوٹی ہوئی نمازیں بعد میں قضا نہیں کی جاتیں۔ یہ روزے سے مختلف ہے: اس دوران چھوٹے ہوئے روزے بعد میں ضرور قضا کیے جاتے ہیں۔",
+      "fiqhCitation": "صحیح بخاری 321 · صحیح مسلم 335",
+      "consultScholar": "یہ اکثریتی رائے کی عکاسی کرتا ہے۔ اپنی مخصوص صورتحال کے لیے اپنے مقامی عالم سے مشورہ کریں۔",
+      "addExcusedRange": "معذوری کا دورانیہ شامل کریں",
+      "startDate": "شروع کی تاریخ",
+      "endDate": "اختتامی تاریخ",
+      "noteOptional": "نوٹ (اختیاری)",
+      "notePlaceholder": "مثلاً حیض، بیماری",
+      "removeExcusedRangeAccessibilityLabel": "معذوری کا دورانیہ ہٹائیں"
+    },
+    "jumuah": {
+      "intro": "جمعہ ہفتے کا بہترین دن ہے۔ نرم یاددہانیاں مقرر کریں اور جمعہ کی سنتوں کے ساتھ تیاری کریں۔",
+      "khutbahTitle": "خطبہ کی یاددہانی",
+      "khutbahSub": "خطبے سے پہلے ہر جمعہ کو ایک یاددہانی۔",
+      "kahfTitle": "سورۃ الکہف کی یاددہانی",
+      "kahfSub": "جمعہ کو سورۃ الکہف پڑھنے کی یاددہانی۔",
+      "kahfDayThursday": "جمعرات کی شام",
+      "kahfDayFriday": "جمعہ کی صبح",
+      "reminderTime": "یاددہانی کا وقت",
+      "checklistTitle": "جمعہ کی سنتیں",
+      "virtueTitle": "جمعہ کی فضیلت",
+      "virtueBody": "نبی ﷺ نے فرمایا: \"جس دن پر سورج طلوع ہوا ان میں سب سے بہترین دن جمعہ ہے۔\"",
+      "virtueCitation": "صحیح مسلم 854",
+      "kahfVirtueBody": "نبی ﷺ نے فرمایا: \"جو جمعہ کے دن سورۃ الکہف پڑھے، اس کے لیے دونوں جمعوں کے درمیان نور روشن ہو جائے گا۔\"",
+      "kahfVirtueCitation": "روایت: حاکم اور بیہقی؛ البانی نے صحیح قرار دیا",
+      "checklist": {
+        "ghusl": "غسل کریں",
+        "ghuslCitation": "صحیح بخاری 877 · صحیح مسلم 846",
+        "cleanClothes": "صاف اور اچھے کپڑے پہنیں",
+        "cleanClothesCitation": "سنن ابی داود 343 (حسن)",
+        "perfume": "خوشبو لگائیں (مسواک اور آراستگی)",
+        "perfumeCitation": "صحیح بخاری 880",
+        "early": "مسجد جلدی جائیں",
+        "earlyCitation": "صحیح بخاری 881 · صحیح مسلم 850",
+        "kahf": "سورۃ الکہف پڑھیں",
+        "kahfCitation": "حاکم / بیہقی (البانی کے نزدیک صحیح)",
+        "salawat": "نبی ﷺ پر درود میں اضافہ کریں",
+        "salawatCitation": "سنن ابی داود 1047 (صحیح)",
+        "dua": "دعا کی قبولیت کی گھڑی تلاش کریں",
+        "duaCitation": "صحیح بخاری 935 · صحیح مسلم 852"
+      }
+    },
+    "leadTimeAccessibilityLabel": "{{prayer}} اطلاع کا وقت، {{minutes}} منٹ پہلے۔ تبدیل کرنے کے لیے ٹیپ کریں۔",
+    "iqamahAccessibilityLabel": "{{prayer}} اقامت کی یاددہانی، {{status}}۔ تبدیل کرنے کے لیے ٹیپ کریں۔",
+    "enableAccessibilityLabel": "{{prayer}} اذان فعال کریں",
+    "rowAccessibilityLabel": "{{name}}، {{distance}} دور",
+    "directionsAccessibilityLabel": "نقشے میں {{name}} کی طرف ہدایات کھولیں",
+    "accentColorAccessibilityLabel": "نمایاں رنگ {{hex}}",
+    "todayTotalAccessibilityLabel": "آج کا ذکر کل: {{total}}",
+    "historyEntryAccessibilityLabel": "{{name}}: {{count}}، {{date}}",
+    "arabicTextAccessibilityLabel": "عربی: {{transliteration}}",
+    "counterAccessibilityLabel": "شمار: {{target}} میں سے {{count}}۔ {{status}}",
+    "tapToIncrement": "بڑھانے کے لیے ٹیپ کریں",
+    "presetAccessibilityLabel": "{{transliteration}}، ہدف {{target}}، ماخذ {{source}}",
+    "zoneRowAccessibilityLabel": "{{label}}، {{radius}} میٹر رداس",
+    "phaseAccessibilityLabel": "چاند کی حالت: {{phase}}، {{illumination}}",
+    "voiceAccessibilityLabel": "{{name}}، {{reciter}} کی آواز میں",
+    "voiceAccessibilityLabelPro": "{{name}}، {{reciter}} کی آواز میں (پرو، منتخب کرنے کے لیے اپ گریڈ درکار)",
+    "surahNameAccessibilityLabel": "سورۃ {{name}}",
+    "readOnWikiAccessibilityLabel": "Islam.Wiki پر سورۃ {{name}} پڑھیں",
+    "verseAccessibilityLabel": "آیت {{number}}: {{transliteration}}",
+    "featuredVerseAccessibilityLabel": "{{label}}: آیت الکرسی",
+    "surahRowAccessibilityLabel": "سورۃ {{number}}، {{name}}، {{count}} آیات، {{type}}",
+    "fullTextAvailableSuffix": "، مکمل متن دستیاب ہے",
+    "revelationMeccan": "مکی",
+    "revelationMedinan": "مدنی"
+  },
+  "onboarding": {
+    "skip": "چھوڑیں",
+    "welcome": {
+      "title": "پرے کیلک میں خوش آمدید",
+      "desc": "درست نماز کے اوقات، قبلہ کی سمت، اور اسلامی کیلنڈر — چند ٹیپس میں تیار۔",
+      "cta": "شروع کریں"
+    },
+    "location": {
+      "title": "آپ کا مقام",
+      "prime": "پرے کیلک آپ کے شہر کے لیے درست نماز کے اوقات کا حساب لگانے کے لیے آپ کا مقام استعمال کرتا ہے۔ یہ آپ کے آلے پر ہی رہتا ہے — ہم اسے کبھی شیئر نہیں کرتے۔ جاری رکھنے کے لیے اگلی اسکرین پر اجازت دیں پر ٹیپ کریں۔",
+      "allow": "مقام کی اجازت دیں",
+      "later": "میں یہ بعد میں مقرر کروں گا"
+    },
+    "notifications": {
+      "title": "نماز کی یاددہانیاں",
+      "prime": "ہر نماز کے وقت پر نرم یاددہانی یا اذان حاصل کریں تاکہ آپ سے کبھی کوئی نماز نہ چھوٹے۔ آپ بعد میں طے کر سکتے ہیں کہ کون سی نمازیں آپ کو مطلع کریں۔",
+      "allow": "یاددہانیاں فعال کریں",
+      "later": "ابھی نہیں"
+    },
+    "method": {
+      "title": "حساب کا طریقہ",
+      "dpcExplain": "DPC (ڈائنامک پرے کیلک) خود بخود آپ کے مقام کے لیے بہترین اوقات کا حساب لگاتا ہے — چاند دیکھنے کے طریقے پر ایک بہتری۔ ہم اسے برقرار رکھنے کی سفارش کرتے ہیں۔",
+      "dpcLabel": "ڈائنامک (پرے کیلک DPC)",
+      "recommended": "تجویز کردہ",
+      "orFixed": "یا ایک مقررہ طریقہ منتخب کریں",
+      "suggested": "آپ کے علاقے کے لیے",
+      "continue": "جاری رکھیں"
+    },
+    "consent": {
+      "title": "پرے کیلک کو بہتر بنانے میں مدد کریں"
+    },
+    "done": {
+      "title": "سب کچھ تیار ہے",
+      "desc": "آپ کے نماز کے اوقات تیار ہیں۔ آپ ان میں سے کوئی بھی انتخاب کسی بھی وقت ترتیبات میں تبدیل کر سکتے ہیں۔",
+      "cta": "پرے کیلک کھولیں"
     }
+  },
+  "consent": {
+    "title": "گمنام استعمال کے تجزیات",
+    "description": "پرے کیلک کو بہتر بنانے میں ہماری مدد کے لیے گمنام، مجموعی استعمال کا ڈیٹا شیئر کریں۔ کبھی بھی کوئی ذاتی معلومات، مقام، یا اکاؤنٹ کی تفصیلات جمع نہیں کی جاتیں۔",
+    "privacyNote": "پہلے سے آف ہے۔ جب تک آپ اسے آن نہیں کرتے کچھ نہیں بھیجا جاتا، اور آپ اسے کسی بھی وقت تبدیل کر سکتے ہیں۔",
+    "accept": "اجازت دیں",
+    "decline": "نہیں شکریہ",
+    "toggleLabel": "گمنام تجزیات شیئر کریں",
+    "privacyScreenTitle": "پرائیویسی",
+    "privacyScreenFooter": "پرے کیلک پرائیویسی کو ترجیح دیتا ہے۔ تجزیات گمنام ہیں اور آپ کی رضامندی کے بغیر آف ہیں۔ اسے آف کرنے سے تمام ٹیلی میٹری فوراً بند ہو جاتی ہے۔"
   }
 }

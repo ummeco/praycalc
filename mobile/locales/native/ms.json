@@ -1,6 +1,6 @@
 {
-  "NSLocationWhenInUseUsageDescription": "Allow Prayer Times to access your location to calculate accurate prayer times.",
-  "NSLocationAlwaysAndWhenInUseUsageDescription": "Allow Prayer Times to access your location to calculate accurate prayer times.",
-  "NSCalendarsFullAccessUsageDescription": "Prayer Times adds salah blocks to your calendar as reminders.",
-  "NSFaceIDUsageDescription": "Prayer Times uses Face ID to confirm lock-on-salah mode."
+  "NSLocationWhenInUseUsageDescription": "Benarkan Waktu Solat mengakses lokasi anda untuk mengira waktu solat yang tepat.",
+  "NSLocationAlwaysAndWhenInUseUsageDescription": "Benarkan Waktu Solat mengakses lokasi anda untuk mengira waktu solat yang tepat.",
+  "NSCalendarsFullAccessUsageDescription": "Waktu Solat menambah blok solat ke kalendar anda sebagai peringatan.",
+  "NSFaceIDUsageDescription": "Waktu Solat menggunakan Face ID untuk mengesahkan mod kunci semasa solat."
 }

@@ -1,6 +1,6 @@
 {
-  "NSLocationWhenInUseUsageDescription": "Allow Prayer Times to access your location to calculate accurate prayer times.",
-  "NSLocationAlwaysAndWhenInUseUsageDescription": "Allow Prayer Times to access your location to calculate accurate prayer times.",
-  "NSCalendarsFullAccessUsageDescription": "Prayer Times adds salah blocks to your calendar as reminders.",
-  "NSFaceIDUsageDescription": "Prayer Times uses Face ID to confirm lock-on-salah mode."
+  "NSLocationWhenInUseUsageDescription": "Fadlan u ogolow Waqtiyada Salaadda inay isticmaasho goobtaada si loo xisaabiyo waqtiyada salaadda si sax ah.",
+  "NSLocationAlwaysAndWhenInUseUsageDescription": "Fadlan u ogolow Waqtiyada Salaadda inay isticmaasho goobtaada si loo xisaabiyo waqtiyada salaadda si sax ah.",
+  "NSCalendarsFullAccessUsageDescription": "Waqtiyada Salaadda waxay ku darsataa xilliyada salaadda jadwalkaaga sidii xasuusin.",
+  "NSFaceIDUsageDescription": "Waqtiyada Salaadda waxay isticmaashaa Face ID si loo xaqiijiyo qaabka xidhitaanka intii salaadda socoto."
 }

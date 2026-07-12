@@ -13,6 +13,27 @@
     "midnight": "Tsakar Dare",
     "lastThird": "Kashi na Ƙarshe"
   },
+  "notifications": {
+    "prayerTime": "Lokacin {{prayer}}",
+    "iqamahTitle": "Iqamar {{prayer}}",
+    "bodyNow": "Lokacin sallar {{prayer}} ya yi — {{time}}",
+    "bodyAdvance_one": "{{prayer}} zai yi bayan minti {{count}} — {{time}}",
+    "bodyAdvance_other": "{{prayer}} zai yi bayan mintuna {{count}} — {{time}}",
+    "bodyIqamah": "Tunatarwar iqama don {{prayer}} (azan ya kasance da {{time}})",
+    "snooze_one": "Jinkirta na minti {{count}}",
+    "snooze_other": "Jinkirta na mintuna {{count}}",
+    "snoozedBody": "Tunatarwar da aka jinkirta don sallar {{prayer}}",
+    "suhoorTitle": "Sahur",
+    "suhoorBody": "Lokacin sahur — abincin kafin asuba. Asuba tana kusa.",
+    "tahajjudTitle": "Tahajjud",
+    "tahajjudBody": "Kashi na ƙarshe na dare — lokaci mai albarka don qiyam da addu'a.",
+    "jumuahKhutbahTitle": "Jumma'a",
+    "jumuahKhutbahBody": "Huduba za yi ba da daɗewa ba. Ka nufi masallaci don sallar Jumma'a.",
+    "kahfTitle": "Suratul Kahf",
+    "kahfBody": "Karanta Suratul Kahf domin haske tsakanin Jumma'a biyu.",
+    "testTitle": "Gwajin Azan",
+    "testBody": "Idan ka ji wannan, sanarwar azan tana aiki."
+  },
   "common": {
     "bismillah": "Da sunan Allah Mai rahama Mai jinƙai",
     "salah": "Sallah",
@@ -36,15 +57,138 @@
     "search": "Bincike",
     "change": "Canza",
     "reset": "Sake saitawa",
+    "complete": "An kammala",
     "openInMaps": "Bude a Taswira",
     "openSettings": "Bude Saituna",
     "upgrade": "Haɓakawa",
-    "signIn": "Shiga"
+    "signIn": "Shiga",
+    "createAccount": "Ƙirƙiri Asusu",
+    "continue": "Ci gaba",
+    "skip": "Tsallake",
+    "nothingHereYet": "Babu komai a nan tukuna",
+    "somethingWentWrong": "Wani abu ya faru ba daidai ba",
+    "tryAgain": "Sake Gwadawa",
+    "tooManyRequests": "Yawan Buƙatu Da Yawa",
+    "waitBeforeRetrying": "Don Allah jira daƙiƙa {{seconds}} kafin sake gwadawa.",
+    "offlineCachedData": "Ba ka da intanet. Ana nuna bayanan da aka ajiye.",
+    "permissionRequired": "Ana Buƙatar Izinin {{permission}}",
+    "permissionRequiredBody": "Lokutan sallah suna buƙatar shiga {{permission}}. Don Allah kunna shi a Saiti.",
+    "loadingContent": "Ana lodin abun ciki",
+    "permissionRequiredGeneric": "Ana Buƙatar Izini",
+    "permissionRequiredGenericBody": "Ana buƙatar izinin {{permission}} don wannan fasalin.",
+    "openSystemSettings": "Bude saitunan tsarin",
+    "retryRequest": "Sake gwada buƙata",
+    "tooManyRequestsRetry": "Yawan buƙatu da yawa. Don Allah jira daƙiƙa {{seconds}} kafin sake gwadawa.",
+    "tooManyRequestsRetryGeneric": "Yawan buƙatu da yawa. Don Allah jira kafin sake gwadawa.",
+    "offlineShowingCachedFrom": "Ba ka da intanet. Ana nuna bayanai daga {{cachedAt}}.",
+    "offlineShowingCachedGeneric": "Ba ka da intanet. Ana nuna bayanan da aka ajiye."
   },
   "greeting": {
     "assalamu_alaykum": "Assalamu Alaykum wa Rahmatullahi wa Barakatuh",
     "prayer_approaching": "Lokin sallah ya yi kusa",
     "prayer_now": "Lokin sallah"
+  },
+  "tabs": {
+    "home": "Sallah",
+    "prayerTimes": "Lokutan Sallah",
+    "qibla": "Alqibla",
+    "calendar": "Kalanda",
+    "quran": "Alkur'ani",
+    "more": "Ƙari"
+  },
+  "menu": {
+    "settings": {
+      "label": "Saiti",
+      "subtitle": "Hanya, wuri, sanarwa"
+    },
+    "adhan": {
+      "label": "Ɗakin Karatun Azan",
+      "subtitle": "Sautin azan & mai karatu"
+    },
+    "tasbeeh": {
+      "label": "Mai Kirga Tasbihi",
+      "subtitle": "Mai kirga zikiri na dijital"
+    },
+    "duaDhikr": {
+      "label": "Addu'a & Azkari",
+      "subtitle": "Addu'oin safe da yamma"
+    },
+    "moon": {
+      "label": "Yanayin Wata",
+      "subtitle": "Kalandar wata & ranar Hijra"
+    },
+    "quran": {
+      "label": "Alkur'ani",
+      "subtitle": "Rubutun Usmani da alamomin ajiya"
+    },
+    "stats": {
+      "label": "Ƙididdigar Sallah",
+      "subtitle": "Bibiya sallolinka & jerin kwanaki"
+    },
+    "ramadan": {
+      "label": "Ramadan",
+      "subtitle": "Lokutan Sahur & Buda baki, mai bibiya"
+    },
+    "subscription": {
+      "label": "Sami Pro",
+      "subtitle": "Buɗe fasalolin premium"
+    },
+    "homeWidget": {
+      "label": "Widget na Farkon Allo",
+      "subtitle": "Sallar gaba a farkon allo"
+    },
+    "smartHome": {
+      "label": "Gida Mai Wayo",
+      "subtitle": "Kulle na'urori a lokacin sallah"
+    },
+    "pairTv": {
+      "label": "Haɗa TV",
+      "subtitle": "Haɗa app na PrayCalc TV"
+    },
+    "tvManager": {
+      "label": "TV-nawa",
+      "subtitle": "Sarrafa allunan TV da aka haɗa"
+    },
+    "agendas": {
+      "label": "Kalandar Sallah",
+      "subtitle": "Ƙara lokutan sallah zuwa kalanda"
+    },
+    "timetable": {
+      "label": "Jadawalin Wata",
+      "subtitle": "Lokutan sallah na wata gaba ɗaya + fitarwa zuwa kalanda"
+    },
+    "mosques": {
+      "label": "Masallatan Kusa",
+      "subtitle": "Nemo masallatan kusa da kai"
+    },
+    "travel": {
+      "label": "Yanayin Tafiya",
+      "subtitle": "Qasr na musafiri ga matafiya"
+    },
+    "jumuah": {
+      "label": "Jumma'a",
+      "subtitle": "Tunatarwar Jumma'a & Suratul Kahf"
+    },
+    "masjidMute": {
+      "label": "Kashe Sauti Ta Atomatik a Masallaci",
+      "subtitle": "Kashe sautin wayarka kusa da masallaci"
+    },
+    "fasting": {
+      "label": "Mai Bibiyar Azumi",
+      "subtitle": "Ramadan, Litinin & Alhamis, Kwanaki Fari"
+    },
+    "qada": {
+      "label": "Sallolin da Aka Rasa (Kada)",
+      "subtitle": "Bibiya kuma cika sallolin da aka rasa"
+    },
+    "privacy": {
+      "label": "Sirri & Bayanai",
+      "subtitle": "Sarrafa izinin bincike"
+    },
+    "shareApp": {
+      "label": "Raba PrayCalc",
+      "subtitle": "Faɗa wa aboki ko ɗan uwa"
+    }
   },
   "settings": {
     "title": "Saiti",
@@ -66,28 +210,692 @@
     "location": {
       "title": "Wuri",
       "detect": "Gano ta atomatik",
-      "manual": "Shigar da hannu"
-    }
+      "manual": "Shigar da hannu",
+      "useGps": "Yi amfani da Wurin GPS",
+      "searchManually": "Nemo Gari da Hannu",
+      "currentCity": "Garin Yanzu",
+      "noneSet": "Ba a saita wuri ba. Ana buƙatar GPS ko gari da hannu.",
+      "gettingLocation": "Ana samun wurinka...",
+      "permissionDenied": "An Ƙi Izini",
+      "permissionDeniedBody": "Kunna shiga wuri a Saiti don gano garinka ta atomatik."
+    },
+    "account": {
+      "title": "Asusu",
+      "signedIn": "Ka shiga",
+      "anonymous": "Ba a sani ba",
+      "free": "Kyauta"
+    },
+    "highLatitude": {
+      "title": "Gyaran Latitude Mai Girma",
+      "hint": "Ana amfani da shi lokacin da Asuba/Isha'i basu iya kaiwa ga kusurwar da ake buƙata (wurare masu nisa arewa/kudu a lokacin bazara).",
+      "nightMiddle": "Tsakiyar Dare",
+      "angleBased": "Bisa Kusurwa",
+      "oneSeventh": "Kashi Bakwai na Dare",
+      "none": "Babu (na iya nuna 'babu')"
+    },
+    "madhab": {
+      "title": "Mazhabi (La'asar)",
+      "hint": "Shafi'i: sau 1 na inuwa | Hanafi: sau 2 na inuwa"
+    },
+    "prayerAdjustments": {
+      "title": "Gyaran Lokutan Sallah",
+      "hint": "Gyara kowane lokaci har zuwa ±minti 30 don dacewa da jadawalin masallacinka."
+    },
+    "hijriAdjustment": {
+      "title": "Gyaran Ranar Hijra",
+      "hint": "Canza ranar Hijra da ±kwanaki 2 idan ganin wata a wurinka ya bambanta da kalandar Umm al-Qura.",
+      "offset": "Bambanci",
+      "decreaseAccessibilityLabel": "Rage bambancin Hijra",
+      "increaseAccessibilityLabel": "Ƙara bambancin Hijra"
+    },
+    "timeFormat": {
+      "title": "Tsarin Lokaci"
+    },
+    "appearance": {
+      "title": "Kamanni",
+      "system": "Tsarin",
+      "light": "Haske",
+      "dark": "Duhu"
+    },
+    "customAngles": {
+      "fajr": "Kusurwar Asuba (°)",
+      "isha": "Kusurwar Isha'i (°)",
+      "fajrAccessibilityLabel": "Kusurwar Asuba ta musamman a digiri",
+      "ishaAccessibilityLabel": "Kusurwar Isha'i ta musamman a digiri"
+    },
+    "upsell": {
+      "priceLine": "Ummat+ $9.99/shekara — yana buɗe app na TV & Gida Mai Wayo",
+      "upgradeButton": "Haɓaka zuwa Ummat+"
+    },
+    "prayerAlerts": "Sanarwar Lokacin Sallah",
+    "manageNotifications": "Sarrafa Sanarwa",
+    "appLanguage": "Harshen App",
+    "decreaseAccessibilityLabel": "Rage gyaran {{prayer}}",
+    "increaseAccessibilityLabel": "Ƙara gyaran {{prayer}}",
+    "valueAccessibilityLabel": "Bambancin Hijra: kwanaki {{value}}",
+    "label12h": "Tsarin sa'o'i 12",
+    "label24h": "Tsarin sa'o'i 24",
+    "themeAccessibilityLabel": "Jigon {{theme}}"
   },
   "errors": {
     "location_permission": "Don Allah bada izinin shiga wurin don ƙididdige lokutan sallah",
     "network": "Ba a iya haɗawa da hanyar sadarwa",
     "calculation": "Ba a iya ƙididdige lokutan sallah"
   },
-  "tabs": {
-    "home": "Sallah",
-    "prayerTimes": "Lokutan Sallah",
-    "qibla": "Alqibla",
-    "calendar": "Kalanda",
-    "quran": "Alkur'ani",
-    "more": "Ƙari"
-  },
-  "menu": {
-    "settings": {
-      "label": "Saituna"
+  "screens": {
+    "more": {
+      "title": "Ƙari"
+    },
+    "notFound": {
+      "title": "Ba a Sami Allo Ba",
+      "goHome": "Je zuwa Lokutan Sallah"
+    },
+    "onboarding": {
+      "welcomeTitle": "Barka da Zuwa PrayCalc",
+      "welcomeDesc": "Lokutan sallah daidai, jihar Alkibla, da kalandar Musulunci — duk a wuri ɗaya.",
+      "getStarted": "Fara",
+      "locationTitle": "Kunna Wuri",
+      "locationDesc": "Lokutan sallah suna buƙatar wurinka don ƙididdiga daidai.",
+      "allowLocation": "Ba da Izinin Wuri",
+      "skipManual": "Tsallake — zan saita da kaina",
+      "authTitle": "Ƙirƙiri Asusu?",
+      "authDesc": "Na zaɓi: ƙirƙiri asusu don daidaita girgije da tarihin sallah. Kana iya yin rajista daga baya kowane lokaci.",
+      "skipForNow": "Tsallake Yanzu"
+    },
+    "auth": {
+      "appTagline": "Lokutan sallah daidai ga kowane Musulmi",
+      "tabSkip": "Tsallake",
+      "continueTitle": "Ci Gaba Ba Tare da Asusu Ba",
+      "continueDesc": "Lokutan sallah, Alkibla, da kalanda suna aiki gaba ɗaya ba tare da intanet ba, ba tare da buƙatar asusu ba. Saitunanka an ajiye su a na'urarka.",
+      "featurePrayerQibla": "Lokutan sallah & Alkibla",
+      "featureCalendar": "Kalandar Musulunci",
+      "featureSettings": "Saiti & sanarwa",
+      "continueAnonymously": "Ci Gaba Ba a San Suna Ba",
+      "signInTitle": "Shiga",
+      "emailPlaceholder": "Imel",
+      "passwordPlaceholder": "Kalmar Sirri",
+      "namePlaceholder": "Suna (na zaɓi)",
+      "switchHint": "Asusu yana bada daman daidaita girgije da tarihin sallah a duk na'urorinka.",
+      "registerTitle": "Ƙirƙiri Asusu",
+      "signingIn": "Ana shiga...",
+      "enterEmailPassword": "Don Allah shigar da imel da kalmar sirri.",
+      "loginFailed": "Shiga ya kasa",
+      "registerFailed": "Rajista ta kasa",
+      "verifyEmail": "Duba imel ɗinka don tabbatar da asusunka, sannan ka shiga."
+    },
+    "adhan": {
+      "enablePerPrayer": "Kunna Azan Don Kowace Sallah",
+      "library": "Ɗakin Karatun Azan",
+      "noVoices": "Babu sautin azan da ake da su.",
+      "proRequiredTitle": "Ana Buƙatar Ummat+",
+      "proRequiredBody": "{{name}} sauti ne na azan na Pro. Haɓaka zuwa Ummat+ don saita shi a matsayin azan mai aiki.",
+      "proFeature": "Fasalin Pro",
+      "playPreview": "Kunna gwaji",
+      "stopPreview": "Dakatar da gwaji",
+      "voiceListLabel": "Jerin sautin azan"
+    },
+    "agendas": {
+      "title": "Kalandar Sallah",
+      "desc": "Ƙara sassan sallah zuwa kalandar na'urarka a matsayin tunatarwa. Kowace sallah tana samun taron minti {{minutes}} tare da faɗakarwa minti 5 kafin.",
+      "whichPrayers": "Wace sallolin za a ƙara",
+      "locationRequired": "Ana Buƙatar Wuri",
+      "locationRequiredBody": "Saita garinka a Saiti don ƙara lokutan sallah zuwa kalanda.",
+      "noCalendarFound": "Ba a Sami Kalanda Ba",
+      "noCalendarFoundBody": "Ba a sami kalandar da za a iya rubutawa a wannan na'urar ba.",
+      "setLocationHint": "Saita garinka a Saiti don kunna daidaita kalanda.",
+      "addButton": "Ƙara Sallolin Yau zuwa Kalanda",
+      "addButtonAccessibilityLabel": "Ƙara lokutan sallah na yau zuwa kalanda",
+      "adding": "Ana ƙarawa...",
+      "done": "An gama",
+      "addedCount": "An ƙara lokutan sallah {{count}} zuwa kalandarka.",
+      "error": "Kuskure",
+      "addFailed": "An kasa ƙarawa zuwa kalanda.",
+      "checkingPermission": "Ana duba izinin kalanda..."
+    },
+    "calendar": {
+      "eventsThisMonth": "Abubuwan Musulunci a Wannan Watan"
+    },
+    "citySearch": {
+      "findCityTitle": "Nemo Gari",
+      "placeholder": "Nemo gari...",
+      "useCurrentLocation": "Yi Amfani da Wurin Yanzu",
+      "locating": "Ana neman wuri…",
+      "searching": "Ana neman garuruwa...",
+      "noResults": "Ba a sami garuruwa don \"{{query}}\" ba.",
+      "popularHint": "An nuna garuruwa shahararru. Rubuta don nema.",
+      "searchError": "Kuskuren bincike: {{message}}",
+      "searchInputAccessibilityLabel": "Filin binciken gari",
+      "useCurrentLocationAccessibilityLabel": "Yi amfani da wurin yanzu",
+      "resultsAccessibilityLabel": "Sakamakon binciken garuruwa"
+    },
+    "duaDhikr": {
+      "noResults": "Ba a sami addu'o'i don wannan rukunin ba.",
+      "categoryAll": "Duka",
+      "categoryAfterAdhan": "Bayan Azan",
+      "categoryAfterPrayer": "Bayan Sallah",
+      "categoryMorning": "Safe",
+      "categoryEvening": "Yamma"
+    },
+    "moon": {
+      "hijriCalendar": "Kalandar Hijra",
+      "hijriDay": "Ranar Hijra",
+      "month": "Wata",
+      "lunarAge": "Shekarun Wata",
+      "daysUnit": "kwanaki {{count}}",
+      "upcomingPhases": "Yanayin Wata Masu Zuwa",
+      "nextFullMoon": "Cikakken Wata na Gaba 🌕",
+      "nextNewMoon": "Sabon Wata na Gaba 🌑",
+      "significance": "Muhimmancin Musulunci",
+      "illuminatedPct": "{{pct}}% haske",
+      "phaseNewMoon": "Sabon Wata",
+      "phaseWaxingCrescent": "Jinjirin Wata Mai Girma",
+      "phaseFirstQuarter": "Kashi na Farko",
+      "phaseWaxingGibbous": "Wata Mai Girma",
+      "phaseFullMoon": "Cikakken Wata",
+      "phaseWaningGibbous": "Wata Mai Raguwa",
+      "phaseLastQuarter": "Kashi na Ƙarshe",
+      "phaseWaningCrescent": "Jinjirin Wata Mai Raguwa",
+      "ramadanNote": "Watan Ramadan ne — watan azumi da neman Laylatul Kadr.",
+      "dhulHijjahNote": "Kwanaki goma na farko na {{month}} suna daga cikin mafi falala a shekara."
     },
     "mosques": {
-      "label": "Masallatan Kusa"
+      "setLocation": "Saita wurinka don samun masallatan kusa da kai.",
+      "setLocationAction": "Saita Wuri",
+      "finding": "Ana neman masallatan kusa...",
+      "noResults": "Ba a sami masallatai a cikin kilomita 10 ba.",
+      "retry": "Sake Gwadawa",
+      "attribution": "Bayanai © masu ba da gudummawa na OpenStreetMap",
+      "searchFailed": "An kasa neman masallatai."
+    },
+    "masjidMute": {
+      "title": "Kashe Sauti Ta Atomatik a Masallaci",
+      "intro": "PrayCalc har yanzu ba ta da jerin masallatai — ƙara yankunan kashe sauti naka a ƙasa. Muna ba da shawarar ƙara masallacinka na kusa don wayarka ta kashe sauti ta atomatik lokacin da ka isa.",
+      "masterToggleLabel": "An kunna kashe sauti ta atomatik",
+      "masterToggleSubtitle": "Kashe sautin waya lokacin da ka shiga kowane yanki a ƙasa",
+      "zonesHeading": "Yankunanka",
+      "emptyTitle": "Babu yanki tukuna",
+      "emptySubtitle": "Ƙara masallacinka na kusa don PrayCalc ta kashe sautin wayarka ta atomatik lokacin da ka isa.",
+      "addZoneAction": "Ƙara Masallacinka na Kusa",
+      "addZoneButton": "Ƙara Yanki",
+      "addZoneTitle": "Ƙara Yankin Kashe Sauti",
+      "editZoneTitle": "Gyara Yankin Kashe Sauti",
+      "labelFieldLabel": "Lambel",
+      "labelFieldPlaceholder": "misali, Masallacin An-Nur",
+      "labelRequired": "Don Allah shigar da lambel don wannan yankin.",
+      "coordinatesInvalid": "Don Allah shigar da latitude da longitude daidai, ko nema/yi amfani da wurin yanzu.",
+      "searchAddressLabel": "Nemo adireshi",
+      "searchAddressPlaceholder": "Nemo adireshi ko wuri",
+      "searching": "Ana nema...",
+      "searchNoResults": "Ba a sami wani sakamako ba. Gwada wani bincike ko shigar da haɗin kai da hannu.",
+      "useCurrentLocation": "Yi Amfani da Wurin Yanzu",
+      "locating": "Ana neman wuri...",
+      "locationFailed": "An kasa samun wurinka na yanzu.",
+      "manualEntryToggle": "Shigar da haɗin kai da hannu",
+      "latitudeLabel": "Latitude",
+      "longitudeLabel": "Longitude",
+      "radiusLabel": "Radius: mita {{radius}}",
+      "radiusHint": "Tsakanin mita {{min}} da mita {{max}} — yana rufe masallaci da filin ajiye motoci.",
+      "decreaseRadiusAccessibilityLabel": "Rage radius da mita 25",
+      "increaseRadiusAccessibilityLabel": "Ƙara radius da mita 25",
+      "saveZone": "Ajiye Yanki",
+      "deleteZone": "Share Yanki",
+      "deleteConfirmTitle": "Share wannan yankin?",
+      "deleteConfirmBody": "\"{{label}}\" ba za ta ƙara kashe sautin wayarka ta atomatik ba.",
+      "mapPickerFollowUp": "An shirya zaɓin taswira don sanya alama a gani — a yanzu, nemi adireshi ko yi amfani da wurinka na yanzu.",
+      "permissionTitle": "Ana Buƙatar Izinin Wuri",
+      "permissionBody": "Kashe Sauti Ta Atomatik a Masallaci yana buƙatar shiga wuri na \"Kullum\" don gano lokacin da ka shiga ko ka fita yanki, ko da app ɗin an rufe ta.",
+      "permissionGrant": "Ba da Izini",
+      "permissionDeniedNote": "Ba a ba da izinin shiga wuri na baya ba — an ajiye yankuna amma kashe sauti ta atomatik ba zai yi aiki ba har sai ka ba da izinin \"Kullum\" a saitunan tsarin.",
+      "androidNote": "Android: wayarka za ta koma girgiza lokacin da ka isa kuma ta dawo da yanayin sautin da ya gabata lokacin da ka fita.",
+      "iosNote": "iOS: Apple ba ta bari app su canza maɓallin kashe sauti ba. Maimakon haka, PrayCalc tana aika sanarwa tana neman ka kashe sautin wayarka da hannu.",
+      "iosReminderTitle": "Ka Isa",
+      "iosReminderBody": "Kana kusa da {{zone}} — don Allah kashe sautin wayarka.",
+      "defaultZoneLabel": "yankin kashe sautinka",
+      "activeNow": "Yana aiki yanzu — an kashe sautin waya",
+      "radiusValue": "Radius na mita {{radius}}"
+    },
+    "pairTv": {
+      "upsellBadge": "Ummat+",
+      "unlockTitle": "Buɗe Haɗin TV",
+      "unlockDesc": "Ummat+ $9.99/shekara — yana buɗe app na TV & Gida Mai Wayo",
+      "pairedTitle": "An Haɗa TV",
+      "pairedDesc": "App ɗinka na TV yanzu an haɗa shi da wannan asusun.",
+      "title": "Haɗa da TV",
+      "desc": "Buɗe PrayCalc a TV ɗinka, sannan shigar da PIN na lambobi 6 da aka nuna a allo.",
+      "enterPin": "Shigar da PIN na lambobi 6 da aka nuna a TV ɗinka.",
+      "pinInputAccessibilityLabel": "PIN na haɗin TV",
+      "pairFailed": "Haɗi ya kasa. Sake gwadawa.",
+      "pairDevice": "Haɗa Na'ura",
+      "invalidOrExpiredPin": "Wannan PIN ba daidai ba ne ko ya ƙare. Duba allon TV kuma sake gwadawa."
+    },
+    "tvManager": {
+      "upsellBadge": "Ummat+",
+      "unlockTitle": "Buɗe Sarrafa TV",
+      "unlockDesc": "Ummat+ $9.99/shekara — yana buɗe app na TV & Gida Mai Wayo",
+      "emptyTitle": "Babu TV da aka haɗa tukuna",
+      "emptySubtitle": "Haɗa TV don ganin ta a nan da sarrafa saitunan allonta.",
+      "pairACta": "Haɗa TV",
+      "noCity": "Ba a saita wuri ba",
+      "nameLabel": "Suna",
+      "colorLabel": "Launin Kwarjini",
+      "streamLabel": "Tushen Kai Tsaye",
+      "streamMakkah": "Makkah TV",
+      "streamSaudiQuran": "Saudi Quran",
+      "streamMedina": "Medina",
+      "rotateLabel": "Juyawar Allo",
+      "decreaseRotate": "Rage mintunan juyawa",
+      "increaseRotate": "Ƙara mintunan juyawa",
+      "weatherLabel": "Nuna Yanayi",
+      "updateLocationAction": "Sabunta wuri zuwa wurina na yanzu",
+      "updateLocationHint": "TV za ta ɗauki canjin wuri lokacin da aka sake haɗa ta — wannan yana sabunta wurin da aka ajiye yanzu.",
+      "noLocationTitle": "Ba a Saita Wuri Ba",
+      "noLocationBody": "Saita wurinka a Saiti kafin sabunta wurin TV.",
+      "locationUpdatedTitle": "An Sabunta Wuri",
+      "locationUpdatedBody": "An ajiye. TV za ta yi amfani da wannan wurin lokacin da aka sake haɗa ta.",
+      "deleteAction": "Cire Wannan TV",
+      "deleteConfirmTitle": "Cire TV?",
+      "deleteConfirmBody": "Wannan zai cire haɗin \"{{name}}\" kuma ya cire saitunanta da aka ajiye. Ba za a iya soke wannan ba.",
+      "deleteConfirmAction": "Cire",
+      "prayerFajr": "Asuba",
+      "prayerDhuhr": "Azahar",
+      "prayerAsr": "La'asar",
+      "prayerMaghrib": "Magariba",
+      "prayerIsha": "Isha'i",
+      "madhabShafii": "Shafi'i",
+      "madhabHanafi": "Hanafi",
+      "timeFormat12h": "Sa'o'i 12",
+      "timeFormat24h": "Sa'o'i 24",
+      "invalidCoordsTitle": "Haɗin Kai Marar Inganci",
+      "invalidCoordsBody": "Shigar da latitude daidai (-90 zuwa 90) da longitude (-180 zuwa 180).",
+      "deepSettingsLabel": "Zurfin Saiti",
+      "countdownTakeoverLabel": "Ɗaukar Allo don Kirgawa",
+      "countdownTakeoverHint": "Ɗauki allo da babban kirga na baya-baya kafin kowace sallah.",
+      "countdownMinutesLabel": "Fara Kirgawa",
+      "decreaseCountdown": "Rage mintunan kirgawa",
+      "increaseCountdown": "Ƙara mintunan kirgawa",
+      "iqamaLabel": "Lokutan Iqama",
+      "iqamaHint": "Nuna kirgan iqama bayan azan, da bambanci ga kowace sallah.",
+      "decreaseIqama": "Rage bambancin iqama na {{prayer}}",
+      "increaseIqama": "Ƙara bambancin iqama na {{prayer}}",
+      "nameOnlyLabel": "Yanayin Suna Kawai",
+      "nameOnlyHint": "Nuna sunan sallah kawai (ba tare da lokuta ba) na wannan mintuna kafin azan.",
+      "nameOnlyMinutesLabel": "Tsawon Yanayin Suna Kawai",
+      "decreaseNameOnly": "Rage mintunan suna kawai",
+      "increaseNameOnly": "Ƙara mintunan suna kawai",
+      "madhabLabel": "Mazhabi",
+      "timeFormatLabel": "Tsarin Lokaci",
+      "calcMethodLabel": "Hanyar Ƙididdiga",
+      "manualLocationToggle": "Shigar da haɗin kai da hannu",
+      "latitudeLabel": "Latitude",
+      "longitudeLabel": "Longitude",
+      "manualLocationSave": "Ajiye Haɗin Kai",
+      "layoutThemeLabel": "Tsari & Jigo",
+      "layoutLabel": "Tsari",
+      "themeLabel": "Jigo",
+      "layoutClassic": "Na Gargajiya",
+      "layoutClassicDesc": "Lokuta + kai tsaye gefe da gefe",
+      "layoutFlipped": "An Juyar",
+      "layoutFlippedDesc": "Rabo iri ɗaya, an nuna madubi",
+      "layoutStreamFull": "Kai Tsaye Cikakke",
+      "layoutStreamFullDesc": "Kai tsaye cikakken allo tare da layin lokuta",
+      "layoutTimesOnly": "Lokuta Kawai",
+      "layoutTimesOnlyDesc": "Lokutan sallah kawai, babu kai tsaye",
+      "layoutAmbient": "Ambient",
+      "layoutAmbientDesc": "Ƙaramin nunin agogo na ambient",
+      "themeUmmatGreen": "Ummat Green",
+      "themeMidnight": "Midnight",
+      "themeWarmSand": "Warm Sand",
+      "themeMono": "Mono"
+    },
+    "prayerTimes": {
+      "setCityTitle": "Saita Garinka",
+      "setCitySubtitle": "Kunna wuri ko zaɓi gari da hannu don ganin lokutan sallah.",
+      "setLocationAction": "Saita Wuri",
+      "offlineMessage": "Ana nuna lokutan sallah na ƙarshe da aka sani (ba tare da intanet ba)",
+      "next": "Na gaba: {{prayer}}",
+      "asrCalculation": "Ƙididdigar La'asar",
+      "markedPrayed": "an yiwa alama a matsayin an yi sallah",
+      "notMarkedPrayed": "ba a yiwa alama a matsayin an yi sallah ba",
+      "doubleTapToggle": "Danna sau biyu don canzawa.",
+      "shareTimes": "Raba lokutan yau",
+      "shareAccessibilityLabel": "Raba lokutan sallah na yau"
+    },
+    "quran": {
+      "loading": "Ana lodin bayanan Alkur'ani...",
+      "backToList": "Koma zuwa jerin suraru",
+      "back": "Baya",
+      "bismillah": "Bismillah",
+      "comingSoonBody": "Karanta {{name}} (aya {{count}}) tare da fassara da karatu a Islam.Wiki — cikakken mai karatun Alkur'anin mu.",
+      "readOnWiki": "Karanta a Islam.Wiki →",
+      "removeBookmark": "Cire alamar ajiya",
+      "bookmarkVerse": "Sanya alamar ajiya ga aya",
+      "surahList": "Jerin Suraru",
+      "wikiFooter": "📖 Cikakken Alkur'ani — dukkan suraru 114, fassara & sauti a Islam.Wiki →",
+      "openFullQuran": "Buɗe Cikakken Alkur'ani a Islam.Wiki",
+      "featuredVerse": "Ayar da Aka Zaɓa",
+      "readableBadge": "Ana Samun Sa"
+    },
+    "ramadan": {
+      "subtitle": "Ramadan Mubarak",
+      "dayOf": "Rana ta {{day}} daga cikin {{total}}",
+      "iftarIn": "Buda baki bayan",
+      "suhoorEndsIn": "Sahur zai ƙare bayan",
+      "notActive": "Ramadan ba ya faruwa a yanzu.\nWatan Hijra na yanzu: {{month}} ({{monthNumber}}/12)",
+      "todaysTimes": "Lokutan Yau",
+      "suhoorEnds": "Ƙarshen Sahur (Asuba)",
+      "iftar": "Buda Baki (Magariba)",
+      "noLocation": "Saita wurinka a Saiti don ganin lokutan sallah.",
+      "duasTitle": "Addu'oin Ramadan",
+      "laylatAlQadrTitle": "Laylatul Kadr",
+      "laylatAlQadrBody": "Muna cikin dare goma na ƙarshe na Ramadan. Ƙara ibada, musamman a cikin darare marasa daidaito (21, 23, 25, 27, 29)."
+    },
+    "notifications": {
+      "masterLabel": "Sanarwar Sallah",
+      "masterSub": "Karɓi faɗakarwa kafin kowane lokacin sallah",
+      "androidExactAlarm": "A Android 12+, ba da izinin \"Ƙararrawa & Tunatarwa\" a saitunan tsarin don faɗakarwa daidai na lokacin sallah.",
+      "openSystemSettings": "Buɗe Saitunan Tsarin",
+      "masterAccessibilityLabel": "Kunna sanarwar sallah",
+      "openSystemSettingsAccessibilityLabel": "Buɗe saitunan tsarin don ƙararrawa",
+      "perPrayerAlerts": "Faɗakarwa Don Kowace Sallah",
+      "minutesBefore_one": "minti {{count}} kafin",
+      "minutesBefore_other": "mintuna {{count}} kafin",
+      "iqamahOff": "an kashe iqama",
+      "iqamahAfter_one": "iqama +minti {{count}}",
+      "iqamahAfter_other": "iqama +mintuna {{count}}",
+      "adhanSoundTitle": "Sautin Azan",
+      "adhanSoundSub": "Wane azan ke kunna lokacin da sanarwar sallah ta zo.",
+      "adhanSound": {
+        "takbir": "Takbir (buɗewa)",
+        "makkah": "Makkah",
+        "mishari": "Mishari Rashid",
+        "madina": "Madina"
+      },
+      "smartAlarmsTitle": "Ƙararrawa Masu Wayo",
+      "suhoorLabel": "Ƙararrawar Sahur",
+      "suhoorSub": "Farka kafin Asuba don abincin kafin asuba.",
+      "suhoorBefore_one": "minti {{count}} kafin Asuba",
+      "suhoorBefore_other": "mintuna {{count}} kafin Asuba",
+      "tahajjudLabel": "Tahajjud / Qiyam",
+      "tahajjudSub": "Tashi a kashi na ƙarshe na dare don sallah.",
+      "tahajjudLastThird": "Kashi na ƙarshe na dare",
+      "tahajjudCustom": "Lokaci na Musamman",
+      "nightTimesTitle": "Lokutan Dare (yau da dare)",
+      "lastThirdBegins": "Kashi na ƙarshe zai fara",
+      "middleOfNight": "Tsakiyar dare",
+      "nightTimesUnavailable": "Saita wurinka don ganin lokutan dare na yau.",
+      "reliabilityTitle": "Isar Da Azan Amintacce",
+      "reliabilitySub": "Tabbatar ƙararrawa suna yin aiki daidai lokaci",
+      "batteryTitle": "Ba da Izinin Ƙararrawa Amintattu",
+      "batteryIntro": "Android na iya kashe ƙararrawar sallah don ajiye baturi. Don jin azan daidai lokaci:",
+      "batteryStepAlarms": "Ba da izinin \"Ƙararrawa & Tunatarwa\" (ƙararrawa daidai) ga Lokutan Sallah.",
+      "batteryStepOptimization": "Kashe haɓaka baturi ga Lokutan Sallah don kada a kwantar da app.",
+      "batteryOemNote": "Wasu wayoyi (Xiaomi, Huawei, Samsung, OnePlus, Oppo, Vivo) suna da ƙarin saitin \"fara-atomatik\" ko \"app ɗin da aka kiyaye\" — kunna Lokutan Sallah a can ma.",
+      "openExactAlarm": "Buɗe Ƙararrawa & Tunatarwa",
+      "openBatterySettings": "Buɗe Saitunan Baturi",
+      "testAdhanButton": "Gwada azanina (dakika 5)",
+      "testAdhanScheduled": "Azan na gwaji zai kunna bayan kusan dakika 5. Kulle allo ko aika app ɗin baya don jin sa a matsayin sanarwa.",
+      "dismiss": "Rufe"
+    },
+    "homeWidget": {
+      "widgetPreviewAccessibilityLabel": "Gwajin widget yana nuna lokacin sallar gaba",
+      "title": "Widget na Farkon Allo",
+      "subtitle": "Duba lokacin sallar gaba a farkon allonka",
+      "widgetPreviewTitle": "Gwajin Widget",
+      "nextPrayer": "Sallar Gaba",
+      "setLocationToPreview": "Saita wurinka don ganin gwaji",
+      "setupInstructions": "Umarnin Saitawa",
+      "integrationStatus": "Matsayin Haɗi",
+      "upsellMessage": "Widget na farkon allo fasali ne na Ummat+.",
+      "upsellAction": "Haɓaka zuwa Ummat+",
+      "countdownPrefix": "bayan {{countdown}}",
+      "setupStep1": "Riƙe farkon allonka na dogon lokaci",
+      "setupStep2": "Danna maɓallin + (iOS) ko menu na widget (Android)",
+      "setupStep3": "Nemo \"{{appName}}\"",
+      "setupStep4": "Zaɓi girman widget da ka fi so",
+      "setupStep5": "Danna Ƙara Widget",
+      "statusAndroid": "Android: yana aiki — widget na \"Sallar Gaba\" na farkon allo yana amfani da react-native-android-widget kuma yana sabuntawa ta atomatik kowane minti 30 (da nan take bayan ka canza saiti ko sanarwa).",
+      "statusIos": "iOS: yana aiki — widget na WidgetKit na \"Sallar Gaba\" yana sabuntawa duk lokacin da ka canza saiti ko sanarwa kuma yana ci gaba da kansa a kowane lokacin sallah."
+    },
+    "smartHome": {
+      "proOnly": "Gida Mai Wayo (kulle-a-lokacin-sallah + sarrafa na'urori) fasali ne na Ummat+.",
+      "upgradeAction": "Haɓaka zuwa Ummat+",
+      "lockDuringPrayer": "Kulle A Lokacin Sallah",
+      "lockDesc": "Duhunta allo ta atomatik kuma kashe sautin kafofin watsa labarai lokacin da lokacin sallah ya fara. Yana buƙatar tabbatarwa don saitawa.",
+      "lockOnSalah": "Kulle A Lokacin Sallah",
+      "lockOnSalahAccessibilityLabel": "Yanayin kulle a lokacin sallah",
+      "activeNote": "Allo zai duhunta kuma kafofin watsa labarai za a dakatar da su a lokutan sallah.\nAndroid: an sake mayar da hankalin kafofin watsa labarai. iOS: an nuna tunatarwar yanayin shiru.",
+      "linkedAccounts": "Asusun Da Aka Haɗa",
+      "noLinks": "Babu asusun gida mai wayo da aka haɗa tukuna. Buɗe app na Alexa ko Google Home, nemi fasalin ko aikin PrayCalc, kuma haɗa asusunka na Ummat.",
+      "linked": "An haɗa {{date}}",
+      "unlink": "Cire Haɗi",
+      "unlinkConfirmTitle": "Cire haɗin {{name}}?",
+      "unlinkConfirmBody": "Kana iya sake haɗa {{name}} kowane lokaci ta hanyar app na Alexa ko Google Home.",
+      "unlinkConfirmAction": "Cire Haɗi",
+      "unlinkFailedTitle": "An kasa cire haɗi",
+      "learnMore": "Ƙarin Koyo",
+      "authPrompt": "Tabbatar don kunna kulle a lokacin sallah",
+      "useFallback": "Yi amfani da lambar sirri"
+    },
+    "stats": {
+      "chartAccessibilityLabel": "Zanen kammala sallolin mako",
+      "noLogs": "Babu bayanan sallah tukuna. Fara kammala sallah don ganin ƙididdigarka.",
+      "dayStreak": "Jerin Kwanaki 🔥",
+      "weeklyRate": "Adadin Mako",
+      "totalLogged": "Jimlar Da Aka Rubuta",
+      "last7Days": "Kwanaki 7 Da Suka Wuce",
+      "thisMonth": "Wannan Watan",
+      "byPrayer": "Ta Kowace Sallah",
+      "weekly": "Na Mako",
+      "monthly": "Na Wata",
+      "fastingStreak": "Jerin Azumi",
+      "qadaOutstanding": "Kada Da Ya Rage"
+    },
+    "subscription": {
+      "title": "PrayCalc Pro",
+      "subtitle": "Inganta ƙwarewar ibadarka",
+      "loadingOptions": "Ana lodin zaɓuɓɓukan biyan kuɗi...",
+      "loadProductsFailed": "An kasa lodin kayayyaki. Duba haɗinka kuma sake gwadawa.",
+      "connectFailed": "An kasa haɗawa da shago.",
+      "createAccountTitle": "Ƙirƙiri Asusu",
+      "createAccountBody": "Shiga da farko don ciniki naka ya iya daidaitawa a duk na'urorinka.",
+      "purchaseFailed": "Siyayya ta kasa. Don Allah sake gwadawa.",
+      "restoreFailed": "Maido ya kasa.",
+      "proTitle": "Kana kan Pro",
+      "proSub": "Na gode da tallafawar PrayCalc!",
+      "noProducts": "Kayayyakin biyan kuɗi ba a samun su ba. Saita a App Store Connect / Google Play Console.",
+      "restorePurchase": "Maido Siyayya",
+      "restorePurchaseAccessibilityLabel": "Maido siyayya ta baya",
+      "legal": "Biyan kuɗi yana sabuntawa ta atomatik sai dai idan an soke aƙalla awanni 24 kafin ƙarshen zagayowar yanzu. Sarrafa a saitunan asusunka na App Store / Google Play.",
+      "featurePremiumAdhan": "Sautin azan na premium — ƙarin masu karatu",
+      "featureHomeWidget": "Widget na farkon allo (sallar gaba)",
+      "featureTvPairing": "Haɗin app na PrayCalc TV",
+      "featureSmartHome": "Gida Mai Wayo — kulle na'urori a lokacin sallah",
+      "subscribeAccessibilityLabel": "Yi rajistar {{title}} akan {{price}}"
+    },
+    "tasbeeh": {
+      "chooseDhikr": "Zaɓi Zikiri",
+      "of": "na {{count}}",
+      "resetCounter": "Sake saita kirga",
+      "todayTotal": "Jimlar Yau",
+      "history": "Tarihi"
+    },
+    "timetable": {
+      "setCityTitle": "Saita Garinka",
+      "setCitySubtitle": "Saita wurinka don ganin jadawalin sallah na wata.",
+      "previousMonth": "Watan Baya",
+      "nextMonth": "Watan Gaba",
+      "exportCalendar": "Fitar da Kalanda (.ics)",
+      "exportAccessibilityLabel": "Fitar da lokutan sallah na wannan watan a matsayin fayil na kalanda",
+      "shareTimes": "Raba wannan watan",
+      "shareAccessibilityLabel": "Raba jadawalin sallah na wannan watan"
+    },
+    "travel": {
+      "musafirModeTitle": "Yanayin Musafiri",
+      "musafirModeDesc": "Ni matafiyi ne (musafiri). Yi amfani da qasr ga sallolin da suka dace.",
+      "musafirModeAccessibilityLabel": "Yanayin tafiya na musafiri",
+      "musafirAlertTitle": "Yanayin Musafiri (Matafiyi)",
+      "musafirAlertBody": "Qasr (rage) yana rage Azahar, La'asar, da Isha'i daga raka'a 4 zuwa 2.\n\nLura: Jama (haɗa sallah) ba a yin ta atomatik ba saboda bambancin ra'ayin malamai. Don Allah bi malaminka na gida ko mazhabi game da haɗa sallah lokacin tafiya.",
+      "understood": "Na Fahimta",
+      "qasrRakatCount": "Adadin Raka'a na Qasr",
+      "fiqhNote": "Ba a rage Asuba da Magariba ba (qasr yana amfani da sallolin raka'a 4 kawai). Jama (haɗa sallah) yana buƙatar bin malaminka na gida ko mazhabi.",
+      "travelDestination": "Wurin Da Za A Je",
+      "changeCity": "Canza",
+      "changeCityAccessibilityLabel": "Canza garin tafiya",
+      "selectTravelCity": "Zaɓi Garin Tafiya",
+      "selectTravelCityAccessibilityLabel": "Zaɓi garin tafiya",
+      "recalcNote": "Za a sake ƙididdige lokutan sallah don wurin tafiyarka.",
+      "homeCity": "Garin Gida",
+      "notSet": "Ba a saita ba"
+    },
+    "qibla": {
+      "calibrating": "Ana daidaita kamfas...",
+      "locationRequiredTitle": "Ana Buƙatar Wuri",
+      "locationRequiredSubtitle": "Saita wurinka a Saiti don gano jihar Alkibla.",
+      "bearingLabel": "Jihar Alkibla",
+      "compassAccessibilityLabel": "Kamfas na Alkibla, jiha ta yanzu digiri {{degrees}}",
+      "accuracyLabel": "Daidaito: {{level}}",
+      "accuracyUnknown": "Ba a Sani Ba",
+      "accuracyUnreliable": "Ba Abin Dogaro Ba Ne",
+      "accuracyLow": "Ƙasa",
+      "accuracyMedium": "Matsakaici",
+      "accuracyHigh": "Sama",
+      "headingNote": "Jiha: {{degrees}}° | Jihar da'irar girma zuwa Ka'aba"
+    },
+    "fasting": {
+      "todaysFast": "Azumin Yau",
+      "logToday": "Rubuta Azumin Yau",
+      "unlogToday": "Cire Rijistar Yau",
+      "loggedAs": "An Rubuta A Matsayin: {{type}}",
+      "yourStreaks": "Jerin Kwanakinka",
+      "mondayStreak": "Jerin Litinin",
+      "thursdayStreak": "Jerin Alhamis",
+      "whiteDaysMonth": "Kwanaki Fari A Wannan Watan",
+      "ramadanLogged": "Azumin Ramadan",
+      "qadaLogged": "Kada Da Aka Cika",
+      "voluntaryLogged": "Azumin Son Rai",
+      "ramadanDayOf": "Ramadan — Rana ta {{day}} daga cikin {{total}}",
+      "upcomingSuggestions": "Kwanakin Azumi Masu Zuwa Da Aka Ba Da Shawara",
+      "logAction": "Rubuta",
+      "sunnahSourceNote": "Azumin Litinin & Alhamis: Sahih Muslim 1162. Kwanaki Fari (13 zuwa 15 na kowane watan Hijra): Sunan an-Nasa'i 2345, Sunan Abi Dawud 2449.",
+      "recentLogs": "Rubuce-rubucen Kwanan Nan"
+    },
+    "qada": {
+      "totalOwed": "Jimlar Sallolin Da Ake Bin Bashi",
+      "perPrayer": "Adadi Ga Kowace Sallah",
+      "makeUpOne": "Cika Ɗaya",
+      "excusedTitle": "Lokutan Uzuri",
+      "fiqhNote": "A lokacin uzuri (kamar al'ada ko jinin haihuwa), mace ba ta yin sallah — kuma waɗannan sallolin da aka rasa ba a cika su ba (kada) daga baya. Wannan ya bambanta da azumi: azumin da aka rasa a wannan lokacin ANA CIKAWA daga baya.",
+      "fiqhCitation": "Sahih al-Bukhari 321 · Sahih Muslim 335",
+      "consultScholar": "Wannan yana nuna ra'ayin mafi yawa. Don halin da kake ciki na musamman, tuntuɓi malaminka na gida.",
+      "addExcusedRange": "Ƙara Lokacin Uzuri",
+      "startDate": "Ranar Farawa",
+      "endDate": "Ranar Ƙarshe",
+      "noteOptional": "Bayani (na zaɓi)",
+      "notePlaceholder": "misali, al'ada, rashin lafiya",
+      "removeExcusedRangeAccessibilityLabel": "Cire lokacin uzuri"
+    },
+    "jumuah": {
+      "intro": "Jumma'a ita ce rana mafi kyau a mako. Saita tunatarwa mai laushi kuma shirya wa Jumma'a da sunnoninta.",
+      "khutbahTitle": "Tunatarwar Huduba",
+      "khutbahSub": "Tunatarwa kowace Jumma'a kafin huduba.",
+      "kahfTitle": "Tunatarwar Suratul Kahf",
+      "kahfSub": "Tunatarwar karanta Suratul Kahf a Jumma'a.",
+      "kahfDayThursday": "Yammacin Alhamis",
+      "kahfDayFriday": "Safiyar Jumma'a",
+      "reminderTime": "Lokacin Tunatarwa",
+      "checklistTitle": "Sunnonin Jumma'a",
+      "virtueTitle": "Falalar Jumma'a",
+      "virtueBody": "Annabi ﷺ ya ce: \"Rana mafi kyau da rana ta fito a kanta ita ce Jumma'a.\"",
+      "virtueCitation": "Sahih Muslim 854",
+      "kahfVirtueBody": "Annabi ﷺ ya ce: \"Duk wanda ya karanta Suratul Kahf a ranar Jumma'a, haske zai haskaka masa tsakanin Jumma'a biyu.\"",
+      "kahfVirtueCitation": "An ruwaito daga al-Hakim da al-Bayhaqi; al-Albani ya inganta shi",
+      "checklist": {
+        "ghusl": "Yi wanka (tsarki na addini)",
+        "ghuslCitation": "Sahih al-Bukhari 877 · Sahih Muslim 846",
+        "cleanClothes": "Sa tufafi masu tsafta da kyau",
+        "cleanClothesCitation": "Sunan Abi Dawud 343 (hasan)",
+        "perfume": "Yi amfani da turare (miswak da kayan shafawa)",
+        "perfumeCitation": "Sahih al-Bukhari 880",
+        "early": "Je masallaci da wuri",
+        "earlyCitation": "Sahih al-Bukhari 881 · Sahih Muslim 850",
+        "kahf": "Karanta Suratul Kahf",
+        "kahfCitation": "al-Hakim / al-Bayhaqi (sahih bisa ga al-Albani)",
+        "salawat": "Ƙara salati ga Annabi ﷺ",
+        "salawatCitation": "Sunan Abi Dawud 1047 (sahih)",
+        "dua": "Nemi lokacin karɓar addu'a",
+        "duaCitation": "Sahih al-Bukhari 935 · Sahih Muslim 852"
+      }
+    },
+    "leadTimeAccessibilityLabel": "Lokacin gargaɗin {{prayer}}, minti {{minutes}} kafin. Danna don canzawa.",
+    "iqamahAccessibilityLabel": "Tunatarwar iqama ta {{prayer}}, {{status}}. Danna don canzawa.",
+    "enableAccessibilityLabel": "Kunna azan na {{prayer}}",
+    "rowAccessibilityLabel": "{{name}}, {{distance}} nesa",
+    "directionsAccessibilityLabel": "Buɗe hanya zuwa {{name}} a Taswira",
+    "accentColorAccessibilityLabel": "Launin kwarjini {{hex}}",
+    "todayTotalAccessibilityLabel": "Jimlar zikirin yau: {{total}}",
+    "historyEntryAccessibilityLabel": "{{name}}: {{count}}, {{date}}",
+    "arabicTextAccessibilityLabel": "Larabci: {{transliteration}}",
+    "counterAccessibilityLabel": "Ƙidaya: {{count}} daga cikin {{target}}. {{status}}",
+    "tapToIncrement": "Danna don ƙarawa",
+    "presetAccessibilityLabel": "{{transliteration}}, manufa {{target}}, tushen {{source}}",
+    "zoneRowAccessibilityLabel": "{{label}}, radius na mita {{radius}}",
+    "phaseAccessibilityLabel": "Yanayin wata: {{phase}}, {{illumination}}",
+    "voiceAccessibilityLabel": "{{name}} ta {{reciter}}",
+    "voiceAccessibilityLabelPro": "{{name}} ta {{reciter}} (Pro, ana buƙatar haɓakawa don zaɓa)",
+    "surahNameAccessibilityLabel": "Suratul {{name}}",
+    "readOnWikiAccessibilityLabel": "Karanta Suratul {{name}} a Islam.Wiki",
+    "verseAccessibilityLabel": "Aya {{number}}: {{transliteration}}",
+    "featuredVerseAccessibilityLabel": "{{label}}: Ayatul Kursiyyu",
+    "surahRowAccessibilityLabel": "Suratul {{number}}, {{name}}, aya {{count}}, {{type}}",
+    "fullTextAvailableSuffix": ", cikakken rubutu ana samun sa",
+    "revelationMeccan": "Makkiya",
+    "revelationMedinan": "Madaniya"
+  },
+  "onboarding": {
+    "skip": "Tsallake",
+    "welcome": {
+      "title": "Barka da Zuwa PrayCalc",
+      "desc": "Lokutan sallah daidai, jihar Alkibla, da kalandar Musulunci — an saita a cikin ɗannawa kaɗan.",
+      "cta": "Fara"
+    },
+    "location": {
+      "title": "Wurinka",
+      "prime": "PrayCalc tana amfani da wurinka don ƙididdige lokutan sallah daidai don garinka. Yana zama a na'urarka — ba mu taɓa raba shi ba. Danna Ba da Izini a allo na gaba don ci gaba.",
+      "allow": "Ba da Izinin Wuri",
+      "later": "Zan saita wannan daga baya"
+    },
+    "notifications": {
+      "title": "Tunatarwar Sallah",
+      "prime": "Karɓi tunatarwa mai laushi ko azan a kowane lokacin sallah don kada ka rasa sallah. Kana iya daidaita wace sallolin ke sanar da kai daga baya.",
+      "allow": "Kunna Tunatarwa",
+      "later": "Ba Yanzu Ba"
+    },
+    "method": {
+      "title": "Hanyar Ƙididdiga",
+      "dpcExplain": "DPC (Dynamic PrayCalc) tana ƙididdige mafi kyawun lokuta don wurinka ta atomatik — ci gaba a kan hanyar Moonsighting. Muna ba da shawarar ka riƙe shi.",
+      "dpcLabel": "Mai Canzawa (PrayCalc DPC)",
+      "recommended": "Ana Ba Da Shawara",
+      "orFixed": "Ko zaɓi hanya ta tabbatacce",
+      "suggested": "Don yankinka",
+      "continue": "Ci Gaba"
+    },
+    "consent": {
+      "title": "Taimaka Inganta PrayCalc"
+    },
+    "done": {
+      "title": "An Shirya Duka",
+      "desc": "Lokutan sallarka a shirye suke. Kana iya canza kowane ɗayan waɗannan zaɓuɓɓuka kowane lokaci a Saiti.",
+      "cta": "Buɗe PrayCalc"
     }
+  },
+  "consent": {
+    "title": "Bincike Na Amfani Ba Tare Da Suna Ba",
+    "description": "Raba bayanan amfani da ba a san suna ba, gaba ɗaya don taimaka mana inganta PrayCalc. Ba a taɓa tattara bayanan sirri, wuri, ko cikakkun bayanan asusu ba.",
+    "privacyNote": "An kashe shi ta asali. Babu abin da ake turawa har sai ka kunna wannan, kuma kana iya canza shi kowane lokaci.",
+    "accept": "Ba da Izini",
+    "decline": "A'a, Na Gode",
+    "toggleLabel": "Raba bincike ba tare da suna ba",
+    "privacyScreenTitle": "Sirri",
+    "privacyScreenFooter": "PrayCalc tana ba da fifiko ga sirri. Bincike ba shi da suna kuma an kashe shi sai dai ka zaɓi shiga. Kashe wannan yana dakatar da duk telemetry nan take."
   }
 }

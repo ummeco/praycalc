@@ -1,6 +1,6 @@
 {
-  "NSLocationWhenInUseUsageDescription": "Allow Prayer Times to access your location to calculate accurate prayer times.",
-  "NSLocationAlwaysAndWhenInUseUsageDescription": "Allow Prayer Times to access your location to calculate accurate prayer times.",
-  "NSCalendarsFullAccessUsageDescription": "Prayer Times adds salah blocks to your calendar as reminders.",
-  "NSFaceIDUsageDescription": "Prayer Times uses Face ID to confirm lock-on-salah mode."
+  "NSLocationWhenInUseUsageDescription": "Doğru namaz vakitlerini hesaplamak için Namaz Vakitleri'nin konumunuza erişmesine izin verin.",
+  "NSLocationAlwaysAndWhenInUseUsageDescription": "Doğru namaz vakitlerini hesaplamak için Namaz Vakitleri'nin konumunuza erişmesine izin verin.",
+  "NSCalendarsFullAccessUsageDescription": "Namaz Vakitleri, salah bloklarını hatırlatıcı olarak takviminize ekler.",
+  "NSFaceIDUsageDescription": "Namaz Vakitleri, namazda kilitleme modunu onaylamak için Face ID kullanır."
 }

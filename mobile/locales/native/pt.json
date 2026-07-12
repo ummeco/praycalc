@@ -1,6 +1,6 @@
 {
-  "NSLocationWhenInUseUsageDescription": "Allow Prayer Times to access your location to calculate accurate prayer times.",
-  "NSLocationAlwaysAndWhenInUseUsageDescription": "Allow Prayer Times to access your location to calculate accurate prayer times.",
-  "NSCalendarsFullAccessUsageDescription": "Prayer Times adds salah blocks to your calendar as reminders.",
-  "NSFaceIDUsageDescription": "Prayer Times uses Face ID to confirm lock-on-salah mode."
+  "NSLocationWhenInUseUsageDescription": "Permita que o Horários de Oração acesse sua localização para calcular horários de oração precisos.",
+  "NSLocationAlwaysAndWhenInUseUsageDescription": "Permita que o Horários de Oração acesse sua localização para calcular horários de oração precisos.",
+  "NSCalendarsFullAccessUsageDescription": "O Horários de Oração adiciona blocos de salah ao seu calendário como lembretes.",
+  "NSFaceIDUsageDescription": "O Horários de Oração usa o Face ID para confirmar o modo de bloqueio durante o salah."
 }

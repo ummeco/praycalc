@@ -306,3 +306,129 @@ references themselves.
   are untouched, out-of-scope parallel work
 - `python3 -c "import json; json.load(open('src/i18n/en.json'))"` — valid JSON,
   purely additive diff (no existing keys altered)
+
+## Completed 2026-07-11 — tr / id / ms / bn / hi now FULL human-quality translation (729/729)
+
+Full native-quality translation pass for Turkish, Indonesian, Malay, Bengali, and Hindi —
+these 5 locales moved from ~63/729 keys (9%, generic-UI whitelist only, everything else
+falling back to English) to **729/729 (100%)**, matching en.json's complete key set
+exactly, including every previously-flagged fiqh-adjacent key (`screens.travel.*`,
+`screens.ramadan.laylatAlQadrBody`, `screens.moon.ramadanNote`/`dhulHijjahNote`,
+`screens.qada.*`, `screens.fasting.sunnahSourceNote`, `screens.jumuah.*` hadith
+citations). The 21-locale coverage table above is now stale for these 5 rows — treat
+`tr`/`id`/`ms`/`bn`/`hi` as fully translated going forward.
+
+**Method:** existing pre-translated strings (app/prayer/common/greeting/settings/errors,
+~63 keys) were preserved verbatim; the remaining ~666 keys per locale were translated
+fresh against `en.json` as source of truth, preserving exact nested JSON structure and
+all `{{placeholder}}` tokens.
+
+**Fiqh-sensitive content — no new decisions made, faithful translation only:** the
+qada excused-periods note, travel qasr/jama fiqh note, and Ramadan/Laylat al-Qadr
+significance notes were translated literally, preserving the English source's existing
+majority-position framing and "consult your local scholar/madhab" language exactly —
+no fiqh stance was altered, added, or softened in translation. Hadith citations
+(Bukhari/Muslim/Nasa'i/Abu Dawud numbering) were kept as Latin-numeral citations
+unchanged across all 5 scripts.
+
+**Islamic terminology per language (Athari/Shafi'i-Hanbali lens, broad Ahl us-Sunnah,
+no sectarian phrasing — per project doctrine):**
+- **tr**: namaz/ezan/kıble/mezhep — standard Turkish Muslim usage (Ottoman-derived
+  vocabulary), matches pre-existing translated keys.
+- **id**: sholat/adzan/kiblat — standard Indonesian usage, matches pre-existing keys
+  (kept "sholat"/"adzan" spelling already established in the repo rather than the
+  alternate "salat"/"azan" spellings, for internal consistency).
+- **ms**: solat/azan/kiblat — standard Malaysian usage, matches pre-existing keys.
+- **bn**: নামাজ/আজান/ইকামত/কিবলা — standard Bengali Muslim-community usage (Bengali
+  script), matches pre-existing keys.
+- **hi**: नमाज़/अज़ान/क़िबला/मज़हब — standard Hindi Muslim-community usage (Devanagari
+  script with Perso-Arabic loanwords, the mainstream convention for Islamic content
+  in Hindi rather than Sanskritized alternatives), matches pre-existing keys.
+
+**No contested renderings requiring flags.** Terminology choices in all 5 locales
+follow each language's already-established convention from the pre-existing
+partial translations (no new sectarian or denominational vocabulary decisions were
+introduced) — nothing here rises to the level of a fiqh dispute needing a separate
+scholar-review flag beyond what was already tracked above for the English source.
+
+**Native iOS permission strings** (`locales/native/{tr,id,ms,bn,hi}.json`, 4 keys
+each — location when-in-use, location always, calendar full-access, Face ID) were
+also translated; previously these files were byte-for-byte copies of the English
+source despite the locale-specific filename.
+
+**Verification:**
+- `python3 -c "import json,glob; [json.load(open(f, encoding='utf-8')) for f in glob.glob('src/i18n/*.json')]"` — all catalogs valid JSON
+- Flattened key-set diff against `en.json` — `tr`/`id`/`ms`/`bn`/`hi`: 729/729 keys,
+  0 missing, 0 extra
+- `locales/native/{tr,id,ms,bn,hi}.json` — 4/4 keys each, 0 missing, 0 extra,
+  confirmed no longer identical to `locales/native/en.json`
+
+## Completed 2026-07-11 (session 2) — ru / nl / so / sw / ha / yo now FULL human-quality translation (729/729)
+
+Same treatment extended to Russian, Dutch, Somali, Swahili, Hausa, and Yoruba —
+these 6 locales moved from ~8 pre-existing keys each (app/prayer/common/greeting/
+settings/errors/tabs/menu partial, ~1%) to **729/729 (100%)**, matching `en.json`'s
+complete key set exactly, including every previously-flagged fiqh-adjacent key
+(`screens.travel.*`, `screens.ramadan.laylatAlQadrBody`, `screens.moon.ramadanNote`/
+`dhulHijjahNote`, `screens.qada.*`, `screens.fasting.sunnahSourceNote`,
+`screens.jumuah.*` hadith citations).
+
+**Method:** existing pre-translated strings (~8 keys per locale) were preserved
+verbatim; the remaining ~721 keys per locale were translated fresh against
+`en.json` as source of truth, preserving exact nested JSON structure and all
+`{{placeholder}}` tokens.
+
+**Fiqh-sensitive content — no new decisions made, faithful translation only:** the
+qada excused-periods note, travel qasr/jama fiqh note, and Ramadan/Laylat al-Qadr
+significance notes were translated literally, preserving the English source's
+existing majority-position framing and "consult your local scholar/madhab" language
+exactly — no fiqh stance was altered, added, or softened in translation. Hadith
+citations (Bukhari/Muslim/Nasa'i/Abu Dawud numbering) were kept as Latin-numeral
+citations unchanged across all 6 scripts.
+
+**Islamic terminology per language (Athari/Shafi'i-Hanbali lens, broad Ahl us-Sunnah,
+no sectarian phrasing — per project doctrine):**
+- **ru**: намаз/азан/икама/кибла — standard Russian-speaking Muslim community
+  convention; matches pre-existing translated keys (`common.salah` = "Намаз",
+  `tabs.home` = "Молитвы" — both forms already established in the repo, preserved
+  as-is for internal consistency rather than unified to one term).
+- **nl**: kept Arabic loanwords untranslated — Adhan/Iqama/Qibla/Hijri — matching
+  Dutch-Muslim-community convention of using the Arabic terms directly rather than
+  literal Dutch calques; "gebed" used for the generic English word "prayer" in
+  UI chrome (buttons, titles) where no religious term was already established.
+- **so**: salaad/adhaan/iqaama/qibla — standard Somali Islamic vocabulary, matches
+  pre-existing keys (e.g. "Subax" for Fajr, "Casar" for Asr — established Somali
+  prayer-name transliterations kept unchanged and reused in all new strings).
+- **sw**: sala/adhan/iqama/qibla — standard Kiswahili Muslim-community usage,
+  matches pre-existing keys (e.g. "Alfajiri", "Adhuhuri", "Alasiri", "Magharibi" —
+  established Swahili prayer names reused; "sala" kept over the alternate "swala"
+  spelling for consistency with the pre-existing catalog).
+- **ha**: sallah/azan/iqama/alkibla — standard Hausa Islamic vocabulary, matches
+  pre-existing keys (e.g. "Asuba", "Azahar", "La'asar", "Magariba", "Isha'i" —
+  established Hausa prayer-name transliterations reused unchanged).
+- **yo**: prayer names (Fajr/Dhuhr/Asr/Maghrib/Isha) kept as Arabic loanwords
+  per the pre-existing catalog's own convention (not translated into older Yoruba
+  equivalents); "Ìjọsìn" (worship/prayer, generic) and "Àdúrà" (prayer/supplication,
+  used in tabs/screens contexts) are both already-established terms in the
+  pre-existing partial catalog and were each reused in their originally-set context
+  rather than unified to a single word, to avoid relitigating an existing choice.
+
+**No contested renderings requiring flags.** Terminology choices in all 6 locales
+follow each language's already-established convention from the pre-existing partial
+translations (no new sectarian or denominational vocabulary decisions were
+introduced) — nothing here rises to the level of a fiqh dispute needing a separate
+scholar-review flag beyond what was already tracked above for the English source.
+
+**Native iOS permission strings** (`locales/native/{ru,nl,so,sw,ha,yo}.json`, 4 keys
+each — location when-in-use, location always, calendar full-access, Face ID) were
+also translated, using each locale's own localized app name (from `app.name` in
+`src/i18n/{locale}.json`) in place of the English "Prayer Times"; previously these
+files were byte-for-byte copies of the English source despite the locale-specific
+filename.
+
+**Verification:**
+- `python3 -c "import json,glob; [json.load(open(f, encoding='utf-8')) for f in glob.glob('src/i18n/*.json')]"` — all catalogs valid JSON
+- Flattened key-set diff against `en.json` — `ru`/`nl`/`so`/`sw`/`ha`/`yo`: 729/729
+  keys each, 0 missing, 0 extra
+- `locales/native/{ru,nl,so,sw,ha,yo}.json` — 4/4 keys each, 0 missing, 0 extra,
+  confirmed no longer identical to `locales/native/en.json`

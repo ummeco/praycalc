@@ -13,6 +13,27 @@
     "midnight": "Tengah Malam",
     "lastThird": "Sepertiga Malam Terakhir"
   },
+  "notifications": {
+    "prayerTime": "Waktu {{prayer}}",
+    "iqamahTitle": "Iqamah {{prayer}}",
+    "bodyNow": "Sudah masuk waktu solat {{prayer}} — {{time}}",
+    "bodyAdvance_one": "{{prayer}} dalam {{count}} minit lagi — {{time}}",
+    "bodyAdvance_other": "{{prayer}} dalam {{count}} minit lagi — {{time}}",
+    "bodyIqamah": "Peringatan iqamah untuk {{prayer}} (azan berkumandang pada {{time}})",
+    "snooze_one": "Tunda {{count}} minit",
+    "snooze_other": "Tunda {{count}} minit",
+    "snoozedBody": "Peringatan ditunda untuk solat {{prayer}}",
+    "suhoorTitle": "Sahur",
+    "suhoorBody": "Waktu sahur — makan sebelum subuh. Waktu Subuh semakin hampir.",
+    "tahajjudTitle": "Tahajud",
+    "tahajjudBody": "Sepertiga malam terakhir — waktu penuh keberkatan untuk qiyamullail dan doa.",
+    "jumuahKhutbahTitle": "Jumaat",
+    "jumuahKhutbahBody": "Khutbah akan bermula sebentar lagi. Segera ke masjid untuk solat Jumaat.",
+    "kahfTitle": "Surah Al-Kahf",
+    "kahfBody": "Bacalah Surah Al-Kahf untuk cahaya di antara dua Jumaat.",
+    "testTitle": "Uji Azan",
+    "testBody": "Jika anda dapat mendengar ini, pemberitahuan azan anda berfungsi."
+  },
   "common": {
     "bismillah": "Dengan nama Allah Yang Maha Pemurah lagi Maha Mengasihani",
     "salah": "Solat",
@@ -36,15 +57,138 @@
     "search": "Cari",
     "change": "Tukar",
     "reset": "Set semula",
+    "complete": "Lengkap",
     "openInMaps": "Buka dalam Peta",
     "openSettings": "Buka Tetapan",
     "upgrade": "Naik taraf",
-    "signIn": "Log masuk"
+    "signIn": "Log masuk",
+    "createAccount": "Cipta Akaun",
+    "continue": "Teruskan",
+    "skip": "Langkau",
+    "nothingHereYet": "Tiada apa-apa lagi di sini",
+    "somethingWentWrong": "Sesuatu tidak kena",
+    "tryAgain": "Cuba Lagi",
+    "tooManyRequests": "Terlalu Banyak Permintaan",
+    "waitBeforeRetrying": "Sila tunggu {{seconds}} saat sebelum cuba lagi.",
+    "offlineCachedData": "Anda sedang luar talian. Memaparkan data cache.",
+    "permissionRequired": "Kebenaran {{permission}} Diperlukan",
+    "permissionRequiredBody": "Waktu solat memerlukan akses {{permission}}. Sila aktifkan dalam Tetapan.",
+    "loadingContent": "Memuatkan kandungan",
+    "permissionRequiredGeneric": "Kebenaran Diperlukan",
+    "permissionRequiredGenericBody": "Kebenaran {{permission}} diperlukan untuk ciri ini.",
+    "openSystemSettings": "Buka tetapan sistem",
+    "retryRequest": "Cuba semula permintaan",
+    "tooManyRequestsRetry": "Terlalu banyak permintaan. Sila tunggu {{seconds}} saat sebelum mencuba semula.",
+    "tooManyRequestsRetryGeneric": "Terlalu banyak permintaan. Sila tunggu sebelum mencuba semula.",
+    "offlineShowingCachedFrom": "Anda sedang luar talian. Memaparkan data dari {{cachedAt}}.",
+    "offlineShowingCachedGeneric": "Anda sedang luar talian. Data cache dipaparkan."
   },
   "greeting": {
     "assalamu_alaykum": "Assalamualaikum Warahmatullahi Wabarakatuh",
     "prayer_approaching": "Waktu solat hampir tiba",
     "prayer_now": "Waktu solat"
+  },
+  "tabs": {
+    "home": "Solat",
+    "prayerTimes": "Waktu Solat",
+    "qibla": "Kiblat",
+    "calendar": "Kalendar",
+    "quran": "Al-Quran",
+    "more": "Lagi"
+  },
+  "menu": {
+    "settings": {
+      "label": "Tetapan",
+      "subtitle": "Kaedah, lokasi, pemberitahuan"
+    },
+    "adhan": {
+      "label": "Perpustakaan Azan",
+      "subtitle": "Suara azan & qari"
+    },
+    "tasbeeh": {
+      "label": "Kiraan Tasbih",
+      "subtitle": "Kiraan zikir digital"
+    },
+    "duaDhikr": {
+      "label": "Doa & Zikir",
+      "subtitle": "Doa pagi & petang"
+    },
+    "moon": {
+      "label": "Fasa Bulan",
+      "subtitle": "Kalendar kamariah & tarikh Hijrah"
+    },
+    "quran": {
+      "label": "Al-Quran",
+      "subtitle": "Mushaf Uthmani dengan penanda"
+    },
+    "stats": {
+      "label": "Statistik Solat",
+      "subtitle": "Jejak solat & jujukan anda"
+    },
+    "ramadan": {
+      "label": "Ramadan",
+      "subtitle": "Waktu sahur & berbuka, penjejak"
+    },
+    "subscription": {
+      "label": "Naik Taraf Pro",
+      "subtitle": "Buka kunci ciri premium"
+    },
+    "homeWidget": {
+      "label": "Widget Skrin Utama",
+      "subtitle": "Solat seterusnya di skrin utama"
+    },
+    "smartHome": {
+      "label": "Rumah Pintar",
+      "subtitle": "Kunci peranti semasa solat"
+    },
+    "pairTv": {
+      "label": "Pasangkan TV",
+      "subtitle": "Sambungkan aplikasi PrayCalc TV"
+    },
+    "tvManager": {
+      "label": "TV Saya",
+      "subtitle": "Urus paparan TV yang dipasangkan"
+    },
+    "agendas": {
+      "label": "Kalendar Solat",
+      "subtitle": "Tambah waktu solat ke kalendar"
+    },
+    "timetable": {
+      "label": "Jadual Waktu Bulanan",
+      "subtitle": "Waktu solat sebulan penuh + eksport kalendar"
+    },
+    "mosques": {
+      "label": "Masjid Berhampiran",
+      "subtitle": "Cari masjid di sekitar anda"
+    },
+    "travel": {
+      "label": "Mod Perjalanan",
+      "subtitle": "Qasar musafir untuk mereka yang bermusafir"
+    },
+    "jumuah": {
+      "label": "Jumaat",
+      "subtitle": "Peringatan Jumaat & Surah Al-Kahf"
+    },
+    "masjidMute": {
+      "label": "Senyap Automatik di Masjid",
+      "subtitle": "Senyapkan telefon anda apabila menghampiri masjid"
+    },
+    "fasting": {
+      "label": "Penjejak Puasa",
+      "subtitle": "Ramadan, Isnin & Khamis, Hari Putih"
+    },
+    "qada": {
+      "label": "Solat Tertinggal (Qada)",
+      "subtitle": "Jejak dan ganti solat yang tertinggal"
+    },
+    "privacy": {
+      "label": "Privasi & Data",
+      "subtitle": "Kawal persetujuan analitik"
+    },
+    "shareApp": {
+      "label": "Kongsi PrayCalc",
+      "subtitle": "Beritahu rakan atau ahli keluarga"
+    }
   },
   "settings": {
     "title": "Tetapan",
@@ -52,7 +196,7 @@
       "title": "Bahasa",
       "select": "Pilih bahasa",
       "restart_required": "Perlu but semula",
-      "restart_prompt": "Aplikasi akan but semula untuk menerapkan arah susun atur baru"
+      "restart_prompt": "Aplikasi akan but semula untuk menerapkan arah susun atur baharu"
     },
     "calculation": {
       "title": "Kaedah Pengiraan",
@@ -66,28 +210,692 @@
     "location": {
       "title": "Lokasi",
       "detect": "Kesan secara automatik",
-      "manual": "Masukkan secara manual"
-    }
+      "manual": "Masukkan secara manual",
+      "useGps": "Guna Lokasi GPS",
+      "searchManually": "Cari Bandar Secara Manual",
+      "currentCity": "Bandar Semasa",
+      "noneSet": "Lokasi belum ditetapkan. GPS atau bandar manual diperlukan.",
+      "gettingLocation": "Mendapatkan lokasi anda...",
+      "permissionDenied": "Kebenaran Ditolak",
+      "permissionDeniedBody": "Aktifkan lokasi dalam Tetapan untuk mengesan bandar anda secara automatik."
+    },
+    "account": {
+      "title": "Akaun",
+      "signedIn": "Telah log masuk",
+      "anonymous": "Tanpa nama",
+      "free": "Percuma"
+    },
+    "highLatitude": {
+      "title": "Pelarasan Latitud Tinggi",
+      "hint": "Digunakan apabila Subuh/Isyak tidak dapat mencapai sudut yang diperlukan (lokasi jauh utara/selatan pada musim panas).",
+      "nightMiddle": "Pertengahan Malam",
+      "angleBased": "Berdasarkan Sudut",
+      "oneSeventh": "Satu Pertujuh Malam",
+      "none": "Tiada (mungkin dipaparkan tidak tersedia)"
+    },
+    "madhab": {
+      "title": "Mazhab (Asar)",
+      "hint": "Syafi'i: faktor bayang 1× | Hanafi: faktor bayang 2×"
+    },
+    "prayerAdjustments": {
+      "title": "Pelarasan Waktu Solat",
+      "hint": "Perhalusi setiap waktu ±30 minit agar sepadan dengan jadual masjid tempatan anda."
+    },
+    "hijriAdjustment": {
+      "title": "Pelarasan Tarikh Hijrah",
+      "hint": "Anjakkan tarikh Hijrah ±2 hari jika cerapan bulan tempatan anda berbeza daripada kalendar Umm al-Qura.",
+      "offset": "Anjakan",
+      "decreaseAccessibilityLabel": "Kurangkan anjakan Hijrah",
+      "increaseAccessibilityLabel": "Tambah anjakan Hijrah"
+    },
+    "timeFormat": {
+      "title": "Format Masa"
+    },
+    "appearance": {
+      "title": "Rupa Bentuk",
+      "system": "Sistem",
+      "light": "Cerah",
+      "dark": "Gelap"
+    },
+    "customAngles": {
+      "fajr": "Sudut Subuh (°)",
+      "isha": "Sudut Isyak (°)",
+      "fajrAccessibilityLabel": "Sudut Subuh tersuai dalam darjah",
+      "ishaAccessibilityLabel": "Sudut Isyak tersuai dalam darjah"
+    },
+    "upsell": {
+      "priceLine": "Ummat+ $9.99/tahun — membuka aplikasi TV & Rumah Pintar",
+      "upgradeButton": "Naik Taraf ke Ummat+"
+    },
+    "prayerAlerts": "Amaran Waktu Solat",
+    "manageNotifications": "Urus Pemberitahuan",
+    "appLanguage": "Bahasa Aplikasi",
+    "decreaseAccessibilityLabel": "Kurangkan pelarasan {{prayer}}",
+    "increaseAccessibilityLabel": "Tambah pelarasan {{prayer}}",
+    "valueAccessibilityLabel": "Anjakan Hijrah: {{value}} hari",
+    "label12h": "Format 12 jam",
+    "label24h": "Format 24 jam",
+    "themeAccessibilityLabel": "Tema {{theme}}"
   },
   "errors": {
     "location_permission": "Sila benarkan akses lokasi untuk mengira waktu solat",
     "network": "Tidak dapat menyambung ke rangkaian",
     "calculation": "Tidak dapat mengira waktu solat"
   },
-  "tabs": {
-    "home": "Solat",
-    "prayerTimes": "Waktu Solat",
-    "qibla": "Kiblat",
-    "calendar": "Kalendar",
-    "quran": "Al-Quran",
-    "more": "Lagi"
-  },
-  "menu": {
-    "settings": {
-      "label": "Tetapan"
+  "screens": {
+    "more": {
+      "title": "Lagi"
+    },
+    "notFound": {
+      "title": "Skrin Tidak Ditemui",
+      "goHome": "Pergi ke Waktu Solat"
+    },
+    "onboarding": {
+      "welcomeTitle": "Selamat Datang ke PrayCalc",
+      "welcomeDesc": "Waktu solat yang tepat, arah kiblat, dan kalendar Islam — semuanya di satu tempat.",
+      "getStarted": "Mula",
+      "locationTitle": "Aktifkan Lokasi",
+      "locationDesc": "Waktu solat memerlukan lokasi anda untuk pengiraan yang tepat.",
+      "allowLocation": "Benarkan Lokasi",
+      "skipManual": "Langkau — Saya akan tetapkan secara manual",
+      "authTitle": "Cipta Akaun?",
+      "authDesc": "Pilihan: cipta akaun untuk penyegerakan awan dan sejarah solat. Anda boleh mendaftar kemudian pada bila-bila masa.",
+      "skipForNow": "Langkau buat masa ini"
+    },
+    "auth": {
+      "appTagline": "Waktu solat yang tepat untuk setiap Muslim",
+      "tabSkip": "Langkau",
+      "continueTitle": "Teruskan Tanpa Akaun",
+      "continueDesc": "Waktu solat, kiblat, dan kalendar berfungsi sepenuhnya luar talian tanpa memerlukan akaun. Tetapan anda disimpan secara tempatan.",
+      "featurePrayerQibla": "Waktu solat & kiblat",
+      "featureCalendar": "Kalendar Islam",
+      "featureSettings": "Tetapan & pemberitahuan",
+      "continueAnonymously": "Teruskan Tanpa Nama",
+      "signInTitle": "Log Masuk",
+      "emailPlaceholder": "E-mel",
+      "passwordPlaceholder": "Kata laluan",
+      "namePlaceholder": "Nama (pilihan)",
+      "switchHint": "Akaun membolehkan penyegerakan awan dan sejarah solat merentasi peranti.",
+      "registerTitle": "Cipta Akaun",
+      "signingIn": "Sedang log masuk...",
+      "enterEmailPassword": "Sila masukkan e-mel dan kata laluan.",
+      "loginFailed": "Log masuk gagal",
+      "registerFailed": "Pendaftaran gagal",
+      "verifyEmail": "Semak e-mel anda untuk mengesahkan akaun, kemudian log masuk."
+    },
+    "adhan": {
+      "enablePerPrayer": "Aktifkan Azan Setiap Solat",
+      "library": "Perpustakaan Azan",
+      "noVoices": "Tiada suara azan tersedia.",
+      "proRequiredTitle": "Ummat+ Diperlukan",
+      "proRequiredBody": "{{name}} ialah suara azan Pro. Naik taraf ke Ummat+ untuk menetapkannya sebagai azan aktif anda.",
+      "proFeature": "Ciri Pro",
+      "playPreview": "Main pratonton",
+      "stopPreview": "Henti pratonton",
+      "voiceListLabel": "Senarai suara azan"
+    },
+    "agendas": {
+      "title": "Kalendar Solat",
+      "desc": "Tambah blok solat ke kalendar peranti anda sebagai peringatan. Setiap solat mendapat acara {{minutes}} minit dengan amaran 5 minit.",
+      "whichPrayers": "Solat mana yang hendak ditambah",
+      "locationRequired": "Lokasi diperlukan",
+      "locationRequiredBody": "Tetapkan bandar anda dalam Tetapan untuk menambah waktu solat ke kalendar.",
+      "noCalendarFound": "Kalendar tidak ditemui",
+      "noCalendarFoundBody": "Tiada kalendar boleh tulis ditemui pada peranti ini.",
+      "setLocationHint": "Tetapkan bandar anda dalam Tetapan untuk mengaktifkan penyegerakan kalendar.",
+      "addButton": "Tambah Solat Hari Ini ke Kalendar",
+      "addButtonAccessibilityLabel": "Tambah waktu solat hari ini ke kalendar",
+      "adding": "Menambah...",
+      "done": "Selesai",
+      "addedCount": "{{count}} waktu solat ditambah ke kalendar anda.",
+      "error": "Ralat",
+      "addFailed": "Gagal menambah ke kalendar.",
+      "checkingPermission": "Menyemak kebenaran kalendar..."
+    },
+    "calendar": {
+      "eventsThisMonth": "Peristiwa Islam Bulan Ini"
+    },
+    "citySearch": {
+      "findCityTitle": "Cari Bandar",
+      "placeholder": "Cari bandar...",
+      "useCurrentLocation": "Guna Lokasi Semasa",
+      "locating": "Mencari lokasi…",
+      "searching": "Mencari bandar...",
+      "noResults": "Tiada bandar ditemui untuk \"{{query}}\".",
+      "popularHint": "Bandar popular dipaparkan. Taip untuk mencari.",
+      "searchError": "Ralat carian: {{message}}",
+      "searchInputAccessibilityLabel": "Medan carian bandar",
+      "useCurrentLocationAccessibilityLabel": "Guna lokasi semasa",
+      "resultsAccessibilityLabel": "Keputusan carian bandar"
+    },
+    "duaDhikr": {
+      "noResults": "Tiada doa ditemui untuk kategori ini.",
+      "categoryAll": "Semua",
+      "categoryAfterAdhan": "Selepas Azan",
+      "categoryAfterPrayer": "Selepas Solat",
+      "categoryMorning": "Pagi",
+      "categoryEvening": "Petang"
+    },
+    "moon": {
+      "hijriCalendar": "Kalendar Hijrah",
+      "hijriDay": "Hari Hijrah",
+      "month": "Bulan",
+      "lunarAge": "Usia Bulan",
+      "daysUnit": "{{count}} hari",
+      "upcomingPhases": "Fasa Akan Datang",
+      "nextFullMoon": "Bulan Purnama Seterusnya 🌕",
+      "nextNewMoon": "Bulan Baharu Seterusnya 🌑",
+      "significance": "Kepentingan dalam Islam",
+      "illuminatedPct": "{{pct}}% bercahaya",
+      "phaseNewMoon": "Bulan Baharu",
+      "phaseWaxingCrescent": "Anak Bulan Membesar",
+      "phaseFirstQuarter": "Suku Pertama",
+      "phaseWaxingGibbous": "Cembung Membesar",
+      "phaseFullMoon": "Bulan Purnama",
+      "phaseWaningGibbous": "Cembung Mengecil",
+      "phaseLastQuarter": "Suku Terakhir",
+      "phaseWaningCrescent": "Anak Bulan Mengecil",
+      "ramadanNote": "Kita berada dalam bulan Ramadan — bulan berpuasa dan mencari Lailatulqadar.",
+      "dhulHijjahNote": "Sepuluh hari pertama {{month}} tergolong dalam hari yang paling utama dalam setahun."
     },
     "mosques": {
-      "label": "Masjid Berhampiran"
+      "setLocation": "Tetapkan lokasi anda untuk mencari masjid berhampiran anda.",
+      "setLocationAction": "Tetapkan Lokasi",
+      "finding": "Mencari masjid berhampiran...",
+      "noResults": "Tiada masjid ditemui dalam lingkungan 10 km.",
+      "retry": "Cuba Semula",
+      "attribution": "Data © penyumbang OpenStreetMap",
+      "searchFailed": "Gagal mencari masjid."
+    },
+    "masjidMute": {
+      "title": "Senyap Automatik di Masjid",
+      "intro": "PrayCalc belum mempunyai direktori masjid — tambah zon senyap anda sendiri di bawah. Kami syorkan menambah masjid tempatan anda supaya telefon anda senyap secara automatik apabila anda tiba.",
+      "masterToggleLabel": "Senyap automatik diaktifkan",
+      "masterToggleSubtitle": "Senyapkan telefon apabila memasuki mana-mana zon di bawah",
+      "zonesHeading": "Zon Anda",
+      "emptyTitle": "Tiada zon lagi",
+      "emptySubtitle": "Tambah masjid tempatan anda supaya PrayCalc boleh menyenyapkan telefon anda secara automatik apabila anda tiba.",
+      "addZoneAction": "Tambah Masjid Tempatan Anda",
+      "addZoneButton": "Tambah Zon",
+      "addZoneTitle": "Tambah Zon Senyap",
+      "editZoneTitle": "Edit Zon Senyap",
+      "labelFieldLabel": "Label",
+      "labelFieldPlaceholder": "cth. Masjid An-Nur",
+      "labelRequired": "Sila masukkan label untuk zon ini.",
+      "coordinatesInvalid": "Sila masukkan latitud dan longitud yang sah, atau cari/guna lokasi semasa.",
+      "searchAddressLabel": "Cari alamat",
+      "searchAddressPlaceholder": "Cari alamat atau tempat",
+      "searching": "Mencari...",
+      "searchNoResults": "Tiada padanan ditemui. Cuba carian lain atau masukkan koordinat secara manual.",
+      "useCurrentLocation": "Guna Lokasi Semasa",
+      "locating": "Mencari lokasi...",
+      "locationFailed": "Tidak dapat memperoleh lokasi semasa anda.",
+      "manualEntryToggle": "Masukkan koordinat secara manual",
+      "latitudeLabel": "Latitud",
+      "longitudeLabel": "Longitud",
+      "radiusLabel": "Jejari: {{radius}} m",
+      "radiusHint": "Antara {{min}} m dan {{max}} m — meliputi masjid dan kawasan letak keretanya.",
+      "decreaseRadiusAccessibilityLabel": "Kurangkan jejari sebanyak 25 meter",
+      "increaseRadiusAccessibilityLabel": "Tambah jejari sebanyak 25 meter",
+      "saveZone": "Simpan Zon",
+      "deleteZone": "Padam Zon",
+      "deleteConfirmTitle": "Padam zon ini?",
+      "deleteConfirmBody": "\"{{label}}\" tidak akan lagi menyenyapkan telefon anda secara automatik.",
+      "mapPickerFollowUp": "Pemilih peta untuk meletakkan pin secara visual sedang dirancang — buat masa ini, cari alamat atau guna lokasi semasa anda.",
+      "permissionTitle": "Kebenaran Lokasi Diperlukan",
+      "permissionBody": "Senyap Automatik di Masjid memerlukan akses lokasi \"Sentiasa\" untuk mengesan apabila anda memasuki atau meninggalkan zon, walaupun apabila aplikasi ditutup.",
+      "permissionGrant": "Beri Kebenaran",
+      "permissionDeniedNote": "Lokasi latar belakang tidak diberikan — zon disimpan tetapi senyap automatik tidak akan dicetuskan sehingga anda membenarkan akses \"Sentiasa\" dalam tetapan sistem.",
+      "androidNote": "Android: telefon anda akan bertukar kepada getar apabila tiba dan kembali ke mod dering sebelumnya semasa keluar.",
+      "iosNote": "iOS: Apple tidak membenarkan aplikasi menukar suis senyap anda. Sebaliknya, PrayCalc menghantar pemberitahuan peringatan meminta anda menyenyapkan telefon secara manual.",
+      "iosReminderTitle": "Anda telah tiba",
+      "iosReminderBody": "Anda berhampiran {{zone}} — sila senyapkan telefon anda.",
+      "defaultZoneLabel": "zon senyap anda",
+      "activeNow": "Aktif sekarang — telefon senyap",
+      "radiusValue": "jejari {{radius}} m"
+    },
+    "pairTv": {
+      "upsellBadge": "Ummat+",
+      "unlockTitle": "Buka Kunci Pemasangan TV",
+      "unlockDesc": "Ummat+ $9.99/tahun — membuka aplikasi TV & Rumah Pintar",
+      "pairedTitle": "TV Dipasangkan",
+      "pairedDesc": "Aplikasi TV anda kini disambungkan ke akaun ini.",
+      "title": "Pasangkan dengan TV",
+      "desc": "Buka PrayCalc pada TV anda, kemudian masukkan PIN 6 digit yang dipaparkan pada skrin.",
+      "enterPin": "Masukkan PIN 6 digit yang dipaparkan pada TV anda.",
+      "pinInputAccessibilityLabel": "PIN pemasangan TV",
+      "pairFailed": "Pemasangan gagal. Cuba lagi.",
+      "pairDevice": "Pasangkan Peranti",
+      "invalidOrExpiredPin": "PIN itu tidak sah atau telah tamat tempoh. Semak skrin TV dan cuba lagi."
+    },
+    "tvManager": {
+      "upsellBadge": "Ummat+",
+      "unlockTitle": "Buka Kunci Pengurusan TV",
+      "unlockDesc": "Ummat+ $9.99/tahun — membuka aplikasi TV & Rumah Pintar",
+      "emptyTitle": "Belum ada TV dipasangkan",
+      "emptySubtitle": "Pasangkan TV untuk melihatnya di sini dan mengurus tetapan paparannya.",
+      "pairACta": "Pasangkan TV",
+      "noCity": "Lokasi belum ditetapkan",
+      "nameLabel": "Nama",
+      "colorLabel": "Warna Aksen",
+      "streamLabel": "Sumber Strim",
+      "streamMakkah": "TV Makkah",
+      "streamSaudiQuran": "Quran Saudi",
+      "streamMedina": "Madinah",
+      "rotateLabel": "Putaran Skrin",
+      "decreaseRotate": "Kurangkan minit putaran",
+      "increaseRotate": "Tambah minit putaran",
+      "weatherLabel": "Papar Cuaca",
+      "updateLocationAction": "Kemas kini lokasi ke lokasi saya sekarang",
+      "updateLocationHint": "TV akan menerima perubahan lokasi pada pemasangan semula seterusnya — ini mengemas kini lokasi tersimpan sekarang.",
+      "noLocationTitle": "Lokasi Belum Ditetapkan",
+      "noLocationBody": "Tetapkan lokasi anda dalam Tetapan sebelum mengemas kini lokasi TV.",
+      "locationUpdatedTitle": "Lokasi Dikemas Kini",
+      "locationUpdatedBody": "Disimpan. TV akan menggunakan lokasi ini pada pemasangan semula seterusnya.",
+      "deleteAction": "Buang TV Ini",
+      "deleteConfirmTitle": "Buang TV?",
+      "deleteConfirmBody": "Ini akan menyahpasangkan \"{{name}}\" dan mengalih keluar tetapan tersimpannya. Ini tidak boleh dibatalkan.",
+      "deleteConfirmAction": "Buang",
+      "prayerFajr": "Subuh",
+      "prayerDhuhr": "Zohor",
+      "prayerAsr": "Asar",
+      "prayerMaghrib": "Maghrib",
+      "prayerIsha": "Isyak",
+      "madhabShafii": "Syafi'i",
+      "madhabHanafi": "Hanafi",
+      "timeFormat12h": "12 jam",
+      "timeFormat24h": "24 jam",
+      "invalidCoordsTitle": "Koordinat Tidak Sah",
+      "invalidCoordsBody": "Masukkan latitud (-90 hingga 90) dan longitud (-180 hingga 180) yang sah.",
+      "deepSettingsLabel": "Tetapan Lanjutan",
+      "countdownTakeoverLabel": "Ambil Alih Kiraan Detik",
+      "countdownTakeoverHint": "Ambil alih skrin dengan kiraan detik besar sebelum setiap solat.",
+      "countdownMinutesLabel": "Mula Kiraan Detik",
+      "decreaseCountdown": "Kurangkan minit kiraan detik",
+      "increaseCountdown": "Tambah minit kiraan detik",
+      "iqamaLabel": "Waktu Iqamah",
+      "iqamaHint": "Papar kiraan detik iqamah selepas azan, dengan anjakan mengikut setiap solat.",
+      "decreaseIqama": "Kurangkan anjakan iqamah {{prayer}}",
+      "increaseIqama": "Tambah anjakan iqamah {{prayer}}",
+      "nameOnlyLabel": "Mod Nama Sahaja",
+      "nameOnlyHint": "Papar hanya nama solat (tanpa waktu) selama beberapa minit sebelum azan.",
+      "nameOnlyMinutesLabel": "Tempoh Nama Sahaja",
+      "decreaseNameOnly": "Kurangkan minit nama sahaja",
+      "increaseNameOnly": "Tambah minit nama sahaja",
+      "madhabLabel": "Mazhab",
+      "timeFormatLabel": "Format Masa",
+      "calcMethodLabel": "Kaedah Pengiraan",
+      "manualLocationToggle": "Masukkan koordinat secara manual",
+      "latitudeLabel": "Latitud",
+      "longitudeLabel": "Longitud",
+      "manualLocationSave": "Simpan Koordinat",
+      "layoutThemeLabel": "Susun Atur & Tema",
+      "layoutLabel": "Susun Atur",
+      "themeLabel": "Tema",
+      "layoutClassic": "Klasik",
+      "layoutClassicDesc": "Waktu + strim langsung bersebelahan",
+      "layoutFlipped": "Terbalik",
+      "layoutFlippedDesc": "Pembahagian sama, dicerminkan",
+      "layoutStreamFull": "Strim Penuh",
+      "layoutStreamFullDesc": "Strim skrin penuh dengan jalur waktu",
+      "layoutTimesOnly": "Waktu Sahaja",
+      "layoutTimesOnlyDesc": "Waktu solat sahaja, tiada strim langsung",
+      "layoutAmbient": "Ambien",
+      "layoutAmbientDesc": "Paparan jam ambien minimal",
+      "themeUmmatGreen": "Hijau Ummat",
+      "themeMidnight": "Tengah Malam",
+      "themeWarmSand": "Pasir Hangat",
+      "themeMono": "Mono"
+    },
+    "prayerTimes": {
+      "setCityTitle": "Tetapkan Bandar Anda",
+      "setCitySubtitle": "Aktifkan lokasi atau pilih bandar secara manual untuk melihat waktu solat.",
+      "setLocationAction": "Tetapkan Lokasi",
+      "offlineMessage": "Memaparkan waktu solat terakhir yang diketahui (luar talian)",
+      "next": "Seterusnya: {{prayer}}",
+      "asrCalculation": "Pengiraan Asar",
+      "markedPrayed": "ditanda telah solat",
+      "notMarkedPrayed": "belum ditanda solat",
+      "doubleTapToggle": "Ketik dua kali untuk menukar.",
+      "shareTimes": "Kongsi waktu hari ini",
+      "shareAccessibilityLabel": "Kongsi waktu solat hari ini"
+    },
+    "quran": {
+      "loading": "Memuatkan data Al-Quran...",
+      "backToList": "Kembali ke senarai surah",
+      "back": "Kembali",
+      "bismillah": "Bismillah",
+      "comingSoonBody": "Baca {{name}} ({{count}} ayat) dengan terjemahan dan bacaan di Islam.Wiki — pembaca Al-Quran penuh kami.",
+      "readOnWiki": "Baca di Islam.Wiki →",
+      "removeBookmark": "Alih keluar penanda",
+      "bookmarkVerse": "Tandakan ayat",
+      "surahList": "Senarai surah",
+      "wikiFooter": "📖 Al-Quran Penuh — semua 114 surah, terjemahan & audio di Islam.Wiki →",
+      "openFullQuran": "Buka Al-Quran penuh di Islam.Wiki",
+      "featuredVerse": "Ayat Pilihan",
+      "readableBadge": "Tersedia"
+    },
+    "ramadan": {
+      "subtitle": "Ramadan Mubarak",
+      "dayOf": "Hari ke-{{day}} daripada {{total}}",
+      "iftarIn": "Berbuka dalam",
+      "suhoorEndsIn": "Sahur tamat dalam",
+      "notActive": "Sekarang bukan bulan Ramadan.\nBulan Hijrah semasa: {{month}} ({{monthNumber}}/12)",
+      "todaysTimes": "Waktu Hari Ini",
+      "suhoorEnds": "Sahur Tamat (Subuh)",
+      "iftar": "Berbuka (Maghrib)",
+      "noLocation": "Tetapkan lokasi anda dalam Tetapan untuk melihat waktu solat.",
+      "duasTitle": "Doa Ramadan",
+      "laylatAlQadrTitle": "Lailatulqadar",
+      "laylatAlQadrBody": "Kita berada dalam sepuluh malam terakhir Ramadan. Perbanyakkan ibadah, terutamanya pada malam ganjil (21, 23, 25, 27, 29)."
+    },
+    "notifications": {
+      "masterLabel": "Pemberitahuan Solat",
+      "masterSub": "Terima amaran sebelum setiap waktu solat",
+      "androidExactAlarm": "Pada Android 12+, benarkan \"Penggera & Peringatan\" dalam tetapan sistem untuk amaran waktu solat yang tepat.",
+      "openSystemSettings": "Buka Tetapan Sistem",
+      "masterAccessibilityLabel": "Aktifkan pemberitahuan solat",
+      "openSystemSettingsAccessibilityLabel": "Buka tetapan sistem untuk penggera",
+      "perPrayerAlerts": "Amaran Setiap Solat",
+      "minutesBefore_one": "{{count}} min sebelum",
+      "minutesBefore_other": "{{count}} min sebelum",
+      "iqamahOff": "iqamah dimatikan",
+      "iqamahAfter_one": "iqamah +{{count}}min",
+      "iqamahAfter_other": "iqamah +{{count}}min",
+      "adhanSoundTitle": "Suara Azan",
+      "adhanSoundSub": "Azan mana yang dimainkan apabila pemberitahuan solat tiba.",
+      "adhanSound": {
+        "takbir": "Takbir (pembukaan)",
+        "makkah": "Makkah",
+        "mishari": "Mishari Rashid",
+        "madina": "Madinah"
+      },
+      "smartAlarmsTitle": "Penggera Pintar",
+      "suhoorLabel": "Penggera sahur",
+      "suhoorSub": "Bangun sebelum Subuh untuk makan sahur.",
+      "suhoorBefore_one": "{{count}} minit sebelum Subuh",
+      "suhoorBefore_other": "{{count}} minit sebelum Subuh",
+      "tahajjudLabel": "Tahajud / Qiyamullail",
+      "tahajjudSub": "Bangun pada bahagian terakhir malam untuk solat.",
+      "tahajjudLastThird": "Sepertiga malam terakhir",
+      "tahajjudCustom": "Masa tersuai",
+      "nightTimesTitle": "Waktu Malam (malam ini)",
+      "lastThirdBegins": "Sepertiga terakhir bermula",
+      "middleOfNight": "Pertengahan malam",
+      "nightTimesUnavailable": "Tetapkan lokasi anda untuk melihat waktu malam ini.",
+      "reliabilityTitle": "Penyampaian Azan Yang Boleh Dipercayai",
+      "reliabilitySub": "Pastikan penggera berbunyi tepat pada masanya",
+      "batteryTitle": "Benarkan penggera yang boleh dipercayai",
+      "batteryIntro": "Android mungkin menyenyapkan penggera solat untuk menjimatkan bateri. Untuk mendengar azan tepat pada masanya:",
+      "batteryStepAlarms": "Benarkan \"Penggera & peringatan\" (penggera tepat) untuk Waktu Solat.",
+      "batteryStepOptimization": "MATIKAN pengoptimuman bateri untuk Waktu Solat supaya ia tidak dimatikan paksa.",
+      "batteryOemNote": "Sesetengah telefon (Xiaomi, Huawei, Samsung, OnePlus, Oppo, Vivo) mempunyai tetapan tambahan \"mula automatik\" atau \"aplikasi dilindungi\" — aktifkan Waktu Solat di situ juga.",
+      "openExactAlarm": "Buka Penggera & peringatan",
+      "openBatterySettings": "Buka tetapan bateri",
+      "testAdhanButton": "Uji azan saya (5s)",
+      "testAdhanScheduled": "Azan uji akan dimainkan dalam lebih kurang 5 saat. Kunci atau latar-belakangkan aplikasi untuk mendengarnya sebagai pemberitahuan.",
+      "dismiss": "Tutup"
+    },
+    "homeWidget": {
+      "widgetPreviewAccessibilityLabel": "Pratonton widget memaparkan waktu solat seterusnya",
+      "title": "Widget Skrin Utama",
+      "subtitle": "Lihat waktu solat seterusnya pada skrin utama anda",
+      "widgetPreviewTitle": "Pratonton Widget",
+      "nextPrayer": "Solat Seterusnya",
+      "setLocationToPreview": "Tetapkan lokasi anda untuk pratonton",
+      "setupInstructions": "Arahan Persediaan",
+      "integrationStatus": "Status Integrasi",
+      "upsellMessage": "Widget skrin utama ialah ciri Ummat+.",
+      "upsellAction": "Naik Taraf ke Ummat+",
+      "countdownPrefix": "dalam {{countdown}}",
+      "setupStep1": "Tekan lama skrin utama anda",
+      "setupStep2": "Ketik butang + (iOS) atau menu Widget (Android)",
+      "setupStep3": "Cari \"{{appName}}\"",
+      "setupStep4": "Pilih saiz widget pilihan anda",
+      "setupStep5": "Ketik Tambah Widget",
+      "statusAndroid": "Android: aktif — widget skrin utama \"Solat Seterusnya\" berfungsi melalui react-native-android-widget dan disegarkan semula secara automatik setiap 30 minit (dan sejurus selepas anda menukar tetapan atau pemberitahuan).",
+      "statusIos": "iOS: aktif — widget WidgetKit \"Solat Seterusnya\" dikemas kini apabila anda menukar tetapan atau pemberitahuan dan bergerak maju sendiri pada setiap waktu solat."
+    },
+    "smartHome": {
+      "proOnly": "Rumah Pintar (kunci semasa solat + kawalan peranti) ialah ciri Ummat+.",
+      "upgradeAction": "Naik Taraf ke Ummat+",
+      "lockDuringPrayer": "Kunci Semasa Solat",
+      "lockDesc": "Malapkan skrin secara automatik dan senyapkan media apabila waktu solat bermula. Memerlukan pengesahan untuk konfigurasi.",
+      "lockOnSalah": "Kunci Semasa Solat",
+      "lockOnSalahAccessibilityLabel": "Mod kunci semasa solat",
+      "activeNote": "Skrin akan malap dan media akan dijeda pada waktu solat.\nAndroid: fokus media dilepaskan. iOS: peringatan mod senyap dipaparkan.",
+      "linkedAccounts": "Akaun Bertaut",
+      "noLinks": "Belum ada akaun rumah pintar bertaut. Buka aplikasi Alexa atau Google Home, cari kemahiran atau tindakan PrayCalc, dan tautkan akaun Ummat anda.",
+      "linked": "Ditautkan {{date}}",
+      "unlink": "Nyahtaut",
+      "unlinkConfirmTitle": "Nyahtaut {{name}}?",
+      "unlinkConfirmBody": "Anda boleh menautkan semula {{name}} pada bila-bila masa daripada aplikasi Alexa atau Google Home.",
+      "unlinkConfirmAction": "Nyahtaut",
+      "unlinkFailedTitle": "Tidak dapat menyahtaut",
+      "learnMore": "Ketahui lebih lanjut",
+      "authPrompt": "Sahkan untuk mengaktifkan kunci semasa solat",
+      "useFallback": "Guna kod laluan"
+    },
+    "stats": {
+      "chartAccessibilityLabel": "Carta penyelesaian solat mingguan",
+      "noLogs": "Belum ada rekod solat. Mula selesaikan solat untuk melihat statistik anda.",
+      "dayStreak": "Jujukan Hari 🔥",
+      "weeklyRate": "Kadar Mingguan",
+      "totalLogged": "Jumlah Direkodkan",
+      "last7Days": "7 Hari Terakhir",
+      "thisMonth": "Bulan Ini",
+      "byPrayer": "Mengikut Solat",
+      "weekly": "Mingguan",
+      "monthly": "Bulanan",
+      "fastingStreak": "Jujukan Puasa",
+      "qadaOutstanding": "Qada Tertunggak"
+    },
+    "subscription": {
+      "title": "PrayCalc Pro",
+      "subtitle": "Tingkatkan pengalaman ibadah anda",
+      "loadingOptions": "Memuatkan pilihan langganan...",
+      "loadProductsFailed": "Tidak dapat memuatkan produk. Semak sambungan anda dan cuba lagi.",
+      "connectFailed": "Gagal menyambung ke kedai.",
+      "createAccountTitle": "Cipta Akaun",
+      "createAccountBody": "Log masuk dahulu supaya pembelian anda boleh diselaraskan merentasi peranti anda.",
+      "purchaseFailed": "Pembelian gagal. Sila cuba lagi.",
+      "restoreFailed": "Pemulihan gagal.",
+      "proTitle": "Anda Pengguna Pro",
+      "proSub": "Terima kasih kerana menyokong PrayCalc!",
+      "noProducts": "Produk langganan tidak tersedia. Konfigurasikan dalam App Store Connect / Google Play Console.",
+      "restorePurchase": "Pulihkan Pembelian",
+      "restorePurchaseAccessibilityLabel": "Pulihkan pembelian terdahulu",
+      "legal": "Langganan diperbaharui secara automatik melainkan dibatalkan sekurang-kurangnya 24 jam sebelum tamat tempoh semasa. Urus dalam tetapan akaun App Store / Google Play anda.",
+      "featurePremiumAdhan": "Suara azan premium — qari tambahan",
+      "featureHomeWidget": "Widget skrin utama (solat seterusnya)",
+      "featureTvPairing": "Pemasangan aplikasi PrayCalc TV",
+      "featureSmartHome": "Rumah Pintar — kunci peranti semasa solat",
+      "subscribeAccessibilityLabel": "Langgan {{title}} dengan harga {{price}}"
+    },
+    "tasbeeh": {
+      "chooseDhikr": "Pilih Zikir",
+      "of": "daripada {{count}}",
+      "resetCounter": "Set semula kiraan",
+      "todayTotal": "Jumlah Hari Ini",
+      "history": "Sejarah"
+    },
+    "timetable": {
+      "setCityTitle": "Tetapkan Bandar Anda",
+      "setCitySubtitle": "Tetapkan lokasi anda untuk melihat jadual waktu solat bulanan.",
+      "previousMonth": "Bulan sebelumnya",
+      "nextMonth": "Bulan seterusnya",
+      "exportCalendar": "Eksport Kalendar (.ics)",
+      "exportAccessibilityLabel": "Eksport waktu solat bulan ini sebagai fail kalendar",
+      "shareTimes": "Kongsi bulan ini",
+      "shareAccessibilityLabel": "Kongsi jadual waktu solat bulan ini"
+    },
+    "travel": {
+      "musafirModeTitle": "Mod Musafir",
+      "musafirModeDesc": "Saya seorang musafir. Kenakan qasar pada solat yang berkenaan.",
+      "musafirModeAccessibilityLabel": "Mod perjalanan musafir",
+      "musafirAlertTitle": "Mod Musafir",
+      "musafirAlertBody": "Qasar (memendekkan) mengurangkan Zohor, Asar, dan Isyak daripada 4 kepada 2 rakaat.\n\nNota: Jamak (menggabungkan solat) tidak dikenakan secara automatik kerana perbezaan pendapat ulama. Sila ikut ulama atau mazhab tempatan anda mengenai penggabungan solat semasa bermusafir.",
+      "understood": "Faham",
+      "qasrRakatCount": "Bilangan Rakaat Qasar",
+      "fiqhNote": "Subuh dan Maghrib tidak dipendekkan (qasar hanya dikenakan pada solat 4 rakaat). Jamak (menggabungkan solat) memerlukan anda mengikut hukum ulama atau mazhab tempatan anda.",
+      "travelDestination": "Destinasi Perjalanan",
+      "changeCity": "Tukar",
+      "changeCityAccessibilityLabel": "Tukar bandar perjalanan",
+      "selectTravelCity": "Pilih Bandar Perjalanan",
+      "selectTravelCityAccessibilityLabel": "Pilih bandar perjalanan",
+      "recalcNote": "Waktu solat akan dikira semula untuk destinasi perjalanan anda.",
+      "homeCity": "Bandar Asal",
+      "notSet": "Belum ditetapkan"
+    },
+    "qibla": {
+      "calibrating": "Menentukur kompas...",
+      "locationRequiredTitle": "Lokasi Diperlukan",
+      "locationRequiredSubtitle": "Tetapkan lokasi anda dalam Tetapan untuk mencari arah kiblat.",
+      "bearingLabel": "Arah Kiblat",
+      "compassAccessibilityLabel": "Kompas kiblat, hala semasa {{degrees}} darjah",
+      "accuracyLabel": "Ketepatan: {{level}}",
+      "accuracyUnknown": "Tidak Diketahui",
+      "accuracyUnreliable": "Tidak Boleh Dipercayai",
+      "accuracyLow": "Rendah",
+      "accuracyMedium": "Sederhana",
+      "accuracyHigh": "Tinggi",
+      "headingNote": "Hala: {{degrees}}° | Sudut bulatan besar ke Kaabah"
+    },
+    "fasting": {
+      "todaysFast": "Puasa Hari Ini",
+      "logToday": "Rekod Puasa Hari Ini",
+      "unlogToday": "Alih Keluar Rekod Hari Ini",
+      "loggedAs": "Direkodkan: {{type}}",
+      "yourStreaks": "Jujukan Anda",
+      "mondayStreak": "Jujukan Isnin",
+      "thursdayStreak": "Jujukan Khamis",
+      "whiteDaysMonth": "Hari Putih Bulan Ini",
+      "ramadanLogged": "Puasa Ramadan",
+      "qadaLogged": "Qada Dilaksanakan",
+      "voluntaryLogged": "Puasa Sunat",
+      "ramadanDayOf": "Ramadan — Hari ke-{{day}} daripada {{total}}",
+      "upcomingSuggestions": "Hari Puasa Sunat Yang Disyorkan",
+      "logAction": "Rekod",
+      "sunnahSourceNote": "Puasa Isnin & Khamis: Sahih Muslim 1162. Hari Putih (13-15 setiap bulan Hijrah): Sunan an-Nasa'i 2345, Sunan Abi Dawud 2449.",
+      "recentLogs": "Rekod Terkini"
+    },
+    "qada": {
+      "totalOwed": "Jumlah Solat Terhutang",
+      "perPrayer": "Bilangan Setiap Solat",
+      "makeUpOne": "Ganti Satu",
+      "excusedTitle": "Tempoh Uzur",
+      "fiqhNote": "Semasa tempoh uzur (seperti haid atau nifas), seorang wanita tidak solat — dan solat yang tertinggal itu tidak diqada kemudian. Ini berbeza daripada puasa: puasa yang tidak dapat dilaksanakan pada tempoh itu MESTI diqada kemudian.",
+      "fiqhCitation": "Sahih al-Bukhari 321 · Sahih Muslim 335",
+      "consultScholar": "Ini mencerminkan pandangan majoriti. Untuk keadaan khusus anda, rujuk ulama tempatan anda.",
+      "addExcusedRange": "Tambah Tempoh Uzur",
+      "startDate": "Tarikh Mula",
+      "endDate": "Tarikh Tamat",
+      "noteOptional": "Nota (pilihan)",
+      "notePlaceholder": "cth. haid, sakit",
+      "removeExcusedRangeAccessibilityLabel": "Alih keluar julat uzur"
+    },
+    "jumuah": {
+      "intro": "Jumaat ialah hari terbaik dalam seminggu. Tetapkan peringatan lembut dan bersedia untuk Jumaat dengan sunnah-sunnahnya.",
+      "khutbahTitle": "Peringatan Khutbah",
+      "khutbahSub": "Amaran setiap Jumaat sebelum khutbah.",
+      "kahfTitle": "Peringatan Surah Al-Kahf",
+      "kahfSub": "Peringatan untuk membaca Surah Al-Kahf pada hari Jumaat.",
+      "kahfDayThursday": "Khamis malam",
+      "kahfDayFriday": "Jumaat pagi",
+      "reminderTime": "Waktu peringatan",
+      "checklistTitle": "Sunnah-sunnah Jumaat",
+      "virtueTitle": "Kelebihan Jumaat",
+      "virtueBody": "Nabi ﷺ bersabda: \"Sebaik-baik hari yang matahari terbit padanya ialah hari Jumaat.\"",
+      "virtueCitation": "Sahih Muslim 854",
+      "kahfVirtueBody": "Nabi ﷺ bersabda: \"Sesiapa yang membaca Surah Al-Kahf pada hari Jumaat, akan bersinar cahaya untuknya di antara dua Jumaat.\"",
+      "kahfVirtueCitation": "Diriwayatkan oleh al-Hakim dan al-Bayhaqi; dinilai sahih oleh al-Albani",
+      "checklist": {
+        "ghusl": "Mandi wajib (ghusl)",
+        "ghuslCitation": "Sahih al-Bukhari 877 · Sahih Muslim 846",
+        "cleanClothes": "Pakai pakaian yang bersih dan elok",
+        "cleanClothesCitation": "Sunan Abi Dawud 343 (hasan)",
+        "perfume": "Pakai wangian (bersugi & bersolek)",
+        "perfumeCitation": "Sahih al-Bukhari 880",
+        "early": "Pergi awal ke masjid",
+        "earlyCitation": "Sahih al-Bukhari 881 · Sahih Muslim 850",
+        "kahf": "Baca Surah Al-Kahf",
+        "kahfCitation": "al-Hakim / al-Bayhaqi (sahih menurut al-Albani)",
+        "salawat": "Perbanyakkan selawat ke atas Nabi ﷺ",
+        "salawatCitation": "Sunan Abi Dawud 1047 (sahih)",
+        "dua": "Cari waktu mustajab doa",
+        "duaCitation": "Sahih al-Bukhari 935 · Sahih Muslim 852"
+      }
+    },
+    "leadTimeAccessibilityLabel": "Masa pendahuluan pemberitahuan {{prayer}}, {{minutes}} minit sebelum. Ketik untuk menukar.",
+    "iqamahAccessibilityLabel": "Peringatan iqamah {{prayer}}, {{status}}. Ketik untuk menukar.",
+    "enableAccessibilityLabel": "Aktifkan azan {{prayer}}",
+    "rowAccessibilityLabel": "{{name}}, sejauh {{distance}}",
+    "directionsAccessibilityLabel": "Buka arah ke {{name}} dalam Peta",
+    "accentColorAccessibilityLabel": "Warna aksen {{hex}}",
+    "todayTotalAccessibilityLabel": "Jumlah zikir hari ini: {{total}}",
+    "historyEntryAccessibilityLabel": "{{name}}: {{count}}, {{date}}",
+    "arabicTextAccessibilityLabel": "Arab: {{transliteration}}",
+    "counterAccessibilityLabel": "Kiraan: {{count}} daripada {{target}}. {{status}}",
+    "tapToIncrement": "Ketik untuk menambah",
+    "presetAccessibilityLabel": "{{transliteration}}, sasaran {{target}}, sumber {{source}}",
+    "zoneRowAccessibilityLabel": "{{label}}, jejari {{radius}} meter",
+    "phaseAccessibilityLabel": "Fasa bulan: {{phase}}, {{illumination}}",
+    "voiceAccessibilityLabel": "{{name}} oleh {{reciter}}",
+    "voiceAccessibilityLabelPro": "{{name}} oleh {{reciter}} (Pro, perlu naik taraf untuk memilih)",
+    "surahNameAccessibilityLabel": "Surah {{name}}",
+    "readOnWikiAccessibilityLabel": "Baca Surah {{name}} di Islam.Wiki",
+    "verseAccessibilityLabel": "Ayat {{number}}: {{transliteration}}",
+    "featuredVerseAccessibilityLabel": "{{label}}: Ayatul Kursi",
+    "surahRowAccessibilityLabel": "Surah {{number}}, {{name}}, {{count}} ayat, {{type}}",
+    "fullTextAvailableSuffix": ", teks penuh tersedia",
+    "revelationMeccan": "Makkiyah",
+    "revelationMedinan": "Madaniyah"
+  },
+  "onboarding": {
+    "skip": "Langkau",
+    "welcome": {
+      "title": "Selamat Datang ke PrayCalc",
+      "desc": "Waktu solat yang tepat, arah kiblat, dan kalendar Islam — siap sedia dengan beberapa ketikan.",
+      "cta": "Mula"
+    },
+    "location": {
+      "title": "Lokasi Anda",
+      "prime": "PrayCalc menggunakan lokasi anda untuk mengira waktu solat yang tepat bagi bandar anda. Ia kekal pada peranti anda — kami tidak sekali-kali berkongsinya. Ketik Benarkan pada skrin seterusnya untuk meneruskan.",
+      "allow": "Benarkan Lokasi",
+      "later": "Saya akan tetapkan ini kemudian"
+    },
+    "notifications": {
+      "title": "Peringatan Solat",
+      "prime": "Dapatkan peringatan lembut atau azan pada setiap waktu solat supaya anda tidak pernah terlepas solat. Anda boleh menyesuaikan solat mana yang memberi anda pemberitahuan kemudian.",
+      "allow": "Aktifkan Peringatan",
+      "later": "Bukan sekarang"
+    },
+    "method": {
+      "title": "Kaedah Pengiraan",
+      "dpcExplain": "DPC (Dynamic PrayCalc) secara automatik mengira waktu terbaik untuk lokasi anda — penambahbaikan berbanding kaedah Moonsighting. Kami syorkan anda kekal menggunakannya.",
+      "dpcLabel": "Dinamik (PrayCalc DPC)",
+      "recommended": "Disyorkan",
+      "orFixed": "Atau pilih kaedah tetap",
+      "suggested": "Untuk wilayah anda",
+      "continue": "Teruskan"
+    },
+    "consent": {
+      "title": "Bantu Kami Menambah Baik PrayCalc"
+    },
+    "done": {
+      "title": "Semuanya sedia",
+      "desc": "Waktu solat anda sudah sedia. Anda boleh menukar mana-mana pilihan ini pada bila-bila masa dalam Tetapan.",
+      "cta": "Buka PrayCalc"
     }
+  },
+  "consent": {
+    "title": "Analitik Penggunaan Tanpa Nama",
+    "description": "Kongsi data penggunaan tanpa nama dan agregat untuk membantu kami menambah baik PrayCalc. Tiada maklumat peribadi, lokasi, atau butiran akaun yang dikumpulkan.",
+    "privacyNote": "Dimatikan secara lalai. Tiada apa-apa dihantar melainkan anda menghidupkannya, dan anda boleh menukarnya pada bila-bila masa.",
+    "accept": "Benarkan",
+    "decline": "Tidak, Terima Kasih",
+    "toggleLabel": "Kongsi analitik tanpa nama",
+    "privacyScreenTitle": "Privasi",
+    "privacyScreenFooter": "PrayCalc mengutamakan privasi. Analitik adalah tanpa nama dan dimatikan melainkan anda memilih untuk menyertainya. Mematikan ini menghentikan semua telemetri serta-merta."
   }
 }

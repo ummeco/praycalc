@@ -13,6 +13,27 @@
     "midnight": "د شپې نیمه",
     "lastThird": "د شپې وروستی دریمه برخه"
   },
+  "notifications": {
+    "prayerTime": "د {{prayer}} وخت",
+    "iqamahTitle": "د {{prayer}} اقامت",
+    "bodyNow": "اوس د {{prayer}} د لمانځه وخت دی — {{time}}",
+    "bodyAdvance_one": "{{prayer}} په {{count}} دقیقه کې دی — {{time}}",
+    "bodyAdvance_other": "{{prayer}} په {{count}} دقیقو کې دی — {{time}}",
+    "bodyIqamah": "د {{prayer}} د اقامت یادونه (اذان په {{time}} کې و)",
+    "snooze_one": "{{count}} دقیقې وځنډوه",
+    "snooze_other": "{{count}} دقیقې وځنډوه",
+    "snoozedBody": "د {{prayer}} لمانځه لپاره ځنډول شوې یادونه",
+    "suhoorTitle": "سحري",
+    "suhoorBody": "د سحرۍ وخت دی — د سهار له مخکې خواړه. فجر نږدې کیږي.",
+    "tahajjudTitle": "تهجد",
+    "tahajjudBody": "د شپې وروستۍ دریمه برخه — د قیام او دعا لپاره برکتي وخت.",
+    "jumuahKhutbahTitle": "جمعه",
+    "jumuahKhutbahBody": "خطبه ډېره ژر پیل کیږي. د جمعې لمانځه لپاره جومات ته لاړ شئ.",
+    "kahfTitle": "سورة الکهف",
+    "kahfBody": "د دوو جمعو ترمنځ د رڼا لپاره سورة الکهف تلاوت کړئ.",
+    "testTitle": "ازموینیز اذان",
+    "testBody": "که تاسو دا اورئ، نو ستاسو د اذان خبرتیاوې سمې کار کوي."
+  },
   "common": {
     "bismillah": "بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ",
     "salah": "لمونځ",
@@ -36,15 +57,138 @@
     "search": "لټون",
     "change": "بدلول",
     "reset": "بيا سيٹول",
+    "complete": "بشپړ",
     "openInMaps": "په نقشو کې خلاصول",
     "openSettings": "تنظيمات خلاصول",
     "upgrade": "لوړول",
-    "signIn": "ننوتل"
+    "signIn": "ننوتل",
+    "createAccount": "حساب جوړول",
+    "continue": "دوام ورکړه",
+    "skip": "پرېږده",
+    "nothingHereYet": "دلته لا هېڅ شی نشته",
+    "somethingWentWrong": "یو څه غلط شول",
+    "tryAgain": "بيا هڅه وکړه",
+    "tooManyRequests": "ډېرې غوښتنې",
+    "waitBeforeRetrying": "مهرباني وکړئ د بیا هڅې دمخه {{seconds}} ثانیې انتظار وباسئ.",
+    "offlineCachedData": "تاسو آفلاین یاست. زیرمه شوي معلومات ښودل کیږي.",
+    "permissionRequired": "د {{permission}} اجازه اړینه ده",
+    "permissionRequiredBody": "د لمانځه وختونو لپاره د {{permission}} لاسرسی اړین دی. مهرباني وکړئ دا په تنظیماتو کې فعال کړئ.",
+    "loadingContent": "منځپانګه بارېږي",
+    "permissionRequiredGeneric": "اجازه اړینه ده",
+    "permissionRequiredGenericBody": "د دې فیچر لپاره د {{permission}} اجازه اړینه ده.",
+    "openSystemSettings": "د سیسټم تنظیمات خلاصول",
+    "retryRequest": "غوښتنه بیا هڅه کړه",
+    "tooManyRequestsRetry": "ډېرې غوښتنې. مهرباني وکړئ د بیا هڅې دمخه {{seconds}} ثانیې انتظار وباسئ.",
+    "tooManyRequestsRetryGeneric": "ډېرې غوښتنې. د بیا هڅې دمخه انتظار وباسئ.",
+    "offlineShowingCachedFrom": "تاسو آفلاین یاست. د {{cachedAt}} معلومات ښودل کیږي.",
+    "offlineShowingCachedGeneric": "تاسو آفلاین یاست. زیرمه شوي معلومات ښودل کیږي."
   },
   "greeting": {
     "assalamu_alaykum": "السَّلَامُ عَلَيْكُمْ وَرَحْمَةُ اللَّهِ وَبَرَكَاتُهُ",
     "prayer_approaching": "د لمانځه وخت رارسیږي",
     "prayer_now": "د لمانځه وخت"
+  },
+  "tabs": {
+    "home": "لمونځونه",
+    "prayerTimes": "د لمانځه وختونه",
+    "qibla": "قبله",
+    "calendar": "کليز",
+    "quran": "قرآن",
+    "more": "نور"
+  },
+  "menu": {
+    "settings": {
+      "label": "تنظيمات",
+      "subtitle": "طریقه، موقعیت، خبرتیاوې"
+    },
+    "adhan": {
+      "label": "د اذان کتابتون",
+      "subtitle": "د اذان غږ او قاري"
+    },
+    "tasbeeh": {
+      "label": "د تسبیح شمېرونکی",
+      "subtitle": "ډیجیټل ذکر شمېرونکی"
+    },
+    "duaDhikr": {
+      "label": "دعا او اذکار",
+      "subtitle": "د سهار او ماښام اذکار"
+    },
+    "moon": {
+      "label": "د سپوږمۍ حالت",
+      "subtitle": "قمري کليز او هجري نیټه"
+    },
+    "quran": {
+      "label": "قرآن",
+      "subtitle": "عثماني رسم الخط، د نښانونو سره"
+    },
+    "stats": {
+      "label": "د لمانځه احصايي",
+      "subtitle": "خپل لمونځونه او پرله‌پسې توب تعقیب کړئ"
+    },
+    "ramadan": {
+      "label": "رمضان",
+      "subtitle": "د سحرۍ او افطار وختونه، تعقیب کوونکی"
+    },
+    "subscription": {
+      "label": "پرو ته لوړ شئ",
+      "subtitle": "پریمیم ځانګړتیاوې خلاصې کړئ"
+    },
+    "homeWidget": {
+      "label": "د کور د پردې وسیله",
+      "subtitle": "بل لمونځ ستاسو د کور په پرده کې"
+    },
+    "smartHome": {
+      "label": "هوښیار کور",
+      "subtitle": "د لمانځه پر مهال وسایل بند کړئ"
+    },
+    "pairTv": {
+      "label": "ټیلیویزیون جوړول",
+      "subtitle": "د پرې‌کیلک ټیلیویزیون اپلیکیشن ونښلوئ"
+    },
+    "tvManager": {
+      "label": "زما ټیلیویزیونونه",
+      "subtitle": "نښلول شوي ټیلیویزیون ډسپلیونه اداره کړئ"
+    },
+    "agendas": {
+      "label": "د لمانځه کليز",
+      "subtitle": "د لمانځه وختونه کليز ته اضافه کړئ"
+    },
+    "timetable": {
+      "label": "میاشتنی مهال‌ویش",
+      "subtitle": "د بشپړې میاشتې د لمانځه وختونه + کليز صادرول"
+    },
+    "mosques": {
+      "label": "نږدې جوماتونه",
+      "subtitle": "ستاسو شاوخوا جوماتونه ومومئ"
+    },
+    "travel": {
+      "label": "د سفر حالت",
+      "subtitle": "د مسافرینو لپاره قصر"
+    },
+    "jumuah": {
+      "label": "جمعه",
+      "subtitle": "د جمعې یادونې او سورة الکهف"
+    },
+    "masjidMute": {
+      "label": "د جومات خودکاره خاموشي",
+      "subtitle": "د جومات نږدې خپل ټلیفون خاموش کړئ"
+    },
+    "fasting": {
+      "label": "د روژې تعقیب کوونکی",
+      "subtitle": "رمضان، دوشنبه او پنجشنبه، سپینې ورځې"
+    },
+    "qada": {
+      "label": "پاتې شوي لمونځونه (قضا)",
+      "subtitle": "پاتې شوي لمونځونه تعقیب او ادا کړئ"
+    },
+    "privacy": {
+      "label": "محرمیت او معلومات",
+      "subtitle": "د تحلیلونو رضایت کنټرول کړئ"
+    },
+    "shareApp": {
+      "label": "پرې‌کیلک شریک کړئ",
+      "subtitle": "یو ملګري یا کورنۍ غړي ته ووایاست"
+    }
   },
   "settings": {
     "title": "ترتیبات",
@@ -66,28 +210,692 @@
     "location": {
       "title": "ځای",
       "detect": "اتوماتیک کشف کول",
-      "manual": "لاسي داخلول"
-    }
+      "manual": "لاسي داخلول",
+      "useGps": "د GPS موقعیت وکاروئ",
+      "searchManually": "ښار په لاس تلاش کړئ",
+      "currentCity": "اوسنی ښار",
+      "noneSet": "هېڅ موقعیت نه دی ټاکل شوی. GPS یا لاسي ښار اړین دی.",
+      "gettingLocation": "ستاسو موقعیت ترلاسه کیږي...",
+      "permissionDenied": "اجازه رد شوه",
+      "permissionDeniedBody": "د خپل ښار د اتوماتیک کشف لپاره په تنظیماتو کې موقعیت فعال کړئ."
+    },
+    "account": {
+      "title": "حساب",
+      "signedIn": "ننوتلی",
+      "anonymous": "ناپیژندلی",
+      "free": "وړیا"
+    },
+    "highLatitude": {
+      "title": "د لوړ عرض البلد سمون",
+      "hint": "دا هغه وخت پلي کیږي کله چې فجر/عشاء ته اړین زاویه ونه رسیږي (په دوبي کې لرې شمالي/جنوبي ځایونه).",
+      "nightMiddle": "د شپې مینځ",
+      "angleBased": "د زاویې پر بنسټ",
+      "oneSeventh": "د شپې اوومه برخه",
+      "none": "هېڅ یو (ممکن نه شتون وښیي)"
+    },
+    "madhab": {
+      "title": "مذهب (عصر)",
+      "hint": "شافعي: ۱× د سیوري فکتور | حنفي: ۲× د سیوري فکتور"
+    },
+    "prayerAdjustments": {
+      "title": "د لمانځه وختونو سمون",
+      "hint": "د خپل سیمه‌ییز جومات مهال‌ویش سره د مطابقت لپاره هر وخت ±۳۰ دقیقو پورې سم کړئ."
+    },
+    "hijriAdjustment": {
+      "title": "د هجري نیټې سمون",
+      "hint": "که ستاسو سیمه‌یيز سترګه لیدنه د ام القرا کلیز سره توپیر ولري نو هجري نیټه ±۲ ورځو ته واړوئ.",
+      "offset": "تفاوت",
+      "decreaseAccessibilityLabel": "د هجري تفاوت کمول",
+      "increaseAccessibilityLabel": "د هجري تفاوت زیاتول"
+    },
+    "timeFormat": {
+      "title": "د وخت بڼه"
+    },
+    "appearance": {
+      "title": "ښکاره ډول",
+      "system": "سیسټم",
+      "light": "روښانه",
+      "dark": "تیاره"
+    },
+    "customAngles": {
+      "fajr": "د فجر زاویه (°)",
+      "isha": "د عشاء زاویه (°)",
+      "fajrAccessibilityLabel": "د فجر ځانګړې زاویه په درجو کې",
+      "ishaAccessibilityLabel": "د عشاء ځانګړې زاویه په درجو کې"
+    },
+    "upsell": {
+      "priceLine": "امت+ $۹.۹۹/کال — ټیلیویزیون اپ او هوښیار کور خلاصوي",
+      "upgradeButton": "امت+ ته لوړ شئ"
+    },
+    "prayerAlerts": "د لمانځه وخت خبرتیاوې",
+    "manageNotifications": "خبرتیاوې اداره کړئ",
+    "appLanguage": "د اپ ژبه",
+    "decreaseAccessibilityLabel": "د {{prayer}} سمون کمول",
+    "increaseAccessibilityLabel": "د {{prayer}} سمون زیاتول",
+    "valueAccessibilityLabel": "د هجري تفاوت: {{value}} ورځې",
+    "label12h": "۱۲ ساعته بڼه",
+    "label24h": "۲۴ ساعته بڼه",
+    "themeAccessibilityLabel": "{{theme}} تھیم"
   },
   "errors": {
     "location_permission": "د لمانځه وختونو محاسبه کولو لپاره د ځای لاسرسي اجازه ورکړه",
     "network": "شبکې سره وصل نه شو",
     "calculation": "د لمانځه وختونه محاسبه نه شو"
   },
-  "tabs": {
-    "home": "لمونځونه",
-    "prayerTimes": "د لمانځه وختونه",
-    "qibla": "قبله",
-    "calendar": "کليز",
-    "quran": "قرآن",
-    "more": "نور"
-  },
-  "menu": {
-    "settings": {
-      "label": "تنظيمات"
+  "screens": {
+    "more": {
+      "title": "نور"
+    },
+    "notFound": {
+      "title": "پرده ونه موندل شوه",
+      "goHome": "د لمانځه وختونو ته لاړ شئ"
+    },
+    "onboarding": {
+      "welcomeTitle": "پرې‌کیلک ته ښه راغلاست",
+      "welcomeDesc": "سمې د لمانځه وختونه، د قبلې لور، او اسلامي کليز — ټول په یو ځای کې.",
+      "getStarted": "پیل کړئ",
+      "locationTitle": "موقعیت فعال کړئ",
+      "locationDesc": "د لمانځه وختونو ته سمې محاسبې لپاره ستاسو موقعیت اړین دی.",
+      "allowLocation": "موقعیت ته اجازه ورکړئ",
+      "skipManual": "پرېږده — زه به یې پخپله لاسي وټاکم",
+      "authTitle": "حساب جوړ کړو؟",
+      "authDesc": "اختیاري: د کلاوډ همغږۍ او د لمانځه تاریخ لپاره حساب جوړ کړئ. تاسو کولی شئ هرکله وروسته هم ثبت نام وکړئ.",
+      "skipForNow": "اوس یې پرېږده"
+    },
+    "auth": {
+      "appTagline": "د هر مسلمان لپاره سمې د لمانځه وختونه",
+      "tabSkip": "پرېږده",
+      "continueTitle": "پرته له حساب دوام ورکړئ",
+      "continueDesc": "د لمانځه وختونه، قبله، او کليز په بشپړ ډول آفلاین کار کوي او هېڅ حساب ته اړتیا نلري. ستاسو تنظیمات سیمه‌ییز ساتل کیږي.",
+      "featurePrayerQibla": "د لمانځه وختونه او قبله",
+      "featureCalendar": "اسلامي کليز",
+      "featureSettings": "تنظیمات او خبرتیاوې",
+      "continueAnonymously": "ناپیژندلي ډول دوام ورکړئ",
+      "signInTitle": "ننوتل",
+      "emailPlaceholder": "بریښنالیک",
+      "passwordPlaceholder": "پټنوم",
+      "namePlaceholder": "نوم (اختیاري)",
+      "switchHint": "حساب ستاسو ټولو وسایلو کې د کلاوډ همغږۍ او د لمانځه تاریخ فعالوي.",
+      "registerTitle": "حساب جوړول",
+      "signingIn": "ننوتنه روانه ده...",
+      "enterEmailPassword": "مهرباني وکړئ بریښنالیک او پټنوم ولیکئ.",
+      "loginFailed": "ننوتل پاتې راغی",
+      "registerFailed": "ثبت نام پاتې راغی",
+      "verifyEmail": "د خپل حساب تایید لپاره خپل بریښنالیک وګورئ، بیا ننوځئ."
+    },
+    "adhan": {
+      "enablePerPrayer": "د هر لمانځه لپاره اذان فعال کړئ",
+      "library": "د اذان کتابتون",
+      "noVoices": "هېڅ د اذان غږ شتون نلري.",
+      "proRequiredTitle": "امت+ اړین دی",
+      "proRequiredBody": "{{name}} یو پرو اذان غږ دی. د خپل فعال اذان په توګه یې ټاکلو لپاره امت+ ته لوړ شئ.",
+      "proFeature": "پرو ځانګړتیا",
+      "playPreview": "مخکتنه غږول",
+      "stopPreview": "مخکتنه ودرول",
+      "voiceListLabel": "د اذان غږونو لیست"
+    },
+    "agendas": {
+      "title": "د لمانځه کليز",
+      "desc": "د لمانځه بلاکونه د یادونو په توګه خپل وسیلې کليز ته اضافه کړئ. هر لمانځه ته {{minutes}} دقیقې پیښه د ۵ دقیقو خبرتیا سره ورکول کیږي.",
+      "whichPrayers": "کوم لمونځونه اضافه شي",
+      "locationRequired": "موقعیت اړین دی",
+      "locationRequiredBody": "د لمانځه وختونه کليز ته د اضافه کولو لپاره خپل ښار په تنظیماتو کې وټاکئ.",
+      "noCalendarFound": "هېڅ کليز ونه موندل شو",
+      "noCalendarFoundBody": "پدې وسیله کې هېڅ لیکل کیدونکی کليز ونه موندل شو.",
+      "setLocationHint": "د کليز همغږۍ فعالولو لپاره خپل ښار په تنظیماتو کې وټاکئ.",
+      "addButton": "د نن ورځې لمونځونه کليز ته اضافه کړئ",
+      "addButtonAccessibilityLabel": "د نن ورځې د لمانځه وختونه کليز ته اضافه کړئ",
+      "adding": "اضافه کیږي...",
+      "done": "بشپړ",
+      "addedCount": "{{count}} د لمانځه وختونه ستاسو کليز ته اضافه شول.",
+      "error": "تېروتنه",
+      "addFailed": "کليز ته اضافه کول پاتې راغی.",
+      "checkingPermission": "د کليز اجازه چیک کیږي..."
+    },
+    "calendar": {
+      "eventsThisMonth": "دې میاشتې کې اسلامي پیښې"
+    },
+    "citySearch": {
+      "findCityTitle": "ښار ومومئ",
+      "placeholder": "ښار لټون...",
+      "useCurrentLocation": "اوسنی موقعیت وکاروئ",
+      "locating": "موقعیت موندل کیږي…",
+      "searching": "ښارونه لټول کیږي...",
+      "noResults": "د \"{{query}}\" لپاره هېڅ ښار ونه موندل شو.",
+      "popularHint": "مشهور ښارونه ښودل شوي. د لټون لپاره ولیکئ.",
+      "searchError": "د لټون تېروتنه: {{message}}",
+      "searchInputAccessibilityLabel": "د ښار لټون ساحه",
+      "useCurrentLocationAccessibilityLabel": "اوسنی موقعیت وکاروئ",
+      "resultsAccessibilityLabel": "د ښار لټون پایلې"
+    },
+    "duaDhikr": {
+      "noResults": "دې ډلې لپاره هېڅ دعا ونه موندل شوه.",
+      "categoryAll": "ټول",
+      "categoryAfterAdhan": "له اذان وروسته",
+      "categoryAfterPrayer": "له لمانځه وروسته",
+      "categoryMorning": "سهار",
+      "categoryEvening": "ماښام"
+    },
+    "moon": {
+      "hijriCalendar": "هجري کليز",
+      "hijriDay": "هجري ورځ",
+      "month": "میاشت",
+      "lunarAge": "قمري عمر",
+      "daysUnit": "{{count}} ورځې",
+      "upcomingPhases": "راتلونکي حالتونه",
+      "nextFullMoon": "بل بشپړ سپوږمی 🌕",
+      "nextNewMoon": "بل نوی سپوږمی 🌑",
+      "significance": "اسلامي اهمیت",
+      "illuminatedPct": "{{pct}}٪ روښانه",
+      "phaseNewMoon": "نوی سپوږمی",
+      "phaseWaxingCrescent": "زیاتیدونکی نیمګړی سپوږمی",
+      "phaseFirstQuarter": "لومړۍ ربعه",
+      "phaseWaxingGibbous": "زیاتیدونکی پوره‌غر سپوږمی",
+      "phaseFullMoon": "بشپړ سپوږمی",
+      "phaseWaningGibbous": "کمیدونکی پوره‌غر سپوږمی",
+      "phaseLastQuarter": "وروستۍ ربعه",
+      "phaseWaningCrescent": "کمیدونکی نیمګړی سپوږمی",
+      "ramadanNote": "دا رمضان دی — د روژې او د لیلة القدر د لټون میاشت.",
+      "dhulHijjahNote": "د {{month}} لومړۍ لسیزه د کال له غوره ورځو څخه دي."
     },
     "mosques": {
-      "label": "نږدې جوماتونه"
+      "setLocation": "د خپلو نږدې جوماتونو موندلو لپاره خپل موقعیت وټاکئ.",
+      "setLocationAction": "موقعیت وټاکئ",
+      "finding": "نږدې جوماتونه لټول کیږي...",
+      "noResults": "په ۱۰ کیلومترۍ کې هېڅ جومات ونه موندل شو.",
+      "retry": "بیا هڅه وکړه",
+      "attribution": "معلومات © د OpenStreetMap ونډه‌والان",
+      "searchFailed": "د جوماتونو لټون پاتې راغی."
+    },
+    "masjidMute": {
+      "title": "د جومات خودکاره خاموشي",
+      "intro": "پرې‌کیلک لا تر اوسه د جوماتونو لارښود نلري — لاندې خپل خاموشۍ سیمې اضافه کړئ. موږ وړاندیز کوو چې خپل سیمه‌ییز جومات اضافه کړئ ترڅو ستاسو ټلیفون ستاسو د رسیدو په وخت خودکاره خاموش شي.",
+      "masterToggleLabel": "خودکاره خاموشي فعاله ده",
+      "masterToggleSubtitle": "کله چې تاسو لاندې کومې سیمې ته ننوځئ ټلیفون خاموش کړئ",
+      "zonesHeading": "ستاسو سیمې",
+      "emptyTitle": "لا تر اوسه هېڅ سیمه نشته",
+      "emptySubtitle": "خپل سیمه‌ییز جومات اضافه کړئ ترڅو پرې‌کیلک ستاسو د رسیدو په وخت ستاسو ټلیفون خودکاره خاموش کړي.",
+      "addZoneAction": "خپل سیمه‌ییز جومات اضافه کړئ",
+      "addZoneButton": "یوه سیمه اضافه کړئ",
+      "addZoneTitle": "د خاموشۍ سیمه اضافه کړئ",
+      "editZoneTitle": "د خاموشۍ سیمه سمه کړئ",
+      "labelFieldLabel": "نښه",
+      "labelFieldPlaceholder": "لکه: مسجد النور",
+      "labelRequired": "مهرباني وکړئ د دې سیمې لپاره یوه نښه ولیکئ.",
+      "coordinatesInvalid": "مهرباني وکړئ سم عرض البلد او طول البلد ولیکئ، یا لټون وکړئ/اوسنی موقعیت وکاروئ.",
+      "searchAddressLabel": "پته لټون",
+      "searchAddressPlaceholder": "د پتې یا ځای لپاره لټون وکړئ",
+      "searching": "لټون کیږي...",
+      "searchNoResults": "هېڅ مطابقت ونه موندل شو. بل لټون هڅه کړئ یا متناسقات پخپله ولیکئ.",
+      "useCurrentLocation": "اوسنی موقعیت وکاروئ",
+      "locating": "موقعیت موندل کیږي...",
+      "locationFailed": "ستاسو اوسنی موقعیت ترلاسه نه شو.",
+      "manualEntryToggle": "متناسقات لاسي داخل کړئ",
+      "latitudeLabel": "عرض البلد",
+      "longitudeLabel": "طول البلد",
+      "radiusLabel": "شعاع: {{radius}} متره",
+      "radiusHint": "د {{min}} متر او {{max}} متر ترمنځ — جومات او د هغه پارکینګ پوښي.",
+      "decreaseRadiusAccessibilityLabel": "شعاع ۲۵ متره کم کړئ",
+      "increaseRadiusAccessibilityLabel": "شعاع ۲۵ متره زیات کړئ",
+      "saveZone": "سیمه خوندي کړئ",
+      "deleteZone": "سیمه ړنګه کړئ",
+      "deleteConfirmTitle": "دا سیمه ړنګه شي؟",
+      "deleteConfirmBody": "\"{{label}}\" به نور ستاسو ټلیفون خودکاره خاموش نه کړي.",
+      "mapPickerFollowUp": "د نقشې یو ټاکونکی چې د پن بصري ایښودو لپاره وي پلان شوی — اوس مهال، پته لټون وکړئ یا خپل اوسنی موقعیت وکاروئ.",
+      "permissionTitle": "د موقعیت اجازه اړینه ده",
+      "permissionBody": "د جومات خودکاره خاموشۍ ته اړتیا ده چې ستاسو د یوې سیمې ننوتل یا وتل کشف کړي، حتی کله چې اپ تړلی وي، ددې لپاره \"تل\" موقعیت لاسرسی اړین دی.",
+      "permissionGrant": "اجازه ورکړئ",
+      "permissionDeniedNote": "شاليد موقعیت ته اجازه نه ده ورکړل شوې — سیمې خوندي دي خو خودکاره خاموشي به فعاله نشي تر څو تاسو د سیسټم تنظیماتو کې \"تل\" لاسرسي ته اجازه ورنکړئ.",
+      "androidNote": "اینډرایډ: ستاسو ټلیفون به د رسیدو پر مهال لړزون حالت ته واوړي او د وتلو پر مهال ستاسو پخوانی زنګ حالت بیرته راولي.",
+      "iosNote": "iOS: اېپل اپلیکیشنونو ته اجازه نه ورکوي چې ستاسو د خاموشۍ کیلي بدله کړي. پرځای یې، پرې‌کیلک یوه یادونې خبرتیا لیږي چې تاسو څخه غواړي خپل ټلیفون پخپله خاموش کړئ.",
+      "iosReminderTitle": "تاسو ورسیدئ",
+      "iosReminderBody": "تاسو د {{zone}} نږدې یاست — مهرباني وکړئ خپل ټلیفون خاموش کړئ.",
+      "defaultZoneLabel": "ستاسو د خاموشۍ سیمه",
+      "activeNow": "اوس فعاله ده — ټلیفون خاموش شو",
+      "radiusValue": "{{radius}} متره شعاع"
+    },
+    "pairTv": {
+      "upsellBadge": "امت+",
+      "unlockTitle": "د ټیلیویزیون جوړولو قفل خلاص کړئ",
+      "unlockDesc": "امت+ $۹.۹۹/کال — ټیلیویزیون اپ او هوښیار کور خلاصوي",
+      "pairedTitle": "ټیلیویزیون وصل شو",
+      "pairedDesc": "ستاسو د ټیلیویزیون اپلیکیشن اوس دې حساب سره وصل دی.",
+      "title": "د ټیلیویزیون سره جوړول",
+      "desc": "پرې‌کیلک په خپل ټیلیویزیون کې خلاص کړئ، بیا هغه ۶ عددي پن چې پرده کې ښودل کیږي ولیکئ.",
+      "enterPin": "هغه ۶ عددي پن ولیکئ چې ستاسو ټیلیویزیون کې ښودل کیږي.",
+      "pinInputAccessibilityLabel": "د ټیلیویزیون د جوړولو پن",
+      "pairFailed": "جوړول پاتې راغی. بیا هڅه وکړئ.",
+      "pairDevice": "وسیله جوړه کړئ",
+      "invalidOrExpiredPin": "دا پن غلط دی یا مهال یې تېر شوی دی. د ټیلیویزیون پرده وګورئ او بیا هڅه وکړئ."
+    },
+    "tvManager": {
+      "upsellBadge": "امت+",
+      "unlockTitle": "د ټیلیویزیون مدیریت قفل خلاص کړئ",
+      "unlockDesc": "امت+ $۹.۹۹/کال — ټیلیویزیون اپ او هوښیار کور خلاصوي",
+      "emptyTitle": "لا تر اوسه هېڅ ټیلیویزیون جوړ شوی نه دی",
+      "emptySubtitle": "یو ټیلیویزیون جوړ کړئ ترڅو یې دلته وګورئ او د هغه ښودنې تنظیمات اداره کړئ.",
+      "pairACta": "یو ټیلیویزیون جوړ کړئ",
+      "noCity": "هېڅ موقعیت نه دی ټاکل شوی",
+      "nameLabel": "نوم",
+      "colorLabel": "ځانګړی رنګ",
+      "streamLabel": "د سټریم سرچینه",
+      "streamMakkah": "د مکې ټیلیویزیون",
+      "streamSaudiQuran": "سعودي قرآن",
+      "streamMedina": "مدینه",
+      "rotateLabel": "د پردې څرخول",
+      "decreaseRotate": "د څرخیدو دقیقې کمول",
+      "increaseRotate": "د څرخیدو دقیقې زیاتول",
+      "weatherLabel": "هوا ښودل",
+      "updateLocationAction": "موقعیت زما اوسني موقعیت ته اپډیټ کړئ",
+      "updateLocationHint": "ټیلیویزیون به موقعیت بدلونونه بیا په جوړولو کې ترلاسه کړي — دا اوس خوندي شوی موقعیت اپډیټ کوي.",
+      "noLocationTitle": "هېڅ موقعیت نه دی ټاکل شوی",
+      "noLocationBody": "د ټیلیویزیون د موقعیت اپډیټ کولو دمخه خپل موقعیت په تنظیماتو کې وټاکئ.",
+      "locationUpdatedTitle": "موقعیت اپډیټ شو",
+      "locationUpdatedBody": "خوندي شو. ټیلیویزیون به بل ځل د جوړولو پرمهال دا موقعیت وکاروي.",
+      "deleteAction": "دا ټیلیویزیون لرې کړئ",
+      "deleteConfirmTitle": "ټیلیویزیون لرې شي؟",
+      "deleteConfirmBody": "دا به د \"{{name}}\" جوړول لرې کړي او د هغه خوندي شوي تنظیمات به لرې کړي. دا بیرته نشي راوستل کیدی.",
+      "deleteConfirmAction": "لرې کړئ",
+      "prayerFajr": "فجر",
+      "prayerDhuhr": "ظهر",
+      "prayerAsr": "عصر",
+      "prayerMaghrib": "مغرب",
+      "prayerIsha": "عشاء",
+      "madhabShafii": "شافعي",
+      "madhabHanafi": "حنفي",
+      "timeFormat12h": "۱۲ ساعته",
+      "timeFormat24h": "۲۴ ساعته",
+      "invalidCoordsTitle": "غلط متناسقات",
+      "invalidCoordsBody": "سم عرض البلد (-۹۰ تر ۹۰) او طول البلد (-۱۸۰ تر ۱۸۰) ولیکئ.",
+      "deepSettingsLabel": "پرمختللي تنظیمات",
+      "countdownTakeoverLabel": "د شمېرنې کنترول اخیستل",
+      "countdownTakeoverHint": "د هر لمانځه دمخه پرده د یوې لویې شمېرنې سره ونیسئ.",
+      "countdownMinutesLabel": "شمېرنه پیل کړئ",
+      "decreaseCountdown": "د شمېرنې دقیقې کمول",
+      "increaseCountdown": "د شمېرنې دقیقې زیاتول",
+      "iqamaLabel": "د اقامت وختونه",
+      "iqamaHint": "له اذان وروسته د اقامت شمېرنه ښکاره کړئ، د هر لمانځه لپاره جلا تفاوت سره.",
+      "decreaseIqama": "د {{prayer}} اقامت تفاوت کمول",
+      "increaseIqama": "د {{prayer}} اقامت تفاوت زیاتول",
+      "nameOnlyLabel": "یوازې د نوم حالت",
+      "nameOnlyHint": "له اذان دمخه یوازې د لمانځه نوم (پرته له وختونو) دې دقیقو لپاره ښکاره کړئ.",
+      "nameOnlyMinutesLabel": "یوازې د نوم موده",
+      "decreaseNameOnly": "یوازې د نوم دقیقې کمول",
+      "increaseNameOnly": "یوازې د نوم دقیقې زیاتول",
+      "madhabLabel": "مذهب",
+      "timeFormatLabel": "د وخت بڼه",
+      "calcMethodLabel": "د محاسبې طریقه",
+      "manualLocationToggle": "متناسقات لاسي داخل کړئ",
+      "latitudeLabel": "عرض البلد",
+      "longitudeLabel": "طول البلد",
+      "manualLocationSave": "متناسقات خوندي کړئ",
+      "layoutThemeLabel": "بڼه او تھیم",
+      "layoutLabel": "بڼه",
+      "themeLabel": "تھیم",
+      "layoutClassic": "کلاسیک",
+      "layoutClassicDesc": "وختونه او مستقیم سټریم سره سره",
+      "layoutFlipped": "اړول شوی",
+      "layoutFlippedDesc": "همغه ویش، منعکس شوی",
+      "layoutStreamFull": "بشپړ سټریم",
+      "layoutStreamFullDesc": "د وختونو یوې پټۍ سره ټوله‌پرده سټریم",
+      "layoutTimesOnly": "یوازې وختونه",
+      "layoutTimesOnlyDesc": "یوازې د لمانځه وختونه، پرته له مستقیم سټریم",
+      "layoutAmbient": "چاپیریالي",
+      "layoutAmbientDesc": "ساده چاپیریالي ساعت ښودنه",
+      "themeUmmatGreen": "امت شین",
+      "themeMidnight": "د شپې نیمه",
+      "themeWarmSand": "ګرم شګه",
+      "themeMono": "یو رنګ"
+    },
+    "prayerTimes": {
+      "setCityTitle": "خپل ښار وټاکئ",
+      "setCitySubtitle": "د لمانځه وختونو لیدو لپاره موقعیت فعال کړئ یا ښار پخپله وټاکئ.",
+      "setLocationAction": "موقعیت وټاکئ",
+      "offlineMessage": "وروستي پیژندل شوي د لمانځه وختونه ښودل کیږي (آفلاین)",
+      "next": "بل: {{prayer}}",
+      "asrCalculation": "د عصر محاسبه",
+      "markedPrayed": "لوستل شوی نښه شوی",
+      "notMarkedPrayed": "نه لوستل شوی نښه شوی",
+      "doubleTapToggle": "د بدلولو لپاره دوه ځلې ټک ورکړئ.",
+      "shareTimes": "د نن وختونه شریک کړئ",
+      "shareAccessibilityLabel": "د نن ورځې د لمانځه وختونه شریک کړئ"
+    },
+    "quran": {
+      "loading": "د قرآن معلومات بارېږي...",
+      "backToList": "د سورتونو لست ته بیرته لاړ شئ",
+      "back": "شاته",
+      "bismillah": "بسم الله",
+      "comingSoonBody": "{{name}} ({{count}} آیتونه) د ژباړې او تلاوت سره Islam.Wiki کې ولولئ — زموږ بشپړ قرآن لوستونکی.",
+      "readOnWiki": "Islam.Wiki کې ولولئ ←",
+      "removeBookmark": "نښه لرې کړئ",
+      "bookmarkVerse": "آیت ته نښه ورکړئ",
+      "surahList": "د سورتونو لست",
+      "wikiFooter": "📖 بشپړ قرآن — ټول ۱۱۴ سورتونه، ژباړې او غږونه Islam.Wiki کې ←",
+      "openFullQuran": "بشپړ قرآن Islam.Wiki کې خلاص کړئ",
+      "featuredVerse": "ځانګړی آیت",
+      "readableBadge": "شتون لري"
+    },
+    "ramadan": {
+      "subtitle": "رمضان مبارک",
+      "dayOf": "ورځ {{day}} د {{total}}",
+      "iftarIn": "افطار په",
+      "suhoorEndsIn": "سحري پای ته رسیږي په",
+      "notActive": "رمضان اوس مهال فعال نه دی.\nاوسنۍ هجري میاشت: {{month}} ({{monthNumber}}/۱۲)",
+      "todaysTimes": "د نن وختونه",
+      "suhoorEnds": "د سحرۍ پای (فجر)",
+      "iftar": "افطار (مغرب)",
+      "noLocation": "د لمانځه وختونو لیدو لپاره خپل موقعیت په تنظیماتو کې وټاکئ.",
+      "duasTitle": "د رمضان دعاوې",
+      "laylatAlQadrTitle": "لیلة القدر",
+      "laylatAlQadrBody": "موږ د رمضان په وروستیو لسو شپو کې یو. عبادت زیات کړئ، په ځانګړي ډول په طاق شپو (۲۱، ۲۳، ۲۵، ۲۷، ۲۹) کې."
+    },
+    "notifications": {
+      "masterLabel": "د لمانځه خبرتیاوې",
+      "masterSub": "د هر لمانځه له وخته دمخه خبرتیاوې ترلاسه کړئ",
+      "androidExactAlarm": "په اینډرایډ ۱۲+ کې، د لمانځه وخت د دقیقو خبرتیاوو لپاره د سیسټم تنظیماتو کې \"الارمونه او یادونې\" ته اجازه ورکړئ.",
+      "openSystemSettings": "د سیسټم تنظیمات خلاصول",
+      "masterAccessibilityLabel": "د لمانځه خبرتیاوې فعالول",
+      "openSystemSettingsAccessibilityLabel": "د الارمونو لپاره د سیسټم تنظیمات خلاصول",
+      "perPrayerAlerts": "د هر لمانځه خبرتیاوې",
+      "minutesBefore_one": "{{count}} دقیقه دمخه",
+      "minutesBefore_other": "{{count}} دقیقې دمخه",
+      "iqamahOff": "اقامت بند دی",
+      "iqamahAfter_one": "اقامت +{{count}} دقیقه",
+      "iqamahAfter_other": "اقامت +{{count}} دقیقې",
+      "adhanSoundTitle": "د اذان غږ",
+      "adhanSoundSub": "کله چې د لمانځه خبرتیا راځي کوم اذان غږیږي.",
+      "adhanSound": {
+        "takbir": "تکبیر (پیل)",
+        "makkah": "مکه",
+        "mishari": "مشاري راشد",
+        "madina": "مدینه"
+      },
+      "smartAlarmsTitle": "هوښیار الارمونه",
+      "suhoorLabel": "د سحرۍ الارم",
+      "suhoorSub": "د سهار له مخکې خواړو لپاره له فجر دمخه راویښ شئ.",
+      "suhoorBefore_one": "له فجر دمخه {{count}} دقیقه",
+      "suhoorBefore_other": "له فجر دمخه {{count}} دقیقې",
+      "tahajjudLabel": "تهجد / قیام",
+      "tahajjudSub": "د لمانځه لپاره د شپې په وروستۍ برخه کې راپاڅئ.",
+      "tahajjudLastThird": "د شپې وروستۍ دریمه برخه",
+      "tahajjudCustom": "ځانګړی وخت",
+      "nightTimesTitle": "د شپې وختونه (نن شپه)",
+      "lastThirdBegins": "وروستۍ دریمه برخه پیل کیږي",
+      "middleOfNight": "د شپې مینځ",
+      "nightTimesUnavailable": "د نن شپې د شپې وختونو لیدو لپاره خپل موقعیت وټاکئ.",
+      "reliabilityTitle": "د اذان باوري رسونه",
+      "reliabilitySub": "ډاډ ترلاسه کړئ چې الارمونه په وخت غږیږي",
+      "batteryTitle": "باوري الارمونو ته اجازه ورکړئ",
+      "batteryIntro": "اینډرایډ ممکن د بیټرۍ خوندي کولو لپاره د لمانځه الارمونه خاموش کړي. د اذان په وخت اورېدو لپاره:",
+      "batteryStepAlarms": "د لمانځه وختونو لپاره \"الارمونه او یادونې\" (دقیق الارمونه) ته اجازه ورکړئ.",
+      "batteryStepOptimization": "د لمانځه وختونو لپاره د بیټرۍ اصلاح بند کړئ ترڅو ویده نشي.",
+      "batteryOemNote": "ځینې ټلیفونونه (شیاومي، هواوي، سامسنګ، ون پلس، اوپو، ویوو) یو اضافي \"اتومات پیل\" یا \"خوندي شوي اپلیکیشنونه\" تنظیم لري — هلته هم د لمانځه وختونه فعال کړئ.",
+      "openExactAlarm": "الارمونه او یادونې خلاصول",
+      "openBatterySettings": "د بیټرۍ تنظیمات خلاصول",
+      "testAdhanButton": "زما اذان وازمویه (۵ ثانیې)",
+      "testAdhanScheduled": "یو ازموینیز اذان به شاوخوا ۵ ثانیو کې غږ شي. د خبرتیا په توګه یې د اورېدو لپاره اپلیکیشن قفل یا شاليد کې کړئ.",
+      "dismiss": "لرې کول"
+    },
+    "homeWidget": {
+      "widgetPreviewAccessibilityLabel": "د وسیلې مخکتنه چې بل لمانځه وخت ښیي",
+      "title": "د کور د پردې وسیله",
+      "subtitle": "ستاسو د کور په پرده کې بل لمانځه وخت وګورئ",
+      "widgetPreviewTitle": "د وسیلې مخکتنه",
+      "nextPrayer": "بل لمانځه",
+      "setLocationToPreview": "د مخکتنې لپاره خپل موقعیت وټاکئ",
+      "setupInstructions": "د تنظیم لارښوونې",
+      "integrationStatus": "د یوځای کیدو حالت",
+      "upsellMessage": "د کور د پردې وسیله د امت+ ځانګړتیا ده.",
+      "upsellAction": "امت+ ته لوړ شئ",
+      "countdownPrefix": "په {{countdown}} کې",
+      "setupStep1": "خپل کور پرده اوږده ټک ورکړئ",
+      "setupStep2": "د + تڼۍ (iOS) یا د وسیلو مینو (اینډرایډ) ته ټک ورکړئ",
+      "setupStep3": "\"{{appName}}\" ولټوئ",
+      "setupStep4": "خپل غوره وسیلې کچه وټاکئ",
+      "setupStep5": "وسیله اضافه کړئ ته ټک ورکړئ",
+      "statusAndroid": "اینډرایډ: فعاله — \"بل لمانځه\" د کور پردې وسیله د react-native-android-widget له لارې چمتو کیږي او هر ۳۰ دقیقو کې خودکاره تازه کیږي (او سملاسي وروسته له دې چې تاسو تنظیمات یا خبرتیاوې بدل کړئ).",
+      "statusIos": "iOS: فعاله — \"بل لمانځه\" WidgetKit وسیله کله چې تاسو تنظیمات یا خبرتیاوې بدل کړئ تازه کیږي او په هر لمانځه وخت کې پخپله مخکې ځي."
+    },
+    "smartHome": {
+      "proOnly": "هوښیار کور (د لمانځه پر مهال قفلول + د وسایلو کنترول) د امت+ ځانګړتیا ده.",
+      "upgradeAction": "امت+ ته لوړ شئ",
+      "lockDuringPrayer": "د لمانځه پر مهال قفل کول",
+      "lockDesc": "کله چې د لمانځه وخت پیل شي، پرده خودکاره تیاره کړئ او رسنۍ خاموشې کړئ. د تنظیم لپاره تصدیق اړین دی.",
+      "lockOnSalah": "د لمانځه پر قفل",
+      "lockOnSalahAccessibilityLabel": "د لمانځه پر قفل حالت",
+      "activeNote": "پرده به د لمانځه پر وختونو تیاره شي او رسنۍ به ودریږي.\nاینډرایډ: د رسنۍ تمرکز خوشې کیږي. iOS: د خاموشۍ حالت یادونه ښودل کیږي.",
+      "linkedAccounts": "وصل شوي حسابونه",
+      "noLinks": "لا تر اوسه هېڅ هوښیار کور حساب وصل نه دی. Alexa اپلیکیشن یا Google Home اپلیکیشن خلاص کړئ، د پرې‌کیلک مهارت یا عمل ولټوئ، او خپل امت حساب وصل کړئ.",
+      "linked": "{{date}} وصل شوی",
+      "unlink": "بیلول",
+      "unlinkConfirmTitle": "د {{name}} بیلول؟",
+      "unlinkConfirmBody": "تاسو کولی شئ هرکله {{name}} بیا د Alexa یا Google Home اپلیکیشن څخه وصل کړئ.",
+      "unlinkConfirmAction": "بیلول",
+      "unlinkFailedTitle": "بیلول ونشول",
+      "learnMore": "نور زده کړئ",
+      "authPrompt": "د لمانځه پر قفل فعالولو لپاره تصدیق کړئ",
+      "useFallback": "پټ کوډ وکاروئ"
+    },
+    "stats": {
+      "chartAccessibilityLabel": "اونۍ د لمانځه بشپړولو چارټ",
+      "noLogs": "لا تر اوسه هېڅ د لمانځه ریکارډ نشته. خپلې احصايي لیدو لپاره لمونځونه بشپړول پیل کړئ.",
+      "dayStreak": "د ورځو پرله‌پسې توب 🔥",
+      "weeklyRate": "اونۍ نرخ",
+      "totalLogged": "ټول ثبت شوي",
+      "last7Days": "وروستۍ ۷ ورځې",
+      "thisMonth": "دې میاشتې کې",
+      "byPrayer": "د لمانځه له مخې",
+      "weekly": "اونیز",
+      "monthly": "میاشتنی",
+      "fastingStreak": "د روژې پرله‌پسې توب",
+      "qadaOutstanding": "پاتې قضا"
+    },
+    "subscription": {
+      "title": "پرې‌کیلک پرو",
+      "subtitle": "خپل عبادت تجربه ښه کړئ",
+      "loadingOptions": "د سبسکرپشن انتخابونه بارېږي...",
+      "loadProductsFailed": "محصولات بار نشول. خپل اتصال چیک کړئ او بیا هڅه وکړئ.",
+      "connectFailed": "د پلورنځي سره اتصال پاتې راغی.",
+      "createAccountTitle": "حساب جوړول",
+      "createAccountBody": "لومړی ننوځئ ترڅو ستاسو پیرودنه ستاسو وسایلو کې همغږې شي.",
+      "purchaseFailed": "پیرودنه پاتې راغله. مهرباني وکړئ بیا هڅه وکړئ.",
+      "restoreFailed": "بیرته راګرځول پاتې راغی.",
+      "proTitle": "تاسو اوس پرو یاست",
+      "proSub": "د پرې‌کیلک ملاتړ لپاره مننه!",
+      "noProducts": "د سبسکرپشن محصولات شتون نلري. یې App Store Connect / Google Play Console کې تنظیم کړئ.",
+      "restorePurchase": "پیرودنه بیرته راولئ",
+      "restorePurchaseAccessibilityLabel": "پخوانۍ پیرودنه بیرته راولئ",
+      "legal": "سبسکرپشنونه خودکاره نوي کیږي پرته له دې چې د اوسنۍ دورې پای ته له رسیدو لږترلږه ۲۴ ساعته دمخه لغوه شي. خپل App Store / Google Play حساب تنظیماتو کې اداره کړئ.",
+      "featurePremiumAdhan": "پریمیم د اذان غږونه — اضافي قاریان",
+      "featureHomeWidget": "د کور د پردې وسیله (بل لمانځه)",
+      "featureTvPairing": "د پرې‌کیلک ټیلیویزیون اپلیکیشن جوړول",
+      "featureSmartHome": "هوښیار کور — د لمانځه پر مهال وسایل قفل کول",
+      "subscribeAccessibilityLabel": "{{title}} د {{price}} په بدل کې سبسکرایب کړئ"
+    },
+    "tasbeeh": {
+      "chooseDhikr": "ذکر وټاکئ",
+      "of": "له {{count}} څخه",
+      "resetCounter": "شمېرونکی بیا سیٹول",
+      "todayTotal": "د نن ټول",
+      "history": "تاریخ"
+    },
+    "timetable": {
+      "setCityTitle": "خپل ښار وټاکئ",
+      "setCitySubtitle": "د میاشتني د لمانځه مهال‌ویش لیدو لپاره خپل موقعیت وټاکئ.",
+      "previousMonth": "پخوانۍ میاشت",
+      "nextMonth": "بله میاشت",
+      "exportCalendar": "کليز صادر کړئ (.ics)",
+      "exportAccessibilityLabel": "د دې میاشتې د لمانځه وختونه د کليز فایل په توګه صادر کړئ",
+      "shareTimes": "دا میاشت شریکه کړئ",
+      "shareAccessibilityLabel": "د دې میاشتې د لمانځه مهال‌ویش شریک کړئ"
+    },
+    "travel": {
+      "musafirModeTitle": "د مسافر حالت",
+      "musafirModeDesc": "زه مسافر یم. اړوندو لمونځونو ته قصر پلي کړئ.",
+      "musafirModeAccessibilityLabel": "د مسافر د سفر حالت",
+      "musafirAlertTitle": "د مسافر حالت",
+      "musafirAlertBody": "قصر (لنډول) ظهر، عصر، او عشاء د ۴ نه ۲ رکعتونو ته کموي.\n\nیادونه: د علمي توپیرونو له امله جمع (لمونځونه یوځای کول) خودکاره پلي نه کیږي. مهرباني وکړئ د سفر پر مهال د لمونځونو د یوځای کولو په اړه خپل سیمه‌ییز عالم یا مذهب تعقیب کړئ.",
+      "understood": "پوه شوم",
+      "qasrRakatCount": "د قصر رکعتونو شمېر",
+      "fiqhNote": "فجر او مغرب نه لنډیږي (قصر یوازې ۴ رکعتونو لمونځونو ته پلي کیږي). جمع (لمونځونه یوځای کول) ته اړتیا ده چې خپل سیمه‌ییز عالم یا مذهب فتوا تعقیب کړئ.",
+      "travelDestination": "د سفر منزل",
+      "changeCity": "بدلول",
+      "changeCityAccessibilityLabel": "د سفر ښار بدلول",
+      "selectTravelCity": "د سفر ښار وټاکئ",
+      "selectTravelCityAccessibilityLabel": "د سفر ښار وټاکئ",
+      "recalcNote": "ستاسو د سفر منزل لپاره د لمانځه وختونه به بیا محاسبه شي.",
+      "homeCity": "کورنی ښار",
+      "notSet": "نه دی ټاکل شوی"
+    },
+    "qibla": {
+      "calibrating": "قطب نما کلیبرېټ کیږي...",
+      "locationRequiredTitle": "موقعیت اړین دی",
+      "locationRequiredSubtitle": "د قبلې لور موندلو لپاره خپل موقعیت په تنظیماتو کې وټاکئ.",
+      "bearingLabel": "د قبلې لور",
+      "compassAccessibilityLabel": "د قبلې قطب نما، اوسنی لور {{degrees}} درجې",
+      "accuracyLabel": "دقت: {{level}}",
+      "accuracyUnknown": "نامعلوم",
+      "accuracyUnreliable": "غیر باوري",
+      "accuracyLow": "ټیټ",
+      "accuracyMedium": "منځنی",
+      "accuracyHigh": "لوړ",
+      "headingNote": "لور: {{degrees}}° | کعبې ته لوی دایرې لور"
+    },
+    "fasting": {
+      "todaysFast": "د نن روژه",
+      "logToday": "د نن روژه ثبت کړئ",
+      "unlogToday": "د نن ثبت لرې کړئ",
+      "loggedAs": "ثبت شوی: {{type}}",
+      "yourStreaks": "ستاسو پرله‌پسې توب",
+      "mondayStreak": "د دوشنبې پرله‌پسې توب",
+      "thursdayStreak": "د پنجشنبې پرله‌پسې توب",
+      "whiteDaysMonth": "دې میاشتې کې سپینې ورځې",
+      "ramadanLogged": "د رمضان روژې",
+      "qadaLogged": "قضا ادا شوې",
+      "voluntaryLogged": "نفلي روژې",
+      "ramadanDayOf": "رمضان — ورځ {{day}} د {{total}}",
+      "upcomingSuggestions": "راتلونکې وړاندیز شوې د روژې ورځې",
+      "logAction": "ثبت کول",
+      "sunnahSourceNote": "د دوشنبې او پنجشنبې روژه: صحیح مسلم ۱۱۶۲. سپینې ورځې (د هرې هجري میاشتې ۱۳مه-۱۵مه): سنن نسائي ۲۳۴۵، سنن ابي داود ۲۴۴۹.",
+      "recentLogs": "وروستي ثبتونه"
+    },
+    "qada": {
+      "totalOwed": "ټول پور لمونځونه",
+      "perPrayer": "د هر لمانځه شمېر",
+      "makeUpOne": "یو ادا کړئ",
+      "excusedTitle": "معذوریت موده",
+      "fiqhNote": "د معذوریت پر مهال (لکه حیض یا نفاس)، ښځه لمونځ نه کوي — او هغه پاتې شوي لمونځونه وروسته قضا نه کیږي. دا له روژې سره توپیر لري: هغه روژې چې دې موده کې پاتې کیږي وروسته باید قضا شي.",
+      "fiqhCitation": "صحیح بخاري ۳۲۱ · صحیح مسلم ۳۳۵",
+      "consultScholar": "دا د اکثریت نظر منعکسوي. ستاسو ځانګړي حالت لپاره، خپل سیمه‌ییز عالم سره مشوره وکړئ.",
+      "addExcusedRange": "د معذوریت موده اضافه کړئ",
+      "startDate": "د پیل نیټه",
+      "endDate": "د پای نیټه",
+      "noteOptional": "یادونه (اختیاري)",
+      "notePlaceholder": "لکه حیض، ناروغي",
+      "removeExcusedRangeAccessibilityLabel": "د معذوریت موده لرې کړئ"
+    },
+    "jumuah": {
+      "intro": "جمعه د اونۍ غوره ورځ ده. نرمې یادونې وټاکئ او د جمعې د سننو سره چمتووالی ونیسئ.",
+      "khutbahTitle": "د خطبې یادونه",
+      "khutbahSub": "د خطبې دمخه هره جمعه یوه یادونه.",
+      "kahfTitle": "د سورة الکهف یادونه",
+      "kahfSub": "د جمعې ورځې سورة الکهف لوستلو یادونه.",
+      "kahfDayThursday": "د پنجشنبې ماښام",
+      "kahfDayFriday": "د جمعې سهار",
+      "reminderTime": "د یادونې وخت",
+      "checklistTitle": "د جمعې سنتونه",
+      "virtueTitle": "د جمعې فضیلت",
+      "virtueBody": "پیغمبر ﷺ وویل: \"غوره ورځ چې لمر پرې راخوځیدلی جمعه ده.\"",
+      "virtueCitation": "صحیح مسلم ۸۵۴",
+      "kahfVirtueBody": "پیغمبر ﷺ وویل: \"هر څوک چې د جمعې په ورځ سورة الکهف ولولي، د هغه لپاره به د دوو جمعو ترمنځ رڼا وځلیږي.\"",
+      "kahfVirtueCitation": "د حاکم او بیهقي روایت؛ البانی صحیح ګڼلی",
+      "checklist": {
+        "ghusl": "غسل وکړئ",
+        "ghuslCitation": "صحیح بخاري ۸۷۷ · صحیح مسلم ۸۴۶",
+        "cleanClothes": "پاک او ښه جامې واغوندئ",
+        "cleanClothesCitation": "سنن ابي داود ۳۴۳ (حسن)",
+        "perfume": "خوشبویي وکاروئ (مسواک او سینګارول)",
+        "perfumeCitation": "صحیح بخاري ۸۸۰",
+        "early": "جومات ته ژر لاړ شئ",
+        "earlyCitation": "صحیح بخاري ۸۸۱ · صحیح مسلم ۸۵۰",
+        "kahf": "سورة الکهف ولولئ",
+        "kahfCitation": "حاکم / بیهقي (البانی له نظره صحیح)",
+        "salawat": "پر پیغمبر ﷺ درود زیات کړئ",
+        "salawatCitation": "سنن ابي داود ۱۰۴۷ (صحیح)",
+        "dua": "د دعا د قبلیدو ساعت ولټوئ",
+        "duaCitation": "صحیح بخاري ۹۳۵ · صحیح مسلم ۸۵۲"
+      }
+    },
+    "leadTimeAccessibilityLabel": "د {{prayer}} خبرتیا وخت، {{minutes}} دقیقې دمخه. د بدلولو لپاره ټک ورکړئ.",
+    "iqamahAccessibilityLabel": "د {{prayer}} د اقامت یادونه، {{status}}. د بدلولو لپاره ټک ورکړئ.",
+    "enableAccessibilityLabel": "د {{prayer}} اذان فعالول",
+    "rowAccessibilityLabel": "{{name}}، {{distance}} لرې",
+    "directionsAccessibilityLabel": "د {{name}} لور نقشو کې خلاصول",
+    "accentColorAccessibilityLabel": "ځانګړی رنګ {{hex}}",
+    "todayTotalAccessibilityLabel": "د نن ذکر ټول: {{total}}",
+    "historyEntryAccessibilityLabel": "{{name}}: {{count}}، {{date}}",
+    "arabicTextAccessibilityLabel": "عربي: {{transliteration}}",
+    "counterAccessibilityLabel": "شمېر: {{count}} د {{target}}. {{status}}",
+    "tapToIncrement": "د زیاتولو لپاره ټک ورکړئ",
+    "presetAccessibilityLabel": "{{transliteration}}، موخه {{target}}، سرچینه {{source}}",
+    "zoneRowAccessibilityLabel": "{{label}}، {{radius}} متره شعاع",
+    "phaseAccessibilityLabel": "د سپوږمۍ حالت: {{phase}}، {{illumination}}",
+    "voiceAccessibilityLabel": "{{name}} د {{reciter}} په غږ",
+    "voiceAccessibilityLabelPro": "{{name}} د {{reciter}} په غږ (پرو، د ټاکلو لپاره لوړونه اړینه ده)",
+    "surahNameAccessibilityLabel": "سورة {{name}}",
+    "readOnWikiAccessibilityLabel": "سورة {{name}} Islam.Wiki کې ولولئ",
+    "verseAccessibilityLabel": "آیت {{number}}: {{transliteration}}",
+    "featuredVerseAccessibilityLabel": "{{label}}: آية الکرسي",
+    "surahRowAccessibilityLabel": "سورة {{number}}، {{name}}، {{count}} آیتونه، {{type}}",
+    "fullTextAvailableSuffix": "، بشپړ متن شتون لري",
+    "revelationMeccan": "مکي",
+    "revelationMedinan": "مدني"
+  },
+  "onboarding": {
+    "skip": "پرېږده",
+    "welcome": {
+      "title": "پرې‌کیلک ته ښه راغلاست",
+      "desc": "سمې د لمانځه وختونه، د قبلې لور، او اسلامي کليز — په څو ټکونو کې چمتو.",
+      "cta": "پیل کړئ"
+    },
+    "location": {
+      "title": "ستاسو موقعیت",
+      "prime": "پرې‌کیلک ستاسو د ښار لپاره د لمانځه سمو وختونو محاسبې لپاره ستاسو موقعیت کاروي. دا ستاسو وسیلې کې پاتې کیږي — موږ یې هېڅکله شریک نه کوو. د دوام لپاره بلې پردې کې اجازه ورکړئ ته ټک ورکړئ.",
+      "allow": "موقعیت ته اجازه ورکړئ",
+      "later": "زه به دا وروسته وټاکم"
+    },
+    "notifications": {
+      "title": "د لمانځه یادونې",
+      "prime": "د هر لمانځه پر وخت یوه نرمه یادونه یا اذان ترلاسه کړئ ترڅو تاسو هېڅکله لمانځه له لاسه ورنه کړئ. تاسو کولی شئ وروسته وټاکئ چې کوم لمونځونه به تاسو ته خبر درکړي.",
+      "allow": "یادونې فعالې کړئ",
+      "later": "اوس نه"
+    },
+    "method": {
+      "title": "د محاسبې طریقه",
+      "dpcExplain": "DPC (متحرک پرې‌کیلک) خودکاره ستاسو موقعیت لپاره غوره وختونه محاسبه کوي — د سترګه لیدنې طریقې پرمختګ. موږ وړاندیز کوو چې پرې پاتې شئ.",
+      "dpcLabel": "متحرک (پرې‌کیلک DPC)",
+      "recommended": "وړاندیز شوی",
+      "orFixed": "یا یوه ثابته طریقه وټاکئ",
+      "suggested": "ستاسو سیمې لپاره",
+      "continue": "دوام ورکړه"
+    },
+    "consent": {
+      "title": "د پرې‌کیلک په ښه کولو کې مرسته وکړئ"
+    },
+    "done": {
+      "title": "ټول شی چمتو دی",
+      "desc": "ستاسو د لمانځه وختونه چمتو دي. تاسو کولی شئ دا انتخابونه هرکله په تنظیماتو کې بدل کړئ.",
+      "cta": "پرې‌کیلک خلاص کړئ"
     }
+  },
+  "consent": {
+    "title": "ناپیژندلي کارونې تحلیلونه",
+    "description": "پرې‌کیلک د ښه کولو کې زموږ سره د مرستې لپاره ناپیژندلي، ټولیز کارونې معلومات شریک کړئ. هېڅکله هېڅ شخصي معلومات، موقعیت، یا حساب توضیحات نه راټولیږي.",
+    "privacyNote": "د اصل له مخې بند دی. تر څو تاسو یې پرانه کړئ هېڅ شی نه لیږل کیږي، او تاسو کولی شئ یې هرکله بدل کړئ.",
+    "accept": "اجازه ورکړئ",
+    "decline": "نه مننه",
+    "toggleLabel": "ناپیژندلي تحلیلونه شریک کړئ",
+    "privacyScreenTitle": "محرمیت",
+    "privacyScreenFooter": "پرې‌کیلک محرمیت ته لومړیتوب ورکوي. تحلیلونه ناپیژندلي دي او تر هغه بند دي تر څو تاسو یې فعال نه کړئ. دا بندول ټول ټیلی‌متري سمدلاسه درېږي."
   }
 }

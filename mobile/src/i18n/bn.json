@@ -11,10 +11,31 @@
     "isha": "এশা",
     "sunrise": "সূর্যোদয়",
     "midnight": "মধ্যরাত",
-    "lastThird": "শেষ তৃতীয়াংশ"
+    "lastThird": "রাতের শেষ তৃতীয়াংশ"
+  },
+  "notifications": {
+    "prayerTime": "{{prayer}}-এর সময়",
+    "iqamahTitle": "{{prayer}}-এর ইকামত",
+    "bodyNow": "{{prayer}} নামাজের সময় হয়েছে — {{time}}",
+    "bodyAdvance_one": "{{prayer}} শুরু হবে {{count}} মিনিট পর — {{time}}",
+    "bodyAdvance_other": "{{prayer}} শুরু হবে {{count}} মিনিট পর — {{time}}",
+    "bodyIqamah": "{{prayer}}-এর জন্য ইকামতের রিমাইন্ডার (আজান হয়েছিল {{time}} সময়ে)",
+    "snooze_one": "{{count}} মিনিট স্নুজ",
+    "snooze_other": "{{count}} মিনিট স্নুজ",
+    "snoozedBody": "{{prayer}} নামাজের জন্য স্থগিত রিমাইন্ডার",
+    "suhoorTitle": "সেহরি",
+    "suhoorBody": "সেহরির সময় — ফজরের আগে খাবারের সময়। ফজর শীঘ্রই শুরু হবে।",
+    "tahajjudTitle": "তাহাজ্জুদ",
+    "tahajjudBody": "রাতের শেষ তৃতীয়াংশ — কিয়াম ও দোয়ার জন্য বরকতময় সময়।",
+    "jumuahKhutbahTitle": "জুমু'আহ",
+    "jumuahKhutbahBody": "খুতবা শীঘ্রই শুরু হবে। জুমু'আর নামাজের জন্য মসজিদে যান।",
+    "kahfTitle": "সূরা আল-কাহফ",
+    "kahfBody": "দুই জুমু'আর মাঝে নূরের জন্য সূরা আল-কাহফ পাঠ করুন।",
+    "testTitle": "পরীক্ষামূলক আজান",
+    "testBody": "যদি আপনি এটি শুনতে পান, তাহলে আপনার আজানের নোটিফিকেশন কাজ করছে।"
   },
   "common": {
-    "bismillah": "বিসমিল্লাহির রাহমানির রাহিম",
+    "bismillah": "পরম করুণাময়, অতি দয়ালু আল্লাহর নামে",
     "salah": "নামাজ",
     "iqama": "ইকামত",
     "adhan": "আজান",
@@ -36,15 +57,138 @@
     "search": "খুঁজুন",
     "change": "পরিবর্তন",
     "reset": "রিসেট",
+    "complete": "সম্পূর্ণ",
     "openInMaps": "মানচিত্রে খুলুন",
     "openSettings": "সেটিংস খুলুন",
     "upgrade": "আপগ্রেড",
-    "signIn": "সাইন ইন"
+    "signIn": "সাইন ইন",
+    "createAccount": "অ্যাকাউন্ট তৈরি করুন",
+    "continue": "চালিয়ে যান",
+    "skip": "এড়িয়ে যান",
+    "nothingHereYet": "এখানে এখনো কিছু নেই",
+    "somethingWentWrong": "কিছু একটা ভুল হয়েছে",
+    "tryAgain": "আবার চেষ্টা করুন",
+    "tooManyRequests": "অতিরিক্ত অনুরোধ",
+    "waitBeforeRetrying": "আবার চেষ্টা করার আগে অনুগ্রহ করে {{seconds}} সেকেন্ড অপেক্ষা করুন।",
+    "offlineCachedData": "আপনি অফলাইনে আছেন। ক্যাশে করা তথ্য দেখানো হচ্ছে।",
+    "permissionRequired": "{{permission}} অনুমতি প্রয়োজন",
+    "permissionRequiredBody": "নামাজের সময় গণনার জন্য {{permission}} অ্যাক্সেস প্রয়োজন। অনুগ্রহ করে সেটিংসে এটি সক্রিয় করুন।",
+    "loadingContent": "কন্টেন্ট লোড হচ্ছে",
+    "permissionRequiredGeneric": "অনুমতি প্রয়োজন",
+    "permissionRequiredGenericBody": "এই ফিচারের জন্য {{permission}} অনুমতি প্রয়োজন।",
+    "openSystemSettings": "সিস্টেম সেটিংস খুলুন",
+    "retryRequest": "অনুরোধ পুনরায় চেষ্টা করুন",
+    "tooManyRequestsRetry": "অতিরিক্ত অনুরোধ। আবার চেষ্টা করার আগে অনুগ্রহ করে {{seconds}} সেকেন্ড অপেক্ষা করুন।",
+    "tooManyRequestsRetryGeneric": "অতিরিক্ত অনুরোধ। আবার চেষ্টা করার আগে অনুগ্রহ করে অপেক্ষা করুন।",
+    "offlineShowingCachedFrom": "আপনি অফলাইনে আছেন। {{cachedAt}} তারিখের তথ্য দেখানো হচ্ছে।",
+    "offlineShowingCachedGeneric": "আপনি অফলাইনে আছেন। ক্যাশে করা তথ্য দেখানো হচ্ছে।"
   },
   "greeting": {
     "assalamu_alaykum": "আস্সালামু আলাইকুম ওয়া রাহমাতুল্লাহি ওয়া বারাকাতুহু",
     "prayer_approaching": "নামাজের সময় আসছে",
     "prayer_now": "নামাজের সময়"
+  },
+  "tabs": {
+    "home": "নামাজ",
+    "prayerTimes": "নামাজের সময়",
+    "qibla": "কিবলা",
+    "calendar": "ক্যালেন্ডার",
+    "quran": "কুরআন",
+    "more": "আরও"
+  },
+  "menu": {
+    "settings": {
+      "label": "সেটিংস",
+      "subtitle": "পদ্ধতি, অবস্থান, বিজ্ঞপ্তি"
+    },
+    "adhan": {
+      "label": "আজান লাইব্রেরি",
+      "subtitle": "আজানের সুর ও ক্বারী"
+    },
+    "tasbeeh": {
+      "label": "তসবিহ কাউন্টার",
+      "subtitle": "ডিজিটাল জিকির কাউন্টার"
+    },
+    "duaDhikr": {
+      "label": "দোয়া ও জিকির",
+      "subtitle": "সকাল ও সন্ধ্যার দোয়া"
+    },
+    "moon": {
+      "label": "চাঁদের অবস্থা",
+      "subtitle": "চান্দ্র ক্যালেন্ডার ও হিজরি তারিখ"
+    },
+    "quran": {
+      "label": "কুরআন",
+      "subtitle": "বুকমার্কসহ উসমানি লিপি"
+    },
+    "stats": {
+      "label": "নামাজের পরিসংখ্যান",
+      "subtitle": "আপনার নামাজ ও ধারাবাহিকতা ট্র্যাক করুন"
+    },
+    "ramadan": {
+      "label": "রমজান",
+      "subtitle": "সেহরি ও ইফতারের সময়, ট্র্যাকার"
+    },
+    "subscription": {
+      "label": "প্রো নিন",
+      "subtitle": "প্রিমিয়াম ফিচার আনলক করুন"
+    },
+    "homeWidget": {
+      "label": "হোম উইজেট",
+      "subtitle": "হোম স্ক্রিনে পরবর্তী নামাজ"
+    },
+    "smartHome": {
+      "label": "স্মার্ট হোম",
+      "subtitle": "নামাজের সময় ডিভাইস লক করুন"
+    },
+    "pairTv": {
+      "label": "টিভি পেয়ার করুন",
+      "subtitle": "PrayCalc টিভি অ্যাপ সংযুক্ত করুন"
+    },
+    "tvManager": {
+      "label": "আমার টিভিসমূহ",
+      "subtitle": "পেয়ার করা টিভি ডিসপ্লে পরিচালনা করুন"
+    },
+    "agendas": {
+      "label": "নামাজের ক্যালেন্ডার",
+      "subtitle": "ক্যালেন্ডারে নামাজের সময় যোগ করুন"
+    },
+    "timetable": {
+      "label": "মাসিক সময়সূচি",
+      "subtitle": "পুরো মাসের নামাজের সময় + ক্যালেন্ডার এক্সপোর্ট"
+    },
+    "mosques": {
+      "label": "কাছাকাছি মসজিদ",
+      "subtitle": "আপনার আশেপাশের মসজিদ খুঁজুন"
+    },
+    "travel": {
+      "label": "ভ্রমণ মোড",
+      "subtitle": "মুসাফিরদের জন্য কসর"
+    },
+    "jumuah": {
+      "label": "জুমু'আহ",
+      "subtitle": "শুক্রবারের রিমাইন্ডার ও সূরা আল-কাহফ"
+    },
+    "masjidMute": {
+      "label": "মসজিদ অটো-মিউট",
+      "subtitle": "মসজিদের কাছে গেলে আপনার ফোন সাইলেন্ট করুন"
+    },
+    "fasting": {
+      "label": "রোজা ট্র্যাকার",
+      "subtitle": "রমজান, সোম ও বৃহস্পতিবার, আইয়ামে বিজ"
+    },
+    "qada": {
+      "label": "কাজা নামাজ",
+      "subtitle": "ছুটে যাওয়া নামাজ ট্র্যাক ও আদায় করুন"
+    },
+    "privacy": {
+      "label": "গোপনীয়তা ও তথ্য",
+      "subtitle": "অ্যানালিটিক্সের সম্মতি নিয়ন্ত্রণ করুন"
+    },
+    "shareApp": {
+      "label": "PrayCalc শেয়ার করুন",
+      "subtitle": "বন্ধু বা পরিবারের সদস্যকে জানান"
+    }
   },
   "settings": {
     "title": "সেটিংস",
@@ -66,28 +210,692 @@
     "location": {
       "title": "অবস্থান",
       "detect": "স্বয়ংক্রিয়ভাবে শনাক্ত করুন",
-      "manual": "ম্যানুয়ালি প্রবেশ করুন"
-    }
+      "manual": "ম্যানুয়ালি প্রবেশ করুন",
+      "useGps": "জিপিএস অবস্থান ব্যবহার করুন",
+      "searchManually": "শহর ম্যানুয়ালি খুঁজুন",
+      "currentCity": "বর্তমান শহর",
+      "noneSet": "কোনো অবস্থান নির্ধারিত নেই। জিপিএস বা ম্যানুয়াল শহর প্রয়োজন।",
+      "gettingLocation": "আপনার অবস্থান পাওয়া যাচ্ছে...",
+      "permissionDenied": "অনুমতি প্রত্যাখ্যাত",
+      "permissionDeniedBody": "আপনার শহর স্বয়ংক্রিয়ভাবে শনাক্ত করতে সেটিংসে অবস্থান সক্রিয় করুন।"
+    },
+    "account": {
+      "title": "অ্যাকাউন্ট",
+      "signedIn": "সাইন ইন করা আছে",
+      "anonymous": "বেনামী",
+      "free": "ফ্রি"
+    },
+    "highLatitude": {
+      "title": "উচ্চ-অক্ষাংশ সমন্বয়",
+      "hint": "ফজর/এশা প্রয়োজনীয় কোণে পৌঁছাতে না পারলে প্রয়োগ করা হয় (গ্রীষ্মে দূরবর্তী উত্তর/দক্ষিণ অঞ্চল)।",
+      "nightMiddle": "রাতের মধ্যভাগ",
+      "angleBased": "কোণ-ভিত্তিক",
+      "oneSeventh": "রাতের এক-সপ্তমাংশ",
+      "none": "কোনোটিই নয় (অনুপলব্ধ দেখাতে পারে)"
+    },
+    "madhab": {
+      "title": "মাযহাব (আসর)",
+      "hint": "শাফি'ঈ: ১× ছায়ার অনুপাত | হানাফি: ২× ছায়ার অনুপাত"
+    },
+    "prayerAdjustments": {
+      "title": "নামাজের সময় সমন্বয়",
+      "hint": "আপনার স্থানীয় মসজিদের সময়সূচির সাথে মেলাতে প্রতিটি সময় ±৩০ মিনিট সূক্ষ্মভাবে সমন্বয় করুন।"
+    },
+    "hijriAdjustment": {
+      "title": "হিজরি তারিখ সমন্বয়",
+      "hint": "আপনার স্থানীয় চাঁদ দেখা উম্মুল কুরা ক্যালেন্ডার থেকে ভিন্ন হলে হিজরি তারিখ ±২ দিন সরিয়ে নিন।",
+      "offset": "অফসেট",
+      "decreaseAccessibilityLabel": "হিজরি অফসেট কমান",
+      "increaseAccessibilityLabel": "হিজরি অফসেট বাড়ান"
+    },
+    "timeFormat": {
+      "title": "সময়ের ফরম্যাট"
+    },
+    "appearance": {
+      "title": "চেহারা",
+      "system": "সিস্টেম",
+      "light": "লাইট",
+      "dark": "ডার্ক"
+    },
+    "customAngles": {
+      "fajr": "ফজরের কোণ (°)",
+      "isha": "এশার কোণ (°)",
+      "fajrAccessibilityLabel": "কাস্টম ফজরের কোণ (ডিগ্রিতে)",
+      "ishaAccessibilityLabel": "কাস্টম এশার কোণ (ডিগ্রিতে)"
+    },
+    "upsell": {
+      "priceLine": "Ummat+ $৯.৯৯/বছর — টিভি অ্যাপ ও স্মার্ট হোম আনলক করে",
+      "upgradeButton": "Ummat+ এ আপগ্রেড করুন"
+    },
+    "prayerAlerts": "নামাজের সময়ের সতর্কতা",
+    "manageNotifications": "বিজ্ঞপ্তি পরিচালনা করুন",
+    "appLanguage": "অ্যাপের ভাষা",
+    "decreaseAccessibilityLabel": "{{prayer}} সমন্বয় কমান",
+    "increaseAccessibilityLabel": "{{prayer}} সমন্বয় বাড়ান",
+    "valueAccessibilityLabel": "হিজরি অফসেট: {{value}} দিন",
+    "label12h": "১২-ঘণ্টা ফরম্যাট",
+    "label24h": "২৪-ঘণ্টা ফরম্যাট",
+    "themeAccessibilityLabel": "{{theme}} থিম"
   },
   "errors": {
     "location_permission": "নামাজের সময় গণনা করতে অবস্থান অ্যাক্সেসের অনুমতি দিন",
     "network": "নেটওয়ার্কে সংযোগ করতে পারেনি",
     "calculation": "নামাজের সময় গণনা করতে পারেনি"
   },
-  "tabs": {
-    "home": "নামাজ",
-    "prayerTimes": "নামাজের সময়",
-    "qibla": "কিবলা",
-    "calendar": "ক্যালেন্ডার",
-    "quran": "কুরআন",
-    "more": "আরও"
-  },
-  "menu": {
-    "settings": {
-      "label": "সেটিংস"
+  "screens": {
+    "more": {
+      "title": "আরও"
+    },
+    "notFound": {
+      "title": "স্ক্রিন পাওয়া যায়নি",
+      "goHome": "নামাজের সময়ে যান"
+    },
+    "onboarding": {
+      "welcomeTitle": "PrayCalc-এ স্বাগতম",
+      "welcomeDesc": "সঠিক নামাজের সময়, কিবলার দিক, এবং ইসলামিক ক্যালেন্ডার — সব একই জায়গায়।",
+      "getStarted": "শুরু করুন",
+      "locationTitle": "অবস্থান সক্রিয় করুন",
+      "locationDesc": "সঠিকভাবে গণনার জন্য নামাজের সময়ের আপনার অবস্থান প্রয়োজন।",
+      "allowLocation": "অবস্থানের অনুমতি দিন",
+      "skipManual": "এড়িয়ে যান — আমি ম্যানুয়ালি সেট করব",
+      "authTitle": "অ্যাকাউন্ট তৈরি করবেন?",
+      "authDesc": "ঐচ্ছিক: ক্লাউড সিঙ্ক ও নামাজের ইতিহাসের জন্য একটি অ্যাকাউন্ট তৈরি করুন। আপনি যেকোনো সময় পরে সাইন আপ করতে পারবেন।",
+      "skipForNow": "আপাতত এড়িয়ে যান"
+    },
+    "auth": {
+      "appTagline": "প্রতিটি মুসলিমের জন্য সঠিক নামাজের সময়",
+      "tabSkip": "এড়িয়ে যান",
+      "continueTitle": "অ্যাকাউন্ট ছাড়াই চালিয়ে যান",
+      "continueDesc": "নামাজের সময়, কিবলা, এবং ক্যালেন্ডার কোনো অ্যাকাউন্ট ছাড়াই সম্পূর্ণ অফলাইনে কাজ করে। আপনার সেটিংস স্থানীয়ভাবে সংরক্ষিত থাকে।",
+      "featurePrayerQibla": "নামাজের সময় ও কিবলা",
+      "featureCalendar": "ইসলামিক ক্যালেন্ডার",
+      "featureSettings": "সেটিংস ও বিজ্ঞপ্তি",
+      "continueAnonymously": "বেনামে চালিয়ে যান",
+      "signInTitle": "সাইন ইন",
+      "emailPlaceholder": "ইমেইল",
+      "passwordPlaceholder": "পাসওয়ার্ড",
+      "namePlaceholder": "নাম (ঐচ্ছিক)",
+      "switchHint": "অ্যাকাউন্ট ডিভাইসজুড়ে ক্লাউড সিঙ্ক ও নামাজের ইতিহাস সক্ষম করে।",
+      "registerTitle": "অ্যাকাউন্ট তৈরি করুন",
+      "signingIn": "সাইন ইন হচ্ছে...",
+      "enterEmailPassword": "অনুগ্রহ করে ইমেইল ও পাসওয়ার্ড লিখুন।",
+      "loginFailed": "লগইন ব্যর্থ হয়েছে",
+      "registerFailed": "নিবন্ধন ব্যর্থ হয়েছে",
+      "verifyEmail": "আপনার অ্যাকাউন্ট যাচাই করতে ইমেইল চেক করুন, তারপর সাইন ইন করুন।"
+    },
+    "adhan": {
+      "enablePerPrayer": "প্রতিটি নামাজের জন্য আজান সক্রিয় করুন",
+      "library": "আজান লাইব্রেরি",
+      "noVoices": "কোনো আজানের সুর পাওয়া যায়নি।",
+      "proRequiredTitle": "Ummat+ প্রয়োজন",
+      "proRequiredBody": "{{name}} একটি প্রো আজানের সুর। এটিকে আপনার সক্রিয় আজান হিসেবে সেট করতে Ummat+ এ আপগ্রেড করুন।",
+      "proFeature": "প্রো ফিচার",
+      "playPreview": "প্রিভিউ চালান",
+      "stopPreview": "প্রিভিউ বন্ধ করুন",
+      "voiceListLabel": "আজানের সুরের তালিকা"
+    },
+    "agendas": {
+      "title": "নামাজের ক্যালেন্ডার",
+      "desc": "রিমাইন্ডার হিসেবে আপনার ডিভাইস ক্যালেন্ডারে নামাজের ব্লক যোগ করুন। প্রতিটি নামাজ {{minutes}}-মিনিটের একটি ইভেন্ট এবং ৫-মিনিটের সতর্কতা পায়।",
+      "whichPrayers": "কোন নামাজগুলো যোগ করবেন",
+      "locationRequired": "অবস্থান প্রয়োজন",
+      "locationRequiredBody": "ক্যালেন্ডারে নামাজের সময় যোগ করতে সেটিংসে আপনার শহর সেট করুন।",
+      "noCalendarFound": "কোনো ক্যালেন্ডার পাওয়া যায়নি",
+      "noCalendarFoundBody": "এই ডিভাইসে কোনো লেখাযোগ্য ক্যালেন্ডার পাওয়া যায়নি।",
+      "setLocationHint": "ক্যালেন্ডার সিঙ্ক সক্ষম করতে সেটিংসে আপনার শহর সেট করুন।",
+      "addButton": "আজকের নামাজ ক্যালেন্ডারে যোগ করুন",
+      "addButtonAccessibilityLabel": "আজকের নামাজের সময় ক্যালেন্ডারে যোগ করুন",
+      "adding": "যোগ করা হচ্ছে...",
+      "done": "সম্পন্ন",
+      "addedCount": "{{count}}টি নামাজের সময় আপনার ক্যালেন্ডারে যোগ করা হয়েছে।",
+      "error": "ত্রুটি",
+      "addFailed": "ক্যালেন্ডারে যোগ করতে ব্যর্থ হয়েছে।",
+      "checkingPermission": "ক্যালেন্ডারের অনুমতি যাচাই করা হচ্ছে..."
+    },
+    "calendar": {
+      "eventsThisMonth": "এই মাসের ইসলামিক ঘটনাবলী"
+    },
+    "citySearch": {
+      "findCityTitle": "শহর খুঁজুন",
+      "placeholder": "শহর খুঁজুন...",
+      "useCurrentLocation": "বর্তমান অবস্থান ব্যবহার করুন",
+      "locating": "অবস্থান নির্ণয় করা হচ্ছে…",
+      "searching": "শহর খোঁজা হচ্ছে...",
+      "noResults": "\"{{query}}\" এর জন্য কোনো শহর পাওয়া যায়নি।",
+      "popularHint": "জনপ্রিয় শহরগুলো দেখানো হচ্ছে। খুঁজতে টাইপ করুন।",
+      "searchError": "অনুসন্ধান ত্রুটি: {{message}}",
+      "searchInputAccessibilityLabel": "শহর অনুসন্ধান ইনপুট",
+      "useCurrentLocationAccessibilityLabel": "বর্তমান অবস্থান ব্যবহার করুন",
+      "resultsAccessibilityLabel": "শহর অনুসন্ধানের ফলাফল"
+    },
+    "duaDhikr": {
+      "noResults": "এই বিভাগে কোনো দোয়া পাওয়া যায়নি।",
+      "categoryAll": "সব",
+      "categoryAfterAdhan": "আজানের পর",
+      "categoryAfterPrayer": "নামাজের পর",
+      "categoryMorning": "সকাল",
+      "categoryEvening": "সন্ধ্যা"
+    },
+    "moon": {
+      "hijriCalendar": "হিজরি ক্যালেন্ডার",
+      "hijriDay": "হিজরি দিন",
+      "month": "মাস",
+      "lunarAge": "চন্দ্র বয়স",
+      "daysUnit": "{{count}} দিন",
+      "upcomingPhases": "আসন্ন পর্যায়সমূহ",
+      "nextFullMoon": "পরবর্তী পূর্ণিমা 🌕",
+      "nextNewMoon": "পরবর্তী অমাবস্যা 🌑",
+      "significance": "ইসলামিক তাৎপর্য",
+      "illuminatedPct": "{{pct}}% আলোকিত",
+      "phaseNewMoon": "অমাবস্যা",
+      "phaseWaxingCrescent": "বর্ধিষ্ণু অর্ধচন্দ্র",
+      "phaseFirstQuarter": "প্রথম পাদ",
+      "phaseWaxingGibbous": "বর্ধিষ্ণু উত্তল চাঁদ",
+      "phaseFullMoon": "পূর্ণিমা",
+      "phaseWaningGibbous": "ক্ষীয়মাণ উত্তল চাঁদ",
+      "phaseLastQuarter": "শেষ পাদ",
+      "phaseWaningCrescent": "ক্ষীয়মাণ অর্ধচন্দ্র",
+      "ramadanNote": "এখন রমজান মাস — রোজা রাখা এবং লাইলাতুল কদর অনুসন্ধানের মাস।",
+      "dhulHijjahNote": "{{month}} মাসের প্রথম দশ দিন বছরের সবচেয়ে ফযীলতপূর্ণ দিনগুলোর মধ্যে অন্যতম।"
     },
     "mosques": {
-      "label": "নিকটবর্তী মসজিদ"
+      "setLocation": "আপনার আশেপাশের মসজিদ খুঁজতে আপনার অবস্থান সেট করুন।",
+      "setLocationAction": "অবস্থান সেট করুন",
+      "finding": "কাছাকাছি মসজিদ খোঁজা হচ্ছে...",
+      "noResults": "১০ কিমির মধ্যে কোনো মসজিদ পাওয়া যায়নি।",
+      "retry": "আবার চেষ্টা করুন",
+      "attribution": "তথ্য © OpenStreetMap অবদানকারীগণ",
+      "searchFailed": "মসজিদ খোঁজা ব্যর্থ হয়েছে।"
+    },
+    "masjidMute": {
+      "title": "মসজিদ অটো-মিউট",
+      "intro": "PrayCalc-এ এখনো মসজিদের ডিরেক্টরি নেই — নিচে নিজের মিউট জোন যোগ করুন। আপনি পৌঁছানোর সাথে সাথে ফোন স্বয়ংক্রিয়ভাবে সাইলেন্ট করতে আপনার স্থানীয় মসজিদ যোগ করার পরামর্শ দিই।",
+      "masterToggleLabel": "অটো-মিউট সক্রিয়",
+      "masterToggleSubtitle": "নিচের যেকোনো জোনে প্রবেশ করলে ফোন সাইলেন্ট করুন",
+      "zonesHeading": "আপনার জোনসমূহ",
+      "emptyTitle": "এখনো কোনো জোন নেই",
+      "emptySubtitle": "আপনি পৌঁছালে PrayCalc যাতে আপনার ফোন স্বয়ংক্রিয়ভাবে সাইলেন্ট করতে পারে তার জন্য আপনার স্থানীয় মসজিদ যোগ করুন।",
+      "addZoneAction": "আপনার স্থানীয় মসজিদ যোগ করুন",
+      "addZoneButton": "জোন যোগ করুন",
+      "addZoneTitle": "মিউট জোন যোগ করুন",
+      "editZoneTitle": "মিউট জোন সম্পাদনা করুন",
+      "labelFieldLabel": "লেবেল",
+      "labelFieldPlaceholder": "যেমন, আল-নূর মসজিদ",
+      "labelRequired": "অনুগ্রহ করে এই জোনের জন্য একটি লেবেল লিখুন।",
+      "coordinatesInvalid": "অনুগ্রহ করে একটি বৈধ অক্ষাংশ ও দ্রাঘিমাংশ লিখুন, অথবা খুঁজুন/বর্তমান অবস্থান ব্যবহার করুন।",
+      "searchAddressLabel": "ঠিকানা খুঁজুন",
+      "searchAddressPlaceholder": "একটি ঠিকানা বা স্থান খুঁজুন",
+      "searching": "খোঁজা হচ্ছে...",
+      "searchNoResults": "কোনো মিল পাওয়া যায়নি। ভিন্ন অনুসন্ধান চেষ্টা করুন বা ম্যানুয়ালি স্থানাঙ্ক লিখুন।",
+      "useCurrentLocation": "বর্তমান অবস্থান ব্যবহার করুন",
+      "locating": "অবস্থান নির্ণয় করা হচ্ছে...",
+      "locationFailed": "আপনার বর্তমান অবস্থান পাওয়া যায়নি।",
+      "manualEntryToggle": "ম্যানুয়ালি স্থানাঙ্ক লিখুন",
+      "latitudeLabel": "অক্ষাংশ",
+      "longitudeLabel": "দ্রাঘিমাংশ",
+      "radiusLabel": "ব্যাসার্ধ: {{radius}} মি",
+      "radiusHint": "{{min}} মি থেকে {{max}} মি এর মধ্যে — মসজিদ ও এর পার্কিং এলাকা কভার করে।",
+      "decreaseRadiusAccessibilityLabel": "ব্যাসার্ধ ২৫ মিটার কমান",
+      "increaseRadiusAccessibilityLabel": "ব্যাসার্ধ ২৫ মিটার বাড়ান",
+      "saveZone": "জোন সংরক্ষণ করুন",
+      "deleteZone": "জোন মুছুন",
+      "deleteConfirmTitle": "এই জোনটি মুছে ফেলবেন?",
+      "deleteConfirmBody": "\"{{label}}\" আর আপনার ফোন স্বয়ংক্রিয়ভাবে সাইলেন্ট করবে না।",
+      "mapPickerFollowUp": "পিন বসিয়ে দৃশ্যত নির্বাচনের জন্য একটি মানচিত্র পিকার পরিকল্পনাধীন — আপাতত, একটি ঠিকানা খুঁজুন বা আপনার বর্তমান অবস্থান ব্যবহার করুন।",
+      "permissionTitle": "অবস্থানের অনুমতি প্রয়োজন",
+      "permissionBody": "মসজিদ অটো-মিউট আপনি একটি জোনে প্রবেশ বা প্রস্থান করছেন তা শনাক্ত করতে \"সর্বদা\" অবস্থান অ্যাক্সেসের প্রয়োজন, এমনকি অ্যাপ বন্ধ থাকলেও।",
+      "permissionGrant": "অনুমতি দিন",
+      "permissionDeniedNote": "ব্যাকগ্রাউন্ড অবস্থান দেওয়া হয়নি — জোনগুলো সংরক্ষিত হয়েছে তবে সিস্টেম সেটিংসে \"সর্বদা\" অ্যাক্সেস অনুমতি না দেওয়া পর্যন্ত অটো-মিউট সক্রিয় হবে না।",
+      "androidNote": "অ্যান্ড্রয়েড: পৌঁছালে আপনার ফোন ভাইব্রেশনে চলে যাবে এবং প্রস্থানের সময় আগের রিংগার মোডে ফিরে যাবে।",
+      "iosNote": "আইওএস: অ্যাপল অ্যাপগুলোকে আপনার সাইলেন্ট সুইচ পরিবর্তন করার অনুমতি দেয় না। পরিবর্তে, PrayCalc আপনাকে ম্যানুয়ালি ফোন সাইলেন্ট করতে বলে একটি রিমাইন্ডার বিজ্ঞপ্তি পাঠায়।",
+      "iosReminderTitle": "আপনি পৌঁছেছেন",
+      "iosReminderBody": "আপনি {{zone}} এর কাছাকাছি আছেন — অনুগ্রহ করে আপনার ফোন সাইলেন্ট করুন।",
+      "defaultZoneLabel": "আপনার মিউট জোন",
+      "activeNow": "এখন সক্রিয় — ফোন সাইলেন্ট",
+      "radiusValue": "{{radius}} মি ব্যাসার্ধ"
+    },
+    "pairTv": {
+      "upsellBadge": "Ummat+",
+      "unlockTitle": "টিভি পেয়ারিং আনলক করুন",
+      "unlockDesc": "Ummat+ $৯.৯৯/বছর — টিভি অ্যাপ ও স্মার্ট হোম আনলক করে",
+      "pairedTitle": "টিভি পেয়ার হয়েছে",
+      "pairedDesc": "আপনার টিভি অ্যাপ এখন এই অ্যাকাউন্টের সাথে সংযুক্ত।",
+      "title": "টিভির সাথে পেয়ার করুন",
+      "desc": "আপনার টিভিতে PrayCalc খুলুন, তারপর স্ক্রিনে দেখানো ৬-সংখ্যার পিন লিখুন।",
+      "enterPin": "আপনার টিভিতে দেখানো ৬-সংখ্যার পিন লিখুন।",
+      "pinInputAccessibilityLabel": "টিভি পেয়ারিং পিন",
+      "pairFailed": "পেয়ারিং ব্যর্থ হয়েছে। আবার চেষ্টা করুন।",
+      "pairDevice": "ডিভাইস পেয়ার করুন",
+      "invalidOrExpiredPin": "এই পিনটি অবৈধ বা মেয়াদোত্তীর্ণ। টিভি স্ক্রিন চেক করে আবার চেষ্টা করুন।"
+    },
+    "tvManager": {
+      "upsellBadge": "Ummat+",
+      "unlockTitle": "টিভি ব্যবস্থাপনা আনলক করুন",
+      "unlockDesc": "Ummat+ $৯.৯৯/বছর — টিভি অ্যাপ ও স্মার্ট হোম আনলক করে",
+      "emptyTitle": "এখনো কোনো টিভি পেয়ার করা হয়নি",
+      "emptySubtitle": "এখানে দেখতে এবং এর ডিসপ্লে সেটিংস পরিচালনা করতে একটি টিভি পেয়ার করুন।",
+      "pairACta": "একটি টিভি পেয়ার করুন",
+      "noCity": "কোনো অবস্থান সেট নেই",
+      "nameLabel": "নাম",
+      "colorLabel": "অ্যাকসেন্ট কালার",
+      "streamLabel": "স্ট্রিম উৎস",
+      "streamMakkah": "মক্কা টিভি",
+      "streamSaudiQuran": "সৌদি কুরআন",
+      "streamMedina": "মদিনা",
+      "rotateLabel": "স্ক্রিন রোটেশন",
+      "decreaseRotate": "রোটেশন মিনিট কমান",
+      "increaseRotate": "রোটেশন মিনিট বাড়ান",
+      "weatherLabel": "আবহাওয়া দেখান",
+      "updateLocationAction": "অবস্থান আমার বর্তমান অবস্থানে আপডেট করুন",
+      "updateLocationHint": "পরবর্তী রি-পেয়ারিং-এর সময় টিভি অবস্থান পরিবর্তন গ্রহণ করবে — এটি সংরক্ষিত অবস্থান এখনই আপডেট করে।",
+      "noLocationTitle": "কোনো অবস্থান সেট নেই",
+      "noLocationBody": "টিভির অবস্থান আপডেট করার আগে সেটিংসে আপনার অবস্থান সেট করুন।",
+      "locationUpdatedTitle": "অবস্থান আপডেট হয়েছে",
+      "locationUpdatedBody": "সংরক্ষিত হয়েছে। পরবর্তী রি-পেয়ারিং-এ টিভি এই অবস্থান ব্যবহার করবে।",
+      "deleteAction": "এই টিভি সরান",
+      "deleteConfirmTitle": "টিভি সরাবেন?",
+      "deleteConfirmBody": "এটি \"{{name}}\" আনপেয়ার করবে এবং এর সংরক্ষিত সেটিংস মুছে ফেলবে। এটি ফিরিয়ে আনা যাবে না।",
+      "deleteConfirmAction": "সরান",
+      "prayerFajr": "ফজর",
+      "prayerDhuhr": "যোহর",
+      "prayerAsr": "আসর",
+      "prayerMaghrib": "মাগরিব",
+      "prayerIsha": "এশা",
+      "madhabShafii": "শাফি'ঈ",
+      "madhabHanafi": "হানাফি",
+      "timeFormat12h": "১২-ঘণ্টা",
+      "timeFormat24h": "২৪-ঘণ্টা",
+      "invalidCoordsTitle": "অবৈধ স্থানাঙ্ক",
+      "invalidCoordsBody": "একটি বৈধ অক্ষাংশ (-৯০ থেকে ৯০) ও দ্রাঘিমাংশ (-১৮০ থেকে ১৮০) লিখুন।",
+      "deepSettingsLabel": "উন্নত সেটিংস",
+      "countdownTakeoverLabel": "কাউন্টডাউন টেকওভার",
+      "countdownTakeoverHint": "প্রতিটি নামাজের আগে একটি বড় কাউন্টডাউন দিয়ে স্ক্রিন দখল করুন।",
+      "countdownMinutesLabel": "কাউন্টডাউন শুরু করুন",
+      "decreaseCountdown": "কাউন্টডাউন মিনিট কমান",
+      "increaseCountdown": "কাউন্টডাউন মিনিট বাড়ান",
+      "iqamaLabel": "ইকামতের সময়",
+      "iqamaHint": "আজানের পর, প্রতিটি নামাজের জন্য সমন্বয়যোগ্য ইকামত কাউন্টডাউন দেখান।",
+      "decreaseIqama": "{{prayer}} ইকামত অফসেট কমান",
+      "increaseIqama": "{{prayer}} ইকামত অফসেট বাড়ান",
+      "nameOnlyLabel": "শুধু নাম মোড",
+      "nameOnlyHint": "আজানের আগে এই কয়েক মিনিটের জন্য শুধু নামাজের নাম দেখান (সময় ছাড়া)।",
+      "nameOnlyMinutesLabel": "শুধু নাম সময়কাল",
+      "decreaseNameOnly": "শুধু নাম মিনিট কমান",
+      "increaseNameOnly": "শুধু নাম মিনিট বাড়ান",
+      "madhabLabel": "মাযহাব",
+      "timeFormatLabel": "সময়ের ফরম্যাট",
+      "calcMethodLabel": "গণনা পদ্ধতি",
+      "manualLocationToggle": "ম্যানুয়ালি স্থানাঙ্ক লিখুন",
+      "latitudeLabel": "অক্ষাংশ",
+      "longitudeLabel": "দ্রাঘিমাংশ",
+      "manualLocationSave": "স্থানাঙ্ক সংরক্ষণ করুন",
+      "layoutThemeLabel": "লেআউট ও থিম",
+      "layoutLabel": "লেআউট",
+      "themeLabel": "থিম",
+      "layoutClassic": "ক্লাসিক",
+      "layoutClassicDesc": "সময় + লাইভ স্ট্রিম পাশাপাশি",
+      "layoutFlipped": "উল্টানো",
+      "layoutFlippedDesc": "একই বিভাজন, প্রতিবিম্বিত",
+      "layoutStreamFull": "সম্পূর্ণ স্ট্রিম",
+      "layoutStreamFullDesc": "সময়ের স্ট্রিপসহ পূর্ণ-স্ক্রিন স্ট্রিম",
+      "layoutTimesOnly": "শুধু সময়",
+      "layoutTimesOnlyDesc": "শুধু নামাজের সময়, কোনো লাইভ স্ট্রিম নেই",
+      "layoutAmbient": "অ্যাম্বিয়েন্ট",
+      "layoutAmbientDesc": "সাদামাটা অ্যাম্বিয়েন্ট ঘড়ি প্রদর্শন",
+      "themeUmmatGreen": "উম্মাহ গ্রিন",
+      "themeMidnight": "মিডনাইট",
+      "themeWarmSand": "ওয়ার্ম স্যান্ড",
+      "themeMono": "মনো"
+    },
+    "prayerTimes": {
+      "setCityTitle": "আপনার শহর সেট করুন",
+      "setCitySubtitle": "নামাজের সময় দেখতে অবস্থান সক্রিয় করুন বা ম্যানুয়ালি একটি শহর নির্বাচন করুন।",
+      "setLocationAction": "অবস্থান সেট করুন",
+      "offlineMessage": "শেষ জানা নামাজের সময় দেখানো হচ্ছে (অফলাইন)",
+      "next": "পরবর্তী: {{prayer}}",
+      "asrCalculation": "আসরের গণনা",
+      "markedPrayed": "পড়া হয়েছে বলে চিহ্নিত",
+      "notMarkedPrayed": "পড়া হয়েছে বলে চিহ্নিত নয়",
+      "doubleTapToggle": "পরিবর্তন করতে ডাবল-ট্যাপ করুন।",
+      "shareTimes": "আজকের সময় শেয়ার করুন",
+      "shareAccessibilityLabel": "আজকের নামাজের সময় শেয়ার করুন"
+    },
+    "quran": {
+      "loading": "কুরআনের তথ্য লোড হচ্ছে...",
+      "backToList": "সূরার তালিকায় ফিরে যান",
+      "back": "পিছনে",
+      "bismillah": "বিসমিল্লাহ",
+      "comingSoonBody": "অনুবাদ ও তিলাওয়াতসহ {{name}} ({{count}}টি আয়াত) Islam.Wiki-তে পড়ুন — আমাদের সম্পূর্ণ কুরআন পাঠক।",
+      "readOnWiki": "Islam.Wiki-তে পড়ুন →",
+      "removeBookmark": "বুকমার্ক সরান",
+      "bookmarkVerse": "আয়াত বুকমার্ক করুন",
+      "surahList": "সূরার তালিকা",
+      "wikiFooter": "📖 সম্পূর্ণ কুরআন — সবগুলো ১১৪ সূরা, অনুবাদ ও অডিও Islam.Wiki-তে →",
+      "openFullQuran": "Islam.Wiki-তে সম্পূর্ণ কুরআন খুলুন",
+      "featuredVerse": "বিশেষ আয়াত",
+      "readableBadge": "উপলব্ধ"
+    },
+    "ramadan": {
+      "subtitle": "রমজান মুবারক",
+      "dayOf": "{{total}}-এর {{day}} নম্বর দিন",
+      "iftarIn": "ইফতারের বাকি",
+      "suhoorEndsIn": "সেহরি শেষ হতে বাকি",
+      "notActive": "এখন রমজান নয়।\nবর্তমান হিজরি মাস: {{month}} ({{monthNumber}}/১২)",
+      "todaysTimes": "আজকের সময়সূচি",
+      "suhoorEnds": "সেহরি শেষ (ফজর)",
+      "iftar": "ইফতার (মাগরিব)",
+      "noLocation": "নামাজের সময় দেখতে সেটিংসে আপনার অবস্থান সেট করুন।",
+      "duasTitle": "রমজানের দোয়া",
+      "laylatAlQadrTitle": "লাইলাতুল কদর",
+      "laylatAlQadrBody": "আমরা রমজানের শেষ দশ রাতে আছি। ইবাদত বাড়ান, বিশেষ করে বেজোড় রাতগুলোতে (২১, ২৩, ২৫, ২৭, ২৯)।"
+    },
+    "notifications": {
+      "masterLabel": "নামাজের বিজ্ঞপ্তি",
+      "masterSub": "প্রতিটি নামাজের সময়ের আগে সতর্কতা পান",
+      "androidExactAlarm": "অ্যান্ড্রয়েড ১২+-এ, সঠিক নামাজের সময়ের সতর্কতার জন্য সিস্টেম সেটিংসে \"অ্যালার্ম ও রিমাইন্ডার\" অনুমতি দিন।",
+      "openSystemSettings": "সিস্টেম সেটিংস খুলুন",
+      "masterAccessibilityLabel": "নামাজের বিজ্ঞপ্তি সক্রিয় করুন",
+      "openSystemSettingsAccessibilityLabel": "অ্যালার্মের জন্য সিস্টেম সেটিংস খুলুন",
+      "perPrayerAlerts": "প্রতিটি নামাজের সতর্কতা",
+      "minutesBefore_one": "{{count}} মিনিট আগে",
+      "minutesBefore_other": "{{count}} মিনিট আগে",
+      "iqamahOff": "ইকামত বন্ধ",
+      "iqamahAfter_one": "ইকামত +{{count}}মিনিট",
+      "iqamahAfter_other": "ইকামত +{{count}}মিনিট",
+      "adhanSoundTitle": "আজানের সুর",
+      "adhanSoundSub": "নামাজের বিজ্ঞপ্তি এলে কোন আজান বাজবে।",
+      "adhanSound": {
+        "takbir": "তাকবির (শুরুর)",
+        "makkah": "মক্কা",
+        "mishari": "মিশারি রাশিদ",
+        "madina": "মদিনা"
+      },
+      "smartAlarmsTitle": "স্মার্ট অ্যালার্ম",
+      "suhoorLabel": "সেহরির অ্যালার্ম",
+      "suhoorSub": "সেহরির খাবারের জন্য ফজরের আগে জাগুন।",
+      "suhoorBefore_one": "ফজরের {{count}} মিনিট আগে",
+      "suhoorBefore_other": "ফজরের {{count}} মিনিট আগে",
+      "tahajjudLabel": "তাহাজ্জুদ / কিয়াম",
+      "tahajjudSub": "নামাজের জন্য রাতের শেষ ভাগে উঠুন।",
+      "tahajjudLastThird": "রাতের শেষ তৃতীয়াংশ",
+      "tahajjudCustom": "কাস্টম সময়",
+      "nightTimesTitle": "রাতের সময় (আজ রাতে)",
+      "lastThirdBegins": "শেষ তৃতীয়াংশ শুরু হয়",
+      "middleOfNight": "রাতের মধ্যভাগ",
+      "nightTimesUnavailable": "আজ রাতের সময়সূচি দেখতে আপনার অবস্থান সেট করুন।",
+      "reliabilityTitle": "নির্ভরযোগ্য আজান প্রদান",
+      "reliabilitySub": "অ্যালার্ম সময়মতো বাজে তা নিশ্চিত করুন",
+      "batteryTitle": "নির্ভরযোগ্য অ্যালার্মের অনুমতি দিন",
+      "batteryIntro": "অ্যান্ড্রয়েড ব্যাটারি বাঁচাতে নামাজের অ্যালার্ম নিঃশব্দ করে দিতে পারে। সময়মতো আজান শুনতে:",
+      "batteryStepAlarms": "Prayer Times-এর জন্য \"অ্যালার্ম ও রিমাইন্ডার\" (সঠিক অ্যালার্ম) অনুমতি দিন।",
+      "batteryStepOptimization": "Prayer Times যাতে নিদ্রিত না হয় তার জন্য ব্যাটারি অপ্টিমাইজেশন বন্ধ করুন।",
+      "batteryOemNote": "কিছু ফোনে (শাওমি, হুয়াওয়ে, স্যামসাং, ওয়ানপ্লাস, অপো, ভিভো) একটি অতিরিক্ত \"অটো-স্টার্ট\" বা \"সুরক্ষিত অ্যাপস\" সেটিং থাকে — সেখানেও Prayer Times সক্রিয় করুন।",
+      "openExactAlarm": "অ্যালার্ম ও রিমাইন্ডার খুলুন",
+      "openBatterySettings": "ব্যাটারি সেটিংস খুলুন",
+      "testAdhanButton": "আমার আজান পরীক্ষা করুন (৫সে)",
+      "testAdhanScheduled": "প্রায় ৫ সেকেন্ডের মধ্যে একটি পরীক্ষামূলক আজান বাজবে। বিজ্ঞপ্তি হিসেবে শুনতে অ্যাপ লক করুন বা ব্যাকগ্রাউন্ডে নিয়ে যান।",
+      "dismiss": "বাতিল"
+    },
+    "homeWidget": {
+      "widgetPreviewAccessibilityLabel": "পরবর্তী নামাজের সময় দেখানো উইজেট প্রিভিউ",
+      "title": "হোম স্ক্রিন উইজেট",
+      "subtitle": "আপনার হোম স্ক্রিনে পরবর্তী নামাজের সময় দেখুন",
+      "widgetPreviewTitle": "উইজেট প্রিভিউ",
+      "nextPrayer": "পরবর্তী নামাজ",
+      "setLocationToPreview": "প্রিভিউ দেখতে আপনার অবস্থান সেট করুন",
+      "setupInstructions": "সেটআপ নির্দেশনা",
+      "integrationStatus": "ইন্টিগ্রেশন অবস্থা",
+      "upsellMessage": "হোম স্ক্রিন উইজেট একটি Ummat+ ফিচার।",
+      "upsellAction": "Ummat+ এ আপগ্রেড করুন",
+      "countdownPrefix": "{{countdown}} পরে",
+      "setupStep1": "আপনার হোম স্ক্রিনে দীর্ঘক্ষণ চাপুন",
+      "setupStep2": "+ বাটনে (আইওএস) বা উইজেট মেনুতে (অ্যান্ড্রয়েড) ট্যাপ করুন",
+      "setupStep3": "\"{{appName}}\" খুঁজুন",
+      "setupStep4": "আপনার পছন্দের উইজেট আকার বেছে নিন",
+      "setupStep5": "উইজেট যোগ করুন-এ ট্যাপ করুন",
+      "statusAndroid": "অ্যান্ড্রয়েড: সক্রিয় — \"পরবর্তী নামাজ\" হোম-স্ক্রিন উইজেটটি react-native-android-widget-এর মাধ্যমে চলে এবং প্রতি ৩০ মিনিটে স্বয়ংক্রিয়ভাবে রিফ্রেশ হয় (এবং আপনি সেটিংস বা বিজ্ঞপ্তি পরিবর্তন করার সাথে সাথেই)।",
+      "statusIos": "আইওএস: সক্রিয় — \"পরবর্তী নামাজ\" WidgetKit উইজেটটি আপনি সেটিংস বা বিজ্ঞপ্তি পরিবর্তন করলেই আপডেট হয় এবং প্রতিটি নামাজের সময় নিজে থেকেই এগিয়ে যায়।"
+    },
+    "smartHome": {
+      "proOnly": "স্মার্ট হোম (নামাজের সময় লক + ডিভাইস নিয়ন্ত্রণ) একটি Ummat+ ফিচার।",
+      "upgradeAction": "Ummat+ এ আপগ্রেড করুন",
+      "lockDuringPrayer": "নামাজের সময় লক করুন",
+      "lockDesc": "নামাজের সময় শুরু হলে স্বয়ংক্রিয়ভাবে স্ক্রিন ম্লান করুন এবং মিডিয়া নিঃশব্দ করুন। কনফিগার করতে প্রমাণীকরণ প্রয়োজন।",
+      "lockOnSalah": "নামাজের সময় লক করুন",
+      "lockOnSalahAccessibilityLabel": "নামাজের সময় লক মোড",
+      "activeNote": "নামাজের সময় স্ক্রিন ম্লান হবে এবং মিডিয়া বিরতি হবে।\nঅ্যান্ড্রয়েড: মিডিয়া ফোকাস মুক্ত করা হয়। আইওএস: সাইলেন্ট মোডের রিমাইন্ডার দেখানো হয়।",
+      "linkedAccounts": "সংযুক্ত অ্যাকাউন্ট",
+      "noLinks": "এখনো কোনো স্মার্ট-হোম অ্যাকাউন্ট সংযুক্ত নেই। Alexa অ্যাপ বা Google Home অ্যাপ খুলুন, PrayCalc স্কিল বা অ্যাকশন খুঁজুন, এবং আপনার Ummat অ্যাকাউন্ট সংযুক্ত করুন।",
+      "linked": "{{date}} তারিখে সংযুক্ত",
+      "unlink": "সংযোগ বিচ্ছিন্ন করুন",
+      "unlinkConfirmTitle": "{{name}}-এর সংযোগ বিচ্ছিন্ন করবেন?",
+      "unlinkConfirmBody": "আপনি যেকোনো সময় Alexa বা Google Home অ্যাপ থেকে {{name}} পুনরায় সংযুক্ত করতে পারবেন।",
+      "unlinkConfirmAction": "সংযোগ বিচ্ছিন্ন করুন",
+      "unlinkFailedTitle": "সংযোগ বিচ্ছিন্ন করা যায়নি",
+      "learnMore": "আরও জানুন",
+      "authPrompt": "নামাজের সময় লক সক্রিয় করতে প্রমাণীকরণ করুন",
+      "useFallback": "পাসকোড ব্যবহার করুন"
+    },
+    "stats": {
+      "chartAccessibilityLabel": "সাপ্তাহিক নামাজ সমাপ্তি চার্ট",
+      "noLogs": "এখনো কোনো নামাজের লগ নেই। আপনার পরিসংখ্যান দেখতে নামাজ সম্পন্ন করা শুরু করুন।",
+      "dayStreak": "দিন ধারাবাহিকতা 🔥",
+      "weeklyRate": "সাপ্তাহিক হার",
+      "totalLogged": "মোট লগ করা",
+      "last7Days": "শেষ ৭ দিন",
+      "thisMonth": "এই মাস",
+      "byPrayer": "নামাজ অনুযায়ী",
+      "weekly": "সাপ্তাহিক",
+      "monthly": "মাসিক",
+      "fastingStreak": "রোজার ধারাবাহিকতা",
+      "qadaOutstanding": "বকেয়া কাজা"
+    },
+    "subscription": {
+      "title": "PrayCalc Pro",
+      "subtitle": "আপনার ইবাদতের অভিজ্ঞতা উন্নত করুন",
+      "loadingOptions": "সাবস্ক্রিপশন অপশন লোড হচ্ছে...",
+      "loadProductsFailed": "প্রোডাক্ট লোড করা যায়নি। আপনার সংযোগ পরীক্ষা করে আবার চেষ্টা করুন।",
+      "connectFailed": "স্টোরে সংযোগ করতে ব্যর্থ হয়েছে।",
+      "createAccountTitle": "একটি অ্যাকাউন্ট তৈরি করুন",
+      "createAccountBody": "আপনার ক্রয় সব ডিভাইসে সিঙ্ক করতে প্রথমে সাইন ইন করুন।",
+      "purchaseFailed": "ক্রয় ব্যর্থ হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।",
+      "restoreFailed": "পুনরুদ্ধার ব্যর্থ হয়েছে।",
+      "proTitle": "আপনি প্রো-তে আছেন",
+      "proSub": "PrayCalc-কে সমর্থন করার জন্য ধন্যবাদ!",
+      "noProducts": "সাবস্ক্রিপশন প্রোডাক্ট অনুপলব্ধ। App Store Connect / Google Play Console-এ কনফিগার করুন।",
+      "restorePurchase": "ক্রয় পুনরুদ্ধার করুন",
+      "restorePurchaseAccessibilityLabel": "পূর্ববর্তী ক্রয় পুনরুদ্ধার করুন",
+      "legal": "বর্তমান মেয়াদ শেষ হওয়ার কমপক্ষে ২৪ ঘণ্টা আগে বাতিল না করলে সাবস্ক্রিপশন স্বয়ংক্রিয়ভাবে নবায়ন হয়। আপনার App Store / Google Play অ্যাকাউন্ট সেটিংসে পরিচালনা করুন।",
+      "featurePremiumAdhan": "প্রিমিয়াম আজানের সুর — অতিরিক্ত ক্বারী",
+      "featureHomeWidget": "হোম স্ক্রিন উইজেট (পরবর্তী নামাজ)",
+      "featureTvPairing": "PrayCalc টিভি অ্যাপ পেয়ারিং",
+      "featureSmartHome": "স্মার্ট হোম — নামাজের সময় ডিভাইস লক করুন",
+      "subscribeAccessibilityLabel": "{{price}}-এ {{title}} সাবস্ক্রাইব করুন"
+    },
+    "tasbeeh": {
+      "chooseDhikr": "জিকির নির্বাচন করুন",
+      "of": "{{count}}-এর মধ্যে",
+      "resetCounter": "কাউন্টার রিসেট করুন",
+      "todayTotal": "আজকের মোট",
+      "history": "ইতিহাস"
+    },
+    "timetable": {
+      "setCityTitle": "আপনার শহর সেট করুন",
+      "setCitySubtitle": "মাসিক নামাজের সময়সূচি দেখতে আপনার অবস্থান সেট করুন।",
+      "previousMonth": "আগের মাস",
+      "nextMonth": "পরের মাস",
+      "exportCalendar": "ক্যালেন্ডার এক্সপোর্ট করুন (.ics)",
+      "exportAccessibilityLabel": "এই মাসের নামাজের সময় ক্যালেন্ডার ফাইল হিসেবে এক্সপোর্ট করুন",
+      "shareTimes": "এই মাস শেয়ার করুন",
+      "shareAccessibilityLabel": "এই মাসের নামাজের সময়সূচি শেয়ার করুন"
+    },
+    "travel": {
+      "musafirModeTitle": "মুসাফির মোড",
+      "musafirModeDesc": "আমি একজন মুসাফির। প্রযোজ্য নামাজে কসর প্রয়োগ করুন।",
+      "musafirModeAccessibilityLabel": "মুসাফির ভ্রমণ মোড",
+      "musafirAlertTitle": "মুসাফির মোড",
+      "musafirAlertBody": "কসর (সংক্ষিপ্তকরণ) যোহর, আসর ও এশাকে ৪ রাকাত থেকে ২ রাকাতে কমিয়ে দেয়।\n\nদ্রষ্টব্য: বিদ্বানদের মতভেদের কারণে জমা (নামাজ একত্র করা) স্বয়ংক্রিয়ভাবে প্রয়োগ করা হয় না। ভ্রমণের সময় নামাজ একত্র করার বিষয়ে অনুগ্রহ করে আপনার স্থানীয় আলেম বা মাযহাব অনুসরণ করুন।",
+      "understood": "বুঝেছি",
+      "qasrRakatCount": "কসর রাকাত সংখ্যা",
+      "fiqhNote": "ফজর ও মাগরিব সংক্ষিপ্ত করা হয় না (কসর শুধু ৪-রাকাত নামাজে প্রযোজ্য)। জমা (নামাজ একত্র করা) আপনার স্থানীয় আলেম বা মাযহাবের রায় অনুসরণ করা প্রয়োজন।",
+      "travelDestination": "ভ্রমণের গন্তব্য",
+      "changeCity": "পরিবর্তন করুন",
+      "changeCityAccessibilityLabel": "ভ্রমণের শহর পরিবর্তন করুন",
+      "selectTravelCity": "ভ্রমণের শহর নির্বাচন করুন",
+      "selectTravelCityAccessibilityLabel": "ভ্রমণের শহর নির্বাচন করুন",
+      "recalcNote": "নামাজের সময় আপনার ভ্রমণের গন্তব্যের জন্য পুনরায় গণনা করা হবে।",
+      "homeCity": "নিজের শহর",
+      "notSet": "সেট করা হয়নি"
+    },
+    "qibla": {
+      "calibrating": "কম্পাস ক্যালিব্রেট করা হচ্ছে...",
+      "locationRequiredTitle": "অবস্থান প্রয়োজন",
+      "locationRequiredSubtitle": "কিবলার দিক খুঁজতে সেটিংসে আপনার অবস্থান সেট করুন।",
+      "bearingLabel": "কিবলার দিক",
+      "compassAccessibilityLabel": "কিবলা কম্পাস, বর্তমান দিক {{degrees}} ডিগ্রি",
+      "accuracyLabel": "নির্ভুলতা: {{level}}",
+      "accuracyUnknown": "অজানা",
+      "accuracyUnreliable": "অনির্ভরযোগ্য",
+      "accuracyLow": "কম",
+      "accuracyMedium": "মাঝারি",
+      "accuracyHigh": "উচ্চ",
+      "headingNote": "দিক: {{degrees}}° | কাবার প্রতি বৃহৎ-বৃত্ত দিক"
+    },
+    "fasting": {
+      "todaysFast": "আজকের রোজা",
+      "logToday": "আজকের রোজা লগ করুন",
+      "unlogToday": "আজকের লগ সরান",
+      "loggedAs": "লগ করা হয়েছে: {{type}}",
+      "yourStreaks": "আপনার ধারাবাহিকতা",
+      "mondayStreak": "সোমবারের ধারাবাহিকতা",
+      "thursdayStreak": "বৃহস্পতিবারের ধারাবাহিকতা",
+      "whiteDaysMonth": "এই মাসের আইয়ামে বিজ",
+      "ramadanLogged": "রমজানের রোজা",
+      "qadaLogged": "কাজা আদায় হয়েছে",
+      "voluntaryLogged": "নফল রোজা",
+      "ramadanDayOf": "রমজান — {{total}}-এর {{day}} নম্বর দিন",
+      "upcomingSuggestions": "আসন্ন প্রস্তাবিত রোজার দিন",
+      "logAction": "লগ করুন",
+      "sunnahSourceNote": "সোম ও বৃহস্পতিবারের রোজা: সহিহ মুসলিম ১১৬২। আইয়ামে বিজ (প্রতি হিজরি মাসের ১৩-১৫ তারিখ): সুনানে নাসাঈ ২৩৪৫, সুনানে আবু দাউদ ২৪৪৯।",
+      "recentLogs": "সাম্প্রতিক লগ"
+    },
+    "qada": {
+      "totalOwed": "মোট বকেয়া নামাজ",
+      "perPrayer": "প্রতিটি নামাজের সংখ্যা",
+      "makeUpOne": "একটি কাজা আদায় করুন",
+      "excusedTitle": "ওজরের সময়কাল",
+      "fiqhNote": "ওজরের সময়কালে (যেমন হায়েজ বা নিফাস), একজন নারী নামাজ পড়েন না — এবং সেই ছুটে যাওয়া নামাজ পরে কাজা করা হয় না। এটি রোজা থেকে ভিন্ন: সেই সময়ে ছুটে যাওয়া রোজা পরে কাজা করতে হয়।",
+      "fiqhCitation": "সহিহ বুখারী ৩২১ · সহিহ মুসলিম ৩৩৫",
+      "consultScholar": "এটি সংখ্যাগরিষ্ঠ মতকে প্রতিফলিত করে। আপনার নির্দিষ্ট পরিস্থিতির জন্য আপনার স্থানীয় আলেমের সাথে পরামর্শ করুন।",
+      "addExcusedRange": "ওজরের সময়কাল যোগ করুন",
+      "startDate": "শুরুর তারিখ",
+      "endDate": "শেষ তারিখ",
+      "noteOptional": "নোট (ঐচ্ছিক)",
+      "notePlaceholder": "যেমন, হায়েজ, অসুস্থতা",
+      "removeExcusedRangeAccessibilityLabel": "ওজরের সময়কাল সরান"
+    },
+    "jumuah": {
+      "intro": "জুমু'আহ সপ্তাহের সেরা দিন। মৃদু রিমাইন্ডার সেট করুন এবং এর সুন্নত সহ জুমু'আর জন্য প্রস্তুত হন।",
+      "khutbahTitle": "খুতবার রিমাইন্ডার",
+      "khutbahSub": "খুতবার আগে প্রতি জুমু'আয় একটি নোটিশ।",
+      "kahfTitle": "সূরা আল-কাহফের রিমাইন্ডার",
+      "kahfSub": "শুক্রবারে সূরা আল-কাহফ পাঠের রিমাইন্ডার।",
+      "kahfDayThursday": "বৃহস্পতিবার সন্ধ্যা",
+      "kahfDayFriday": "শুক্রবার সকাল",
+      "reminderTime": "রিমাইন্ডারের সময়",
+      "checklistTitle": "জুমু'আর সুন্নত",
+      "virtueTitle": "জুমু'আর ফযীলত",
+      "virtueBody": "নবী ﷺ বলেছেন: \"যে দিনে সূর্য উদিত হয়েছে তার মধ্যে সর্বোত্তম দিন হলো জুমু'আহ।\"",
+      "virtueCitation": "সহিহ মুসলিম ৮৫৪",
+      "kahfVirtueBody": "নবী ﷺ বলেছেন: \"যে ব্যক্তি জুমু'আর দিনে সূরা আল-কাহফ পাঠ করবে, তার জন্য দুই জুমু'আর মাঝে একটি নূর উজ্জ্বল হবে।\"",
+      "kahfVirtueCitation": "আল-হাকিম ও আল-বায়হাকী কর্তৃক বর্ণিত; আল-আলবানী কর্তৃক সহিহ বলে গণ্য",
+      "checklist": {
+        "ghusl": "গোসল করুন (আনুষ্ঠানিক স্নান)",
+        "ghuslCitation": "সহিহ বুখারী ৮৭৭ · সহিহ মুসলিম ৮৪৬",
+        "cleanClothes": "পরিষ্কার, ভালো পোশাক পরুন",
+        "cleanClothesCitation": "সুনানে আবু দাউদ ৩৪৩ (হাসান)",
+        "perfume": "সুগন্ধি ব্যবহার করুন (মিসওয়াক ও পরিচ্ছন্নতা)",
+        "perfumeCitation": "সহিহ বুখারী ৮৮০",
+        "early": "মসজিদে আগে যান",
+        "earlyCitation": "সহিহ বুখারী ৮৮১ · সহিহ মুসলিম ৮৫০",
+        "kahf": "সূরা আল-কাহফ পাঠ করুন",
+        "kahfCitation": "আল-হাকিম / আল-বায়হাকী (আল-আলবানী অনুযায়ী সহিহ)",
+        "salawat": "নবী ﷺ-এর উপর দরুদ বাড়ান",
+        "salawatCitation": "সুনানে আবু দাউদ ১০৪৭ (সহিহ)",
+        "dua": "দোয়া কবুলের সময় খুঁজুন",
+        "duaCitation": "সহিহ বুখারী ৯৩৫ · সহিহ মুসলিম ৮৫২"
+      }
+    },
+    "leadTimeAccessibilityLabel": "{{prayer}} বিজ্ঞপ্তি সময়, নির্ধারিত সময়ের {{minutes}} মিনিট আগে। পরিবর্তন করতে ট্যাপ করুন।",
+    "iqamahAccessibilityLabel": "{{prayer}} ইকামত রিমাইন্ডার, {{status}}। পরিবর্তন করতে ট্যাপ করুন।",
+    "enableAccessibilityLabel": "{{prayer}} আজান সক্রিয় করুন",
+    "rowAccessibilityLabel": "{{name}}, {{distance}} দূরে",
+    "directionsAccessibilityLabel": "মানচিত্রে {{name}}-এর দিকনির্দেশ খুলুন",
+    "accentColorAccessibilityLabel": "অ্যাকসেন্ট রং {{hex}}",
+    "todayTotalAccessibilityLabel": "আজকের জিকিরের মোট: {{total}}",
+    "historyEntryAccessibilityLabel": "{{name}}: {{count}}, {{date}}",
+    "arabicTextAccessibilityLabel": "আরবি: {{transliteration}}",
+    "counterAccessibilityLabel": "গণনা: {{count}} এর মধ্যে {{target}}। {{status}}",
+    "tapToIncrement": "বাড়াতে ট্যাপ করুন",
+    "presetAccessibilityLabel": "{{transliteration}}, লক্ষ্য {{target}}, উৎস {{source}}",
+    "zoneRowAccessibilityLabel": "{{label}}, {{radius}} মিটার ব্যাসার্ধ",
+    "phaseAccessibilityLabel": "চাঁদের পর্যায়: {{phase}}, {{illumination}}",
+    "voiceAccessibilityLabel": "{{reciter}}-এর {{name}}",
+    "voiceAccessibilityLabelPro": "{{reciter}}-এর {{name}} (প্রো, নির্বাচন করতে আপগ্রেড প্রয়োজন)",
+    "surahNameAccessibilityLabel": "সূরা {{name}}",
+    "readOnWikiAccessibilityLabel": "Islam.Wiki-তে সূরা {{name}} পড়ুন",
+    "verseAccessibilityLabel": "আয়াত {{number}}: {{transliteration}}",
+    "featuredVerseAccessibilityLabel": "{{label}}: আয়াতুল কুরসি",
+    "surahRowAccessibilityLabel": "সূরা {{number}}, {{name}}, {{count}} আয়াত, {{type}}",
+    "fullTextAvailableSuffix": ", সম্পূর্ণ টেক্সট উপলব্ধ",
+    "revelationMeccan": "মাক্কী",
+    "revelationMedinan": "মাদানী"
+  },
+  "onboarding": {
+    "skip": "এড়িয়ে যান",
+    "welcome": {
+      "title": "PrayCalc-এ স্বাগতম",
+      "desc": "সঠিক নামাজের সময়, কিবলার দিক, এবং ইসলামিক ক্যালেন্ডার — কয়েক ট্যাপে সেটআপ।",
+      "cta": "শুরু করুন"
+    },
+    "location": {
+      "title": "আপনার অবস্থান",
+      "prime": "PrayCalc আপনার শহরের জন্য সঠিক নামাজের সময় গণনা করতে আপনার অবস্থান ব্যবহার করে। এটি আপনার ডিভাইসেই থাকে — আমরা কখনো তা শেয়ার করি না। চালিয়ে যেতে পরবর্তী স্ক্রিনে অনুমতি দিন-এ ট্যাপ করুন।",
+      "allow": "অবস্থানের অনুমতি দিন",
+      "later": "আমি এটি পরে সেট করব"
+    },
+    "notifications": {
+      "title": "নামাজের রিমাইন্ডার",
+      "prime": "প্রতিটি নামাজের সময় একটি মৃদু রিমাইন্ডার বা আজান পান যাতে আপনি কখনো নামাজ না মিস করেন। পরে আপনি নির্ধারণ করতে পারবেন কোন নামাজগুলো আপনাকে জানাবে।",
+      "allow": "রিমাইন্ডার সক্রিয় করুন",
+      "later": "এখন নয়"
+    },
+    "method": {
+      "title": "গণনা পদ্ধতি",
+      "dpcExplain": "DPC (ডাইনামিক PrayCalc) স্বয়ংক্রিয়ভাবে আপনার অবস্থানের জন্য সেরা সময় গণনা করে — মুনসাইটিং পদ্ধতির একটি উন্নতি। আমরা এটি ব্যবহার চালিয়ে যাওয়ার পরামর্শ দিই।",
+      "dpcLabel": "ডাইনামিক (PrayCalc DPC)",
+      "recommended": "প্রস্তাবিত",
+      "orFixed": "অথবা একটি নির্দিষ্ট পদ্ধতি বেছে নিন",
+      "suggested": "আপনার অঞ্চলের জন্য",
+      "continue": "চালিয়ে যান"
+    },
+    "consent": {
+      "title": "PrayCalc উন্নত করতে সাহায্য করুন"
+    },
+    "done": {
+      "title": "সবকিছু প্রস্তুত",
+      "desc": "আপনার নামাজের সময় প্রস্তুত। আপনি যেকোনো সময় সেটিংসে এই যেকোনো পছন্দ পরিবর্তন করতে পারবেন।",
+      "cta": "PrayCalc খুলুন"
     }
+  },
+  "consent": {
+    "title": "বেনামী ব্যবহার বিশ্লেষণ",
+    "description": "PrayCalc উন্নত করতে সাহায্য করার জন্য বেনামী, সমষ্টিগত ব্যবহারের তথ্য শেয়ার করুন। কোনো ব্যক্তিগত তথ্য, অবস্থান, বা অ্যাকাউন্টের বিবরণ কখনো সংগ্রহ করা হয় না।",
+    "privacyNote": "ডিফল্টভাবে বন্ধ। আপনি চালু না করলে কিছুই পাঠানো হয় না, এবং আপনি যেকোনো সময় এটি পরিবর্তন করতে পারবেন।",
+    "accept": "অনুমতি দিন",
+    "decline": "না ধন্যবাদ",
+    "toggleLabel": "বেনামী বিশ্লেষণ শেয়ার করুন",
+    "privacyScreenTitle": "গোপনীয়তা",
+    "privacyScreenFooter": "PrayCalc গোপনীয়তা-প্রথম। বিশ্লেষণ বেনামী এবং আপনি সম্মত না হলে বন্ধ থাকে। এটি বন্ধ করলে সব টেলিমেট্রি সাথে সাথে বন্ধ হয়ে যায়।"
   }
 }

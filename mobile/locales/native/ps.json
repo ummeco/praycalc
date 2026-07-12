@@ -1,6 +1,6 @@
 {
-  "NSLocationWhenInUseUsageDescription": "Allow Prayer Times to access your location to calculate accurate prayer times.",
-  "NSLocationAlwaysAndWhenInUseUsageDescription": "Allow Prayer Times to access your location to calculate accurate prayer times.",
-  "NSCalendarsFullAccessUsageDescription": "Prayer Times adds salah blocks to your calendar as reminders.",
-  "NSFaceIDUsageDescription": "Prayer Times uses Face ID to confirm lock-on-salah mode."
+  "NSLocationWhenInUseUsageDescription": "د لمانځه سمو وختونو محاسبې لپاره، د لمانځه وختونو اپلیکیشن ته ستاسو موقعیت ته د لاسرسي اجازه ورکړئ.",
+  "NSLocationAlwaysAndWhenInUseUsageDescription": "د لمانځه سمو وختونو محاسبې لپاره، د لمانځه وختونو اپلیکیشن ته ستاسو موقعیت ته د لاسرسي اجازه ورکړئ.",
+  "NSCalendarsFullAccessUsageDescription": "د لمانځه وختونو اپلیکیشن ستاسو کليز ته د لمانځه وختونه د یادونو په توګه اضافه کوي.",
+  "NSFaceIDUsageDescription": "د لمانځه وختونو اپلیکیشن د لمانځه پر قفل حالت تصدیق لپاره Face ID کاروي."
 }

@@ -13,6 +13,27 @@
     "midnight": "Badh Habeenkii",
     "lastThird": "Seddexdaad Dambe"
   },
+  "notifications": {
+    "prayerTime": "Waqtiga {{prayer}}",
+    "iqamahTitle": "Iqaamada {{prayer}}",
+    "bodyNow": "Waa waqtiga salaadda {{prayer}} — {{time}}",
+    "bodyAdvance_one": "{{prayer}} wuxuu ku dhawaaday {{count}} daqiiqad — {{time}}",
+    "bodyAdvance_other": "{{prayer}} wuxuu ku dhawaaday {{count}} daqiiqo — {{time}}",
+    "bodyIqamah": "Xasuusin iqaamo ah oo {{prayer}} ah (adhaanku wuxuu ahaa {{time}})",
+    "snooze_one": "Dib u dhig {{count}} daqiiqad",
+    "snooze_other": "Dib u dhig {{count}} daqiiqo",
+    "snoozedBody": "Xasuusin dib loo dhigay oo salaadda {{prayer}} ah",
+    "suhoorTitle": "Sahuur",
+    "suhoorBody": "Waqtiga sahuurka — cuntada waagu ka hor. Subaxu waa soo dhawaanaysaa.",
+    "tahajjudTitle": "Tahajjud",
+    "tahajjudBody": "Seddexdaad dambe ee habeenka — waqti barakaysan oo qiyaam iyo du'aa ah.",
+    "jumuahKhutbahTitle": "Jimce",
+    "jumuahKhutbahBody": "Khudbadu way soo dhawaanaysaa. Aad masaajidka si aad u tukato salaadda Jimcaha.",
+    "kahfTitle": "Suuratul Kahf",
+    "kahfBody": "Akhri Suuratul Kahf si aad u hesho nuurka u dhexeeya labada jimco.",
+    "testTitle": "Adhaan Tijaabo ah",
+    "testBody": "Haddii aad maqasho tan, ogeysiisyada adhaanka way shaqeynayaan."
+  },
   "common": {
     "bismillah": "Bismillaahir Rahmaanir Rahiim",
     "salah": "Salaad",
@@ -36,15 +57,138 @@
     "search": "Raadi",
     "change": "Bedel",
     "reset": "Dib u deji",
+    "complete": "Dhammaystiran",
     "openInMaps": "Ku fur Khariidadaha",
     "openSettings": "Fur Dejinta",
     "upgrade": "Casriyayn",
-    "signIn": "Gal"
+    "signIn": "Gal",
+    "createAccount": "Samee Akoon",
+    "continue": "Sii wad",
+    "skip": "Dhaaf",
+    "nothingHereYet": "Weli waxba halkan kuma jiraan",
+    "somethingWentWrong": "Wax baa qaldamay",
+    "tryAgain": "Isku day mar kale",
+    "tooManyRequests": "Codsiyo aad u badan",
+    "waitBeforeRetrying": "Fadlan sug {{seconds}} ilbiriqsi ka hor inta aad mar kale isku dayin.",
+    "offlineCachedData": "Ma jirtid khadka internetka. Waxaa la muujinayaa xogta la kaydiyay.",
+    "permissionRequired": "Waa loo baahan yahay ogolaanshaha {{permission}}",
+    "permissionRequiredBody": "Waqtiyada salaadda waxay u baahan yihiin gelitaanka {{permission}}. Fadlan ka daar Dejinta.",
+    "loadingContent": "Waa la soo rarayaa qeexitaanka",
+    "permissionRequiredGeneric": "Waa loo baahan yahay ogolaansho",
+    "permissionRequiredGenericBody": "Ogolaanshaha {{permission}} ayaa loo baahan yahay sifadan.",
+    "openSystemSettings": "Fur dejinta nidaamka",
+    "retryRequest": "Isku day codsiga mar kale",
+    "tooManyRequestsRetry": "Codsiyo aad u badan. Fadlan sug {{seconds}} ilbiriqsi ka hor inta aad mar kale isku dayin.",
+    "tooManyRequestsRetryGeneric": "Codsiyo aad u badan. Fadlan sug ka hor inta aad mar kale isku dayin.",
+    "offlineShowingCachedFrom": "Ma jirtid khadka internetka. Waxaa la muujinayaa xogta laga soo helay {{cachedAt}}.",
+    "offlineShowingCachedGeneric": "Ma jirtid khadka internetka. Waxaa la muujinayaa xogta la kaydiyay."
   },
   "greeting": {
     "assalamu_alaykum": "Assalaamu Calaykum wa Rahmatullaahi wa Barakaatuh",
     "prayer_approaching": "Waqtiga salaadda ayaa soo dhawaanaya",
     "prayer_now": "Waqtiga salaadda"
+  },
+  "tabs": {
+    "home": "Salaadaha",
+    "prayerTimes": "Waqtiyada Salaadda",
+    "qibla": "Qiblada",
+    "calendar": "Jadwalka",
+    "quran": "Qur'aanka",
+    "more": "Wax dheeraad ah"
+  },
+  "menu": {
+    "settings": {
+      "label": "Dejinta",
+      "subtitle": "Habka, goobta, ogeysiisyada"
+    },
+    "adhan": {
+      "label": "Maktabadda Adhaanka",
+      "subtitle": "Codka adhaanka & aqriyaha"
+    },
+    "tasbeeh": {
+      "label": "Tirinta Tasbiixa",
+      "subtitle": "Tirinta dhikrka ee dhijitaalka ah"
+    },
+    "duaDhikr": {
+      "label": "Ducooyin & Adhkaar",
+      "subtitle": "Ducooyinka subaxa & fiidka"
+    },
+    "moon": {
+      "label": "Marxaladaha Dayaxa",
+      "subtitle": "Jadwalka qamariga & taariikhda hijriga"
+    },
+    "quran": {
+      "label": "Qur'aanka",
+      "subtitle": "Farta Cusmaaniga ah oo leh calaamado"
+    },
+    "stats": {
+      "label": "Tirakoobka Salaadda",
+      "subtitle": "La soco salaadahaaga & taxanahaaga"
+    },
+    "ramadan": {
+      "label": "Ramadaan",
+      "subtitle": "Waqtiyada Sahuurka & Futuurka, la socod"
+    },
+    "subscription": {
+      "label": "Hel Pro",
+      "subtitle": "Fur sifooyinka premium-ka"
+    },
+    "homeWidget": {
+      "label": "Widget-ka Bogga Hore",
+      "subtitle": "Salaadda xigta ee shaashadda hore"
+    },
+    "smartHome": {
+      "label": "Guriga Casriga ah",
+      "subtitle": "Xidh qalabka intii salaadda socoto"
+    },
+    "pairTv": {
+      "label": "Ku Xir TV",
+      "subtitle": "Ku xir aplikeeshanka PrayCalc TV"
+    },
+    "tvManager": {
+      "label": "TV-yadayda",
+      "subtitle": "Maamul shaashadaha TV-ga ee la xiray"
+    },
+    "agendas": {
+      "label": "Jadwalka Salaadda",
+      "subtitle": "Ku dar waqtiyada salaadda jadwalka"
+    },
+    "timetable": {
+      "label": "Jadwalka Bisha",
+      "subtitle": "Waqtiyada salaadda bisha oo dhan + soo dejin jadwal"
+    },
+    "mosques": {
+      "label": "Masaajidyada Kuu Dhow",
+      "subtitle": "Hel masaajidyada kuu dhow"
+    },
+    "travel": {
+      "label": "Habka Safarka",
+      "subtitle": "Qasrka musaafirka ee dadka safraya"
+    },
+    "jumuah": {
+      "label": "Jimce",
+      "subtitle": "Xasuusinta Jimcaha & Suuratul Kahf"
+    },
+    "masjidMute": {
+      "label": "Aamusinta Otomaatiga ah ee Masaajidka",
+      "subtitle": "Aamusi taleefankaaga marka aad masaajidka u dhawaato"
+    },
+    "fasting": {
+      "label": "La Socodka Soonka",
+      "subtitle": "Ramadaan, Isniinta & Khamiista, Ayaamaha Cad"
+    },
+    "qada": {
+      "label": "Salaadaha La Seegay (Qadaa)",
+      "subtitle": "La soco oo bixi salaadaha la seegay"
+    },
+    "privacy": {
+      "label": "Asturnaanta & Xogta",
+      "subtitle": "Xakamee ogolaanshaha falanqaynta"
+    },
+    "shareApp": {
+      "label": "La Wadaag PrayCalc",
+      "subtitle": "U sheeg saaxiib ama xubin qoyska ah"
+    }
   },
   "settings": {
     "title": "Dejinta",
@@ -66,28 +210,692 @@
     "location": {
       "title": "Goobta",
       "detect": "Si toos ah u ogaado",
-      "manual": "Geli si toos ah"
-    }
+      "manual": "Geli si toos ah",
+      "useGps": "Isticmaal Goobta GPS-ka",
+      "searchManually": "Raadi Magaalada Gacanta",
+      "currentCity": "Magaalada Hadda",
+      "noneSet": "Goob lama dejin. Waxaa loo baahan yahay GPS ama magaalo gacanta lagu geliyo.",
+      "gettingLocation": "Waa la helayaa goobtaada...",
+      "permissionDenied": "Ogolaansho La Diiday",
+      "permissionDeniedBody": "Ka daar gelitaanka goobta ee Dejinta si aad si toos ah u ogaato magaaladaada."
+    },
+    "account": {
+      "title": "Akoonka",
+      "signedIn": "Waad soo gashay",
+      "anonymous": "Qarsoodi",
+      "free": "Bilaash"
+    },
+    "highLatitude": {
+      "title": "Hagaajinta Loolka Sare",
+      "hint": "Waxaa la isticmaalaa marka Subaxa/Cishaha aysan gaari karin xagasha loo baahan yahay (goobaha aad u fog waqooyiga/koonfurta xagaaga).",
+      "nightMiddle": "Badhtanka Habeenka",
+      "angleBased": "Ku Salaysan Xagasha",
+      "oneSeventh": "Toddobaadka Habeenka",
+      "none": "Midna (waxay muujin kartaa 'lama hayo')"
+    },
+    "madhab": {
+      "title": "Madhab (Casarka)",
+      "hint": "Shaafici: hal jibbaar oo hooska ah | Xanafi: laba jibbaar oo hooska ah"
+    },
+    "prayerAdjustments": {
+      "title": "Hagaajinta Waqtiyada Salaadda",
+      "hint": "Hagaaji waqti kasta ilaa ±30 daqiiqo si ay ula jaanqaadaan jadwalka masaajidkaaga."
+    },
+    "hijriAdjustment": {
+      "title": "Hagaajinta Taariikhda Hijriga",
+      "hint": "Beddel taariikhda hijriga ilaa ±2 maalmood haddii aragtida dayaxa ee aad ku sugan tahay ay ka duwan tahay jadwalka Umm al-Qura.",
+      "offset": "Kala Duwanaanta",
+      "decreaseAccessibilityLabel": "Yaree kala duwanaanta hijriga",
+      "increaseAccessibilityLabel": "Kordhi kala duwanaanta hijriga"
+    },
+    "timeFormat": {
+      "title": "Qaabka Waqtiga"
+    },
+    "appearance": {
+      "title": "Muuqaalka",
+      "system": "Nidaamka",
+      "light": "Iftiin",
+      "dark": "Madow"
+    },
+    "customAngles": {
+      "fajr": "Xagasha Subaxa (°)",
+      "isha": "Xagasha Cishaha (°)",
+      "fajrAccessibilityLabel": "Xagasha Subaxa ee gaarka ah, darajooyin",
+      "ishaAccessibilityLabel": "Xagasha Cishaha ee gaarka ah, darajooyin"
+    },
+    "upsell": {
+      "priceLine": "Ummat+ $9.99/sanadkii — wuxuu furayaa aplikeeshanka TV & Guriga Casriga ah",
+      "upgradeButton": "U kaco Ummat+"
+    },
+    "prayerAlerts": "Digniinaha Waqtiga Salaadda",
+    "manageNotifications": "Maamul Ogeysiisyada",
+    "appLanguage": "Luqadda Barnaamijka",
+    "decreaseAccessibilityLabel": "Yaree hagaajinta {{prayer}}",
+    "increaseAccessibilityLabel": "Kordhi hagaajinta {{prayer}}",
+    "valueAccessibilityLabel": "Kala duwanaanta hijriga: {{value}} maalmood",
+    "label12h": "Qaabka 12-saac",
+    "label24h": "Qaabka 24-saac",
+    "themeAccessibilityLabel": "Muuqaalka {{theme}}"
   },
   "errors": {
     "location_permission": "Fadlan u ogolow helitaanka goobta si loo xisaabiyo waqtiyada salaadda",
     "network": "Laguma xidhaan karo shabakadda",
     "calculation": "Lama xisaabin karo waqtiyada salaadda"
   },
-  "tabs": {
-    "home": "Salaadaha",
-    "prayerTimes": "Waqtiyada Salaadda",
-    "qibla": "Qiblada",
-    "calendar": "Jadwalka",
-    "quran": "Qur'aanka",
-    "more": "Wax dheeraad ah"
-  },
-  "menu": {
-    "settings": {
-      "label": "Dejinta"
+  "screens": {
+    "more": {
+      "title": "Wax dheeraad ah"
+    },
+    "notFound": {
+      "title": "Shaashad Lama Helin",
+      "goHome": "Aad Waqtiyada Salaadda"
+    },
+    "onboarding": {
+      "welcomeTitle": "Ku soo dhawoow PrayCalc",
+      "welcomeDesc": "Waqtiyada salaadda oo sax ah, jihada qiblada, iyo jadwalka Islaamka — dhammaan hal meel.",
+      "getStarted": "Bilaaw",
+      "locationTitle": "Fur Goobta",
+      "locationDesc": "Waqtiyada salaadda waxay u baahan yihiin goobtaada si loo xisaabiyo si sax ah.",
+      "allowLocation": "Ogolow Goobta",
+      "skipManual": "Dhaaf — waan iska dejin doonaa",
+      "authTitle": "Samee Akoon?",
+      "authDesc": "Ikhtiyaari ah: samee akoon si aad u hesho isku-dheelitirka daruuraha iyo taariikhda salaadaha. Waad iska diiwaan gelin kartaa mar dambe.",
+      "skipForNow": "Hadda ka dhaaf"
+    },
+    "auth": {
+      "appTagline": "Waqtiyada saxda ah ee salaadda muslim kasta",
+      "tabSkip": "Dhaaf",
+      "continueTitle": "Sii Wad Iyada Oo Aan Akoon La Samayn",
+      "continueDesc": "Waqtiyada salaadda, qiblada, iyo jadwalku si buuxda ayey uga shaqeeyaan khadka internetka la'aanteed iyadoo aan loo baahnayn akoon. Dejintaadu waxay ku kaydsan tahay qalabkaaga.",
+      "featurePrayerQibla": "Waqtiyada Salaadda & Qiblada",
+      "featureCalendar": "Jadwalka Islaamka",
+      "featureSettings": "Dejinta & Ogeysiisyada",
+      "continueAnonymously": "Sii Wad Qarsoodi",
+      "signInTitle": "Gal",
+      "emailPlaceholder": "Iimayl",
+      "passwordPlaceholder": "Furaha Sirta ah",
+      "namePlaceholder": "Magaca (ikhtiyaari)",
+      "switchHint": "Akoonku wuxuu awood u siinayaa isku-dheelitirka daruuraha iyo taariikhda salaadaha qalabyada oo dhan.",
+      "registerTitle": "Samee Akoon",
+      "signingIn": "Waa la soo gelayaa...",
+      "enterEmailPassword": "Fadlan geli iimaylka iyo furaha sirta ah.",
+      "loginFailed": "Gelitaanka wuu fashilmay",
+      "registerFailed": "Diiwaan gelinta wey fashilantay",
+      "verifyEmail": "Hubi iimaylkaaga si aad u xaqiijiso akoonkaaga, ka dibna soo gal."
+    },
+    "adhan": {
+      "enablePerPrayer": "Hawl-geli Adhaanka Salaad Kasta",
+      "library": "Maktabadda Adhaanka",
+      "noVoices": "Codadka adhaanka lama hayo.",
+      "proRequiredTitle": "Waxaa loo baahan yahay Ummat+",
+      "proRequiredBody": "{{name}} waa cod adhaan oo Pro ah. U kaco Ummat+ si aad u dejiso adhaankaaga firfircoon.",
+      "proFeature": "Sifada Pro",
+      "playPreview": "Ciyaari tijaabo",
+      "stopPreview": "Jooji tijaabada",
+      "voiceListLabel": "Liiska codadka adhaanka"
+    },
+    "agendas": {
+      "title": "Jadwalka Salaadda",
+      "desc": "Ku dar xilliyada salaadda jadwalka qalabkaaga sida xasuusin. Salaad kasta waxay heli doontaa dhacdo {{minutes}} daqiiqo ah oo leh digniin 5 daqiiqo ah.",
+      "whichPrayers": "Salaadaha la doonayo in la daro",
+      "locationRequired": "Waa loo baahan yahay goob",
+      "locationRequiredBody": "Ku qor magaaladaada Dejinta si aad u darto waqtiyada salaadda jadwalka.",
+      "noCalendarFound": "Jadwal Lama Helin",
+      "noCalendarFoundBody": "Jadwal la qori karo lagama helin qalabkan.",
+      "setLocationHint": "Ku qor magaaladaada Dejinta si aad u hawl-gelisho isku-dheelitirka jadwalka.",
+      "addButton": "Ku Dar Salaadaha Maanta Jadwalka",
+      "addButtonAccessibilityLabel": "Ku dar waqtiyada salaadda maanta jadwalka",
+      "adding": "Waa la darayaa...",
+      "done": "Dhamaaday",
+      "addedCount": "{{count}} waqtiyood oo salaad ah ayaa lagu daray jadwalkaaga.",
+      "error": "Khalad",
+      "addFailed": "Lagu dari waayay jadwalka.",
+      "checkingPermission": "Waa la hubinayaa ogolaanshaha jadwalka..."
+    },
+    "calendar": {
+      "eventsThisMonth": "Dhacdooyinka Islaamka Bishan"
+    },
+    "citySearch": {
+      "findCityTitle": "Hel Magaalo",
+      "placeholder": "Raadi magaalo...",
+      "useCurrentLocation": "Isticmaal Goobta Hadda",
+      "locating": "Waa la helayaa goobta…",
+      "searching": "Waa la raadinayaa magaalooyinka...",
+      "noResults": "Magaalooyin looma helin \"{{query}}\".",
+      "popularHint": "Waxaa la muujiyay magaalooyinka caanka ah. Qor si aad u raadiso.",
+      "searchError": "Khalad raadin: {{message}}",
+      "searchInputAccessibilityLabel": "Goobta raadinta magaalada",
+      "useCurrentLocationAccessibilityLabel": "Isticmaal goobta hadda",
+      "resultsAccessibilityLabel": "Natiijooyinka raadinta magaalooyinka"
+    },
+    "duaDhikr": {
+      "noResults": "Duco lagama helin qaybtan.",
+      "categoryAll": "Dhammaan",
+      "categoryAfterAdhan": "Adhaanka Ka Dib",
+      "categoryAfterPrayer": "Salaadda Ka Dib",
+      "categoryMorning": "Subax",
+      "categoryEvening": "Fiid"
+    },
+    "moon": {
+      "hijriCalendar": "Jadwalka Hijriga",
+      "hijriDay": "Maalinta Hijriga",
+      "month": "Bil",
+      "lunarAge": "Da'da Qamariga",
+      "daysUnit": "{{count}} maalmood",
+      "upcomingPhases": "Marxaladaha Soo Socda",
+      "nextFullMoon": "Dayax-buuxa Xiga 🌕",
+      "nextNewMoon": "Dayax-cusub Xiga 🌑",
+      "significance": "Macnaha Islaamka",
+      "illuminatedPct": "{{pct}}% iftiimay",
+      "phaseNewMoon": "Dayax-cusub",
+      "phaseWaxingCrescent": "Dayax Soo Kordhaya",
+      "phaseFirstQuarter": "Rubuca Koowaad",
+      "phaseWaxingGibbous": "Dayax Aad u Kordhay",
+      "phaseFullMoon": "Dayax-buuxa",
+      "phaseWaningGibbous": "Dayax Aad u Dhimanaya",
+      "phaseLastQuarter": "Rubuca Dambe",
+      "phaseWaningCrescent": "Dayax Dhimanaya",
+      "ramadanNote": "Waa bisha Ramadaan — bisha soonka iyo raadinta Laylatul Qadr.",
+      "dhulHijjahNote": "Tobankii maalmood ee ugu horreeya ee {{month}} waa kuwa ugu fadli badan sanadka."
     },
     "mosques": {
-      "label": "Masaajidyada Kuu Dhow"
+      "setLocation": "Deji goobtaada si aad u hesho masaajidyada kuu dhow.",
+      "setLocationAction": "Deji Goobta",
+      "finding": "Waa la raadinayaa masaajidyada kuu dhow...",
+      "noResults": "Masaajid lagama helin 10 km gudahood.",
+      "retry": "Isku Day Mar Kale",
+      "attribution": "Xogta © waxaa lahaanshahay contributors-ka OpenStreetMap",
+      "searchFailed": "Lagu raadin waayay masaajidyada."
+    },
+    "masjidMute": {
+      "title": "Aamusinta Otomaatiga ah ee Masaajidka",
+      "intro": "PrayCalc weli ma haysato tusmo masaajidyo — ku dar zone-yada aamusinta hoos ku qoran. Waxaan kula talineynaa inaad ku darto masaajidkaaga si taleefankaagu si otomaatig ah u aamuso markaad timaado.",
+      "masterToggleLabel": "Aamusinta otomaatiga ah waa furan tahay",
+      "masterToggleSubtitle": "Aamusi taleefankaaga marka aad gasho zone kasta oo hoos ku qoran",
+      "zonesHeading": "Zone-yadaada",
+      "emptyTitle": "Weli zone lama darin",
+      "emptySubtitle": "Ku dar masaajidkaaga si PrayCalc si otomaatig ah taleefankaaga uga aamusiyo markaad timaado.",
+      "addZoneAction": "Ku Dar Masaajidkaaga",
+      "addZoneButton": "Ku Dar Zone",
+      "addZoneTitle": "Ku Dar Zone Aamusin",
+      "editZoneTitle": "Wax Ka Beddel Zone Aamusin",
+      "labelFieldLabel": "Calaamadda",
+      "labelFieldPlaceholder": "tusaale, Masjidka An-Nuur",
+      "labelRequired": "Fadlan geli calaamad zoneetan.",
+      "coordinatesInvalid": "Fadlan geli loolka iyo dhererka sax ah, ama raadi/isticmaal goobta hadda.",
+      "searchAddressLabel": "Raadi cinwaanka",
+      "searchAddressPlaceholder": "Raadi cinwaan ama meel",
+      "searching": "Waa la raadinayaa...",
+      "searchNoResults": "Waxba lagama helin. Isku day raadin kale ama geli isku-duwayaasha gacanta.",
+      "useCurrentLocation": "Isticmaal Goobta Hadda",
+      "locating": "Waa la helayaa goobta...",
+      "locationFailed": "Lama helin goobtaada hadda.",
+      "manualEntryToggle": "Geli isku-duwayaasha gacanta",
+      "latitudeLabel": "Loolka",
+      "longitudeLabel": "Dhererka",
+      "radiusLabel": "Gaadhka: {{radius}} m",
+      "radiusHint": "Intooda u dhaxaysa {{min}} m iyo {{max}} m — waxay daboolaysaa masaajidka iyo goobta baarkinka.",
+      "decreaseRadiusAccessibilityLabel": "Yaree gaadhka 25 mitir",
+      "increaseRadiusAccessibilityLabel": "Kordhi gaadhka 25 mitir",
+      "saveZone": "Kaydi Zone-ka",
+      "deleteZone": "Tirtir Zone-ka",
+      "deleteConfirmTitle": "Ma tirtirayaa zone-kan?",
+      "deleteConfirmBody": "\"{{label}}\" mar dambe si otomaatig ah taleefankaaga uma aamusin doono.",
+      "mapPickerFollowUp": "Doorasho khariidad oo lagu muujiyo calaamad ayaa la qorsheeyay — hadda, raadi cinwaan ama isticmaal goobta hadda.",
+      "permissionTitle": "Waa Loo Baahan Yahay Ogolaanshaha Goobta",
+      "permissionBody": "Aamusinta Otomaatiga ah ee Masaajidku waxay u baahan tahay gelitaan goob oo \"Had iyo jeer\" ah si loo ogaado marka aad gasho ama ka baxdo zone, xitaa marka barnaamijku xiran yahay.",
+      "permissionGrant": "Sii Ogolaanshaha",
+      "permissionDeniedNote": "Gelitaanka goobta ee asalka lagama siin — zone-yada waa la kaydiyay laakiin aamusinta otomaatiga ahi ma dhici doonto ilaa aad ogolaato gelitaanka \"Had iyo jeer\" ee dejinta nidaamka.",
+      "androidNote": "Android: taleefankaagu wuxuu markaad timaado u beddeli doonaa gariir wuxuuna soo celin doonaa qaabkii hore ee codka markaad baxdo.",
+      "iosNote": "iOS: Apple uma ogola barnaamijyada inay bedelaan switchka aamusinta. Halkii, PrayCalc waxay dirtaa ogeysiis kaa codsanaya inaad taleefankaaga gacanta ku aamusiso.",
+      "iosReminderTitle": "Waad timid",
+      "iosReminderBody": "Waxaad u dhow tahay {{zone}} — fadlan taleefankaaga aamusi.",
+      "defaultZoneLabel": "zone-kaaga aamusinta",
+      "activeNow": "Hadda firfircoon — taleefanku waa aamusan yahay",
+      "radiusValue": "Gaadh {{radius}} m"
+    },
+    "pairTv": {
+      "upsellBadge": "Ummat+",
+      "unlockTitle": "Fur Xidhiidhinta TV",
+      "unlockDesc": "Ummat+ $9.99/sanadkii — wuxuu furayaa aplikeeshanka TV & Guriga Casriga ah",
+      "pairedTitle": "TV-ga Waa La Xiray",
+      "pairedDesc": "Aplikeeshankaaga TV-ga hadda wuxuu ku xidhan yahay akoonkan.",
+      "title": "Ku Xir TV",
+      "desc": "Fur PrayCalc TV-gaaga, ka dibna geli lambarka PIN-ka ee 6-lambar ah ee shaashadda ku muuqda.",
+      "enterPin": "Geli lambarka PIN-ka ee 6-lambar ah ee TV-gaaga ku muuqda.",
+      "pinInputAccessibilityLabel": "PIN-ka xidhiidhinta TV-ga",
+      "pairFailed": "Xidhiidhinta wey fashilantay. Isku day mar kale.",
+      "pairDevice": "Ku Xir Qalabka",
+      "invalidOrExpiredPin": "PIN-kaasi waa khalad ama wuu dhacay. Hubi shaashadda TV-ga oo isku day mar kale."
+    },
+    "tvManager": {
+      "upsellBadge": "Ummat+",
+      "unlockTitle": "Fur Maamulka TV",
+      "unlockDesc": "Ummat+ $9.99/sanadkii — wuxuu furayaa aplikeeshanka TV & Guriga Casriga ah",
+      "emptyTitle": "Weli TV lama xirin",
+      "emptySubtitle": "Ku xir TV si aad halkan uga aragto oo aad u maamusho dejinta shaashaddiisa.",
+      "pairACta": "Ku Xir TV",
+      "noCity": "Goob lama dejin",
+      "nameLabel": "Magac",
+      "colorLabel": "Midabka Muuqaalka",
+      "streamLabel": "Isha Muuqaalka",
+      "streamMakkah": "Makkah TV",
+      "streamSaudiQuran": "Saudi Quran",
+      "streamMedina": "Medina",
+      "rotateLabel": "Wareejinta Shaashadda",
+      "decreaseRotate": "Yaree daqiiqadaha wareejinta",
+      "increaseRotate": "Kordhi daqiiqadaha wareejinta",
+      "weatherLabel": "Tus Cimilada",
+      "updateLocationAction": "Cusboonaysii goobta ilaa tayda hadda",
+      "updateLocationHint": "TV-gu wuxuu qaadan doonaa isbeddellada goobta markii xigta ee dib loo xidho — tani hadda wey cusboonaysiinaysaa goobta la kaydiyay.",
+      "noLocationTitle": "Goob Lama Dejin",
+      "noLocationBody": "Deji goobtaada Dejinta ka hor inta aadan cusboonaysiin goobta TV-ga.",
+      "locationUpdatedTitle": "Goobta Waa La Cusboonaysiiyay",
+      "locationUpdatedBody": "Waa la kaydiyay. TV-gu wuxuu isticmaali doonaa goobtan marka xigta ee dib loo xidho.",
+      "deleteAction": "Ka Saar TV-gan",
+      "deleteConfirmTitle": "Ma ka saarayaa TV-ga?",
+      "deleteConfirmBody": "Tani waxay ka fasaxi doontaa \"{{name}}\" waxayna ka saari doontaa dejinta la kaydiyay. Tan lama celin karo.",
+      "deleteConfirmAction": "Ka Saar",
+      "prayerFajr": "Subax",
+      "prayerDhuhr": "Duhr",
+      "prayerAsr": "Casar",
+      "prayerMaghrib": "Marib",
+      "prayerIsha": "Cisho",
+      "madhabShafii": "Shaafici",
+      "madhabHanafi": "Xanafi",
+      "timeFormat12h": "12-saac",
+      "timeFormat24h": "24-saac",
+      "invalidCoordsTitle": "Isku-duwayaal Khalad ah",
+      "invalidCoordsBody": "Geli loolka sax ah (-90 ilaa 90) iyo dhererka (-180 ilaa 180).",
+      "deepSettingsLabel": "Dejinta Qotada Dheer",
+      "countdownTakeoverLabel": "Qaadista Shaashadda ee Tirinta",
+      "countdownTakeoverHint": "Qaado shaashadda tiro weyn oo dib-u-tiris ah salaad kasta ka hor.",
+      "countdownMinutesLabel": "Bilowga Tirinta",
+      "decreaseCountdown": "Yaree daqiiqadaha tirinta",
+      "increaseCountdown": "Kordhi daqiiqadaha tirinta",
+      "iqamaLabel": "Waqtiyada Iqaamada",
+      "iqamaHint": "Tus dib-u-tiriska iqaamada adhaanka ka dib, oo salaad kasta leh kala duwanaan gaar ah.",
+      "decreaseIqama": "Yaree kala duwanaanta iqaamada {{prayer}}",
+      "increaseIqama": "Kordhi kala duwanaanta iqaamada {{prayer}}",
+      "nameOnlyLabel": "Habka Magaca Kaliya",
+      "nameOnlyHint": "Tus magaca salaadda kaliya (waqti la'aan) inta lagu jiro daqiiqadahan adhaanka ka hor.",
+      "nameOnlyMinutesLabel": "Muddada Habka Magaca Kaliya",
+      "decreaseNameOnly": "Yaree daqiiqadaha magaca kaliya",
+      "increaseNameOnly": "Kordhi daqiiqadaha magaca kaliya",
+      "madhabLabel": "Madhab",
+      "timeFormatLabel": "Qaabka Waqtiga",
+      "calcMethodLabel": "Habka Xisaabinta",
+      "manualLocationToggle": "Geli isku-duwayaasha gacanta",
+      "latitudeLabel": "Loolka",
+      "longitudeLabel": "Dhererka",
+      "manualLocationSave": "Kaydi Isku-duwayaasha",
+      "layoutThemeLabel": "Naqshadda & Muuqaalka",
+      "layoutLabel": "Naqshadda",
+      "themeLabel": "Muuqaalka",
+      "layoutClassic": "Qadiim",
+      "layoutClassicDesc": "Waqtiyada + muuqaalka toos ah oo isku dhinac ah",
+      "layoutFlipped": "Rogan",
+      "layoutFlippedDesc": "Isla qaybinta, oo muraayad ah",
+      "layoutStreamFull": "Muuqaal Buuxa",
+      "layoutStreamFullDesc": "Muuqaal toos ah oo buuxa oo leh xariiq waqti",
+      "layoutTimesOnly": "Waqtiyada Kaliya",
+      "layoutTimesOnlyDesc": "Waqtiyada salaadda kaliya, muuqaal toos ahi ma jiro",
+      "layoutAmbient": "Deggan",
+      "layoutAmbientDesc": "Muuqaal saacad oo yar oo deggan",
+      "themeUmmatGreen": "Ummat Green",
+      "themeMidnight": "Midnight",
+      "themeWarmSand": "Warm Sand",
+      "themeMono": "Mono"
+    },
+    "prayerTimes": {
+      "setCityTitle": "Deji Magaaladaada",
+      "setCitySubtitle": "Fur goobta ama gacanta u doorasho magaalo si aad u aragto waqtiyada salaadda.",
+      "setLocationAction": "Deji Goobta",
+      "offlineMessage": "Waxaa la muujinayaa waqtiyadii salaadda ugu dambeeyay ee la ogaa (khadka internetka la'aan)",
+      "next": "Xiga: {{prayer}}",
+      "asrCalculation": "Xisaabinta Casarka",
+      "markedPrayed": "waxaa loo calaamadeeyay in la tukaday",
+      "notMarkedPrayed": "looma calaamadayn in la tukaday",
+      "doubleTapToggle": "Laba jeer taabo si aad u bedasho.",
+      "shareTimes": "La wadaag waqtiyada maanta",
+      "shareAccessibilityLabel": "La wadaag waqtiyada salaadda maanta"
+    },
+    "quran": {
+      "loading": "Xogta Qur'aanka waa la soo rarayaa...",
+      "backToList": "Ku noqo liiska suuradaha",
+      "back": "Dib",
+      "bismillah": "Bismillah",
+      "comingSoonBody": "Akhri {{name}} ({{count}} aayadood) oo leh turjumaad iyo aqriskeed Islam.Wiki — aqriyahayaga Qur'aanka oo buuxa.",
+      "readOnWiki": "Ka akhri Islam.Wiki →",
+      "removeBookmark": "Ka saar calaamadda",
+      "bookmarkVerse": "Calaamadi aayadda",
+      "surahList": "Liiska Suuradaha",
+      "wikiFooter": "📖 Qur'aanka oo dhan — 114-ka suuradood oo dhan, turjumaad & maqal Islam.Wiki →",
+      "openFullQuran": "Fur Qur'aanka oo buuxa Islam.Wiki",
+      "featuredVerse": "Aayad Muuqata",
+      "readableBadge": "Waa la heli karaa"
+    },
+    "ramadan": {
+      "subtitle": "Ramadaan Mubaarak",
+      "dayOf": "Maalinta {{day}} ee {{total}}",
+      "iftarIn": "Futuurka wuxuu ku dhawaaday",
+      "suhoorEndsIn": "Sahuurku wuxuu ku dhammaanayaa",
+      "notActive": "Ramadaan hadda ma socda.\nBisha hijriga ee hadda: {{month}} ({{monthNumber}}/12)",
+      "todaysTimes": "Waqtiyada Maanta",
+      "suhoorEnds": "Dhammaadka Sahuurka (Subax)",
+      "iftar": "Futuur (Marib)",
+      "noLocation": "Deji goobtaada Dejinta si aad u aragto waqtiyada salaadda.",
+      "duasTitle": "Ducooyinka Ramadaan",
+      "laylatAlQadrTitle": "Laylatul Qadr",
+      "laylatAlQadrBody": "Waxaan ku jirnaa tobankii habeen ee ugu dambeeya ee Ramadaan. Kordhi cibaadada, gaar ahaan habeenada taban (21, 23, 25, 27, 29)."
+    },
+    "notifications": {
+      "masterLabel": "Ogeysiisyada Salaadda",
+      "masterSub": "Hel digniino ka hor waqti kasta oo salaad ah",
+      "androidExactAlarm": "Android 12+, ogolow \"Saacadaha & Xasuusinnada\" dejinta nidaamka si aad u hesho digniino sax ah oo waqtiga salaadda ah.",
+      "openSystemSettings": "Fur Dejinta Nidaamka",
+      "masterAccessibilityLabel": "Hawl-geli ogeysiisyada salaadda",
+      "openSystemSettingsAccessibilityLabel": "Fur dejinta nidaamka ee saacadaha",
+      "perPrayerAlerts": "Digniinaha Salaad Kasta",
+      "minutesBefore_one": "{{count}} daqiiqo ka hor",
+      "minutesBefore_other": "{{count}} daqiiqo ka hor",
+      "iqamahOff": "iqaamadu waa damban tahay",
+      "iqamahAfter_one": "iqaamo +{{count}} daqiiqo",
+      "iqamahAfter_other": "iqaamo +{{count}} daqiiqo",
+      "adhanSoundTitle": "Codka Adhaanka",
+      "adhanSoundSub": "Adhaan kee ayaa ciyaara marka ogeysiis salaad ah yimaado.",
+      "adhanSound": {
+        "takbir": "Takbiir (Furitaanka)",
+        "makkah": "Makkah",
+        "mishari": "Mishari Rashid",
+        "madina": "Madiina"
+      },
+      "smartAlarmsTitle": "Saacadaha Casriga ah",
+      "suhoorLabel": "Saacadda Sahuurka",
+      "suhoorSub": "Toos ka hor Subaxa si aad u cunto sahuurka.",
+      "suhoorBefore_one": "{{count}} daqiiqo ka hor Subaxa",
+      "suhoorBefore_other": "{{count}} daqiiqo ka hor Subaxa",
+      "tahajjudLabel": "Tahajjud / Qiyaam",
+      "tahajjudSub": "Toos qaybta dambe ee habeenka si aad u tukato.",
+      "tahajjudLastThird": "Seddexdaad dambe ee habeenka",
+      "tahajjudCustom": "Waqti Gaar ah",
+      "nightTimesTitle": "Waqtiyada Habeenka (caawa)",
+      "lastThirdBegins": "Seddexdaad dambe waa bilaabaneysaa",
+      "middleOfNight": "Badhtanka Habeenka",
+      "nightTimesUnavailable": "Deji goobtaada si aad u aragto waqtiyada habeenka caawa.",
+      "reliabilityTitle": "Gaarsiinta Adhaanka Ee La Aamini Karo",
+      "reliabilitySub": "Hubi in saacadaha ay ku dhacaan waqtigooda",
+      "batteryTitle": "Ogolow Saacadaha La Aamini Karo",
+      "batteryIntro": "Android ayaa laga yaabaa inay aamusiso digniinaha salaadda si ay u kaydiso batteriga. Si aad adhaanka ugu maqasho waqtigiisa:",
+      "batteryStepAlarms": "Ogolow \"Saacadaha & Xasuusinnada\" (saacadaha saxda ah) ee Waqtiyada Salaadda.",
+      "batteryStepOptimization": "Dami hagaajinta batteriga ee Waqtiyada Salaadda si aan loo seexin barnaamijka.",
+      "batteryOemNote": "Taleefanada qaarkood (Xiaomi, Huawei, Samsung, OnePlus, Oppo, Vivo) waxay leeyihiin dejin dheeraad ah oo \"is-bilow\" ama \"barnaamijyo la ilaaliyay\" ah — halkaas kadi hawl-geli Waqtiyada Salaadda.",
+      "openExactAlarm": "Fur Saacadaha & Xasuusinnada",
+      "openBatterySettings": "Fur Dejinta Batteriga",
+      "testAdhanButton": "Tijaabi adhaankayga (5s)",
+      "testAdhanScheduled": "Adhaan tijaabo ah ayaa ciyaari doona ku dhawaad 5 ilbiriqsi gudahood. Xidh shaashadda ama gadaal u dhig barnaamijka si aad ugu maqasho sida ogeysiis.",
+      "dismiss": "Xir"
+    },
+    "homeWidget": {
+      "widgetPreviewAccessibilityLabel": "Tijaabinta widget-ka oo tusaya waqtiga salaadda xigta",
+      "title": "Widget-ka Shaashadda Hore",
+      "subtitle": "Arag waqtiga salaadda xigta shaashaddaada hore",
+      "widgetPreviewTitle": "Tijaabinta Widget-ka",
+      "nextPrayer": "Salaadda Xigta",
+      "setLocationToPreview": "Deji goobtaada si aad u aragto tijaabo",
+      "setupInstructions": "Tilmaamaha Dejinta",
+      "integrationStatus": "Xaaladda Isku-duwidda",
+      "upsellMessage": "Widget-ka shaashadda hore waa sifo Ummat+ ah.",
+      "upsellAction": "U kaco Ummat+",
+      "countdownPrefix": "{{countdown}} gudahood",
+      "setupStep1": "Taabo oo hay shaashaddaada hore",
+      "setupStep2": "Taabo badhanka + (iOS) ama menuuga widget-yada (Android)",
+      "setupStep3": "Raadi \"{{appName}}\"",
+      "setupStep4": "Dooro cabbirka widget-ka aad rabto",
+      "setupStep5": "Taabo Ku Dar Widget",
+      "statusAndroid": "Android: firfircoon — widget-ka \"Salaadda Xigta\" ee shaashadda hore wuxuu u shaqeeyaa react-native-android-widget wuxuuna si otomaatig ah u cusboonaysiiyaa 30 daqiiqo kasta (iyo isla markiiba markaad bedesho dejinta ama ogeysiisyada).",
+      "statusIos": "iOS: firfircoon — widget-ka WidgetKit ee \"Salaadda Xigta\" wuu cusboonaysiiyaa markaad bedesho dejinta ama ogeysiisyada wuxuuna iskiis u gudbaa waqti kasta oo salaad ah."
+    },
+    "smartHome": {
+      "proOnly": "Guriga Casriga ah (xidhitaanka salaadda + maamulka qalabka) waa sifo Ummat+ ah.",
+      "upgradeAction": "U kaco Ummat+",
+      "lockDuringPrayer": "Xidh Intii Salaadda Socoto",
+      "lockDesc": "Si otomaatig ah u madoobee shaashadda oo aamusi warbaahinta marka waqtiga salaadda bilaabmo. Waxay u baahan tahay xaqiijin si loo dejiyo.",
+      "lockOnSalah": "Xidh Intii Salaadda Socoto",
+      "lockOnSalahAccessibilityLabel": "Habka xidhitaanka intii salaadda socoto",
+      "activeNote": "Shaashaddu way madoobaan doontaa, warbaahintuna way joogsan doontaa waqtiyada salaadda.\nAndroid: diiradda warbaahinta waa la sii deynayaa. iOS: xasuusin habka aamusnaanta ayaa la muujinayaa.",
+      "linkedAccounts": "Akoonnada Isku Xidhan",
+      "noLinks": "Weli akoonno guri casri ah lama xirin. Fur barnaamijka Alexa ama Google Home, raadi xirfadda ama ficilka PrayCalc, oo ku xir akoonkaaga Ummat.",
+      "linked": "Waxaa la xiray {{date}}",
+      "unlink": "Ka Fasax",
+      "unlinkConfirmTitle": "Ma ka fasaxeysaa {{name}}?",
+      "unlinkConfirmBody": "Waad dib u xidhi kartaa {{name}} wakhti kasta iyadoo laga adeegsanayo barnaamijka Alexa ama Google Home.",
+      "unlinkConfirmAction": "Ka Fasax",
+      "unlinkFailedTitle": "Lama fasaxi karin",
+      "learnMore": "Wax dheeraad ah baro",
+      "authPrompt": "Xaqiiji si aad u hawl-geliso xidhitaanka intii salaadda socoto",
+      "useFallback": "Isticmaal furaha sirta ah"
+    },
+    "stats": {
+      "chartAccessibilityLabel": "Jaantuska dhammaystirka salaadda toddobaadka",
+      "noLogs": "Weli diiwaan salaad ah lama hayo. Bilow dhammaystirka salaadaha si aad u aragto tirakoobkaaga.",
+      "dayStreak": "Taxane Maalmood 🔥",
+      "weeklyRate": "Heerka Toddobaadlaha ah",
+      "totalLogged": "Wadarta La Diiwaan Geliyay",
+      "last7Days": "7-dii Maalmood Ee Ugu Dambeeyay",
+      "thisMonth": "Bishan",
+      "byPrayer": "Salaad Kasta",
+      "weekly": "Toddobaadlaha ah",
+      "monthly": "Billaha ah",
+      "fastingStreak": "Taxane Soon",
+      "qadaOutstanding": "Qadaa Hadhay"
+    },
+    "subscription": {
+      "title": "PrayCalc Pro",
+      "subtitle": "Hagaaji khibradaada cibaadada",
+      "loadingOptions": "Waa la soo rarayaa doorashooyinka is-diiwaangelinta...",
+      "loadProductsFailed": "Lama soo rari karin alaabta. Hubi xidhiidhkaaga oo isku day mar kale.",
+      "connectFailed": "Ku xidhitaanka dukaanka wuu fashilmay.",
+      "createAccountTitle": "Samee Akoon",
+      "createAccountBody": "Marka hore soo gal si iibsigaagu ugu isku-dheelitiro qalabyada oo dhan.",
+      "purchaseFailed": "Iibsigu wuu fashilmay. Isku day mar kale.",
+      "restoreFailed": "Soo celinta wey fashilantay.",
+      "proTitle": "Waxaad haysataa Pro",
+      "proSub": "Waad ku mahadsan tahay taageeradaada PrayCalc!",
+      "noProducts": "Alaabta is-diiwaangelinta lama hayo. Ku dejiso App Store Connect / Google Play Console.",
+      "restorePurchase": "Soo Celi Iibsiga",
+      "restorePurchaseAccessibilityLabel": "Soo celi iibsigii hore",
+      "legal": "Is-diiwaangelinnadu si otomaatig ah ayey u cusboonaysiiyaan haddii aan la joojin ugu yaraan 24 saac ka hor dhammaadka xilliga hadda. Ka maamul dejinta akoonkaaga App Store / Google Play.",
+      "featurePremiumAdhan": "Codadka Adhaanka Premium-ka ah — aqriyayaal dheeraad ah",
+      "featureHomeWidget": "Widget-ka shaashadda hore (salaadda xigta)",
+      "featureTvPairing": "Xidhiidhinta aplikeeshanka PrayCalc TV",
+      "featureSmartHome": "Guriga Casriga ah — xidh qalabka intii salaadda socoto",
+      "subscribeAccessibilityLabel": "Ku biir {{title}} qiimo {{price}} ah"
+    },
+    "tasbeeh": {
+      "chooseDhikr": "Dooro Dhikr",
+      "of": "ee {{count}}",
+      "resetCounter": "Dib u deji tirinta",
+      "todayTotal": "Wadarta Maanta",
+      "history": "Taariikhda"
+    },
+    "timetable": {
+      "setCityTitle": "Deji Magaaladaada",
+      "setCitySubtitle": "Deji goobtaada si aad u aragto jadwalka salaadda ee bisha.",
+      "previousMonth": "Bisha Hore",
+      "nextMonth": "Bisha Xigta",
+      "exportCalendar": "Soo Deji Jadwalka (.ics)",
+      "exportAccessibilityLabel": "Soo deji waqtiyada salaadda bishan sida faylka jadwalka",
+      "shareTimes": "La wadaag bishan",
+      "shareAccessibilityLabel": "La wadaag jadwalka salaadda ee bishan"
+    },
+    "travel": {
+      "musafirModeTitle": "Habka Musaafirka",
+      "musafirModeDesc": "Waxaan ahay safar-yahan (musaafir). Ku dabaqid qasrka salaadaha khuseeya.",
+      "musafirModeAccessibilityLabel": "Habka safarka musaafirka",
+      "musafirAlertTitle": "Habka Musaafirka (Safarka)",
+      "musafirAlertBody": "Qasrku (soo gaabsiinta) wuxuu ka dhigayaa Duhr, Casar, iyo Cisho 2 rakco halkii 4 ka ahaan lahaa.\n\nFiiro gaar ah: Jamcu (isku darka salaadaha) si otomaatig ah looma dabaqin doono sababtoo ah is-khilaafyada culimada. Fadlan raac aalimkaaga deegaanka ama madhabkaaga marka la eego isku darka salaadaha intii safarka la joogo.",
+      "understood": "Waan Fahmay",
+      "qasrRakatCount": "Tirada Rakcooyinka Qasrka",
+      "fiqhNote": "Subaxa iyo Maribku lama soo gaabiyo (qasrku wuxuu khuseeyaa salaadaha 4 rakco kaliya). Jamcu (isku darka salaadaha) wuxuu u baahan yahay in la raaco aalimkaaga deegaanka ama madhabkaaga.",
+      "travelDestination": "Meesha Safarka",
+      "changeCity": "Bedel",
+      "changeCityAccessibilityLabel": "Bedel magaalada safarka",
+      "selectTravelCity": "Dooro Magaalada Safarka",
+      "selectTravelCityAccessibilityLabel": "Dooro magaalada safarka",
+      "recalcNote": "Waqtiyada salaadda dib ayaa loo xisaabin doonaa meesha safarkaaga.",
+      "homeCity": "Magaalada Hooyo",
+      "notSet": "Lama dejin"
+    },
+    "qibla": {
+      "calibrating": "Waa la hagaajinayaa kamaradda...",
+      "locationRequiredTitle": "Waa Loo Baahan Yahay Goob",
+      "locationRequiredSubtitle": "Deji goobtaada Dejinta si aad u hesho jihada qiblada.",
+      "bearingLabel": "Jihada Qiblada",
+      "compassAccessibilityLabel": "Kamaradda qiblada, jihada hadda {{degrees}} darajo",
+      "accuracyLabel": "Saxnaanta: {{level}}",
+      "accuracyUnknown": "Lama Ogeyn",
+      "accuracyUnreliable": "Lama Aamini Karo",
+      "accuracyLow": "Hooseeya",
+      "accuracyMedium": "Dhexdhexaad",
+      "accuracyHigh": "Sare",
+      "headingNote": "Jihada: {{degrees}}° | Jihada goobabka waaweyn ee Kacbada"
+    },
+    "fasting": {
+      "todaysFast": "Soonka Maanta",
+      "logToday": "Diiwaan Geli Soonka Maanta",
+      "unlogToday": "Ka Saar Diiwaanka Maanta",
+      "loggedAs": "La Diiwaan Geliyay: {{type}}",
+      "yourStreaks": "Taxanahaaga",
+      "mondayStreak": "Taxanaha Isniinta",
+      "thursdayStreak": "Taxanaha Khamiista",
+      "whiteDaysMonth": "Ayaamaha Cad Bishan",
+      "ramadanLogged": "Soonka Ramadaan",
+      "qadaLogged": "Qadaa La Bixiyay",
+      "voluntaryLogged": "Soon Ikhtiyaari ah",
+      "ramadanDayOf": "Ramadaan — Maalinta {{day}} ee {{total}}",
+      "upcomingSuggestions": "Maalmaha Soon ee Soo Socda ee La Talinayo",
+      "logAction": "Diiwaan Geli",
+      "sunnahSourceNote": "Soonka Isniinta & Khamiista: Saxiix Muslim 1162. Ayaamaha Cad (13aad–15aad bil kasta oo hijri ah): Sunan an-Nasaa'i 2345, Sunan Abi Daawuud 2449.",
+      "recentLogs": "Diiwaanadii Dhawaa"
+    },
+    "qada": {
+      "totalOwed": "Wadarta Salaadaha La Leeyahay",
+      "perPrayer": "Tirada Salaad Kasta",
+      "makeUpOne": "Bixi Mid",
+      "excusedTitle": "Xilliyada Cudurdaarka",
+      "fiqhNote": "Intii uu socdo xilli cudurdaar ah (sida caadada ama dhiigga dhalmada ka dib), haweeneydu ma tukato — salaadahaas la seegayna dib looma bixiyo (qadaa). Tani way ka duwan tahay soonka: soonka la seego xilligaas WAA la bixiyaa mar dambe.",
+      "fiqhCitation": "Saxiix al-Bukhaari 321 · Saxiix Muslim 335",
+      "consultScholar": "Tani waxay muujineysaa aragtida aqlabiyadda. Xaaladdaada gaarka ah, la tashii aalimkaaga deegaanka.",
+      "addExcusedRange": "Ku Dar Xilli Cudurdaar",
+      "startDate": "Taariikhda Bilowga",
+      "endDate": "Taariikhda Dhammaadka",
+      "noteOptional": "Fiiro Gaar Ah (ikhtiyaari)",
+      "notePlaceholder": "tusaale, caado, xanuun",
+      "removeExcusedRangeAccessibilityLabel": "Ka saar xilliga cudurdaarka"
+    },
+    "jumuah": {
+      "intro": "Jimcuhu waa maalinta ugu fiican toddobaadka. Deji xasuusino jilicsan oo isu diyaari Jimcaha iyo sunnooyinkiisa.",
+      "khutbahTitle": "Xasuusinta Khudbadda",
+      "khutbahSub": "Xasuusin jimce kasta khudbadda ka hor.",
+      "kahfTitle": "Xasuusinta Suuratul Kahf",
+      "kahfSub": "Xasuusin si aad u akhrido Suuratul Kahf jimcaha.",
+      "kahfDayThursday": "Fiidkii Khamiista",
+      "kahfDayFriday": "Aroortii Jimcaha",
+      "reminderTime": "Waqtiga Xasuusinta",
+      "checklistTitle": "Sunnooyinka Jimcaha",
+      "virtueTitle": "Fadliga Jimcaha",
+      "virtueBody": "Nabigu ﷺ wuxuu yidhi: \"Maalinta ugu fiican ee qorraxdu ka soo baxday waa Jimcaha.\"",
+      "virtueCitation": "Saxiix Muslim 854",
+      "kahfVirtueBody": "Nabigu ﷺ wuxuu yidhi: \"Qofkii akhriya Suuratul Kahf maalinta Jimcaha, nuur baa u ifi doona intii u dhaxaysa labada Jimco.\"",
+      "kahfVirtueCitation": "Waxaa soo waday al-Xaakim iyo al-Bayhaqi; waxaa saxiix ku sheegay al-Albaani",
+      "checklist": {
+        "ghusl": "Samee ghusul (nadaafad diinta)",
+        "ghuslCitation": "Saxiix al-Bukhaari 877 · Saxiix Muslim 846",
+        "cleanClothes": "Xidho dhar nadiif ah oo fiican",
+        "cleanClothesCitation": "Sunan Abi Daawuud 343 (xasan)",
+        "perfume": "Isticmaal cadar (siwaak iyo isu diyaarin)",
+        "perfumeCitation": "Saxiix al-Bukhaari 880",
+        "early": "Aad masaajidka goor hore",
+        "earlyCitation": "Saxiix al-Bukhaari 881 · Saxiix Muslim 850",
+        "kahf": "Akhri Suuratul Kahf",
+        "kahfCitation": "al-Xaakim / al-Bayhaqi (saxiix marka la eego al-Albaani)",
+        "salawat": "Badi salawaadka Nabiga ﷺ",
+        "salawatCitation": "Sunan Abi Daawuud 1047 (saxiix)",
+        "dua": "Raadi saacadda ay ducadu ka aqbalanto",
+        "duaCitation": "Saxiix al-Bukhaari 935 · Saxiix Muslim 852"
+      }
+    },
+    "leadTimeAccessibilityLabel": "Waqtiga hore ee digniinta {{prayer}}, {{minutes}} daqiiqo ka hor. Taabo si aad u bedasho.",
+    "iqamahAccessibilityLabel": "Xasuusinta iqaamada {{prayer}}, {{status}}. Taabo si aad u bedasho.",
+    "enableAccessibilityLabel": "Hawl-geli adhaanka {{prayer}}",
+    "rowAccessibilityLabel": "{{name}}, {{distance}} u jirta",
+    "directionsAccessibilityLabel": "Fur jihooyinka {{name}} Khariidadaha",
+    "accentColorAccessibilityLabel": "Midabka muuqaalka {{hex}}",
+    "todayTotalAccessibilityLabel": "Wadarta dhikrka maanta: {{total}}",
+    "historyEntryAccessibilityLabel": "{{name}}: {{count}}, {{date}}",
+    "arabicTextAccessibilityLabel": "Carabi: {{transliteration}}",
+    "counterAccessibilityLabel": "Tiro: {{count}} ee {{target}}. {{status}}",
+    "tapToIncrement": "Taabo si aad u kordhiso",
+    "presetAccessibilityLabel": "{{transliteration}}, bartilmaameedka {{target}}, isha {{source}}",
+    "zoneRowAccessibilityLabel": "{{label}}, gaadh {{radius}} mitir",
+    "phaseAccessibilityLabel": "Marxaladda dayaxa: {{phase}}, {{illumination}}",
+    "voiceAccessibilityLabel": "{{name}} ee uu akhriyay {{reciter}}",
+    "voiceAccessibilityLabelPro": "{{name}} ee uu akhriyay {{reciter}} (Pro, waxaa loo baahan yahay in la kaco si loo doorto)",
+    "surahNameAccessibilityLabel": "Suuradda {{name}}",
+    "readOnWikiAccessibilityLabel": "Ka akhri Suuradda {{name}} Islam.Wiki",
+    "verseAccessibilityLabel": "Aayadda {{number}}: {{transliteration}}",
+    "featuredVerseAccessibilityLabel": "{{label}}: Aayatul Kursi",
+    "surahRowAccessibilityLabel": "Suuradda {{number}}, {{name}}, {{count}} aayadood, {{type}}",
+    "fullTextAvailableSuffix": ", qoraalka buuxa waa la heli karaa",
+    "revelationMeccan": "Makki",
+    "revelationMedinan": "Madani"
+  },
+  "onboarding": {
+    "skip": "Dhaaf",
+    "welcome": {
+      "title": "Ku soo dhawoow PrayCalc",
+      "desc": "Waqtiyada salaadda oo sax ah, jihada qiblada, iyo jadwalka Islaamka — waxaa lagu dejiyaa dhawr taabasho.",
+      "cta": "Bilaaw"
+    },
+    "location": {
+      "title": "Goobtaada",
+      "prime": "PrayCalc waxay isticmaashaa goobtaada si ay ugu xisaabiso waqtiyada salaadda ee saxda ah magaaladaada. Waxay ku hadhaysaa qalabkaaga — marnaba lama wadaagno. Taabo Ogolow shaashadda xigta si aad u sii wadato.",
+      "allow": "Ogolow Goobta",
+      "later": "Waxaan dejin doonaa dambe"
+    },
+    "notifications": {
+      "title": "Xasuusinnada Salaadda",
+      "prime": "Hel xasuusin jilicsan ama adhaan waqti kasta oo salaad ah si aadan waligaa u seegin. Waxaad si sax ah u dejin kartaa dambe salaadaha ku ogeysiinaya.",
+      "allow": "Hawl-geli Xasuusinnada",
+      "later": "Hadda Ma Aha"
+    },
+    "method": {
+      "title": "Habka Xisaabinta",
+      "dpcExplain": "DPC (Dynamic PrayCalc) si otomaatig ah ayey u xisaabisaa waqtiyada ugu fiican ee goobtaada — hagaajin ku saabsan habka Moonsighting. Waxaan kula talineynaa inaad sii haysato.",
+      "dpcLabel": "Dhaqdhaqaaqa (PrayCalc DPC)",
+      "recommended": "La Talinayo",
+      "orFixed": "Ama dooro hab go'an",
+      "suggested": "Gobolkaaga",
+      "continue": "Sii Wad"
+    },
+    "consent": {
+      "title": "Naga Caawi Hagaajinta PrayCalc"
+    },
+    "done": {
+      "title": "Dhammaan Waa Diyaar",
+      "desc": "Waqtiyada salaaddaadu waa diyaar. Waad bedeli kartaa mid kasta oo doorashooyinkan ah wakhti kasta Dejinta.",
+      "cta": "Fur PrayCalc"
     }
+  },
+  "consent": {
+    "title": "Falanqaynta Isticmaalka ee Qarsoodiga ah",
+    "description": "La wadaag xog qarsoodi ah oo kooban si aad naga caawiso hagaajinta PrayCalc. Macluumaad shakhsi ah, goob, ama faahfaahin akoon marnaba lama ururiyo.",
+    "privacyNote": "Asal ahaan waa damban. Waxba lama dirin ilaa aad tan furto, waadna bedeli kartaa wakhti kasta.",
+    "accept": "Ogolow",
+    "decline": "Maya, Mahadsanid",
+    "toggleLabel": "La wadaag falanqaynta qarsoodiga ah",
+    "privacyScreenTitle": "Asturnaanta",
+    "privacyScreenFooter": "PrayCalc marka hore waxay ka fikirtaa asturnaanta. Falanqaynta waa qarsoodi waana damban tahay ilaa aad iska rabto. Damintiisu waxay isla markiiba joojin doontaa dhammaan telemetry-ga."
   }
 }

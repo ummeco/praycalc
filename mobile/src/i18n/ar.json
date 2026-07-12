@@ -13,6 +13,27 @@
     "midnight": "مُنْتَصَف اللَّيْل",
     "lastThird": "ثُلُث اللَّيْل الأَخِير"
   },
+  "notifications": {
+    "prayerTime": "وقت {{prayer}}",
+    "iqamahTitle": "إقامة {{prayer}}",
+    "bodyNow": "حان الآن وقت صلاة {{prayer}} — {{time}}",
+    "bodyAdvance_one": "تبقى {{count}} دقيقة على {{prayer}} — {{time}}",
+    "bodyAdvance_other": "تبقى {{count}} دقائق على {{prayer}} — {{time}}",
+    "bodyIqamah": "تذكير بإقامة {{prayer}} (كان الأذان في {{time}})",
+    "snooze_one": "تأجيل {{count}} دقيقة",
+    "snooze_other": "تأجيل {{count}} دقائق",
+    "snoozedBody": "تذكير مؤجَّل لصلاة {{prayer}}",
+    "suhoorTitle": "السحور",
+    "suhoorBody": "حان وقت السحور — وجبة ما قبل الفجر. يقترب وقت الفجر.",
+    "tahajjudTitle": "التهجد",
+    "tahajjudBody": "الثلث الأخير من الليل — وقت مبارك لقيام الليل والدعاء.",
+    "jumuahKhutbahTitle": "الجمعة",
+    "jumuahKhutbahBody": "الخطبة قريبًا. توجّه إلى المسجد لصلاة الجمعة.",
+    "kahfTitle": "سورة الكهف",
+    "kahfBody": "اقرأ سورة الكهف لتنال النور بين الجمعتين.",
+    "testTitle": "أذان تجريبي",
+    "testBody": "إذا سمعت هذا، فإشعارات الأذان تعمل بشكل صحيح."
+  },
   "common": {
     "bismillah": "بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ",
     "salah": "الصَّلاَة",
@@ -36,6 +57,7 @@
     "search": "بحث",
     "change": "تغيير",
     "reset": "إعادة تعيين",
+    "complete": "مكتمل",
     "openInMaps": "فتح في الخرائط",
     "openSettings": "فتح الإعدادات",
     "upgrade": "ترقية",
@@ -45,12 +67,128 @@
     "skip": "تخطي",
     "nothingHereYet": "لا يوجد شيء هنا بعد",
     "somethingWentWrong": "حدث خطأ ما",
-    "tryAgain": "حاول مرة أخرى"
+    "tryAgain": "حاول مرة أخرى",
+    "tooManyRequests": "طلبات كثيرة جدًا",
+    "waitBeforeRetrying": "يرجى الانتظار {{seconds}} ثانية قبل المحاولة مرة أخرى.",
+    "offlineCachedData": "أنت غير متصل بالإنترنت. يتم عرض البيانات المخزنة.",
+    "permissionRequired": "إذن {{permission}} مطلوب",
+    "permissionRequiredBody": "تتطلب أوقات الصلاة الوصول إلى {{permission}}. يرجى تفعيله من الإعدادات.",
+    "loadingContent": "جارٍ تحميل المحتوى",
+    "permissionRequiredGeneric": "الإذن مطلوب",
+    "permissionRequiredGenericBody": "إذن {{permission}} مطلوب لاستخدام هذه الميزة.",
+    "openSystemSettings": "فتح إعدادات النظام",
+    "retryRequest": "إعادة محاولة الطلب",
+    "tooManyRequestsRetry": "طلبات كثيرة جدًا. يرجى الانتظار {{seconds}} ثانية قبل إعادة المحاولة.",
+    "tooManyRequestsRetryGeneric": "طلبات كثيرة جدًا. يرجى الانتظار قبل إعادة المحاولة.",
+    "offlineShowingCachedFrom": "أنت غير متصل بالإنترنت. يتم عرض بيانات من {{cachedAt}}.",
+    "offlineShowingCachedGeneric": "أنت غير متصل بالإنترنت. يتم عرض بيانات مخزنة."
   },
   "greeting": {
     "assalamu_alaykum": "السَّلاَمُ عَلَيْكُم وَرَحْمَةُ اللَّهِ وَبَرَكَاتُهُ",
     "prayer_approaching": "الصَّلاَة قَادِمَة",
     "prayer_now": "حَانَ وَقْت الصَّلاَة"
+  },
+  "tabs": {
+    "home": "الصلوات",
+    "prayerTimes": "أوقات الصلاة",
+    "qibla": "القبلة",
+    "calendar": "التقويم",
+    "quran": "القرآن",
+    "more": "المزيد"
+  },
+  "menu": {
+    "settings": {
+      "label": "الإعدادات",
+      "subtitle": "الطريقة، الموقع، الإشعارات"
+    },
+    "adhan": {
+      "label": "مكتبة الأذان",
+      "subtitle": "صوت الأذان والقارئ"
+    },
+    "tasbeeh": {
+      "label": "عداد التسبيح",
+      "subtitle": "عداد الذكر الرقمي"
+    },
+    "duaDhikr": {
+      "label": "الأدعية والأذكار",
+      "subtitle": "أذكار الصباح والمساء"
+    },
+    "moon": {
+      "label": "طور القمر",
+      "subtitle": "التقويم القمري والتاريخ الهجري"
+    },
+    "quran": {
+      "label": "القرآن الكريم",
+      "subtitle": "المصحف بالرسم العثماني مع العلامات المرجعية"
+    },
+    "stats": {
+      "label": "إحصائيات الصلاة",
+      "subtitle": "تتبع صلواتك وتتابعها"
+    },
+    "ramadan": {
+      "label": "رمضان",
+      "subtitle": "أوقات السحور والإفطار، والمتابعة"
+    },
+    "subscription": {
+      "label": "الترقية إلى برو",
+      "subtitle": "افتح الميزات المميزة"
+    },
+    "homeWidget": {
+      "label": "أداة الشاشة الرئيسية",
+      "subtitle": "الصلاة القادمة على الشاشة الرئيسية"
+    },
+    "smartHome": {
+      "label": "المنزل الذكي",
+      "subtitle": "قفل الأجهزة أثناء الصلاة"
+    },
+    "pairTv": {
+      "label": "إقران التلفاز",
+      "subtitle": "اربط تطبيق أوقات الصلاة بتلفازك"
+    },
+    "tvManager": {
+      "label": "أجهزة التلفاز الخاصة بي",
+      "subtitle": "إدارة شاشات التلفاز المقترنة"
+    },
+    "agendas": {
+      "label": "تقويم الصلاة",
+      "subtitle": "أضف أوقات الصلاة إلى التقويم"
+    },
+    "timetable": {
+      "label": "الجدول الشهري",
+      "subtitle": "أوقات الصلاة الكاملة للشهر مع تصدير للتقويم"
+    },
+    "mosques": {
+      "label": "المساجد القريبة",
+      "subtitle": "ابحث عن المساجد القريبة منك"
+    },
+    "travel": {
+      "label": "وضع السفر",
+      "subtitle": "قصر الصلاة للمسافرين"
+    },
+    "jumuah": {
+      "label": "الجمعة",
+      "subtitle": "تذكيرات الجمعة وسورة الكهف"
+    },
+    "masjidMute": {
+      "label": "كتم تلقائي عند المسجد",
+      "subtitle": "أسكت هاتفك بالقرب من المسجد"
+    },
+    "fasting": {
+      "label": "متابعة الصيام",
+      "subtitle": "رمضان، الإثنين والخميس، الأيام البيض"
+    },
+    "qada": {
+      "label": "الصلوات الفائتة (القضاء)",
+      "subtitle": "تتبع الصلوات الفائتة وقضاؤها"
+    },
+    "privacy": {
+      "label": "الخصوصية والبيانات",
+      "subtitle": "التحكم بموافقة التحليلات"
+    },
+    "shareApp": {
+      "label": "شارك أوقات الصلاة",
+      "subtitle": "أخبر صديقًا أو أحد أفراد العائلة"
+    }
   },
   "settings": {
     "title": "الإِعْدَادَات",
@@ -72,28 +210,692 @@
     "location": {
       "title": "المَوْقِع",
       "detect": "تَحْدِيد المَوْقِع تِلْقَائِيًّا",
-      "manual": "إِدْخَال المَوْقِع يَدَوِيًّا"
-    }
+      "manual": "إِدْخَال المَوْقِع يَدَوِيًّا",
+      "useGps": "استخدام موقع GPS",
+      "searchManually": "البحث عن مدينة يدويًا",
+      "currentCity": "المدينة الحالية",
+      "noneSet": "لم يتم تحديد الموقع. يلزم تحديد الموقع عبر GPS أو إدخال مدينة يدويًا.",
+      "gettingLocation": "جارٍ تحديد موقعك...",
+      "permissionDenied": "تم رفض الإذن",
+      "permissionDeniedBody": "فعّل خدمة الموقع من الإعدادات لتحديد مدينتك تلقائيًا."
+    },
+    "account": {
+      "title": "الحساب",
+      "signedIn": "تم تسجيل الدخول",
+      "anonymous": "مجهول",
+      "free": "مجاني"
+    },
+    "highLatitude": {
+      "title": "تعديل خطوط العرض العالية",
+      "hint": "يُطبَّق عندما لا يمكن للفجر/العشاء الوصول إلى الزاوية المطلوبة (المناطق الشمالية/الجنوبية البعيدة في الصيف).",
+      "nightMiddle": "منتصف الليل",
+      "angleBased": "على أساس الزاوية",
+      "oneSeventh": "سُبع الليل",
+      "none": "بدون (قد يظهر غير متاح)"
+    },
+    "madhab": {
+      "title": "المذهب (العصر)",
+      "hint": "الشافعي: معامل ظل ×1 | الحنفي: معامل ظل ×2"
+    },
+    "prayerAdjustments": {
+      "title": "تعديلات أوقات الصلاة",
+      "hint": "اضبط كل وقت بدقة بمقدار ±30 دقيقة ليطابق توقيت مسجدك المحلي."
+    },
+    "hijriAdjustment": {
+      "title": "تعديل التاريخ الهجري",
+      "hint": "أزح التاريخ الهجري بمقدار ±يومين إذا اختلفت رؤية الهلال المحلية عن تقويم أم القرى.",
+      "offset": "الإزاحة",
+      "decreaseAccessibilityLabel": "تقليل إزاحة التاريخ الهجري",
+      "increaseAccessibilityLabel": "زيادة إزاحة التاريخ الهجري"
+    },
+    "timeFormat": {
+      "title": "تنسيق الوقت"
+    },
+    "appearance": {
+      "title": "المظهر",
+      "system": "النظام",
+      "light": "فاتح",
+      "dark": "داكن"
+    },
+    "customAngles": {
+      "fajr": "زاوية الفجر (°)",
+      "isha": "زاوية العشاء (°)",
+      "fajrAccessibilityLabel": "زاوية الفجر المخصصة بالدرجات",
+      "ishaAccessibilityLabel": "زاوية العشاء المخصصة بالدرجات"
+    },
+    "upsell": {
+      "priceLine": "أُمّة+ 9.99$/سنة — يفتح تطبيق التلفاز والمنزل الذكي",
+      "upgradeButton": "الترقية إلى أُمّة+"
+    },
+    "prayerAlerts": "تنبيهات أوقات الصلاة",
+    "manageNotifications": "إدارة الإشعارات",
+    "appLanguage": "لغة التطبيق",
+    "decreaseAccessibilityLabel": "تقليل تعديل {{prayer}}",
+    "increaseAccessibilityLabel": "زيادة تعديل {{prayer}}",
+    "valueAccessibilityLabel": "إزاحة التاريخ الهجري: {{value}} يوم",
+    "label12h": "تنسيق 12 ساعة",
+    "label24h": "تنسيق 24 ساعة",
+    "themeAccessibilityLabel": "مظهر {{theme}}"
   },
   "errors": {
     "location_permission": "يَرْجَى السَّمَاح بِالوُصُول إِلَى المَوْقِع لِحِسَاب أَوْقَات الصَّلاَة",
     "network": "تَعَذَّر الاتِّصَال بِالشَّبَكَة",
     "calculation": "تَعَذَّر حِسَاب أَوْقَات الصَّلاَة"
   },
-  "tabs": {
-    "home": "الصلوات",
-    "prayerTimes": "أوقات الصلاة",
-    "qibla": "القبلة",
-    "calendar": "التقويم",
-    "quran": "القرآن",
-    "more": "المزيد"
-  },
-  "menu": {
-    "settings": {
-      "label": "الإعدادات"
+  "screens": {
+    "more": {
+      "title": "المزيد"
+    },
+    "notFound": {
+      "title": "الشاشة غير موجودة",
+      "goHome": "الذهاب إلى أوقات الصلاة"
+    },
+    "onboarding": {
+      "welcomeTitle": "مرحبًا بك في أوقات الصلاة",
+      "welcomeDesc": "أوقات صلاة دقيقة، اتجاه القبلة، والتقويم الإسلامي — كل ذلك في مكان واحد.",
+      "getStarted": "ابدأ الآن",
+      "locationTitle": "تفعيل الموقع",
+      "locationDesc": "تتطلب أوقات الصلاة موقعك لحساب دقيق.",
+      "allowLocation": "السماح بالموقع",
+      "skipManual": "تخطي — سأحدده يدويًا",
+      "authTitle": "إنشاء حساب؟",
+      "authDesc": "اختياري: أنشئ حسابًا للمزامنة السحابية وسجل الصلوات. يمكنك التسجيل لاحقًا في أي وقت.",
+      "skipForNow": "تخطي الآن"
+    },
+    "auth": {
+      "appTagline": "أوقات صلاة دقيقة لكل مسلم",
+      "tabSkip": "تخطي",
+      "continueTitle": "المتابعة بدون حساب",
+      "continueDesc": "أوقات الصلاة والقبلة والتقويم تعمل بالكامل دون اتصال بالإنترنت ولا تحتاج إلى حساب. تُحفظ إعداداتك محليًا.",
+      "featurePrayerQibla": "أوقات الصلاة والقبلة",
+      "featureCalendar": "التقويم الإسلامي",
+      "featureSettings": "الإعدادات والإشعارات",
+      "continueAnonymously": "المتابعة بشكل مجهول",
+      "signInTitle": "تسجيل الدخول",
+      "emailPlaceholder": "البريد الإلكتروني",
+      "passwordPlaceholder": "كلمة المرور",
+      "namePlaceholder": "الاسم (اختياري)",
+      "switchHint": "يتيح الحساب المزامنة السحابية وسجل الصلوات عبر جميع أجهزتك.",
+      "registerTitle": "إنشاء حساب",
+      "signingIn": "جارٍ تسجيل الدخول...",
+      "enterEmailPassword": "يرجى إدخال البريد الإلكتروني وكلمة المرور.",
+      "loginFailed": "فشل تسجيل الدخول",
+      "registerFailed": "فشل إنشاء الحساب",
+      "verifyEmail": "تحقق من بريدك الإلكتروني لتأكيد حسابك، ثم سجّل الدخول."
+    },
+    "adhan": {
+      "enablePerPrayer": "تفعيل الأذان لكل صلاة",
+      "library": "مكتبة الأذان",
+      "noVoices": "لا توجد أصوات أذان متاحة.",
+      "proRequiredTitle": "يتطلب أُمّة+",
+      "proRequiredBody": "{{name}} هو صوت أذان مميز. قم بالترقية إلى أُمّة+ لتعيينه كأذانك النشط.",
+      "proFeature": "ميزة مميزة",
+      "playPreview": "تشغيل معاينة",
+      "stopPreview": "إيقاف المعاينة",
+      "voiceListLabel": "قائمة أصوات الأذان"
+    },
+    "agendas": {
+      "title": "تقويم الصلاة",
+      "desc": "أضف أوقات الصلاة إلى تقويم جهازك كتذكيرات. تحصل كل صلاة على حدث مدته {{minutes}} دقيقة مع تنبيه قبل 5 دقائق.",
+      "whichPrayers": "أي الصلوات تريد إضافتها",
+      "locationRequired": "الموقع مطلوب",
+      "locationRequiredBody": "حدّد مدينتك في الإعدادات لإضافة أوقات الصلاة إلى التقويم.",
+      "noCalendarFound": "لم يُعثر على تقويم",
+      "noCalendarFoundBody": "لم يُعثر على تقويم قابل للكتابة على هذا الجهاز.",
+      "setLocationHint": "حدّد مدينتك في الإعدادات لتفعيل مزامنة التقويم.",
+      "addButton": "إضافة صلوات اليوم إلى التقويم",
+      "addButtonAccessibilityLabel": "إضافة أوقات صلاة اليوم إلى التقويم",
+      "adding": "جارٍ الإضافة...",
+      "done": "تمّ",
+      "addedCount": "تمت إضافة {{count}} وقت صلاة إلى تقويمك.",
+      "error": "خطأ",
+      "addFailed": "فشلت الإضافة إلى التقويم.",
+      "checkingPermission": "جارٍ التحقق من إذن التقويم..."
+    },
+    "calendar": {
+      "eventsThisMonth": "المناسبات الإسلامية هذا الشهر"
+    },
+    "citySearch": {
+      "findCityTitle": "البحث عن مدينة",
+      "placeholder": "ابحث عن مدينة...",
+      "useCurrentLocation": "استخدام الموقع الحالي",
+      "locating": "جارٍ تحديد الموقع…",
+      "searching": "جارٍ البحث عن المدن...",
+      "noResults": "لم يُعثر على مدن لـ \"{{query}}\".",
+      "popularHint": "المدن الشائعة معروضة. اكتب للبحث.",
+      "searchError": "خطأ في البحث: {{message}}",
+      "searchInputAccessibilityLabel": "حقل البحث عن مدينة",
+      "useCurrentLocationAccessibilityLabel": "استخدام الموقع الحالي",
+      "resultsAccessibilityLabel": "نتائج البحث عن المدن"
+    },
+    "duaDhikr": {
+      "noResults": "لم يُعثر على أدعية لهذه الفئة.",
+      "categoryAll": "الكل",
+      "categoryAfterAdhan": "بعد الأذان",
+      "categoryAfterPrayer": "بعد الصلاة",
+      "categoryMorning": "الصباح",
+      "categoryEvening": "المساء"
+    },
+    "moon": {
+      "hijriCalendar": "التقويم الهجري",
+      "hijriDay": "اليوم الهجري",
+      "month": "الشهر",
+      "lunarAge": "عمر القمر",
+      "daysUnit": "{{count}} يوم",
+      "upcomingPhases": "الأطوار القادمة",
+      "nextFullMoon": "البدر القادم 🌕",
+      "nextNewMoon": "المحاق القادم 🌑",
+      "significance": "الأهمية الإسلامية",
+      "illuminatedPct": "{{pct}}% مضيء",
+      "phaseNewMoon": "محاق",
+      "phaseWaxingCrescent": "هلال متزايد",
+      "phaseFirstQuarter": "تربيع أول",
+      "phaseWaxingGibbous": "أحدب متزايد",
+      "phaseFullMoon": "بدر",
+      "phaseWaningGibbous": "أحدب متناقص",
+      "phaseLastQuarter": "تربيع أخير",
+      "phaseWaningCrescent": "هلال متناقص",
+      "ramadanNote": "إنه شهر رمضان — شهر الصيام وطلب ليلة القدر.",
+      "dhulHijjahNote": "العشر الأوائل من {{month}} من أفضل أيام العام."
     },
     "mosques": {
-      "label": "المساجد القريبة"
+      "setLocation": "حدّد موقعك للعثور على المساجد القريبة منك.",
+      "setLocationAction": "تحديد الموقع",
+      "finding": "جارٍ البحث عن المساجد القريبة...",
+      "noResults": "لم يُعثر على مساجد ضمن 10 كم.",
+      "retry": "إعادة المحاولة",
+      "attribution": "البيانات © مساهمو OpenStreetMap",
+      "searchFailed": "فشل البحث عن المساجد."
+    },
+    "masjidMute": {
+      "title": "كتم تلقائي عند المسجد",
+      "intro": "لا يحتوي تطبيق أوقات الصلاة على دليل للمساجد بعد — أضف مناطق الكتم الخاصة بك أدناه. نوصي بإضافة مسجدك المحلي ليصمت هاتفك تلقائيًا عند وصولك.",
+      "masterToggleLabel": "الكتم التلقائي مفعّل",
+      "masterToggleSubtitle": "إسكات الهاتف عند دخول أي منطقة أدناه",
+      "zonesHeading": "مناطقك",
+      "emptyTitle": "لا توجد مناطق بعد",
+      "emptySubtitle": "أضف مسجدك المحلي ليتمكن التطبيق من كتم هاتفك تلقائيًا عند وصولك.",
+      "addZoneAction": "إضافة مسجدك المحلي",
+      "addZoneButton": "إضافة منطقة",
+      "addZoneTitle": "إضافة منطقة كتم",
+      "editZoneTitle": "تعديل منطقة الكتم",
+      "labelFieldLabel": "التسمية",
+      "labelFieldPlaceholder": "مثال: مسجد النور",
+      "labelRequired": "يرجى إدخال تسمية لهذه المنطقة.",
+      "coordinatesInvalid": "يرجى إدخال خط عرض وخط طول صحيحين، أو البحث/استخدام الموقع الحالي.",
+      "searchAddressLabel": "البحث عن عنوان",
+      "searchAddressPlaceholder": "ابحث عن عنوان أو مكان",
+      "searching": "جارٍ البحث...",
+      "searchNoResults": "لم يُعثر على نتائج مطابقة. جرّب بحثًا مختلفًا أو أدخل الإحداثيات يدويًا.",
+      "useCurrentLocation": "استخدام الموقع الحالي",
+      "locating": "جارٍ تحديد الموقع...",
+      "locationFailed": "تعذّر الحصول على موقعك الحالي.",
+      "manualEntryToggle": "إدخال الإحداثيات يدويًا",
+      "latitudeLabel": "خط العرض",
+      "longitudeLabel": "خط الطول",
+      "radiusLabel": "نصف القطر: {{radius}} م",
+      "radiusHint": "بين {{min}} م و{{max}} م — يغطي المسجد وموقف سياراته.",
+      "decreaseRadiusAccessibilityLabel": "تقليل نصف القطر بمقدار 25 مترًا",
+      "increaseRadiusAccessibilityLabel": "زيادة نصف القطر بمقدار 25 مترًا",
+      "saveZone": "حفظ المنطقة",
+      "deleteZone": "حذف المنطقة",
+      "deleteConfirmTitle": "حذف هذه المنطقة؟",
+      "deleteConfirmBody": "لن يقوم \"{{label}}\" بعد الآن بكتم هاتفك تلقائيًا.",
+      "mapPickerFollowUp": "من المخطط إضافة أداة خريطة لتحديد موقع بصريًا — في الوقت الحالي، ابحث عن عنوان أو استخدم موقعك الحالي.",
+      "permissionTitle": "إذن الموقع مطلوب",
+      "permissionBody": "يحتاج الكتم التلقائي عند المسجد إلى إذن الوصول \"دائمًا\" للموقع للكشف عن دخولك أو خروجك من منطقة، حتى عندما يكون التطبيق مغلقًا.",
+      "permissionGrant": "منح الإذن",
+      "permissionDeniedNote": "لم يُمنح إذن الموقع في الخلفية — تم حفظ المناطق لكن الكتم التلقائي لن يعمل حتى تسمح بالوصول \"دائمًا\" من إعدادات النظام.",
+      "androidNote": "أندرويد: سيتحول هاتفك إلى وضع الاهتزاز عند الوصول ويستعيد وضع الرنين السابق عند المغادرة.",
+      "iosNote": "iOS: لا تسمح Apple للتطبيقات بتغيير مفتاح الكتم. بدلاً من ذلك، يرسل تطبيق أوقات الصلاة إشعار تذكير يطلب منك كتم هاتفك يدويًا.",
+      "iosReminderTitle": "لقد وصلت",
+      "iosReminderBody": "أنت بالقرب من {{zone}} — يرجى كتم هاتفك.",
+      "defaultZoneLabel": "منطقة الكتم الخاصة بك",
+      "activeNow": "نشط الآن — الهاتف مكتوم",
+      "radiusValue": "نصف قطر {{radius}} م"
+    },
+    "pairTv": {
+      "upsellBadge": "أُمّة+",
+      "unlockTitle": "فتح إقران التلفاز",
+      "unlockDesc": "أُمّة+ 9.99$/سنة — يفتح تطبيق التلفاز والمنزل الذكي",
+      "pairedTitle": "تم إقران التلفاز",
+      "pairedDesc": "تطبيق التلفاز الخاص بك مرتبط الآن بهذا الحساب.",
+      "title": "الإقران مع التلفاز",
+      "desc": "افتح تطبيق أوقات الصلاة على تلفازك، ثم أدخل رمز PIN المكوّن من 6 أرقام الظاهر على الشاشة.",
+      "enterPin": "أدخل رمز PIN المكوّن من 6 أرقام الظاهر على تلفازك.",
+      "pinInputAccessibilityLabel": "رمز إقران التلفاز",
+      "pairFailed": "فشل الإقران. حاول مرة أخرى.",
+      "pairDevice": "إقران الجهاز",
+      "invalidOrExpiredPin": "هذا الرمز غير صالح أو منتهي الصلاحية. تحقق من شاشة التلفاز وحاول مرة أخرى."
+    },
+    "tvManager": {
+      "upsellBadge": "أُمّة+",
+      "unlockTitle": "فتح إدارة التلفاز",
+      "unlockDesc": "أُمّة+ 9.99$/سنة — يفتح تطبيق التلفاز والمنزل الذكي",
+      "emptyTitle": "لا توجد أجهزة تلفاز مقترنة بعد",
+      "emptySubtitle": "قم بإقران تلفاز لتراه هنا وتدير إعدادات عرضه.",
+      "pairACta": "إقران تلفاز",
+      "noCity": "لم يُحدد موقع",
+      "nameLabel": "الاسم",
+      "colorLabel": "لون التمييز",
+      "streamLabel": "مصدر البث",
+      "streamMakkah": "قناة مكة",
+      "streamSaudiQuran": "القرآن الكريم السعودية",
+      "streamMedina": "المدينة",
+      "rotateLabel": "دوران الشاشة",
+      "decreaseRotate": "تقليل دقائق الدوران",
+      "increaseRotate": "زيادة دقائق الدوران",
+      "weatherLabel": "إظهار الطقس",
+      "updateLocationAction": "تحديث الموقع إلى موقعي الحالي",
+      "updateLocationHint": "يستقبل التلفاز تغييرات الموقع في المرة القادمة التي يُعاد فيها إقرانه — هذا يحدّث الموقع المحفوظ الآن.",
+      "noLocationTitle": "لم يُحدد موقع",
+      "noLocationBody": "حدّد موقعك في الإعدادات قبل تحديث موقع أحد أجهزة التلفاز.",
+      "locationUpdatedTitle": "تم تحديث الموقع",
+      "locationUpdatedBody": "تم الحفظ. سيستخدم التلفاز هذا الموقع في المرة القادمة التي يُعاد فيها إقرانه.",
+      "deleteAction": "إزالة هذا التلفاز",
+      "deleteConfirmTitle": "إزالة التلفاز؟",
+      "deleteConfirmBody": "سيؤدي هذا إلى إلغاء إقران \"{{name}}\" وإزالة إعداداته المحفوظة. لا يمكن التراجع عن هذا.",
+      "deleteConfirmAction": "إزالة",
+      "prayerFajr": "الفجر",
+      "prayerDhuhr": "الظهر",
+      "prayerAsr": "العصر",
+      "prayerMaghrib": "المغرب",
+      "prayerIsha": "العشاء",
+      "madhabShafii": "شافعي",
+      "madhabHanafi": "حنفي",
+      "timeFormat12h": "12 ساعة",
+      "timeFormat24h": "24 ساعة",
+      "invalidCoordsTitle": "إحداثيات غير صالحة",
+      "invalidCoordsBody": "أدخل خط عرض صالح (-90 إلى 90) وخط طول صالح (-180 إلى 180).",
+      "deepSettingsLabel": "إعدادات متقدمة",
+      "countdownTakeoverLabel": "استحواذ العد التنازلي",
+      "countdownTakeoverHint": "الاستحواذ على الشاشة بعدّاد تنازلي كبير قبل كل صلاة.",
+      "countdownMinutesLabel": "بدء العد التنازلي",
+      "decreaseCountdown": "تقليل دقائق العد التنازلي",
+      "increaseCountdown": "زيادة دقائق العد التنازلي",
+      "iqamaLabel": "أوقات الإقامة",
+      "iqamaHint": "إظهار عدّاد تنازلي للإقامة بعد الأذان، بإزاحة لكل صلاة.",
+      "decreaseIqama": "تقليل إزاحة إقامة {{prayer}}",
+      "increaseIqama": "زيادة إزاحة إقامة {{prayer}}",
+      "nameOnlyLabel": "وضع الاسم فقط",
+      "nameOnlyHint": "إظهار اسم الصلاة فقط (بدون أوقات) لهذه الدقائق قبل الأذان.",
+      "nameOnlyMinutesLabel": "مدة وضع الاسم فقط",
+      "decreaseNameOnly": "تقليل دقائق وضع الاسم فقط",
+      "increaseNameOnly": "زيادة دقائق وضع الاسم فقط",
+      "madhabLabel": "المذهب",
+      "timeFormatLabel": "تنسيق الوقت",
+      "calcMethodLabel": "طريقة الحساب",
+      "manualLocationToggle": "إدخال الإحداثيات يدويًا",
+      "latitudeLabel": "خط العرض",
+      "longitudeLabel": "خط الطول",
+      "manualLocationSave": "حفظ الإحداثيات",
+      "layoutThemeLabel": "التخطيط والمظهر",
+      "layoutLabel": "التخطيط",
+      "themeLabel": "المظهر",
+      "layoutClassic": "كلاسيكي",
+      "layoutClassicDesc": "الأوقات والبث المباشر جنبًا إلى جنب",
+      "layoutFlipped": "معكوس",
+      "layoutFlippedDesc": "نفس التقسيم، معكوس",
+      "layoutStreamFull": "بث كامل",
+      "layoutStreamFullDesc": "بث ملء الشاشة مع شريط أوقات",
+      "layoutTimesOnly": "الأوقات فقط",
+      "layoutTimesOnlyDesc": "أوقات الصلاة فقط، بدون بث مباشر",
+      "layoutAmbient": "محيطي",
+      "layoutAmbientDesc": "عرض ساعة محيطية بسيطة",
+      "themeUmmatGreen": "أخضر أُمّة",
+      "themeMidnight": "منتصف الليل",
+      "themeWarmSand": "رملي دافئ",
+      "themeMono": "أحادي اللون"
+    },
+    "prayerTimes": {
+      "setCityTitle": "حدّد مدينتك",
+      "setCitySubtitle": "فعّل الموقع أو اختر مدينة يدويًا لرؤية أوقات الصلاة.",
+      "setLocationAction": "تحديد الموقع",
+      "offlineMessage": "عرض آخر أوقات صلاة معروفة (غير متصل)",
+      "next": "التالي: {{prayer}}",
+      "asrCalculation": "حساب العصر",
+      "markedPrayed": "مُعلَّمة كمُصلَّاة",
+      "notMarkedPrayed": "غير مُعلَّمة كمُصلَّاة",
+      "doubleTapToggle": "اضغط مرتين للتبديل.",
+      "shareTimes": "مشاركة أوقات اليوم",
+      "shareAccessibilityLabel": "مشاركة أوقات صلاة اليوم"
+    },
+    "quran": {
+      "loading": "جارٍ تحميل بيانات القرآن...",
+      "backToList": "العودة إلى قائمة السور",
+      "back": "رجوع",
+      "bismillah": "بسم الله",
+      "comingSoonBody": "اقرأ {{name}} ({{count}} آية) مع الترجمة والتلاوة على Islam.Wiki — قارئنا الكامل للقرآن.",
+      "readOnWiki": "اقرأ على Islam.Wiki ←",
+      "removeBookmark": "إزالة العلامة المرجعية",
+      "bookmarkVerse": "إضافة علامة مرجعية للآية",
+      "surahList": "قائمة السور",
+      "wikiFooter": "📖 القرآن الكامل — جميع السور الـ114، الترجمات والصوتيات على Islam.Wiki ←",
+      "openFullQuran": "فتح القرآن الكامل على Islam.Wiki",
+      "featuredVerse": "الآية المميزة",
+      "readableBadge": "متاح"
+    },
+    "ramadan": {
+      "subtitle": "رمضان مبارك",
+      "dayOf": "اليوم {{day}} من {{total}}",
+      "iftarIn": "الإفطار خلال",
+      "suhoorEndsIn": "ينتهي السحور خلال",
+      "notActive": "رمضان غير نشط حاليًا.\nالشهر الهجري الحالي: {{month}} ({{monthNumber}}/12)",
+      "todaysTimes": "أوقات اليوم",
+      "suhoorEnds": "نهاية السحور (الفجر)",
+      "iftar": "الإفطار (المغرب)",
+      "noLocation": "حدّد موقعك في الإعدادات لرؤية أوقات الصلاة.",
+      "duasTitle": "أدعية رمضان",
+      "laylatAlQadrTitle": "ليلة القدر",
+      "laylatAlQadrBody": "نحن في العشر الأواخر من رمضان. أكثِر من العبادة، خاصة في الليالي الوترية (21، 23، 25، 27، 29)."
+    },
+    "notifications": {
+      "masterLabel": "إشعارات الصلاة",
+      "masterSub": "تلقّي تنبيهات قبل كل وقت صلاة",
+      "androidExactAlarm": "على أندرويد 12 وما فوق، اسمح بـ\"التنبيهات والتذكيرات\" في إعدادات النظام لتلقي تنبيهات دقيقة لأوقات الصلاة.",
+      "openSystemSettings": "فتح إعدادات النظام",
+      "masterAccessibilityLabel": "تفعيل إشعارات الصلاة",
+      "openSystemSettingsAccessibilityLabel": "فتح إعدادات النظام للتنبيهات",
+      "perPrayerAlerts": "تنبيهات لكل صلاة",
+      "minutesBefore_one": "{{count}} دقيقة قبل",
+      "minutesBefore_other": "{{count}} دقائق قبل",
+      "iqamahOff": "الإقامة معطّلة",
+      "iqamahAfter_one": "الإقامة بعد {{count}} دقيقة",
+      "iqamahAfter_other": "الإقامة بعد {{count}} دقائق",
+      "adhanSoundTitle": "صوت الأذان",
+      "adhanSoundSub": "أي أذان يُشغَّل عند وصول إشعار الصلاة.",
+      "adhanSound": {
+        "takbir": "التكبير (الافتتاح)",
+        "makkah": "مكة المكرمة",
+        "mishari": "مشاري راشد",
+        "madina": "المدينة المنورة"
+      },
+      "smartAlarmsTitle": "التنبيهات الذكية",
+      "suhoorLabel": "منبه السحور",
+      "suhoorSub": "استيقظ قبل الفجر لتناول وجبة السحور.",
+      "suhoorBefore_one": "{{count}} دقيقة قبل الفجر",
+      "suhoorBefore_other": "{{count}} دقائق قبل الفجر",
+      "tahajjudLabel": "التهجد / القيام",
+      "tahajjudSub": "قم في آخر الليل للصلاة.",
+      "tahajjudLastThird": "الثلث الأخير من الليل",
+      "tahajjudCustom": "وقت مخصص",
+      "nightTimesTitle": "أوقات الليل (الليلة)",
+      "lastThirdBegins": "يبدأ الثلث الأخير",
+      "middleOfNight": "منتصف الليل",
+      "nightTimesUnavailable": "حدّد موقعك لرؤية أوقات الليل الليلة.",
+      "reliabilityTitle": "وصول موثوق للأذان",
+      "reliabilitySub": "تأكد من انطلاق التنبيهات في وقتها",
+      "batteryTitle": "السماح بتنبيهات موثوقة",
+      "batteryIntro": "قد يُسكِت أندرويد تنبيهات الصلاة لتوفير البطارية. لسماع الأذان في وقته:",
+      "batteryStepAlarms": "اسمح بـ\"التنبيهات والتذكيرات\" (التنبيهات الدقيقة) لتطبيق أوقات الصلاة.",
+      "batteryStepOptimization": "أوقف تحسين البطارية لتطبيق أوقات الصلاة حتى لا يدخل في وضع السكون.",
+      "batteryOemNote": "بعض الهواتف (شاومي، هواوي، سامسونج، ون بلس، أوبو، فيفو) لديها إعداد إضافي مثل \"التشغيل التلقائي\" أو \"التطبيقات المحمية\" — فعّل تطبيق أوقات الصلاة هناك أيضًا.",
+      "openExactAlarm": "فتح التنبيهات والتذكيرات",
+      "openBatterySettings": "فتح إعدادات البطارية",
+      "testAdhanButton": "اختبار الأذان (5 ثوانٍ)",
+      "testAdhanScheduled": "سيُشغَّل أذان تجريبي خلال حوالي 5 ثوانٍ. أغلق أو ضع التطبيق في الخلفية لسماعه كإشعار.",
+      "dismiss": "إغلاق"
+    },
+    "homeWidget": {
+      "widgetPreviewAccessibilityLabel": "معاينة الأداة تظهر وقت الصلاة القادمة",
+      "title": "أداة الشاشة الرئيسية",
+      "subtitle": "شاهد وقت الصلاة القادمة على شاشتك الرئيسية",
+      "widgetPreviewTitle": "معاينة الأداة",
+      "nextPrayer": "الصلاة القادمة",
+      "setLocationToPreview": "حدّد موقعك للمعاينة",
+      "setupInstructions": "تعليمات الإعداد",
+      "integrationStatus": "حالة التكامل",
+      "upsellMessage": "أداة الشاشة الرئيسية هي ميزة من أُمّة+.",
+      "upsellAction": "الترقية إلى أُمّة+",
+      "countdownPrefix": "خلال {{countdown}}",
+      "setupStep1": "اضغط مطولًا على شاشتك الرئيسية",
+      "setupStep2": "اضغط على زر + (iOS) أو قائمة الأدوات (أندرويد)",
+      "setupStep3": "ابحث عن \"{{appName}}\"",
+      "setupStep4": "اختر حجم الأداة المفضل لديك",
+      "setupStep5": "اضغط على إضافة الأداة",
+      "statusAndroid": "أندرويد: نشطة — أداة \"الصلاة القادمة\" على الشاشة الرئيسية تعمل عبر react-native-android-widget وتُحدَّث تلقائيًا كل 30 دقيقة (وفورًا بعد تغيير الإعدادات أو الإشعارات).",
+      "statusIos": "iOS: نشطة — أداة WidgetKit \"الصلاة القادمة\" تُحدَّث عند تغيير الإعدادات أو الإشعارات وتتقدم عند كل وقت صلاة تلقائيًا."
+    },
+    "smartHome": {
+      "proOnly": "المنزل الذكي (القفل عند الصلاة والتحكم بالأجهزة) هي ميزة من أُمّة+.",
+      "upgradeAction": "الترقية إلى أُمّة+",
+      "lockDuringPrayer": "القفل أثناء الصلاة",
+      "lockDesc": "تعتيم الشاشة وكتم الوسائط تلقائيًا عند بدء وقت الصلاة. يتطلب المصادقة للتهيئة.",
+      "lockOnSalah": "القفل عند الصلاة",
+      "lockOnSalahAccessibilityLabel": "وضع القفل عند الصلاة",
+      "activeNote": "ستُعتَّم الشاشة وتُوقَف الوسائط مؤقتًا في أوقات الصلاة.\nأندرويد: يُحرَّر تركيز الوسائط. iOS: يظهر تذكير بالوضع الصامت.",
+      "linkedAccounts": "الحسابات المرتبطة",
+      "noLinks": "لا توجد حسابات منزل ذكي مرتبطة بعد. افتح تطبيق Alexa أو Google Home، ابحث عن مهارة أو إجراء أوقات الصلاة، واربط حساب أُمّة الخاص بك.",
+      "linked": "مرتبط منذ {{date}}",
+      "unlink": "إلغاء الربط",
+      "unlinkConfirmTitle": "إلغاء ربط {{name}}؟",
+      "unlinkConfirmBody": "يمكنك إعادة ربط {{name}} في أي وقت من تطبيق Alexa أو Google Home.",
+      "unlinkConfirmAction": "إلغاء الربط",
+      "unlinkFailedTitle": "تعذّر إلغاء الربط",
+      "learnMore": "اعرف المزيد",
+      "authPrompt": "صادق لتفعيل القفل عند الصلاة",
+      "useFallback": "استخدام رمز المرور"
+    },
+    "stats": {
+      "chartAccessibilityLabel": "مخطط إنجاز الصلوات الأسبوعي",
+      "noLogs": "لا توجد سجلات صلاة بعد. ابدأ بإتمام الصلوات لرؤية إحصائياتك.",
+      "dayStreak": "تتابع الأيام 🔥",
+      "weeklyRate": "المعدل الأسبوعي",
+      "totalLogged": "الإجمالي المُسجَّل",
+      "last7Days": "آخر 7 أيام",
+      "thisMonth": "هذا الشهر",
+      "byPrayer": "حسب الصلاة",
+      "weekly": "أسبوعي",
+      "monthly": "شهري",
+      "fastingStreak": "تتابع الصيام",
+      "qadaOutstanding": "القضاء المتبقي"
+    },
+    "subscription": {
+      "title": "أوقات الصلاة برو",
+      "subtitle": "عزّز تجربة عبادتك",
+      "loadingOptions": "جارٍ تحميل خيارات الاشتراك...",
+      "loadProductsFailed": "تعذّر تحميل المنتجات. تحقق من اتصالك وحاول مرة أخرى.",
+      "connectFailed": "فشل الاتصال بالمتجر.",
+      "createAccountTitle": "إنشاء حساب",
+      "createAccountBody": "سجّل الدخول أولًا حتى تتم مزامنة عملية الشراء عبر أجهزتك.",
+      "purchaseFailed": "فشل الشراء. يرجى المحاولة مرة أخرى.",
+      "restoreFailed": "فشلت الاستعادة.",
+      "proTitle": "أنت الآن في برو",
+      "proSub": "شكرًا لدعمك أوقات الصلاة!",
+      "noProducts": "منتجات الاشتراك غير متاحة. قم بتهيئتها في App Store Connect / Google Play Console.",
+      "restorePurchase": "استعادة الشراء",
+      "restorePurchaseAccessibilityLabel": "استعادة الشراء السابق",
+      "legal": "تتجدد الاشتراكات تلقائيًا ما لم تُلغَ قبل 24 ساعة على الأقل من نهاية الفترة الحالية. أدِر ذلك من إعدادات حسابك في App Store / Google Play.",
+      "featurePremiumAdhan": "أصوات أذان مميزة — قراء إضافيون",
+      "featureHomeWidget": "أداة الشاشة الرئيسية (الصلاة القادمة)",
+      "featureTvPairing": "إقران تطبيق أوقات الصلاة بالتلفاز",
+      "featureSmartHome": "المنزل الذكي — قفل الأجهزة أثناء الصلاة",
+      "subscribeAccessibilityLabel": "اشترك في {{title}} مقابل {{price}}"
+    },
+    "tasbeeh": {
+      "chooseDhikr": "اختر الذكر",
+      "of": "من {{count}}",
+      "resetCounter": "إعادة تعيين العداد",
+      "todayTotal": "إجمالي اليوم",
+      "history": "السجل"
+    },
+    "timetable": {
+      "setCityTitle": "حدّد مدينتك",
+      "setCitySubtitle": "حدّد موقعك لرؤية الجدول الشهري لأوقات الصلاة.",
+      "previousMonth": "الشهر السابق",
+      "nextMonth": "الشهر التالي",
+      "exportCalendar": "تصدير التقويم (.ics)",
+      "exportAccessibilityLabel": "تصدير أوقات الصلاة لهذا الشهر كملف تقويم",
+      "shareTimes": "مشاركة هذا الشهر",
+      "shareAccessibilityLabel": "مشاركة جدول أوقات الصلاة لهذا الشهر"
+    },
+    "travel": {
+      "musafirModeTitle": "وضع المسافر",
+      "musafirModeDesc": "أنا مسافر. طبّق القصر على الصلوات المعنية.",
+      "musafirModeAccessibilityLabel": "وضع السفر للمسافر",
+      "musafirAlertTitle": "وضع المسافر",
+      "musafirAlertBody": "القصر (التقصير) يُنقص الظهر والعصر والعشاء من 4 إلى 2 ركعة.\n\nملاحظة: الجمع بين الصلوات لا يُطبَّق تلقائيًا نظرًا للاختلافات العلمية. يرجى اتباع عالمك المحلي أو مذهبك بخصوص الجمع بين الصلوات أثناء السفر.",
+      "understood": "مفهوم",
+      "qasrRakatCount": "عدد ركعات القصر",
+      "fiqhNote": "لا يُقصَر الفجر والمغرب (القصر يُطبَّق فقط على الصلوات ذات الأربع ركعات). الجمع بين الصلوات يتطلب اتباع فتوى عالمك المحلي أو مذهبك.",
+      "travelDestination": "وجهة السفر",
+      "changeCity": "تغيير",
+      "changeCityAccessibilityLabel": "تغيير مدينة السفر",
+      "selectTravelCity": "اختر مدينة السفر",
+      "selectTravelCityAccessibilityLabel": "اختيار مدينة السفر",
+      "recalcNote": "سيتم إعادة حساب أوقات الصلاة لوجهة سفرك.",
+      "homeCity": "المدينة الأصلية",
+      "notSet": "غير محدد"
+    },
+    "qibla": {
+      "calibrating": "جارٍ معايرة البوصلة...",
+      "locationRequiredTitle": "الموقع مطلوب",
+      "locationRequiredSubtitle": "حدّد موقعك في الإعدادات للعثور على اتجاه القبلة.",
+      "bearingLabel": "اتجاه القبلة",
+      "compassAccessibilityLabel": "بوصلة القبلة، الاتجاه الحالي {{degrees}} درجة",
+      "accuracyLabel": "الدقة: {{level}}",
+      "accuracyUnknown": "غير معروفة",
+      "accuracyUnreliable": "غير موثوقة",
+      "accuracyLow": "منخفضة",
+      "accuracyMedium": "متوسطة",
+      "accuracyHigh": "عالية",
+      "headingNote": "الاتجاه: {{degrees}}° | اتجاه الدائرة العظمى إلى الكعبة"
+    },
+    "fasting": {
+      "todaysFast": "صيام اليوم",
+      "logToday": "تسجيل صيام اليوم",
+      "unlogToday": "إزالة سجل اليوم",
+      "loggedAs": "مُسجَّل: {{type}}",
+      "yourStreaks": "تتابعاتك",
+      "mondayStreak": "تتابع الاثنين",
+      "thursdayStreak": "تتابع الخميس",
+      "whiteDaysMonth": "الأيام البيض هذا الشهر",
+      "ramadanLogged": "صيام رمضان",
+      "qadaLogged": "قضاء تم",
+      "voluntaryLogged": "صيام تطوعي",
+      "ramadanDayOf": "رمضان — اليوم {{day}} من {{total}}",
+      "upcomingSuggestions": "أيام الصيام الموصى بها القادمة",
+      "logAction": "تسجيل",
+      "sunnahSourceNote": "صيام الاثنين والخميس: صحيح مسلم 1162. الأيام البيض (13-15 من كل شهر هجري): سنن النسائي 2345، سنن أبي داود 2449.",
+      "recentLogs": "السجلات الأخيرة"
+    },
+    "qada": {
+      "totalOwed": "إجمالي الصلوات المستحقة",
+      "perPrayer": "العدد لكل صلاة",
+      "makeUpOne": "قضاء واحدة",
+      "excusedTitle": "فترات العذر",
+      "fiqhNote": "خلال فترة العذر (كالحيض أو النفاس)، لا تصلي المرأة — ولا تُقضى تلك الصلوات الفائتة لاحقًا. يختلف هذا عن الصيام: فالصيام الفائت خلال تلك الفترة يُقضى لاحقًا.",
+      "fiqhCitation": "صحيح البخاري 321 · صحيح مسلم 335",
+      "consultScholar": "يعكس هذا الرأي الغالب. لحالتك الخاصة، استشر عالمك المحلي.",
+      "addExcusedRange": "إضافة فترة عذر",
+      "startDate": "تاريخ البدء",
+      "endDate": "تاريخ الانتهاء",
+      "noteOptional": "ملاحظة (اختياري)",
+      "notePlaceholder": "مثال: حيض، مرض",
+      "removeExcusedRangeAccessibilityLabel": "إزالة فترة العذر"
+    },
+    "jumuah": {
+      "intro": "الجمعة هو أفضل يوم في الأسبوع. حدّد تذكيرات لطيفة واستعد للجمعة بسننها.",
+      "khutbahTitle": "تذكير الخطبة",
+      "khutbahSub": "تنبيه كل جمعة قبل الخطبة.",
+      "kahfTitle": "تذكير سورة الكهف",
+      "kahfSub": "تذكير بقراءة سورة الكهف يوم الجمعة.",
+      "kahfDayThursday": "مساء الخميس",
+      "kahfDayFriday": "صباح الجمعة",
+      "reminderTime": "وقت التذكير",
+      "checklistTitle": "سنن الجمعة",
+      "virtueTitle": "فضل يوم الجمعة",
+      "virtueBody": "قال النبي ﷺ: \"خير يوم طلعت عليه الشمس يوم الجمعة.\"",
+      "virtueCitation": "صحيح مسلم 854",
+      "kahfVirtueBody": "قال النبي ﷺ: \"من قرأ سورة الكهف يوم الجمعة أضاء له من النور ما بين الجمعتين.\"",
+      "kahfVirtueCitation": "رواه الحاكم والبيهقي؛ صححه الألباني",
+      "checklist": {
+        "ghusl": "الاغتسال",
+        "ghuslCitation": "صحيح البخاري 877 · صحيح مسلم 846",
+        "cleanClothes": "لبس ثياب نظيفة وحسنة",
+        "cleanClothesCitation": "سنن أبي داود 343 (حسن)",
+        "perfume": "التطيب (السواك والتزين)",
+        "perfumeCitation": "صحيح البخاري 880",
+        "early": "التبكير إلى المسجد",
+        "earlyCitation": "صحيح البخاري 881 · صحيح مسلم 850",
+        "kahf": "قراءة سورة الكهف",
+        "kahfCitation": "الحاكم / البيهقي (صححه الألباني)",
+        "salawat": "الإكثار من الصلاة على النبي ﷺ",
+        "salawatCitation": "سنن أبي داود 1047 (صحيح)",
+        "dua": "التماس ساعة الإجابة بالدعاء",
+        "duaCitation": "صحيح البخاري 935 · صحيح مسلم 852"
+      }
+    },
+    "leadTimeAccessibilityLabel": "مهلة إشعار {{prayer}}، {{minutes}} دقيقة قبل. اضغط للتغيير.",
+    "iqamahAccessibilityLabel": "تذكير إقامة {{prayer}}، {{status}}. اضغط للتغيير.",
+    "enableAccessibilityLabel": "تفعيل أذان {{prayer}}",
+    "rowAccessibilityLabel": "{{name}}، على بعد {{distance}}",
+    "directionsAccessibilityLabel": "فتح الاتجاهات إلى {{name}} في الخرائط",
+    "accentColorAccessibilityLabel": "لون التمييز {{hex}}",
+    "todayTotalAccessibilityLabel": "إجمالي ذكر اليوم: {{total}}",
+    "historyEntryAccessibilityLabel": "{{name}}: {{count}}، {{date}}",
+    "arabicTextAccessibilityLabel": "العربية: {{transliteration}}",
+    "counterAccessibilityLabel": "العدد: {{count}} من {{target}}. {{status}}",
+    "tapToIncrement": "اضغط للزيادة",
+    "presetAccessibilityLabel": "{{transliteration}}، الهدف {{target}}، المصدر {{source}}",
+    "zoneRowAccessibilityLabel": "{{label}}، نصف قطر {{radius}} متر",
+    "phaseAccessibilityLabel": "طور القمر: {{phase}}، {{illumination}}",
+    "voiceAccessibilityLabel": "{{name}} بصوت {{reciter}}",
+    "voiceAccessibilityLabelPro": "{{name}} بصوت {{reciter}} (مميز، يتطلب الترقية للاختيار)",
+    "surahNameAccessibilityLabel": "سورة {{name}}",
+    "readOnWikiAccessibilityLabel": "اقرأ سورة {{name}} على Islam.Wiki",
+    "verseAccessibilityLabel": "الآية {{number}}: {{transliteration}}",
+    "featuredVerseAccessibilityLabel": "{{label}}: آية الكرسي",
+    "surahRowAccessibilityLabel": "سورة {{number}}، {{name}}، {{count}} آية، {{type}}",
+    "fullTextAvailableSuffix": "، النص الكامل متاح",
+    "revelationMeccan": "مكية",
+    "revelationMedinan": "مدنية"
+  },
+  "onboarding": {
+    "skip": "تخطي",
+    "welcome": {
+      "title": "مرحبًا بك في أوقات الصلاة",
+      "desc": "أوقات صلاة دقيقة، اتجاه القبلة، والتقويم الإسلامي — جاهز خلال لمسات قليلة.",
+      "cta": "ابدأ الآن"
+    },
+    "location": {
+      "title": "موقعك",
+      "prime": "يستخدم تطبيق أوقات الصلاة موقعك لحساب أوقات الصلاة الدقيقة لمدينتك. يبقى على جهازك — لا نشاركه أبدًا. اضغط على السماح في الشاشة التالية للمتابعة.",
+      "allow": "السماح بالموقع",
+      "later": "سأحدد هذا لاحقًا"
+    },
+    "notifications": {
+      "title": "تذكيرات الصلاة",
+      "prime": "احصل على تذكير لطيف أو الأذان في كل وقت صلاة حتى لا تفوتك أي صلاة. يمكنك ضبط الصلوات التي تُشعِرك لاحقًا.",
+      "allow": "تفعيل التذكيرات",
+      "later": "ليس الآن"
+    },
+    "method": {
+      "title": "طريقة الحساب",
+      "dpcExplain": "يحسب DPC (أوقات الصلاة الديناميكية) تلقائيًا أفضل الأوقات لموقعك — تحسين على طريقة رؤية الهلال. نوصي بإبقائها.",
+      "dpcLabel": "ديناميكي (DPC الخاص بالتطبيق)",
+      "recommended": "موصى به",
+      "orFixed": "أو اختر طريقة ثابتة",
+      "suggested": "لمنطقتك",
+      "continue": "متابعة"
+    },
+    "consent": {
+      "title": "ساعد في تحسين التطبيق"
+    },
+    "done": {
+      "title": "كل شيء جاهز",
+      "desc": "أوقات صلاتك جاهزة. يمكنك تغيير أي من هذه الخيارات في أي وقت من الإعدادات.",
+      "cta": "افتح التطبيق"
     }
+  },
+  "consent": {
+    "title": "تحليلات استخدام مجهولة",
+    "description": "شارك بيانات استخدام مجهولة وإجمالية لمساعدتنا في تحسين التطبيق. لا يتم جمع أي معلومات شخصية أو موقع أو تفاصيل حساب على الإطلاق.",
+    "privacyNote": "معطّل افتراضيًا. لا يُرسَل شيء ما لم تفعّل هذا، ويمكنك تغييره في أي وقت.",
+    "accept": "السماح",
+    "decline": "لا شكرًا",
+    "toggleLabel": "مشاركة تحليلات مجهولة",
+    "privacyScreenTitle": "الخصوصية",
+    "privacyScreenFooter": "تطبيق أوقات الصلاة يضع الخصوصية أولاً. التحليلات مجهولة ومعطّلة ما لم توافق. إيقاف هذا يوقف كل القياس عن بعد فورًا."
   }
 }

@@ -1,6 +1,6 @@
 {
-  "NSLocationWhenInUseUsageDescription": "Allow Prayer Times to access your location to calculate accurate prayer times.",
-  "NSLocationAlwaysAndWhenInUseUsageDescription": "Allow Prayer Times to access your location to calculate accurate prayer times.",
-  "NSCalendarsFullAccessUsageDescription": "Prayer Times adds salah blocks to your calendar as reminders.",
-  "NSFaceIDUsageDescription": "Prayer Times uses Face ID to confirm lock-on-salah mode."
+  "NSLocationWhenInUseUsageDescription": "सटीक नमाज़ के वक़्त की गणना करने के लिए नमाज़ के वक़्त को आपके स्थान तक पहुंचने की अनुमति दें।",
+  "NSLocationAlwaysAndWhenInUseUsageDescription": "सटीक नमाज़ के वक़्त की गणना करने के लिए नमाज़ के वक़्त को आपके स्थान तक पहुंचने की अनुमति दें।",
+  "NSCalendarsFullAccessUsageDescription": "नमाज़ के वक़्त रिमाइंडर के रूप में आपके कैलेंडर में नमाज़ के ब्लॉक जोड़ता है।",
+  "NSFaceIDUsageDescription": "नमाज़ के वक़्त लॉक-ऑन-सलाह मोड की पुष्टि करने के लिए Face ID का उपयोग करता है।"
 }

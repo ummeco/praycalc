@@ -13,6 +13,27 @@
     "midnight": "Usiku wa Manane",
     "lastThird": "Theluthi ya Mwisho"
   },
+  "notifications": {
+    "prayerTime": "Muda wa {{prayer}}",
+    "iqamahTitle": "Iqama ya {{prayer}}",
+    "bodyNow": "Ni wakati wa sala ya {{prayer}} — {{time}}",
+    "bodyAdvance_one": "{{prayer}} itaanza baada ya dakika {{count}} — {{time}}",
+    "bodyAdvance_other": "{{prayer}} itaanza baada ya dakika {{count}} — {{time}}",
+    "bodyIqamah": "Ukumbusho wa iqama kwa {{prayer}} (adhana ilikuwa saa {{time}})",
+    "snooze_one": "Ahirisha dakika {{count}}",
+    "snooze_other": "Ahirisha dakika {{count}}",
+    "snoozedBody": "Ukumbusho uliyoahirishwa kwa sala ya {{prayer}}",
+    "suhoorTitle": "Daku",
+    "suhoorBody": "Wakati wa daku — chakula cha kabla ya alfajiri. Alfajiri inakaribia.",
+    "tahajjudTitle": "Tahajjud",
+    "tahajjudBody": "Theluthi ya mwisho ya usiku — wakati wa baraka kwa qiyamu na dua.",
+    "jumuahKhutbahTitle": "Ijumaa",
+    "jumuahKhutbahBody": "Khutba itaanza hivi karibuni. Elekea msikitini kwa ajili ya sala ya Ijumaa.",
+    "kahfTitle": "Surat al-Kahf",
+    "kahfBody": "Soma Surat al-Kahf kwa ajili ya nuru baina ya Ijumaa mbili.",
+    "testTitle": "Adhana ya Majaribio",
+    "testBody": "Ukisikia hii, arifa za adhana zinafanya kazi."
+  },
   "common": {
     "bismillah": "Kwa jina la Allah Mwingi wa Rehema Mwenye Kurehemu",
     "salah": "Sala",
@@ -36,15 +57,138 @@
     "search": "Tafuta",
     "change": "Badilisha",
     "reset": "Weka upya",
+    "complete": "Imekamilika",
     "openInMaps": "Fungua kwenye Ramani",
     "openSettings": "Fungua Mipangilio",
     "upgrade": "Boresha",
-    "signIn": "Ingia"
+    "signIn": "Ingia",
+    "createAccount": "Fungua Akaunti",
+    "continue": "Endelea",
+    "skip": "Ruka",
+    "nothingHereYet": "Hakuna kitu bado hapa",
+    "somethingWentWrong": "Kuna hitilafu iliyotokea",
+    "tryAgain": "Jaribu Tena",
+    "tooManyRequests": "Maombi Mengi Sana",
+    "waitBeforeRetrying": "Tafadhali subiri sekunde {{seconds}} kabla ya kujaribu tena.",
+    "offlineCachedData": "Huna mtandao. Data iliyohifadhiwa inaonyeshwa.",
+    "permissionRequired": "Ruhusa ya {{permission}} Inahitajika",
+    "permissionRequiredBody": "Nyakati za sala zinahitaji ufikiaji wa {{permission}}. Tafadhali iwashe kwenye Mipangilio.",
+    "loadingContent": "Inapakia maudhui",
+    "permissionRequiredGeneric": "Ruhusa Inahitajika",
+    "permissionRequiredGenericBody": "Ruhusa ya {{permission}} inahitajika kwa kipengele hiki.",
+    "openSystemSettings": "Fungua mipangilio ya mfumo",
+    "retryRequest": "Jaribu ombi tena",
+    "tooManyRequestsRetry": "Maombi mengi sana. Tafadhali subiri sekunde {{seconds}} kabla ya kujaribu tena.",
+    "tooManyRequestsRetryGeneric": "Maombi mengi sana. Tafadhali subiri kabla ya kujaribu tena.",
+    "offlineShowingCachedFrom": "Huna mtandao. Data kutoka {{cachedAt}} inaonyeshwa.",
+    "offlineShowingCachedGeneric": "Huna mtandao. Data iliyohifadhiwa inaonyeshwa."
   },
   "greeting": {
     "assalamu_alaykum": "Assalamu Alaykum wa Rahmatullahi wa Barakatuh",
     "prayer_approaching": "Sala inakaribia",
     "prayer_now": "Wakati wa sala"
+  },
+  "tabs": {
+    "home": "Sala",
+    "prayerTimes": "Nyakati za Sala",
+    "qibla": "Kibla",
+    "calendar": "Kalenda",
+    "quran": "Qur'ani",
+    "more": "Zaidi"
+  },
+  "menu": {
+    "settings": {
+      "label": "Mipangilio",
+      "subtitle": "Njia, mahali, arifa"
+    },
+    "adhan": {
+      "label": "Maktaba ya Adhan",
+      "subtitle": "Sauti ya adhana na msomaji"
+    },
+    "tasbeeh": {
+      "label": "Kihesabu Tasbihi",
+      "subtitle": "Kihesabu dhikri cha kidijitali"
+    },
+    "duaDhikr": {
+      "label": "Dua na Adhkari",
+      "subtitle": "Dua za asubuhi na jioni"
+    },
+    "moon": {
+      "label": "Awamu za Mwezi",
+      "subtitle": "Kalenda ya mwandamo na tarehe ya Hijri"
+    },
+    "quran": {
+      "label": "Qur'ani",
+      "subtitle": "Maandishi ya Kiuthmani yenye alamisho"
+    },
+    "stats": {
+      "label": "Takwimu za Sala",
+      "subtitle": "Fuatilia sala zako na mfululizo"
+    },
+    "ramadan": {
+      "label": "Ramadhani",
+      "subtitle": "Nyakati za Daku na Futari, kifuatiliaji"
+    },
+    "subscription": {
+      "label": "Pata Pro",
+      "subtitle": "Fungua vipengele vya premium"
+    },
+    "homeWidget": {
+      "label": "Wijeti ya Skrini ya Nyumbani",
+      "subtitle": "Sala ijayo kwenye skrini ya nyumbani"
+    },
+    "smartHome": {
+      "label": "Nyumba Janja",
+      "subtitle": "Funga vifaa wakati wa sala"
+    },
+    "pairTv": {
+      "label": "Unganisha TV",
+      "subtitle": "Unganisha programu ya PrayCalc TV"
+    },
+    "tvManager": {
+      "label": "TV Zangu",
+      "subtitle": "Simamia skrini za TV zilizounganishwa"
+    },
+    "agendas": {
+      "label": "Kalenda ya Sala",
+      "subtitle": "Ongeza nyakati za sala kwenye kalenda"
+    },
+    "timetable": {
+      "label": "Ratiba ya Mwezi",
+      "subtitle": "Nyakati za sala za mwezi mzima + hamisha kwenye kalenda"
+    },
+    "mosques": {
+      "label": "Misikiti ya Karibu",
+      "subtitle": "Tafuta misikiti karibu na wewe"
+    },
+    "travel": {
+      "label": "Hali ya Safari",
+      "subtitle": "Kufupisha sala kwa wasafiri (musafir qasr)"
+    },
+    "jumuah": {
+      "label": "Ijumaa",
+      "subtitle": "Ukumbusho wa Ijumaa na Surat al-Kahf"
+    },
+    "masjidMute": {
+      "label": "Kunyamazisha Kiotomatiki Msikitini",
+      "subtitle": "Nyamazisha simu yako karibu na msikiti"
+    },
+    "fasting": {
+      "label": "Kifuatiliaji cha Funga",
+      "subtitle": "Ramadhani, Jumatatu na Alhamisi, Siku Nyeupe"
+    },
+    "qada": {
+      "label": "Sala Zilizokosekana (Qadha)",
+      "subtitle": "Fuatilia na lipa sala zilizokosekana"
+    },
+    "privacy": {
+      "label": "Faragha na Data",
+      "subtitle": "Dhibiti idhini ya uchambuzi"
+    },
+    "shareApp": {
+      "label": "Shiriki PrayCalc",
+      "subtitle": "Mwambie rafiki au mwanafamilia"
+    }
   },
   "settings": {
     "title": "Mipangilio",
@@ -66,28 +210,692 @@
     "location": {
       "title": "Mahali",
       "detect": "Gundua kiotomatiki",
-      "manual": "Ingiza mkono"
-    }
+      "manual": "Ingiza mkono",
+      "useGps": "Tumia Mahali pa GPS",
+      "searchManually": "Tafuta Jiji kwa Mkono",
+      "currentCity": "Jiji la Sasa",
+      "noneSet": "Hakuna mahali palipowekwa. GPS au jiji la mkono linahitajika.",
+      "gettingLocation": "Inapata mahali pako...",
+      "permissionDenied": "Ruhusa Imekataliwa",
+      "permissionDeniedBody": "Washa mahali kwenye Mipangilio ili kugundua jiji lako kiotomatiki."
+    },
+    "account": {
+      "title": "Akaunti",
+      "signedIn": "Umeingia",
+      "anonymous": "Bila Jina",
+      "free": "Bure"
+    },
+    "highLatitude": {
+      "title": "Marekebisho ya Latitudo za Juu",
+      "hint": "Hutumika wakati Alfajiri/Isha haziwezi kufikia pembe inayohitajika (maeneo ya mbali kaskazini/kusini wakati wa kiangazi).",
+      "nightMiddle": "Katikati ya Usiku",
+      "angleBased": "Kwa Msingi wa Pembe",
+      "oneSeventh": "Sehemu ya Saba ya Usiku",
+      "none": "Hakuna (inaweza kuonyesha 'haipatikani')"
+    },
+    "madhab": {
+      "title": "Madhehebu (Alasiri)",
+      "hint": "Shafi'i: kipimo cha kivuli 1× | Hanafi: kipimo cha kivuli 2×"
+    },
+    "prayerAdjustments": {
+      "title": "Marekebisho ya Nyakati za Sala",
+      "hint": "Rekebisha kila muda kwa dakika ±30 ili kuendana na ratiba ya msikiti wako wa karibu."
+    },
+    "hijriAdjustment": {
+      "title": "Marekebisho ya Tarehe ya Hijri",
+      "hint": "Hamisha tarehe ya Hijri kwa siku ±2 ikiwa kuonekana kwa mwezi eneo lako kunatofautiana na kalenda ya Umm al-Qura.",
+      "offset": "Mrekebisho",
+      "decreaseAccessibilityLabel": "Punguza mrekebisho wa Hijri",
+      "increaseAccessibilityLabel": "Ongeza mrekebisho wa Hijri"
+    },
+    "timeFormat": {
+      "title": "Muundo wa Muda"
+    },
+    "appearance": {
+      "title": "Muonekano",
+      "system": "Mfumo",
+      "light": "Mwanga",
+      "dark": "Giza"
+    },
+    "customAngles": {
+      "fajr": "Pembe ya Alfajiri (°)",
+      "isha": "Pembe ya Isha (°)",
+      "fajrAccessibilityLabel": "Pembe maalum ya Alfajiri kwa digrii",
+      "ishaAccessibilityLabel": "Pembe maalum ya Isha kwa digrii"
+    },
+    "upsell": {
+      "priceLine": "Ummat+ $9.99/mwaka — inafungua programu ya TV na Nyumba Janja",
+      "upgradeButton": "Boresha kuwa Ummat+"
+    },
+    "prayerAlerts": "Arifa za Muda wa Sala",
+    "manageNotifications": "Simamia Arifa",
+    "appLanguage": "Lugha ya Programu",
+    "decreaseAccessibilityLabel": "Punguza marekebisho ya {{prayer}}",
+    "increaseAccessibilityLabel": "Ongeza marekebisho ya {{prayer}}",
+    "valueAccessibilityLabel": "Mrekebisho wa Hijri: siku {{value}}",
+    "label12h": "Muundo wa saa 12",
+    "label24h": "Muundo wa saa 24",
+    "themeAccessibilityLabel": "Mandhari ya {{theme}}"
   },
   "errors": {
     "location_permission": "Tafadhali ruhusu ufikiaji wa mahali ili kuhesabu nyakati za sala",
     "network": "Haiwezekani kuunganisha kwenye mtandao",
     "calculation": "Haiwezekani kuhesabu nyakati za sala"
   },
-  "tabs": {
-    "home": "Sala",
-    "prayerTimes": "Nyakati za Sala",
-    "qibla": "Kibla",
-    "calendar": "Kalenda",
-    "quran": "Qur'ani",
-    "more": "Zaidi"
-  },
-  "menu": {
-    "settings": {
-      "label": "Mipangilio"
+  "screens": {
+    "more": {
+      "title": "Zaidi"
+    },
+    "notFound": {
+      "title": "Skrini Haikupatikana",
+      "goHome": "Nenda kwa Nyakati za Sala"
+    },
+    "onboarding": {
+      "welcomeTitle": "Karibu PrayCalc",
+      "welcomeDesc": "Nyakati sahihi za sala, mwelekeo wa Qibla, na kalenda ya Kiislamu — vyote mahali pamoja.",
+      "getStarted": "Anza",
+      "locationTitle": "Washa Mahali",
+      "locationDesc": "Nyakati za sala zinahitaji mahali pako kwa hesabu sahihi.",
+      "allowLocation": "Ruhusu Mahali",
+      "skipManual": "Ruka — nitaweka mwenyewe",
+      "authTitle": "Fungua Akaunti?",
+      "authDesc": "Hiari: fungua akaunti kwa usawazishaji wa wingu na historia ya sala. Unaweza kujisajili baadaye wakati wowote.",
+      "skipForNow": "Ruka kwa Sasa"
+    },
+    "auth": {
+      "appTagline": "Nyakati sahihi za sala kwa kila Muislamu",
+      "tabSkip": "Ruka",
+      "continueTitle": "Endelea Bila Akaunti",
+      "continueDesc": "Nyakati za sala, Qibla, na kalenda hufanya kazi kikamilifu bila mtandao na bila akaunti. Mipangilio yako inahifadhiwa kwenye kifaa chako.",
+      "featurePrayerQibla": "Nyakati za sala na Qibla",
+      "featureCalendar": "Kalenda ya Kiislamu",
+      "featureSettings": "Mipangilio na arifa",
+      "continueAnonymously": "Endelea Bila Jina",
+      "signInTitle": "Ingia",
+      "emailPlaceholder": "Barua pepe",
+      "passwordPlaceholder": "Nenosiri",
+      "namePlaceholder": "Jina (hiari)",
+      "switchHint": "Akaunti huwezesha usawazishaji wa wingu na historia ya sala kwenye vifaa vyako vyote.",
+      "registerTitle": "Fungua Akaunti",
+      "signingIn": "Inaingia...",
+      "enterEmailPassword": "Tafadhali weka barua pepe na nenosiri.",
+      "loginFailed": "Kuingia kumeshindwa",
+      "registerFailed": "Usajili umeshindwa",
+      "verifyEmail": "Angalia barua pepe yako ili kuthibitisha akaunti yako, kisha ingia."
+    },
+    "adhan": {
+      "enablePerPrayer": "Washa Adhana kwa Kila Sala",
+      "library": "Maktaba ya Adhan",
+      "noVoices": "Hakuna sauti za adhana zinazopatikana.",
+      "proRequiredTitle": "Ummat+ Inahitajika",
+      "proRequiredBody": "{{name}} ni sauti ya adhana ya Pro. Boresha kuwa Ummat+ ili kuiweka kama adhana yako amilifu.",
+      "proFeature": "Kipengele cha Pro",
+      "playPreview": "Cheza sampuli",
+      "stopPreview": "Simamisha sampuli",
+      "voiceListLabel": "Orodha ya sauti za adhana"
+    },
+    "agendas": {
+      "title": "Kalenda ya Sala",
+      "desc": "Ongeza vipindi vya sala kwenye kalenda ya kifaa chako kama ukumbusho. Kila sala hupata tukio la dakika {{minutes}} lenye tahadhari ya dakika 5.",
+      "whichPrayers": "Sala zipi za kuongeza",
+      "locationRequired": "Mahali Panahitajika",
+      "locationRequiredBody": "Weka jiji lako kwenye Mipangilio ili kuongeza nyakati za sala kwenye kalenda.",
+      "noCalendarFound": "Hakuna Kalenda Iliyopatikana",
+      "noCalendarFoundBody": "Hakuna kalenda inayoweza kuandikwa iliyopatikana kwenye kifaa hiki.",
+      "setLocationHint": "Weka jiji lako kwenye Mipangilio ili kuwezesha usawazishaji wa kalenda.",
+      "addButton": "Ongeza Sala za Leo kwenye Kalenda",
+      "addButtonAccessibilityLabel": "Ongeza nyakati za sala za leo kwenye kalenda",
+      "adding": "Inaongeza...",
+      "done": "Imekamilika",
+      "addedCount": "Nyakati {{count}} za sala zimeongezwa kwenye kalenda yako.",
+      "error": "Hitilafu",
+      "addFailed": "Imeshindwa kuongeza kwenye kalenda.",
+      "checkingPermission": "Inaangalia ruhusa ya kalenda..."
+    },
+    "calendar": {
+      "eventsThisMonth": "Matukio ya Kiislamu Mwezi Huu"
+    },
+    "citySearch": {
+      "findCityTitle": "Tafuta Jiji",
+      "placeholder": "Tafuta jiji...",
+      "useCurrentLocation": "Tumia Mahali pa Sasa",
+      "locating": "Inatafuta mahali…",
+      "searching": "Inatafuta miji...",
+      "noResults": "Hakuna miji iliyopatikana kwa \"{{query}}\".",
+      "popularHint": "Miji maarufu imeonyeshwa. Andika ili kutafuta.",
+      "searchError": "Hitilafu ya utafutaji: {{message}}",
+      "searchInputAccessibilityLabel": "Sehemu ya kutafuta jiji",
+      "useCurrentLocationAccessibilityLabel": "Tumia mahali pa sasa",
+      "resultsAccessibilityLabel": "Matokeo ya utafutaji wa miji"
+    },
+    "duaDhikr": {
+      "noResults": "Hakuna dua zilizopatikana kwa kategoria hii.",
+      "categoryAll": "Zote",
+      "categoryAfterAdhan": "Baada ya Adhana",
+      "categoryAfterPrayer": "Baada ya Sala",
+      "categoryMorning": "Asubuhi",
+      "categoryEvening": "Jioni"
+    },
+    "moon": {
+      "hijriCalendar": "Kalenda ya Hijri",
+      "hijriDay": "Siku ya Hijri",
+      "month": "Mwezi",
+      "lunarAge": "Umri wa Mwezi",
+      "daysUnit": "siku {{count}}",
+      "upcomingPhases": "Awamu Zijazo",
+      "nextFullMoon": "Mwezi Mzima Ujao 🌕",
+      "nextNewMoon": "Mwezi Mchanga Ujao 🌑",
+      "significance": "Umuhimu wa Kiislamu",
+      "illuminatedPct": "{{pct}}% imeangazwa",
+      "phaseNewMoon": "Mwezi Mchanga",
+      "phaseWaxingCrescent": "Hilali Inayokua",
+      "phaseFirstQuarter": "Robo ya Kwanza",
+      "phaseWaxingGibbous": "Mwezi Unaokua",
+      "phaseFullMoon": "Mwezi Mzima",
+      "phaseWaningGibbous": "Mwezi Unaopungua",
+      "phaseLastQuarter": "Robo ya Mwisho",
+      "phaseWaningCrescent": "Hilali Inayopungua",
+      "ramadanNote": "Ni Ramadhani — mwezi wa funga na kutafuta Laylat al-Qadr.",
+      "dhulHijjahNote": "Siku kumi za kwanza za {{month}} ni miongoni mwa zenye fadhila kubwa zaidi mwakani."
     },
     "mosques": {
-      "label": "Misikiti ya Karibu"
+      "setLocation": "Weka mahali pako ili kupata misikiti karibu na wewe.",
+      "setLocationAction": "Weka Mahali",
+      "finding": "Inatafuta misikiti ya karibu...",
+      "noResults": "Hakuna misikiti iliyopatikana ndani ya km 10.",
+      "retry": "Jaribu Tena",
+      "attribution": "Data © wachangiaji wa OpenStreetMap",
+      "searchFailed": "Imeshindwa kutafuta misikiti."
+    },
+    "masjidMute": {
+      "title": "Kunyamazisha Kiotomatiki Msikitini",
+      "intro": "PrayCalc bado haina orodha ya misikiti — ongeza kanda zako za kunyamazisha hapa chini. Tunapendekeza kuongeza msikiti wako wa karibu ili simu yako inyamaze kiotomatiki unapofika.",
+      "masterToggleLabel": "Kunyamazisha kiotomatiki kumewashwa",
+      "masterToggleSubtitle": "Nyamazisha simu unapoingia kanda yoyote hapa chini",
+      "zonesHeading": "Kanda Zako",
+      "emptyTitle": "Hakuna kanda bado",
+      "emptySubtitle": "Ongeza msikiti wako wa karibu ili PrayCalc inyamazishe simu yako kiotomatiki unapofika.",
+      "addZoneAction": "Ongeza Msikiti Wako wa Karibu",
+      "addZoneButton": "Ongeza Kanda",
+      "addZoneTitle": "Ongeza Kanda ya Kunyamazisha",
+      "editZoneTitle": "Hariri Kanda ya Kunyamazisha",
+      "labelFieldLabel": "Lebo",
+      "labelFieldPlaceholder": "mfano, Msikiti wa An-Nur",
+      "labelRequired": "Tafadhali weka lebo kwa kanda hii.",
+      "coordinatesInvalid": "Tafadhali weka latitudo na longitudo sahihi, au tafuta/tumia mahali pa sasa.",
+      "searchAddressLabel": "Tafuta anwani",
+      "searchAddressPlaceholder": "Tafuta anwani au mahali",
+      "searching": "Inatafuta...",
+      "searchNoResults": "Hakuna kilichopatikana. Jaribu utafutaji mwingine au weka kuratibu kwa mkono.",
+      "useCurrentLocation": "Tumia Mahali pa Sasa",
+      "locating": "Inatafuta mahali...",
+      "locationFailed": "Imeshindwa kupata mahali pako pa sasa.",
+      "manualEntryToggle": "Weka kuratibu kwa mkono",
+      "latitudeLabel": "Latitudo",
+      "longitudeLabel": "Longitudo",
+      "radiusLabel": "Eneo: mita {{radius}}",
+      "radiusHint": "Kati ya mita {{min}} na mita {{max}} — inashughulikia msikiti na eneo lake la kuegesha.",
+      "decreaseRadiusAccessibilityLabel": "Punguza eneo kwa mita 25",
+      "increaseRadiusAccessibilityLabel": "Ongeza eneo kwa mita 25",
+      "saveZone": "Hifadhi Kanda",
+      "deleteZone": "Futa Kanda",
+      "deleteConfirmTitle": "Futa kanda hii?",
+      "deleteConfirmBody": "\"{{label}}\" haitanyamazisha simu yako kiotomatiki tena.",
+      "mapPickerFollowUp": "Kichagua ramani cha kuweka pini kwa macho kimepangwa — kwa sasa, tafuta anwani au tumia mahali pako pa sasa.",
+      "permissionTitle": "Ruhusa ya Mahali Inahitajika",
+      "permissionBody": "Kunyamazisha Kiotomatiki Msikitini kunahitaji ufikiaji wa mahali wa \"Daima\" ili kugundua unapoingia au kutoka kanda, hata programu ikiwa imefungwa.",
+      "permissionGrant": "Toa Ruhusa",
+      "permissionDeniedNote": "Ufikiaji wa mahali wa nyuma haujatolewa — kanda zimehifadhiwa lakini kunyamazisha kiotomatiki hakutafanya kazi hadi uruhusu ufikiaji wa \"Daima\" kwenye mipangilio ya mfumo.",
+      "androidNote": "Android: simu yako itabadilika kuwa mtetemo unapofika na kurejesha hali yako ya awali ya sauti unapoondoka.",
+      "iosNote": "iOS: Apple hairuhusu programu kubadilisha kitufe chako cha kunyamazisha. Badala yake, PrayCalc hutuma arifa ikikuomba unyamazishe simu yako kwa mkono.",
+      "iosReminderTitle": "Umefika",
+      "iosReminderBody": "Uko karibu na {{zone}} — tafadhali nyamazisha simu yako.",
+      "defaultZoneLabel": "kanda yako ya kunyamazisha",
+      "activeNow": "Amilifu sasa — simu imenyamazishwa",
+      "radiusValue": "Eneo la mita {{radius}}"
+    },
+    "pairTv": {
+      "upsellBadge": "Ummat+",
+      "unlockTitle": "Fungua Uunganishaji wa TV",
+      "unlockDesc": "Ummat+ $9.99/mwaka — inafungua programu ya TV na Nyumba Janja",
+      "pairedTitle": "TV Imeunganishwa",
+      "pairedDesc": "Programu yako ya TV sasa imeunganishwa na akaunti hii.",
+      "title": "Unganisha na TV",
+      "desc": "Fungua PrayCalc kwenye TV yako, kisha weka PIN ya tarakimu 6 inayoonyeshwa kwenye skrini.",
+      "enterPin": "Weka PIN ya tarakimu 6 inayoonyeshwa kwenye TV yako.",
+      "pinInputAccessibilityLabel": "PIN ya kuunganisha TV",
+      "pairFailed": "Kuunganisha kumeshindwa. Jaribu tena.",
+      "pairDevice": "Unganisha Kifaa",
+      "invalidOrExpiredPin": "PIN hiyo si sahihi au imeisha muda wake. Angalia skrini ya TV na ujaribu tena."
+    },
+    "tvManager": {
+      "upsellBadge": "Ummat+",
+      "unlockTitle": "Fungua Usimamizi wa TV",
+      "unlockDesc": "Ummat+ $9.99/mwaka — inafungua programu ya TV na Nyumba Janja",
+      "emptyTitle": "Hakuna TV zilizounganishwa bado",
+      "emptySubtitle": "Unganisha TV ili kuiona hapa na kusimamia mipangilio yake ya skrini.",
+      "pairACta": "Unganisha TV",
+      "noCity": "Hakuna mahali palipowekwa",
+      "nameLabel": "Jina",
+      "colorLabel": "Rangi ya Msisitizo",
+      "streamLabel": "Chanzo cha Mtiririko",
+      "streamMakkah": "Makkah TV",
+      "streamSaudiQuran": "Saudi Quran",
+      "streamMedina": "Medina",
+      "rotateLabel": "Mzunguko wa Skrini",
+      "decreaseRotate": "Punguza dakika za mzunguko",
+      "increaseRotate": "Ongeza dakika za mzunguko",
+      "weatherLabel": "Onyesha Hali ya Hewa",
+      "updateLocationAction": "Sasisha mahali kuwa mahali pangu pa sasa",
+      "updateLocationHint": "TV itachukua mabadiliko ya mahali wakati itakapounganishwa tena — hii inasasisha mahali palipohifadhiwa sasa.",
+      "noLocationTitle": "Hakuna Mahali Palipowekwa",
+      "noLocationBody": "Weka mahali pako kwenye Mipangilio kabla ya kusasisha mahali pa TV.",
+      "locationUpdatedTitle": "Mahali Pamesasishwa",
+      "locationUpdatedBody": "Imehifadhiwa. TV itatumia mahali hapa wakati itakapounganishwa tena.",
+      "deleteAction": "Ondoa TV Hii",
+      "deleteConfirmTitle": "Ondoa TV?",
+      "deleteConfirmBody": "Hii itaondoa muunganisho wa \"{{name}}\" na kuondoa mipangilio yake iliyohifadhiwa. Hii haiwezi kutenduliwa.",
+      "deleteConfirmAction": "Ondoa",
+      "prayerFajr": "Alfajiri",
+      "prayerDhuhr": "Adhuhuri",
+      "prayerAsr": "Alasiri",
+      "prayerMaghrib": "Magharibi",
+      "prayerIsha": "Isha",
+      "madhabShafii": "Shafi'i",
+      "madhabHanafi": "Hanafi",
+      "timeFormat12h": "Saa 12",
+      "timeFormat24h": "Saa 24",
+      "invalidCoordsTitle": "Kuratibu Batili",
+      "invalidCoordsBody": "Weka latitudo sahihi (-90 hadi 90) na longitudo (-180 hadi 180).",
+      "deepSettingsLabel": "Mipangilio ya Kina",
+      "countdownTakeoverLabel": "Kuchukua Skrini kwa Kuhesabu",
+      "countdownTakeoverHint": "Chukua skrini kwa hesabu kubwa ya kurudi nyuma kabla ya kila sala.",
+      "countdownMinutesLabel": "Anza Kuhesabu",
+      "decreaseCountdown": "Punguza dakika za kuhesabu",
+      "increaseCountdown": "Ongeza dakika za kuhesabu",
+      "iqamaLabel": "Nyakati za Iqama",
+      "iqamaHint": "Onyesha hesabu ya kurudi nyuma ya iqama baada ya adhana, na mrekebisho kwa kila sala.",
+      "decreaseIqama": "Punguza mrekebisho wa iqama wa {{prayer}}",
+      "increaseIqama": "Ongeza mrekebisho wa iqama wa {{prayer}}",
+      "nameOnlyLabel": "Hali ya Jina Pekee",
+      "nameOnlyHint": "Onyesha jina la sala pekee (bila nyakati) kwa dakika hizi kabla ya adhana.",
+      "nameOnlyMinutesLabel": "Muda wa Hali ya Jina Pekee",
+      "decreaseNameOnly": "Punguza dakika za jina pekee",
+      "increaseNameOnly": "Ongeza dakika za jina pekee",
+      "madhabLabel": "Madhehebu",
+      "timeFormatLabel": "Muundo wa Muda",
+      "calcMethodLabel": "Njia ya Hesabu",
+      "manualLocationToggle": "Weka kuratibu kwa mkono",
+      "latitudeLabel": "Latitudo",
+      "longitudeLabel": "Longitudo",
+      "manualLocationSave": "Hifadhi Kuratibu",
+      "layoutThemeLabel": "Mpangilio na Mandhari",
+      "layoutLabel": "Mpangilio",
+      "themeLabel": "Mandhari",
+      "layoutClassic": "Classic",
+      "layoutClassicDesc": "Nyakati + mtiririko wa moja kwa moja kando kwa kando",
+      "layoutFlipped": "Iliyopinduliwa",
+      "layoutFlippedDesc": "Mgawanyo uleule, umeakisiwa",
+      "layoutStreamFull": "Mtiririko Kamili",
+      "layoutStreamFullDesc": "Mtiririko wa skrini nzima na ukanda wa nyakati",
+      "layoutTimesOnly": "Nyakati Pekee",
+      "layoutTimesOnlyDesc": "Nyakati za sala pekee, bila mtiririko wa moja kwa moja",
+      "layoutAmbient": "Ambient",
+      "layoutAmbientDesc": "Onyesho la saa dogo la ambient",
+      "themeUmmatGreen": "Ummat Green",
+      "themeMidnight": "Midnight",
+      "themeWarmSand": "Warm Sand",
+      "themeMono": "Mono"
+    },
+    "prayerTimes": {
+      "setCityTitle": "Weka Jiji Lako",
+      "setCitySubtitle": "Washa mahali au chagua jiji kwa mkono ili kuona nyakati za sala.",
+      "setLocationAction": "Weka Mahali",
+      "offlineMessage": "Nyakati za mwisho zinazojulikana za sala zinaonyeshwa (bila mtandao)",
+      "next": "Ijayo: {{prayer}}",
+      "asrCalculation": "Hesabu ya Alasiri",
+      "markedPrayed": "imetiwa alama kuwa imeswaliwa",
+      "notMarkedPrayed": "haijatiwa alama kuwa imeswaliwa",
+      "doubleTapToggle": "Gusa mara mbili ili kubadilisha.",
+      "shareTimes": "Shiriki nyakati za leo",
+      "shareAccessibilityLabel": "Shiriki nyakati za sala za leo"
+    },
+    "quran": {
+      "loading": "Data ya Qur'ani inapakia...",
+      "backToList": "Rudi kwenye orodha ya surah",
+      "back": "Rudi",
+      "bismillah": "Bismillah",
+      "comingSoonBody": "Soma {{name}} (aya {{count}}) na tafsiri na usomaji kwenye Islam.Wiki — msomaji wetu kamili wa Qur'ani.",
+      "readOnWiki": "Soma kwenye Islam.Wiki →",
+      "removeBookmark": "Ondoa alamisho",
+      "bookmarkVerse": "Wekea aya alamisho",
+      "surahList": "Orodha ya Surah",
+      "wikiFooter": "📖 Qur'ani Kamili — surah zote 114, tafsiri na sauti kwenye Islam.Wiki →",
+      "openFullQuran": "Fungua Qur'ani Kamili kwenye Islam.Wiki",
+      "featuredVerse": "Aya Iliyoangaziwa",
+      "readableBadge": "Inapatikana"
+    },
+    "ramadan": {
+      "subtitle": "Ramadhani Mubarak",
+      "dayOf": "Siku ya {{day}} kati ya {{total}}",
+      "iftarIn": "Futari baada ya",
+      "suhoorEndsIn": "Daku inaisha baada ya",
+      "notActive": "Ramadhani haifanyiki kwa sasa.\nMwezi wa Hijri wa sasa: {{month}} ({{monthNumber}}/12)",
+      "todaysTimes": "Nyakati za Leo",
+      "suhoorEnds": "Mwisho wa Daku (Alfajiri)",
+      "iftar": "Futari (Magharibi)",
+      "noLocation": "Weka mahali pako kwenye Mipangilio ili kuona nyakati za sala.",
+      "duasTitle": "Dua za Ramadhani",
+      "laylatAlQadrTitle": "Laylat al-Qadr",
+      "laylatAlQadrBody": "Tuko katika usiku kumi wa mwisho wa Ramadhani. Ongeza ibada, hasa katika usiku wa witiri (21, 23, 25, 27, 29)."
+    },
+    "notifications": {
+      "masterLabel": "Arifa za Sala",
+      "masterSub": "Pokea tahadhari kabla ya kila muda wa sala",
+      "androidExactAlarm": "Kwenye Android 12+, ruhusu \"Kengele na Vikumbusho\" kwenye mipangilio ya mfumo kwa tahadhari sahihi za muda wa sala.",
+      "openSystemSettings": "Fungua Mipangilio ya Mfumo",
+      "masterAccessibilityLabel": "Washa arifa za sala",
+      "openSystemSettingsAccessibilityLabel": "Fungua mipangilio ya mfumo kwa kengele",
+      "perPrayerAlerts": "Tahadhari kwa Kila Sala",
+      "minutesBefore_one": "dakika {{count}} kabla",
+      "minutesBefore_other": "dakika {{count}} kabla",
+      "iqamahOff": "iqama imezimwa",
+      "iqamahAfter_one": "iqama +dakika {{count}}",
+      "iqamahAfter_other": "iqama +dakika {{count}}",
+      "adhanSoundTitle": "Sauti ya Adhana",
+      "adhanSoundSub": "Ni adhana gani inachezwa arifa ya sala inapofika.",
+      "adhanSound": {
+        "takbir": "Takbiri (ufunguzi)",
+        "makkah": "Makkah",
+        "mishari": "Mishari Rashid",
+        "madina": "Madina"
+      },
+      "smartAlarmsTitle": "Kengele za Busara",
+      "suhoorLabel": "Kengele ya Daku",
+      "suhoorSub": "Amka kabla ya Alfajiri kwa ajili ya chakula cha kabla ya alfajiri.",
+      "suhoorBefore_one": "dakika {{count}} kabla ya Alfajiri",
+      "suhoorBefore_other": "dakika {{count}} kabla ya Alfajiri",
+      "tahajjudLabel": "Tahajjud / Qiyamu",
+      "tahajjudSub": "Amka katika sehemu ya mwisho ya usiku kwa ajili ya sala.",
+      "tahajjudLastThird": "Theluthi ya mwisho ya usiku",
+      "tahajjudCustom": "Muda Maalum",
+      "nightTimesTitle": "Nyakati za Usiku (leo usiku)",
+      "lastThirdBegins": "Theluthi ya mwisho inaanza",
+      "middleOfNight": "Katikati ya usiku",
+      "nightTimesUnavailable": "Weka mahali pako ili kuona nyakati za usiku wa leo.",
+      "reliabilityTitle": "Uwasilishaji wa Adhana Unaotegemewa",
+      "reliabilitySub": "Hakikisha kengele zinalia kwa wakati",
+      "batteryTitle": "Ruhusu Kengele Zinazotegemewa",
+      "batteryIntro": "Android inaweza kunyamazisha kengele za sala ili kuhifadhi betri. Ili kusikia adhana kwa wakati:",
+      "batteryStepAlarms": "Ruhusu \"Kengele na Vikumbusho\" (kengele sahihi) kwa Nyakati za Sala.",
+      "batteryStepOptimization": "Zima uboreshaji wa betri kwa Nyakati za Sala ili programu isilale.",
+      "batteryOemNote": "Simu zingine (Xiaomi, Huawei, Samsung, OnePlus, Oppo, Vivo) zina mpangilio wa ziada wa \"kuanza-otomatiki\" au \"programu zinazolindwa\" — washa Nyakati za Sala huko pia.",
+      "openExactAlarm": "Fungua Kengele na Vikumbusho",
+      "openBatterySettings": "Fungua Mipangilio ya Betri",
+      "testAdhanButton": "Jaribu adhana yangu (sekunde 5)",
+      "testAdhanScheduled": "Adhana ya majaribio itachezwa baada ya takribani sekunde 5. Funga skrini au peleka programu nyuma ili kuisikia kama arifa.",
+      "dismiss": "Funga"
+    },
+    "homeWidget": {
+      "widgetPreviewAccessibilityLabel": "Muonekano wa wijeti unaoonyesha muda wa sala ijayo",
+      "title": "Wijeti ya Skrini ya Nyumbani",
+      "subtitle": "Ona muda wa sala ijayo kwenye skrini yako ya nyumbani",
+      "widgetPreviewTitle": "Muonekano wa Wijeti",
+      "nextPrayer": "Sala Ijayo",
+      "setLocationToPreview": "Weka mahali pako ili kuona muonekano",
+      "setupInstructions": "Maelekezo ya Usanidi",
+      "integrationStatus": "Hali ya Muunganisho",
+      "upsellMessage": "Wijeti ya skrini ya nyumbani ni kipengele cha Ummat+.",
+      "upsellAction": "Boresha kuwa Ummat+",
+      "countdownPrefix": "baada ya {{countdown}}",
+      "setupStep1": "Bonyeza kwa muda mrefu skrini yako ya nyumbani",
+      "setupStep2": "Gusa kitufe cha + (iOS) au menyu ya wijeti (Android)",
+      "setupStep3": "Tafuta \"{{appName}}\"",
+      "setupStep4": "Chagua ukubwa wa wijeti unaoupenda",
+      "setupStep5": "Gusa Ongeza Wijeti",
+      "statusAndroid": "Android: hai — wijeti ya \"Sala Ijayo\" ya skrini ya nyumbani hutumia react-native-android-widget na hujisasisha kiotomatiki kila dakika 30 (na mara moja baada ya kubadilisha mipangilio au arifa).",
+      "statusIos": "iOS: hai — wijeti ya WidgetKit ya \"Sala Ijayo\" husasisha unapobadilisha mipangilio au arifa na husonga mbele yenyewe kwa kila muda wa sala."
+    },
+    "smartHome": {
+      "proOnly": "Nyumba Janja (kufunga-wakati-wa-sala + udhibiti wa vifaa) ni kipengele cha Ummat+.",
+      "upgradeAction": "Boresha kuwa Ummat+",
+      "lockDuringPrayer": "Funga Wakati wa Sala",
+      "lockDesc": "Punguza mwanga wa skrini na nyamazisha media kiotomatiki wakati wa sala unapoanza. Inahitaji uthibitisho ili kusanidi.",
+      "lockOnSalah": "Funga Wakati wa Sala",
+      "lockOnSalahAccessibilityLabel": "Hali ya kufunga wakati wa sala",
+      "activeNote": "Skrini itapunguza mwanga na media itasitishwa wakati wa nyakati za sala.\nAndroid: umakini wa media unaachiliwa. iOS: kikumbusho cha hali ya kimya kinaonyeshwa.",
+      "linkedAccounts": "Akaunti Zilizounganishwa",
+      "noLinks": "Hakuna akaunti za nyumba janja zilizounganishwa bado. Fungua programu ya Alexa au Google Home, tafuta uwezo au kitendo cha PrayCalc, na uunganishe akaunti yako ya Ummat.",
+      "linked": "Imeunganishwa {{date}}",
+      "unlink": "Ondoa Muunganisho",
+      "unlinkConfirmTitle": "Ondoa muunganisho wa {{name}}?",
+      "unlinkConfirmBody": "Unaweza kuunganisha tena {{name}} wakati wowote kupitia programu ya Alexa au Google Home.",
+      "unlinkConfirmAction": "Ondoa Muunganisho",
+      "unlinkFailedTitle": "Imeshindwa kuondoa muunganisho",
+      "learnMore": "Jifunze Zaidi",
+      "authPrompt": "Thibitisha ili kuwezesha kufunga wakati wa sala",
+      "useFallback": "Tumia msimbo wa siri"
+    },
+    "stats": {
+      "chartAccessibilityLabel": "Chati ya ukamilishaji wa sala wa wiki",
+      "noLogs": "Hakuna kumbukumbu za sala bado. Anza kukamilisha sala ili kuona takwimu zako.",
+      "dayStreak": "Mfululizo wa Siku 🔥",
+      "weeklyRate": "Kiwango cha Wiki",
+      "totalLogged": "Jumla Iliyorekodiwa",
+      "last7Days": "Siku 7 Zilizopita",
+      "thisMonth": "Mwezi Huu",
+      "byPrayer": "Kwa Kila Sala",
+      "weekly": "Kila Wiki",
+      "monthly": "Kila Mwezi",
+      "fastingStreak": "Mfululizo wa Funga",
+      "qadaOutstanding": "Qadha Iliyobaki"
+    },
+    "subscription": {
+      "title": "PrayCalc Pro",
+      "subtitle": "Boresha uzoefu wako wa ibada",
+      "loadingOptions": "Inapakia chaguo za usajili...",
+      "loadProductsFailed": "Imeshindwa kupakia bidhaa. Angalia muunganisho wako na ujaribu tena.",
+      "connectFailed": "Imeshindwa kuunganisha na duka.",
+      "createAccountTitle": "Fungua Akaunti",
+      "createAccountBody": "Ingia kwanza ili ununuzi wako uweze kusawazishwa kwenye vifaa vyako vyote.",
+      "purchaseFailed": "Ununuzi umeshindwa. Tafadhali jaribu tena.",
+      "restoreFailed": "Kurejesha kumeshindwa.",
+      "proTitle": "Uko kwenye Pro",
+      "proSub": "Asante kwa kuunga mkono PrayCalc!",
+      "noProducts": "Bidhaa za usajili hazipatikani. Sanidi kwenye App Store Connect / Google Play Console.",
+      "restorePurchase": "Rejesha Ununuzi",
+      "restorePurchaseAccessibilityLabel": "Rejesha ununuzi uliopita",
+      "legal": "Usajili husasishwa kiotomatiki isipokuwa umefutwa angalau saa 24 kabla ya mwisho wa kipindi cha sasa. Simamia kwenye mipangilio ya akaunti yako ya App Store / Google Play.",
+      "featurePremiumAdhan": "Sauti za adhana za premium — wasomaji zaidi",
+      "featureHomeWidget": "Wijeti ya skrini ya nyumbani (sala ijayo)",
+      "featureTvPairing": "Kuunganisha programu ya PrayCalc TV",
+      "featureSmartHome": "Nyumba Janja — funga vifaa wakati wa sala",
+      "subscribeAccessibilityLabel": "Jisajili {{title}} kwa {{price}}"
+    },
+    "tasbeeh": {
+      "chooseDhikr": "Chagua Dhikri",
+      "of": "kati ya {{count}}",
+      "resetCounter": "Weka upya kihesabu",
+      "todayTotal": "Jumla ya Leo",
+      "history": "Historia"
+    },
+    "timetable": {
+      "setCityTitle": "Weka Jiji Lako",
+      "setCitySubtitle": "Weka mahali pako ili kuona ratiba ya sala ya mwezi.",
+      "previousMonth": "Mwezi Uliopita",
+      "nextMonth": "Mwezi Ujao",
+      "exportCalendar": "Hamisha Kalenda (.ics)",
+      "exportAccessibilityLabel": "Hamisha nyakati za sala za mwezi huu kama faili la kalenda",
+      "shareTimes": "Shiriki mwezi huu",
+      "shareAccessibilityLabel": "Shiriki ratiba ya sala ya mwezi huu"
+    },
+    "travel": {
+      "musafirModeTitle": "Hali ya Musafir",
+      "musafirModeDesc": "Mimi ni msafiri (musafir). Tumia qasr kwa sala zinazohusika.",
+      "musafirModeAccessibilityLabel": "Hali ya safari ya musafir",
+      "musafirAlertTitle": "Hali ya Musafir (Msafiri)",
+      "musafirAlertBody": "Qasr (kufupisha) hupunguza Adhuhuri, Alasiri, na Isha kutoka rakaa 4 hadi 2.\n\nKumbuka: Jama (kuunganisha sala) haitumiki kiotomatiki kutokana na tofauti za kiwango cha wanachuoni. Tafadhali fuata mwanachuoni wako wa eneo lako au madhehebu kuhusu kuunganisha sala wakati wa safari.",
+      "understood": "Nimeelewa",
+      "qasrRakatCount": "Idadi ya Rakaa za Qasr",
+      "fiqhNote": "Alfajiri na Magharibi hazifupishwi (qasr inatumika kwa sala za rakaa 4 pekee). Jama (kuunganisha sala) inahitaji kufuata mwanachuoni wako wa eneo lako au madhehebu.",
+      "travelDestination": "Marudio ya Safari",
+      "changeCity": "Badilisha",
+      "changeCityAccessibilityLabel": "Badilisha jiji la safari",
+      "selectTravelCity": "Chagua Jiji la Safari",
+      "selectTravelCityAccessibilityLabel": "Chagua jiji la safari",
+      "recalcNote": "Nyakati za sala zitahesabiwa upya kwa marudio yako ya safari.",
+      "homeCity": "Jiji la Nyumbani",
+      "notSet": "Halijawekwa"
+    },
+    "qibla": {
+      "calibrating": "Inarekebisha dira...",
+      "locationRequiredTitle": "Mahali Panahitajika",
+      "locationRequiredSubtitle": "Weka mahali pako kwenye Mipangilio ili kupata mwelekeo wa Qibla.",
+      "bearingLabel": "Mwelekeo wa Qibla",
+      "compassAccessibilityLabel": "Dira ya Qibla, mwelekeo wa sasa digrii {{degrees}}",
+      "accuracyLabel": "Usahihi: {{level}}",
+      "accuracyUnknown": "Haijulikani",
+      "accuracyUnreliable": "Haitegemeki",
+      "accuracyLow": "Chini",
+      "accuracyMedium": "Wastani",
+      "accuracyHigh": "Juu",
+      "headingNote": "Mwelekeo: {{degrees}}° | Mwelekeo wa duara kubwa kuelekea Kaaba"
+    },
+    "fasting": {
+      "todaysFast": "Funga ya Leo",
+      "logToday": "Rekodi Funga ya Leo",
+      "unlogToday": "Ondoa Rekodi ya Leo",
+      "loggedAs": "Imerekodiwa kama: {{type}}",
+      "yourStreaks": "Mfululizo Wako",
+      "mondayStreak": "Mfululizo wa Jumatatu",
+      "thursdayStreak": "Mfululizo wa Alhamisi",
+      "whiteDaysMonth": "Siku Nyeupe Mwezi Huu",
+      "ramadanLogged": "Funga za Ramadhani",
+      "qadaLogged": "Qadha Iliyolipwa",
+      "voluntaryLogged": "Funga za Hiari",
+      "ramadanDayOf": "Ramadhani — Siku ya {{day}} kati ya {{total}}",
+      "upcomingSuggestions": "Siku za Funga Zinazopendekezwa Zijazo",
+      "logAction": "Rekodi",
+      "sunnahSourceNote": "Kufunga Jumatatu na Alhamisi: Sahih Muslim 1162. Siku Nyeupe (tarehe 13–15 za kila mwezi wa Hijri): Sunan an-Nasa'i 2345, Sunan Abi Dawud 2449.",
+      "recentLogs": "Rekodi za Hivi Karibuni"
+    },
+    "qada": {
+      "totalOwed": "Jumla ya Sala Zinazodaiwa",
+      "perPrayer": "Idadi kwa Kila Sala",
+      "makeUpOne": "Lipa Moja",
+      "excusedTitle": "Vipindi vya Ruhusa",
+      "fiqhNote": "Wakati wa kipindi cha ruhusa (kama hedhi au damu ya baada ya kuzaa), mwanamke hasali — na sala hizo zilizokosekana hazilipwi baadaye (qadha). Hii ni tofauti na funga: funga zilizokosekana wakati huo ZINALIPWA baadaye.",
+      "fiqhCitation": "Sahih al-Bukhari 321 · Sahih Muslim 335",
+      "consultScholar": "Hii inaonyesha msimamo wa wengi. Kwa hali yako maalum, wasiliana na mwanachuoni wako wa eneo lako.",
+      "addExcusedRange": "Ongeza Kipindi cha Ruhusa",
+      "startDate": "Tarehe ya Kuanza",
+      "endDate": "Tarehe ya Mwisho",
+      "noteOptional": "Kumbukumbu (hiari)",
+      "notePlaceholder": "mfano, hedhi, ugonjwa",
+      "removeExcusedRangeAccessibilityLabel": "Ondoa kipindi cha ruhusa"
+    },
+    "jumuah": {
+      "intro": "Ijumaa ni siku bora zaidi ya wiki. Weka vikumbusho vya upole na jiandae kwa Ijumaa na sunnah zake.",
+      "khutbahTitle": "Ukumbusho wa Khutba",
+      "khutbahSub": "Ukumbusho kila Ijumaa kabla ya khutba.",
+      "kahfTitle": "Ukumbusho wa Surat al-Kahf",
+      "kahfSub": "Ukumbusho wa kusoma Surat al-Kahf siku ya Ijumaa.",
+      "kahfDayThursday": "Jioni ya Alhamisi",
+      "kahfDayFriday": "Asubuhi ya Ijumaa",
+      "reminderTime": "Muda wa Ukumbusho",
+      "checklistTitle": "Sunnah za Ijumaa",
+      "virtueTitle": "Fadhila ya Ijumaa",
+      "virtueBody": "Mtume ﷺ alisema: \"Siku bora zaidi ambayo jua limechomoza ni Ijumaa.\"",
+      "virtueCitation": "Sahih Muslim 854",
+      "kahfVirtueBody": "Mtume ﷺ alisema: \"Atakayesoma Surat al-Kahf siku ya Ijumaa, nuru itamwangazia baina ya Ijumaa mbili.\"",
+      "kahfVirtueCitation": "Imepokewa na al-Hakim na al-Bayhaqi; imethibitishwa kuwa sahihi na al-Albani",
+      "checklist": {
+        "ghusl": "Fanya ghusl (kuoga kwa kidini)",
+        "ghuslCitation": "Sahih al-Bukhari 877 · Sahih Muslim 846",
+        "cleanClothes": "Vaa nguo safi na nzuri",
+        "cleanClothesCitation": "Sunan Abi Dawud 343 (hasan)",
+        "perfume": "Tumia manukato (miswaki na kujipamba)",
+        "perfumeCitation": "Sahih al-Bukhari 880",
+        "early": "Nenda msikitini mapema",
+        "earlyCitation": "Sahih al-Bukhari 881 · Sahih Muslim 850",
+        "kahf": "Soma Surat al-Kahf",
+        "kahfCitation": "al-Hakim / al-Bayhaqi (sahih kwa mujibu wa al-Albani)",
+        "salawat": "Ongeza salawati kwa Mtume ﷺ",
+        "salawatCitation": "Sunan Abi Dawud 1047 (sahih)",
+        "dua": "Tafuta saa ya kukubaliwa kwa dua",
+        "duaCitation": "Sahih al-Bukhari 935 · Sahih Muslim 852"
+      }
+    },
+    "leadTimeAccessibilityLabel": "Muda wa tahadhari ya {{prayer}}, dakika {{minutes}} kabla. Gusa ili kubadilisha.",
+    "iqamahAccessibilityLabel": "Ukumbusho wa iqama wa {{prayer}}, {{status}}. Gusa ili kubadilisha.",
+    "enableAccessibilityLabel": "Washa adhana ya {{prayer}}",
+    "rowAccessibilityLabel": "{{name}}, umbali wa {{distance}}",
+    "directionsAccessibilityLabel": "Fungua mielekeo ya {{name}} kwenye Ramani",
+    "accentColorAccessibilityLabel": "Rangi ya msisitizo {{hex}}",
+    "todayTotalAccessibilityLabel": "Jumla ya dhikri ya leo: {{total}}",
+    "historyEntryAccessibilityLabel": "{{name}}: {{count}}, {{date}}",
+    "arabicTextAccessibilityLabel": "Kiarabu: {{transliteration}}",
+    "counterAccessibilityLabel": "Hesabu: {{count}} kati ya {{target}}. {{status}}",
+    "tapToIncrement": "Gusa ili kuongeza",
+    "presetAccessibilityLabel": "{{transliteration}}, lengo {{target}}, chanzo {{source}}",
+    "zoneRowAccessibilityLabel": "{{label}}, eneo la mita {{radius}}",
+    "phaseAccessibilityLabel": "Awamu ya mwezi: {{phase}}, {{illumination}}",
+    "voiceAccessibilityLabel": "{{name}} na {{reciter}}",
+    "voiceAccessibilityLabelPro": "{{name}} na {{reciter}} (Pro, boresha inahitajika ili kuchagua)",
+    "surahNameAccessibilityLabel": "Surah {{name}}",
+    "readOnWikiAccessibilityLabel": "Soma Surah {{name}} kwenye Islam.Wiki",
+    "verseAccessibilityLabel": "Aya {{number}}: {{transliteration}}",
+    "featuredVerseAccessibilityLabel": "{{label}}: Ayat al-Kursi",
+    "surahRowAccessibilityLabel": "Surah {{number}}, {{name}}, aya {{count}}, {{type}}",
+    "fullTextAvailableSuffix": ", maandishi kamili yanapatikana",
+    "revelationMeccan": "Makiya",
+    "revelationMedinan": "Madaniya"
+  },
+  "onboarding": {
+    "skip": "Ruka",
+    "welcome": {
+      "title": "Karibu PrayCalc",
+      "desc": "Nyakati sahihi za sala, mwelekeo wa Qibla, na kalenda ya Kiislamu — sanidi kwa mibofyo michache.",
+      "cta": "Anza"
+    },
+    "location": {
+      "title": "Mahali Pako",
+      "prime": "PrayCalc hutumia mahali pako kuhesabu nyakati sahihi za sala kwa jiji lako. Panabaki kwenye kifaa chako — hatushiriki kamwe. Gusa Ruhusu kwenye skrini ijayo ili kuendelea.",
+      "allow": "Ruhusu Mahali",
+      "later": "Nitaweka hili baadaye"
+    },
+    "notifications": {
+      "title": "Vikumbusho vya Sala",
+      "prime": "Pata ukumbusho wa upole au adhana kwa kila muda wa sala ili usikose sala kamwe. Unaweza kurekebisha ni sala zipi zinazokujulisha baadaye.",
+      "allow": "Washa Vikumbusho",
+      "later": "Sio Sasa"
+    },
+    "method": {
+      "title": "Njia ya Hesabu",
+      "dpcExplain": "DPC (Dynamic PrayCalc) hukokotoa kiotomatiki nyakati bora zaidi kwa mahali pako — uboreshaji wa njia ya Moonsighting. Tunapendekeza kuiacha ikiwa hivyo.",
+      "dpcLabel": "Dinamik (PrayCalc DPC)",
+      "recommended": "Inapendekezwa",
+      "orFixed": "Au chagua njia maalum",
+      "suggested": "Kwa eneo lako",
+      "continue": "Endelea"
+    },
+    "consent": {
+      "title": "Saidia Kuboresha PrayCalc"
+    },
+    "done": {
+      "title": "Umekamilisha Yote",
+      "desc": "Nyakati zako za sala ziko tayari. Unaweza kubadilisha chaguo lolote kati ya haya wakati wowote kwenye Mipangilio.",
+      "cta": "Fungua PrayCalc"
     }
+  },
+  "consent": {
+    "title": "Uchambuzi wa Matumizi Usiokuwa na Jina",
+    "description": "Shiriki data ya matumizi isiyokuwa na jina, ya pamoja ili kutusaidia kuboresha PrayCalc. Taarifa binafsi, mahali, au maelezo ya akaunti havikusanywi kamwe.",
+    "privacyNote": "Imezimwa kwa chaguo-msingi. Hakuna kinachotumwa hadi uwashe hii, na unaweza kuibadilisha wakati wowote.",
+    "accept": "Ruhusu",
+    "decline": "Hapana, Asante",
+    "toggleLabel": "Shiriki uchambuzi usiokuwa na jina",
+    "privacyScreenTitle": "Faragha",
+    "privacyScreenFooter": "PrayCalc inatanguliza faragha. Uchambuzi haukuwa na jina na umezimwa isipokuwa uamue kujiunga. Kuzima hii kunasimamisha telemetry yote mara moja."
   }
 }

@@ -13,6 +13,27 @@
     "midnight": "Medianoche",
     "lastThird": "Último Tercio"
   },
+  "notifications": {
+    "prayerTime": "Hora del {{prayer}}",
+    "iqamahTitle": "Iqama del {{prayer}}",
+    "bodyNow": "Es hora de la oración del {{prayer}} — {{time}}",
+    "bodyAdvance_one": "{{prayer}} en {{count}} minuto — {{time}}",
+    "bodyAdvance_other": "{{prayer}} en {{count}} minutos — {{time}}",
+    "bodyIqamah": "Recordatorio de iqama para {{prayer}} (el adhán fue a las {{time}})",
+    "snooze_one": "Posponer {{count}} min",
+    "snooze_other": "Posponer {{count}} min",
+    "snoozedBody": "Recordatorio pospuesto para la oración del {{prayer}}",
+    "suhoorTitle": "Suhoor",
+    "suhoorBody": "Hora del suhoor — la comida antes del amanecer. Se acerca el Fajr.",
+    "tahajjudTitle": "Tahajjud",
+    "tahajjudBody": "El último tercio de la noche — un momento bendito para el qiyam y la du'a.",
+    "jumuahKhutbahTitle": "Jumu'ah",
+    "jumuahKhutbahBody": "La jutba comenzará pronto. Dirígete a la mezquita para la oración del Jumu'ah.",
+    "kahfTitle": "Surat al-Kahf",
+    "kahfBody": "Recita Surat al-Kahf por la luz entre los dos viernes.",
+    "testTitle": "Prueba de Adhán",
+    "testBody": "Si puedes escuchar esto, tus notificaciones de adhán están funcionando."
+  },
   "common": {
     "bismillah": "En el nombre de Alá, el Compasivo, el Misericordioso",
     "salah": "Oración",
@@ -36,15 +57,138 @@
     "search": "Buscar",
     "change": "Cambiar",
     "reset": "Restablecer",
+    "complete": "Completado",
     "openInMaps": "Abrir en Mapas",
     "openSettings": "Abrir ajustes",
     "upgrade": "Mejorar",
-    "signIn": "Iniciar sesión"
+    "signIn": "Iniciar sesión",
+    "createAccount": "Crear cuenta",
+    "continue": "Continuar",
+    "skip": "Omitir",
+    "nothingHereYet": "Aún no hay nada aquí",
+    "somethingWentWrong": "Algo salió mal",
+    "tryAgain": "Intentar de nuevo",
+    "tooManyRequests": "Demasiadas solicitudes",
+    "waitBeforeRetrying": "Espera {{seconds}} s antes de volver a intentarlo.",
+    "offlineCachedData": "Estás sin conexión. Mostrando datos guardados en caché.",
+    "permissionRequired": "Se requiere permiso de {{permission}}",
+    "permissionRequiredBody": "Los horarios de oración requieren acceso a {{permission}}. Actívalo en los ajustes.",
+    "loadingContent": "Cargando contenido",
+    "permissionRequiredGeneric": "Se requiere permiso",
+    "permissionRequiredGenericBody": "Se requiere el permiso de {{permission}} para esta función.",
+    "openSystemSettings": "Abrir ajustes del sistema",
+    "retryRequest": "Reintentar solicitud",
+    "tooManyRequestsRetry": "Demasiadas solicitudes. Espera {{seconds}} s antes de volver a intentarlo.",
+    "tooManyRequestsRetryGeneric": "Demasiadas solicitudes. Espera antes de volver a intentarlo.",
+    "offlineShowingCachedFrom": "Estás sin conexión. Mostrando datos del {{cachedAt}}.",
+    "offlineShowingCachedGeneric": "Estás sin conexión. Mostrando datos en caché."
   },
   "greeting": {
     "assalamu_alaykum": "Assalamu Alaykum wa Rahmatullahi wa Barakatuh",
     "prayer_approaching": "La oración se acerca",
     "prayer_now": "Hora de oración"
+  },
+  "tabs": {
+    "home": "Oraciones",
+    "prayerTimes": "Horarios de oración",
+    "qibla": "Qibla",
+    "calendar": "Calendario",
+    "quran": "Corán",
+    "more": "Más"
+  },
+  "menu": {
+    "settings": {
+      "label": "Ajustes",
+      "subtitle": "Método, ubicación, notificaciones"
+    },
+    "adhan": {
+      "label": "Biblioteca de Adhán",
+      "subtitle": "Audio de la llamada a la oración y recitador"
+    },
+    "tasbeeh": {
+      "label": "Contador de Tasbeeh",
+      "subtitle": "Contador digital de dhikr"
+    },
+    "duaDhikr": {
+      "label": "Dua y Adhkar",
+      "subtitle": "Súplicas de la mañana y la tarde"
+    },
+    "moon": {
+      "label": "Fase Lunar",
+      "subtitle": "Calendario lunar y fecha Hijri"
+    },
+    "quran": {
+      "label": "Corán",
+      "subtitle": "Escritura Uthmani con marcadores"
+    },
+    "stats": {
+      "label": "Estadísticas de Oración",
+      "subtitle": "Sigue tus oraciones y rachas"
+    },
+    "ramadan": {
+      "label": "Ramadán",
+      "subtitle": "Horarios de suhoor e iftar, seguimiento"
+    },
+    "subscription": {
+      "label": "Hazte Pro",
+      "subtitle": "Desbloquea funciones premium"
+    },
+    "homeWidget": {
+      "label": "Widget de Pantalla de Inicio",
+      "subtitle": "La próxima oración en tu pantalla de inicio"
+    },
+    "smartHome": {
+      "label": "Hogar Inteligente",
+      "subtitle": "Bloquea dispositivos durante el salah"
+    },
+    "pairTv": {
+      "label": "Vincular TV",
+      "subtitle": "Vincular la aplicación PrayCalc TV"
+    },
+    "tvManager": {
+      "label": "Mis TV",
+      "subtitle": "Gestiona las pantallas de TV vinculadas"
+    },
+    "agendas": {
+      "label": "Calendario de Oración",
+      "subtitle": "Añade los horarios de oración al calendario"
+    },
+    "timetable": {
+      "label": "Horario Mensual",
+      "subtitle": "Horarios de oración del mes completo + exportación al calendario"
+    },
+    "mosques": {
+      "label": "Mezquitas Cercanas",
+      "subtitle": "Encuentra mezquitas cerca de ti"
+    },
+    "travel": {
+      "label": "Modo Viaje",
+      "subtitle": "Qasr musafir para viajeros"
+    },
+    "jumuah": {
+      "label": "Jumu'ah",
+      "subtitle": "Recordatorios del viernes y Surat al-Kahf"
+    },
+    "masjidMute": {
+      "label": "Silencio Automático en Mezquita",
+      "subtitle": "Silencia tu teléfono cerca de una mezquita"
+    },
+    "fasting": {
+      "label": "Seguimiento de Ayuno",
+      "subtitle": "Ramadán, lunes y jueves, Días Blancos"
+    },
+    "qada": {
+      "label": "Oraciones Perdidas (Qada)",
+      "subtitle": "Sigue y recupera las oraciones perdidas"
+    },
+    "privacy": {
+      "label": "Privacidad y Datos",
+      "subtitle": "Controla el consentimiento de análisis"
+    },
+    "shareApp": {
+      "label": "Compartir PrayCalc",
+      "subtitle": "Cuéntaselo a un amigo o familiar"
+    }
   },
   "settings": {
     "title": "Configuración",
@@ -66,28 +210,692 @@
     "location": {
       "title": "Ubicación",
       "detect": "Detectar automáticamente",
-      "manual": "Ingresar manualmente"
-    }
+      "manual": "Ingresar manualmente",
+      "useGps": "Usar ubicación GPS",
+      "searchManually": "Buscar ciudad manualmente",
+      "currentCity": "Ciudad actual",
+      "noneSet": "No hay ubicación establecida. Se requiere GPS o ciudad manual.",
+      "gettingLocation": "Obteniendo tu ubicación...",
+      "permissionDenied": "Permiso denegado",
+      "permissionDeniedBody": "Activa la ubicación en los ajustes para detectar tu ciudad automáticamente."
+    },
+    "account": {
+      "title": "Cuenta",
+      "signedIn": "Sesión iniciada",
+      "anonymous": "Anónimo",
+      "free": "Gratis"
+    },
+    "highLatitude": {
+      "title": "Ajuste de Alta Latitud",
+      "hint": "Se aplica cuando el Fajr/Isha no puede alcanzar el ángulo requerido (ubicaciones muy al norte/sur en verano).",
+      "nightMiddle": "Mitad de la Noche",
+      "angleBased": "Basado en Ángulo",
+      "oneSeventh": "Un Séptimo de la Noche",
+      "none": "Ninguno (puede mostrarse como no disponible)"
+    },
+    "madhab": {
+      "title": "Madhhab (Asr)",
+      "hint": "Shafi'i: factor de sombra 1× | Hanafi: factor de sombra 2×"
+    },
+    "prayerAdjustments": {
+      "title": "Ajustes de Horarios de Oración",
+      "hint": "Ajusta cada horario en ±30 minutos para coincidir con el horario de tu mezquita local."
+    },
+    "hijriAdjustment": {
+      "title": "Ajuste de Fecha Hijri",
+      "hint": "Desplaza la fecha Hijri en ±2 días si el avistamiento local de la luna difiere del calendario Umm al-Qura.",
+      "offset": "Desplazamiento",
+      "decreaseAccessibilityLabel": "Disminuir el desplazamiento Hijri",
+      "increaseAccessibilityLabel": "Aumentar el desplazamiento Hijri"
+    },
+    "timeFormat": {
+      "title": "Formato de Hora"
+    },
+    "appearance": {
+      "title": "Apariencia",
+      "system": "Sistema",
+      "light": "Claro",
+      "dark": "Oscuro"
+    },
+    "customAngles": {
+      "fajr": "Ángulo de Fajr (°)",
+      "isha": "Ángulo de Isha (°)",
+      "fajrAccessibilityLabel": "Ángulo personalizado de Fajr en grados",
+      "ishaAccessibilityLabel": "Ángulo personalizado de Isha en grados"
+    },
+    "upsell": {
+      "priceLine": "Ummat+ 9,99 $/año — desbloquea la app de TV y el Hogar Inteligente",
+      "upgradeButton": "Mejorar a Ummat+"
+    },
+    "prayerAlerts": "Alertas de Horarios de Oración",
+    "manageNotifications": "Gestionar Notificaciones",
+    "appLanguage": "Idioma de la App",
+    "decreaseAccessibilityLabel": "Disminuir el ajuste de {{prayer}}",
+    "increaseAccessibilityLabel": "Aumentar el ajuste de {{prayer}}",
+    "valueAccessibilityLabel": "Desplazamiento Hijri: {{value}} días",
+    "label12h": "Formato de 12 horas",
+    "label24h": "Formato de 24 horas",
+    "themeAccessibilityLabel": "Tema {{theme}}"
   },
   "errors": {
     "location_permission": "Permita el acceso a la ubicación para calcular los horarios de oración",
     "network": "No se pudo conectar a la red",
     "calculation": "No se pudieron calcular los horarios de oración"
   },
-  "tabs": {
-    "home": "Oraciones",
-    "prayerTimes": "Horarios de oración",
-    "qibla": "Qibla",
-    "calendar": "Calendario",
-    "quran": "Corán",
-    "more": "Más"
-  },
-  "menu": {
-    "settings": {
-      "label": "Ajustes"
+  "screens": {
+    "more": {
+      "title": "Más"
+    },
+    "notFound": {
+      "title": "Pantalla No Encontrada",
+      "goHome": "Ir a Horarios de Oración"
+    },
+    "onboarding": {
+      "welcomeTitle": "Bienvenido a PrayCalc",
+      "welcomeDesc": "Horarios de oración precisos, dirección de la Qibla y calendario islámico — todo en un solo lugar.",
+      "getStarted": "Comenzar",
+      "locationTitle": "Activar Ubicación",
+      "locationDesc": "Los horarios de oración requieren tu ubicación para un cálculo preciso.",
+      "allowLocation": "Permitir Ubicación",
+      "skipManual": "Omitir — lo configuraré manualmente",
+      "authTitle": "¿Crear cuenta?",
+      "authDesc": "Opcional: crea una cuenta para sincronización en la nube e historial de oraciones. Siempre puedes registrarte más tarde.",
+      "skipForNow": "Omitir por ahora"
+    },
+    "auth": {
+      "appTagline": "Horarios de oración precisos para cada musulmán",
+      "tabSkip": "Omitir",
+      "continueTitle": "Continuar Sin Cuenta",
+      "continueDesc": "Los horarios de oración, la Qibla y el calendario funcionan completamente sin conexión, sin necesidad de cuenta. Tus ajustes se guardan localmente.",
+      "featurePrayerQibla": "Horarios de oración y Qibla",
+      "featureCalendar": "Calendario islámico",
+      "featureSettings": "Ajustes y notificaciones",
+      "continueAnonymously": "Continuar de Forma Anónima",
+      "signInTitle": "Iniciar Sesión",
+      "emailPlaceholder": "Correo electrónico",
+      "passwordPlaceholder": "Contraseña",
+      "namePlaceholder": "Nombre (opcional)",
+      "switchHint": "Una cuenta habilita la sincronización en la nube y el historial de oraciones entre dispositivos.",
+      "registerTitle": "Crear Cuenta",
+      "signingIn": "Iniciando sesión...",
+      "enterEmailPassword": "Por favor, introduce el correo electrónico y la contraseña.",
+      "loginFailed": "Error al iniciar sesión",
+      "registerFailed": "Error en el registro",
+      "verifyEmail": "Revisa tu correo electrónico para verificar tu cuenta y luego inicia sesión."
+    },
+    "adhan": {
+      "enablePerPrayer": "Activar Adhán por Oración",
+      "library": "Biblioteca de Adhán",
+      "noVoices": "No hay voces de adhán disponibles.",
+      "proRequiredTitle": "Se Requiere Ummat+",
+      "proRequiredBody": "{{name}} es una voz de adhán Pro. Mejora a Ummat+ para establecerla como tu adhán activo.",
+      "proFeature": "Función Pro",
+      "playPreview": "Reproducir vista previa",
+      "stopPreview": "Detener vista previa",
+      "voiceListLabel": "Lista de voces de adhán"
+    },
+    "agendas": {
+      "title": "Calendario de Oración",
+      "desc": "Añade bloques de salah a tu calendario del dispositivo como recordatorios. Cada oración obtiene un evento de {{minutes}} minutos con una alerta de 5 minutos antes.",
+      "whichPrayers": "Qué oraciones añadir",
+      "locationRequired": "Ubicación requerida",
+      "locationRequiredBody": "Establece tu ciudad en los ajustes para añadir los horarios de oración al calendario.",
+      "noCalendarFound": "No se encontró calendario",
+      "noCalendarFoundBody": "No se encontró un calendario editable en este dispositivo.",
+      "setLocationHint": "Establece tu ciudad en los ajustes para habilitar la sincronización del calendario.",
+      "addButton": "Añadir las Oraciones de Hoy al Calendario",
+      "addButtonAccessibilityLabel": "Añadir los horarios de oración de hoy al calendario",
+      "adding": "Añadiendo...",
+      "done": "Listo",
+      "addedCount": "Se añadieron {{count}} horarios de oración a tu calendario.",
+      "error": "Error",
+      "addFailed": "Error al añadir al calendario.",
+      "checkingPermission": "Comprobando permiso de calendario..."
+    },
+    "calendar": {
+      "eventsThisMonth": "Eventos Islámicos Este Mes"
+    },
+    "citySearch": {
+      "findCityTitle": "Buscar Ciudad",
+      "placeholder": "Buscar ciudad...",
+      "useCurrentLocation": "Usar Ubicación Actual",
+      "locating": "Localizando…",
+      "searching": "Buscando ciudades...",
+      "noResults": "No se encontraron ciudades para \"{{query}}\".",
+      "popularHint": "Se muestran ciudades populares. Escribe para buscar.",
+      "searchError": "Error de búsqueda: {{message}}",
+      "searchInputAccessibilityLabel": "Campo de búsqueda de ciudad",
+      "useCurrentLocationAccessibilityLabel": "Usar ubicación actual",
+      "resultsAccessibilityLabel": "Resultados de búsqueda de ciudad"
+    },
+    "duaDhikr": {
+      "noResults": "No se encontraron duas para esta categoría.",
+      "categoryAll": "Todas",
+      "categoryAfterAdhan": "Después del Adhán",
+      "categoryAfterPrayer": "Después de la Oración",
+      "categoryMorning": "Mañana",
+      "categoryEvening": "Tarde"
+    },
+    "moon": {
+      "hijriCalendar": "Calendario Hijri",
+      "hijriDay": "Día Hijri",
+      "month": "Mes",
+      "lunarAge": "Edad Lunar",
+      "daysUnit": "{{count}} días",
+      "upcomingPhases": "Próximas Fases",
+      "nextFullMoon": "Próxima Luna Llena 🌕",
+      "nextNewMoon": "Próxima Luna Nueva 🌑",
+      "significance": "Significado Islámico",
+      "illuminatedPct": "{{pct}}% iluminado",
+      "phaseNewMoon": "Luna Nueva",
+      "phaseWaxingCrescent": "Creciente Iluminante",
+      "phaseFirstQuarter": "Cuarto Creciente",
+      "phaseWaxingGibbous": "Gibosa Creciente",
+      "phaseFullMoon": "Luna Llena",
+      "phaseWaningGibbous": "Gibosa Menguante",
+      "phaseLastQuarter": "Cuarto Menguante",
+      "phaseWaningCrescent": "Creciente Menguante",
+      "ramadanNote": "Es Ramadán — el mes del ayuno y la búsqueda de Laylat al-Qadr.",
+      "dhulHijjahNote": "Los primeros diez días de {{month}} están entre los más virtuosos del año."
     },
     "mosques": {
-      "label": "Mezquitas cercanas"
+      "setLocation": "Establece tu ubicación para encontrar mezquitas cerca de ti.",
+      "setLocationAction": "Establecer Ubicación",
+      "finding": "Buscando mezquitas cercanas...",
+      "noResults": "No se encontraron mezquitas dentro de 10 km.",
+      "retry": "Reintentar",
+      "attribution": "Datos © colaboradores de OpenStreetMap",
+      "searchFailed": "Error al buscar mezquitas."
+    },
+    "masjidMute": {
+      "title": "Silencio Automático en Mezquita",
+      "intro": "PrayCalc aún no tiene un directorio de mezquitas — añade tus propias zonas de silencio a continuación. Recomendamos añadir tu mezquita local para que tu teléfono se silencie automáticamente al llegar.",
+      "masterToggleLabel": "Silencio automático activado",
+      "masterToggleSubtitle": "Silencia el teléfono al entrar en cualquier zona de abajo",
+      "zonesHeading": "Tus Zonas",
+      "emptyTitle": "Aún no hay zonas",
+      "emptySubtitle": "Añade tu mezquita local para que PrayCalc pueda silenciar automáticamente tu teléfono al llegar.",
+      "addZoneAction": "Añadir Tu Mezquita Local",
+      "addZoneButton": "Añadir una Zona",
+      "addZoneTitle": "Añadir Zona de Silencio",
+      "editZoneTitle": "Editar Zona de Silencio",
+      "labelFieldLabel": "Etiqueta",
+      "labelFieldPlaceholder": "ej. Masjid Al-Noor",
+      "labelRequired": "Introduce una etiqueta para esta zona.",
+      "coordinatesInvalid": "Introduce una latitud y longitud válidas, o busca/usa la ubicación actual.",
+      "searchAddressLabel": "Buscar dirección",
+      "searchAddressPlaceholder": "Buscar una dirección o lugar",
+      "searching": "Buscando...",
+      "searchNoResults": "No se encontraron coincidencias. Prueba con otra búsqueda o introduce las coordenadas manualmente.",
+      "useCurrentLocation": "Usar Ubicación Actual",
+      "locating": "Localizando...",
+      "locationFailed": "No se pudo obtener tu ubicación actual.",
+      "manualEntryToggle": "Introducir coordenadas manualmente",
+      "latitudeLabel": "Latitud",
+      "longitudeLabel": "Longitud",
+      "radiusLabel": "Radio: {{radius}} m",
+      "radiusHint": "Entre {{min}} m y {{max}} m — cubre la mezquita y su estacionamiento.",
+      "decreaseRadiusAccessibilityLabel": "Disminuir el radio en 25 metros",
+      "increaseRadiusAccessibilityLabel": "Aumentar el radio en 25 metros",
+      "saveZone": "Guardar Zona",
+      "deleteZone": "Eliminar Zona",
+      "deleteConfirmTitle": "¿Eliminar esta zona?",
+      "deleteConfirmBody": "\"{{label}}\" ya no silenciará automáticamente tu teléfono.",
+      "mapPickerFollowUp": "Se planea un selector de mapa para colocar un pin visualmente — por ahora, busca una dirección o usa tu ubicación actual.",
+      "permissionTitle": "Se Necesita Permiso de Ubicación",
+      "permissionBody": "Silencio Automático en Mezquita necesita acceso a la ubicación \"Siempre\" para detectar cuándo entras o sales de una zona, incluso con la app cerrada.",
+      "permissionGrant": "Conceder Permiso",
+      "permissionDeniedNote": "No se concedió la ubicación en segundo plano — las zonas se guardan, pero el silencio automático no se activará hasta que permitas el acceso \"Siempre\" en los ajustes del sistema.",
+      "androidNote": "Android: tu teléfono cambiará a vibración al llegar y restaurará tu modo de tono anterior al salir.",
+      "iosNote": "iOS: Apple no permite que las apps cambien el interruptor de silencio. En su lugar, PrayCalc envía una notificación pidiéndote que silencies el teléfono manualmente.",
+      "iosReminderTitle": "Has llegado",
+      "iosReminderBody": "Estás cerca de {{zone}} — por favor, silencia tu teléfono.",
+      "defaultZoneLabel": "tu zona de silencio",
+      "activeNow": "Activo ahora — teléfono silenciado",
+      "radiusValue": "Radio de {{radius}} m"
+    },
+    "pairTv": {
+      "upsellBadge": "Ummat+",
+      "unlockTitle": "Desbloquear Vinculación de TV",
+      "unlockDesc": "Ummat+ 9,99 $/año — desbloquea la app de TV y el Hogar Inteligente",
+      "pairedTitle": "TV Vinculada",
+      "pairedDesc": "Tu app de TV ahora está vinculada a esta cuenta.",
+      "title": "Vincular con TV",
+      "desc": "Abre PrayCalc en tu TV y luego introduce el PIN de 6 dígitos que aparece en pantalla.",
+      "enterPin": "Introduce el PIN de 6 dígitos que aparece en tu TV.",
+      "pinInputAccessibilityLabel": "PIN de vinculación de TV",
+      "pairFailed": "Error de vinculación. Inténtalo de nuevo.",
+      "pairDevice": "Vincular Dispositivo",
+      "invalidOrExpiredPin": "Ese PIN no es válido o ha caducado. Revisa la pantalla de la TV e inténtalo de nuevo."
+    },
+    "tvManager": {
+      "upsellBadge": "Ummat+",
+      "unlockTitle": "Desbloquear Gestión de TV",
+      "unlockDesc": "Ummat+ 9,99 $/año — desbloquea la app de TV y el Hogar Inteligente",
+      "emptyTitle": "Aún no hay TV vinculadas",
+      "emptySubtitle": "Vincula una TV para verla aquí y gestionar sus ajustes de pantalla.",
+      "pairACta": "Vincular una TV",
+      "noCity": "No hay ubicación establecida",
+      "nameLabel": "Nombre",
+      "colorLabel": "Color de Acento",
+      "streamLabel": "Fuente de Transmisión",
+      "streamMakkah": "Makkah TV",
+      "streamSaudiQuran": "Saudi Quran",
+      "streamMedina": "Medina",
+      "rotateLabel": "Rotación de Pantalla",
+      "decreaseRotate": "Disminuir minutos de rotación",
+      "increaseRotate": "Aumentar minutos de rotación",
+      "weatherLabel": "Mostrar Clima",
+      "updateLocationAction": "Actualizar ubicación a mi ubicación actual",
+      "updateLocationHint": "La TV toma los cambios de ubicación la próxima vez que se re-vincule — esto solo actualiza la ubicación guardada ahora.",
+      "noLocationTitle": "No Hay Ubicación Establecida",
+      "noLocationBody": "Establece tu ubicación en los ajustes antes de actualizar la ubicación de una TV.",
+      "locationUpdatedTitle": "Ubicación Actualizada",
+      "locationUpdatedBody": "Guardado. La TV usará esta ubicación la próxima vez que se re-vincule.",
+      "deleteAction": "Eliminar Esta TV",
+      "deleteConfirmTitle": "¿Eliminar TV?",
+      "deleteConfirmBody": "Esto desvinculará \"{{name}}\" y eliminará sus ajustes guardados. Esto no se puede deshacer.",
+      "deleteConfirmAction": "Eliminar",
+      "prayerFajr": "Fajr",
+      "prayerDhuhr": "Dhuhr",
+      "prayerAsr": "Asr",
+      "prayerMaghrib": "Maghrib",
+      "prayerIsha": "Isha",
+      "madhabShafii": "Shafi'i",
+      "madhabHanafi": "Hanafi",
+      "timeFormat12h": "12 horas",
+      "timeFormat24h": "24 horas",
+      "invalidCoordsTitle": "Coordenadas Inválidas",
+      "invalidCoordsBody": "Introduce una latitud válida (-90 a 90) y una longitud válida (-180 a 180).",
+      "deepSettingsLabel": "Ajustes Avanzados",
+      "countdownTakeoverLabel": "Toma de Control con Cuenta Regresiva",
+      "countdownTakeoverHint": "Toma el control de la pantalla con una gran cuenta regresiva antes de cada oración.",
+      "countdownMinutesLabel": "Iniciar Cuenta Regresiva",
+      "decreaseCountdown": "Disminuir minutos de cuenta regresiva",
+      "increaseCountdown": "Aumentar minutos de cuenta regresiva",
+      "iqamaLabel": "Horarios de Iqama",
+      "iqamaHint": "Muestra una cuenta regresiva de iqama después del adhán, desplazada por oración.",
+      "decreaseIqama": "Disminuir el desplazamiento de iqama de {{prayer}}",
+      "increaseIqama": "Aumentar el desplazamiento de iqama de {{prayer}}",
+      "nameOnlyLabel": "Modo Solo Nombre",
+      "nameOnlyHint": "Muestra solo el nombre de la oración (sin horarios) durante estos minutos antes del adhán.",
+      "nameOnlyMinutesLabel": "Duración de Solo Nombre",
+      "decreaseNameOnly": "Disminuir minutos de solo nombre",
+      "increaseNameOnly": "Aumentar minutos de solo nombre",
+      "madhabLabel": "Madhhab",
+      "timeFormatLabel": "Formato de Hora",
+      "calcMethodLabel": "Método de Cálculo",
+      "manualLocationToggle": "Introducir coordenadas manualmente",
+      "latitudeLabel": "Latitud",
+      "longitudeLabel": "Longitud",
+      "manualLocationSave": "Guardar Coordenadas",
+      "layoutThemeLabel": "Diseño y Tema",
+      "layoutLabel": "Diseño",
+      "themeLabel": "Tema",
+      "layoutClassic": "Clásico",
+      "layoutClassicDesc": "Horarios + transmisión en vivo lado a lado",
+      "layoutFlipped": "Invertido",
+      "layoutFlippedDesc": "Misma división, en espejo",
+      "layoutStreamFull": "Transmisión Completa",
+      "layoutStreamFullDesc": "Transmisión a pantalla completa con una franja de horarios",
+      "layoutTimesOnly": "Solo Horarios",
+      "layoutTimesOnlyDesc": "Solo horarios de oración, sin transmisión en vivo",
+      "layoutAmbient": "Ambiental",
+      "layoutAmbientDesc": "Pantalla de reloj ambiental minimalista",
+      "themeUmmatGreen": "Verde Ummat",
+      "themeMidnight": "Medianoche",
+      "themeWarmSand": "Arena Cálida",
+      "themeMono": "Mono"
+    },
+    "prayerTimes": {
+      "setCityTitle": "Establece Tu Ciudad",
+      "setCitySubtitle": "Activa la ubicación o selecciona manualmente una ciudad para ver los horarios de oración.",
+      "setLocationAction": "Establecer Ubicación",
+      "offlineMessage": "Mostrando los últimos horarios de oración conocidos (sin conexión)",
+      "next": "Siguiente: {{prayer}}",
+      "asrCalculation": "Cálculo de Asr",
+      "markedPrayed": "marcada como orada",
+      "notMarkedPrayed": "no marcada como orada",
+      "doubleTapToggle": "Toca dos veces para alternar.",
+      "shareTimes": "Compartir los horarios de hoy",
+      "shareAccessibilityLabel": "Compartir los horarios de oración de hoy"
+    },
+    "quran": {
+      "loading": "Cargando datos del Corán...",
+      "backToList": "Volver a la lista de suras",
+      "back": "Atrás",
+      "bismillah": "Bismillah",
+      "comingSoonBody": "Lee {{name}} ({{count}} versículos) con traducción y recitación en Islam.Wiki — nuestro lector completo del Corán.",
+      "readOnWiki": "Leer en Islam.Wiki →",
+      "removeBookmark": "Eliminar marcador",
+      "bookmarkVerse": "Marcar versículo",
+      "surahList": "Lista de suras",
+      "wikiFooter": "📖 Corán completo — las 114 suras, traducciones y audio en Islam.Wiki →",
+      "openFullQuran": "Abrir el Corán completo en Islam.Wiki",
+      "featuredVerse": "Versículo Destacado",
+      "readableBadge": "Disponible"
+    },
+    "ramadan": {
+      "subtitle": "Ramadán Mubarak",
+      "dayOf": "Día {{day}} de {{total}}",
+      "iftarIn": "Iftar en",
+      "suhoorEndsIn": "El suhoor termina en",
+      "notActive": "El Ramadán no está activo actualmente.\nMes Hijri actual: {{month}} ({{monthNumber}}/12)",
+      "todaysTimes": "Horarios de Hoy",
+      "suhoorEnds": "Fin del Suhoor (Fajr)",
+      "iftar": "Iftar (Maghrib)",
+      "noLocation": "Establece tu ubicación en los ajustes para ver los horarios de oración.",
+      "duasTitle": "Duas de Ramadán",
+      "laylatAlQadrTitle": "Laylat al-Qadr",
+      "laylatAlQadrBody": "Estamos en las últimas diez noches del Ramadán. Intensifica la adoración, especialmente en las noches impares (21, 23, 25, 27, 29)."
+    },
+    "notifications": {
+      "masterLabel": "Notificaciones de Oración",
+      "masterSub": "Recibe alertas antes de cada horario de oración",
+      "androidExactAlarm": "En Android 12+, permite \"Alarmas y recordatorios\" en los ajustes del sistema para alertas exactas de horarios de oración.",
+      "openSystemSettings": "Abrir Ajustes del Sistema",
+      "masterAccessibilityLabel": "Activar notificaciones de oración",
+      "openSystemSettingsAccessibilityLabel": "Abrir los ajustes del sistema para alarmas",
+      "perPrayerAlerts": "Alertas por Oración",
+      "minutesBefore_one": "{{count}} min antes",
+      "minutesBefore_other": "{{count}} min antes",
+      "iqamahOff": "iqama desactivado",
+      "iqamahAfter_one": "iqama +{{count}} min",
+      "iqamahAfter_other": "iqama +{{count}} min",
+      "adhanSoundTitle": "Sonido de Adhán",
+      "adhanSoundSub": "Qué adhán suena cuando llega una notificación de oración.",
+      "adhanSound": {
+        "takbir": "Takbir (apertura)",
+        "makkah": "Makkah",
+        "mishari": "Mishari Rashid",
+        "madina": "Madina"
+      },
+      "smartAlarmsTitle": "Alarmas Inteligentes",
+      "suhoorLabel": "Alarma de Suhoor",
+      "suhoorSub": "Despierta antes del Fajr para la comida antes del amanecer.",
+      "suhoorBefore_one": "{{count}} min antes del Fajr",
+      "suhoorBefore_other": "{{count}} min antes del Fajr",
+      "tahajjudLabel": "Tahajjud / Qiyam",
+      "tahajjudSub": "Levántate en la última parte de la noche para orar.",
+      "tahajjudLastThird": "Último tercio de la noche",
+      "tahajjudCustom": "Hora personalizada",
+      "nightTimesTitle": "Horarios Nocturnos (esta noche)",
+      "lastThirdBegins": "Comienza el último tercio",
+      "middleOfNight": "Mitad de la noche",
+      "nightTimesUnavailable": "Establece tu ubicación para ver los horarios nocturnos de esta noche.",
+      "reliabilityTitle": "Entrega Confiable del Adhán",
+      "reliabilitySub": "Asegúrate de que las alarmas suenen a tiempo",
+      "batteryTitle": "Permitir alarmas confiables",
+      "batteryIntro": "Android puede silenciar las alarmas de oración para ahorrar batería. Para escuchar el adhán a tiempo:",
+      "batteryStepAlarms": "Permite \"Alarmas y recordatorios\" (alarmas exactas) para Horarios de Oración.",
+      "batteryStepOptimization": "Desactiva la optimización de batería para Horarios de Oración para que no se ponga en reposo.",
+      "batteryOemNote": "Algunos teléfonos (Xiaomi, Huawei, Samsung, OnePlus, Oppo, Vivo) tienen un ajuste adicional de \"inicio automático\" o \"apps protegidas\" — activa Horarios de Oración también allí.",
+      "openExactAlarm": "Abrir Alarmas y Recordatorios",
+      "openBatterySettings": "Abrir ajustes de batería",
+      "testAdhanButton": "Probar mi adhán (5 s)",
+      "testAdhanScheduled": "Un adhán de prueba sonará en unos 5 segundos. Bloquea o pon la app en segundo plano para escucharlo como notificación.",
+      "dismiss": "Descartar"
+    },
+    "homeWidget": {
+      "widgetPreviewAccessibilityLabel": "Vista previa del widget mostrando la próxima oración",
+      "title": "Widget de Pantalla de Inicio",
+      "subtitle": "Ve la próxima oración en tu pantalla de inicio",
+      "widgetPreviewTitle": "Vista Previa del Widget",
+      "nextPrayer": "Próxima Oración",
+      "setLocationToPreview": "Establece tu ubicación para ver la vista previa",
+      "setupInstructions": "Instrucciones de Configuración",
+      "integrationStatus": "Estado de Integración",
+      "upsellMessage": "El widget de pantalla de inicio es una función de Ummat+.",
+      "upsellAction": "Mejorar a Ummat+",
+      "countdownPrefix": "en {{countdown}}",
+      "setupStep1": "Mantén presionada tu pantalla de inicio",
+      "setupStep2": "Toca el botón + (iOS) o el menú de Widgets (Android)",
+      "setupStep3": "Busca \"{{appName}}\"",
+      "setupStep4": "Elige el tamaño de widget preferido",
+      "setupStep5": "Toca Añadir Widget",
+      "statusAndroid": "Android: activo — el widget \"Próxima Oración\" de pantalla de inicio se ejecuta a través de react-native-android-widget y se actualiza automáticamente cada 30 minutos (e inmediatamente después de cambiar los ajustes o las notificaciones).",
+      "statusIos": "iOS: activo — el widget WidgetKit \"Próxima Oración\" se actualiza cuando cambias los ajustes o las notificaciones, y avanza en cada horario de oración por sí solo."
+    },
+    "smartHome": {
+      "proOnly": "Hogar Inteligente (bloqueo durante el salah + control de dispositivos) es una función de Ummat+.",
+      "upgradeAction": "Mejorar a Ummat+",
+      "lockDuringPrayer": "Bloquear Durante la Oración",
+      "lockDesc": "Atenúa automáticamente la pantalla y silencia los medios cuando comienza la oración. Requiere autenticación para configurarse.",
+      "lockOnSalah": "Bloquear en el Salah",
+      "lockOnSalahAccessibilityLabel": "Modo de bloqueo en el salah",
+      "activeNote": "La pantalla se atenuará y los medios se pausarán en los horarios de oración.\nAndroid: se libera el foco de medios. iOS: se muestra un recordatorio del modo silencioso.",
+      "linkedAccounts": "Cuentas Vinculadas",
+      "noLinks": "Aún no hay cuentas de hogar inteligente vinculadas. Abre la app de Alexa o Google Home, busca la skill o acción de PrayCalc, y vincula tu cuenta de Ummat.",
+      "linked": "Vinculado el {{date}}",
+      "unlink": "Desvincular",
+      "unlinkConfirmTitle": "¿Desvincular {{name}}?",
+      "unlinkConfirmBody": "Puedes volver a vincular {{name}} en cualquier momento desde la app de Alexa o Google Home.",
+      "unlinkConfirmAction": "Desvincular",
+      "unlinkFailedTitle": "No se pudo desvincular",
+      "learnMore": "Más información",
+      "authPrompt": "Autentícate para activar el bloqueo en el salah",
+      "useFallback": "Usar código de acceso"
+    },
+    "stats": {
+      "chartAccessibilityLabel": "Gráfico semanal de cumplimiento de oración",
+      "noLogs": "Aún no hay registros de oración. Comienza a completar tus oraciones para ver tus estadísticas.",
+      "dayStreak": "Racha de Días 🔥",
+      "weeklyRate": "Tasa Semanal",
+      "totalLogged": "Total Registrado",
+      "last7Days": "Últimos 7 Días",
+      "thisMonth": "Este Mes",
+      "byPrayer": "Por Oración",
+      "weekly": "Semanal",
+      "monthly": "Mensual",
+      "fastingStreak": "Racha de Ayuno",
+      "qadaOutstanding": "Qada Pendiente"
+    },
+    "subscription": {
+      "title": "PrayCalc Pro",
+      "subtitle": "Mejora tu experiencia de adoración",
+      "loadingOptions": "Cargando opciones de suscripción...",
+      "loadProductsFailed": "No se pudieron cargar los productos. Verifica tu conexión e inténtalo de nuevo.",
+      "connectFailed": "Error al conectar con la tienda.",
+      "createAccountTitle": "Crear una Cuenta",
+      "createAccountBody": "Inicia sesión primero para que tu compra pueda sincronizarse entre tus dispositivos.",
+      "purchaseFailed": "Error en la compra. Inténtalo de nuevo.",
+      "restoreFailed": "Error al restaurar.",
+      "proTitle": "Tienes Pro",
+      "proSub": "¡Gracias por apoyar a PrayCalc!",
+      "noProducts": "Productos de suscripción no disponibles. Configúralos en App Store Connect / Google Play Console.",
+      "restorePurchase": "Restaurar Compra",
+      "restorePurchaseAccessibilityLabel": "Restaurar compra anterior",
+      "legal": "Las suscripciones se renuevan automáticamente a menos que se cancelen al menos 24 horas antes del final del período actual. Gestiónalas en los ajustes de tu cuenta de App Store / Google Play.",
+      "featurePremiumAdhan": "Voces de adhán premium — recitadores adicionales",
+      "featureHomeWidget": "Widget de pantalla de inicio (próxima oración)",
+      "featureTvPairing": "Vinculación de la app PrayCalc TV",
+      "featureSmartHome": "Hogar Inteligente — bloquea dispositivos durante el salah",
+      "subscribeAccessibilityLabel": "Suscribirse a {{title}} por {{price}}"
+    },
+    "tasbeeh": {
+      "chooseDhikr": "Elegir Dhikr",
+      "of": "de {{count}}",
+      "resetCounter": "Reiniciar contador",
+      "todayTotal": "Total de Hoy",
+      "history": "Historial"
+    },
+    "timetable": {
+      "setCityTitle": "Establece Tu Ciudad",
+      "setCitySubtitle": "Establece tu ubicación para ver el horario mensual de oración.",
+      "previousMonth": "Mes anterior",
+      "nextMonth": "Mes siguiente",
+      "exportCalendar": "Exportar Calendario (.ics)",
+      "exportAccessibilityLabel": "Exportar los horarios de oración de este mes como archivo de calendario",
+      "shareTimes": "Compartir este mes",
+      "shareAccessibilityLabel": "Compartir el horario de oración de este mes"
+    },
+    "travel": {
+      "musafirModeTitle": "Modo Musafir",
+      "musafirModeDesc": "Soy un viajero (musafir). Aplicar qasr a las oraciones correspondientes.",
+      "musafirModeAccessibilityLabel": "Modo de viaje Musafir",
+      "musafirAlertTitle": "Modo Musafir (Viajero)",
+      "musafirAlertBody": "El qasr (acortamiento) reduce el Dhuhr, el Asr y el Isha de 4 a 2 rakat.\n\nNota: el jama (combinar oraciones) no se aplica automáticamente debido a las diferencias entre los eruditos. Sigue a tu erudito local o madhhab con respecto a combinar oraciones durante el viaje.",
+      "understood": "Entendido",
+      "qasrRakatCount": "Número de Rakat en Qasr",
+      "fiqhNote": "El Fajr y el Maghrib no se acortan (el qasr solo se aplica a las oraciones de 4 rakat). El jama (combinar oraciones) requiere seguir a tu erudito local o madhhab.",
+      "travelDestination": "Destino de Viaje",
+      "changeCity": "Cambiar",
+      "changeCityAccessibilityLabel": "Cambiar ciudad de viaje",
+      "selectTravelCity": "Seleccionar Ciudad de Viaje",
+      "selectTravelCityAccessibilityLabel": "Seleccionar ciudad de viaje",
+      "recalcNote": "Los horarios de oración se recalcularán para tu destino de viaje.",
+      "homeCity": "Ciudad de Origen",
+      "notSet": "No establecido"
+    },
+    "qibla": {
+      "calibrating": "Calibrando brújula...",
+      "locationRequiredTitle": "Ubicación Requerida",
+      "locationRequiredSubtitle": "Establece tu ubicación en los ajustes para encontrar la dirección de la Qibla.",
+      "bearingLabel": "Rumbo de la Qibla",
+      "compassAccessibilityLabel": "Brújula de Qibla, rumbo actual {{degrees}} grados",
+      "accuracyLabel": "Precisión: {{level}}",
+      "accuracyUnknown": "Desconocida",
+      "accuracyUnreliable": "Poco fiable",
+      "accuracyLow": "Baja",
+      "accuracyMedium": "Media",
+      "accuracyHigh": "Alta",
+      "headingNote": "Rumbo: {{degrees}}° | Rumbo ortodrómico hacia la Kaaba"
+    },
+    "fasting": {
+      "todaysFast": "Ayuno de Hoy",
+      "logToday": "Registrar el Ayuno de Hoy",
+      "unlogToday": "Eliminar Registro de Hoy",
+      "loggedAs": "Registrado: {{type}}",
+      "yourStreaks": "Tus Rachas",
+      "mondayStreak": "Racha de Lunes",
+      "thursdayStreak": "Racha de Jueves",
+      "whiteDaysMonth": "Días Blancos Este Mes",
+      "ramadanLogged": "Ayunos de Ramadán",
+      "qadaLogged": "Qada Recuperado",
+      "voluntaryLogged": "Ayunos Voluntarios",
+      "ramadanDayOf": "Ramadán — Día {{day}} de {{total}}",
+      "upcomingSuggestions": "Próximos Días de Ayuno Recomendados",
+      "logAction": "Registrar",
+      "sunnahSourceNote": "Ayuno los lunes y jueves: Sahih Muslim 1162. Los Días Blancos (13-15 de cada mes Hijri): Sunan an-Nasa'i 2345, Sunan Abi Dawud 2449.",
+      "recentLogs": "Registros Recientes"
+    },
+    "qada": {
+      "totalOwed": "Total de Oraciones Adeudadas",
+      "perPrayer": "Conteo por Oración",
+      "makeUpOne": "Recuperar Una",
+      "excusedTitle": "Períodos Excusados",
+      "fiqhNote": "Durante un período excusado (como la menstruación o el sangrado posparto), una mujer no ora — y esas oraciones perdidas no se recuperan (qada) después. Esto es diferente del ayuno: los ayunos perdidos durante ese tiempo SÍ se recuperan más tarde.",
+      "fiqhCitation": "Sahih al-Bujari 321 · Sahih Muslim 335",
+      "consultScholar": "Esto refleja la posición mayoritaria. Para tu situación específica, consulta a tu erudito local.",
+      "addExcusedRange": "Añadir Período Excusado",
+      "startDate": "Fecha de Inicio",
+      "endDate": "Fecha de Fin",
+      "noteOptional": "Nota (opcional)",
+      "notePlaceholder": "ej. menstruación, enfermedad",
+      "removeExcusedRangeAccessibilityLabel": "Eliminar período excusado"
+    },
+    "jumuah": {
+      "intro": "El viernes es el mejor día de la semana. Establece recordatorios suaves y prepárate para el Jumu'ah con sus sunnahs.",
+      "khutbahTitle": "Recordatorio de Jutba",
+      "khutbahSub": "Un aviso cada viernes antes de la jutba.",
+      "kahfTitle": "Recordatorio de Surat al-Kahf",
+      "kahfSub": "Recordatorio para recitar Surat al-Kahf el viernes.",
+      "kahfDayThursday": "Jueves por la tarde",
+      "kahfDayFriday": "Viernes por la mañana",
+      "reminderTime": "Hora del recordatorio",
+      "checklistTitle": "Sunnahs del Jumu'ah",
+      "virtueTitle": "La Virtud del Jumu'ah",
+      "virtueBody": "El Profeta ﷺ dijo: \"El mejor día en que ha salido el sol es el viernes.\"",
+      "virtueCitation": "Sahih Muslim 854",
+      "kahfVirtueBody": "El Profeta ﷺ dijo: \"Quien recite Surat al-Kahf el día del Jumu'ah, una luz brillará para él entre los dos viernes.\"",
+      "kahfVirtueCitation": "Relatado por al-Hakim y al-Bayhaqi; calificado como auténtico por al-Albani",
+      "checklist": {
+        "ghusl": "Realizar el ghusl (baño ritual)",
+        "ghuslCitation": "Sahih al-Bujari 877 · Sahih Muslim 846",
+        "cleanClothes": "Vestir ropa limpia y adecuada",
+        "cleanClothesCitation": "Sunan Abi Dawud 343 (hasan)",
+        "perfume": "Aplicar perfume (miswak y aseo)",
+        "perfumeCitation": "Sahih al-Bujari 880",
+        "early": "Ir temprano a la mezquita",
+        "earlyCitation": "Sahih al-Bujari 881 · Sahih Muslim 850",
+        "kahf": "Recitar Surat al-Kahf",
+        "kahfCitation": "al-Hakim / al-Bayhaqi (sahih según al-Albani)",
+        "salawat": "Aumentar los salawat sobre el Profeta ﷺ",
+        "salawatCitation": "Sunan Abi Dawud 1047 (sahih)",
+        "dua": "Buscar la hora de aceptación en la du'a",
+        "duaCitation": "Sahih al-Bujari 935 · Sahih Muslim 852"
+      }
+    },
+    "leadTimeAccessibilityLabel": "Tiempo de aviso de notificación de {{prayer}}, {{minutes}} minutos antes. Toca para cambiar.",
+    "iqamahAccessibilityLabel": "Recordatorio de iqama de {{prayer}}, {{status}}. Toca para cambiar.",
+    "enableAccessibilityLabel": "Activar adhán de {{prayer}}",
+    "rowAccessibilityLabel": "{{name}}, a {{distance}}",
+    "directionsAccessibilityLabel": "Abrir indicaciones a {{name}} en Mapas",
+    "accentColorAccessibilityLabel": "Color de acento {{hex}}",
+    "todayTotalAccessibilityLabel": "Total de dhikr de hoy: {{total}}",
+    "historyEntryAccessibilityLabel": "{{name}}: {{count}}, {{date}}",
+    "arabicTextAccessibilityLabel": "Árabe: {{transliteration}}",
+    "counterAccessibilityLabel": "Conteo: {{count}} de {{target}}. {{status}}",
+    "tapToIncrement": "Toca para incrementar",
+    "presetAccessibilityLabel": "{{transliteration}}, objetivo {{target}}, fuente {{source}}",
+    "zoneRowAccessibilityLabel": "{{label}}, radio de {{radius}} metros",
+    "phaseAccessibilityLabel": "Fase lunar: {{phase}}, {{illumination}}",
+    "voiceAccessibilityLabel": "{{name}} por {{reciter}}",
+    "voiceAccessibilityLabelPro": "{{name}} por {{reciter}} (Pro, se requiere mejora para seleccionar)",
+    "surahNameAccessibilityLabel": "Sura {{name}}",
+    "readOnWikiAccessibilityLabel": "Leer Sura {{name}} en Islam.Wiki",
+    "verseAccessibilityLabel": "Versículo {{number}}: {{transliteration}}",
+    "featuredVerseAccessibilityLabel": "{{label}}: Ayat al-Kursi",
+    "surahRowAccessibilityLabel": "Sura {{number}}, {{name}}, {{count}} versículos, {{type}}",
+    "fullTextAvailableSuffix": ", texto completo disponible",
+    "revelationMeccan": "Mecana",
+    "revelationMedinan": "Medinense"
+  },
+  "onboarding": {
+    "skip": "Omitir",
+    "welcome": {
+      "title": "Bienvenido a PrayCalc",
+      "desc": "Horarios de oración precisos, dirección de la Qibla y calendario islámico — configurado en pocos pasos.",
+      "cta": "Comenzar"
+    },
+    "location": {
+      "title": "Tu Ubicación",
+      "prime": "PrayCalc usa tu ubicación para calcular horarios de oración precisos para tu ciudad. Permanece en tu dispositivo — nunca la compartimos. Toca Permitir en la siguiente pantalla para continuar.",
+      "allow": "Permitir Ubicación",
+      "later": "Lo configuraré más tarde"
+    },
+    "notifications": {
+      "title": "Recordatorios de Oración",
+      "prime": "Recibe un recordatorio suave o el adhán en cada horario de oración para no perderte nunca un salah. Puedes ajustar más tarde qué oraciones te notifican.",
+      "allow": "Activar Recordatorios",
+      "later": "Ahora no"
+    },
+    "method": {
+      "title": "Método de Cálculo",
+      "dpcExplain": "DPC (Dynamic PrayCalc) calcula automáticamente los mejores horarios para tu ubicación — una mejora respecto al método de avistamiento lunar. Recomendamos mantenerlo.",
+      "dpcLabel": "Dinámico (PrayCalc DPC)",
+      "recommended": "Recomendado",
+      "orFixed": "O elige un método fijo",
+      "suggested": "Para tu región",
+      "continue": "Continuar"
+    },
+    "consent": {
+      "title": "Ayuda a Mejorar PrayCalc"
+    },
+    "done": {
+      "title": "Todo Listo",
+      "desc": "Tus horarios de oración están listos. Puedes cambiar cualquiera de estas opciones en cualquier momento en los ajustes.",
+      "cta": "Abrir PrayCalc"
     }
+  },
+  "consent": {
+    "title": "Análisis de Uso Anónimo",
+    "description": "Comparte datos de uso anónimos y agregados para ayudarnos a mejorar PrayCalc. Nunca se recopila información personal, de ubicación o de cuenta.",
+    "privacyNote": "Desactivado por defecto. No se envía nada a menos que lo actives, y puedes cambiarlo en cualquier momento.",
+    "accept": "Permitir",
+    "decline": "No, Gracias",
+    "toggleLabel": "Compartir análisis anónimo",
+    "privacyScreenTitle": "Privacidad",
+    "privacyScreenFooter": "PrayCalc prioriza la privacidad. Los análisis son anónimos y están desactivados a menos que optes por activarlos. Desactivar esto detiene toda la telemetría de inmediato."
   }
 }

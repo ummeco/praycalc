@@ -13,6 +13,27 @@
     "midnight": "Middernacht",
     "lastThird": "Laatste Derde"
   },
+  "notifications": {
+    "prayerTime": "{{prayer}}-tijd",
+    "iqamahTitle": "Iqama {{prayer}}",
+    "bodyNow": "Het is tijd voor het {{prayer}}-gebed — {{time}}",
+    "bodyAdvance_one": "{{prayer}} is over {{count}} minuut — {{time}}",
+    "bodyAdvance_other": "{{prayer}} is over {{count}} minuten — {{time}}",
+    "bodyIqamah": "Iqama-herinnering voor {{prayer}} (adhan was om {{time}})",
+    "snooze_one": "Sluimer {{count}} min",
+    "snooze_other": "Sluimer {{count}} min",
+    "snoozedBody": "Gesluimerde herinnering voor het {{prayer}}-gebed",
+    "suhoorTitle": "Suhoor",
+    "suhoorBody": "Tijd voor suhoor — de maaltijd vóór zonsopgang. Fajr komt eraan.",
+    "tahajjudTitle": "Tahajjud",
+    "tahajjudBody": "Het laatste derde deel van de nacht — een gezegende tijd voor qiyam en du'a.",
+    "jumuahKhutbahTitle": "Jumu'ah",
+    "jumuahKhutbahBody": "De khutbah begint binnenkort. Ga naar de moskee voor het Jumu'ah-gebed.",
+    "kahfTitle": "Surah al-Kahf",
+    "kahfBody": "Reciteer Surah al-Kahf voor het licht tussen de twee vrijdagen.",
+    "testTitle": "Test-adhan",
+    "testBody": "Als je dit hoort, werken je adhan-meldingen."
+  },
   "common": {
     "bismillah": "In de naam van Allah, de Meest Genadige, de Meest Barmhartige",
     "salah": "Gebed",
@@ -36,15 +57,138 @@
     "search": "Zoeken",
     "change": "Wijzigen",
     "reset": "Reset",
+    "complete": "Voltooid",
     "openInMaps": "Openen in Kaarten",
     "openSettings": "Instellingen openen",
     "upgrade": "Upgraden",
-    "signIn": "Inloggen"
+    "signIn": "Inloggen",
+    "createAccount": "Account aanmaken",
+    "continue": "Doorgaan",
+    "skip": "Overslaan",
+    "nothingHereYet": "Hier is nog niets",
+    "somethingWentWrong": "Er is iets misgegaan",
+    "tryAgain": "Probeer opnieuw",
+    "tooManyRequests": "Te veel verzoeken",
+    "waitBeforeRetrying": "Wacht {{seconds}}s voordat je het opnieuw probeert.",
+    "offlineCachedData": "Je bent offline. Opgeslagen gegevens worden getoond.",
+    "permissionRequired": "{{permission}}-toestemming vereist",
+    "permissionRequiredBody": "Gebedstijden vereisen toegang tot {{permission}}. Schakel dit in via Instellingen.",
+    "loadingContent": "Inhoud laden",
+    "permissionRequiredGeneric": "Toestemming vereist",
+    "permissionRequiredGenericBody": "{{permission}}-toestemming is vereist voor deze functie.",
+    "openSystemSettings": "Systeeminstellingen openen",
+    "retryRequest": "Verzoek opnieuw proberen",
+    "tooManyRequestsRetry": "Te veel verzoeken. Wacht {{seconds}}s voordat je het opnieuw probeert.",
+    "tooManyRequestsRetryGeneric": "Te veel verzoeken. Wacht even voordat je het opnieuw probeert.",
+    "offlineShowingCachedFrom": "Je bent offline. Gegevens van {{cachedAt}} worden getoond.",
+    "offlineShowingCachedGeneric": "Je bent offline. Opgeslagen gegevens worden getoond."
   },
   "greeting": {
     "assalamu_alaykum": "Assalamu Alaykum wa Rahmatullahi wa Barakatuh",
     "prayer_approaching": "Gebedstijd nadert",
     "prayer_now": "Gebedstijd"
+  },
+  "tabs": {
+    "home": "Gebeden",
+    "prayerTimes": "Gebedstijden",
+    "qibla": "Qibla",
+    "calendar": "Kalender",
+    "quran": "Koran",
+    "more": "Meer"
+  },
+  "menu": {
+    "settings": {
+      "label": "Instellingen",
+      "subtitle": "Methode, locatie, meldingen"
+    },
+    "adhan": {
+      "label": "Adhan-bibliotheek",
+      "subtitle": "Gebedsoproep-audio & voordrager"
+    },
+    "tasbeeh": {
+      "label": "Tasbeeh-teller",
+      "subtitle": "Digitale dhikr-teller"
+    },
+    "duaDhikr": {
+      "label": "Dua & Adhkar",
+      "subtitle": "Ochtend- en avondsmeekbeden"
+    },
+    "moon": {
+      "label": "Maanfase",
+      "subtitle": "Maankalender & Hijri-datum"
+    },
+    "quran": {
+      "label": "Koran",
+      "subtitle": "Uthmani-schrift met bladwijzers"
+    },
+    "stats": {
+      "label": "Gebedsstatistieken",
+      "subtitle": "Houd je gebeden & reeksen bij"
+    },
+    "ramadan": {
+      "label": "Ramadan",
+      "subtitle": "Suhoor- & Iftar-tijden, tracker"
+    },
+    "subscription": {
+      "label": "Word Pro",
+      "subtitle": "Ontgrendel premiumfuncties"
+    },
+    "homeWidget": {
+      "label": "Startschermwidget",
+      "subtitle": "Volgend gebed op je startscherm"
+    },
+    "smartHome": {
+      "label": "Smart Home",
+      "subtitle": "Vergrendel apparaten tijdens salah"
+    },
+    "pairTv": {
+      "label": "TV Koppelen",
+      "subtitle": "Koppel de PrayCalc TV-app"
+    },
+    "tvManager": {
+      "label": "Mijn TV's",
+      "subtitle": "Beheer gekoppelde tv-schermen"
+    },
+    "agendas": {
+      "label": "Gebedskalender",
+      "subtitle": "Voeg gebedstijden toe aan de kalender"
+    },
+    "timetable": {
+      "label": "Maandrooster",
+      "subtitle": "Volledige maand gebedstijden + kalenderexport"
+    },
+    "mosques": {
+      "label": "Moskeeën in de buurt",
+      "subtitle": "Vind moskeeën bij jou in de buurt"
+    },
+    "travel": {
+      "label": "Reismodus",
+      "subtitle": "Musafir qasr voor reizigers"
+    },
+    "jumuah": {
+      "label": "Jumu'ah",
+      "subtitle": "Vrijdagherinneringen & Surah al-Kahf"
+    },
+    "masjidMute": {
+      "label": "Moskee-auto-dempen",
+      "subtitle": "Zet je telefoon stil bij een moskee"
+    },
+    "fasting": {
+      "label": "Vastentracker",
+      "subtitle": "Ramadan, maandagen & donderdagen, Witte Dagen"
+    },
+    "qada": {
+      "label": "Gemiste gebeden (Qada)",
+      "subtitle": "Houd bij en haal gemiste gebeden in"
+    },
+    "privacy": {
+      "label": "Privacy & Gegevens",
+      "subtitle": "Beheer toestemming voor analyse"
+    },
+    "shareApp": {
+      "label": "Deel PrayCalc",
+      "subtitle": "Vertel het een vriend of familielid"
+    }
   },
   "settings": {
     "title": "Instellingen",
@@ -66,28 +210,692 @@
     "location": {
       "title": "Locatie",
       "detect": "Automatisch detecteren",
-      "manual": "Handmatig invoeren"
-    }
+      "manual": "Handmatig invoeren",
+      "useGps": "Gps-locatie gebruiken",
+      "searchManually": "Stad handmatig zoeken",
+      "currentCity": "Huidige stad",
+      "noneSet": "Geen locatie ingesteld. Gps of handmatige stad vereist.",
+      "gettingLocation": "Locatie ophalen...",
+      "permissionDenied": "Toestemming geweigerd",
+      "permissionDeniedBody": "Schakel locatie in via Instellingen om je stad automatisch te detecteren."
+    },
+    "account": {
+      "title": "Account",
+      "signedIn": "Ingelogd",
+      "anonymous": "Anoniem",
+      "free": "Gratis"
+    },
+    "highLatitude": {
+      "title": "Correctie voor hoge breedtegraden",
+      "hint": "Wordt toegepast wanneer Fajr/Isha de vereiste hoek niet kunnen bereiken (locaties ver in het noorden/zuiden in de zomer).",
+      "nightMiddle": "Midden van de nacht",
+      "angleBased": "Op basis van hoek",
+      "oneSeventh": "Een zevende van de nacht",
+      "none": "Geen (kan 'niet beschikbaar' tonen)"
+    },
+    "madhab": {
+      "title": "Madhab (Asr)",
+      "hint": "Shafi'i: 1× schaduwfactor | Hanafi: 2× schaduwfactor"
+    },
+    "prayerAdjustments": {
+      "title": "Aanpassing gebedstijden",
+      "hint": "Stel elke tijd bij met ±30 minuten om aan te sluiten bij het rooster van je lokale moskee."
+    },
+    "hijriAdjustment": {
+      "title": "Aanpassing Hijri-datum",
+      "hint": "Verschuif de Hijri-datum met ±2 dagen als de maanwaarneming bij jou afwijkt van de Umm al-Qura-kalender.",
+      "offset": "Verschuiving",
+      "decreaseAccessibilityLabel": "Hijri-verschuiving verlagen",
+      "increaseAccessibilityLabel": "Hijri-verschuiving verhogen"
+    },
+    "timeFormat": {
+      "title": "Tijdnotatie"
+    },
+    "appearance": {
+      "title": "Weergave",
+      "system": "Systeem",
+      "light": "Licht",
+      "dark": "Donker"
+    },
+    "customAngles": {
+      "fajr": "Fajr-hoek (°)",
+      "isha": "Isha-hoek (°)",
+      "fajrAccessibilityLabel": "Aangepaste Fajr-hoek in graden",
+      "ishaAccessibilityLabel": "Aangepaste Isha-hoek in graden"
+    },
+    "upsell": {
+      "priceLine": "Ummat+ $9,99/jaar — ontgrendelt de tv-app & Smart Home",
+      "upgradeButton": "Upgraden naar Ummat+"
+    },
+    "prayerAlerts": "Gebedstijdmeldingen",
+    "manageNotifications": "Meldingen beheren",
+    "appLanguage": "Apptaal",
+    "decreaseAccessibilityLabel": "{{prayer}}-aanpassing verlagen",
+    "increaseAccessibilityLabel": "{{prayer}}-aanpassing verhogen",
+    "valueAccessibilityLabel": "Hijri-verschuiving: {{value}} dagen",
+    "label12h": "12-uursnotatie",
+    "label24h": "24-uursnotatie",
+    "themeAccessibilityLabel": "{{theme}}-thema"
   },
   "errors": {
     "location_permission": "Sta locatietoegang toe om gebedstijden te berekenen",
     "network": "Kan geen verbinding maken met het netwerk",
     "calculation": "Kan de gebedstijden niet berekenen"
   },
-  "tabs": {
-    "home": "Gebeden",
-    "prayerTimes": "Gebedstijden",
-    "qibla": "Qibla",
-    "calendar": "Kalender",
-    "quran": "Koran",
-    "more": "Meer"
-  },
-  "menu": {
-    "settings": {
-      "label": "Instellingen"
+  "screens": {
+    "more": {
+      "title": "Meer"
+    },
+    "notFound": {
+      "title": "Scherm niet gevonden",
+      "goHome": "Ga naar Gebedstijden"
+    },
+    "onboarding": {
+      "welcomeTitle": "Welkom bij PrayCalc",
+      "welcomeDesc": "Nauwkeurige gebedstijden, Qibla-richting en de islamitische kalender — allemaal op één plek.",
+      "getStarted": "Aan de slag",
+      "locationTitle": "Locatie inschakelen",
+      "locationDesc": "Gebedstijden vereisen je locatie voor een nauwkeurige berekening.",
+      "allowLocation": "Locatie toestaan",
+      "skipManual": "Overslaan — ik stel het zelf in",
+      "authTitle": "Account aanmaken?",
+      "authDesc": "Optioneel: maak een account aan voor cloudsynchronisatie en gebedsgeschiedenis. Je kunt je altijd later registreren.",
+      "skipForNow": "Voorlopig overslaan"
+    },
+    "auth": {
+      "appTagline": "Nauwkeurige gebedstijden voor elke moslim",
+      "tabSkip": "Overslaan",
+      "continueTitle": "Doorgaan zonder account",
+      "continueDesc": "Gebedstijden, Qibla en kalender werken volledig offline, zonder account. Je instellingen worden lokaal opgeslagen.",
+      "featurePrayerQibla": "Gebedstijden & Qibla",
+      "featureCalendar": "Islamitische kalender",
+      "featureSettings": "Instellingen & meldingen",
+      "continueAnonymously": "Anoniem doorgaan",
+      "signInTitle": "Inloggen",
+      "emailPlaceholder": "E-mail",
+      "passwordPlaceholder": "Wachtwoord",
+      "namePlaceholder": "Naam (optioneel)",
+      "switchHint": "Een account maakt cloudsynchronisatie en gebedsgeschiedenis op al je apparaten mogelijk.",
+      "registerTitle": "Account aanmaken",
+      "signingIn": "Bezig met inloggen...",
+      "enterEmailPassword": "Voer je e-mailadres en wachtwoord in.",
+      "loginFailed": "Inloggen mislukt",
+      "registerFailed": "Registratie mislukt",
+      "verifyEmail": "Controleer je e-mail om je account te verifiëren en log daarna in."
+    },
+    "adhan": {
+      "enablePerPrayer": "Adhan per gebed inschakelen",
+      "library": "Adhan-bibliotheek",
+      "noVoices": "Geen adhan-stemmen beschikbaar.",
+      "proRequiredTitle": "Ummat+ vereist",
+      "proRequiredBody": "{{name}} is een Pro-adhanstem. Upgrade naar Ummat+ om deze als je actieve adhan in te stellen.",
+      "proFeature": "Pro-functie",
+      "playPreview": "Voorbeeld afspelen",
+      "stopPreview": "Voorbeeld stoppen",
+      "voiceListLabel": "Lijst met adhan-stemmen"
+    },
+    "agendas": {
+      "title": "Gebedskalender",
+      "desc": "Voeg salah-blokken als herinneringen toe aan je apparaatkalender. Elk gebed krijgt een gebeurtenis van {{minutes}} minuten met een melding 5 minuten vooraf.",
+      "whichPrayers": "Welke gebeden toevoegen",
+      "locationRequired": "Locatie vereist",
+      "locationRequiredBody": "Stel je stad in via Instellingen om gebedstijden aan de kalender toe te voegen.",
+      "noCalendarFound": "Geen kalender gevonden",
+      "noCalendarFoundBody": "Geen beschrijfbare kalender gevonden op dit apparaat.",
+      "setLocationHint": "Stel je stad in via Instellingen om kalendersynchronisatie in te schakelen.",
+      "addButton": "Voeg de gebeden van vandaag toe aan de kalender",
+      "addButtonAccessibilityLabel": "Voeg de gebedstijden van vandaag toe aan de kalender",
+      "adding": "Toevoegen...",
+      "done": "Klaar",
+      "addedCount": "{{count}} gebedstijden toegevoegd aan je kalender.",
+      "error": "Fout",
+      "addFailed": "Toevoegen aan kalender mislukt.",
+      "checkingPermission": "Kalendertoestemming controleren..."
+    },
+    "calendar": {
+      "eventsThisMonth": "Islamitische gebeurtenissen deze maand"
+    },
+    "citySearch": {
+      "findCityTitle": "Stad zoeken",
+      "placeholder": "Stad zoeken...",
+      "useCurrentLocation": "Huidige locatie gebruiken",
+      "locating": "Locatie bepalen…",
+      "searching": "Steden zoeken...",
+      "noResults": "Geen steden gevonden voor \"{{query}}\".",
+      "popularHint": "Populaire steden worden getoond. Typ om te zoeken.",
+      "searchError": "Zoekfout: {{message}}",
+      "searchInputAccessibilityLabel": "Zoekveld voor stad",
+      "useCurrentLocationAccessibilityLabel": "Huidige locatie gebruiken",
+      "resultsAccessibilityLabel": "Zoekresultaten voor steden"
+    },
+    "duaDhikr": {
+      "noResults": "Geen dua's gevonden voor deze categorie.",
+      "categoryAll": "Alle",
+      "categoryAfterAdhan": "Na de adhan",
+      "categoryAfterPrayer": "Na het gebed",
+      "categoryMorning": "Ochtend",
+      "categoryEvening": "Avond"
+    },
+    "moon": {
+      "hijriCalendar": "Hijri-kalender",
+      "hijriDay": "Hijri-dag",
+      "month": "Maand",
+      "lunarAge": "Maanleeftijd",
+      "daysUnit": "{{count}} dagen",
+      "upcomingPhases": "Komende fases",
+      "nextFullMoon": "Volgende volle maan 🌕",
+      "nextNewMoon": "Volgende nieuwe maan 🌑",
+      "significance": "Islamitische betekenis",
+      "illuminatedPct": "{{pct}}% verlicht",
+      "phaseNewMoon": "Nieuwe maan",
+      "phaseWaxingCrescent": "Wassende sikkel",
+      "phaseFirstQuarter": "Eerste kwartier",
+      "phaseWaxingGibbous": "Wassende maan",
+      "phaseFullMoon": "Volle maan",
+      "phaseWaningGibbous": "Afnemende maan",
+      "phaseLastQuarter": "Laatste kwartier",
+      "phaseWaningCrescent": "Afnemende sikkel",
+      "ramadanNote": "Het is Ramadan — de maand van vasten en het zoeken naar Laylat al-Qadr.",
+      "dhulHijjahNote": "De eerste tien dagen van {{month}} behoren tot de meest verdienstelijke van het jaar."
     },
     "mosques": {
-      "label": "Moskeeën in de buurt"
+      "setLocation": "Stel je locatie in om moskeeën bij jou in de buurt te vinden.",
+      "setLocationAction": "Locatie instellen",
+      "finding": "Moskeeën in de buurt zoeken...",
+      "noResults": "Geen moskeeën gevonden binnen 10 km.",
+      "retry": "Opnieuw proberen",
+      "attribution": "Gegevens © OpenStreetMap-bijdragers",
+      "searchFailed": "Zoeken naar moskeeën mislukt."
+    },
+    "masjidMute": {
+      "title": "Moskee-auto-dempen",
+      "intro": "PrayCalc heeft nog geen moskeegids — voeg hieronder je eigen demp-zones toe. We raden aan je lokale moskee toe te voegen, zodat je telefoon automatisch stil wordt bij aankomst.",
+      "masterToggleLabel": "Auto-dempen ingeschakeld",
+      "masterToggleSubtitle": "Telefoon dempen bij het betreden van een zone hieronder",
+      "zonesHeading": "Jouw zones",
+      "emptyTitle": "Nog geen zones",
+      "emptySubtitle": "Voeg je lokale moskee toe zodat PrayCalc je telefoon automatisch kan dempen bij aankomst.",
+      "addZoneAction": "Voeg je lokale moskee toe",
+      "addZoneButton": "Zone toevoegen",
+      "addZoneTitle": "Demp-zone toevoegen",
+      "editZoneTitle": "Demp-zone bewerken",
+      "labelFieldLabel": "Label",
+      "labelFieldPlaceholder": "bijv. Moskee Al-Noor",
+      "labelRequired": "Voer een label in voor deze zone.",
+      "coordinatesInvalid": "Voer een geldige breedte- en lengtegraad in, of zoek/gebruik de huidige locatie.",
+      "searchAddressLabel": "Adres zoeken",
+      "searchAddressPlaceholder": "Zoek een adres of plaats",
+      "searching": "Zoeken...",
+      "searchNoResults": "Geen resultaten gevonden. Probeer een andere zoekopdracht of voer handmatig coördinaten in.",
+      "useCurrentLocation": "Huidige locatie gebruiken",
+      "locating": "Locatie bepalen...",
+      "locationFailed": "Kan je huidige locatie niet bepalen.",
+      "manualEntryToggle": "Coördinaten handmatig invoeren",
+      "latitudeLabel": "Breedtegraad",
+      "longitudeLabel": "Lengtegraad",
+      "radiusLabel": "Straal: {{radius}} m",
+      "radiusHint": "Tussen {{min}} m en {{max}} m — dekt de moskee en het parkeerterrein.",
+      "decreaseRadiusAccessibilityLabel": "Straal met 25 meter verkleinen",
+      "increaseRadiusAccessibilityLabel": "Straal met 25 meter vergroten",
+      "saveZone": "Zone opslaan",
+      "deleteZone": "Zone verwijderen",
+      "deleteConfirmTitle": "Deze zone verwijderen?",
+      "deleteConfirmBody": "\"{{label}}\" dempt je telefoon niet langer automatisch.",
+      "mapPickerFollowUp": "Een kaartkiezer om visueel een pin te plaatsen is gepland — zoek voorlopig een adres of gebruik je huidige locatie.",
+      "permissionTitle": "Locatietoestemming vereist",
+      "permissionBody": "Moskee-auto-dempen heeft \"Altijd\"-locatietoegang nodig om te detecteren wanneer je een zone betreedt of verlaat, ook als de app gesloten is.",
+      "permissionGrant": "Toestemming verlenen",
+      "permissionDeniedNote": "Achtergrondlocatie is niet toegestaan — zones zijn opgeslagen, maar auto-dempen wordt niet geactiveerd totdat je \"Altijd\"-toegang toestaat in de systeeminstellingen.",
+      "androidNote": "Android: je telefoon schakelt bij aankomst over op trillen en herstelt bij vertrek je vorige geluidsmodus.",
+      "iosNote": "iOS: Apple staat apps niet toe je stille-modus-schakelaar te wijzigen. In plaats daarvan stuurt PrayCalc een melding met het verzoek je telefoon handmatig te dempen.",
+      "iosReminderTitle": "Je bent aangekomen",
+      "iosReminderBody": "Je bent in de buurt van {{zone}} — demp je telefoon.",
+      "defaultZoneLabel": "je demp-zone",
+      "activeNow": "Nu actief — telefoon gedempt",
+      "radiusValue": "Straal {{radius}} m"
+    },
+    "pairTv": {
+      "upsellBadge": "Ummat+",
+      "unlockTitle": "TV-koppeling ontgrendelen",
+      "unlockDesc": "Ummat+ $9,99/jaar — ontgrendelt de tv-app & Smart Home",
+      "pairedTitle": "TV gekoppeld",
+      "pairedDesc": "Je tv-app is nu gekoppeld aan dit account.",
+      "title": "Koppelen met tv",
+      "desc": "Open PrayCalc op je tv en voer de 6-cijferige pincode op het scherm in.",
+      "enterPin": "Voer de 6-cijferige pincode op je tv in.",
+      "pinInputAccessibilityLabel": "Tv-koppelingspincode",
+      "pairFailed": "Koppelen mislukt. Probeer opnieuw.",
+      "pairDevice": "Apparaat koppelen",
+      "invalidOrExpiredPin": "Die pincode is ongeldig of verlopen. Controleer het tv-scherm en probeer opnieuw."
+    },
+    "tvManager": {
+      "upsellBadge": "Ummat+",
+      "unlockTitle": "Tv-beheer ontgrendelen",
+      "unlockDesc": "Ummat+ $9,99/jaar — ontgrendelt de tv-app & Smart Home",
+      "emptyTitle": "Nog geen tv's gekoppeld",
+      "emptySubtitle": "Koppel een tv om deze hier te zien en de schermweergave te beheren.",
+      "pairACta": "Koppel een tv",
+      "noCity": "Geen locatie ingesteld",
+      "nameLabel": "Naam",
+      "colorLabel": "Accentkleur",
+      "streamLabel": "Streambron",
+      "streamMakkah": "Makkah TV",
+      "streamSaudiQuran": "Saudi Quran",
+      "streamMedina": "Medina",
+      "rotateLabel": "Schermrotatie",
+      "decreaseRotate": "Rotatieminuten verlagen",
+      "increaseRotate": "Rotatieminuten verhogen",
+      "weatherLabel": "Weer tonen",
+      "updateLocationAction": "Locatie bijwerken naar mijn huidige locatie",
+      "updateLocationHint": "De tv neemt locatiewijzigingen over bij de volgende herkoppeling — dit werkt de opgeslagen locatie nu bij.",
+      "noLocationTitle": "Geen locatie ingesteld",
+      "noLocationBody": "Stel je locatie in via Instellingen voordat je de locatie van een tv bijwerkt.",
+      "locationUpdatedTitle": "Locatie bijgewerkt",
+      "locationUpdatedBody": "Opgeslagen. De tv gebruikt deze locatie bij de volgende herkoppeling.",
+      "deleteAction": "Deze tv verwijderen",
+      "deleteConfirmTitle": "Tv verwijderen?",
+      "deleteConfirmBody": "Dit ontkoppelt \"{{name}}\" en verwijdert de opgeslagen instellingen. Dit kan niet ongedaan worden gemaakt.",
+      "deleteConfirmAction": "Verwijderen",
+      "prayerFajr": "Fajr",
+      "prayerDhuhr": "Dhuhr",
+      "prayerAsr": "Asr",
+      "prayerMaghrib": "Maghrib",
+      "prayerIsha": "Isha",
+      "madhabShafii": "Shafi'i",
+      "madhabHanafi": "Hanafi",
+      "timeFormat12h": "12-uurs",
+      "timeFormat24h": "24-uurs",
+      "invalidCoordsTitle": "Ongeldige coördinaten",
+      "invalidCoordsBody": "Voer een geldige breedtegraad (-90 tot 90) en lengtegraad (-180 tot 180) in.",
+      "deepSettingsLabel": "Geavanceerde instellingen",
+      "countdownTakeoverLabel": "Volledig scherm aftellen",
+      "countdownTakeoverHint": "Neem het scherm over met een groot aftelscherm vóór elk gebed.",
+      "countdownMinutesLabel": "Start aftellen",
+      "decreaseCountdown": "Aftelminuten verlagen",
+      "increaseCountdown": "Aftelminuten verhogen",
+      "iqamaLabel": "Iqama-tijden",
+      "iqamaHint": "Toon een iqama-aftelling na de adhan, met een verschuiving per gebed.",
+      "decreaseIqama": "{{prayer}}-iqamaverschuiving verlagen",
+      "increaseIqama": "{{prayer}}-iqamaverschuiving verhogen",
+      "nameOnlyLabel": "Alleen-naam-modus",
+      "nameOnlyHint": "Toon alleen de gebedsnaam (geen tijden) gedurende dit aantal minuten vóór de adhan.",
+      "nameOnlyMinutesLabel": "Duur alleen-naam-modus",
+      "decreaseNameOnly": "Alleen-naam-minuten verlagen",
+      "increaseNameOnly": "Alleen-naam-minuten verhogen",
+      "madhabLabel": "Madhab",
+      "timeFormatLabel": "Tijdnotatie",
+      "calcMethodLabel": "Berekeningsmethode",
+      "manualLocationToggle": "Coördinaten handmatig invoeren",
+      "latitudeLabel": "Breedtegraad",
+      "longitudeLabel": "Lengtegraad",
+      "manualLocationSave": "Coördinaten opslaan",
+      "layoutThemeLabel": "Indeling & thema",
+      "layoutLabel": "Indeling",
+      "themeLabel": "Thema",
+      "layoutClassic": "Klassiek",
+      "layoutClassicDesc": "Tijden + livestream naast elkaar",
+      "layoutFlipped": "Omgedraaid",
+      "layoutFlippedDesc": "Zelfde indeling, gespiegeld",
+      "layoutStreamFull": "Volledig scherm stream",
+      "layoutStreamFullDesc": "Volledig scherm stream met tijdenbalk",
+      "layoutTimesOnly": "Alleen tijden",
+      "layoutTimesOnlyDesc": "Alleen gebedstijden, geen livestream",
+      "layoutAmbient": "Ambient",
+      "layoutAmbientDesc": "Minimale ambient klokweergave",
+      "themeUmmatGreen": "Ummat Green",
+      "themeMidnight": "Midnight",
+      "themeWarmSand": "Warm Sand",
+      "themeMono": "Mono"
+    },
+    "prayerTimes": {
+      "setCityTitle": "Stel je stad in",
+      "setCitySubtitle": "Schakel locatie in of selecteer handmatig een stad om gebedstijden te zien.",
+      "setLocationAction": "Locatie instellen",
+      "offlineMessage": "Laatst bekende gebedstijden getoond (offline)",
+      "next": "Volgende: {{prayer}}",
+      "asrCalculation": "Asr-berekening",
+      "markedPrayed": "gemarkeerd als gebeden",
+      "notMarkedPrayed": "niet gemarkeerd als gebeden",
+      "doubleTapToggle": "Dubbeltik om te wisselen.",
+      "shareTimes": "Deel de tijden van vandaag",
+      "shareAccessibilityLabel": "Deel de gebedstijden van vandaag"
+    },
+    "quran": {
+      "loading": "Korangegevens laden...",
+      "backToList": "Terug naar surah-lijst",
+      "back": "Terug",
+      "bismillah": "Bismillah",
+      "comingSoonBody": "Lees {{name}} ({{count}} verzen) met vertaling en recitatie op Islam.Wiki — onze volledige Koranlezer.",
+      "readOnWiki": "Lees op Islam.Wiki →",
+      "removeBookmark": "Bladwijzer verwijderen",
+      "bookmarkVerse": "Vers markeren met bladwijzer",
+      "surahList": "Surah-lijst",
+      "wikiFooter": "📖 Volledige Koran — alle 114 surahs, vertalingen & audio op Islam.Wiki →",
+      "openFullQuran": "Open de volledige Koran op Islam.Wiki",
+      "featuredVerse": "Uitgelicht vers",
+      "readableBadge": "Beschikbaar"
+    },
+    "ramadan": {
+      "subtitle": "Ramadan Mubarak",
+      "dayOf": "Dag {{day}} van {{total}}",
+      "iftarIn": "Iftar over",
+      "suhoorEndsIn": "Suhoor eindigt over",
+      "notActive": "Ramadan is momenteel niet actief.\nHuidige Hijri-maand: {{month}} ({{monthNumber}}/12)",
+      "todaysTimes": "Tijden van vandaag",
+      "suhoorEnds": "Einde suhoor (Fajr)",
+      "iftar": "Iftar (Maghrib)",
+      "noLocation": "Stel je locatie in via Instellingen om gebedstijden te zien.",
+      "duasTitle": "Ramadan-dua's",
+      "laylatAlQadrTitle": "Laylat al-Qadr",
+      "laylatAlQadrBody": "We zitten in de laatste tien nachten van Ramadan. Verhoog je aanbidding, vooral op de oneven nachten (21, 23, 25, 27, 29)."
+    },
+    "notifications": {
+      "masterLabel": "Gebedsmeldingen",
+      "masterSub": "Ontvang meldingen vóór elke gebedstijd",
+      "androidExactAlarm": "Sta op Android 12+ \"Alarmen & herinneringen\" toe in de systeeminstellingen voor exacte gebedstijdmeldingen.",
+      "openSystemSettings": "Systeeminstellingen openen",
+      "masterAccessibilityLabel": "Gebedsmeldingen inschakelen",
+      "openSystemSettingsAccessibilityLabel": "Systeeminstellingen voor alarmen openen",
+      "perPrayerAlerts": "Meldingen per gebed",
+      "minutesBefore_one": "{{count}}m van tevoren",
+      "minutesBefore_other": "{{count}}m van tevoren",
+      "iqamahOff": "iqama uit",
+      "iqamahAfter_one": "iqama +{{count}}m",
+      "iqamahAfter_other": "iqama +{{count}}m",
+      "adhanSoundTitle": "Adhan-geluid",
+      "adhanSoundSub": "Welke adhan afspeelt wanneer een gebedsmelding binnenkomt.",
+      "adhanSound": {
+        "takbir": "Takbir (opening)",
+        "makkah": "Makkah",
+        "mishari": "Mishari Rashid",
+        "madina": "Madina"
+      },
+      "smartAlarmsTitle": "Slimme alarmen",
+      "suhoorLabel": "Suhoor-alarm",
+      "suhoorSub": "Word wakker vóór Fajr voor de maaltijd vóór zonsopgang.",
+      "suhoorBefore_one": "{{count}} min vóór Fajr",
+      "suhoorBefore_other": "{{count}} min vóór Fajr",
+      "tahajjudLabel": "Tahajjud / Qiyam",
+      "tahajjudSub": "Sta op in het laatste deel van de nacht om te bidden.",
+      "tahajjudLastThird": "Laatste derde van de nacht",
+      "tahajjudCustom": "Aangepaste tijd",
+      "nightTimesTitle": "Nachttijden (vannacht)",
+      "lastThirdBegins": "Laatste derde begint",
+      "middleOfNight": "Midden van de nacht",
+      "nightTimesUnavailable": "Stel je locatie in om de nachttijden van vanavond te zien.",
+      "reliabilityTitle": "Betrouwbare adhan-bezorging",
+      "reliabilitySub": "Zorg dat alarmen op tijd afgaan",
+      "batteryTitle": "Betrouwbare alarmen toestaan",
+      "batteryIntro": "Android kan gebedsalarmen dempen om de batterij te sparen. Om de adhan op tijd te horen:",
+      "batteryStepAlarms": "Sta \"Alarmen & herinneringen\" (exacte alarmen) toe voor Gebedstijden.",
+      "batteryStepOptimization": "Schakel batterijoptimalisatie voor Gebedstijden uit, zodat de app niet in slaap wordt gezet.",
+      "batteryOemNote": "Sommige telefoons (Xiaomi, Huawei, Samsung, OnePlus, Oppo, Vivo) hebben een extra \"auto-start\"- of \"beschermde apps\"-instelling — schakel Gebedstijden daar ook in.",
+      "openExactAlarm": "Alarmen & herinneringen openen",
+      "openBatterySettings": "Batterij-instellingen openen",
+      "testAdhanButton": "Test mijn adhan (5s)",
+      "testAdhanScheduled": "Er speelt over ongeveer 5 seconden een test-adhan af. Vergrendel het scherm of stuur de app naar de achtergrond om het als melding te horen.",
+      "dismiss": "Sluiten"
+    },
+    "homeWidget": {
+      "widgetPreviewAccessibilityLabel": "Widgetvoorbeeld met het volgende gebedstijdstip",
+      "title": "Startschermwidget",
+      "subtitle": "Bekijk het volgende gebedstijdstip op je startscherm",
+      "widgetPreviewTitle": "Widgetvoorbeeld",
+      "nextPrayer": "Volgend gebed",
+      "setLocationToPreview": "Stel je locatie in voor een voorbeeld",
+      "setupInstructions": "Installatie-instructies",
+      "integrationStatus": "Integratiestatus",
+      "upsellMessage": "De startschermwidget is een Ummat+-functie.",
+      "upsellAction": "Upgraden naar Ummat+",
+      "countdownPrefix": "over {{countdown}}",
+      "setupStep1": "Houd je startscherm ingedrukt",
+      "setupStep2": "Tik op de +-knop (iOS) of het widgetmenu (Android)",
+      "setupStep3": "Zoek naar \"{{appName}}\"",
+      "setupStep4": "Kies je gewenste widgetformaat",
+      "setupStep5": "Tik op Widget toevoegen",
+      "statusAndroid": "Android: actief — de \"Volgend gebed\"-startschermwidget draait via react-native-android-widget en ververst automatisch elke 30 minuten (en meteen na wijziging van instellingen of meldingen).",
+      "statusIos": "iOS: actief — de WidgetKit-widget \"Volgend gebed\" werkt bij bij elke wijziging van instellingen of meldingen en schakelt zelfstandig door bij elke gebedstijd."
+    },
+    "smartHome": {
+      "proOnly": "Smart Home (vergrendelen-tijdens-salah + apparaatbeheer) is een Ummat+-functie.",
+      "upgradeAction": "Upgraden naar Ummat+",
+      "lockDuringPrayer": "Vergrendelen tijdens gebed",
+      "lockDesc": "Dim automatisch het scherm en dempt media bij het begin van de gebedstijd. Vereist authenticatie om in te stellen.",
+      "lockOnSalah": "Vergrendelen tijdens salah",
+      "lockOnSalahAccessibilityLabel": "Modus vergrendelen tijdens salah",
+      "activeNote": "Het scherm dimt en media wordt gepauzeerd tijdens gebedstijden.\nAndroid: media-focus wordt vrijgegeven. iOS: herinnering voor stille modus getoond.",
+      "linkedAccounts": "Gekoppelde accounts",
+      "noLinks": "Nog geen smart-home-accounts gekoppeld. Open de Alexa- of Google Home-app, zoek de PrayCalc-skill of -actie en koppel je Ummat-account.",
+      "linked": "Gekoppeld op {{date}}",
+      "unlink": "Ontkoppelen",
+      "unlinkConfirmTitle": "{{name}} ontkoppelen?",
+      "unlinkConfirmBody": "Je kunt {{name}} altijd opnieuw koppelen via de Alexa- of Google Home-app.",
+      "unlinkConfirmAction": "Ontkoppelen",
+      "unlinkFailedTitle": "Ontkoppelen mislukt",
+      "learnMore": "Meer informatie",
+      "authPrompt": "Authenticeer om vergrendelen-tijdens-salah in te schakelen",
+      "useFallback": "Toegangscode gebruiken"
+    },
+    "stats": {
+      "chartAccessibilityLabel": "Grafiek van wekelijkse gebedsvoltooiing",
+      "noLogs": "Nog geen gebedslogboeken. Begin met het voltooien van gebeden om je statistieken te zien.",
+      "dayStreak": "Dagenreeks 🔥",
+      "weeklyRate": "Wekelijks percentage",
+      "totalLogged": "Totaal geregistreerd",
+      "last7Days": "Afgelopen 7 dagen",
+      "thisMonth": "Deze maand",
+      "byPrayer": "Per gebed",
+      "weekly": "Wekelijks",
+      "monthly": "Maandelijks",
+      "fastingStreak": "Vastenreeks",
+      "qadaOutstanding": "Openstaande qada"
+    },
+    "subscription": {
+      "title": "PrayCalc Pro",
+      "subtitle": "Verrijk je aanbiddingservaring",
+      "loadingOptions": "Abonnementsopties laden...",
+      "loadProductsFailed": "Kan producten niet laden. Controleer je verbinding en probeer opnieuw.",
+      "connectFailed": "Verbinden met winkel mislukt.",
+      "createAccountTitle": "Maak een account aan",
+      "createAccountBody": "Log eerst in zodat je aankoop op al je apparaten kan synchroniseren.",
+      "purchaseFailed": "Aankoop mislukt. Probeer opnieuw.",
+      "restoreFailed": "Herstellen mislukt.",
+      "proTitle": "Je hebt Pro",
+      "proSub": "Bedankt voor je steun aan PrayCalc!",
+      "noProducts": "Abonnementsproducten niet beschikbaar. Configureer dit in App Store Connect / Google Play Console.",
+      "restorePurchase": "Aankoop herstellen",
+      "restorePurchaseAccessibilityLabel": "Vorige aankoop herstellen",
+      "legal": "Abonnementen worden automatisch verlengd tenzij minstens 24 uur vóór het einde van de huidige periode wordt geannuleerd. Beheer dit in je App Store- / Google Play-accountinstellingen.",
+      "featurePremiumAdhan": "Premium adhan-stemmen — extra voordragers",
+      "featureHomeWidget": "Startschermwidget (volgend gebed)",
+      "featureTvPairing": "Koppeling met de PrayCalc TV-app",
+      "featureSmartHome": "Smart Home — vergrendel apparaten tijdens salah",
+      "subscribeAccessibilityLabel": "Abonneer op {{title}} voor {{price}}"
+    },
+    "tasbeeh": {
+      "chooseDhikr": "Kies dhikr",
+      "of": "van {{count}}",
+      "resetCounter": "Teller resetten",
+      "todayTotal": "Totaal van vandaag",
+      "history": "Geschiedenis"
+    },
+    "timetable": {
+      "setCityTitle": "Stel je stad in",
+      "setCitySubtitle": "Stel je locatie in om het maandelijkse gebedsrooster te zien.",
+      "previousMonth": "Vorige maand",
+      "nextMonth": "Volgende maand",
+      "exportCalendar": "Kalender exporteren (.ics)",
+      "exportAccessibilityLabel": "Exporteer de gebedstijden van deze maand als kalenderbestand",
+      "shareTimes": "Deel deze maand",
+      "shareAccessibilityLabel": "Deel het gebedsrooster van deze maand"
+    },
+    "travel": {
+      "musafirModeTitle": "Musafir-modus",
+      "musafirModeDesc": "Ik ben een reiziger (musafir). Pas qasr toe op de betreffende gebeden.",
+      "musafirModeAccessibilityLabel": "Musafir-reismodus",
+      "musafirAlertTitle": "Musafir-modus (reiziger)",
+      "musafirAlertBody": "Qasr (inkorten) verkort Dhuhr, Asr en Isha van 4 naar 2 rakat.\n\nLet op: Jama (gebeden combineren) wordt niet automatisch toegepast vanwege verschillen tussen geleerden. Volg de richtlijnen van je lokale geleerde of rechtsschool wat betreft het combineren van gebeden tijdens het reizen.",
+      "understood": "Begrepen",
+      "qasrRakatCount": "Aantal rakat bij qasr",
+      "fiqhNote": "Fajr en Maghrib worden niet ingekort (qasr geldt alleen voor gebeden van 4 rakat). Jama (gebeden combineren) vereist het volgen van je lokale geleerde of rechtsschool.",
+      "travelDestination": "Reisbestemming",
+      "changeCity": "Wijzigen",
+      "changeCityAccessibilityLabel": "Reisstad wijzigen",
+      "selectTravelCity": "Selecteer reisstad",
+      "selectTravelCityAccessibilityLabel": "Reisstad selecteren",
+      "recalcNote": "Gebedstijden worden opnieuw berekend voor je reisbestemming.",
+      "homeCity": "Thuisstad",
+      "notSet": "Niet ingesteld"
+    },
+    "qibla": {
+      "calibrating": "Kompas kalibreren...",
+      "locationRequiredTitle": "Locatie vereist",
+      "locationRequiredSubtitle": "Stel je locatie in via Instellingen om de Qibla-richting te vinden.",
+      "bearingLabel": "Qibla-richting",
+      "compassAccessibilityLabel": "Qibla-kompas, huidige richting {{degrees}} graden",
+      "accuracyLabel": "Nauwkeurigheid: {{level}}",
+      "accuracyUnknown": "Onbekend",
+      "accuracyUnreliable": "Onbetrouwbaar",
+      "accuracyLow": "Laag",
+      "accuracyMedium": "Gemiddeld",
+      "accuracyHigh": "Hoog",
+      "headingNote": "Richting: {{degrees}}° | Grootcirkelrichting naar de Kaaba"
+    },
+    "fasting": {
+      "todaysFast": "Vasten van vandaag",
+      "logToday": "Vasten van vandaag registreren",
+      "unlogToday": "Registratie van vandaag verwijderen",
+      "loggedAs": "Geregistreerd: {{type}}",
+      "yourStreaks": "Jouw reeksen",
+      "mondayStreak": "Maandagreeks",
+      "thursdayStreak": "Donderdagreeks",
+      "whiteDaysMonth": "Witte Dagen deze maand",
+      "ramadanLogged": "Ramadan-vasten",
+      "qadaLogged": "Ingehaalde qada",
+      "voluntaryLogged": "Vrijwillige vasten",
+      "ramadanDayOf": "Ramadan — dag {{day}} van {{total}}",
+      "upcomingSuggestions": "Aankomende aanbevolen vastendagen",
+      "logAction": "Registreren",
+      "sunnahSourceNote": "Vasten op maandag & donderdag: Sahih Muslim 1162. De Witte Dagen (13e–15e van elke Hijri-maand): Sunan an-Nasa'i 2345, Sunan Abi Dawud 2449.",
+      "recentLogs": "Recente registraties"
+    },
+    "qada": {
+      "totalOwed": "Totaal verschuldigde gebeden",
+      "perPrayer": "Aantal per gebed",
+      "makeUpOne": "Eén inhalen",
+      "excusedTitle": "Vrijgestelde perioden",
+      "fiqhNote": "Tijdens een vrijgestelde periode (zoals menstruatie of postnatale bloeding) bidt een vrouw niet — en die gemiste gebeden worden achteraf niet ingehaald (qada). Dit verschilt van vasten: gemiste vastendagen in die periode WORDEN later wel ingehaald.",
+      "fiqhCitation": "Sahih al-Bukhari 321 · Sahih Muslim 335",
+      "consultScholar": "Dit weerspiegelt het standpunt van de meerderheid. Raadpleeg voor jouw specifieke situatie je lokale geleerde.",
+      "addExcusedRange": "Vrijgestelde periode toevoegen",
+      "startDate": "Startdatum",
+      "endDate": "Einddatum",
+      "noteOptional": "Notitie (optioneel)",
+      "notePlaceholder": "bijv. menstruatie, ziekte",
+      "removeExcusedRangeAccessibilityLabel": "Vrijgestelde periode verwijderen"
+    },
+    "jumuah": {
+      "intro": "Vrijdag is de beste dag van de week. Stel zachte herinneringen in en bereid je voor op Jumu'ah met de bijbehorende sunnahs.",
+      "khutbahTitle": "Khutbah-herinnering",
+      "khutbahSub": "Een herinnering elke vrijdag vóór de khutbah.",
+      "kahfTitle": "Herinnering Surah al-Kahf",
+      "kahfSub": "Herinnering om Surah al-Kahf op vrijdag te reciteren.",
+      "kahfDayThursday": "Donderdagavond",
+      "kahfDayFriday": "Vrijdagochtend",
+      "reminderTime": "Herinneringstijd",
+      "checklistTitle": "Sunnahs van Jumu'ah",
+      "virtueTitle": "De deugd van Jumu'ah",
+      "virtueBody": "De Profeet ﷺ zei: \"De beste dag waarop de zon is opgekomen, is vrijdag.\"",
+      "virtueCitation": "Sahih Muslim 854",
+      "kahfVirtueBody": "De Profeet ﷺ zei: \"Wie Surah al-Kahf leest op de dag van Jumu'ah, voor hem zal een licht schijnen tussen de twee vrijdagen.\"",
+      "kahfVirtueCitation": "Overgeleverd door al-Hakim en al-Bayhaqi; authentiek verklaard door al-Albani",
+      "checklist": {
+        "ghusl": "Ghusl verrichten (rituele wassing)",
+        "ghuslCitation": "Sahih al-Bukhari 877 · Sahih Muslim 846",
+        "cleanClothes": "Draag schone, nette kleding",
+        "cleanClothesCitation": "Sunan Abi Dawud 343 (hasan)",
+        "perfume": "Parfum gebruiken (miswak & verzorging)",
+        "perfumeCitation": "Sahih al-Bukhari 880",
+        "early": "Ga vroeg naar de moskee",
+        "earlyCitation": "Sahih al-Bukhari 881 · Sahih Muslim 850",
+        "kahf": "Reciteer Surah al-Kahf",
+        "kahfCitation": "al-Hakim / al-Bayhaqi (sahih volgens al-Albani)",
+        "salawat": "Verhoog salawat op de Profeet ﷺ",
+        "salawatCitation": "Sunan Abi Dawud 1047 (sahih)",
+        "dua": "Zoek het uur van verhoring in du'a",
+        "duaCitation": "Sahih al-Bukhari 935 · Sahih Muslim 852"
+      }
+    },
+    "leadTimeAccessibilityLabel": "{{prayer}}-meldingsvoorlooptijd, {{minutes}} minuten van tevoren. Tik om te wijzigen.",
+    "iqamahAccessibilityLabel": "{{prayer}}-iqama-herinnering, {{status}}. Tik om te wijzigen.",
+    "enableAccessibilityLabel": "{{prayer}}-adhan inschakelen",
+    "rowAccessibilityLabel": "{{name}}, {{distance}} verderop",
+    "directionsAccessibilityLabel": "Open routebeschrijving naar {{name}} in Kaarten",
+    "accentColorAccessibilityLabel": "Accentkleur {{hex}}",
+    "todayTotalAccessibilityLabel": "Totaal dhikr van vandaag: {{total}}",
+    "historyEntryAccessibilityLabel": "{{name}}: {{count}}, {{date}}",
+    "arabicTextAccessibilityLabel": "Arabisch: {{transliteration}}",
+    "counterAccessibilityLabel": "Aantal: {{count}} van {{target}}. {{status}}",
+    "tapToIncrement": "Tik om te verhogen",
+    "presetAccessibilityLabel": "{{transliteration}}, doel {{target}}, bron {{source}}",
+    "zoneRowAccessibilityLabel": "{{label}}, straal van {{radius}} meter",
+    "phaseAccessibilityLabel": "Maanfase: {{phase}}, {{illumination}}",
+    "voiceAccessibilityLabel": "{{name}} door {{reciter}}",
+    "voiceAccessibilityLabelPro": "{{name}} door {{reciter}} (Pro, upgrade vereist om te selecteren)",
+    "surahNameAccessibilityLabel": "Surah {{name}}",
+    "readOnWikiAccessibilityLabel": "Lees Surah {{name}} op Islam.Wiki",
+    "verseAccessibilityLabel": "Vers {{number}}: {{transliteration}}",
+    "featuredVerseAccessibilityLabel": "{{label}}: Ayat al-Kursi",
+    "surahRowAccessibilityLabel": "Surah {{number}}, {{name}}, {{count}} verzen, {{type}}",
+    "fullTextAvailableSuffix": ", volledige tekst beschikbaar",
+    "revelationMeccan": "Mekkaans",
+    "revelationMedinan": "Medinees"
+  },
+  "onboarding": {
+    "skip": "Overslaan",
+    "welcome": {
+      "title": "Welkom bij PrayCalc",
+      "desc": "Nauwkeurige gebedstijden, Qibla-richting en de islamitische kalender — in enkele tikken ingesteld.",
+      "cta": "Aan de slag"
+    },
+    "location": {
+      "title": "Jouw locatie",
+      "prime": "PrayCalc gebruikt je locatie om exacte gebedstijden voor je stad te berekenen. Het blijft op je apparaat — we delen het nooit. Tik op het volgende scherm op Toestaan om door te gaan.",
+      "allow": "Locatie toestaan",
+      "later": "Ik stel dit later in"
+    },
+    "notifications": {
+      "title": "Gebedsherinneringen",
+      "prime": "Ontvang een zachte herinnering of de adhan op elk gebedstijdstip, zodat je nooit een salah mist. Je kunt later precies instellen bij welke gebeden je een melding wilt.",
+      "allow": "Herinneringen inschakelen",
+      "later": "Niet nu"
+    },
+    "method": {
+      "title": "Berekeningsmethode",
+      "dpcExplain": "DPC (Dynamic PrayCalc) berekent automatisch de beste tijden voor jouw locatie — een verbetering ten opzichte van de Moonsighting-methode. We raden aan deze te behouden.",
+      "dpcLabel": "Dynamisch (PrayCalc DPC)",
+      "recommended": "Aanbevolen",
+      "orFixed": "Of kies een vaste methode",
+      "suggested": "Voor jouw regio",
+      "continue": "Doorgaan"
+    },
+    "consent": {
+      "title": "Help PrayCalc verbeteren"
+    },
+    "done": {
+      "title": "Je bent helemaal klaar",
+      "desc": "Je gebedstijden zijn klaar. Je kunt elk van deze keuzes altijd wijzigen via Instellingen.",
+      "cta": "Open PrayCalc"
     }
+  },
+  "consent": {
+    "title": "Anonieme gebruiksanalyse",
+    "description": "Deel anonieme, geaggregeerde gebruiksgegevens om ons te helpen PrayCalc te verbeteren. Er worden nooit persoonlijke gegevens, locatie of accountgegevens verzameld.",
+    "privacyNote": "Standaard uitgeschakeld. Er wordt niets verzonden totdat je dit inschakelt, en je kunt het op elk moment wijzigen.",
+    "accept": "Toestaan",
+    "decline": "Nee, bedankt",
+    "toggleLabel": "Anonieme analyse delen",
+    "privacyScreenTitle": "Privacy",
+    "privacyScreenFooter": "PrayCalc staat privacy voorop. Analyse is anoniem en uitgeschakeld tenzij je je aanmeldt. Als je dit uitschakelt, stopt alle telemetrie onmiddellijk."
   }
 }

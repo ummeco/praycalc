@@ -11,7 +11,28 @@
     "isha": "इशा",
     "sunrise": "सूर्योदय",
     "midnight": "मध्यरात्रि",
-    "lastThird": "अंतिम तिहाई"
+    "lastThird": "रात का अंतिम तिहाई"
+  },
+  "notifications": {
+    "prayerTime": "{{prayer}} का वक़्त",
+    "iqamahTitle": "{{prayer}} की इक़ामत",
+    "bodyNow": "{{prayer}} नमाज़ का वक़्त हो गया है — {{time}}",
+    "bodyAdvance_one": "{{prayer}} {{count}} मिनट में — {{time}}",
+    "bodyAdvance_other": "{{prayer}} {{count}} मिनट में — {{time}}",
+    "bodyIqamah": "{{prayer}} के लिए इक़ामत की याद (अज़ान {{time}} पर हुई थी)",
+    "snooze_one": "{{count}} मिनट स्नूज़ करें",
+    "snooze_other": "{{count}} मिनट स्नूज़ करें",
+    "snoozedBody": "{{prayer}} नमाज़ के लिए स्थगित रिमाइंडर",
+    "suhoorTitle": "सहरी",
+    "suhoorBody": "सहरी का वक़्त — फ़ज्र से पहले का भोजन। फ़ज्र नज़दीक आ रही है।",
+    "tahajjudTitle": "तहज्जुद",
+    "tahajjudBody": "रात का अंतिम तिहाई — क़ियाम और दुआ के लिए बरकत वाला वक़्त।",
+    "jumuahKhutbahTitle": "जुमु'आ",
+    "jumuahKhutbahBody": "ख़ुत्बा जल्द शुरू होगा। जुमु'आ की नमाज़ के लिए मस्जिद जाएं।",
+    "kahfTitle": "सूरह अल-कहफ़",
+    "kahfBody": "दो जुमु'आ के बीच नूर के लिए सूरह अल-कहफ़ पढ़ें।",
+    "testTitle": "टेस्ट अज़ान",
+    "testBody": "अगर आप इसे सुन पा रहे हैं, तो आपकी अज़ान सूचनाएं काम कर रही हैं।"
   },
   "common": {
     "bismillah": "अल्लाह के नाम से जो बड़ा मेहरबान निहायत रहम वाला है",
@@ -36,15 +57,138 @@
     "search": "खोजें",
     "change": "बदलें",
     "reset": "रीसेट करें",
+    "complete": "पूर्ण",
     "openInMaps": "मानचित्र में खोलें",
     "openSettings": "सेटिंग्स खोलें",
     "upgrade": "अपग्रेड करें",
-    "signIn": "साइन इन करें"
+    "signIn": "साइन इन करें",
+    "createAccount": "खाता बनाएं",
+    "continue": "जारी रखें",
+    "skip": "छोड़ें",
+    "nothingHereYet": "अभी यहां कुछ भी नहीं है",
+    "somethingWentWrong": "कुछ गड़बड़ हो गई",
+    "tryAgain": "पुनः प्रयास करें",
+    "tooManyRequests": "बहुत अधिक अनुरोध",
+    "waitBeforeRetrying": "कृपया पुनः प्रयास करने से पहले {{seconds}} सेकंड प्रतीक्षा करें।",
+    "offlineCachedData": "आप ऑफ़लाइन हैं। कैश किया हुआ डेटा दिखाया जा रहा है।",
+    "permissionRequired": "{{permission}} अनुमति आवश्यक है",
+    "permissionRequiredBody": "नमाज़ के वक़्त की गणना के लिए {{permission}} एक्सेस आवश्यक है। कृपया सेटिंग्स में इसे सक्षम करें।",
+    "loadingContent": "सामग्री लोड हो रही है",
+    "permissionRequiredGeneric": "अनुमति आवश्यक है",
+    "permissionRequiredGenericBody": "इस सुविधा के लिए {{permission}} अनुमति आवश्यक है।",
+    "openSystemSettings": "सिस्टम सेटिंग्स खोलें",
+    "retryRequest": "अनुरोध पुनः प्रयास करें",
+    "tooManyRequestsRetry": "बहुत अधिक अनुरोध। कृपया पुनः प्रयास करने से पहले {{seconds}} सेकंड प्रतीक्षा करें।",
+    "tooManyRequestsRetryGeneric": "बहुत अधिक अनुरोध। कृपया पुनः प्रयास करने से पहले प्रतीक्षा करें।",
+    "offlineShowingCachedFrom": "आप ऑफ़लाइन हैं। {{cachedAt}} का डेटा दिखाया जा रहा है।",
+    "offlineShowingCachedGeneric": "आप ऑफ़लाइन हैं। कैश किया हुआ डेटा दिखाया गया है।"
   },
   "greeting": {
     "assalamu_alaykum": "अस्सलामु अलैकुम व रहमतुल्लाहि व बरकातुहू",
     "prayer_approaching": "नमाज़ का वक़्त आ रहा है",
     "prayer_now": "नमाज़ का वक़्त"
+  },
+  "tabs": {
+    "home": "नमाज़ें",
+    "prayerTimes": "नमाज़ का समय",
+    "qibla": "क़िबला",
+    "calendar": "कैलेंडर",
+    "quran": "क़ुरआन",
+    "more": "और"
+  },
+  "menu": {
+    "settings": {
+      "label": "सेटिंग्स",
+      "subtitle": "तरीक़ा, स्थान, सूचनाएं"
+    },
+    "adhan": {
+      "label": "अज़ान लाइब्रेरी",
+      "subtitle": "अज़ान की आवाज़ और क़ारी"
+    },
+    "tasbeeh": {
+      "label": "तस्बीह काउंटर",
+      "subtitle": "डिजिटल ज़िक्र काउंटर"
+    },
+    "duaDhikr": {
+      "label": "दुआ और अज़्कार",
+      "subtitle": "सुबह और शाम की दुआएं"
+    },
+    "moon": {
+      "label": "चांद की स्थिति",
+      "subtitle": "चंद्र कैलेंडर और हिजरी तारीख़"
+    },
+    "quran": {
+      "label": "क़ुरआन",
+      "subtitle": "बुकमार्क के साथ उस्मानी लिपि"
+    },
+    "stats": {
+      "label": "नमाज़ के आंकड़े",
+      "subtitle": "अपनी नमाज़ों और लगातार सिलसिले को ट्रैक करें"
+    },
+    "ramadan": {
+      "label": "रमज़ान",
+      "subtitle": "सहरी और इफ़्तार के वक़्त, ट्रैकर"
+    },
+    "subscription": {
+      "label": "प्रो लें",
+      "subtitle": "प्रीमियम सुविधाएं अनलॉक करें"
+    },
+    "homeWidget": {
+      "label": "होम विजेट",
+      "subtitle": "होम स्क्रीन पर अगली नमाज़"
+    },
+    "smartHome": {
+      "label": "स्मार्ट होम",
+      "subtitle": "नमाज़ के दौरान उपकरण लॉक करें"
+    },
+    "pairTv": {
+      "label": "टीवी पेयर करें",
+      "subtitle": "PrayCalc टीवी ऐप को जोड़ें"
+    },
+    "tvManager": {
+      "label": "मेरे टीवी",
+      "subtitle": "पेयर किए गए टीवी डिस्प्ले प्रबंधित करें"
+    },
+    "agendas": {
+      "label": "नमाज़ कैलेंडर",
+      "subtitle": "नमाज़ के समय को कैलेंडर में जोड़ें"
+    },
+    "timetable": {
+      "label": "मासिक समय सारणी",
+      "subtitle": "पूरे महीने की नमाज़ के समय + कैलेंडर एक्सपोर्ट"
+    },
+    "mosques": {
+      "label": "नज़दीकी मस्जिदें",
+      "subtitle": "अपने आस-पास मस्जिदें खोजें"
+    },
+    "travel": {
+      "label": "यात्रा मोड",
+      "subtitle": "मुसाफ़िरों के लिए मुसाफ़िर क़स्र"
+    },
+    "jumuah": {
+      "label": "जुमु'आ",
+      "subtitle": "शुक्रवार की याद और सूरह अल-कहफ़"
+    },
+    "masjidMute": {
+      "label": "मस्जिद ऑटो-म्यूट",
+      "subtitle": "मस्जिद के पास पहुंचने पर अपना फ़ोन साइलेंट करें"
+    },
+    "fasting": {
+      "label": "रोज़ा ट्रैकर",
+      "subtitle": "रमज़ान, सोमवार और गुरुवार, सफ़ेद दिन"
+    },
+    "qada": {
+      "label": "छूटी हुई नमाज़ें (क़ज़ा)",
+      "subtitle": "छूटी हुई नमाज़ों को ट्रैक करें और पूरा करें"
+    },
+    "privacy": {
+      "label": "गोपनीयता और डेटा",
+      "subtitle": "एनालिटिक्स की सहमति नियंत्रित करें"
+    },
+    "shareApp": {
+      "label": "PrayCalc साझा करें",
+      "subtitle": "किसी दोस्त या परिवार के सदस्य को बताएं"
+    }
   },
   "settings": {
     "title": "सेटिंग्स",
@@ -66,28 +210,692 @@
     "location": {
       "title": "स्थान",
       "detect": "स्वतः पहचानें",
-      "manual": "मैन्युअल दर्ज करें"
-    }
+      "manual": "मैन्युअल दर्ज करें",
+      "useGps": "जीपीएस स्थान उपयोग करें",
+      "searchManually": "शहर मैन्युअल रूप से खोजें",
+      "currentCity": "वर्तमान शहर",
+      "noneSet": "कोई स्थान सेट नहीं है। जीपीएस या मैन्युअल शहर आवश्यक है।",
+      "gettingLocation": "आपका स्थान प्राप्त किया जा रहा है...",
+      "permissionDenied": "अनुमति अस्वीकृत",
+      "permissionDeniedBody": "अपने शहर को स्वतः पहचानने के लिए सेटिंग्स में स्थान सक्षम करें।"
+    },
+    "account": {
+      "title": "खाता",
+      "signedIn": "साइन इन किया गया",
+      "anonymous": "अज्ञात",
+      "free": "मुफ़्त"
+    },
+    "highLatitude": {
+      "title": "उच्च-अक्षांश समायोजन",
+      "hint": "जब फ़ज्र/इशा आवश्यक कोण तक नहीं पहुंच सकते तब लागू होता है (गर्मियों में दूर उत्तर/दक्षिण स्थान)।",
+      "nightMiddle": "रात का मध्य",
+      "angleBased": "कोण-आधारित",
+      "oneSeventh": "रात का एक-सातवां भाग",
+      "none": "कोई नहीं (अनुपलब्ध दिखा सकता है)"
+    },
+    "madhab": {
+      "title": "मज़हब (अस्र)",
+      "hint": "शाफ़ई: 1× छाया कारक | हनफ़ी: 2× छाया कारक"
+    },
+    "prayerAdjustments": {
+      "title": "नमाज़ के समय में समायोजन",
+      "hint": "अपनी स्थानीय मस्जिद की समय सारणी से मेल खाने के लिए हर समय को ±30 मिनट तक समायोजित करें।"
+    },
+    "hijriAdjustment": {
+      "title": "हिजरी तारीख़ समायोजन",
+      "hint": "यदि आपकी स्थानीय चांद दर्शन उम्मुल क़ुरा कैलेंडर से भिन्न है तो हिजरी तारीख़ को ±2 दिन खिसकाएं।",
+      "offset": "ऑफ़सेट",
+      "decreaseAccessibilityLabel": "हिजरी ऑफ़सेट घटाएं",
+      "increaseAccessibilityLabel": "हिजरी ऑफ़सेट बढ़ाएं"
+    },
+    "timeFormat": {
+      "title": "समय प्रारूप"
+    },
+    "appearance": {
+      "title": "रूप-रंग",
+      "system": "सिस्टम",
+      "light": "लाइट",
+      "dark": "डार्क"
+    },
+    "customAngles": {
+      "fajr": "फ़ज्र कोण (°)",
+      "isha": "इशा कोण (°)",
+      "fajrAccessibilityLabel": "कस्टम फ़ज्र कोण डिग्री में",
+      "ishaAccessibilityLabel": "कस्टम इशा कोण डिग्री में"
+    },
+    "upsell": {
+      "priceLine": "Ummat+ $9.99/वर्ष — टीवी ऐप और स्मार्ट होम अनलॉक करता है",
+      "upgradeButton": "Ummat+ में अपग्रेड करें"
+    },
+    "prayerAlerts": "नमाज़ के समय की सूचनाएं",
+    "manageNotifications": "सूचनाएं प्रबंधित करें",
+    "appLanguage": "ऐप की भाषा",
+    "decreaseAccessibilityLabel": "{{prayer}} समायोजन घटाएं",
+    "increaseAccessibilityLabel": "{{prayer}} समायोजन बढ़ाएं",
+    "valueAccessibilityLabel": "हिजरी ऑफ़सेट: {{value}} दिन",
+    "label12h": "12-घंटे प्रारूप",
+    "label24h": "24-घंटे प्रारूप",
+    "themeAccessibilityLabel": "{{theme}} थीम"
   },
   "errors": {
     "location_permission": "नमाज़ के वक़्त की गणना के लिए स्थान एक्सेस की अनुमति दें",
     "network": "नेटवर्क से जुड़ नहीं सका",
     "calculation": "नमाज़ के वक़्त की गणना नहीं हो सकी"
   },
-  "tabs": {
-    "home": "नमाज़ें",
-    "prayerTimes": "नमाज़ का समय",
-    "qibla": "क़िबला",
-    "calendar": "कैलेंडर",
-    "quran": "क़ुरआन",
-    "more": "और"
-  },
-  "menu": {
-    "settings": {
-      "label": "सेटिंग्स"
+  "screens": {
+    "more": {
+      "title": "और"
+    },
+    "notFound": {
+      "title": "स्क्रीन नहीं मिली",
+      "goHome": "नमाज़ के वक़्त पर जाएं"
+    },
+    "onboarding": {
+      "welcomeTitle": "PrayCalc में आपका स्वागत है",
+      "welcomeDesc": "सटीक नमाज़ के वक़्त, क़िबला की दिशा, और इस्लामी कैलेंडर — सब एक ही जगह पर।",
+      "getStarted": "शुरू करें",
+      "locationTitle": "स्थान सक्षम करें",
+      "locationDesc": "सटीक गणना के लिए नमाज़ के वक़्त को आपके स्थान की आवश्यकता है।",
+      "allowLocation": "स्थान की अनुमति दें",
+      "skipManual": "छोड़ें — मैं मैन्युअल रूप से सेट करूंगा",
+      "authTitle": "खाता बनाएं?",
+      "authDesc": "वैकल्पिक: क्लाउड सिंक और नमाज़ के इतिहास के लिए खाता बनाएं। आप हमेशा बाद में साइन अप कर सकते हैं।",
+      "skipForNow": "अभी के लिए छोड़ें"
+    },
+    "auth": {
+      "appTagline": "हर मुसलमान के लिए सटीक नमाज़ के वक़्त",
+      "tabSkip": "छोड़ें",
+      "continueTitle": "बिना खाते के जारी रखें",
+      "continueDesc": "नमाज़ के वक़्त, क़िबला, और कैलेंडर बिना किसी खाते के पूरी तरह ऑफ़लाइन काम करते हैं। आपकी सेटिंग्स स्थानीय रूप से सहेजी जाती हैं।",
+      "featurePrayerQibla": "नमाज़ के वक़्त और क़िबला",
+      "featureCalendar": "इस्लामी कैलेंडर",
+      "featureSettings": "सेटिंग्स और सूचनाएं",
+      "continueAnonymously": "गुमनाम रूप से जारी रखें",
+      "signInTitle": "साइन इन करें",
+      "emailPlaceholder": "ईमेल",
+      "passwordPlaceholder": "पासवर्ड",
+      "namePlaceholder": "नाम (वैकल्पिक)",
+      "switchHint": "खाता डिवाइसों में क्लाउड सिंक और नमाज़ के इतिहास को सक्षम करता है।",
+      "registerTitle": "खाता बनाएं",
+      "signingIn": "साइन इन हो रहा है...",
+      "enterEmailPassword": "कृपया ईमेल और पासवर्ड दर्ज करें।",
+      "loginFailed": "लॉगिन विफल हुआ",
+      "registerFailed": "पंजीकरण विफल हुआ",
+      "verifyEmail": "अपने खाते को सत्यापित करने के लिए अपना ईमेल जांचें, फिर साइन इन करें।"
+    },
+    "adhan": {
+      "enablePerPrayer": "प्रत्येक नमाज़ के लिए अज़ान सक्षम करें",
+      "library": "अज़ान लाइब्रेरी",
+      "noVoices": "कोई अज़ान आवाज़ उपलब्ध नहीं है।",
+      "proRequiredTitle": "Ummat+ आवश्यक है",
+      "proRequiredBody": "{{name}} एक प्रो अज़ान आवाज़ है। इसे अपनी सक्रिय अज़ान के रूप में सेट करने के लिए Ummat+ में अपग्रेड करें।",
+      "proFeature": "प्रो सुविधा",
+      "playPreview": "पूर्वावलोकन चलाएं",
+      "stopPreview": "पूर्वावलोकन रोकें",
+      "voiceListLabel": "अज़ान आवाज़ सूची"
+    },
+    "agendas": {
+      "title": "नमाज़ कैलेंडर",
+      "desc": "याद दिलाने के लिए अपने डिवाइस कैलेंडर में नमाज़ के ब्लॉक जोड़ें। हर नमाज़ को {{minutes}}-मिनट का इवेंट और 5-मिनट की सूचना मिलती है।",
+      "whichPrayers": "कौन सी नमाज़ें जोड़ें",
+      "locationRequired": "स्थान आवश्यक है",
+      "locationRequiredBody": "कैलेंडर में नमाज़ के समय जोड़ने के लिए सेटिंग्स में अपना शहर सेट करें।",
+      "noCalendarFound": "कोई कैलेंडर नहीं मिला",
+      "noCalendarFoundBody": "इस डिवाइस पर कोई लिखने-योग्य कैलेंडर नहीं मिला।",
+      "setLocationHint": "कैलेंडर सिंक सक्षम करने के लिए सेटिंग्स में अपना शहर सेट करें।",
+      "addButton": "आज की नमाज़ें कैलेंडर में जोड़ें",
+      "addButtonAccessibilityLabel": "आज की नमाज़ के समय कैलेंडर में जोड़ें",
+      "adding": "जोड़ा जा रहा है...",
+      "done": "हो गया",
+      "addedCount": "{{count}} नमाज़ के समय आपके कैलेंडर में जोड़ दिए गए।",
+      "error": "त्रुटि",
+      "addFailed": "कैलेंडर में जोड़ने में विफल।",
+      "checkingPermission": "कैलेंडर अनुमति जांची जा रही है..."
+    },
+    "calendar": {
+      "eventsThisMonth": "इस महीने की इस्लामी घटनाएं"
+    },
+    "citySearch": {
+      "findCityTitle": "शहर खोजें",
+      "placeholder": "शहर खोजें...",
+      "useCurrentLocation": "वर्तमान स्थान का उपयोग करें",
+      "locating": "स्थान का पता लगाया जा रहा है…",
+      "searching": "शहर खोजे जा रहे हैं...",
+      "noResults": "\"{{query}}\" के लिए कोई शहर नहीं मिला।",
+      "popularHint": "लोकप्रिय शहर दिखाए जा रहे हैं। खोजने के लिए टाइप करें।",
+      "searchError": "खोज त्रुटि: {{message}}",
+      "searchInputAccessibilityLabel": "शहर खोज इनपुट",
+      "useCurrentLocationAccessibilityLabel": "वर्तमान स्थान का उपयोग करें",
+      "resultsAccessibilityLabel": "शहर खोज परिणाम"
+    },
+    "duaDhikr": {
+      "noResults": "इस श्रेणी में कोई दुआ नहीं मिली।",
+      "categoryAll": "सभी",
+      "categoryAfterAdhan": "अज़ान के बाद",
+      "categoryAfterPrayer": "नमाज़ के बाद",
+      "categoryMorning": "सुबह",
+      "categoryEvening": "शाम"
+    },
+    "moon": {
+      "hijriCalendar": "हिजरी कैलेंडर",
+      "hijriDay": "हिजरी दिन",
+      "month": "महीना",
+      "lunarAge": "चंद्र आयु",
+      "daysUnit": "{{count}} दिन",
+      "upcomingPhases": "आगामी चरण",
+      "nextFullMoon": "अगली पूर्णिमा 🌕",
+      "nextNewMoon": "अगली अमावस्या 🌑",
+      "significance": "इस्लामी महत्व",
+      "illuminatedPct": "{{pct}}% प्रकाशित",
+      "phaseNewMoon": "अमावस्या",
+      "phaseWaxingCrescent": "बढ़ता अर्धचंद्र",
+      "phaseFirstQuarter": "प्रथम चतुर्थांश",
+      "phaseWaxingGibbous": "बढ़ता उत्तल चांद",
+      "phaseFullMoon": "पूर्णिमा",
+      "phaseWaningGibbous": "घटता उत्तल चांद",
+      "phaseLastQuarter": "अंतिम चतुर्थांश",
+      "phaseWaningCrescent": "घटता अर्धचंद्र",
+      "ramadanNote": "अभी रमज़ान का महीना है — रोज़े का और लैलतुल क़द्र की तलाश का महीना।",
+      "dhulHijjahNote": "{{month}} के पहले दस दिन साल के सबसे उत्तम दिनों में से हैं।"
     },
     "mosques": {
-      "label": "नज़दीकी मस्जिदें"
+      "setLocation": "अपने आस-पास मस्जिदें खोजने के लिए अपना स्थान सेट करें।",
+      "setLocationAction": "स्थान सेट करें",
+      "finding": "नज़दीकी मस्जिदें खोजी जा रही हैं...",
+      "noResults": "10 किमी के भीतर कोई मस्जिद नहीं मिली।",
+      "retry": "पुनः प्रयास करें",
+      "attribution": "डेटा © OpenStreetMap योगदानकर्ता",
+      "searchFailed": "मस्जिद खोजने में विफल।"
+    },
+    "masjidMute": {
+      "title": "मस्जिद ऑटो-म्यूट",
+      "intro": "PrayCalc के पास अभी तक मस्जिद निर्देशिका नहीं है — नीचे अपने स्वयं के म्यूट ज़ोन जोड़ें। हम सुझाव देते हैं कि आप अपनी स्थानीय मस्जिद जोड़ें ताकि आपके पहुंचते ही आपका फ़ोन अपने आप साइलेंट हो जाए।",
+      "masterToggleLabel": "ऑटो-म्यूट सक्षम है",
+      "masterToggleSubtitle": "नीचे किसी भी ज़ोन में प्रवेश करने पर फ़ोन साइलेंट करें",
+      "zonesHeading": "आपके ज़ोन",
+      "emptyTitle": "अभी तक कोई ज़ोन नहीं",
+      "emptySubtitle": "अपनी स्थानीय मस्जिद जोड़ें ताकि PrayCalc आपके पहुंचने पर आपका फ़ोन अपने आप साइलेंट कर सके।",
+      "addZoneAction": "अपनी स्थानीय मस्जिद जोड़ें",
+      "addZoneButton": "ज़ोन जोड़ें",
+      "addZoneTitle": "म्यूट ज़ोन जोड़ें",
+      "editZoneTitle": "म्यूट ज़ोन संपादित करें",
+      "labelFieldLabel": "लेबल",
+      "labelFieldPlaceholder": "उदा. मस्जिद अन-नूर",
+      "labelRequired": "कृपया इस ज़ोन के लिए एक लेबल दर्ज करें।",
+      "coordinatesInvalid": "कृपया एक वैध अक्षांश और देशांतर दर्ज करें, या खोजें/वर्तमान स्थान का उपयोग करें।",
+      "searchAddressLabel": "पता खोजें",
+      "searchAddressPlaceholder": "किसी पते या स्थान की खोज करें",
+      "searching": "खोजा जा रहा है...",
+      "searchNoResults": "कोई मेल नहीं मिला। कोई अलग खोज करें या मैन्युअल रूप से निर्देशांक दर्ज करें।",
+      "useCurrentLocation": "वर्तमान स्थान का उपयोग करें",
+      "locating": "स्थान का पता लगाया जा रहा है...",
+      "locationFailed": "आपका वर्तमान स्थान प्राप्त नहीं हो सका।",
+      "manualEntryToggle": "निर्देशांक मैन्युअल रूप से दर्ज करें",
+      "latitudeLabel": "अक्षांश",
+      "longitudeLabel": "देशांतर",
+      "radiusLabel": "त्रिज्या: {{radius}} मी",
+      "radiusHint": "{{min}} मी और {{max}} मी के बीच — मस्जिद और उसके पार्किंग क्षेत्र को कवर करता है।",
+      "decreaseRadiusAccessibilityLabel": "त्रिज्या 25 मीटर घटाएं",
+      "increaseRadiusAccessibilityLabel": "त्रिज्या 25 मीटर बढ़ाएं",
+      "saveZone": "ज़ोन सहेजें",
+      "deleteZone": "ज़ोन हटाएं",
+      "deleteConfirmTitle": "इस ज़ोन को हटाएं?",
+      "deleteConfirmBody": "\"{{label}}\" अब आपके फ़ोन को अपने आप साइलेंट नहीं करेगा।",
+      "mapPickerFollowUp": "पिन दृश्य रूप से रखने के लिए एक मानचित्र पिकर की योजना है — फ़िलहाल, कोई पता खोजें या अपने वर्तमान स्थान का उपयोग करें।",
+      "permissionTitle": "स्थान की अनुमति आवश्यक है",
+      "permissionBody": "मस्जिद ऑटो-म्यूट को यह पता लगाने के लिए \"हमेशा\" स्थान एक्सेस की आवश्यकता है कि आप किसी ज़ोन में कब प्रवेश करते हैं या छोड़ते हैं, भले ही ऐप बंद हो।",
+      "permissionGrant": "अनुमति दें",
+      "permissionDeniedNote": "पृष्ठभूमि स्थान नहीं दी गई — ज़ोन सहेजे गए हैं लेकिन जब तक आप सिस्टम सेटिंग्स में \"हमेशा\" एक्सेस की अनुमति नहीं देते, ऑटो-म्यूट सक्रिय नहीं होगा।",
+      "androidNote": "एंड्रॉइड: पहुंचने पर आपका फ़ोन वाइब्रेट पर स्विच हो जाएगा और बाहर निकलते समय पिछले रिंगर मोड पर वापस आ जाएगा।",
+      "iosNote": "iOS: Apple ऐप्स को आपके साइलेंट स्विच को बदलने की अनुमति नहीं देता। इसके बजाय, PrayCalc आपको फ़ोन को मैन्युअल रूप से साइलेंट करने के लिए कहते हुए एक रिमाइंडर सूचना भेजता है।",
+      "iosReminderTitle": "आप पहुंच गए हैं",
+      "iosReminderBody": "आप {{zone}} के पास हैं — कृपया अपना फ़ोन साइलेंट करें।",
+      "defaultZoneLabel": "आपका म्यूट ज़ोन",
+      "activeNow": "अभी सक्रिय — फ़ोन साइलेंट है",
+      "radiusValue": "{{radius}} मी त्रिज्या"
+    },
+    "pairTv": {
+      "upsellBadge": "Ummat+",
+      "unlockTitle": "टीवी पेयरिंग अनलॉक करें",
+      "unlockDesc": "Ummat+ $9.99/वर्ष — टीवी ऐप और स्मार्ट होम अनलॉक करता है",
+      "pairedTitle": "टीवी पेयर हो गया",
+      "pairedDesc": "आपका टीवी ऐप अब इस खाते से जुड़ा है।",
+      "title": "टीवी के साथ पेयर करें",
+      "desc": "अपने टीवी पर PrayCalc खोलें, फिर स्क्रीन पर दिखाया गया 6-अंकों का पिन दर्ज करें।",
+      "enterPin": "अपने टीवी पर दिखाया गया 6-अंकों का पिन दर्ज करें।",
+      "pinInputAccessibilityLabel": "टीवी पेयरिंग पिन",
+      "pairFailed": "पेयरिंग विफल हुई। पुनः प्रयास करें।",
+      "pairDevice": "डिवाइस पेयर करें",
+      "invalidOrExpiredPin": "वह पिन अमान्य है या समाप्त हो गया है। टीवी स्क्रीन जांचें और पुनः प्रयास करें।"
+    },
+    "tvManager": {
+      "upsellBadge": "Ummat+",
+      "unlockTitle": "टीवी प्रबंधन अनलॉक करें",
+      "unlockDesc": "Ummat+ $9.99/वर्ष — टीवी ऐप और स्मार्ट होम अनलॉक करता है",
+      "emptyTitle": "अभी तक कोई टीवी पेयर नहीं हुआ",
+      "emptySubtitle": "इसे यहां देखने और इसकी डिस्प्ले सेटिंग्स प्रबंधित करने के लिए एक टीवी पेयर करें।",
+      "pairACta": "एक टीवी पेयर करें",
+      "noCity": "कोई स्थान सेट नहीं",
+      "nameLabel": "नाम",
+      "colorLabel": "एक्सेंट रंग",
+      "streamLabel": "स्ट्रीम स्रोत",
+      "streamMakkah": "मक्का टीवी",
+      "streamSaudiQuran": "सऊदी क़ुरआन",
+      "streamMedina": "मदीना",
+      "rotateLabel": "स्क्रीन घुमाव",
+      "decreaseRotate": "घुमाव मिनट घटाएं",
+      "increaseRotate": "घुमाव मिनट बढ़ाएं",
+      "weatherLabel": "मौसम दिखाएं",
+      "updateLocationAction": "स्थान को मेरे वर्तमान स्थान पर अपडेट करें",
+      "updateLocationHint": "टीवी अगली बार पुनः पेयर होने पर स्थान परिवर्तन प्राप्त करेगा — यह सहेजे गए स्थान को अभी अपडेट करता है।",
+      "noLocationTitle": "कोई स्थान सेट नहीं",
+      "noLocationBody": "टीवी का स्थान अपडेट करने से पहले सेटिंग्स में अपना स्थान सेट करें।",
+      "locationUpdatedTitle": "स्थान अपडेट हुआ",
+      "locationUpdatedBody": "सहेजा गया। टीवी अगली बार पुनः पेयर होने पर इस स्थान का उपयोग करेगा।",
+      "deleteAction": "यह टीवी हटाएं",
+      "deleteConfirmTitle": "टीवी हटाएं?",
+      "deleteConfirmBody": "यह \"{{name}}\" को अनपेयर कर देगा और इसकी सहेजी गई सेटिंग्स हटा देगा। इसे पूर्ववत नहीं किया जा सकता।",
+      "deleteConfirmAction": "हटाएं",
+      "prayerFajr": "फ़ज्र",
+      "prayerDhuhr": "ज़ुहर",
+      "prayerAsr": "अस्र",
+      "prayerMaghrib": "मग़रिब",
+      "prayerIsha": "इशा",
+      "madhabShafii": "शाफ़ई",
+      "madhabHanafi": "हनफ़ी",
+      "timeFormat12h": "12-घंटे",
+      "timeFormat24h": "24-घंटे",
+      "invalidCoordsTitle": "अमान्य निर्देशांक",
+      "invalidCoordsBody": "एक वैध अक्षांश (-90 से 90) और देशांतर (-180 से 180) दर्ज करें।",
+      "deepSettingsLabel": "उन्नत सेटिंग्स",
+      "countdownTakeoverLabel": "काउंटडाउन टेकओवर",
+      "countdownTakeoverHint": "हर नमाज़ से पहले एक बड़े काउंटडाउन के साथ स्क्रीन पर कब्ज़ा करें।",
+      "countdownMinutesLabel": "काउंटडाउन शुरू करें",
+      "decreaseCountdown": "काउंटडाउन मिनट घटाएं",
+      "increaseCountdown": "काउंटडाउन मिनट बढ़ाएं",
+      "iqamaLabel": "इक़ामत के समय",
+      "iqamaHint": "अज़ान के बाद, हर नमाज़ के लिए एक समायोज्य इक़ामत काउंटडाउन दिखाएं।",
+      "decreaseIqama": "{{prayer}} इक़ामत ऑफ़सेट घटाएं",
+      "increaseIqama": "{{prayer}} इक़ामत ऑफ़सेट बढ़ाएं",
+      "nameOnlyLabel": "केवल नाम मोड",
+      "nameOnlyHint": "अज़ान से पहले इतने मिनट तक केवल नमाज़ का नाम दिखाएं (समय के बिना)।",
+      "nameOnlyMinutesLabel": "केवल नाम अवधि",
+      "decreaseNameOnly": "केवल नाम मिनट घटाएं",
+      "increaseNameOnly": "केवल नाम मिनट बढ़ाएं",
+      "madhabLabel": "मज़हब",
+      "timeFormatLabel": "समय प्रारूप",
+      "calcMethodLabel": "गणना विधि",
+      "manualLocationToggle": "निर्देशांक मैन्युअल रूप से दर्ज करें",
+      "latitudeLabel": "अक्षांश",
+      "longitudeLabel": "देशांतर",
+      "manualLocationSave": "निर्देशांक सहेजें",
+      "layoutThemeLabel": "लेआउट और थीम",
+      "layoutLabel": "लेआउट",
+      "themeLabel": "थीम",
+      "layoutClassic": "क्लासिक",
+      "layoutClassicDesc": "समय + लाइव स्ट्रीम साथ-साथ",
+      "layoutFlipped": "उल्टा",
+      "layoutFlippedDesc": "वही विभाजन, दर्पण जैसा",
+      "layoutStreamFull": "पूर्ण स्ट्रीम",
+      "layoutStreamFullDesc": "समय पट्टी के साथ पूर्ण-स्क्रीन स्ट्रीम",
+      "layoutTimesOnly": "केवल समय",
+      "layoutTimesOnlyDesc": "केवल नमाज़ के समय, कोई लाइव स्ट्रीम नहीं",
+      "layoutAmbient": "एम्बिएंट",
+      "layoutAmbientDesc": "न्यूनतम एम्बिएंट घड़ी प्रदर्शन",
+      "themeUmmatGreen": "उम्मत ग्रीन",
+      "themeMidnight": "मिडनाइट",
+      "themeWarmSand": "वार्म सैंड",
+      "themeMono": "मोनो"
+    },
+    "prayerTimes": {
+      "setCityTitle": "अपना शहर सेट करें",
+      "setCitySubtitle": "नमाज़ के समय देखने के लिए स्थान सक्षम करें या मैन्युअल रूप से एक शहर चुनें।",
+      "setLocationAction": "स्थान सेट करें",
+      "offlineMessage": "अंतिम ज्ञात नमाज़ के समय दिखाए जा रहे हैं (ऑफ़लाइन)",
+      "next": "अगला: {{prayer}}",
+      "asrCalculation": "अस्र की गणना",
+      "markedPrayed": "पढ़ी गई के रूप में चिह्नित",
+      "notMarkedPrayed": "पढ़ी गई के रूप में चिह्नित नहीं",
+      "doubleTapToggle": "बदलने के लिए डबल-टैप करें।",
+      "shareTimes": "आज के समय साझा करें",
+      "shareAccessibilityLabel": "आज की नमाज़ के समय साझा करें"
+    },
+    "quran": {
+      "loading": "क़ुरआन का डेटा लोड हो रहा है...",
+      "backToList": "सूरह सूची पर वापस जाएं",
+      "back": "वापस",
+      "bismillah": "बिस्मिल्लाह",
+      "comingSoonBody": "अनुवाद और तिलावत के साथ {{name}} ({{count}} आयतें) Islam.Wiki पर पढ़ें — हमारा पूर्ण क़ुरआन रीडर।",
+      "readOnWiki": "Islam.Wiki पर पढ़ें →",
+      "removeBookmark": "बुकमार्क हटाएं",
+      "bookmarkVerse": "आयत को बुकमार्क करें",
+      "surahList": "सूरह सूची",
+      "wikiFooter": "📖 पूर्ण क़ुरआन — सभी 114 सूरह, अनुवाद और ऑडियो Islam.Wiki पर →",
+      "openFullQuran": "Islam.Wiki पर पूर्ण क़ुरआन खोलें",
+      "featuredVerse": "विशेष आयत",
+      "readableBadge": "उपलब्ध"
+    },
+    "ramadan": {
+      "subtitle": "रमज़ान मुबारक",
+      "dayOf": "{{total}} में से दिन {{day}}",
+      "iftarIn": "इफ़्तार में बाकी",
+      "suhoorEndsIn": "सहरी समाप्त होने में बाकी",
+      "notActive": "अभी रमज़ान नहीं है।\nवर्तमान हिजरी महीना: {{month}} ({{monthNumber}}/12)",
+      "todaysTimes": "आज के समय",
+      "suhoorEnds": "सहरी समाप्त (फ़ज्र)",
+      "iftar": "इफ़्तार (मग़रिब)",
+      "noLocation": "नमाज़ के समय देखने के लिए सेटिंग्स में अपना स्थान सेट करें।",
+      "duasTitle": "रमज़ान की दुआएं",
+      "laylatAlQadrTitle": "लैलतुल क़द्र",
+      "laylatAlQadrBody": "हम रमज़ान की आख़िरी दस रातों में हैं। इबादत बढ़ाएं, विशेषकर विषम रातों में (21, 23, 25, 27, 29)।"
+    },
+    "notifications": {
+      "masterLabel": "नमाज़ की सूचनाएं",
+      "masterSub": "हर नमाज़ के समय से पहले सूचना प्राप्त करें",
+      "androidExactAlarm": "एंड्रॉइड 12+ पर, सटीक नमाज़ के समय की सूचनाओं के लिए सिस्टम सेटिंग्स में \"अलार्म और रिमाइंडर\" की अनुमति दें।",
+      "openSystemSettings": "सिस्टम सेटिंग्स खोलें",
+      "masterAccessibilityLabel": "नमाज़ की सूचनाएं सक्षम करें",
+      "openSystemSettingsAccessibilityLabel": "अलार्म के लिए सिस्टम सेटिंग्स खोलें",
+      "perPrayerAlerts": "प्रति-नमाज़ सूचनाएं",
+      "minutesBefore_one": "{{count}} मिनट पहले",
+      "minutesBefore_other": "{{count}} मिनट पहले",
+      "iqamahOff": "इक़ामत बंद",
+      "iqamahAfter_one": "इक़ामत +{{count}}मिनट",
+      "iqamahAfter_other": "इक़ामत +{{count}}मिनट",
+      "adhanSoundTitle": "अज़ान की आवाज़",
+      "adhanSoundSub": "नमाज़ की सूचना आने पर कौन सी अज़ान बजेगी।",
+      "adhanSound": {
+        "takbir": "तकबीर (शुरुआती)",
+        "makkah": "मक्का",
+        "mishari": "मिशारी राशिद",
+        "madina": "मदीना"
+      },
+      "smartAlarmsTitle": "स्मार्ट अलार्म",
+      "suhoorLabel": "सहरी अलार्म",
+      "suhoorSub": "सहरी के भोजन के लिए फ़ज्र से पहले जागें।",
+      "suhoorBefore_one": "फ़ज्र से {{count}} मिनट पहले",
+      "suhoorBefore_other": "फ़ज्र से {{count}} मिनट पहले",
+      "tahajjudLabel": "तहज्जुद / क़ियाम",
+      "tahajjudSub": "नमाज़ के लिए रात के अंतिम भाग में उठें।",
+      "tahajjudLastThird": "रात का अंतिम तिहाई",
+      "tahajjudCustom": "कस्टम समय",
+      "nightTimesTitle": "रात के समय (आज रात)",
+      "lastThirdBegins": "अंतिम तिहाई शुरू होता है",
+      "middleOfNight": "रात का मध्य",
+      "nightTimesUnavailable": "आज रात के समय देखने के लिए अपना स्थान सेट करें।",
+      "reliabilityTitle": "विश्वसनीय अज़ान वितरण",
+      "reliabilitySub": "सुनिश्चित करें कि अलार्म समय पर बजें",
+      "batteryTitle": "विश्वसनीय अलार्म की अनुमति दें",
+      "batteryIntro": "एंड्रॉइड बैटरी बचाने के लिए नमाज़ के अलार्म को शांत कर सकता है। समय पर अज़ान सुनने के लिए:",
+      "batteryStepAlarms": "Prayer Times के लिए \"अलार्म और रिमाइंडर\" (सटीक अलार्म) की अनुमति दें।",
+      "batteryStepOptimization": "Prayer Times को सुलाया न जाए इसके लिए बैटरी अनुकूलन को बंद करें।",
+      "batteryOemNote": "कुछ फ़ोन (श्याओमी, हुआवेई, सैमसंग, वनप्लस, ओप्पो, विवो) में एक अतिरिक्त \"ऑटो-स्टार्ट\" या \"संरक्षित ऐप्स\" सेटिंग होती है — वहां भी Prayer Times सक्षम करें।",
+      "openExactAlarm": "अलार्म और रिमाइंडर खोलें",
+      "openBatterySettings": "बैटरी सेटिंग्स खोलें",
+      "testAdhanButton": "मेरी अज़ान टेस्ट करें (5से)",
+      "testAdhanScheduled": "लगभग 5 सेकंड में एक टेस्ट अज़ान बजेगी। इसे सूचना के रूप में सुनने के लिए ऐप को लॉक करें या बैकग्राउंड में डालें।",
+      "dismiss": "खारिज करें"
+    },
+    "homeWidget": {
+      "widgetPreviewAccessibilityLabel": "अगली नमाज़ का समय दिखाने वाला विजेट पूर्वावलोकन",
+      "title": "होम स्क्रीन विजेट",
+      "subtitle": "अपनी होम स्क्रीन पर अगली नमाज़ का समय देखें",
+      "widgetPreviewTitle": "विजेट पूर्वावलोकन",
+      "nextPrayer": "अगली नमाज़",
+      "setLocationToPreview": "पूर्वावलोकन के लिए अपना स्थान सेट करें",
+      "setupInstructions": "सेटअप निर्देश",
+      "integrationStatus": "एकीकरण स्थिति",
+      "upsellMessage": "होम स्क्रीन विजेट एक Ummat+ सुविधा है।",
+      "upsellAction": "Ummat+ में अपग्रेड करें",
+      "countdownPrefix": "{{countdown}} में",
+      "setupStep1": "अपनी होम स्क्रीन पर देर तक दबाएं",
+      "setupStep2": "+ बटन (iOS) या विजेट मेनू (एंड्रॉइड) पर टैप करें",
+      "setupStep3": "\"{{appName}}\" खोजें",
+      "setupStep4": "अपना पसंदीदा विजेट आकार चुनें",
+      "setupStep5": "विजेट जोड़ें पर टैप करें",
+      "statusAndroid": "एंड्रॉइड: सक्रिय — \"अगली नमाज़\" होम-स्क्रीन विजेट react-native-android-widget के ज़रिए काम करता है और हर 30 मिनट में अपने आप ताज़ा होता है (और सेटिंग्स या सूचनाएं बदलने के तुरंत बाद भी)।",
+      "statusIos": "iOS: सक्रिय — \"अगली नमाज़\" WidgetKit विजेट तब अपडेट होता है जब आप सेटिंग्स या सूचनाएं बदलते हैं और हर नमाज़ के समय पर स्वयं आगे बढ़ता है।"
+    },
+    "smartHome": {
+      "proOnly": "स्मार्ट होम (नमाज़ के दौरान लॉक + उपकरण नियंत्रण) एक Ummat+ सुविधा है।",
+      "upgradeAction": "Ummat+ में अपग्रेड करें",
+      "lockDuringPrayer": "नमाज़ के दौरान लॉक करें",
+      "lockDesc": "नमाज़ का समय शुरू होने पर स्वतः स्क्रीन धीमी करें और मीडिया म्यूट करें। कॉन्फ़िगर करने के लिए प्रमाणीकरण आवश्यक है।",
+      "lockOnSalah": "नमाज़ पर लॉक करें",
+      "lockOnSalahAccessibilityLabel": "नमाज़ पर लॉक मोड",
+      "activeNote": "नमाज़ के समय स्क्रीन धीमी होगी और मीडिया रुक जाएगा।\nएंड्रॉइड: मीडिया फ़ोकस छोड़ा जाता है। iOS: साइलेंट मोड की याद दिखाई जाती है।",
+      "linkedAccounts": "जुड़े हुए खाते",
+      "noLinks": "अभी तक कोई स्मार्ट-होम खाता नहीं जुड़ा है। Alexa ऐप या Google Home ऐप खोलें, PrayCalc स्किल या एक्शन खोजें, और अपना Ummat खाता जोड़ें।",
+      "linked": "{{date}} को जोड़ा गया",
+      "unlink": "अनलिंक करें",
+      "unlinkConfirmTitle": "{{name}} को अनलिंक करें?",
+      "unlinkConfirmBody": "आप {{name}} को Alexa या Google Home ऐप से कभी भी फिर से जोड़ सकते हैं।",
+      "unlinkConfirmAction": "अनलिंक करें",
+      "unlinkFailedTitle": "अनलिंक नहीं हो सका",
+      "learnMore": "और जानें",
+      "authPrompt": "नमाज़ पर लॉक सक्षम करने के लिए प्रमाणीकरण करें",
+      "useFallback": "पासकोड का उपयोग करें"
+    },
+    "stats": {
+      "chartAccessibilityLabel": "साप्ताहिक नमाज़ पूर्णता चार्ट",
+      "noLogs": "अभी तक कोई नमाज़ लॉग नहीं है। अपने आंकड़े देखने के लिए नमाज़ें पूरी करना शुरू करें।",
+      "dayStreak": "दिन का सिलसिला 🔥",
+      "weeklyRate": "साप्ताहिक दर",
+      "totalLogged": "कुल दर्ज",
+      "last7Days": "पिछले 7 दिन",
+      "thisMonth": "इस महीने",
+      "byPrayer": "नमाज़ के अनुसार",
+      "weekly": "साप्ताहिक",
+      "monthly": "मासिक",
+      "fastingStreak": "रोज़े का सिलसिला",
+      "qadaOutstanding": "बकाया क़ज़ा"
+    },
+    "subscription": {
+      "title": "PrayCalc Pro",
+      "subtitle": "अपने इबादत के अनुभव को बेहतर बनाएं",
+      "loadingOptions": "सदस्यता विकल्प लोड हो रहे हैं...",
+      "loadProductsFailed": "उत्पाद लोड नहीं हो सके। अपना कनेक्शन जांचें और पुनः प्रयास करें।",
+      "connectFailed": "स्टोर से कनेक्ट होने में विफल।",
+      "createAccountTitle": "एक खाता बनाएं",
+      "createAccountBody": "अपनी खरीद को अपने डिवाइसों में सिंक करने के लिए पहले साइन इन करें।",
+      "purchaseFailed": "खरीद विफल हुई। कृपया पुनः प्रयास करें।",
+      "restoreFailed": "पुनर्स्थापना विफल हुई।",
+      "proTitle": "आप प्रो में हैं",
+      "proSub": "PrayCalc का समर्थन करने के लिए धन्यवाद!",
+      "noProducts": "सदस्यता उत्पाद अनुपलब्ध हैं। App Store Connect / Google Play Console में कॉन्फ़िगर करें।",
+      "restorePurchase": "खरीद पुनर्स्थापित करें",
+      "restorePurchaseAccessibilityLabel": "पिछली खरीद पुनर्स्थापित करें",
+      "legal": "यदि वर्तमान अवधि समाप्त होने से कम से कम 24 घंटे पहले रद्द नहीं की जाती है तो सदस्यताएं स्वतः नवीनीकृत हो जाती हैं। अपने App Store / Google Play खाता सेटिंग्स में प्रबंधित करें।",
+      "featurePremiumAdhan": "प्रीमियम अज़ान आवाज़ें — अतिरिक्त क़ारी",
+      "featureHomeWidget": "होम स्क्रीन विजेट (अगली नमाज़)",
+      "featureTvPairing": "PrayCalc टीवी ऐप पेयरिंग",
+      "featureSmartHome": "स्मार्ट होम — नमाज़ के दौरान उपकरण लॉक करें",
+      "subscribeAccessibilityLabel": "{{price}} में {{title}} की सदस्यता लें"
+    },
+    "tasbeeh": {
+      "chooseDhikr": "ज़िक्र चुनें",
+      "of": "{{count}} में से",
+      "resetCounter": "काउंटर रीसेट करें",
+      "todayTotal": "आज का कुल",
+      "history": "इतिहास"
+    },
+    "timetable": {
+      "setCityTitle": "अपना शहर सेट करें",
+      "setCitySubtitle": "मासिक नमाज़ समय सारणी देखने के लिए अपना स्थान सेट करें।",
+      "previousMonth": "पिछला महीना",
+      "nextMonth": "अगला महीना",
+      "exportCalendar": "कैलेंडर एक्सपोर्ट करें (.ics)",
+      "exportAccessibilityLabel": "इस महीने की नमाज़ के समय को कैलेंडर फ़ाइल के रूप में एक्सपोर्ट करें",
+      "shareTimes": "यह महीना साझा करें",
+      "shareAccessibilityLabel": "इस महीने की नमाज़ समय सारणी साझा करें"
+    },
+    "travel": {
+      "musafirModeTitle": "मुसाफ़िर मोड",
+      "musafirModeDesc": "मैं एक मुसाफ़िर हूं। लागू होने वाली नमाज़ों पर क़स्र लागू करें।",
+      "musafirModeAccessibilityLabel": "मुसाफ़िर यात्रा मोड",
+      "musafirAlertTitle": "मुसाफ़िर मोड",
+      "musafirAlertBody": "क़स्र (छोटा करना) ज़ुहर, अस्र, और इशा को 4 से 2 रकात तक कम कर देता है।\n\nनोट: विद्वानों के मतभेद के कारण जमा (नमाज़ों को मिलाना) स्वतः लागू नहीं होता। यात्रा के दौरान नमाज़ों को मिलाने के संबंध में कृपया अपने स्थानीय आलिम या मज़हब का पालन करें।",
+      "understood": "समझ गया",
+      "qasrRakatCount": "क़स्र रकात संख्या",
+      "fiqhNote": "फ़ज्र और मग़रिब को छोटा नहीं किया जाता (क़स्र केवल 4-रकात नमाज़ों पर लागू होता है)। जमा (नमाज़ों को मिलाना) के लिए आपको अपने स्थानीय आलिम या मज़हब के निर्णय का पालन करना आवश्यक है।",
+      "travelDestination": "यात्रा गंतव्य",
+      "changeCity": "बदलें",
+      "changeCityAccessibilityLabel": "यात्रा शहर बदलें",
+      "selectTravelCity": "यात्रा शहर चुनें",
+      "selectTravelCityAccessibilityLabel": "यात्रा शहर चुनें",
+      "recalcNote": "आपके यात्रा गंतव्य के लिए नमाज़ के समय की पुनर्गणना की जाएगी।",
+      "homeCity": "गृह शहर",
+      "notSet": "सेट नहीं है"
+    },
+    "qibla": {
+      "calibrating": "कंपास कैलिब्रेट किया जा रहा है...",
+      "locationRequiredTitle": "स्थान आवश्यक है",
+      "locationRequiredSubtitle": "क़िबला की दिशा खोजने के लिए सेटिंग्स में अपना स्थान सेट करें।",
+      "bearingLabel": "क़िबला दिशा",
+      "compassAccessibilityLabel": "क़िबला कंपास, वर्तमान दिशा {{degrees}} डिग्री",
+      "accuracyLabel": "सटीकता: {{level}}",
+      "accuracyUnknown": "अज्ञात",
+      "accuracyUnreliable": "अविश्वसनीय",
+      "accuracyLow": "कम",
+      "accuracyMedium": "मध्यम",
+      "accuracyHigh": "उच्च",
+      "headingNote": "दिशा: {{degrees}}° | काबा की ओर बड़ा वृत्त कोण"
+    },
+    "fasting": {
+      "todaysFast": "आज का रोज़ा",
+      "logToday": "आज का रोज़ा दर्ज करें",
+      "unlogToday": "आज की प्रविष्टि हटाएं",
+      "loggedAs": "दर्ज किया गया: {{type}}",
+      "yourStreaks": "आपके सिलसिले",
+      "mondayStreak": "सोमवार का सिलसिला",
+      "thursdayStreak": "गुरुवार का सिलसिला",
+      "whiteDaysMonth": "इस महीने के सफ़ेद दिन",
+      "ramadanLogged": "रमज़ान के रोज़े",
+      "qadaLogged": "क़ज़ा पूरी हुई",
+      "voluntaryLogged": "नफ़्ल रोज़े",
+      "ramadanDayOf": "रमज़ान — {{total}} में से दिन {{day}}",
+      "upcomingSuggestions": "आगामी सुझाए गए रोज़े के दिन",
+      "logAction": "दर्ज करें",
+      "sunnahSourceNote": "सोमवार और गुरुवार के रोज़े: सहीह मुस्लिम 1162। सफ़ेद दिन (हर हिजरी महीने की 13-15 तारीख़): सुनन अन-नसाई 2345, सुनन अबी दाऊद 2449।",
+      "recentLogs": "हाल की प्रविष्टियां"
+    },
+    "qada": {
+      "totalOwed": "कुल बाकी नमाज़ें",
+      "perPrayer": "प्रति-नमाज़ संख्या",
+      "makeUpOne": "एक क़ज़ा पूरी करें",
+      "excusedTitle": "माफ़ी की अवधि",
+      "fiqhNote": "माफ़ी की अवधि के दौरान (जैसे मासिक धर्म या प्रसवोत्तर रक्तस्राव), एक महिला नमाज़ नहीं पढ़ती — और वे छूटी हुई नमाज़ें बाद में क़ज़ा नहीं की जातीं। यह रोज़े से अलग है: उस अवधि के दौरान छूटे रोज़े बाद में ज़रूर क़ज़ा किए जाते हैं।",
+      "fiqhCitation": "सहीह अल-बुख़ारी 321 · सहीह मुस्लिम 335",
+      "consultScholar": "यह बहुसंख्यक मत को दर्शाता है। अपनी विशेष स्थिति के लिए, अपने स्थानीय आलिम से सलाह लें।",
+      "addExcusedRange": "माफ़ी की अवधि जोड़ें",
+      "startDate": "आरंभ तारीख़",
+      "endDate": "समाप्ति तारीख़",
+      "noteOptional": "नोट (वैकल्पिक)",
+      "notePlaceholder": "उदा. मासिक धर्म, बीमारी",
+      "removeExcusedRangeAccessibilityLabel": "माफ़ी की अवधि हटाएं"
+    },
+    "jumuah": {
+      "intro": "जुमु'आ हफ़्ते का सबसे उत्तम दिन है। हल्की याद-दिहानियां सेट करें और इसकी सुन्नतों के साथ जुमु'आ की तैयारी करें।",
+      "khutbahTitle": "ख़ुत्बा याद-दिहानी",
+      "khutbahSub": "ख़ुत्बे से पहले हर जुमु'आ पर एक सूचना।",
+      "kahfTitle": "सूरह अल-कहफ़ याद-दिहानी",
+      "kahfSub": "शुक्रवार को सूरह अल-कहफ़ पढ़ने की याद-दिहानी।",
+      "kahfDayThursday": "गुरुवार शाम",
+      "kahfDayFriday": "शुक्रवार सुबह",
+      "reminderTime": "याद-दिहानी का समय",
+      "checklistTitle": "जुमु'आ की सुन्नतें",
+      "virtueTitle": "जुमु'आ की फ़ज़ीलत",
+      "virtueBody": "नबी ﷺ ने फ़रमाया: \"जिस दिन सूरज उगा उनमें सबसे उत्तम दिन जुमु'आ है।\"",
+      "virtueCitation": "सहीह मुस्लिम 854",
+      "kahfVirtueBody": "नबी ﷺ ने फ़रमाया: \"जो कोई जुमु'आ के दिन सूरह अल-कहफ़ पढ़े, उसके लिए दो जुमु'आ के बीच एक नूर चमकेगा।\"",
+      "kahfVirtueCitation": "अल-हाकिम और अल-बैहक़ी द्वारा रिवायत; अल-अल्बानी द्वारा सहीह क़रार",
+      "checklist": {
+        "ghusl": "ग़ुस्ल करें (स्नान)",
+        "ghuslCitation": "सहीह अल-बुख़ारी 877 · सहीह मुस्लिम 846",
+        "cleanClothes": "साफ़, अच्छे कपड़े पहनें",
+        "cleanClothesCitation": "सुनन अबी दाऊद 343 (हसन)",
+        "perfume": "इत्र लगाएं (मिस्वाक और सजना-संवरना)",
+        "perfumeCitation": "सहीह अल-बुख़ारी 880",
+        "early": "मस्जिद जल्दी जाएं",
+        "earlyCitation": "सहीह अल-बुख़ारी 881 · सहीह मुस्लिम 850",
+        "kahf": "सूरह अल-कहफ़ पढ़ें",
+        "kahfCitation": "अल-हाकिम / अल-बैहक़ी (अल-अल्बानी के अनुसार सहीह)",
+        "salawat": "नबी ﷺ पर दरूद बढ़ाएं",
+        "salawatCitation": "सुनन अबी दाऊद 1047 (सहीह)",
+        "dua": "दुआ क़बूल होने का समय तलाश करें",
+        "duaCitation": "सहीह अल-बुख़ारी 935 · सहीह मुस्लिम 852"
+      }
+    },
+    "leadTimeAccessibilityLabel": "{{prayer}} सूचना समय, वक़्त से {{minutes}} मिनट पहले। बदलने के लिए टैप करें।",
+    "iqamahAccessibilityLabel": "{{prayer}} इक़ामत याद-दिहानी, {{status}}। बदलने के लिए टैप करें।",
+    "enableAccessibilityLabel": "{{prayer}} अज़ान सक्षम करें",
+    "rowAccessibilityLabel": "{{name}}, {{distance}} दूर",
+    "directionsAccessibilityLabel": "मानचित्र में {{name}} की दिशा खोलें",
+    "accentColorAccessibilityLabel": "एक्सेंट रंग {{hex}}",
+    "todayTotalAccessibilityLabel": "आज का ज़िक्र कुल: {{total}}",
+    "historyEntryAccessibilityLabel": "{{name}}: {{count}}, {{date}}",
+    "arabicTextAccessibilityLabel": "अरबी: {{transliteration}}",
+    "counterAccessibilityLabel": "गिनती: {{count}} में से {{target}}। {{status}}",
+    "tapToIncrement": "बढ़ाने के लिए टैप करें",
+    "presetAccessibilityLabel": "{{transliteration}}, लक्ष्य {{target}}, स्रोत {{source}}",
+    "zoneRowAccessibilityLabel": "{{label}}, {{radius}} मीटर त्रिज्या",
+    "phaseAccessibilityLabel": "चांद की स्थिति: {{phase}}, {{illumination}}",
+    "voiceAccessibilityLabel": "{{reciter}} द्वारा {{name}}",
+    "voiceAccessibilityLabelPro": "{{reciter}} द्वारा {{name}} (प्रो, चुनने के लिए अपग्रेड आवश्यक)",
+    "surahNameAccessibilityLabel": "सूरह {{name}}",
+    "readOnWikiAccessibilityLabel": "Islam.Wiki पर सूरह {{name}} पढ़ें",
+    "verseAccessibilityLabel": "आयत {{number}}: {{transliteration}}",
+    "featuredVerseAccessibilityLabel": "{{label}}: आयतुल कुर्सी",
+    "surahRowAccessibilityLabel": "सूरह {{number}}, {{name}}, {{count}} आयतें, {{type}}",
+    "fullTextAvailableSuffix": ", पूर्ण पाठ उपलब्ध",
+    "revelationMeccan": "मक्की",
+    "revelationMedinan": "मदनी"
+  },
+  "onboarding": {
+    "skip": "छोड़ें",
+    "welcome": {
+      "title": "PrayCalc में आपका स्वागत है",
+      "desc": "सटीक नमाज़ के वक़्त, क़िबला की दिशा, और इस्लामी कैलेंडर — कुछ ही टैप में तैयार।",
+      "cta": "शुरू करें"
+    },
+    "location": {
+      "title": "आपका स्थान",
+      "prime": "PrayCalc आपके शहर के लिए सटीक नमाज़ के वक़्त की गणना करने हेतु आपके स्थान का उपयोग करता है। यह आपके डिवाइस पर ही रहता है — हम इसे कभी साझा नहीं करते। जारी रखने के लिए अगली स्क्रीन पर अनुमति दें पर टैप करें।",
+      "allow": "स्थान की अनुमति दें",
+      "later": "मैं इसे बाद में सेट करूंगा"
+    },
+    "notifications": {
+      "title": "नमाज़ की याद-दिहानियां",
+      "prime": "हर नमाज़ के समय एक हल्की याद-दिहानी या अज़ान प्राप्त करें ताकि आप कभी कोई नमाज़ न छोड़ें। आप बाद में यह तय कर सकते हैं कि कौन सी नमाज़ें आपको सूचित करें।",
+      "allow": "याद-दिहानियां सक्षम करें",
+      "later": "अभी नहीं"
+    },
+    "method": {
+      "title": "गणना विधि",
+      "dpcExplain": "DPC (डायनामिक PrayCalc) स्वतः आपके स्थान के लिए सबसे अच्छे समय की गणना करता है — मूनसाइटिंग विधि में एक सुधार। हम इसे उपयोग करना जारी रखने की सलाह देते हैं।",
+      "dpcLabel": "डायनामिक (PrayCalc DPC)",
+      "recommended": "अनुशंसित",
+      "orFixed": "या एक स्थिर विधि चुनें",
+      "suggested": "आपके क्षेत्र के लिए",
+      "continue": "जारी रखें"
+    },
+    "consent": {
+      "title": "PrayCalc को बेहतर बनाने में मदद करें"
+    },
+    "done": {
+      "title": "सब कुछ तैयार है",
+      "desc": "आपके नमाज़ के वक़्त तैयार हैं। आप इनमें से किसी भी विकल्प को कभी भी सेटिंग्स में बदल सकते हैं।",
+      "cta": "PrayCalc खोलें"
     }
+  },
+  "consent": {
+    "title": "गुमनाम उपयोग विश्लेषण",
+    "description": "PrayCalc को बेहतर बनाने में मदद के लिए गुमनाम, सामूहिक उपयोग डेटा साझा करें। कोई व्यक्तिगत जानकारी, स्थान, या खाता विवरण कभी एकत्र नहीं किया जाता।",
+    "privacyNote": "डिफ़ॉल्ट रूप से बंद। जब तक आप इसे चालू नहीं करते तब तक कुछ भी नहीं भेजा जाता, और आप इसे कभी भी बदल सकते हैं।",
+    "accept": "अनुमति दें",
+    "decline": "नहीं धन्यवाद",
+    "toggleLabel": "गुमनाम विश्लेषण साझा करें",
+    "privacyScreenTitle": "गोपनीयता",
+    "privacyScreenFooter": "PrayCalc गोपनीयता-प्राथमिकता वाला है। विश्लेषण गुमनाम है और जब तक आप शामिल नहीं होते तब तक बंद रहता है। इसे बंद करने से सभी टेलीमेट्री तुरंत रुक जाती है।"
   }
 }

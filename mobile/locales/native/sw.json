@@ -1,6 +1,6 @@
 {
-  "NSLocationWhenInUseUsageDescription": "Allow Prayer Times to access your location to calculate accurate prayer times.",
-  "NSLocationAlwaysAndWhenInUseUsageDescription": "Allow Prayer Times to access your location to calculate accurate prayer times.",
-  "NSCalendarsFullAccessUsageDescription": "Prayer Times adds salah blocks to your calendar as reminders.",
-  "NSFaceIDUsageDescription": "Prayer Times uses Face ID to confirm lock-on-salah mode."
+  "NSLocationWhenInUseUsageDescription": "Ruhusu Nyakati za Sala kufikia mahali ulipo ili kuhesabu nyakati sahihi za sala.",
+  "NSLocationAlwaysAndWhenInUseUsageDescription": "Ruhusu Nyakati za Sala kufikia mahali ulipo ili kuhesabu nyakati sahihi za sala.",
+  "NSCalendarsFullAccessUsageDescription": "Nyakati za Sala huongeza vipindi vya sala kwenye kalenda yako kama ukumbusho.",
+  "NSFaceIDUsageDescription": "Nyakati za Sala hutumia Face ID kuthibitisha hali ya kufunga wakati wa sala."
 }

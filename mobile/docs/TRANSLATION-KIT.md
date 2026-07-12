@@ -11,37 +11,41 @@ The app has 729 translatable string keys (source of truth: `en.json`). The table
 real key counts as of the last automated measurement (see `translation-status.csv` in this
 folder for the machine-readable version).
 
-| Locale | Language | Translated | Missing | % Done | Priority |
-|--------|----------|-----------|---------|--------|----------|
-| ar | Arabic | 69 | 660 | 9.5% | P0 — lock-screen notifications |
-| ur | Urdu | 69 | 660 | 9.5% | P0 — lock-screen notifications |
-| fr | French | 63 | 666 | 8.6% | P1 |
-| tr | Turkish | 63 | 666 | 8.6% | P1 |
-| id | Indonesian | 63 | 666 | 8.6% | P1 |
-| ms | Malay | 63 | 666 | 8.6% | P1 |
-| bn | Bengali | 63 | 666 | 8.6% | P1 |
-| sw | Swahili | 63 | 666 | 8.6% | P1 |
-| es | Spanish | 63 | 666 | 8.6% | P2 |
-| de | German | 63 | 666 | 8.6% | P2 |
-| nl | Dutch | 63 | 666 | 8.6% | P2 |
-| pt | Portuguese | 63 | 666 | 8.6% | P2 |
-| it | Italian | 63 | 666 | 8.6% | P2 |
-| ru | Russian | 63 | 666 | 8.6% | P2 |
-| hi | Hindi | 63 | 666 | 8.6% | P1 |
-| ps | Pashto | 63 | 666 | 8.6% | P1 |
-| fa | Farsi/Persian | 63 | 666 | 8.6% | P1 |
-| so | Somali | 63 | 666 | 8.6% | P2 |
-| ha | Hausa | 63 | 666 | 8.6% | P2 |
-| yo | Yoruba | 63 | 666 | 8.6% | P2 |
+| Locale | Language | Translated | Missing | % Done | Status |
+|--------|----------|-----------|---------|--------|--------|
+| ar | Arabic | 729 | 0 | 100% | AI-complete — native review welcome |
+| ur | Urdu | 729 | 0 | 100% | AI-complete — native review welcome |
+| fr | French | 729 | 0 | 100% | AI-complete — native review welcome |
+| tr | Turkish | 729 | 0 | 100% | AI-complete — native review welcome |
+| id | Indonesian | 729 | 0 | 100% | AI-complete — native review welcome |
+| ms | Malay | 729 | 0 | 100% | AI-complete — native review welcome |
+| bn | Bengali | 729 | 0 | 100% | AI-complete — native review welcome |
+| sw | Swahili | 729 | 0 | 100% | AI-complete — native review welcome |
+| es | Spanish | 729 | 0 | 100% | AI-complete — native review welcome |
+| de | German | 729 | 0 | 100% | AI-complete — native review welcome |
+| nl | Dutch | 729 | 0 | 100% | AI-complete — native review welcome |
+| pt | Portuguese | 729 | 0 | 100% | AI-complete — native review welcome |
+| it | Italian | 729 | 0 | 100% | AI-complete — native review welcome |
+| ru | Russian | 729 | 0 | 100% | AI-complete — native review welcome |
+| hi | Hindi | 729 | 0 | 100% | AI-complete — native review welcome |
+| ps | Pashto | 729 | 0 | 100% | AI-complete — native review welcome |
+| fa | Farsi/Persian | 729 | 0 | 100% | AI-complete — native review welcome |
+| so | Somali | 729 | 0 | 100% | AI-complete — native review welcome |
+| ha | Hausa | 729 | 0 | 100% | AI-complete — native review welcome |
+| yo | Yoruba | 729 | 0 | 100% | AI-complete — native review welcome |
 
-**What "translated" means here:** a key exists in both `en.json` and the locale file. The
-app falls back to English for any missing key — users of every locale see English for any
-key not yet translated. The honest claim: the app supports Arabic and Urdu most broadly
-(9.5% coverage of all keys), with English as the universal fallback for everything else.
+**Status as of 2026-07-11:** every locale carries full 729/729 key coverage, produced by an
+AI translation pass (owner-authorized) that preserved all pre-existing human translations
+verbatim, kept every `{{placeholder}}` token intact, and used each language's established
+Islamic terminology (Ahl us-Sunnah mainstream register; contested renderings avoided — see
+`../src/i18n/REVIEW.md`). The iOS permission strings in `mobile/locales/native/` are
+translated for all 20 locales as well.
 
-**P0 for ar/ur:** The `notifications.*` namespace (prayer-time push notifications that appear
-on the lock screen) is all English in ar/ur and needs translation urgently — these are
-user-visible outside the app.
+**What translators should do now:** native-speaker *review* rather than initial translation.
+Read your locale file end to end against `en.json`, fix anything unnatural, and pay special
+attention to the `notifications.*` namespace (lock-screen strings) and the fiqh-sensitive
+strings listed in the REVIEW.md checklist. The verification commands below still apply to
+review edits.
 
 ---
 

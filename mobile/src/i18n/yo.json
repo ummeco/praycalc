@@ -13,6 +13,27 @@
     "midnight": "Ọgànjọ́",
     "lastThird": "Ìdá Mẹta Ẹhin"
   },
+  "notifications": {
+    "prayerTime": "Àkókò {{prayer}}",
+    "iqamahTitle": "Iqama {{prayer}}",
+    "bodyNow": "Àkókò àdúrà {{prayer}} ti dé — {{time}}",
+    "bodyAdvance_one": "{{prayer}} yóò dé ní ìṣẹ́jú {{count}} — {{time}}",
+    "bodyAdvance_other": "{{prayer}} yóò dé ní ìṣẹ́jú {{count}} — {{time}}",
+    "bodyIqamah": "Ìrántí iqama fún {{prayer}} (azan ti wà ní {{time}})",
+    "snooze_one": "Sun oorun fún ìṣẹ́jú {{count}}",
+    "snooze_other": "Sun oorun fún ìṣẹ́jú {{count}}",
+    "snoozedBody": "Ìrántí tí a sún fún àdúrà {{prayer}}",
+    "suhoorTitle": "Sahur",
+    "suhoorBody": "Àkókò sahur — oúnjẹ ṣáájú àfẹ̀mọ́júmọ́. Fajr ń sún mọ́.",
+    "tahajjudTitle": "Tahajjud",
+    "tahajjudBody": "Ìdá mẹ́ta ìkẹyìn òru — àkókò ìbùkún fún qiyam àti ẹ̀bẹ̀.",
+    "jumuahKhutbahTitle": "Jimọ́",
+    "jumuahKhutbahBody": "Ìwàásù ń sún mọ́. Lọ sí mọ́sáláṣí fún àdúrà Jimọ́.",
+    "kahfTitle": "Suuratul Kahf",
+    "kahfBody": "Ka Suuratul Kahf fún ìmọ́lẹ̀ láàrin ọjọ́ Jimọ́ méjì.",
+    "testTitle": "Àdánwò Azan",
+    "testBody": "Bí o bá gbọ́ èyí, ìwífún azan ń ṣiṣẹ́."
+  },
   "common": {
     "bismillah": "Ní orúkọ Allāhu Rahmāni Rahīm",
     "salah": "Ìjọsìn",
@@ -36,15 +57,138 @@
     "search": "Wá",
     "change": "Yí padà",
     "reset": "Tún ṣe",
+    "complete": "Parí",
     "openInMaps": "Ṣí nínú Àwòrán",
     "openSettings": "Ṣí Ètò",
     "upgrade": "Gbéga",
-    "signIn": "Wọlé"
+    "signIn": "Wọlé",
+    "createAccount": "Ṣẹ̀dá Àkáǹtì",
+    "continue": "Tẹ̀síwájú",
+    "skip": "Fò",
+    "nothingHereYet": "Kò sí ohunkóhun níhìn-ín síbẹ̀",
+    "somethingWentWrong": "Àṣìṣe kan ṣẹlẹ̀",
+    "tryAgain": "Gbìyànjú Lẹ́ẹ̀kan Sí",
+    "tooManyRequests": "Ọ̀pọ̀lọpọ̀ Ìbéèrè",
+    "waitBeforeRetrying": "Jọ̀wọ́ dúró fún ìṣẹ́jú-àáyá {{seconds}} kí o tó gbìyànjú lẹ́ẹ̀kan sí.",
+    "offlineCachedData": "O kò sí lórí ayélujára. À ń fi dátà tí a fipamọ́ hàn.",
+    "permissionRequired": "A Nílò Ìyọ̀ǹda {{permission}}",
+    "permissionRequiredBody": "Àkókò àdúrà nílò ìwọlé sí {{permission}}. Jọ̀wọ́ mú un ṣiṣẹ́ nínú Ètò.",
+    "loadingContent": "Ń gba àkóónú",
+    "permissionRequiredGeneric": "A Nílò Ìyọ̀ǹda",
+    "permissionRequiredGenericBody": "A nílò ìyọ̀ǹda {{permission}} fún ẹ̀yà yìí.",
+    "openSystemSettings": "Ṣí ètò sístẹ́mù",
+    "retryRequest": "Gbìyànjú ìbéèrè lẹ́ẹ̀kan sí",
+    "tooManyRequestsRetry": "Ọ̀pọ̀lọpọ̀ ìbéèrè. Jọ̀wọ́ dúró fún ìṣẹ́jú-àáyá {{seconds}} kí o tó gbìyànjú lẹ́ẹ̀kan sí.",
+    "tooManyRequestsRetryGeneric": "Ọ̀pọ̀lọpọ̀ ìbéèrè. Jọ̀wọ́ dúró kí o tó gbìyànjú lẹ́ẹ̀kan sí.",
+    "offlineShowingCachedFrom": "O kò sí lórí ayélujára. À ń fi dátà láti {{cachedAt}} hàn.",
+    "offlineShowingCachedGeneric": "O kò sí lórí ayélujára. À ń fi dátà tí a fipamọ́ hàn."
   },
   "greeting": {
     "assalamu_alaykum": "Assalamu Alaykum wa Rahmatullahi wa Barakatuh",
     "prayer_approaching": "Àkókò ìjọsìn ń sún mọ́",
     "prayer_now": "Àkókò ìjọsìn"
+  },
+  "tabs": {
+    "home": "Àdúrà",
+    "prayerTimes": "Àkókò Àdúrà",
+    "qibla": "Kiblah",
+    "calendar": "Kàlẹ́ńdà",
+    "quran": "Kùránì",
+    "more": "Síwájú"
+  },
+  "menu": {
+    "settings": {
+      "label": "Ètò",
+      "subtitle": "Ọ̀nà, ipò, ìwífún"
+    },
+    "adhan": {
+      "label": "Ilé-Ìkówèésí Azan",
+      "subtitle": "Ohùn azan & agbóhùnsáfẹ́fẹ́"
+    },
+    "tasbeeh": {
+      "label": "Ìka Tasbihi",
+      "subtitle": "Ìka dhikri lóri ẹ̀rọ"
+    },
+    "duaDhikr": {
+      "label": "Ẹ̀bẹ̀ & Adhkari",
+      "subtitle": "Ẹ̀bẹ̀ àárọ̀ àti alẹ́"
+    },
+    "moon": {
+      "label": "Ìpele Òṣùpá",
+      "subtitle": "Kàlẹ́ńdà òṣùpá & ọjọ́ Hijri"
+    },
+    "quran": {
+      "label": "Kùránì",
+      "subtitle": "Àkọsílẹ̀ Usmani pẹ̀lú àmì ìfipamọ́"
+    },
+    "stats": {
+      "label": "Ìtàn Àdúrà",
+      "subtitle": "Tọpinpin àdúrà rẹ & ọjọ́ tí o kò yẹ̀"
+    },
+    "ramadan": {
+      "label": "Ramadan",
+      "subtitle": "Àkókò Sahur & Ìjẹ Alẹ́, atọpinpin"
+    },
+    "subscription": {
+      "label": "Gba Pro",
+      "subtitle": "Ṣí àwọn ẹ̀yà premium"
+    },
+    "homeWidget": {
+      "label": "Widget Ojú Ìwé Ilé",
+      "subtitle": "Àdúrà tó ń bọ̀ lórí ojú ìwé ilé"
+    },
+    "smartHome": {
+      "label": "Ilé Ọlọ́gbọ́n",
+      "subtitle": "Ti àwọn ẹ̀rọ nígbà àdúrà"
+    },
+    "pairTv": {
+      "label": "So TV Pọ̀",
+      "subtitle": "So app PrayCalc TV pọ̀"
+    },
+    "tvManager": {
+      "label": "Àwọn TV Mi",
+      "subtitle": "Ṣàkóso àwọn ojú ìwé TV tí a so pọ̀"
+    },
+    "agendas": {
+      "label": "Kàlẹ́ńdà Àdúrà",
+      "subtitle": "Fi àkókò àdúrà kún kàlẹ́ńdà"
+    },
+    "timetable": {
+      "label": "Àkókò Oṣù",
+      "subtitle": "Àkókò àdúrà odidi oṣù + kó jáde sí kàlẹ́ńdà"
+    },
+    "mosques": {
+      "label": "Mọ́sáláṣí Tó Súnmọ́",
+      "subtitle": "Wa mọ́sáláṣí tó súnmọ́ ọ"
+    },
+    "travel": {
+      "label": "Ipò Ìrìnàjò",
+      "subtitle": "Qasr musafir fún àwọn arìnrìn-àjò"
+    },
+    "jumuah": {
+      "label": "Jimọ́",
+      "subtitle": "Ìrántí Jimọ́ & Suuratul Kahf"
+    },
+    "masjidMute": {
+      "label": "Ìdákẹ́jẹ́ẹ́ Aládàáṣiṣẹ́ Ní Mọ́sáláṣí",
+      "subtitle": "Dá fóònù rẹ jẹ́ẹ́ nítòsí mọ́sáláṣí"
+    },
+    "fasting": {
+      "label": "Atọpinpin Àwẹ̀",
+      "subtitle": "Ramadan, Ọjọ́ Aje & Ọjọ́bọ̀, Ọjọ́ Funfun"
+    },
+    "qada": {
+      "label": "Àdúrà Tí Kò Ṣe (Qada)",
+      "subtitle": "Tọpinpin kí o sì san àdúrà tí kò ṣe"
+    },
+    "privacy": {
+      "label": "Ìpamọ́ & Dátà",
+      "subtitle": "Ṣàkóso ìyọ̀ǹda ìtúpalẹ̀"
+    },
+    "shareApp": {
+      "label": "Pín PrayCalc",
+      "subtitle": "Sọ fún ọ̀rẹ́ tàbí ẹbí"
+    }
   },
   "settings": {
     "title": "Ìṣètò",
@@ -66,28 +210,692 @@
     "location": {
       "title": "Ibi",
       "detect": "Wá fúnrarẹ̀",
-      "manual": "Tẹ̀ sílẹ̀ fúnrarẹ̀"
-    }
+      "manual": "Tẹ̀ sílẹ̀ fúnrarẹ̀",
+      "useGps": "Lo Ipò GPS",
+      "searchManually": "Wa Ìlú Fúnrarẹ̀",
+      "currentCity": "Ìlú Lọ́wọ́lọ́wọ́",
+      "noneSet": "A kò ṣètò ipò kankan. GPS tàbí ìlú fúnrarẹ̀ ni a nílò.",
+      "gettingLocation": "Ń wá ipò rẹ...",
+      "permissionDenied": "A Kọ Ìyọ̀ǹda",
+      "permissionDeniedBody": "Mú ìwọlé sí ipò ṣiṣẹ́ nínú Ètò láti ṣàwárí ìlú rẹ fúnrarẹ̀."
+    },
+    "account": {
+      "title": "Àkáǹtì",
+      "signedIn": "O ti wọlé",
+      "anonymous": "Aláìní Orúkọ",
+      "free": "Ọ̀fẹ́"
+    },
+    "highLatitude": {
+      "title": "Àtúnṣe Latitude Gíga",
+      "hint": "A ń lò nígbà tí Fajr/Isha kò lè dé igun tí a nílò (àwọn ibi tó jìnnà sí àríwá/gúúsù ní ìgbà ẹ̀ẹ̀rùn).",
+      "nightMiddle": "Àárín Òru",
+      "angleBased": "Bí Igun Ṣe Rí",
+      "oneSeventh": "Ìdá Méje Òru",
+      "none": "Kò Sí (lè fi 'kò sí' hàn)"
+    },
+    "madhab": {
+      "title": "Madhab (Asr)",
+      "hint": "Shafi'i: ìlọ́po 1 òjìji | Hanafi: ìlọ́po 2 òjìji"
+    },
+    "prayerAdjustments": {
+      "title": "Àtúnṣe Àkókò Àdúrà",
+      "hint": "Tún àkókò kọ̀ọ̀kan ṣe títí dé ìṣẹ́jú ±30 láti bá àkókò mọ́sáláṣí rẹ mu."
+    },
+    "hijriAdjustment": {
+      "title": "Àtúnṣe Ọjọ́ Hijri",
+      "hint": "Yí ọjọ́ Hijri padà ní ọjọ́ ±2 bí wíwo òṣùpá ní agbègbè rẹ bá yàtọ̀ sí kàlẹ́ńdà Umm al-Qura.",
+      "offset": "Ìyàtọ̀",
+      "decreaseAccessibilityLabel": "Dín ìyàtọ̀ Hijri kù",
+      "increaseAccessibilityLabel": "Fi kún ìyàtọ̀ Hijri"
+    },
+    "timeFormat": {
+      "title": "Ọ̀nà Àkókò"
+    },
+    "appearance": {
+      "title": "Ìrísí",
+      "system": "Sístẹ́mù",
+      "light": "Ìmọ́lẹ̀",
+      "dark": "Òkùnkùn"
+    },
+    "customAngles": {
+      "fajr": "Igun Fajr (°)",
+      "isha": "Igun Isha (°)",
+      "fajrAccessibilityLabel": "Igun Fajr àkànṣe ní dígrì",
+      "ishaAccessibilityLabel": "Igun Isha àkànṣe ní dígrì"
+    },
+    "upsell": {
+      "priceLine": "Ummat+ $9.99/ọdún — yóò ṣí app TV & Ilé Ọlọ́gbọ́n",
+      "upgradeButton": "Gbéga sí Ummat+"
+    },
+    "prayerAlerts": "Ìkìlọ̀ Àkókò Àdúrà",
+    "manageNotifications": "Ṣàkóso Ìwífún",
+    "appLanguage": "Èdè App",
+    "decreaseAccessibilityLabel": "Dín àtúnṣe {{prayer}} kù",
+    "increaseAccessibilityLabel": "Fi kún àtúnṣe {{prayer}}",
+    "valueAccessibilityLabel": "Ìyàtọ̀ Hijri: ọjọ́ {{value}}",
+    "label12h": "Ọ̀nà wákàtí 12",
+    "label24h": "Ọ̀nà wákàtí 24",
+    "themeAccessibilityLabel": "Àkòrí {{theme}}"
   },
   "errors": {
     "location_permission": "Jọ̀wọ́ gbà ìráàyèsí ibi láti ṣírò àkókò ìjọsìn",
     "network": "Kò lè so mọ́ nẹ́tíwọ̀ọ̀kì",
     "calculation": "Kò lè ṣírò àkókò ìjọsìn"
   },
-  "tabs": {
-    "home": "Àdúrà",
-    "prayerTimes": "Àkókò Àdúrà",
-    "qibla": "Kiblah",
-    "calendar": "Kàlẹ́ńdà",
-    "quran": "Kùránì",
-    "more": "Síwájú"
-  },
-  "menu": {
-    "settings": {
-      "label": "Ètò"
+  "screens": {
+    "more": {
+      "title": "Síwájú"
+    },
+    "notFound": {
+      "title": "A Kò Rí Ojú Ìwé",
+      "goHome": "Lọ sí Àkókò Àdúrà"
+    },
+    "onboarding": {
+      "welcomeTitle": "Kaàbọ̀ sí PrayCalc",
+      "welcomeDesc": "Àkókò àdúrà tó péye, ìtọ́ni Qibla, àti kàlẹ́ńdà Islam — gbogbo rẹ̀ ní ibì kan náà.",
+      "getStarted": "Bẹ̀rẹ̀",
+      "locationTitle": "Mú Ipò Ṣiṣẹ́",
+      "locationDesc": "Àkókò àdúrà nílò ipò rẹ fún ìṣírò tó péye.",
+      "allowLocation": "Yọ̀ǹda Ipò",
+      "skipManual": "Fò — Èmi yóò ṣètò fúnrarẹ̀",
+      "authTitle": "Ṣẹ̀dá Àkáǹtì?",
+      "authDesc": "Àṣàyàn: ṣẹ̀dá àkáǹtì fún ìṣọ̀kan awọsánmọ̀ àti ìtàn àdúrà. O lè forúkọ sílẹ̀ nígbàkigbà mìíràn.",
+      "skipForNow": "Fò Fún Àsìkò Yìí"
+    },
+    "auth": {
+      "appTagline": "Àkókò àdúrà tó péye fún Mùsùlùmí kọ̀ọ̀kan",
+      "tabSkip": "Fò",
+      "continueTitle": "Tẹ̀síwájú Láìní Àkáǹtì",
+      "continueDesc": "Àkókò àdúrà, Qibla, àti kàlẹ́ńdà ń ṣiṣẹ́ ní kíkún láìní ayélujára, láìní àìní àkáǹtì. Ètò rẹ ni a fipamọ́ sínú ẹ̀rọ rẹ.",
+      "featurePrayerQibla": "Àkókò àdúrà & Qibla",
+      "featureCalendar": "Kàlẹ́ńdà Islam",
+      "featureSettings": "Ètò & ìwífún",
+      "continueAnonymously": "Tẹ̀síwájú Láìní Orúkọ",
+      "signInTitle": "Wọlé",
+      "emailPlaceholder": "Ímeèlì",
+      "passwordPlaceholder": "Ọ̀rọ̀ìgbaniwọlé",
+      "namePlaceholder": "Orúkọ (àṣàyàn)",
+      "switchHint": "Àkáǹtì máa ń fún ọ ní ìṣọ̀kan awọsánmọ̀ àti ìtàn àdúrà lórí gbogbo ẹ̀rọ rẹ.",
+      "registerTitle": "Ṣẹ̀dá Àkáǹtì",
+      "signingIn": "Ń wọlé...",
+      "enterEmailPassword": "Jọ̀wọ́ tẹ ímeèlì àti ọ̀rọ̀ìgbaniwọlé sílẹ̀.",
+      "loginFailed": "Wíwọlé kùnà",
+      "registerFailed": "Ìforúkọsílẹ̀ kùnà",
+      "verifyEmail": "Wo ímeèlì rẹ láti fi ẹsẹ̀ múlẹ̀ àkáǹtì rẹ, lẹ́yìn náà kí o wọlé."
+    },
+    "adhan": {
+      "enablePerPrayer": "Mú Azan Ṣiṣẹ́ Fún Àdúrà Kọ̀ọ̀kan",
+      "library": "Ilé-Ìkówèésí Azan",
+      "noVoices": "Kò sí ohùn azan kankan tí ó wà.",
+      "proRequiredTitle": "A Nílò Ummat+",
+      "proRequiredBody": "{{name}} jẹ́ ohùn azan Pro. Gbéga sí Ummat+ láti fi rẹ̀ ṣe azan rẹ tí ń ṣiṣẹ́.",
+      "proFeature": "Ẹ̀yà Pro",
+      "playPreview": "Ṣe àwòṣàyẹ̀wò",
+      "stopPreview": "Dá àwòṣàyẹ̀wò dúró",
+      "voiceListLabel": "Àtòjọ ohùn azan"
+    },
+    "agendas": {
+      "title": "Kàlẹ́ńdà Àdúrà",
+      "desc": "Fi àwọn ìpín àdúrà kún kàlẹ́ńdà ẹ̀rọ rẹ gẹ́gẹ́ bí ìrántí. Àdúrà kọ̀ọ̀kan yóò ní ìṣẹ̀lẹ̀ ìṣẹ́jú {{minutes}} pẹ̀lú ìkìlọ̀ ìṣẹ́jú márùn-ún.",
+      "whichPrayers": "Àwọn àdúrà wo ni a fẹ́ fi kún",
+      "locationRequired": "A Nílò Ipò",
+      "locationRequiredBody": "Ṣètò ìlú rẹ nínú Ètò láti fi àkókò àdúrà kún kàlẹ́ńdà.",
+      "noCalendarFound": "A Kò Rí Kàlẹ́ńdà",
+      "noCalendarFoundBody": "A kò rí kàlẹ́ńdà tí a lè kọ sí lórí ẹ̀rọ yìí.",
+      "setLocationHint": "Ṣètò ìlú rẹ nínú Ètò láti mú ìṣọ̀kan kàlẹ́ńdà ṣiṣẹ́.",
+      "addButton": "Fi Àdúrà Òní Kún Kàlẹ́ńdà",
+      "addButtonAccessibilityLabel": "Fi àkókò àdúrà òní kún kàlẹ́ńdà",
+      "adding": "Ń fi kún...",
+      "done": "Parí",
+      "addedCount": "A ti fi àkókò àdúrà {{count}} kún kàlẹ́ńdà rẹ.",
+      "error": "Àṣìṣe",
+      "addFailed": "Kò lè fi kún kàlẹ́ńdà.",
+      "checkingPermission": "Ń ṣàyẹ̀wò ìyọ̀ǹda kàlẹ́ńdà..."
+    },
+    "calendar": {
+      "eventsThisMonth": "Àwọn Ìṣẹ̀lẹ̀ Islam Ní Oṣù Yìí"
+    },
+    "citySearch": {
+      "findCityTitle": "Wa Ìlú",
+      "placeholder": "Wa ìlú...",
+      "useCurrentLocation": "Lo Ipò Lọ́wọ́lọ́wọ́",
+      "locating": "Ń wá ipò…",
+      "searching": "Ń wa àwọn ìlú...",
+      "noResults": "A kò rí ìlú kankan fún \"{{query}}\".",
+      "popularHint": "Àwọn ìlú gbajúmọ̀ ni a fihàn. Kọ̀wé láti wá.",
+      "searchError": "Àṣìṣe wíwá: {{message}}",
+      "searchInputAccessibilityLabel": "Àyè wíwá ìlú",
+      "useCurrentLocationAccessibilityLabel": "Lo ipò lọ́wọ́lọ́wọ́",
+      "resultsAccessibilityLabel": "Àbájáde wíwá ìlú"
+    },
+    "duaDhikr": {
+      "noResults": "A kò rí ẹ̀bẹ̀ kankan fún ẹ̀ka yìí.",
+      "categoryAll": "Gbogbo",
+      "categoryAfterAdhan": "Lẹ́yìn Azan",
+      "categoryAfterPrayer": "Lẹ́yìn Àdúrà",
+      "categoryMorning": "Àárọ̀",
+      "categoryEvening": "Alẹ́"
+    },
+    "moon": {
+      "hijriCalendar": "Kàlẹ́ńdà Hijri",
+      "hijriDay": "Ọjọ́ Hijri",
+      "month": "Oṣù",
+      "lunarAge": "Ọjọ́orí Òṣùpá",
+      "daysUnit": "ọjọ́ {{count}}",
+      "upcomingPhases": "Àwọn Ìpele Tó Ń Bọ̀",
+      "nextFullMoon": "Òṣùpá Kíkún Tó Ń Bọ̀ 🌕",
+      "nextNewMoon": "Òṣùpá Tuntun Tó Ń Bọ̀ 🌑",
+      "significance": "Ìtumọ̀ Islam",
+      "illuminatedPct": "{{pct}}% ń tàn",
+      "phaseNewMoon": "Òṣùpá Tuntun",
+      "phaseWaxingCrescent": "Òṣùpá Tó Ń Dàgbà",
+      "phaseFirstQuarter": "Ìdá Mẹ́rin Àkọ́kọ́",
+      "phaseWaxingGibbous": "Òṣùpá Tó Fẹ́rẹ̀ Kún",
+      "phaseFullMoon": "Òṣùpá Kíkún",
+      "phaseWaningGibbous": "Òṣùpá Tó Ń Dínkù",
+      "phaseLastQuarter": "Ìdá Mẹ́rin Ìkẹyìn",
+      "phaseWaningCrescent": "Òṣùpá Tó Fẹ́rẹ̀ Parẹ́",
+      "ramadanNote": "Ó jẹ́ Ramadan — oṣù àwẹ̀ àti wíwá Laylatul Kadr.",
+      "dhulHijjahNote": "Ọjọ́ mẹ́wàá àkọ́kọ́ ti {{month}} wà lára àwọn tó lọ́lá jùlọ ní ọdún."
     },
     "mosques": {
-      "label": "Mọ́sáláṣí Tó Súnmọ́"
+      "setLocation": "Ṣètò ipò rẹ láti wa mọ́sáláṣí tó súnmọ́ ọ.",
+      "setLocationAction": "Ṣètò Ipò",
+      "finding": "Ń wa mọ́sáláṣí tó súnmọ́...",
+      "noResults": "A kò rí mọ́sáláṣí kankan láàrin kìlómítà 10.",
+      "retry": "Gbìyànjú Lẹ́ẹ̀kan Sí",
+      "attribution": "Dátà © àwọn olùdásí OpenStreetMap",
+      "searchFailed": "Kò lè wa mọ́sáláṣí."
+    },
+    "masjidMute": {
+      "title": "Ìdákẹ́jẹ́ẹ́ Aládàáṣiṣẹ́ Ní Mọ́sáláṣí",
+      "intro": "PrayCalc kò tíì ní àtòjọ mọ́sáláṣí — fi àwọn agbègbè ìdákẹ́jẹ́ẹ́ tìrẹ kún ní ìsàlẹ̀. À ń dábàá pé kí o fi mọ́sáláṣí agbègbè rẹ kún kí fóònù rẹ lè dákẹ́jẹ́ẹ́ fúnrarẹ̀ nígbà tí o bá dé.",
+      "masterToggleLabel": "Ìdákẹ́jẹ́ẹ́ aládàáṣiṣẹ́ ti wà ní ṣíṣí",
+      "masterToggleSubtitle": "Dá fóònù jẹ́ẹ́ nígbà tí o bá wọ agbègbè èyíkéyìí ní ìsàlẹ̀",
+      "zonesHeading": "Àwọn Agbègbè Rẹ",
+      "emptyTitle": "Kò sí agbègbè kankan síbẹ̀",
+      "emptySubtitle": "Fi mọ́sáláṣí agbègbè rẹ kún kí PrayCalc lè dá fóònù rẹ jẹ́ẹ́ fúnrarẹ̀ nígbà tí o bá dé.",
+      "addZoneAction": "Fi Mọ́sáláṣí Agbègbè Rẹ Kún",
+      "addZoneButton": "Fi Agbègbè Kún",
+      "addZoneTitle": "Fi Agbègbè Ìdákẹ́jẹ́ẹ́ Kún",
+      "editZoneTitle": "Ṣàtúnṣe Agbègbè Ìdákẹ́jẹ́ẹ́",
+      "labelFieldLabel": "Àmì",
+      "labelFieldPlaceholder": "bí àpẹẹrẹ, Mọ́sáláṣí An-Nur",
+      "labelRequired": "Jọ̀wọ́ tẹ àmì sílẹ̀ fún agbègbè yìí.",
+      "coordinatesInvalid": "Jọ̀wọ́ tẹ latitude àti longitude tó tọ́ sílẹ̀, tàbí kí o wá/lo ipò lọ́wọ́lọ́wọ́.",
+      "searchAddressLabel": "Wa àdírẹ́sì",
+      "searchAddressPlaceholder": "Wa àdírẹ́sì tàbí ibi kan",
+      "searching": "Ń wá...",
+      "searchNoResults": "A kò rí ohunkóhun. Gbìyànjú wíwá mìíràn tàbí tẹ ìdarapọ̀ sílẹ̀ fúnrarẹ̀.",
+      "useCurrentLocation": "Lo Ipò Lọ́wọ́lọ́wọ́",
+      "locating": "Ń wá ipò...",
+      "locationFailed": "Kò lè rí ipò rẹ lọ́wọ́lọ́wọ́.",
+      "manualEntryToggle": "Tẹ ìdarapọ̀ sílẹ̀ fúnrarẹ̀",
+      "latitudeLabel": "Latitude",
+      "longitudeLabel": "Longitude",
+      "radiusLabel": "Rédíọ̀sì: mítà {{radius}}",
+      "radiusHint": "Láàrin mítà {{min}} àti mítà {{max}} — ó bo mọ́sáláṣí àti ibi tí wọ́n ń kọ́kọ́ ọkọ̀ sí.",
+      "decreaseRadiusAccessibilityLabel": "Dín rédíọ̀sì kù ní mítà 25",
+      "increaseRadiusAccessibilityLabel": "Fi kún rédíọ̀sì ní mítà 25",
+      "saveZone": "Fi Agbègbè Pamọ́",
+      "deleteZone": "Pa Agbègbè Rẹ́",
+      "deleteConfirmTitle": "Pa agbègbè yìí rẹ́?",
+      "deleteConfirmBody": "\"{{label}}\" kì yóò tún dá fóònù rẹ jẹ́ẹ́ fúnrarẹ̀ mọ́.",
+      "mapPickerFollowUp": "A ti gbèrò olùyan ìpẹ̀tí kí a lè fi àmì sí ojú ìwòye — fún àsìkò yìí, wa àdírẹ́sì tàbí lo ipò rẹ lọ́wọ́lọ́wọ́.",
+      "permissionTitle": "A Nílò Ìyọ̀ǹda Ipò",
+      "permissionBody": "Ìdákẹ́jẹ́ẹ́ Aládàáṣiṣẹ́ Ní Mọ́sáláṣí nílò ìwọlé sí ipò \"Nígbà Gbogbo\" láti ṣàwárí nígbà tí o bá wọ tàbí kúrò ní agbègbè kan, kódà bí app náà bá ti pa.",
+      "permissionGrant": "Fún Ní Ìyọ̀ǹda",
+      "permissionDeniedNote": "A kò fún ní ìyọ̀ǹda ipò abẹ́lé — a ti fi àwọn agbègbè pamọ́ ṣùgbọ́n ìdákẹ́jẹ́ẹ́ aládàáṣiṣẹ́ kò ní ṣiṣẹ́ títí o fi fún ní ìyọ̀ǹda \"Nígbà Gbogbo\" nínú ètò sístẹ́mù.",
+      "androidNote": "Android: fóònù rẹ yóò yí padà sí gbígbọ̀n nígbà tí o bá dé, yóò sì dá ipò ohùn tí ó ti wà pàdà nígbà tí o bá kúrò.",
+      "iosNote": "iOS: Apple kò yọ̀ǹda fún àwọn app láti yí sìwítì ìdákẹ́jẹ́ẹ́ padà. Dípò bẹ́ẹ̀, PrayCalc máa ń fi ìwífún ránṣẹ́ tí ó ń béèrè pé kí o dá fóònù rẹ jẹ́ẹ́ fúnrarẹ̀.",
+      "iosReminderTitle": "O Ti Dé",
+      "iosReminderBody": "O súnmọ́ {{zone}} — jọ̀wọ́ dá fóònù rẹ jẹ́ẹ́.",
+      "defaultZoneLabel": "agbègbè ìdákẹ́jẹ́ẹ́ rẹ",
+      "activeNow": "Ó ń ṣiṣẹ́ báyìí — fóònù ti dákẹ́jẹ́ẹ́",
+      "radiusValue": "Rédíọ̀sì mítà {{radius}}"
+    },
+    "pairTv": {
+      "upsellBadge": "Ummat+",
+      "unlockTitle": "Ṣí Ìdarapọ̀ TV",
+      "unlockDesc": "Ummat+ $9.99/ọdún — yóò ṣí app TV & Ilé Ọlọ́gbọ́n",
+      "pairedTitle": "TV Ti Sopọ̀",
+      "pairedDesc": "App TV rẹ ti sopọ̀ mọ́ àkáǹtì yìí nísisìyí.",
+      "title": "So Pọ̀ Pẹ̀lú TV",
+      "desc": "Ṣí PrayCalc lórí TV rẹ, lẹ́yìn náà tẹ PIN oníhàmọ́kàn mẹ́fà tí ó farahàn lórí ojú ìwòye sílẹ̀.",
+      "enterPin": "Tẹ PIN oníhàmọ́kàn mẹ́fà tí ó farahàn lórí TV rẹ sílẹ̀.",
+      "pinInputAccessibilityLabel": "PIN ìdarapọ̀ TV",
+      "pairFailed": "Ìdarapọ̀ kùnà. Gbìyànjú lẹ́ẹ̀kan sí.",
+      "pairDevice": "So Ẹ̀rọ Pọ̀",
+      "invalidOrExpiredPin": "PIN yẹn kò tọ́ tàbí ó ti parí. Ṣàyẹ̀wò ojú ìwòye TV kí o sì gbìyànjú lẹ́ẹ̀kan sí."
+    },
+    "tvManager": {
+      "upsellBadge": "Ummat+",
+      "unlockTitle": "Ṣí Ìṣàkóso TV",
+      "unlockDesc": "Ummat+ $9.99/ọdún — yóò ṣí app TV & Ilé Ọlọ́gbọ́n",
+      "emptyTitle": "Kò sí TV kankan tí a so pọ̀ síbẹ̀",
+      "emptySubtitle": "So TV kan pọ̀ láti rí i níhìn-ín kí o sì ṣàkóso àwọn ètò ojú ìwòye rẹ̀.",
+      "pairACta": "So TV Kan Pọ̀",
+      "noCity": "A kò ṣètò ipò kankan",
+      "nameLabel": "Orúkọ",
+      "colorLabel": "Àwọ̀ Ìtẹnumọ́",
+      "streamLabel": "Orísun Ìgbésẹ́jáde",
+      "streamMakkah": "Makkah TV",
+      "streamSaudiQuran": "Saudi Quran",
+      "streamMedina": "Medina",
+      "rotateLabel": "Yíyí Ojú Ìwòye",
+      "decreaseRotate": "Dín ìṣẹ́jú yíyí kù",
+      "increaseRotate": "Fi kún ìṣẹ́jú yíyí",
+      "weatherLabel": "Fi Ojú Ọjọ́ Hàn",
+      "updateLocationAction": "Sọ ipò di tuntun sí ibi tí mo wà nísisìyí",
+      "updateLocationHint": "TV yóò gba àwọn ìyípadà ipò nígbà tí ó bá tún so pọ̀ nígbà tí ó bá kàn — èyí máa ń sọ ipò tí a fipamọ́ di tuntun nísisìyí.",
+      "noLocationTitle": "A Kò Ṣètò Ipò",
+      "noLocationBody": "Ṣètò ipò rẹ nínú Ètò kí o tó sọ ipò TV di tuntun.",
+      "locationUpdatedTitle": "Ipò Ti Di Tuntun",
+      "locationUpdatedBody": "A ti fi pamọ́. TV yóò lo ipò yìí nígbà tí ó bá tún so pọ̀ nígbà tí ó bá kàn.",
+      "deleteAction": "Yọ TV Yìí Kúrò",
+      "deleteConfirmTitle": "Yọ TV kúrò?",
+      "deleteConfirmBody": "Èyí yóò tú \"{{name}}\" kúrò, yóò sì yọ àwọn ètò rẹ̀ tí a fipamọ́ kúrò. A kò lè dá èyí padà.",
+      "deleteConfirmAction": "Yọ Kúrò",
+      "prayerFajr": "Fajr",
+      "prayerDhuhr": "Dhuhr",
+      "prayerAsr": "Asr",
+      "prayerMaghrib": "Maghrib",
+      "prayerIsha": "Isha",
+      "madhabShafii": "Shafi'i",
+      "madhabHanafi": "Hanafi",
+      "timeFormat12h": "Wákàtí 12",
+      "timeFormat24h": "Wákàtí 24",
+      "invalidCoordsTitle": "Ìdarapọ̀ Kò Tọ́",
+      "invalidCoordsBody": "Tẹ latitude tó tọ́ (-90 sí 90) àti longitude (-180 sí 180) sílẹ̀.",
+      "deepSettingsLabel": "Ètò Jíjìn",
+      "countdownTakeoverLabel": "Gbígba Ojú Ìwòye Fún Kíkàsẹ́yìn",
+      "countdownTakeoverHint": "Gba ojú ìwòye pẹ̀lú kíkàsẹ́yìn ńlá kí àdúrà kọ̀ọ̀kan tó dé.",
+      "countdownMinutesLabel": "Bẹ̀rẹ̀ Kíkàsẹ́yìn",
+      "decreaseCountdown": "Dín ìṣẹ́jú kíkàsẹ́yìn kù",
+      "increaseCountdown": "Fi kún ìṣẹ́jú kíkàsẹ́yìn",
+      "iqamaLabel": "Àkókò Iqama",
+      "iqamaHint": "Fi kíkàsẹ́yìn iqama hàn lẹ́yìn azan, pẹ̀lú ìyàtọ̀ fún àdúrà kọ̀ọ̀kan.",
+      "decreaseIqama": "Dín ìyàtọ̀ iqama ti {{prayer}} kù",
+      "increaseIqama": "Fi kún ìyàtọ̀ iqama ti {{prayer}}",
+      "nameOnlyLabel": "Ipò Orúkọ Nìkan",
+      "nameOnlyHint": "Fi orúkọ àdúrà nìkan hàn (láìní àkókò) fún iye ìṣẹ́jú yìí kí azan tó dé.",
+      "nameOnlyMinutesLabel": "Àkókò Ipò Orúkọ Nìkan",
+      "decreaseNameOnly": "Dín ìṣẹ́jú orúkọ nìkan kù",
+      "increaseNameOnly": "Fi kún ìṣẹ́jú orúkọ nìkan",
+      "madhabLabel": "Madhab",
+      "timeFormatLabel": "Ọ̀nà Àkókò",
+      "calcMethodLabel": "Ọ̀nà Ìṣírò",
+      "manualLocationToggle": "Tẹ ìdarapọ̀ sílẹ̀ fúnrarẹ̀",
+      "latitudeLabel": "Latitude",
+      "longitudeLabel": "Longitude",
+      "manualLocationSave": "Fi Ìdarapọ̀ Pamọ́",
+      "layoutThemeLabel": "Ìtòlẹ́sẹẹsẹ & Àkòrí",
+      "layoutLabel": "Ìtòlẹ́sẹẹsẹ",
+      "themeLabel": "Àkòrí",
+      "layoutClassic": "Ayélujára",
+      "layoutClassicDesc": "Àkókò + ìgbésẹ́jáde tààrà lẹ́gbẹ̀ẹ́ ara wọn",
+      "layoutFlipped": "Àyípadà",
+      "layoutFlippedDesc": "Ìpín kan náà, tí a yí padà",
+      "layoutStreamFull": "Ìgbésẹ́jáde Kíkún",
+      "layoutStreamFullDesc": "Ìgbésẹ́jáde ojú ìwòye kíkún pẹ̀lú ọ̀já àkókò",
+      "layoutTimesOnly": "Àkókò Nìkan",
+      "layoutTimesOnlyDesc": "Àkókò àdúrà nìkan, láìní ìgbésẹ́jáde tààrà",
+      "layoutAmbient": "Ambient",
+      "layoutAmbientDesc": "Ìfihàn aago kékeré tí ó rọrùn",
+      "themeUmmatGreen": "Ummat Green",
+      "themeMidnight": "Midnight",
+      "themeWarmSand": "Warm Sand",
+      "themeMono": "Mono"
+    },
+    "prayerTimes": {
+      "setCityTitle": "Ṣètò Ìlú Rẹ",
+      "setCitySubtitle": "Mú ipò ṣiṣẹ́ tàbí yan ìlú fúnrarẹ̀ láti rí àkókò àdúrà.",
+      "setLocationAction": "Ṣètò Ipò",
+      "offlineMessage": "À ń fi àkókò àdúrà tí a mọ̀ kẹ́yìn hàn (láìní ayélujára)",
+      "next": "Tí Ń Bọ̀: {{prayer}}",
+      "asrCalculation": "Ìṣírò Asr",
+      "markedPrayed": "a ti sàmì sí i pé a ti gbàdúrà",
+      "notMarkedPrayed": "a kò sàmì sí i pé a ti gbàdúrà",
+      "doubleTapToggle": "Tẹ ìlọ́po méjì láti yí padà.",
+      "shareTimes": "Pín àkókò òní",
+      "shareAccessibilityLabel": "Pín àkókò àdúrà òní"
+    },
+    "quran": {
+      "loading": "Ń gba dátà Kùránì...",
+      "backToList": "Padà sí àtòjọ sura",
+      "back": "Padà",
+      "bismillah": "Bismillah",
+      "comingSoonBody": "Ka {{name}} (ẹsẹ {{count}}) pẹ̀lú ìtumọ̀ àti kíkà lórí Islam.Wiki — agbóhùnsáfẹ́fẹ́ Kùránì wa tó pé.",
+      "readOnWiki": "Ka lórí Islam.Wiki →",
+      "removeBookmark": "Yọ àmì ìfipamọ́ kúrò",
+      "bookmarkVerse": "Fi àmì ìfipamọ́ sí ẹsẹ",
+      "surahList": "Àtòjọ Sura",
+      "wikiFooter": "📖 Kùránì Kíkún — gbogbo sura 114, ìtumọ̀ & ohùn lórí Islam.Wiki →",
+      "openFullQuran": "Ṣí Kùránì Kíkún Lórí Islam.Wiki",
+      "featuredVerse": "Ẹsẹ Tí A Fi Hàn",
+      "readableBadge": "Ó Wà"
+    },
+    "ramadan": {
+      "subtitle": "Ramadan Mubarak",
+      "dayOf": "Ọjọ́ {{day}} nínú {{total}}",
+      "iftarIn": "Ìjẹ alẹ́ ní",
+      "suhoorEndsIn": "Sahur máa parí ní",
+      "notActive": "Ramadan kò sí lọ́wọ́lọ́wọ́.\nOṣù Hijri lọ́wọ́lọ́wọ́: {{month}} ({{monthNumber}}/12)",
+      "todaysTimes": "Àkókò Òní",
+      "suhoorEnds": "Ìparí Sahur (Fajr)",
+      "iftar": "Ìjẹ Alẹ́ (Maghrib)",
+      "noLocation": "Ṣètò ipò rẹ nínú Ètò láti rí àkókò àdúrà.",
+      "duasTitle": "Ẹ̀bẹ̀ Ramadan",
+      "laylatAlQadrTitle": "Laylatul Kadr",
+      "laylatAlQadrBody": "À wà nínú ọjọ́ mẹ́wàá ìkẹyìn Ramadan. Fi kún ìjọsìn, pàápàá ní àwọn òru àìdọ́gba (21, 23, 25, 27, 29)."
+    },
+    "notifications": {
+      "masterLabel": "Ìwífún Àdúrà",
+      "masterSub": "Gba ìkìlọ̀ kí àkókò àdúrà kọ̀ọ̀kan tó dé",
+      "androidExactAlarm": "Lórí Android 12+, yọ̀ǹda \"Ìtaniji & Ìrántí\" nínú ètò sístẹ́mù fún ìkìlọ̀ àkókò àdúrà tó péye.",
+      "openSystemSettings": "Ṣí Ètò Sístẹ́mù",
+      "masterAccessibilityLabel": "Mú ìwífún àdúrà ṣiṣẹ́",
+      "openSystemSettingsAccessibilityLabel": "Ṣí ètò sístẹ́mù fún àwọn ìtaniji",
+      "perPrayerAlerts": "Ìkìlọ̀ Fún Àdúrà Kọ̀ọ̀kan",
+      "minutesBefore_one": "ìṣẹ́jú {{count}} kí ó tó dé",
+      "minutesBefore_other": "ìṣẹ́jú {{count}} kí ó tó dé",
+      "iqamahOff": "iqama ti pa",
+      "iqamahAfter_one": "iqama +ìṣẹ́jú {{count}}",
+      "iqamahAfter_other": "iqama +ìṣẹ́jú {{count}}",
+      "adhanSoundTitle": "Ohùn Azan",
+      "adhanSoundSub": "Azan wo ni yóò dún nígbà tí ìwífún àdúrà bá dé.",
+      "adhanSound": {
+        "takbir": "Takbir (ìbẹ̀rẹ̀)",
+        "makkah": "Makkah",
+        "mishari": "Mishari Rashid",
+        "madina": "Madina"
+      },
+      "smartAlarmsTitle": "Àwọn Ìtaniji Ọlọ́gbọ́n",
+      "suhoorLabel": "Ìtaniji Sahur",
+      "suhoorSub": "Jí kí Fajr tó dé fún oúnjẹ ṣáájú àfẹ̀mọ́júmọ́.",
+      "suhoorBefore_one": "ìṣẹ́jú {{count}} kí Fajr tó dé",
+      "suhoorBefore_other": "ìṣẹ́jú {{count}} kí Fajr tó dé",
+      "tahajjudLabel": "Tahajjud / Qiyam",
+      "tahajjudSub": "Dìde ní apá ìkẹyìn òru fún àdúrà.",
+      "tahajjudLastThird": "Ìdá mẹ́ta ìkẹyìn òru",
+      "tahajjudCustom": "Àkókò Àkànṣe",
+      "nightTimesTitle": "Àkókò Òru (alẹ́ òní)",
+      "lastThirdBegins": "Ìdá mẹ́ta ìkẹyìn bẹ̀rẹ̀",
+      "middleOfNight": "Àárín òru",
+      "nightTimesUnavailable": "Ṣètò ipò rẹ láti rí àkókò òru alẹ́ òní.",
+      "reliabilityTitle": "Ìfìdílẹ̀ Azan Tí A Lè Gbẹ́kẹ̀lé",
+      "reliabilitySub": "Rí i dájú pé àwọn ìtaniji dún ní àkókò tí ó tọ́",
+      "batteryTitle": "Yọ̀ǹda Àwọn Ìtaniji Tí A Lè Gbẹ́kẹ̀lé",
+      "batteryIntro": "Android lè dá àwọn ìtaniji àdúrà jẹ́ẹ́ láti fi bátìrì pamọ́. Láti gbọ́ azan ní àkókò tí ó tọ́:",
+      "batteryStepAlarms": "Yọ̀ǹda \"Ìtaniji & Ìrántí\" (àwọn ìtaniji tó péye) fún Àkókò Àdúrà.",
+      "batteryStepOptimization": "Pa ìmúgbòòrò bátìrì fún Àkókò Àdúrà kúrò kí a má bàa mú app náà sùn.",
+      "batteryOemNote": "Àwọn fóònù kan (Xiaomi, Huawei, Samsung, OnePlus, Oppo, Vivo) ní ètò àfikún kan tí a ń pè ní \"ìbẹ̀rẹ̀-fúnrarẹ̀\" tàbí \"àwọn app tí a dáàbò bò\" — mú Àkókò Àdúrà ṣiṣẹ́ níbẹ̀ pẹ̀lú.",
+      "openExactAlarm": "Ṣí Ìtaniji & Ìrántí",
+      "openBatterySettings": "Ṣí Ètò Bátìrì",
+      "testAdhanButton": "Dán azan mi wò (ìṣẹ́jú-àáyá 5)",
+      "testAdhanScheduled": "Azan àdánwò yóò dún ní bí ìṣẹ́jú-àáyá 5. Ti ojú ìwòye tàbí fi app náà sẹ́yìn láti gbọ́ ọ gẹ́gẹ́ bí ìwífún.",
+      "dismiss": "Ti"
+    },
+    "homeWidget": {
+      "widgetPreviewAccessibilityLabel": "Àwòṣàyẹ̀wò widget tí ń fi àkókò àdúrà tí ń bọ̀ hàn",
+      "title": "Widget Ojú Ìwé Ilé",
+      "subtitle": "Rí àkókò àdúrà tí ń bọ̀ lórí ojú ìwé ilé rẹ",
+      "widgetPreviewTitle": "Àwòṣàyẹ̀wò Widget",
+      "nextPrayer": "Àdúrà Tí Ń Bọ̀",
+      "setLocationToPreview": "Ṣètò ipò rẹ láti rí àwòṣàyẹ̀wò",
+      "setupInstructions": "Àwọn Ìtọ́ni Ìṣètò",
+      "integrationStatus": "Ipò Ìṣọ̀kan",
+      "upsellMessage": "Widget ojú ìwé ilé jẹ́ ẹ̀yà Ummat+.",
+      "upsellAction": "Gbéga sí Ummat+",
+      "countdownPrefix": "ní {{countdown}}",
+      "setupStep1": "Tẹ ojú ìwé ilé rẹ mọ́lẹ̀ fún ìgbà pípẹ́",
+      "setupStep2": "Tẹ bọ́tìnnì + (iOS) tàbí àtòjọ widget (Android)",
+      "setupStep3": "Wa \"{{appName}}\"",
+      "setupStep4": "Yan ìwọ̀n widget tí o fẹ́ràn",
+      "setupStep5": "Tẹ Fi Widget Kún",
+      "statusAndroid": "Android: ń ṣiṣẹ́ — widget \"Àdúrà Tí Ń Bọ̀\" ojú ìwé ilé ń lo react-native-android-widget, ó sì ń sọ ara rẹ̀ di tuntun fúnrarẹ̀ ní ìṣẹ́jú 30 kọ̀ọ̀kan (àti lẹ́sẹ̀kẹsẹ̀ lẹ́yìn tí o bá yí ètò tàbí ìwífún padà).",
+      "statusIos": "iOS: ń ṣiṣẹ́ — widget WidgetKit \"Àdúrà Tí Ń Bọ̀\" máa ń di tuntun nígbàkúùgbà tí o bá yí ètò tàbí ìwífún padà, ó sì ń tẹ̀síwájú fúnrarẹ̀ ní àkókò àdúrà kọ̀ọ̀kan."
+    },
+    "smartHome": {
+      "proOnly": "Ilé Ọlọ́gbọ́n (títi-nígbà-àdúrà + ìṣàkóso ẹ̀rọ) jẹ́ ẹ̀yà Ummat+.",
+      "upgradeAction": "Gbéga sí Ummat+",
+      "lockDuringPrayer": "Ti Nígbà Àdúrà",
+      "lockDesc": "Dín ìmọ́lẹ̀ ojú ìwòye kù fúnrarẹ̀ kí o sì dá àwọn amóhùnmáwòrán jẹ́ẹ́ nígbà tí àkókò àdúrà bá bẹ̀rẹ̀. Ó nílò ìfẹsẹ̀múlẹ̀ láti ṣètò.",
+      "lockOnSalah": "Ti Nígbà Àdúrà",
+      "lockOnSalahAccessibilityLabel": "Ipò títi nígbà àdúrà",
+      "activeNote": "Ojú ìwòye yóò dín ìmọ́lẹ̀ kù, a ó sì dá àwọn amóhùnmáwòrán dúró ní àkókò àdúrà.\nAndroid: a ó tú ìfojúsùn amóhùnmáwòrán sílẹ̀. iOS: a ó fi ìrántí ipò ìdákẹ́jẹ́ẹ́ hàn.",
+      "linkedAccounts": "Àwọn Àkáǹtì Tí A Sopọ̀",
+      "noLinks": "Kò sí àkáǹtì ilé ọlọ́gbọ́n kankan tí a sopọ̀ síbẹ̀. Ṣí app Alexa tàbí Google Home, wa ẹ̀yà tàbí ìṣe PrayCalc, kí o sì so àkáǹtì Ummat rẹ pọ̀.",
+      "linked": "A sopọ̀ ní {{date}}",
+      "unlink": "Tú Sílẹ̀",
+      "unlinkConfirmTitle": "Tú {{name}} sílẹ̀?",
+      "unlinkConfirmBody": "O lè tún so {{name}} pọ̀ nígbàkigbà nípasẹ̀ app Alexa tàbí Google Home.",
+      "unlinkConfirmAction": "Tú Sílẹ̀",
+      "unlinkFailedTitle": "Kò lè tú sílẹ̀",
+      "learnMore": "Kọ́ Síwájú Sí i",
+      "authPrompt": "Fi ẹsẹ̀ múlẹ̀ láti mú títi nígbà àdúrà ṣiṣẹ́",
+      "useFallback": "Lo àmì-ìdánimọ̀"
+    },
+    "stats": {
+      "chartAccessibilityLabel": "Àwòrán ìparí àdúrà ọ̀sẹ̀",
+      "noLogs": "Kò sí àkọsílẹ̀ àdúrà síbẹ̀. Bẹ̀rẹ̀ parí àdúrà láti rí ìtàn rẹ.",
+      "dayStreak": "Ọjọ́ Tí Kò Yẹ̀ 🔥",
+      "weeklyRate": "Ìwọ̀n Ọ̀sẹ̀",
+      "totalLogged": "Àpapọ̀ Tí A Kọ Sílẹ̀",
+      "last7Days": "Ọjọ́ 7 Tó Kọjá",
+      "thisMonth": "Oṣù Yìí",
+      "byPrayer": "Nípa Àdúrà Kọ̀ọ̀kan",
+      "weekly": "Ti Ọ̀sẹ̀",
+      "monthly": "Ti Oṣù",
+      "fastingStreak": "Àwẹ̀ Tí Kò Yẹ̀",
+      "qadaOutstanding": "Qada Tí Ó Ku"
+    },
+    "subscription": {
+      "title": "PrayCalc Pro",
+      "subtitle": "Mú ìrírí ìjọsìn rẹ dára sí i",
+      "loadingOptions": "Ń gba àwọn àṣàyàn ìforúkọsílẹ̀...",
+      "loadProductsFailed": "Kò lè gba àwọn ọjà. Ṣàyẹ̀wò ìsopọ̀ rẹ kí o sì gbìyànjú lẹ́ẹ̀kan sí.",
+      "connectFailed": "Kò lè sopọ̀ mọ́ ilé ìtajà.",
+      "createAccountTitle": "Ṣẹ̀dá Àkáǹtì",
+      "createAccountBody": "Kọ́kọ́ wọlé kí ìrà rẹ lè ṣọ̀kan lórí gbogbo ẹ̀rọ rẹ.",
+      "purchaseFailed": "Ìrà kùnà. Jọ̀wọ́ gbìyànjú lẹ́ẹ̀kan sí.",
+      "restoreFailed": "Ìmúpadàbọ̀sípò kùnà.",
+      "proTitle": "O wà lórí Pro",
+      "proSub": "Ẹ ṣé fún àtìlẹ́yìn yín fún PrayCalc!",
+      "noProducts": "Àwọn ọjà ìforúkọsílẹ̀ kò sí. Ṣètò rẹ̀ nínú App Store Connect / Google Play Console.",
+      "restorePurchase": "Mú Ìrà Padàbọ̀",
+      "restorePurchaseAccessibilityLabel": "Mú ìrà tẹ́lẹ̀ padàbọ̀",
+      "legal": "Àwọn ìforúkọsílẹ̀ máa ń tún bẹ̀rẹ̀ fúnrarẹ̀ àyàfi tí a bá fagilé o kéré tán wákàtí 24 kí àsìkò lọ́wọ́lọ́wọ́ tó parí. Ṣàkóso nínú ètò àkáǹtì App Store / Google Play rẹ.",
+      "featurePremiumAdhan": "Ohùn azan premium — àwọn agbóhùnsáfẹ́fẹ́ mìíràn",
+      "featureHomeWidget": "Widget ojú ìwé ilé (àdúrà tí ń bọ̀)",
+      "featureTvPairing": "Ìdarapọ̀ app PrayCalc TV",
+      "featureSmartHome": "Ilé Ọlọ́gbọ́n — ti àwọn ẹ̀rọ nígbà àdúrà",
+      "subscribeAccessibilityLabel": "Forúkọ sílẹ̀ fún {{title}} ní iye {{price}}"
+    },
+    "tasbeeh": {
+      "chooseDhikr": "Yan Dhikri",
+      "of": "nínú {{count}}",
+      "resetCounter": "Tún ìka bẹ̀rẹ̀",
+      "todayTotal": "Àpapọ̀ Òní",
+      "history": "Ìtàn"
+    },
+    "timetable": {
+      "setCityTitle": "Ṣètò Ìlú Rẹ",
+      "setCitySubtitle": "Ṣètò ipò rẹ láti rí àkókò àdúrà oṣù.",
+      "previousMonth": "Oṣù Tó Kọjá",
+      "nextMonth": "Oṣù Tó Ń Bọ̀",
+      "exportCalendar": "Kó Kàlẹ́ńdà Jáde (.ics)",
+      "exportAccessibilityLabel": "Kó àkókò àdúrà oṣù yìí jáde gẹ́gẹ́ bí fáìlì kàlẹ́ńdà",
+      "shareTimes": "Pín oṣù yìí",
+      "shareAccessibilityLabel": "Pín àkókò àdúrà oṣù yìí"
+    },
+    "travel": {
+      "musafirModeTitle": "Ipò Musafir",
+      "musafirModeDesc": "Èmi jẹ́ arìnrìn-àjò (musafir). Fi qasr sí àwọn àdúrà tó bára mu.",
+      "musafirModeAccessibilityLabel": "Ipò ìrìnàjò musafir",
+      "musafirAlertTitle": "Ipò Musafir (Arìnrìn-àjò)",
+      "musafirAlertBody": "Qasr (kíkúrú) máa ń dín Dhuhr, Asr, àti Isha kù láti raka'a 4 sí 2.\n\nAkíyèsí: Jama (dídarapọ̀ àdúrà) kò ní ṣiṣẹ́ fúnrarẹ̀ nítorí àìdọ́gba ìmọ̀ràn àwọn ọ̀mọ̀wé. Jọ̀wọ́ tẹ̀lé ọ̀mọ̀wé agbègbè rẹ tàbí madhab rẹ nípa dídarapọ̀ àdúrà nígbà ìrìnàjò.",
+      "understood": "Mo Ti Yé Mi",
+      "qasrRakatCount": "Iye Raka'a Qasr",
+      "fiqhNote": "A kò kúrú Fajr àti Maghrib (qasr kàn ṣiṣẹ́ sí àdúrà raka'a 4 nìkan). Jama (dídarapọ̀ àdúrà) nílò títẹ̀lé ọ̀mọ̀wé agbègbè rẹ tàbí madhab rẹ.",
+      "travelDestination": "Ibi Tí A Ń Lọ",
+      "changeCity": "Yí Padà",
+      "changeCityAccessibilityLabel": "Yí ìlú ìrìnàjò padà",
+      "selectTravelCity": "Yan Ìlú Ìrìnàjò",
+      "selectTravelCityAccessibilityLabel": "Yan ìlú ìrìnàjò",
+      "recalcNote": "A ó tún ṣírò àkókò àdúrà fún ibi tí o ń lọ.",
+      "homeCity": "Ìlú Ilé",
+      "notSet": "Kò Ṣètò"
+    },
+    "qibla": {
+      "calibrating": "Ń tún kọ̀mpáàsì ṣe...",
+      "locationRequiredTitle": "A Nílò Ipò",
+      "locationRequiredSubtitle": "Ṣètò ipò rẹ nínú Ètò láti rí ìtọ́ni Qibla.",
+      "bearingLabel": "Ìtọ́ni Qibla",
+      "compassAccessibilityLabel": "Kọ̀mpáàsì Qibla, ìtọ́ni lọ́wọ́lọ́wọ́ dígrì {{degrees}}",
+      "accuracyLabel": "Ìpéye: {{level}}",
+      "accuracyUnknown": "A Kò Mọ̀",
+      "accuracyUnreliable": "Kò Ṣeé Gbẹ́kẹ̀lé",
+      "accuracyLow": "Kékeré",
+      "accuracyMedium": "Àárín",
+      "accuracyHigh": "Gíga",
+      "headingNote": "Ìtọ́ni: {{degrees}}° | Ìtọ́ni yíká ńlá sí Kaaba"
+    },
+    "fasting": {
+      "todaysFast": "Àwẹ̀ Òní",
+      "logToday": "Kọ Àwẹ̀ Òní Sílẹ̀",
+      "unlogToday": "Yọ Àkọsílẹ̀ Òní Kúrò",
+      "loggedAs": "A Kọ Sílẹ̀ Gẹ́gẹ́ Bí: {{type}}",
+      "yourStreaks": "Àwọn Ọjọ́ Rẹ Tí Kò Yẹ̀",
+      "mondayStreak": "Ọjọ́ Aje Tí Kò Yẹ̀",
+      "thursdayStreak": "Ọjọ́bọ̀ Tí Kò Yẹ̀",
+      "whiteDaysMonth": "Ọjọ́ Funfun Ní Oṣù Yìí",
+      "ramadanLogged": "Àwẹ̀ Ramadan",
+      "qadaLogged": "Qada Tí A San",
+      "voluntaryLogged": "Àwẹ̀ Àtinúwá",
+      "ramadanDayOf": "Ramadan — Ọjọ́ {{day}} nínú {{total}}",
+      "upcomingSuggestions": "Àwọn Ọjọ́ Àwẹ̀ Tí A Dábàá Tí Ń Bọ̀",
+      "logAction": "Kọ Sílẹ̀",
+      "sunnahSourceNote": "Àwẹ̀ Ọjọ́ Aje & Ọjọ́bọ̀: Sahih Muslim 1162. Ọjọ́ Funfun (ọjọ́ 13sí15 oṣù Hijri kọ̀ọ̀kan): Sunan an-Nasa'i 2345, Sunan Abi Dawud 2449.",
+      "recentLogs": "Àwọn Àkọsílẹ̀ Àìpẹ́"
+    },
+    "qada": {
+      "totalOwed": "Àpapọ̀ Àdúrà Tí A Jẹ Gbèsè",
+      "perPrayer": "Iye Fún Àdúrà Kọ̀ọ̀kan",
+      "makeUpOne": "San Ọ̀kan",
+      "excusedTitle": "Àkókò Àjọ̀wọ́",
+      "fiqhNote": "Nígbà àkókò àjọ̀wọ́ (bí nǹkan oṣù tàbí ẹ̀jẹ̀ lẹ́yìn ìbímọ), obìnrin kò gbàdúrà — a kò sì tún san àwọn àdúrà tí kò ṣe wọ̀nyí padà (qada) lẹ́yìn náà. Èyí yàtọ̀ sí àwẹ̀: A Ó SAN àwẹ̀ tí kò ṣe ní àkókò yẹn padà lẹ́yìn náà.",
+      "fiqhCitation": "Sahih al-Bukhari 321 · Sahih Muslim 335",
+      "consultScholar": "Èyí fi ojú-ìwòye ọ̀pọ̀ hàn. Fún ipò àkànṣe rẹ, bá ọ̀mọ̀wé agbègbè rẹ sọ̀rọ̀.",
+      "addExcusedRange": "Fi Àkókò Àjọ̀wọ́ Kún",
+      "startDate": "Ọjọ́ Ìbẹ̀rẹ̀",
+      "endDate": "Ọjọ́ Ìparí",
+      "noteOptional": "Àkíyèsí (àṣàyàn)",
+      "notePlaceholder": "bí àpẹẹrẹ, nǹkan oṣù, àìsàn",
+      "removeExcusedRangeAccessibilityLabel": "Yọ àkókò àjọ̀wọ́ kúrò"
+    },
+    "jumuah": {
+      "intro": "Jimọ́ ni ọjọ́ tó dára jùlọ nínú ọ̀sẹ̀. Ṣètò àwọn ìrántí jẹ́ẹ́jẹ́ kí o sì múra sílẹ̀ fún Jimọ́ pẹ̀lú àwọn sunnah rẹ̀.",
+      "khutbahTitle": "Ìrántí Ìwàásù",
+      "khutbahSub": "Ìrántí Jimọ́ kọ̀ọ̀kan kí ìwàásù tó dé.",
+      "kahfTitle": "Ìrántí Suuratul Kahf",
+      "kahfSub": "Ìrántí láti ka Suuratul Kahf ní ọjọ́ Jimọ́.",
+      "kahfDayThursday": "Alẹ́ Ọjọ́bọ̀",
+      "kahfDayFriday": "Àárọ̀ Jimọ́",
+      "reminderTime": "Àkókò Ìrántí",
+      "checklistTitle": "Àwọn Sunnah Jimọ́",
+      "virtueTitle": "Iyì Jimọ́",
+      "virtueBody": "Ànábì ﷺ sọ pé: \"Ọjọ́ tó dára jùlọ tí oòrùn ti yọ ni Jimọ́.\"",
+      "virtueCitation": "Sahih Muslim 854",
+      "kahfVirtueBody": "Ànábì ﷺ sọ pé: \"Ẹnikẹ́ni tí ó bá ka Suuratul Kahf ní ọjọ́ Jimọ́, ìmọ́lẹ̀ yóò tàn fún un láàrin ọjọ́ Jimọ́ méjì.\"",
+      "kahfVirtueCitation": "Al-Hakim àti al-Bayhaqi ni wọ́n ròyìn rẹ̀; al-Albani fi ẹsẹ̀ múlẹ̀ pé ó jẹ́ òdodo",
+      "checklist": {
+        "ghusl": "Ṣe ghusl (ìwẹ̀ ẹ̀sìn)",
+        "ghuslCitation": "Sahih al-Bukhari 877 · Sahih Muslim 846",
+        "cleanClothes": "Wọ aṣọ tí ó mọ́ tí ó sì dára",
+        "cleanClothesCitation": "Sunan Abi Dawud 343 (hasan)",
+        "perfume": "Lo òórùn dídùn (miswak àti ìmúra ara)",
+        "perfumeCitation": "Sahih al-Bukhari 880",
+        "early": "Lọ sí mọ́sáláṣí ní kùtùkùtù",
+        "earlyCitation": "Sahih al-Bukhari 881 · Sahih Muslim 850",
+        "kahf": "Ka Suuratul Kahf",
+        "kahfCitation": "al-Hakim / al-Bayhaqi (sahih gẹ́gẹ́ bí al-Albani ṣe sọ)",
+        "salawat": "Fi kún salawat sórí Ànábì ﷺ",
+        "salawatCitation": "Sunan Abi Dawud 1047 (sahih)",
+        "dua": "Wa wákàtí ìgbàláyè ẹ̀bẹ̀",
+        "duaCitation": "Sahih al-Bukhari 935 · Sahih Muslim 852"
+      }
+    },
+    "leadTimeAccessibilityLabel": "Àkókò ìkìlọ̀ {{prayer}}, ìṣẹ́jú {{minutes}} kí ó tó dé. Tẹ̀ láti yí padà.",
+    "iqamahAccessibilityLabel": "Ìrántí iqama ti {{prayer}}, {{status}}. Tẹ̀ láti yí padà.",
+    "enableAccessibilityLabel": "Mú azan {{prayer}} ṣiṣẹ́",
+    "rowAccessibilityLabel": "{{name}}, ní {{distance}} sí",
+    "directionsAccessibilityLabel": "Ṣí ọ̀nà sí {{name}} nínú Àwòrán",
+    "accentColorAccessibilityLabel": "Àwọ̀ ìtẹnumọ́ {{hex}}",
+    "todayTotalAccessibilityLabel": "Àpapọ̀ dhikri òní: {{total}}",
+    "historyEntryAccessibilityLabel": "{{name}}: {{count}}, {{date}}",
+    "arabicTextAccessibilityLabel": "Lárúbáwá: {{transliteration}}",
+    "counterAccessibilityLabel": "Iye: {{count}} nínú {{target}}. {{status}}",
+    "tapToIncrement": "Tẹ̀ láti fi kún",
+    "presetAccessibilityLabel": "{{transliteration}}, góńgó {{target}}, orísun {{source}}",
+    "zoneRowAccessibilityLabel": "{{label}}, rédíọ̀sì mítà {{radius}}",
+    "phaseAccessibilityLabel": "Ìpele òṣùpá: {{phase}}, {{illumination}}",
+    "voiceAccessibilityLabel": "{{name}} láti ọwọ́ {{reciter}}",
+    "voiceAccessibilityLabelPro": "{{name}} láti ọwọ́ {{reciter}} (Pro, a nílò gbígbéga láti yàn án)",
+    "surahNameAccessibilityLabel": "Sura {{name}}",
+    "readOnWikiAccessibilityLabel": "Ka Sura {{name}} lórí Islam.Wiki",
+    "verseAccessibilityLabel": "Ẹsẹ {{number}}: {{transliteration}}",
+    "featuredVerseAccessibilityLabel": "{{label}}: Ayat al-Kursi",
+    "surahRowAccessibilityLabel": "Sura {{number}}, {{name}}, ẹsẹ {{count}}, {{type}}",
+    "fullTextAvailableSuffix": ", ẹ̀dà kíkún wà",
+    "revelationMeccan": "Ti Makka",
+    "revelationMedinan": "Ti Madina"
+  },
+  "onboarding": {
+    "skip": "Fò",
+    "welcome": {
+      "title": "Kaàbọ̀ sí PrayCalc",
+      "desc": "Àkókò àdúrà tó péye, ìtọ́ni Qibla, àti kàlẹ́ńdà Islam — ṣètò ní ìfọwọ́kàn díẹ̀.",
+      "cta": "Bẹ̀rẹ̀"
+    },
+    "location": {
+      "title": "Ipò Rẹ",
+      "prime": "PrayCalc ń lo ipò rẹ láti ṣírò àkókò àdúrà tó péye fún ìlú rẹ. Ó máa dúró sínú ẹ̀rọ rẹ — a kì í pín in rárá. Tẹ Yọ̀ǹda lórí ojú ìwòye tó kàn láti tẹ̀síwájú.",
+      "allow": "Yọ̀ǹda Ipò",
+      "later": "Èmi yóò ṣètò èyí lẹ́yìn náà"
+    },
+    "notifications": {
+      "title": "Ìrántí Àdúrà",
+      "prime": "Gba ìrántí jẹ́ẹ́jẹ́ tàbí azan ní àkókò àdúrà kọ̀ọ̀kan kí o má bàa fojú fo àdúrà kan rárá. O lè tún ètò rẹ ṣe lẹ́yìn nípa àwọn àdúrà tí yóò máa fún ọ ní ìwífún.",
+      "allow": "Mú Ìrántí Ṣiṣẹ́",
+      "later": "Kò Sí Nísisìyí"
+    },
+    "method": {
+      "title": "Ọ̀nà Ìṣírò",
+      "dpcExplain": "DPC (Dynamic PrayCalc) máa ń ṣírò àkókò tó dára jùlọ fún ipò rẹ fúnrarẹ̀ — ìlọ́síwájú lórí ọ̀nà Moonsighting. À ń dábàá pé kí o pa á mọ́.",
+      "dpcLabel": "Aládàáyípadà (PrayCalc DPC)",
+      "recommended": "A Dábàá Rẹ̀",
+      "orFixed": "Tàbí yan ọ̀nà tí ó dúró ṣinṣin",
+      "suggested": "Fún agbègbè rẹ",
+      "continue": "Tẹ̀síwájú"
+    },
+    "consent": {
+      "title": "Ṣèrànwọ́ Láti Mú PrayCalc Dára Sí i"
+    },
+    "done": {
+      "title": "Gbogbo Rẹ̀ Ti Ṣetán",
+      "desc": "Àkókò àdúrà rẹ ti ṣetán. O lè yí èyíkéyìí nínú àwọn àṣàyàn wọ̀nyí padà nígbàkigbà nínú Ètò.",
+      "cta": "Ṣí PrayCalc"
     }
+  },
+  "consent": {
+    "title": "Ìtúpalẹ̀ Lílò Aláìní Orúkọ",
+    "description": "Pín dátà lílò aláìní orúkọ, tí a kójọ pọ̀ láti ràn wá lọ́wọ́ láti mú PrayCalc dára sí i. A kì í kó ìròyìn ẹnìkọ̀ọ̀kan, ipò, tàbí ìsọfúnni àkáǹtì jọ rárá.",
+    "privacyNote": "Ó ti pa ní àkọ́kọ́bẹ̀rẹ̀. Kò sí ohun tí a fi ránṣẹ́ títí o fi mú èyí ṣiṣẹ́, o sì lè yí i padà nígbàkigbà.",
+    "accept": "Yọ̀ǹda",
+    "decline": "Rárá, Ẹ Ṣé",
+    "toggleLabel": "Pín ìtúpalẹ̀ aláìní orúkọ",
+    "privacyScreenTitle": "Ìpamọ́",
+    "privacyScreenFooter": "PrayCalc fi ìpamọ́ ṣíwájú. Ìtúpalẹ̀ jẹ́ aláìní orúkọ, ó sì ti pa àyàfi tí o bá yàn láti dara pọ̀. Pípa èyí yóò dá gbogbo telemetry dúró lẹ́sẹ̀kẹsẹ̀."
   }
 }

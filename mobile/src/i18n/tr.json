@@ -13,6 +13,27 @@
     "midnight": "Gece Yarısı",
     "lastThird": "Son Üçte Bir"
   },
+  "notifications": {
+    "prayerTime": "{{prayer}} Vakti",
+    "iqamahTitle": "{{prayer}} Kameti",
+    "bodyNow": "{{prayer}} namazı vakti geldi — {{time}}",
+    "bodyAdvance_one": "{{prayer}} vaktine {{count}} dakika kaldı — {{time}}",
+    "bodyAdvance_other": "{{prayer}} vaktine {{count}} dakika kaldı — {{time}}",
+    "bodyIqamah": "{{prayer}} için kamet hatırlatması (ezan {{time}} vaktindeydi)",
+    "snooze_one": "{{count}} dk ertele",
+    "snooze_other": "{{count}} dk ertele",
+    "snoozedBody": "{{prayer}} namazı için ertelenen hatırlatma",
+    "suhoorTitle": "Sahur",
+    "suhoorBody": "Sahur vakti — imsak öncesi yemek zamanı. Sabah namazı yaklaşıyor.",
+    "tahajjudTitle": "Teheccüd",
+    "tahajjudBody": "Gecenin son üçte biri — kıyam ve dua için mübarek bir vakit.",
+    "jumuahKhutbahTitle": "Cuma",
+    "jumuahKhutbahBody": "Hutbe yakında başlıyor. Cuma namazı için camiye gidin.",
+    "kahfTitle": "Kehf Suresi",
+    "kahfBody": "İki cuma arasında nur olması için Kehf Suresi'ni okuyun.",
+    "testTitle": "Test Ezanı",
+    "testBody": "Bunu duyabiliyorsanız ezan bildirimleriniz çalışıyor demektir."
+  },
   "common": {
     "bismillah": "Rahman ve Rahim olan Allah'ın adıyla",
     "salah": "Namaz",
@@ -36,15 +57,138 @@
     "search": "Ara",
     "change": "Değiştir",
     "reset": "Sıfırla",
+    "complete": "Tamamla",
     "openInMaps": "Haritalarda Aç",
     "openSettings": "Ayarları Aç",
     "upgrade": "Yükselt",
-    "signIn": "Giriş Yap"
+    "signIn": "Giriş Yap",
+    "createAccount": "Hesap Oluştur",
+    "continue": "Devam Et",
+    "skip": "Atla",
+    "nothingHereYet": "Henüz bir şey yok",
+    "somethingWentWrong": "Bir şeyler ters gitti",
+    "tryAgain": "Tekrar Dene",
+    "tooManyRequests": "Çok Fazla İstek",
+    "waitBeforeRetrying": "Tekrar denemeden önce lütfen {{seconds}} saniye bekleyin.",
+    "offlineCachedData": "Çevrimdışısınız. Önbelleğe alınmış veriler gösteriliyor.",
+    "permissionRequired": "{{permission}} İzni Gerekli",
+    "permissionRequiredBody": "Namaz vakitleri için {{permission}} erişimi gereklidir. Lütfen Ayarlar'dan etkinleştirin.",
+    "loadingContent": "İçerik yükleniyor",
+    "permissionRequiredGeneric": "İzin Gerekli",
+    "permissionRequiredGenericBody": "Bu özellik için {{permission}} izni gereklidir.",
+    "openSystemSettings": "Sistem ayarlarını aç",
+    "retryRequest": "İsteği tekrar dene",
+    "tooManyRequestsRetry": "Çok fazla istek. Lütfen tekrar denemeden önce {{seconds}} saniye bekleyin.",
+    "tooManyRequestsRetryGeneric": "Çok fazla istek. Lütfen tekrar denemeden önce bekleyin.",
+    "offlineShowingCachedFrom": "Çevrimdışısınız. {{cachedAt}} tarihli veriler gösteriliyor.",
+    "offlineShowingCachedGeneric": "Çevrimdışısınız. Önbelleğe alınmış veriler gösteriliyor."
   },
   "greeting": {
     "assalamu_alaykum": "Esselâmü Aleyküm ve Rahmetullahi ve Berekâtüh",
     "prayer_approaching": "Namaz vakti yaklaşıyor",
     "prayer_now": "Namaz vakti"
+  },
+  "tabs": {
+    "home": "Namazlar",
+    "prayerTimes": "Namaz Vakitleri",
+    "qibla": "Kıble",
+    "calendar": "Takvim",
+    "quran": "Kur'an",
+    "more": "Diğer"
+  },
+  "menu": {
+    "settings": {
+      "label": "Ayarlar",
+      "subtitle": "Yöntem, konum, bildirimler"
+    },
+    "adhan": {
+      "label": "Ezan Kütüphanesi",
+      "subtitle": "Ezan sesi ve okuyucu"
+    },
+    "tasbeeh": {
+      "label": "Tesbih Sayacı",
+      "subtitle": "Dijital zikir sayacı"
+    },
+    "duaDhikr": {
+      "label": "Dua ve Zikirler",
+      "subtitle": "Sabah ve akşam duaları"
+    },
+    "moon": {
+      "label": "Ay Evresi",
+      "subtitle": "Kamerî takvim ve Hicri tarih"
+    },
+    "quran": {
+      "label": "Kur'an",
+      "subtitle": "Yer imleriyle Osmanlı hattı"
+    },
+    "stats": {
+      "label": "Namaz İstatistikleri",
+      "subtitle": "Namazlarınızı ve serilerinizi takip edin"
+    },
+    "ramadan": {
+      "label": "Ramazan",
+      "subtitle": "Sahur ve iftar vakitleri, takip"
+    },
+    "subscription": {
+      "label": "Pro'ya Geç",
+      "subtitle": "Premium özelliklerin kilidini aç"
+    },
+    "homeWidget": {
+      "label": "Ana Ekran Widget'ı",
+      "subtitle": "Ana ekranda sıradaki namaz vakti"
+    },
+    "smartHome": {
+      "label": "Akıllı Ev",
+      "subtitle": "Namaz sırasında cihazları kilitle"
+    },
+    "pairTv": {
+      "label": "TV Eşleştir",
+      "subtitle": "PrayCalc TV uygulamasını bağla"
+    },
+    "tvManager": {
+      "label": "TV'lerim",
+      "subtitle": "Eşleştirilmiş TV ekranlarını yönet"
+    },
+    "agendas": {
+      "label": "Namaz Takvimi",
+      "subtitle": "Namaz vakitlerini takvime ekle"
+    },
+    "timetable": {
+      "label": "Aylık Vakit Tablosu",
+      "subtitle": "Tüm ay namaz vakitleri ve takvim dışa aktarma"
+    },
+    "mosques": {
+      "label": "Yakındaki Camiler",
+      "subtitle": "Çevrenizdeki camileri bulun"
+    },
+    "travel": {
+      "label": "Yolculuk Modu",
+      "subtitle": "Yolcular için musafir kasrı"
+    },
+    "jumuah": {
+      "label": "Cuma",
+      "subtitle": "Cuma hatırlatmaları ve Kehf Suresi"
+    },
+    "masjidMute": {
+      "label": "Cami Otomatik Sessize Alma",
+      "subtitle": "Camiye yaklaşınca telefonunuzu sessize alın"
+    },
+    "fasting": {
+      "label": "Oruç Takibi",
+      "subtitle": "Ramazan, Pazartesi ve Perşembe, Beyaz Günler"
+    },
+    "qada": {
+      "label": "Kaza Namazları",
+      "subtitle": "Kaçırılan namazları takip edin ve kaza edin"
+    },
+    "privacy": {
+      "label": "Gizlilik ve Veri",
+      "subtitle": "Analitik iznini kontrol edin"
+    },
+    "shareApp": {
+      "label": "PrayCalc'ı Paylaş",
+      "subtitle": "Bir arkadaşınıza veya aile üyenize anlatın"
+    }
   },
   "settings": {
     "title": "Ayarlar",
@@ -66,28 +210,692 @@
     "location": {
       "title": "Konum",
       "detect": "Otomatik tespit et",
-      "manual": "Manuel gir"
-    }
+      "manual": "Manuel gir",
+      "useGps": "GPS Konumunu Kullan",
+      "searchManually": "Şehri Manuel Ara",
+      "currentCity": "Mevcut Şehir",
+      "noneSet": "Konum ayarlanmadı. GPS veya manuel şehir gerekli.",
+      "gettingLocation": "Konumunuz alınıyor...",
+      "permissionDenied": "İzin Reddedildi",
+      "permissionDeniedBody": "Şehrinizi otomatik algılamak için Ayarlar'dan konumu etkinleştirin."
+    },
+    "account": {
+      "title": "Hesap",
+      "signedIn": "Giriş yapıldı",
+      "anonymous": "Anonim",
+      "free": "Ücretsiz"
+    },
+    "highLatitude": {
+      "title": "Yüksek Enlem Ayarı",
+      "hint": "Sabah/Yatsı gerekli açıya ulaşamadığında uygulanır (yaz aylarında uzak kuzey/güney konumlar).",
+      "nightMiddle": "Gecenin Ortası",
+      "angleBased": "Açıya Dayalı",
+      "oneSeventh": "Gecenin Yedide Biri",
+      "none": "Yok (kullanılamaz gösterilebilir)"
+    },
+    "madhab": {
+      "title": "Mezhep (İkindi)",
+      "hint": "Şafi: 1× gölge faktörü | Hanefi: 2× gölge faktörü"
+    },
+    "prayerAdjustments": {
+      "title": "Namaz Vakti Ayarlamaları",
+      "hint": "Yerel cami vakit tablonuza uyması için her vakti ±30 dakika ince ayar yapın."
+    },
+    "hijriAdjustment": {
+      "title": "Hicri Tarih Ayarı",
+      "hint": "Yerel ay gözlemi Ümmülkura takviminden farklıysa Hicri tarihi ±2 gün kaydırın.",
+      "offset": "Kaydırma",
+      "decreaseAccessibilityLabel": "Hicri kaydırmayı azalt",
+      "increaseAccessibilityLabel": "Hicri kaydırmayı artır"
+    },
+    "timeFormat": {
+      "title": "Saat Biçimi"
+    },
+    "appearance": {
+      "title": "Görünüm",
+      "system": "Sistem",
+      "light": "Açık",
+      "dark": "Koyu"
+    },
+    "customAngles": {
+      "fajr": "Sabah açısı (°)",
+      "isha": "Yatsı açısı (°)",
+      "fajrAccessibilityLabel": "Özel Sabah açısı (derece)",
+      "ishaAccessibilityLabel": "Özel Yatsı açısı (derece)"
+    },
+    "upsell": {
+      "priceLine": "Ummat+ 9,99$/yıl — TV uygulaması ve Akıllı Ev'in kilidini açar",
+      "upgradeButton": "Ummat+'a Yükselt"
+    },
+    "prayerAlerts": "Namaz Vakti Uyarıları",
+    "manageNotifications": "Bildirimleri Yönet",
+    "appLanguage": "Uygulama Dili",
+    "decreaseAccessibilityLabel": "{{prayer}} ayarını azalt",
+    "increaseAccessibilityLabel": "{{prayer}} ayarını artır",
+    "valueAccessibilityLabel": "Hicri kaydırma: {{value}} gün",
+    "label12h": "12 saat biçimi",
+    "label24h": "24 saat biçimi",
+    "themeAccessibilityLabel": "{{theme}} teması"
   },
   "errors": {
     "location_permission": "Namaz vakitlerini hesaplamak için konum erişimine izin verin",
     "network": "Ağa bağlanılamadı",
     "calculation": "Namaz vakitleri hesaplanamadı"
   },
-  "tabs": {
-    "home": "Namazlar",
-    "prayerTimes": "Namaz Vakitleri",
-    "qibla": "Kıble",
-    "calendar": "Takvim",
-    "quran": "Kur'an",
-    "more": "Diğer"
-  },
-  "menu": {
-    "settings": {
-      "label": "Ayarlar"
+  "screens": {
+    "more": {
+      "title": "Diğer"
+    },
+    "notFound": {
+      "title": "Ekran Bulunamadı",
+      "goHome": "Namaz Vakitlerine Git"
+    },
+    "onboarding": {
+      "welcomeTitle": "PrayCalc'a Hoş Geldiniz",
+      "welcomeDesc": "Doğru namaz vakitleri, kıble yönü ve İslami takvim — hepsi tek yerde.",
+      "getStarted": "Başlayın",
+      "locationTitle": "Konumu Etkinleştir",
+      "locationDesc": "Namaz vakitlerinin doğru hesaplanması için konumunuz gereklidir.",
+      "allowLocation": "Konuma İzin Ver",
+      "skipManual": "Atla — Manuel ayarlarım",
+      "authTitle": "Hesap Oluşturulsun mu?",
+      "authDesc": "İsteğe bağlı: bulut senkronizasyonu ve namaz geçmişi için hesap oluşturun. İstediğiniz zaman sonra da kaydolabilirsiniz.",
+      "skipForNow": "Şimdilik atla"
+    },
+    "auth": {
+      "appTagline": "Her Müslüman için doğru namaz vakitleri",
+      "tabSkip": "Atla",
+      "continueTitle": "Hesapsız Devam Et",
+      "continueDesc": "Namaz vakitleri, kıble ve takvim hesap gerekmeden tamamen çevrimdışı çalışır. Ayarlarınız cihazınızda saklanır.",
+      "featurePrayerQibla": "Namaz vakitleri ve kıble",
+      "featureCalendar": "İslami takvim",
+      "featureSettings": "Ayarlar ve bildirimler",
+      "continueAnonymously": "Anonim Devam Et",
+      "signInTitle": "Giriş Yap",
+      "emailPlaceholder": "E-posta",
+      "passwordPlaceholder": "Şifre",
+      "namePlaceholder": "Ad (isteğe bağlı)",
+      "switchHint": "Hesap, cihazlar arasında bulut senkronizasyonu ve namaz geçmişi sağlar.",
+      "registerTitle": "Hesap Oluştur",
+      "signingIn": "Giriş yapılıyor...",
+      "enterEmailPassword": "Lütfen e-posta ve şifre girin.",
+      "loginFailed": "Giriş başarısız",
+      "registerFailed": "Kayıt başarısız",
+      "verifyEmail": "Hesabınızı doğrulamak için e-postanızı kontrol edin, ardından giriş yapın."
+    },
+    "adhan": {
+      "enablePerPrayer": "Vakit Başına Ezanı Etkinleştir",
+      "library": "Ezan Kütüphanesi",
+      "noVoices": "Kullanılabilir ezan sesi yok.",
+      "proRequiredTitle": "Ummat+ Gerekli",
+      "proRequiredBody": "{{name}} bir Pro ezan sesidir. Etkin ezanınız olarak ayarlamak için Ummat+'a yükseltin.",
+      "proFeature": "Pro özellik",
+      "playPreview": "Önizlemeyi çal",
+      "stopPreview": "Önizlemeyi durdur",
+      "voiceListLabel": "Ezan sesi listesi"
+    },
+    "agendas": {
+      "title": "Namaz Takvimi",
+      "desc": "Salah bloklarını cihaz takviminize hatırlatıcı olarak ekleyin. Her namaz {{minutes}} dakikalık bir etkinlik ve 5 dakikalık bir uyarı alır.",
+      "whichPrayers": "Hangi namazlar eklensin",
+      "locationRequired": "Konum gerekli",
+      "locationRequiredBody": "Namaz vakitlerini takvime eklemek için Ayarlar'da şehrinizi belirleyin.",
+      "noCalendarFound": "Takvim bulunamadı",
+      "noCalendarFoundBody": "Bu cihazda yazılabilir bir takvim bulunamadı.",
+      "setLocationHint": "Takvim senkronizasyonunu etkinleştirmek için Ayarlar'da şehrinizi belirleyin.",
+      "addButton": "Bugünün Namazlarını Takvime Ekle",
+      "addButtonAccessibilityLabel": "Bugünün namaz vakitlerini takvime ekle",
+      "adding": "Ekleniyor...",
+      "done": "Tamam",
+      "addedCount": "{{count}} namaz vakti takviminize eklendi.",
+      "error": "Hata",
+      "addFailed": "Takvime eklenemedi.",
+      "checkingPermission": "Takvim izni kontrol ediliyor..."
+    },
+    "calendar": {
+      "eventsThisMonth": "Bu Ayki İslami Etkinlikler"
+    },
+    "citySearch": {
+      "findCityTitle": "Şehir Bul",
+      "placeholder": "Şehir ara...",
+      "useCurrentLocation": "Mevcut Konumu Kullan",
+      "locating": "Konum belirleniyor…",
+      "searching": "Şehirler aranıyor...",
+      "noResults": "\"{{query}}\" için şehir bulunamadı.",
+      "popularHint": "Popüler şehirler gösteriliyor. Aramak için yazın.",
+      "searchError": "Arama hatası: {{message}}",
+      "searchInputAccessibilityLabel": "Şehir arama girişi",
+      "useCurrentLocationAccessibilityLabel": "Mevcut konumu kullan",
+      "resultsAccessibilityLabel": "Şehir arama sonuçları"
+    },
+    "duaDhikr": {
+      "noResults": "Bu kategoride dua bulunamadı.",
+      "categoryAll": "Tümü",
+      "categoryAfterAdhan": "Ezandan Sonra",
+      "categoryAfterPrayer": "Namazdan Sonra",
+      "categoryMorning": "Sabah",
+      "categoryEvening": "Akşam"
+    },
+    "moon": {
+      "hijriCalendar": "Hicri Takvim",
+      "hijriDay": "Hicri Gün",
+      "month": "Ay",
+      "lunarAge": "Ay Yaşı",
+      "daysUnit": "{{count}} gün",
+      "upcomingPhases": "Yaklaşan Evreler",
+      "nextFullMoon": "Sıradaki Dolunay 🌕",
+      "nextNewMoon": "Sıradaki Yeni Ay 🌑",
+      "significance": "İslami Önemi",
+      "illuminatedPct": "%{{pct}} aydınlık",
+      "phaseNewMoon": "Yeni Ay",
+      "phaseWaxingCrescent": "Hilal (Büyüyen)",
+      "phaseFirstQuarter": "İlk Dördün",
+      "phaseWaxingGibbous": "Büyüyen Şişkin Ay",
+      "phaseFullMoon": "Dolunay",
+      "phaseWaningGibbous": "Küçülen Şişkin Ay",
+      "phaseLastQuarter": "Son Dördün",
+      "phaseWaningCrescent": "Hilal (Küçülen)",
+      "ramadanNote": "Ramazan ayındayız — oruç ve Kadir Gecesi'ni arama ayı.",
+      "dhulHijjahNote": "{{month}} ayının ilk on günü, yılın en faziletli günleri arasındadır."
     },
     "mosques": {
-      "label": "Yakındaki Camiler"
+      "setLocation": "Yakınınızdaki camileri bulmak için konumunuzu ayarlayın.",
+      "setLocationAction": "Konum Ayarla",
+      "finding": "Yakındaki camiler aranıyor...",
+      "noResults": "10 km içinde cami bulunamadı.",
+      "retry": "Tekrar Dene",
+      "attribution": "Veri © OpenStreetMap katkıda bulunanları",
+      "searchFailed": "Cami araması başarısız oldu."
+    },
+    "masjidMute": {
+      "title": "Cami Otomatik Sessize Alma",
+      "intro": "PrayCalc'ta henüz bir cami dizini yok — kendi sessize alma bölgelerinizi aşağıya ekleyin. Vardığınızda telefonunuzun otomatik olarak sessize alınması için yerel camiinizi eklemenizi öneririz.",
+      "masterToggleLabel": "Otomatik sessize alma etkin",
+      "masterToggleSubtitle": "Aşağıdaki herhangi bir bölgeye girildiğinde telefonu sessize al",
+      "zonesHeading": "Bölgeleriniz",
+      "emptyTitle": "Henüz bölge yok",
+      "emptySubtitle": "Vardığınızda PrayCalc'ın telefonunuzu otomatik sessize alabilmesi için yerel camiinizi ekleyin.",
+      "addZoneAction": "Yerel Camiinizi Ekleyin",
+      "addZoneButton": "Bölge Ekle",
+      "addZoneTitle": "Sessize Alma Bölgesi Ekle",
+      "editZoneTitle": "Sessize Alma Bölgesini Düzenle",
+      "labelFieldLabel": "Etiket",
+      "labelFieldPlaceholder": "örn. Nur Camii",
+      "labelRequired": "Lütfen bu bölge için bir etiket girin.",
+      "coordinatesInvalid": "Lütfen geçerli bir enlem ve boylam girin, ya da arayın/mevcut konumu kullanın.",
+      "searchAddressLabel": "Adres ara",
+      "searchAddressPlaceholder": "Bir adres veya yer arayın",
+      "searching": "Aranıyor...",
+      "searchNoResults": "Eşleşme bulunamadı. Farklı bir arama deneyin veya koordinatları manuel girin.",
+      "useCurrentLocation": "Mevcut Konumu Kullan",
+      "locating": "Konum belirleniyor...",
+      "locationFailed": "Mevcut konumunuz alınamadı.",
+      "manualEntryToggle": "Koordinatları manuel gir",
+      "latitudeLabel": "Enlem",
+      "longitudeLabel": "Boylam",
+      "radiusLabel": "Yarıçap: {{radius}} m",
+      "radiusHint": "{{min}} m ile {{max}} m arasında — camiyi ve otoparkını kapsar.",
+      "decreaseRadiusAccessibilityLabel": "Yarıçapı 25 metre azalt",
+      "increaseRadiusAccessibilityLabel": "Yarıçapı 25 metre artır",
+      "saveZone": "Bölgeyi Kaydet",
+      "deleteZone": "Bölgeyi Sil",
+      "deleteConfirmTitle": "Bu bölge silinsin mi?",
+      "deleteConfirmBody": "\"{{label}}\" artık telefonunuzu otomatik sessize almayacak.",
+      "mapPickerFollowUp": "Görsel olarak pin bırakmak için bir harita seçici planlanıyor — şimdilik bir adres arayın veya mevcut konumunuzu kullanın.",
+      "permissionTitle": "Konum İzni Gerekli",
+      "permissionBody": "Cami Otomatik Sessize Alma, uygulama kapalıyken bile bir bölgeye girip çıktığınızı algılamak için \"Her Zaman\" konum erişimine ihtiyaç duyar.",
+      "permissionGrant": "İzin Ver",
+      "permissionDeniedNote": "Arka plan konumu verilmedi — bölgeler kaydedildi ancak sistem ayarlarında \"Her Zaman\" erişimine izin verene kadar otomatik sessize alma tetiklenmeyecek.",
+      "androidNote": "Android: telefonunuz vardığınızda titreşime geçer ve çıkışta önceki zil moduna döner.",
+      "iosNote": "iOS: Apple, uygulamaların sessiz anahtarınızı değiştirmesine izin vermez. Bunun yerine PrayCalc, telefonunuzu manuel olarak sessize almanızı isteyen bir hatırlatma bildirimi gönderir.",
+      "iosReminderTitle": "Vardınız",
+      "iosReminderBody": "{{zone}} yakınındasınız — lütfen telefonunuzu sessize alın.",
+      "defaultZoneLabel": "sessize alma bölgeniz",
+      "activeNow": "Şu anda etkin — telefon sessizde",
+      "radiusValue": "{{radius}} m yarıçap"
+    },
+    "pairTv": {
+      "upsellBadge": "Ummat+",
+      "unlockTitle": "TV Eşleştirmenin Kilidini Aç",
+      "unlockDesc": "Ummat+ 9,99$/yıl — TV uygulaması ve Akıllı Ev'in kilidini açar",
+      "pairedTitle": "TV Eşleştirildi",
+      "pairedDesc": "TV uygulamanız artık bu hesaba bağlı.",
+      "title": "TV ile Eşleştir",
+      "desc": "TV'nizde PrayCalc'ı açın, ardından ekranda görünen 6 haneli PIN'i girin.",
+      "enterPin": "TV'nizde görünen 6 haneli PIN'i girin.",
+      "pinInputAccessibilityLabel": "TV eşleştirme PIN'i",
+      "pairFailed": "Eşleştirme başarısız. Tekrar deneyin.",
+      "pairDevice": "Cihazı Eşleştir",
+      "invalidOrExpiredPin": "Bu PIN geçersiz veya süresi dolmuş. TV ekranını kontrol edip tekrar deneyin."
+    },
+    "tvManager": {
+      "upsellBadge": "Ummat+",
+      "unlockTitle": "TV Yönetiminin Kilidini Aç",
+      "unlockDesc": "Ummat+ 9,99$/yıl — TV uygulaması ve Akıllı Ev'in kilidini açar",
+      "emptyTitle": "Henüz eşleştirilmiş TV yok",
+      "emptySubtitle": "Burada görmek ve ekran ayarlarını yönetmek için bir TV eşleştirin.",
+      "pairACta": "Bir TV Eşleştir",
+      "noCity": "Konum ayarlanmadı",
+      "nameLabel": "Ad",
+      "colorLabel": "Vurgu Rengi",
+      "streamLabel": "Yayın Kaynağı",
+      "streamMakkah": "Mekke TV",
+      "streamSaudiQuran": "Suudi Kur'an",
+      "streamMedina": "Medine",
+      "rotateLabel": "Ekran Döndürme",
+      "decreaseRotate": "Döndürme dakikasını azalt",
+      "increaseRotate": "Döndürme dakikasını artır",
+      "weatherLabel": "Hava Durumunu Göster",
+      "updateLocationAction": "Konumu mevcut konumuma güncelle",
+      "updateLocationHint": "TV, konum değişikliklerini bir sonraki yeniden eşleştirmede alır — bu, kaydedilen konumu şimdi günceller.",
+      "noLocationTitle": "Konum Ayarlanmadı",
+      "noLocationBody": "Bir TV'nin konumunu güncellemeden önce Ayarlar'da konumunuzu belirleyin.",
+      "locationUpdatedTitle": "Konum Güncellendi",
+      "locationUpdatedBody": "Kaydedildi. TV, bir sonraki yeniden eşleştirmede bu konumu kullanacak.",
+      "deleteAction": "Bu TV'yi Kaldır",
+      "deleteConfirmTitle": "TV Kaldırılsın mı?",
+      "deleteConfirmBody": "Bu, \"{{name}}\" eşleştirmesini kaldıracak ve kayıtlı ayarlarını silecek. Bu geri alınamaz.",
+      "deleteConfirmAction": "Kaldır",
+      "prayerFajr": "Sabah",
+      "prayerDhuhr": "Öğle",
+      "prayerAsr": "İkindi",
+      "prayerMaghrib": "Akşam",
+      "prayerIsha": "Yatsı",
+      "madhabShafii": "Şafi'i",
+      "madhabHanafi": "Hanefi",
+      "timeFormat12h": "12 saat",
+      "timeFormat24h": "24 saat",
+      "invalidCoordsTitle": "Geçersiz Koordinatlar",
+      "invalidCoordsBody": "Geçerli bir enlem (-90 ile 90 arası) ve boylam (-180 ile 180 arası) girin.",
+      "deepSettingsLabel": "Gelişmiş Ayarlar",
+      "countdownTakeoverLabel": "Geri Sayım Devralması",
+      "countdownTakeoverHint": "Her namazdan önce ekranı büyük bir geri sayımla devral.",
+      "countdownMinutesLabel": "Geri Sayımı Başlat",
+      "decreaseCountdown": "Geri sayım dakikasını azalt",
+      "increaseCountdown": "Geri sayım dakikasını artır",
+      "iqamaLabel": "Kamet Vakitleri",
+      "iqamaHint": "Ezandan sonra, her namaz için ayarlanabilir bir kamet geri sayımı göster.",
+      "decreaseIqama": "{{prayer}} kamet süresini azalt",
+      "increaseIqama": "{{prayer}} kamet süresini artır",
+      "nameOnlyLabel": "Sadece İsim Modu",
+      "nameOnlyHint": "Ezandan önce bu kadar dakika boyunca sadece namaz adını göster (vakit olmadan).",
+      "nameOnlyMinutesLabel": "Sadece İsim Süresi",
+      "decreaseNameOnly": "Sadece isim dakikasını azalt",
+      "increaseNameOnly": "Sadece isim dakikasını artır",
+      "madhabLabel": "Mezhep",
+      "timeFormatLabel": "Saat Biçimi",
+      "calcMethodLabel": "Hesaplama Yöntemi",
+      "manualLocationToggle": "Koordinatları manuel gir",
+      "latitudeLabel": "Enlem",
+      "longitudeLabel": "Boylam",
+      "manualLocationSave": "Koordinatları Kaydet",
+      "layoutThemeLabel": "Düzen ve Tema",
+      "layoutLabel": "Düzen",
+      "themeLabel": "Tema",
+      "layoutClassic": "Klasik",
+      "layoutClassicDesc": "Vakitler ve canlı yayın yan yana",
+      "layoutFlipped": "Ters Çevrilmiş",
+      "layoutFlippedDesc": "Aynı bölünme, yansıtılmış",
+      "layoutStreamFull": "Tam Yayın",
+      "layoutStreamFullDesc": "Vakit şeridiyle tam ekran yayın",
+      "layoutTimesOnly": "Sadece Vakitler",
+      "layoutTimesOnlyDesc": "Sadece namaz vakitleri, canlı yayın yok",
+      "layoutAmbient": "Ortam",
+      "layoutAmbientDesc": "Minimal ortam saati görünümü",
+      "themeUmmatGreen": "Ummat Yeşili",
+      "themeMidnight": "Gece Yarısı",
+      "themeWarmSand": "Sıcak Kum",
+      "themeMono": "Tek Renk"
+    },
+    "prayerTimes": {
+      "setCityTitle": "Şehrinizi Belirleyin",
+      "setCitySubtitle": "Namaz vakitlerini görmek için konumu etkinleştirin veya manuel olarak bir şehir seçin.",
+      "setLocationAction": "Konum Ayarla",
+      "offlineMessage": "Son bilinen namaz vakitleri gösteriliyor (çevrimdışı)",
+      "next": "Sıradaki: {{prayer}}",
+      "asrCalculation": "İkindi Hesaplaması",
+      "markedPrayed": "kılındı olarak işaretlendi",
+      "notMarkedPrayed": "kılındı olarak işaretlenmedi",
+      "doubleTapToggle": "Değiştirmek için çift dokunun.",
+      "shareTimes": "Bugünün vakitlerini paylaş",
+      "shareAccessibilityLabel": "Bugünün namaz vakitlerini paylaş"
+    },
+    "quran": {
+      "loading": "Kur'an verileri yükleniyor...",
+      "backToList": "Sure listesine dön",
+      "back": "Geri",
+      "bismillah": "Bismillah",
+      "comingSoonBody": "{{name}} suresini ({{count}} ayet) çeviri ve tilavetiyle Islam.Wiki'de okuyun — tam Kur'an okuyucumuz.",
+      "readOnWiki": "Islam.Wiki'de Oku →",
+      "removeBookmark": "Yer imini kaldır",
+      "bookmarkVerse": "Ayeti yer imlerine ekle",
+      "surahList": "Sure listesi",
+      "wikiFooter": "📖 Tam Kur'an — Islam.Wiki'de tüm 114 sure, çeviriler ve ses kaydı →",
+      "openFullQuran": "Islam.Wiki'de tam Kur'an'ı aç",
+      "featuredVerse": "Öne Çıkan Ayet",
+      "readableBadge": "Mevcut"
+    },
+    "ramadan": {
+      "subtitle": "Ramazan Mübarek",
+      "dayOf": "{{total}} günün {{day}}. günü",
+      "iftarIn": "İftara kalan süre",
+      "suhoorEndsIn": "Sahur bitimine kalan süre",
+      "notActive": "Şu anda Ramazan değil.\nMevcut Hicri ay: {{month}} ({{monthNumber}}/12)",
+      "todaysTimes": "Bugünün Vakitleri",
+      "suhoorEnds": "Sahur Biter (Sabah)",
+      "iftar": "İftar (Akşam)",
+      "noLocation": "Namaz vakitlerini görmek için Ayarlar'da konumunuzu belirleyin.",
+      "duasTitle": "Ramazan Duaları",
+      "laylatAlQadrTitle": "Kadir Gecesi",
+      "laylatAlQadrBody": "Ramazan'ın son on gecesindeyiz. İbadeti artırın, özellikle tek gecelerde (21, 23, 25, 27, 29)."
+    },
+    "notifications": {
+      "masterLabel": "Namaz Bildirimleri",
+      "masterSub": "Her namaz vaktinden önce uyarı alın",
+      "androidExactAlarm": "Android 12+ sürümünde, tam namaz vakti uyarıları için sistem ayarlarında \"Alarmlar ve Hatırlatıcılar\"a izin verin.",
+      "openSystemSettings": "Sistem Ayarlarını Aç",
+      "masterAccessibilityLabel": "Namaz bildirimlerini etkinleştir",
+      "openSystemSettingsAccessibilityLabel": "Alarmlar için sistem ayarlarını aç",
+      "perPrayerAlerts": "Namaz Bazında Uyarılar",
+      "minutesBefore_one": "{{count}} dk önce",
+      "minutesBefore_other": "{{count}} dk önce",
+      "iqamahOff": "kamet kapalı",
+      "iqamahAfter_one": "kamet +{{count}}dk",
+      "iqamahAfter_other": "kamet +{{count}}dk",
+      "adhanSoundTitle": "Ezan Sesi",
+      "adhanSoundSub": "Namaz bildirimi geldiğinde hangi ezanın çalacağı.",
+      "adhanSound": {
+        "takbir": "Tekbir (açılış)",
+        "makkah": "Mekke",
+        "mishari": "Mişari Raşid",
+        "madina": "Medine"
+      },
+      "smartAlarmsTitle": "Akıllı Alarmlar",
+      "suhoorLabel": "Sahur alarmı",
+      "suhoorSub": "Sahur için sabah namazından önce uyanın.",
+      "suhoorBefore_one": "Sabahtan {{count}} dk önce",
+      "suhoorBefore_other": "Sabahtan {{count}} dk önce",
+      "tahajjudLabel": "Teheccüd / Kıyam",
+      "tahajjudSub": "Namaz için gecenin son bölümünde kalkın.",
+      "tahajjudLastThird": "Gecenin son üçte biri",
+      "tahajjudCustom": "Özel saat",
+      "nightTimesTitle": "Gece Vakitleri (bu gece)",
+      "lastThirdBegins": "Son üçte bir başlar",
+      "middleOfNight": "Gecenin ortası",
+      "nightTimesUnavailable": "Bu geceki gece vakitlerini görmek için konumunuzu belirleyin.",
+      "reliabilityTitle": "Güvenilir Ezan Teslimi",
+      "reliabilitySub": "Alarmların zamanında çalmasını sağlayın",
+      "batteryTitle": "Güvenilir alarmlara izin ver",
+      "batteryIntro": "Android, pil tasarrufu için namaz alarmlarını sessize alabilir. Ezanı zamanında duymak için:",
+      "batteryStepAlarms": "Namaz Vakitleri için \"Alarmlar ve hatırlatıcılar\"a (tam alarmlar) izin verin.",
+      "batteryStepOptimization": "Namaz Vakitleri'nin uyutulmaması için pil optimizasyonunu KAPATIN.",
+      "batteryOemNote": "Bazı telefonlarda (Xiaomi, Huawei, Samsung, OnePlus, Oppo, Vivo) ekstra bir \"otomatik başlatma\" veya \"korumalı uygulamalar\" ayarı vardır — Namaz Vakitleri'ni orada da etkinleştirin.",
+      "openExactAlarm": "Alarmlar ve hatırlatıcıları aç",
+      "openBatterySettings": "Pil ayarlarını aç",
+      "testAdhanButton": "Ezanımı test et (5sn)",
+      "testAdhanScheduled": "Yaklaşık 5 saniye içinde bir test ezanı çalacak. Bildirim olarak duymak için uygulamayı kilitleyin veya arka plana alın.",
+      "dismiss": "Kapat"
+    },
+    "homeWidget": {
+      "widgetPreviewAccessibilityLabel": "Sıradaki namaz vaktini gösteren widget önizlemesi",
+      "title": "Ana Ekran Widget'ı",
+      "subtitle": "Ana ekranınızda sıradaki namaz vaktini görün",
+      "widgetPreviewTitle": "Widget Önizlemesi",
+      "nextPrayer": "Sıradaki Namaz",
+      "setLocationToPreview": "Önizlemek için konumunuzu belirleyin",
+      "setupInstructions": "Kurulum Talimatları",
+      "integrationStatus": "Entegrasyon Durumu",
+      "upsellMessage": "Ana ekran widget'ı bir Ummat+ özelliğidir.",
+      "upsellAction": "Ummat+'a Yükselt",
+      "countdownPrefix": "{{countdown}} sonra",
+      "setupStep1": "Ana ekranınıza uzun basın",
+      "setupStep2": "+ düğmesine (iOS) veya Widget'lar menüsüne (Android) dokunun",
+      "setupStep3": "\"{{appName}}\" araması yapın",
+      "setupStep4": "Tercih ettiğiniz widget boyutunu seçin",
+      "setupStep5": "Widget Ekle'ye dokunun",
+      "statusAndroid": "Android: aktif — \"Sıradaki Namaz\" ana ekran widget'ı react-native-android-widget aracılığıyla çalışır ve her 30 dakikada bir (ve ayarları veya bildirimleri değiştirdiğinizde hemen) otomatik olarak yenilenir.",
+      "statusIos": "iOS: aktif — \"Sıradaki Namaz\" WidgetKit widget'ı ayarları veya bildirimleri değiştirdiğinizde güncellenir ve her namaz vaktinde kendiliğinden ilerler."
+    },
+    "smartHome": {
+      "proOnly": "Akıllı Ev (namazda kilitleme + cihaz kontrolü) bir Ummat+ özelliğidir.",
+      "upgradeAction": "Ummat+'a Yükselt",
+      "lockDuringPrayer": "Namaz Sırasında Kilitle",
+      "lockDesc": "Namaz vakti başladığında ekranı otomatik olarak karart ve medyayı sessize al. Yapılandırmak için kimlik doğrulama gerekir.",
+      "lockOnSalah": "Namazda Kilitle",
+      "lockOnSalahAccessibilityLabel": "Namazda kilitleme modu",
+      "activeNote": "Namaz vakitlerinde ekran kararacak ve medya duraklatılacak.\nAndroid: medya odağı serbest bırakılır. iOS: sessiz mod hatırlatması gösterilir.",
+      "linkedAccounts": "Bağlı Hesaplar",
+      "noLinks": "Henüz bağlı akıllı ev hesabı yok. Alexa veya Google Home uygulamasını açın, PrayCalc becerisini veya eylemini arayın ve Ummat hesabınızı bağlayın.",
+      "linked": "{{date}} tarihinde bağlandı",
+      "unlink": "Bağlantıyı Kaldır",
+      "unlinkConfirmTitle": "{{name}} bağlantısı kaldırılsın mı?",
+      "unlinkConfirmBody": "{{name}}'i istediğiniz zaman Alexa veya Google Home uygulamasından yeniden bağlayabilirsiniz.",
+      "unlinkConfirmAction": "Bağlantıyı Kaldır",
+      "unlinkFailedTitle": "Bağlantı kaldırılamadı",
+      "learnMore": "Daha fazla bilgi",
+      "authPrompt": "Namazda kilitlemeyi etkinleştirmek için kimlik doğrulayın",
+      "useFallback": "Şifre kullan"
+    },
+    "stats": {
+      "chartAccessibilityLabel": "Haftalık namaz tamamlama grafiği",
+      "noLogs": "Henüz namaz kaydı yok. İstatistiklerinizi görmek için namazları tamamlamaya başlayın.",
+      "dayStreak": "Gün Serisi 🔥",
+      "weeklyRate": "Haftalık Oran",
+      "totalLogged": "Toplam Kayıt",
+      "last7Days": "Son 7 Gün",
+      "thisMonth": "Bu Ay",
+      "byPrayer": "Namaza Göre",
+      "weekly": "Haftalık",
+      "monthly": "Aylık",
+      "fastingStreak": "Oruç Serisi",
+      "qadaOutstanding": "Kalan Kaza"
+    },
+    "subscription": {
+      "title": "PrayCalc Pro",
+      "subtitle": "İbadet deneyiminizi geliştirin",
+      "loadingOptions": "Abonelik seçenekleri yükleniyor...",
+      "loadProductsFailed": "Ürünler yüklenemedi. Bağlantınızı kontrol edip tekrar deneyin.",
+      "connectFailed": "Mağazaya bağlanılamadı.",
+      "createAccountTitle": "Bir Hesap Oluşturun",
+      "createAccountBody": "Satın alımınızın cihazlarınız arasında senkronize olabilmesi için önce giriş yapın.",
+      "purchaseFailed": "Satın alma başarısız oldu. Lütfen tekrar deneyin.",
+      "restoreFailed": "Geri yükleme başarısız oldu.",
+      "proTitle": "Pro'dasınız",
+      "proSub": "PrayCalc'ı desteklediğiniz için teşekkürler!",
+      "noProducts": "Abonelik ürünleri kullanılamıyor. App Store Connect / Google Play Console'da yapılandırın.",
+      "restorePurchase": "Satın Almayı Geri Yükle",
+      "restorePurchaseAccessibilityLabel": "Önceki satın almayı geri yükle",
+      "legal": "Abonelikler, mevcut dönemin bitiminden en az 24 saat önce iptal edilmedikçe otomatik olarak yenilenir. App Store / Google Play hesap ayarlarınızdan yönetin.",
+      "featurePremiumAdhan": "Premium ezan sesleri — ek okuyucular",
+      "featureHomeWidget": "Ana ekran widget'ı (sıradaki namaz)",
+      "featureTvPairing": "PrayCalc TV uygulaması eşleştirmesi",
+      "featureSmartHome": "Akıllı Ev — namazda cihazları kilitle",
+      "subscribeAccessibilityLabel": "{{price}} karşılığında {{title}} abone ol"
+    },
+    "tasbeeh": {
+      "chooseDhikr": "Zikir Seç",
+      "of": "{{count}} üzerinden",
+      "resetCounter": "Sayacı sıfırla",
+      "todayTotal": "Bugünün Toplamı",
+      "history": "Geçmiş"
+    },
+    "timetable": {
+      "setCityTitle": "Şehrinizi Belirleyin",
+      "setCitySubtitle": "Aylık namaz vakit tablosunu görmek için konumunuzu belirleyin.",
+      "previousMonth": "Önceki ay",
+      "nextMonth": "Sonraki ay",
+      "exportCalendar": "Takvimi Dışa Aktar (.ics)",
+      "exportAccessibilityLabel": "Bu ayın namaz vakitlerini takvim dosyası olarak dışa aktar",
+      "shareTimes": "Bu ayı paylaş",
+      "shareAccessibilityLabel": "Bu ayın namaz vakit tablosunu paylaş"
+    },
+    "travel": {
+      "musafirModeTitle": "Musafir Modu",
+      "musafirModeDesc": "Ben bir yolcuyum (musafir). Uygun namazlara kasr uygula.",
+      "musafirModeAccessibilityLabel": "Musafir yolculuk modu",
+      "musafirAlertTitle": "Musafir (Yolcu) Modu",
+      "musafirAlertBody": "Kasr (kısaltma), Öğle, İkindi ve Yatsı namazlarını 4 rekattan 2 rekata indirir.\n\nNot: Alimler arasındaki görüş farklılıkları nedeniyle cem (namazları birleştirme) otomatik olarak uygulanmaz. Yolculuk sırasında namazları birleştirme konusunda lütfen yerel aliminizi veya mezhebinizi takip edin.",
+      "understood": "Anladım",
+      "qasrRakatCount": "Kasr Rekat Sayısı",
+      "fiqhNote": "Sabah ve Akşam namazları kısaltılmaz (kasr sadece 4 rekatlı namazlara uygulanır). Cem (namazları birleştirme), yerel aliminizin veya mezhebinizin hükmünü takip etmenizi gerektirir.",
+      "travelDestination": "Yolculuk Hedefi",
+      "changeCity": "Değiştir",
+      "changeCityAccessibilityLabel": "Yolculuk şehrini değiştir",
+      "selectTravelCity": "Yolculuk Şehri Seç",
+      "selectTravelCityAccessibilityLabel": "Yolculuk şehri seç",
+      "recalcNote": "Namaz vakitleri yolculuk hedefiniz için yeniden hesaplanacak.",
+      "homeCity": "Ev Şehri",
+      "notSet": "Ayarlanmadı"
+    },
+    "qibla": {
+      "calibrating": "Pusula kalibre ediliyor...",
+      "locationRequiredTitle": "Konum Gerekli",
+      "locationRequiredSubtitle": "Kıble yönünü bulmak için Ayarlar'da konumunuzu belirleyin.",
+      "bearingLabel": "Kıble Açısı",
+      "compassAccessibilityLabel": "Kıble pusulası, mevcut yön {{degrees}} derece",
+      "accuracyLabel": "Doğruluk: {{level}}",
+      "accuracyUnknown": "Bilinmiyor",
+      "accuracyUnreliable": "Güvenilmez",
+      "accuracyLow": "Düşük",
+      "accuracyMedium": "Orta",
+      "accuracyHigh": "Yüksek",
+      "headingNote": "Yön: {{degrees}}° | Kabe'ye büyük daire açısı"
+    },
+    "fasting": {
+      "todaysFast": "Bugünün Orucu",
+      "logToday": "Bugünün Orucunu Kaydet",
+      "unlogToday": "Bugünün Kaydını Kaldır",
+      "loggedAs": "Kayıtlı: {{type}}",
+      "yourStreaks": "Serileriniz",
+      "mondayStreak": "Pazartesi Serisi",
+      "thursdayStreak": "Perşembe Serisi",
+      "whiteDaysMonth": "Bu Ayki Beyaz Günler",
+      "ramadanLogged": "Ramazan Oruçları",
+      "qadaLogged": "Kaza Tutuldu",
+      "voluntaryLogged": "Nafile Oruçlar",
+      "ramadanDayOf": "Ramazan — {{total}} günün {{day}}. günü",
+      "upcomingSuggestions": "Yaklaşan Önerilen Oruç Günleri",
+      "logAction": "Kaydet",
+      "sunnahSourceNote": "Pazartesi ve Perşembe oruçları: Sahih Müslim 1162. Beyaz Günler (her Hicri ayın 13-15'i): Sünen en-Nesai 2345, Sünen Ebu Davud 2449.",
+      "recentLogs": "Son Kayıtlar"
+    },
+    "qada": {
+      "totalOwed": "Toplam Borçlu Namaz",
+      "perPrayer": "Namaz Bazında Sayı",
+      "makeUpOne": "Bir Tane Kaza Et",
+      "excusedTitle": "Mazeretli Dönemler",
+      "fiqhNote": "Mazeretli bir dönemde (hayız veya lohusalık gibi), bir kadın namaz kılmaz — ve bu kaçırılan namazlar sonradan kaza edilmez. Bu, oruçtan farklıdır: o dönemde tutulamayan oruçlar sonradan kaza edilir.",
+      "fiqhCitation": "Sahih el-Buhari 321 · Sahih Müslim 335",
+      "consultScholar": "Bu, çoğunluk görüşünü yansıtır. Özel durumunuz için yerel aliminize danışın.",
+      "addExcusedRange": "Mazeretli Dönem Ekle",
+      "startDate": "Başlangıç Tarihi",
+      "endDate": "Bitiş Tarihi",
+      "noteOptional": "Not (isteğe bağlı)",
+      "notePlaceholder": "örn. hayız, hastalık",
+      "removeExcusedRangeAccessibilityLabel": "Mazeretli aralığı kaldır"
+    },
+    "jumuah": {
+      "intro": "Cuma, haftanın en hayırlı günüdür. Nazik hatırlatmalar ayarlayın ve sünnetleriyle Cuma'ya hazırlanın.",
+      "khutbahTitle": "Hutbe Hatırlatıcısı",
+      "khutbahSub": "Her cuma hutbeden önce bir uyarı.",
+      "kahfTitle": "Kehf Suresi Hatırlatıcısı",
+      "kahfSub": "Cuma günü Kehf Suresi'ni okuma hatırlatıcısı.",
+      "kahfDayThursday": "Perşembe akşamı",
+      "kahfDayFriday": "Cuma sabahı",
+      "reminderTime": "Hatırlatma saati",
+      "checklistTitle": "Cuma'nın Sünnetleri",
+      "virtueTitle": "Cuma'nın Fazileti",
+      "virtueBody": "Peygamber ﷺ şöyle buyurdu: \"Güneşin doğduğu en hayırlı gün cumadır.\"",
+      "virtueCitation": "Sahih Müslim 854",
+      "kahfVirtueBody": "Peygamber ﷺ şöyle buyurdu: \"Kim cuma günü Kehf Suresi'ni okursa, iki cuma arasında onun için bir nur parlar.\"",
+      "kahfVirtueCitation": "Hakim ve Beyhaki rivayet etmiştir; Albani tarafından sahih olarak derecelendirilmiştir",
+      "checklist": {
+        "ghusl": "Gusül yapın (yıkanma)",
+        "ghuslCitation": "Sahih el-Buhari 877 · Sahih Müslim 846",
+        "cleanClothes": "Temiz, güzel kıyafetler giyin",
+        "cleanClothesCitation": "Sünen Ebu Davud 343 (hasen)",
+        "perfume": "Güzel koku sürün (misvak ve bakım)",
+        "perfumeCitation": "Sahih el-Buhari 880",
+        "early": "Camiye erken gidin",
+        "earlyCitation": "Sahih el-Buhari 881 · Sahih Müslim 850",
+        "kahf": "Kehf Suresi'ni okuyun",
+        "kahfCitation": "Hakim / Beyhaki (Albani'ye göre sahih)",
+        "salawat": "Peygamber'e ﷺ salavatı artırın",
+        "salawatCitation": "Sünen Ebu Davud 1047 (sahih)",
+        "dua": "Duanın kabul edildiği saati arayın",
+        "duaCitation": "Sahih el-Buhari 935 · Sahih Müslim 852"
+      }
+    },
+    "leadTimeAccessibilityLabel": "{{prayer}} bildirim süresi, vakitten {{minutes}} dakika önce. Değiştirmek için dokunun.",
+    "iqamahAccessibilityLabel": "{{prayer}} kamet hatırlatması, {{status}}. Değiştirmek için dokunun.",
+    "enableAccessibilityLabel": "{{prayer}} ezanını etkinleştir",
+    "rowAccessibilityLabel": "{{name}}, {{distance}} uzaklıkta",
+    "directionsAccessibilityLabel": "{{name}} için Haritalar'da yol tarifini aç",
+    "accentColorAccessibilityLabel": "Vurgu rengi {{hex}}",
+    "todayTotalAccessibilityLabel": "Bugünün zikir toplamı: {{total}}",
+    "historyEntryAccessibilityLabel": "{{name}}: {{count}}, {{date}}",
+    "arabicTextAccessibilityLabel": "Arapça: {{transliteration}}",
+    "counterAccessibilityLabel": "Sayı: {{count}} / {{target}}. {{status}}",
+    "tapToIncrement": "Artırmak için dokunun",
+    "presetAccessibilityLabel": "{{transliteration}}, hedef {{target}}, kaynak {{source}}",
+    "zoneRowAccessibilityLabel": "{{label}}, {{radius}} metre yarıçap",
+    "phaseAccessibilityLabel": "Ay evresi: {{phase}}, {{illumination}}",
+    "voiceAccessibilityLabel": "{{reciter}} - {{name}}",
+    "voiceAccessibilityLabelPro": "{{reciter}} - {{name}} (Pro, seçmek için yükseltme gerekir)",
+    "surahNameAccessibilityLabel": "{{name}} Suresi",
+    "readOnWikiAccessibilityLabel": "{{name}} Suresi'ni Islam.Wiki'de oku",
+    "verseAccessibilityLabel": "Ayet {{number}}: {{transliteration}}",
+    "featuredVerseAccessibilityLabel": "{{label}}: Ayetel Kürsi",
+    "surahRowAccessibilityLabel": "{{number}}. Sure, {{name}}, {{count}} ayet, {{type}}",
+    "fullTextAvailableSuffix": ", tam metin mevcut",
+    "revelationMeccan": "Mekki",
+    "revelationMedinan": "Medeni"
+  },
+  "onboarding": {
+    "skip": "Atla",
+    "welcome": {
+      "title": "PrayCalc'a Hoş Geldiniz",
+      "desc": "Doğru namaz vakitleri, kıble yönü ve İslami takvim — birkaç dokunuşla kurulum.",
+      "cta": "Başlayın"
+    },
+    "location": {
+      "title": "Konumunuz",
+      "prime": "PrayCalc, şehriniz için tam namaz vakitlerini hesaplamak amacıyla konumunuzu kullanır. Cihazınızda kalır — asla paylaşmayız. Devam etmek için sonraki ekranda İzin Ver'e dokunun.",
+      "allow": "Konuma İzin Ver",
+      "later": "Bunu sonra ayarlarım"
+    },
+    "notifications": {
+      "title": "Namaz Hatırlatıcıları",
+      "prime": "Bir namazı kaçırmamanız için her namaz vaktinde nazik bir hatırlatma veya ezan alın. Hangi namazların sizi bildireceğini daha sonra ince ayar yapabilirsiniz.",
+      "allow": "Hatırlatıcıları Etkinleştir",
+      "later": "Şimdi değil"
+    },
+    "method": {
+      "title": "Hesaplama Yöntemi",
+      "dpcExplain": "DPC (Dinamik PrayCalc), konumunuz için en iyi vakitleri otomatik olarak hesaplar — Ay Gözlemi yönteminde bir gelişme. Bunu kullanmaya devam etmenizi öneririz.",
+      "dpcLabel": "Dinamik (PrayCalc DPC)",
+      "recommended": "Önerilen",
+      "orFixed": "Ya da sabit bir yöntem seçin",
+      "suggested": "Bölgeniz için",
+      "continue": "Devam Et"
+    },
+    "consent": {
+      "title": "PrayCalc'ı Geliştirmemize Yardım Edin"
+    },
+    "done": {
+      "title": "Her şey hazır",
+      "desc": "Namaz vakitleriniz hazır. Bu seçimlerin herhangi birini istediğiniz zaman Ayarlar'dan değiştirebilirsiniz.",
+      "cta": "PrayCalc'ı Aç"
     }
+  },
+  "consent": {
+    "title": "Anonim Kullanım Analitiği",
+    "description": "PrayCalc'ı geliştirmemize yardımcı olmak için anonim, toplu kullanım verilerini paylaşın. Kişisel bilgi, konum veya hesap detayları asla toplanmaz.",
+    "privacyNote": "Varsayılan olarak kapalı. Siz açmadıkça hiçbir şey gönderilmez ve istediğiniz zaman değiştirebilirsiniz.",
+    "accept": "İzin Ver",
+    "decline": "Hayır, Teşekkürler",
+    "toggleLabel": "Anonim analitiği paylaş",
+    "privacyScreenTitle": "Gizlilik",
+    "privacyScreenFooter": "PrayCalc gizlilik odaklıdır. Analitik anonimdir ve siz katılmadıkça kapalıdır. Bunu kapatmak tüm telemetriyi anında durdurur."
   }
 }
