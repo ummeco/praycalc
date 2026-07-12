@@ -70,13 +70,19 @@ jobs:
               praycalc-smart:latest
           '
 
-      - name: Verify public health endpoint
-        # Container start + app boot + docker healthcheck warmup can exceed a
-        # minute — poll for up to 4 minutes before declaring the deploy bad.
+      - name: Verify health (on-box via SSH)
+        # Probed on the server itself: Cloudflare Bot Fight Mode challenges
+        # requests from cloud-provider ASNs (GitHub runners included) and can't
+        # be skip-ruled, so a public HTTPS probe from CI always fails even when
+        # production is healthy. The on-box probe tests exactly what we deployed;
+        # edge reachability is Cloudflare's separate concern.
         run: |
+          SSH="ssh -i ~/.ssh/deploy_key -o IdentitiesOnly=yes root@159.69.190.92"
           for i in $(seq 1 24); do
-            CODE=$(curl -s -o /dev/null -w '%{http_code}' https://smart.praycalc.com/health)
+            CODE=$($SSH "curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:4010/health" || echo 000)
             [ "$CODE" = "200" ] && echo "healthy after ~$((i*10))s" && exit 0
             sleep 10
           done
-          echo "::error::smart.praycalc.com/health not 200 after deploy"; exit 1
+          echo "::error::praycalc-smart /health not 200 on the box after deploy"
+          $SSH "docker ps -a --format '{{.Names}} {{.Status}}' | grep smart; docker logs praycalc-smart --tail 40" || true
+          exit 1
