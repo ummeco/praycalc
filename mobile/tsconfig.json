@@ -6,8 +6,7 @@
     "moduleResolution": "bundler",
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"],
-      "@praycalc/bridge-types": ["../packages/bridge-types/src/index.ts"]
+      "@/*": ["src/*"]
     },
     "skipLibCheck": true
   },
