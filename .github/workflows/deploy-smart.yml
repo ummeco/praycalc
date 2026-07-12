@@ -71,10 +71,12 @@ jobs:
           '
 
       - name: Verify public health endpoint
+        # Container start + app boot + docker healthcheck warmup can exceed a
+        # minute — poll for up to 4 minutes before declaring the deploy bad.
         run: |
-          for i in $(seq 1 12); do
+          for i in $(seq 1 24); do
             CODE=$(curl -s -o /dev/null -w '%{http_code}' https://smart.praycalc.com/health)
-            [ "$CODE" = "200" ] && echo "healthy" && exit 0
-            sleep 5
+            [ "$CODE" = "200" ] && echo "healthy after ~$((i*10))s" && exit 0
+            sleep 10
           done
           echo "::error::smart.praycalc.com/health not 200 after deploy"; exit 1
