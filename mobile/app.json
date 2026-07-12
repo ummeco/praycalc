@@ -154,6 +154,17 @@
       },
       "graphqlUrl": "https://api.ummat.dev/v1/graphql",
       "authUrl": "https://auth.ummat.dev"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/UD-PENDING-EAS-PROJECT-ID",
+      "checkAutomatically": "ON_LOAD",
+      "fallbackToCacheTimeout": 0,
+      "requestHeaders": {
+        "expo-channel-name": "production"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
     }
   }
 }

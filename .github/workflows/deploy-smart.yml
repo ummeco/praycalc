@@ -1,0 +1,80 @@
+name: Deploy Smart Server
+
+# Push to main touching smart/** → run the smart test suite → deploy to
+# ummat-prod (rsync + docker build + container restart, same steps as
+# smart/deploy.sh) → verify the public health endpoint. This makes
+# smart.praycalc.com fully hands-off: merged code is live in ~3 minutes with
+# no manual deploy step. Rollback = revert the commit (redeploys the previous
+# tree the same way).
+
+on:
+  push:
+    branches: [main]
+    paths: ['smart/**', '.github/workflows/deploy-smart.yml']
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-smart
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  test-and-deploy:
+    name: Test → deploy → verify
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: pnpm/action-setup@v4
+        with:
+          package_json_file: smart/package.json
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install + test (smart standalone workspace)
+        working-directory: smart
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm test
+
+      - name: Set up deploy SSH key
+        env:
+          DEPLOY_KEY: ${{ secrets.PRAYCALC_SMART_DEPLOY_SSH_KEY }}
+        run: |
+          if [ -z "$DEPLOY_KEY" ]; then
+            echo "::error::PRAYCALC_SMART_DEPLOY_SSH_KEY secret missing"; exit 1
+          fi
+          mkdir -p ~/.ssh
+          echo "$DEPLOY_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H 159.69.190.92 >> ~/.ssh/known_hosts 2>/dev/null
+
+      - name: Deploy (rsync + docker build + restart)
+        run: |
+          SSH="ssh -i ~/.ssh/deploy_key -o IdentitiesOnly=yes root@159.69.190.92"
+          rsync -az --delete --exclude node_modules --exclude dist --exclude .git \
+            -e "ssh -i ~/.ssh/deploy_key -o IdentitiesOnly=yes" \
+            smart/ root@159.69.190.92:/opt/ummat/smart/
+          $SSH "cd /opt/ummat/smart && docker build -q -t praycalc-smart:latest ."
+          $SSH '
+            docker stop praycalc-smart 2>/dev/null || true
+            docker rm praycalc-smart 2>/dev/null || true
+            docker run -d --name praycalc-smart --network ummat_network \
+              --restart unless-stopped -p 127.0.0.1:4010:4010 \
+              $(cat /opt/ummat/smart/.env.prod 2>/dev/null | sed "s/^/-e /" | tr "\n" " ") \
+              praycalc-smart:latest
+          '
+
+      - name: Verify public health endpoint
+        run: |
+          for i in $(seq 1 12); do
+            CODE=$(curl -s -o /dev/null -w '%{http_code}' https://smart.praycalc.com/health)
+            [ "$CODE" = "200" ] && echo "healthy" && exit 0
+            sleep 5
+          done
+          echo "::error::smart.praycalc.com/health not 200 after deploy"; exit 1
