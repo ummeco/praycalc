@@ -1,3 +1,19 @@
+## [mobile-v2.2.3, tv-v1.0.1] — 2026-08-19 — P0: no more fabricated prayer times above the Arctic Circle
+
+### Fixed
+- **Mobile + TV: prayer times were invented, not calculated, above the Arctic Circle.** The NREL SPA reports an unreachable sunrise/sunset as the sentinel `-99999` rather than `NaN`. That value is *finite*, so every `Number.isFinite` guard in both apps accepted it and the formatters wrapped it into a plausible clock time. At Longyearbyen on 2026-06-21 the apps displayed Sunrise 09:00 and Maghrib 09:00 — identical, because both were the same sentinel — alongside Dhuhr 09:02 and Fajr/Isha 21:00, with nothing to tell the user the times were meaningless. Affected roughly 240 days a year at Longyearbyen, 116 at Tromso, 102 at Murmansk and 30 at Rovaniemi; no location below the Arctic Circle was affected. Web and desktop were never affected, as both read the formatted `calcTimesAll` API which renders "N/A". Both apps now sanitize every engine value at the boundary; a prayer with no time on a date is reported as absent (`--:--`) instead of as midnight or a sentinel artifact.
+- Mobile: next-prayer countdown skips prayers that do not occur, instead of rendering `NaN`
+- Mobile: calendar export no longer writes a corrupt event from a non-existent prayer time
+- Mobile: Ramadan iftar/suhoor countdown hides itself rather than showing `NaN`
+- Mobile: monthly timetable used a duplicate time formatter that bypassed the shared invalid-date guard, printing "Invalid Date" cells; it now re-exports the canonical formatter
+- TV: iqamah offset column no longer renders `NaN:NaN`
+- TV: Ramadan countdown renders `--:--:--` instead of `NaN:NaN:NaN`
+- TV: `tv/app.json` version had drifted to 0.1.0 against `package.json` 1.0.0, and the Android build hardcoded `versionName "1.0.0"` / `versionCode 1`, so every TV APK shipped mislabeled and could not upgrade a prior sideload. All three are now aligned and increment together.
+
+### Notes
+- Found while verifying an external developer's question about Longyearbyen and Antarctica. The underlying engine defect is tracked as PKG-03/PKG-05 and fixed separately in the published packages; these app-side guards stay as defense in depth.
+- Full package-family audit: 24 items, `.claude/docs/PACKAGE-AUDIT-2026-08-19.md`; public issue ummeco/praycalc#77.
+
 ## [Unreleased] — 2026-07-10 — UI overhaul, PWA hardening, gap-closure wave, releases
 
 ### Added
