@@ -46,6 +46,12 @@ _METHOD_PARAMS: dict[Method, tuple[float, Optional[float], Optional[int]]] = {
 }
 
 
+#: Rendered in place of a prayer that has no time on the requested date. Above the
+#: polar circles the sun can fail to rise or set for weeks, so Fajr, Sunrise, Maghrib
+#: and Isha genuinely do not occur on some days.
+NO_TIME_PLACEHOLDER = "--:--"
+
+
 def _to_rad(degrees: float) -> float:
     return degrees * math.pi / 180.0
 
@@ -120,8 +126,19 @@ def _asr_time(jd: float, lat: float, shadow_factor: int) -> float:
 
 
 def _format_time(hour: float, lng: float) -> str:
-    """Format fractional hour as HH:MM, adjusted for longitude offset."""
+    """Format fractional hour as HH:MM, adjusted for longitude offset.
+
+    Returns NO_TIME_PLACEHOLDER when the prayer has no time on the requested date.
+    Above the polar circles the sun can fail to rise or set for weeks, so a depression
+    angle is simply unreachable and the solvers return NaN. Passing that to
+    ``_fix_hour`` raised ``ValueError: cannot convert float NaN to integer`` and took
+    the caller's whole request down with it (PKG-07).
+    """
+    if not math.isfinite(hour):
+        return NO_TIME_PLACEHOLDER
     hour = _fix_hour(hour + lng / 15.0)  # crude UTC offset; production would use TZ database
+    if not math.isfinite(hour):
+        return NO_TIME_PLACEHOLDER
     h = int(hour)
     m = int((hour - h) * 60 + 0.5)
     if m >= 60:

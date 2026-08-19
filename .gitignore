@@ -130,3 +130,8 @@ mobile/.expo/
 # exempt them from the generic dist/ ignore so a fresh checkout can build.
 !web/vendor/*/dist
 coverage/
+
+# C + Python build artifacts (PKG-09 test binary, bytecode caches)
+__pycache__/
+core/c/test_pray_calc
+core/c/libpraycalc.a

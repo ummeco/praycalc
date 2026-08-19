@@ -93,8 +93,18 @@ private func asrTime(jd: Double, lat: Double, shadowFactor: Int) -> Double {
     return noon + toDeg(acos(cosVal)) / 15
 }
 
+/// Rendered in place of a prayer that has no time on the requested date.
+///
+/// Above the polar circles the sun can fail to rise or set for weeks, so a depression
+/// angle is simply unreachable and `sunAngleTime`/`asrTime` return NaN.
+public let noTimePlaceholder = "--:--"
+
 private func formatTime(_ hour: Double, lng: Double) -> String {
+    // `Int(Double.nan)` is a FATAL TRAP in Swift, not a catchable error: it killed the
+    // host process outright for any caller asking about a polar latitude (PKG-06).
+    guard hour.isFinite else { return noTimePlaceholder }
     let h = fixHour(hour + lng / 15)
+    guard h.isFinite else { return noTimePlaceholder }
     var hr = Int(h)
     var min = Int((h - Double(hr)) * 60 + 0.5)
     if min >= 60 { hr += 1; min -= 60 }

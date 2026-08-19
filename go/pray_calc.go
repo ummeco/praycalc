@@ -115,8 +115,23 @@ func asrTime(jd, lat float64, shadowFactor int) float64 {
 	return noon + toDeg(math.Acos(cosVal))/15
 }
 
+// NoTimePlaceholder is reported for a prayer that has no time on the requested date.
+//
+// Above the polar circles the sun can fail to rise or set for weeks, so a depression
+// angle is simply unreachable and the solvers return NaN.
+const NoTimePlaceholder = "--:--"
+
 func formatTime(hour, lng float64) string {
+	// int(NaN) is 0 in Go — no panic, no error. Without this guard an unreachable
+	// prayer was reported as "00:00", indistinguishable from a real midnight time,
+	// so a wrong answer looked exactly like a right one (PKG-08).
+	if math.IsNaN(hour) || math.IsInf(hour, 0) {
+		return NoTimePlaceholder
+	}
 	hour = fixHour(hour + lng/15)
+	if math.IsNaN(hour) || math.IsInf(hour, 0) {
+		return NoTimePlaceholder
+	}
 	h := int(hour)
 	m := int((hour-float64(h))*60 + 0.5)
 	if m >= 60 {

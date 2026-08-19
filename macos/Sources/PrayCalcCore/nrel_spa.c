@@ -935,6 +935,50 @@ void spa_input_init(SpaInput *input) {
     input->atmos_refract = 0.5667;
 }
 
+/* ---------------------------------------------------------------------------
+ * Polar-day/night presentation helpers.
+ *
+ * The reference implementation writes SPA_NO_EVENT (-99999) into srha, ssha, sta,
+ * suntransit, sunrise and sunset when the sun does not cross the horizon on the
+ * requested day. The port above stays faithful to that. These helpers exist so no
+ * sentinel crosses the public API: it is a FINITE number, so every isnan() guard in
+ * every caller accepted it and treated it as a real time (PKG-09).
+ * --------------------------------------------------------------------------- */
+
+#define SPA_NO_EVENT (-99999.0)
+
+/* True when a raw field carries the "no such event" sentinel rather than a time.
+ * A magnitude test, not equality: the sentinel is arithmetic-poisoned downstream
+ * (a custom angle offsets it by hours, giving -100002.015 and similar). */
+int spa_is_no_event(double value) {
+    return !isfinite(value) || value <= SPA_NO_EVENT + 1000.0;
+}
+
+/* Present a raw rise/set field to callers, mapping "no such event" to NAN. */
+double spa_present_rts(double value) {
+    return spa_is_no_event(value) ? NAN : value;
+}
+
+/* Local solar transit in fractional hours of local clock time.
+ *
+ * The sun crosses the local meridian every day everywhere on Earth, so solar noon is
+ * always defined -- but the reference blanks it alongside the genuinely absent sunrise
+ * and sunset, which cost Dhuhr and Asr on every polar day (PKG-05). The equation of
+ * time is computed unconditionally before that branch, so transit is recoverable:
+ *
+ *     transit = 12 - (4 * (longitude - 15 * timezone) + eot) / 60
+ *
+ * Used ONLY where the reference has nothing to offer; where it produces a transit that
+ * value passes through untouched, so no existing result moves. */
+double spa_transit_from_eot(const SpaData *d) {
+    double time_correction_minutes = 4.0 * (d->longitude - 15.0 * d->timezone) + d->eot;
+    double transit = 12.0 - time_correction_minutes / 60.0;
+    if (!isfinite(transit)) return NAN;
+    transit = fmod(transit, 24.0);
+    if (transit < 0) transit += 24.0;
+    return transit;
+}
+
 int spa_calculate(const SpaInput *input, SpaResult *result) {
     SpaData d;
 
@@ -961,9 +1005,16 @@ int spa_calculate(const SpaInput *input, SpaResult *result) {
 
     result->zenith = d.zenith;
     result->azimuth = d.azimuth;
-    result->sunrise = d.sunrise;
-    result->solar_noon = d.suntransit;
-    result->sunset = d.sunset;
+    /* The reference writes SPA_NO_EVENT into these when the sun does not cross the
+     * horizon. It is a finite number, so callers checking isnan() -- exactly what
+     * pray_calc.h documents -- accepted it as a real time (PKG-09). Present NAN. */
+    result->sunrise = spa_present_rts(d.sunrise);
+    /* Solar transit happens every day at every latitude even when sunrise does not,
+     * so recover it rather than discarding Dhuhr and Asr along with it (PKG-05). */
+    result->solar_noon = spa_is_no_event(d.suntransit)
+                             ? spa_transit_from_eot(&d)
+                             : d.suntransit;
+    result->sunset = spa_present_rts(d.sunset);
     result->declination = d.delta;
 
     return 0;
@@ -977,6 +1028,14 @@ SpaAnglesResult spa_custom_angle(double zenith_angle, double solar_noon,
     double z = zenith_angle * M_PI / 180.0;
     double cos_h0 = (cos(z) - sin(phi) * sin(delta_rad)) / (cos(phi) * cos(delta_rad));
     if (cos_h0 < -1.0 || cos_h0 > 1.0) {
+        r.sunrise = NAN;
+        r.sunset = NAN;
+        return r;
+    }
+    /* A depression angle can be reachable on a day with no sunrise, but these times are
+     * offsets from solar transit -- a sentinel transit yielded finite, plausible, wholly
+     * wrong values such as -100002.015 (PKG-09). */
+    if (spa_is_no_event(solar_noon)) {
         r.sunrise = NAN;
         r.sunset = NAN;
         return r;

@@ -384,6 +384,82 @@ static void test_seasonal_variation(void) {
     check(summer.maghrib > winter.maghrib, "Summer Maghrib later than winter in London");
 }
 
+
+/* ─── Polar latitudes (PKG-09 / PKG-05) ───────────────────────────────────── */
+
+/*
+ * pray_calc.h documents: "If a prayer time cannot be computed (e.g., polar regions),
+ * the corresponding field is set to NAN." It was not -- the NREL sentinel -99999 (and
+ * angle-offset variants such as -100002.015) flowed into every field, so an FFI caller
+ * checking isnan() exactly as documented accepted garbage as a real time.
+ *
+ * Separately, solar transit was discarded on those days even though the sun crosses the
+ * meridian every day everywhere, which cost Dhuhr and Asr when both were computable.
+ */
+static PrayCalcResult polar_at(double lat, double lng, int y, int m, int d, double tz) {
+    PrayCalcInput in;
+    pray_calc_input_init(&in);
+    in.latitude = lat;
+    in.longitude = lng;
+    in.year = y;
+    in.month = m;
+    in.day = d;
+    in.timezone = tz;
+    return pray_calc_times(in);
+}
+
+static int has_sentinel(PrayCalcResult r) {
+    const double vals[6] = { r.fajr, r.sunrise, r.dhuhr, r.asr, r.maghrib, r.isha };
+    int i;
+    for (i = 0; i < 6; i++) {
+        if (!isnan(vals[i]) && (vals[i] < -48.0 || vals[i] > 48.0)) return 1;
+    }
+    return 0;
+}
+
+static void test_polar_latitudes(void) {
+    printf("\n=== Polar latitudes (no sentinel leakage) ===\n");
+
+    check(!has_sentinel(polar_at(78.22334, 15.64689, 2026, 6, 21, 1)),
+          "Longyearbyen polar day: no sentinel in any field");
+    check(!has_sentinel(polar_at(78.22334, 15.64689, 2026, 12, 21, 1)),
+          "Longyearbyen polar night: no sentinel in any field");
+    check(!has_sentinel(polar_at(69.6492, 18.9553, 2026, 6, 21, 2)),
+          "Tromso polar day: no sentinel in any field");
+    check(!has_sentinel(polar_at(-77.8419, 166.6863, 2026, 6, 21, 13)),
+          "McMurdo polar night: no sentinel in any field");
+
+    /* Header contract: absent prayers are NAN. */
+    PrayCalcResult pd = polar_at(78.22334, 15.64689, 2026, 6, 21, 1);
+    check(isnan(pd.sunrise), "polar day: sunrise is NAN per header contract");
+    check(isnan(pd.maghrib), "polar day: maghrib is NAN per header contract");
+
+    /* PKG-05: solar noon exists every day, so Dhuhr and Asr survive polar day. */
+    check(!isnan(pd.dhuhr) && pd.dhuhr >= 0.0 && pd.dhuhr < 24.0,
+          "polar day: dhuhr is a real time");
+    check(!isnan(pd.asr) && pd.asr >= 0.0 && pd.asr < 24.0,
+          "polar day: asr is a real time");
+
+    /* Normal latitude unchanged and correctly ordered. */
+    PrayCalcResult nyc = polar_at(40.7128, -74.006, 2026, 3, 15, -4);
+    check(!isnan(nyc.fajr) && !isnan(nyc.sunrise) && !isnan(nyc.dhuhr),
+          "NYC: all times present");
+    check(nyc.sunrise < nyc.dhuhr && nyc.dhuhr < nyc.asr && nyc.asr < nyc.maghrib,
+          "NYC: ordering intact");
+
+    /* Global sweep: no sentinel anywhere on Earth in any month. */
+    {
+        double lat;
+        int mo, clean = 1;
+        for (lat = -85.0; lat <= 85.0; lat += 5.0) {
+            for (mo = 1; mo <= 12; mo++) {
+                if (has_sentinel(polar_at(lat, 0.0, 2026, mo, 15, 0.0))) clean = 0;
+            }
+        }
+        check(clean, "global sweep (35 latitudes x 12 months): no sentinel anywhere");
+    }
+}
+
 /* ─── Main ────────────────────────────────────────────────────────────────── */
 
 int main(void) {
@@ -397,6 +473,7 @@ int main(void) {
     test_qibla();
     test_format_time();
     test_seasonal_variation();
+    test_polar_latitudes();
 
     printf("\n=============================\n");
     printf("Results: %d passed, %d failed, %d total\n",
