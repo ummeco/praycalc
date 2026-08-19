@@ -14,7 +14,16 @@
 
 import type { TimeFormat } from '../types/prayer';
 
+/**
+ * Rendered in place of a prayer that has no time on this date. Above the Arctic and
+ * Antarctic circles the sun can fail to rise or set for weeks, so Fajr, Sunrise, Maghrib
+ * and Isha genuinely do not occur. Showing a dash is the honest answer; the alternatives
+ * are a fabricated clock time or the literal string "Invalid Date" (PKG-01).
+ */
+export const NO_TIME_PLACEHOLDER = '--:--';
+
 export function formatTime(date: Date, format: TimeFormat, locale: string): string {
+  if (!(date instanceof Date) || Number.isNaN(date.getTime())) return NO_TIME_PLACEHOLDER;
   if (format === '24h') {
     return date.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit', hour12: false });
   }

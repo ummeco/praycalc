@@ -21,8 +21,9 @@ import { useThemeColors } from '../../hooks/useThemeColors';
 import { useResponsiveLayout } from '../../hooks/useResponsiveLayout';
 import type { ThemeColors } from '../../constants/colors';
 import { useSettingsStore, useActiveLocation } from '../settings/store/useSettingsStore';
-import { calculatePrayerTimes } from '../../lib/prayer-calc';
+import { calculatePrayerTimes, isPrayerTimeValid } from '../../lib/prayer-calc';
 import { resolveTimezoneOffset } from '../../lib/timezone';
+import { NO_TIME_PLACEHOLDER } from '../../lib/formatTime';
 import { gregorianToHijri, RAMADAN_MONTH } from '../../lib/hijri';
 import type { CalcMethodKey } from '../../constants/methods';
 
@@ -98,18 +99,25 @@ export default function RamadanScreen() {
   const countdown = useMemo(() => {
     if (!prayerTimes) return null;
     const nowMs = now.getTime();
-    if (nowMs < prayerTimes.Maghrib.getTime()) {
+    // Above the Arctic Circle there may be no Maghrib and no Fajr on this date. Without
+    // these guards the NaN comparison falls through to the Suhoor branch and the countdown
+    // renders "NaN" (PKG-01) — hiding it is the honest outcome.
+    if (isPrayerTimeValid(prayerTimes.Maghrib) && nowMs < prayerTimes.Maghrib.getTime()) {
       return { label: t('screens.ramadan.iftarIn'), seconds: (prayerTimes.Maghrib.getTime() - nowMs) / 1000 };
     }
     // After Maghrib: count down to tomorrow's Suhoor end (Fajr).
+    if (!isPrayerTimeValid(prayerTimes.Fajr)) return null;
     const tomorrowFajr = new Date(prayerTimes.Fajr);
     tomorrowFajr.setDate(tomorrowFajr.getDate() + 1);
     return { label: t('screens.ramadan.suhoorEndsIn'), seconds: (tomorrowFajr.getTime() - nowMs) / 1000 };
     // eslint-disable-next-line react-hooks/exhaustive-deps -- t is stable per active locale
   }, [prayerTimes, now]);
 
+  // Suhoor/Iftar rows must never print "Invalid Date" on a polar-day date (PKG-01).
   const formatTime = (d: Date) =>
-    d.toLocaleTimeString(i18next.language, { hour: '2-digit', minute: '2-digit', hour12: true });
+    isPrayerTimeValid(d)
+      ? d.toLocaleTimeString(i18next.language, { hour: '2-digit', minute: '2-digit', hour12: true })
+      : NO_TIME_PLACEHOLDER;
 
   return (
     <SafeAreaView style={styles.container}>

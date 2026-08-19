@@ -23,6 +23,13 @@ function getCountdownTarget(fajr: string, maghrib: string): { label: string; tar
   const [fajrH, fajrM] = fajr.split(':').map(Number);
   const [maghribH, maghribM] = maghrib.split(':').map(Number);
 
+  // Above the Arctic Circle Fajr or Maghrib can be "--:--" on a given date. Parsing that
+  // gives NaN, `setHours(NaN, NaN)` produces an Invalid Date, and the countdown renders
+  // "NaN:NaN:NaN" (PKG-02). NaN targetMs is the caller's signal to hide the countdown.
+  if (![fajrH, fajrM, maghribH, maghribM].every((n) => Number.isFinite(n))) {
+    return { label: 'Fasting times unavailable at this latitude today', targetMs: NaN };
+  }
+
   const fajrToday = new Date(now);
   fajrToday.setHours(fajrH, fajrM, 0, 0);
 
@@ -46,6 +53,8 @@ function getCountdownTarget(fajr: string, maghrib: string): { label: string; tar
 }
 
 function formatCountdown(diffMs: number): string {
+  // NaN reaches here when the date has no Fajr/Maghrib at this latitude (see above).
+  if (!Number.isFinite(diffMs)) return '--:--:--';
   if (diffMs <= 0) return '00:00:00';
   const totalSec = Math.floor(diffMs / 1000);
   const h = Math.floor(totalSec / 3600).toString().padStart(2, '0');

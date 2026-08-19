@@ -16,7 +16,7 @@ import { useTranslation } from '../../i18n';
 import { useThemeColors } from '../../hooks/useThemeColors';
 import type { ThemeColors } from '../../constants/colors';
 import { PermissionDeniedState, LoadingState } from '../../components/states';
-import { calculatePrayerTimes } from '../../lib/prayer-calc';
+import { calculatePrayerTimes, isPrayerTimeValid } from '../../lib/prayer-calc';
 import { resolveTimezoneOffset } from '../../lib/timezone';
 import { useSettingsStore, useActiveLocation } from '../settings/store/useSettingsStore';
 import { PRAYER_LABEL_KEYS, NOTIFIABLE_PRAYERS as PRAYER_NAMES } from '../../constants/prayers';
@@ -75,7 +75,10 @@ export default function AgendasScreen() {
       for (const name of PRAYER_NAMES) {
         if (!enabledPrayers[name]) continue;
         const time = prayerTimes[name as keyof typeof prayerTimes];
-        if (!(time instanceof Date)) continue;
+        // `instanceof Date` alone is not enough: a prayer with no time on this date is an
+        // Invalid Date, which would reach createEventAsync and write a corrupt calendar
+        // entry (PKG-01). Skip it — there is no event to create.
+        if (!isPrayerTimeValid(time)) continue;
         const startDate = time;
         const endDate = new Date(time.getTime() + PRAYER_DURATION_MINS * 60 * 1000);
         await Calendar.createEventAsync(defaultCalendar.id, {

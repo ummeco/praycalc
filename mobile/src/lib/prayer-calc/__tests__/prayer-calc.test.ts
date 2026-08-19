@@ -9,7 +9,7 @@
  *   night-length calculation and produced solar-noon nonsense for both Fajr and Isha.
  */
 
-import { calculatePrayerTimes } from '../index';
+import { calculatePrayerTimes, isPrayerTimeValid } from '../index';
 
 function minutesBetween(a: Date, b: Date): number {
   return Math.abs(a.getTime() - b.getTime()) / 60_000;
@@ -57,9 +57,10 @@ describe('calculatePrayerTimes — high-latitude fallback', () => {
     const times = calculatePrayerTimes(
       summerSolstice, reykjavik.lat, reykjavik.lng, reykjavik.tz, 'MWL', 'Shafi', 'None',
     );
-    // hoursToDate falls back to local midnight when the underlying angle is unreachable
-    expect(times.Fajr.getHours()).toBe(0);
-    expect(times.Fajr.getMinutes()).toBe(0);
+    // An unreachable prayer is an Invalid Date. It used to fall back to local midnight,
+    // which is itself a real time of day and read as "Fajr is at 12:00 AM" (PKG-01).
+    expect(Number.isNaN(times.Fajr.getTime())).toBe(true);
+    expect(isPrayerTimeValid(times.Fajr)).toBe(false);
   });
 
   it.each(['NightMiddle', 'OneSeventh', 'AngleBased'] as const)(

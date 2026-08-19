@@ -27,6 +27,27 @@ interface CalcOptions {
   madhab: Madhab;
 }
 
+/**
+ * Upper bound on any legitimate fractional-hour prayer time. The NREL SPA reports an
+ * unreachable rise/set event as the magic number -99999 rather than NaN.
+ */
+const MAX_PLAUSIBLE_HOURS = 1000;
+
+/**
+ * Normalize one raw engine value to NaN when it is not a usable time.
+ *
+ * WHY: -99999 is FINITE, so the `Number.isFinite` guard below accepted it and
+ * `((-99999 % 24) + 24) % 24 === 9` printed a confident "09:00" for both Sunrise and
+ * Maghrib during Longyearbyen's polar day (PKG-02). Every engine value passes through
+ * here before any formatting.
+ */
+function sanitizeHours(value: number | null | undefined): number {
+  if (value === null || value === undefined) return NaN;
+  if (!Number.isFinite(value)) return NaN;
+  if (Math.abs(value) >= MAX_PLAUSIBLE_HOURS) return NaN;
+  return value;
+}
+
 /** Fractional-hours (may be NaN / slightly out of [0,24)) → "HH:mm" local, or "--:--". */
 function hoursToHHMM(hours: number): string {
   if (!Number.isFinite(hours)) return '--:--';
@@ -49,15 +70,16 @@ export function calculatePrayerTimes(opts: CalcOptions): PrayerDay {
 
   const methodKey = PRAY_CALC_METHOD_ID[opts.methodId];
   const methodEntry = methodKey ? raw.Methods[methodKey] : undefined; // [Fajr, Isha] fractional hours
-  const fajr = methodEntry?.[0] ?? raw.Fajr; // DPC / unknown -> dynamic
-  const isha = methodEntry?.[1] ?? raw.Isha;
+  // Sanitize at the boundary — the `??` below must not treat a sentinel as a real value.
+  const fajr = sanitizeHours(methodEntry?.[0] ?? raw.Fajr); // DPC / unknown -> dynamic
+  const isha = sanitizeHours(methodEntry?.[1] ?? raw.Isha);
 
   return {
     fajr: hoursToHHMM(fajr),
-    sunrise: hoursToHHMM(raw.Sunrise),
-    dhuhr: hoursToHHMM(raw.Dhuhr),
-    asr: hoursToHHMM(raw.Asr),
-    maghrib: hoursToHHMM(raw.Maghrib),
+    sunrise: hoursToHHMM(sanitizeHours(raw.Sunrise)),
+    dhuhr: hoursToHHMM(sanitizeHours(raw.Dhuhr)),
+    asr: hoursToHHMM(sanitizeHours(raw.Asr)),
+    maghrib: hoursToHHMM(sanitizeHours(raw.Maghrib)),
     isha: hoursToHHMM(isha),
     date: opts.date.toISOString().split('T')[0] as string,
   };

@@ -23,9 +23,16 @@ const PRAYER_LABELS: Record<PrayerName, { en: string; ar: string }> = {
   isha: { en: 'Isha', ar: 'العشاء' },
 };
 
-/** Adds `minutes` to a "HH:MM" 24h time string, wrapping across midnight. */
+/**
+ * Adds `minutes` to a "HH:MM" 24h time string, wrapping across midnight.
+ *
+ * A prayer with no time on this date arrives as "--:--" (polar day/night). Parsing that
+ * yields NaN, and the arithmetic below would render the literal string "NaN:NaN" in the
+ * iqamah column (PKG-02) — there is no iqamah for a prayer that does not occur.
+ */
 function addMinutesToTime(hhmm: string, minutes: number): string {
   const [h, m] = hhmm.split(':').map(Number);
+  if (!Number.isFinite(h) || !Number.isFinite(m)) return hhmm;
   const total = (((h * 60 + m + minutes) % 1440) + 1440) % 1440;
   const hh = Math.floor(total / 60);
   const mm = total % 60;

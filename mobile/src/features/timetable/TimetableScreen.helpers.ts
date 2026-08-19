@@ -24,12 +24,12 @@ export function getMonthName(year: number, month0: number, locale: string): stri
   return new Date(year, month0, 1).toLocaleDateString(locale, { month: 'long' });
 }
 
-export function formatTime(date: Date, format: '12h' | '24h', locale: string): string {
-  if (format === '24h') {
-    return date.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit', hour12: false });
-  }
-  return date.toLocaleTimeString(locale, { hour: 'numeric', minute: '2-digit', hour12: true });
-}
+/**
+ * Re-exported from the canonical formatter rather than duplicated (MOB-6). The local copy
+ * that used to live here bypassed the shared Invalid-Date guard, so a month containing
+ * polar days rendered "Invalid Date" cells in the timetable grid (PKG-01).
+ */
+export { formatTime } from '../../lib/formatTime';
 
 export interface DayRow {
   day: number;

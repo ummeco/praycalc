@@ -12,7 +12,7 @@ import { useState, useEffect, useCallback } from 'react';
 import type { PrayerTimes, PrayerName, HighLatRule } from '../../../types/prayer';
 import type { CalcMethodKey } from '../../../constants/methods';
 import type { Madhab } from '../../../types/prayer';
-import { calculatePrayerTimes } from '../../../lib/prayer-calc';
+import { calculatePrayerTimes, isPrayerTimeValid } from '../../../lib/prayer-calc';
 
 export type PrayerTimesStatus =
   | 'loading'
@@ -67,7 +67,7 @@ export function usePrayerTimes({
   const [tick, setTick] = useState(0);
 
   const computeNextPrayer = useCallback(
-    (prayerTimes: PrayerTimes): { name: PrayerName; seconds: number } => {
+    (prayerTimes: PrayerTimes): { name: PrayerName | null; seconds: number } => {
       const now = new Date();
       const prayers: [PrayerName, Date][] = [
         ['Fajr', prayerTimes.Fajr],
@@ -79,13 +79,19 @@ export function usePrayerTimes({
       ];
 
       for (const [name, time] of prayers) {
+        // Above the Arctic Circle a prayer may have no time today (Invalid Date). Skipping
+        // it here is what keeps the countdown honest — NaN comparisons are always false, so
+        // an unguarded Invalid Date would silently fall through to the tomorrow branch and
+        // surface as a "NaN" countdown on screen (PKG-01).
+        if (!isPrayerTimeValid(time)) continue;
         const diff = (time.getTime() - now.getTime()) / 1000;
         if (diff > 0) {
           return { name, seconds: Math.floor(diff) };
         }
       }
 
-      // All prayers passed — next is Fajr tomorrow
+      // All of today's prayers have passed — next is Fajr tomorrow, if Fajr exists at all.
+      if (!isPrayerTimeValid(prayerTimes.Fajr)) return { name: null, seconds: 0 };
       const tomorrow = new Date(prayerTimes.Fajr);
       tomorrow.setDate(tomorrow.getDate() + 1);
       const diff = (tomorrow.getTime() - now.getTime()) / 1000;
