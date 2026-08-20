@@ -3,7 +3,7 @@
     "name": "PrayCalc",
     "slug": "praycalc",
     "owner": "ummeco",
-    "version": "2.2.3",
+    "version": "2.2.4",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "scheme": "praycalc",

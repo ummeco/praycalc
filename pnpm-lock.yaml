@@ -248,14 +248,14 @@ importers:
         specifier: ^4.0.3
         version: 4.0.3
       nrel-spa:
-        specifier: ^2.0.1
-        version: 2.0.1
+        specifier: ^2.1.0
+        version: 2.1.0
       nullthrows:
         specifier: ^1.1.1
         version: 1.1.1
       pray-calc:
-        specifier: ^2.1.2
-        version: 2.1.2
+        specifier: ^2.2.0
+        version: 2.2.0
       promise:
         specifier: ^8.3.0
         version: 8.3.0
@@ -511,8 +511,8 @@ importers:
         specifier: ^23.14.0
         version: 23.16.8
       pray-calc:
-        specifier: ^2.1.2
-        version: 2.1.2
+        specifier: ^2.2.0
+        version: 2.2.0
       react:
         specifier: 19.0.0
         version: 19.0.0
@@ -620,8 +620,8 @@ importers:
         specifier: ^2.0.0
         version: 2.0.0
       pray-calc:
-        specifier: ^2.1.2
-        version: 2.1.2
+        specifier: ^2.2.0
+        version: 2.2.0
       react:
         specifier: ^19.2.7
         version: 19.2.7
@@ -7853,8 +7853,8 @@ packages:
     resolution: {integrity: sha512-S48WzZW777zhNIrn7gxOlISNAqi9ZC/uQFnRdbeIHhZhCA6UqpkOT8T1G7BvfdgP4Er8gF4sUbaS0i7QvIfCWw==}
     engines: {node: '>=8'}
 
-  nrel-spa@2.0.1:
-    resolution: {integrity: sha512-KwsudVfAHMUwz9RwhriI7oNqFYz77+VGi2vUpJeR+xNx57MU28EYcdt1TQ1frEDbpBXkF4EJxM62Hi2iX6QNCA==}
+  nrel-spa@2.1.0:
+    resolution: {integrity: sha512-YM5Ry7HRg8PNrM6EymFmdYV8yQhs5NXd06GZzLwhYN9Ppd3CmtMGsvVMubM0bvTjJAAOt0JFzYRh3Cnh5NBOhg==}
     engines: {node: '>=20'}
 
   nth-check@2.1.1:
@@ -8158,8 +8158,8 @@ packages:
     resolution: {integrity: sha512-SoSL4+OSEtR99LHFZQiJLkT59C5B1amGO1NzTwj7TT1qCUgUO6hxOvzkOYxD+vMrXBM3XJIKzokoERdqQq/Zmg==}
     engines: {node: ^10 || ^12 || >=14}
 
-  pray-calc@2.1.2:
-    resolution: {integrity: sha512-fhtpubQpZp+7yMtKdtIWX1ZXb8MLrhOs+Xfm/OJ02dT8lJkmxlvUGQjh2wCMLPMa35s45kXc+krsrvnHnl9+Sg==}
+  pray-calc@2.2.0:
+    resolution: {integrity: sha512-vnTzZ9wpTrAn49d2G/14GaetMObBEfU/litMqKhSjbdgLPhDFpg7n5+9+44j/LG48jWuG2qy2x4SzZY+8+H0HQ==}
     engines: {node: '>=20'}
 
   prelude-ls@1.2.1:
@@ -19489,7 +19489,7 @@ snapshots:
     dependencies:
       path-key: 3.1.1
 
-  nrel-spa@2.0.1: {}
+  nrel-spa@2.1.0: {}
 
   nth-check@2.1.1:
     dependencies:
@@ -19816,9 +19816,9 @@ snapshots:
       picocolors: 1.1.1
       source-map-js: 1.2.1
 
-  pray-calc@2.1.2:
+  pray-calc@2.2.0:
     dependencies:
-      nrel-spa: 2.0.1
+      nrel-spa: 2.1.0
 
   prelude-ls@1.2.1: {}
 

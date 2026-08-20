@@ -34,7 +34,7 @@
     "clsx": "^2.1.1",
     "luxon": "^3.5.0",
     "moon-cycle": "^2.0.0",
-    "pray-calc": "^2.1.2",
+    "pray-calc": "^2.2.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "tailwindcss": "^4.3.2"

@@ -1,3 +1,16 @@
+## [mobile-v2.2.4, tv-v1.0.2] — 2026-08-19 — engines fixed at the source; Dhuhr and Asr restored inside the polar circles
+
+### Changed
+- Engines bumped to `pray-calc` 2.2.0 and `nrel-spa` 2.1.0, which fix the fabricated-times defect at its source rather than in the app. The app-side guards shipped in 2.2.3 stay in place as defense in depth, since both dependencies are pinned with caret ranges.
+- **Dhuhr and Asr now appear above the Arctic Circle.** The solar-position library had been discarding solar transit on days with no sunrise, even though the sun crosses the local meridian every day everywhere on Earth. At Longyearbyen on 2026-06-21 the app previously showed nothing at all; it now shows Dhuhr 12:01 and Asr 18:07, with Fajr, Sunrise, Maghrib and Isha correctly marked absent.
+- The engines gained opt-in high-latitude rules (`aqrabAlBilad`, `aqrabAlAyyam` and three night-proportion rules) plus a `provenance` field distinguishing a computed time from a substituted one. Not yet surfaced in the app UI.
+
+### Removed
+- Two duplicate copies of the prayer engine that nothing imported: an in-repo fork under `packages/` and a stale vendored copy under `smart/`.
+
+### Fixed
+- TV version had drifted across `package.json`, `app.json` and `build.gradle`, so every TV APK shipped mislabeled and could not upgrade a prior sideload. All three now move together.
+
 ## [mobile-v2.2.3, tv-v1.0.1] — 2026-08-19 — P0: no more fabricated prayer times above the Arctic Circle
 
 ### Fixed

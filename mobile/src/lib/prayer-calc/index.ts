@@ -45,7 +45,7 @@ const MAX_PLAUSIBLE_HOURS = 1000;
  * Longyearbyen in June (PKG-01). Every value coming out of pray-calc must pass through
  * here before any arithmetic or formatting touches it.
  */
-function sanitizeHours(value: number | null | undefined): number {
+export function sanitizeHours(value: number | null | undefined): number {
   if (value === null || value === undefined) return NaN;
   if (!Number.isFinite(value)) return NaN;
   if (Math.abs(value) >= MAX_PLAUSIBLE_HOURS) return NaN;
@@ -160,6 +160,14 @@ function hoursToDate(base: Date, hours: number): Date {
   d.setHours(h, m, s, 0);
   return d;
 }
+
+/**
+ * Test-only alias for the boundary sanitizer, so a regression test can inject a sentinel
+ * directly. The engines no longer emit one (nrel-spa >= 2.1.0), but the app pins its
+ * engine with a caret range, so this guard stays as defense in depth against an older
+ * resolution.
+ */
+export const sanitizeForTest = sanitizeHours;
 
 /**
  * True when a prayer time is a real instant that may be displayed, scheduled or compared.

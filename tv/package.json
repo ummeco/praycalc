@@ -1,6 +1,6 @@
 {
   "name": "praycalc-tv",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "private": true,
   "scripts": {
     "start": "react-native start",
@@ -21,7 +21,7 @@
     "@urql/core": "^5.0.6",
     "graphql": "^16.9.0",
     "i18next": "^23.14.0",
-    "pray-calc": "^2.1.2",
+    "pray-calc": "^2.2.0",
     "react": "19.0.0",
     "react-i18next": "^15.0.0",
     "react-native": "npm:react-native-tvos@0.74.5-0",
