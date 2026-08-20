@@ -54,6 +54,10 @@ jobs:
         with:
           python-version: '3.12'
       - name: Install ruff
-        run: pip install ruff
+        # Pinned deliberately. Unpinned, every new ruff release can enable rules that turn
+        # a previously-green main red with no code change — which is exactly what happened
+        # when I001 (import sorting) started firing here. Bump this on purpose, not by
+        # surprise.
+        run: pip install 'ruff==0.15.20'
       - name: Lint HA component
         run: ruff check smart/homeassistant/custom_components/praycalc/

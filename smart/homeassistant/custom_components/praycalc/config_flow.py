@@ -6,21 +6,20 @@ import logging
 from typing import Any
 
 import voluptuous as vol
-
 from homeassistant.config_entries import ConfigFlow, ConfigFlowResult
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from .const import (
-    DOMAIN,
-    DEFAULT_NAME,
+    CALC_METHODS,
+    CONF_API_URL,
+    CONF_CALC_METHOD,
+    CONF_CITY,
     CONF_LATITUDE,
     CONF_LONGITUDE,
-    CONF_CITY,
-    CONF_CALC_METHOD,
     CONF_MADHAB,
-    CONF_API_URL,
     DEFAULT_API_URL,
-    CALC_METHODS,
+    DEFAULT_NAME,
+    DOMAIN,
     MADHABS,
 )
 

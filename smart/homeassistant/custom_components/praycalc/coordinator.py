@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import logging
-from datetime import timedelta, datetime
+from datetime import datetime, timedelta
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
@@ -14,13 +14,13 @@ from homeassistant.helpers.update_coordinator import (
 )
 
 from .const import (
-    DOMAIN,
+    CONF_API_URL,
+    CONF_CALC_METHOD,
     CONF_LATITUDE,
     CONF_LONGITUDE,
-    CONF_CALC_METHOD,
     CONF_MADHAB,
-    CONF_API_URL,
     DEFAULT_API_URL,
+    DOMAIN,
     UPDATE_INTERVAL_SECONDS,
 )
 
