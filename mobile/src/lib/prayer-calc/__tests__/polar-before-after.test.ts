@@ -10,7 +10,7 @@
  * older engine through a caret range.
  */
 import { getTimesAll } from 'pray-calc';
-import { calculatePrayerTimes, sanitizeForTest } from '../index';
+import { calculatePrayerTimes, sanitizeHours } from '../index';
 
 /** Verbatim copy of the pre-fix shipped logic, kept only to prove the delta. */
 function oldLogic(date: Date, lat: number, lng: number, tz: number) {
@@ -53,9 +53,9 @@ describe('Verification 2 — the reported Longyearbyen case', () => {
     expect(fabricated.getHours()).toBe(9);
 
     // What the current sanitizer does with the same value.
-    expect(sanitizeForTest(SENTINEL)).toBeNaN();
-    expect(sanitizeForTest(-100001.38)).toBeNaN();
-    expect(sanitizeForTest(12.5)).toBe(12.5);
+    expect(sanitizeHours(SENTINEL)).toBeNaN();
+    expect(sanitizeHours(-100001.38)).toBeNaN();
+    expect(sanitizeHours(12.5)).toBe(12.5);
   });
 
   it('the sun-dependent prayers have no time, while Dhuhr survives', () => {

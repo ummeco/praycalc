@@ -2,14 +2,17 @@
  * Purpose: Prayer-time + qibla wrapper for RN consumption.
  *   Prayer times use the validated `pray-calc` package (v2, the same engine the
  *   web app uses) via getTimesAll — NREL SPA solar position + the Dynamic Method,
- *   with fixed-angle method presets and Hanafi/Shafi Asr. Adds two layers pray-calc
- *   itself does not provide: (1) user-supplied custom Fajr/Isha depression angles,
- *   solved via the standard solar hour-angle equation against pray-calc's own solar
- *   ephemeris/noon outputs; (2) high-latitude fallback (Angle-Based / Middle-of-the-
- *   Night / One-Seventh) applied whenever a depression angle is geometrically
- *   unreachable (polar summer), using the classical night-length approximation from
- *   the praytimes.org reference algorithm that the whole industry's high-lat rules
- *   are built on.
+ *   with fixed-angle method presets and Hanafi/Shafi Asr. Adds two layers on top:
+ *   (1) user-supplied custom Fajr/Isha depression angles, solved via the standard solar
+ *   hour-angle equation against pray-calc's own solar ephemeris/noon outputs;
+ *   (2) the app's own high-latitude fallback (Angle-Based / Middle-of-the-Night /
+ *   One-Seventh) applied whenever a depression angle is geometrically unreachable,
+ *   using the classical night-length approximation from the praytimes.org reference
+ *   algorithm. NOTE: pray-calc 2.2.0 added its own `highLatitudeRule` option covering
+ *   these three plus Aqrab al-Bilad and Aqrab al-Ayyam, which are the only rules that
+ *   reach inside the polar circles. The app layer has not been migrated onto it yet —
+ *   doing so would also surface `provenance`, letting the UI distinguish a computed
+ *   time from a juristic substitution.
  * Inputs: latitude, longitude, date, method key, madhab, tz offset (hours),
  *   optional highLatRule + custom angles + per-prayer manual minute adjustments
  *   (±30, matching a local mosque timetable — applied AFTER high-lat fallback so
@@ -44,6 +47,10 @@ const MAX_PLAUSIBLE_HOURS = 1000;
  * rendered as a confident, entirely fabricated "09:00" for Sunrise AND Maghrib at
  * Longyearbyen in June (PKG-01). Every value coming out of pray-calc must pass through
  * here before any arithmetic or formatting touches it.
+ *
+ * Exported so a regression test can inject a sentinel directly. The engines stopped
+ * emitting one in nrel-spa 2.1.0, but the app pins its engine with a caret range, so this
+ * stays as defense in depth against an older resolution.
  */
 export function sanitizeHours(value: number | null | undefined): number {
   if (value === null || value === undefined) return NaN;
@@ -160,14 +167,6 @@ function hoursToDate(base: Date, hours: number): Date {
   d.setHours(h, m, s, 0);
   return d;
 }
-
-/**
- * Test-only alias for the boundary sanitizer, so a regression test can inject a sentinel
- * directly. The engines no longer emit one (nrel-spa >= 2.1.0), but the app pins its
- * engine with a caret range, so this guard stays as defense in depth against an older
- * resolution.
- */
-export const sanitizeForTest = sanitizeHours;
 
 /**
  * True when a prayer time is a real instant that may be displayed, scheduled or compared.
