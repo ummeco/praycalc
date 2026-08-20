@@ -4,31 +4,31 @@
     "expires": "2026-12-31"
   },
   "1117930": {
-    "reason": "Next.js 16.1.7 DoS (Server Components). Affects org/ only. org/ pinned at 16.1.7 due to webpack/MDX regression in 16.2.x — cannot upgrade. No upstream patch path.",
+    "reason": "Next.js 16.1.7 DoS (Server Components). Affects org/ only. org/ pinned at 16.1.7 due to webpack/MDX regression in 16.2.x \u2014 cannot upgrade. No upstream patch path.",
     "expires": "2026-12-31"
   },
   "1118938": {
-    "reason": "Next.js 16.1.7 Middleware/Proxy bypass (App Router). Affects org/ only. org/ pinned at 16.1.7 due to webpack/MDX regression in 16.2.x — cannot upgrade.",
+    "reason": "Next.js 16.1.7 Middleware/Proxy bypass (App Router). Affects org/ only. org/ pinned at 16.1.7 due to webpack/MDX regression in 16.2.x \u2014 cannot upgrade.",
     "expires": "2026-12-31"
   },
   "1118949": {
-    "reason": "Next.js 16.1.7 DoS via connection. Affects org/ only. org/ pinned at 16.1.7 due to webpack/MDX regression in 16.2.x — cannot upgrade.",
+    "reason": "Next.js 16.1.7 DoS via connection. Affects org/ only. org/ pinned at 16.1.7 due to webpack/MDX regression in 16.2.x \u2014 cannot upgrade.",
     "expires": "2026-12-31"
   },
   "1118953": {
-    "reason": "Next.js 16.1.7 SSRF. Affects org/ only. org/ pinned at 16.1.7 due to webpack/MDX regression in 16.2.x — cannot upgrade.",
+    "reason": "Next.js 16.1.7 SSRF. Affects org/ only. org/ pinned at 16.1.7 due to webpack/MDX regression in 16.2.x \u2014 cannot upgrade.",
     "expires": "2026-12-31"
   },
   "1118955": {
-    "reason": "Next.js 16.1.7 Middleware/Proxy bypass. Affects org/ only. org/ pinned at 16.1.7 due to webpack/MDX regression in 16.2.x — cannot upgrade.",
+    "reason": "Next.js 16.1.7 Middleware/Proxy bypass. Affects org/ only. org/ pinned at 16.1.7 due to webpack/MDX regression in 16.2.x \u2014 cannot upgrade.",
     "expires": "2026-12-31"
   },
   "1118959": {
-    "reason": "Next.js 16.1.7 Middleware/Proxy bypass (App Router). Affects org/ only. org/ pinned at 16.1.7 due to webpack/MDX regression in 16.2.x — cannot upgrade.",
+    "reason": "Next.js 16.1.7 Middleware/Proxy bypass (App Router). Affects org/ only. org/ pinned at 16.1.7 due to webpack/MDX regression in 16.2.x \u2014 cannot upgrade.",
     "expires": "2026-12-31"
   },
   "1118961": {
-    "reason": "Next.js 16.1.7 Middleware/Proxy bypass (Pages Router i18n). Affects org/ only. org/ pinned at 16.1.7 due to webpack/MDX regression in 16.2.x — cannot upgrade.",
+    "reason": "Next.js 16.1.7 Middleware/Proxy bypass (Pages Router i18n). Affects org/ only. org/ pinned at 16.1.7 due to webpack/MDX regression in 16.2.x \u2014 cannot upgrade.",
     "expires": "2026-12-31"
   },
   "1120912": {
@@ -38,5 +38,21 @@
   "1120917": {
     "reason": "Astro <6.4.6 host-header SSRF in prerendered error page. web/ is on Astro 5.18.2; patch requires Astro 6.x (major version, breaking). Accepted-risk pending tracked Astro 6 migration; error pages prerendered on Vercel with fixed host.",
     "expires": "2026-09-30"
+  },
+  "1138808": {
+    "reason": "image-size ICNS parser DoS. Dev-only, transitive via mobile>expo>@expo/metro-config>metro. No patched version exists upstream (advisory reports patched=<0.0.0). Reached only by the Metro bundler parsing local project assets at build time, never by user-supplied input at runtime. Re-check when Expo bumps metro.",
+    "expires": "2026-12-31"
+  },
+  "1138809": {
+    "reason": "image-size JXL/HEIF parser DoS. Same dev-only Metro bundler path as 1138808, same absent upstream patch.",
+    "expires": "2026-12-31"
+  },
+  "1139377": {
+    "reason": "Astro Host-header SSRF in the prerendered error page fetch. org/ and web/ are on Astro 5.18.2; the fix lands in 6.4.6, a major upgrade that is its own migration task and out of scope for a patch release. Both sites are static output (output:'static') deployed to Vercel's CDN, so there is no origin server performing the vulnerable fetch. Tracked for the Astro 6 migration.",
+    "expires": "2026-11-30"
+  },
+  "1139378": {
+    "reason": "Astro reflected XSS via unescaped slot name. Fix is in 6.x (major upgrade, own task). Exploitation requires an attacker-controlled slot name; every slot in web/ and org/ is a compile-time literal, none derived from request input. Tracked for the Astro 6 migration.",
+    "expires": "2026-11-30"
   }
 }
