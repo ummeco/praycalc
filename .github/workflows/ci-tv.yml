@@ -33,9 +33,6 @@ jobs:
         working-directory: tv
         run: pnpm install --frozen-lockfile
 
-      - name: Build workspace deps (pray-calc)
-        working-directory: tv
-        run: pnpm --filter @acamarata/pray-calc build
 
       - name: Typecheck
         working-directory: tv

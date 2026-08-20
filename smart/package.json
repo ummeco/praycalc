@@ -20,7 +20,6 @@
     "jsonwebtoken": "^9.0.2",
     "node-cache": "^5.1.2",
     "node-cron": "^4.5.0",
-    "pray-calc": "file:./vendor/pray-calc",
     "stripe": "^22.3.0"
   },
   "devDependencies": {

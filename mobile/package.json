@@ -18,7 +18,6 @@
     "test:watch": "jest --watchAll"
   },
   "dependencies": {
-    "@acamarata/pray-calc": "workspace:*",
     "@praycalc/bridge-types": "workspace:*",
     "@babel/runtime": "^7.29.2",
     "@bacons/apple-targets": "^4.0.7",
