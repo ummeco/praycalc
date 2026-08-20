@@ -12,15 +12,15 @@
     "lint": "eslint src/ --ext .ts"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.1078.0",
-    "@aws-sdk/s3-request-presigner": "^3.1078.0",
+    "@aws-sdk/client-s3": "^3.1111.0",
+    "@aws-sdk/s3-request-presigner": "^3.1111.0",
     "cors": "^2.8.5",
     "express": "^5.2.1",
-    "helmet": "^8.2.0",
+    "helmet": "^8.3.0",
     "jsonwebtoken": "^9.0.2",
     "node-cache": "^5.1.2",
-    "node-cron": "^4.5.0",
-    "stripe": "^22.3.0"
+    "node-cron": "^4.6.0",
+    "stripe": "^22.5.0"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
@@ -29,14 +29,14 @@
     "@types/jsonwebtoken": "^9.0.7",
     "@types/node": "^22.0.0",
     "@types/node-cron": "^3.0.11",
-    "@types/supertest": "^7.2.0",
-    "@typescript-eslint/eslint-plugin": "^8.62.1",
-    "@typescript-eslint/parser": "^8.62.1",
-    "eslint": "^10.4.0",
+    "@types/supertest": "^7.2.1",
+    "@typescript-eslint/eslint-plugin": "^8.67.0",
+    "@typescript-eslint/parser": "^8.67.0",
+    "eslint": "^10.8.1",
     "supertest": "^7.0.0",
-    "tsx": "^4.22.4",
+    "tsx": "^4.23.12",
     "typescript": "^5.6.0",
-    "typescript-eslint": "^8.62.1",
+    "typescript-eslint": "^8.67.0",
     "vitest": "^3.2.6"
   },
   "packageManager": "pnpm@10.30.1",
