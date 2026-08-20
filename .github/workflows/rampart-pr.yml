@@ -46,7 +46,7 @@ jobs:
         working-directory: web/
     steps:
       - uses: actions/checkout@v7
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
       - uses: actions/setup-node@v6
         with: { node-version: 22 }
       - run: pnpm audit --prod --json > pnpm-audit.json || true

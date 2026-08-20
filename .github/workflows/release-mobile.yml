@@ -61,7 +61,7 @@ jobs:
           echo "Version check passed: tag=$TAG_VERSION app.json=$APP_VERSION"
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v6
 
       - name: Setup Node
         uses: actions/setup-node@v6
