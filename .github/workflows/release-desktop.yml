@@ -180,10 +180,15 @@ jobs:
       - name: Download latest.json from the versioned release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Passed through the environment rather than interpolated into the script.
+          # `${{ }}` expansion happens before the shell runs, so a crafted ref name would
+          # be substituted as literal script text (semgrep run-shell-injection).
+          REF_NAME: ${{ github.ref_name }}
+          REPO: ${{ github.repository }}
         run: |
           mkdir -p /tmp/desktop-latest
-          gh release download "${{ github.ref_name }}" \
-            --repo "${{ github.repository }}" \
+          gh release download "$REF_NAME" \
+            --repo "$REPO" \
             --pattern latest.json \
             --dir /tmp/desktop-latest \
             --clobber
@@ -191,10 +196,11 @@ jobs:
       - name: Ensure the rolling desktop-latest release exists
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
         run: |
-          if ! gh release view desktop-latest --repo "${{ github.repository }}" >/dev/null 2>&1; then
+          if ! gh release view desktop-latest --repo "$REPO" >/dev/null 2>&1; then
             gh release create desktop-latest \
-              --repo "${{ github.repository }}" \
+              --repo "$REPO" \
               --title 'Desktop auto-update manifest (rolling)' \
               --notes 'Rolling alias, not a downloadable release. Hosts only the stable
           latest.json the in-app updater polls at
@@ -207,7 +213,8 @@ jobs:
       - name: Publish latest.json to the desktop-latest rolling release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
         run: |
           gh release upload desktop-latest /tmp/desktop-latest/latest.json \
-            --repo "${{ github.repository }}" \
+            --repo "$REPO" \
             --clobber
