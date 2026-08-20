@@ -1,6 +1,6 @@
 {
   "name": "@ummat/praycalc-mobile",
-  "version": "2.2.4",
+  "version": "2.3.0",
   "private": true,
   "description": "PrayCalc \u2014 React Native + Expo SDK 53 prayer times app",
   "main": "index.js",
@@ -63,7 +63,7 @@
     "memoize-one": "^4.0.3",
     "nrel-spa": "^2.1.0",
     "nullthrows": "^1.1.1",
-    "pray-calc": "^2.2.0",
+    "pray-calc": "^2.3.0",
     "promise": "^8.3.0",
     "react": "19.0.0",
     "react-i18next": "^15.1.2",

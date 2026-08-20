@@ -231,6 +231,10 @@
       "nightMiddle": "Midden van de nacht",
       "angleBased": "Op basis van hoek",
       "oneSeventh": "Een zevende van de nacht",
+      "aqrabAlBilad": "Aqrab al-Bilad (dichtstbijzijnde plaats)",
+      "aqrabAlBiladHint": "Gebruikt de 45e breedtegraad. Werkt ook binnen de poolcirkels.",
+      "aqrabAlAyyam": "Aqrab al-Ayyam (dichtstbijzijnde dag)",
+      "aqrabAlAyyamHint": "Neemt de dichtstbijzijnde dag met zichtbare dageraad. Werkt ook binnen de poolcirkels.",
       "none": "Geen (kan 'niet beschikbaar' tonen)"
     },
     "madhab": {
@@ -558,7 +562,8 @@
       "notMarkedPrayed": "niet gemarkeerd als gebeden",
       "doubleTapToggle": "Dubbeltik om te wisselen.",
       "shareTimes": "Deel de tijden van vandaag",
-      "shareAccessibilityLabel": "Deel de gebedstijden van vandaag"
+      "shareAccessibilityLabel": "Deel de gebedstijden van vandaag",
+      "substituted": "geschat"
     },
     "quran": {
       "loading": "Korangegevens laden...",

@@ -231,6 +231,10 @@
       "nightMiddle": "Pertengahan Malam",
       "angleBased": "Berdasarkan Sudut",
       "oneSeventh": "Satu Pertujuh Malam",
+      "aqrabAlBilad": "Aqrab al-Bilad (Lokasi Terdekat)",
+      "aqrabAlBiladHint": "Menggunakan garis lintang 45. Berfungsi di dalam bulatan kutub.",
+      "aqrabAlAyyam": "Aqrab al-Ayyam (Hari Terdekat)",
+      "aqrabAlAyyamHint": "Mengambil hari terdekat apabila fajar kelihatan. Berfungsi di dalam bulatan kutub.",
       "none": "Tiada (mungkin dipaparkan tidak tersedia)"
     },
     "madhab": {
@@ -558,7 +562,8 @@
       "notMarkedPrayed": "belum ditanda solat",
       "doubleTapToggle": "Ketik dua kali untuk menukar.",
       "shareTimes": "Kongsi waktu hari ini",
-      "shareAccessibilityLabel": "Kongsi waktu solat hari ini"
+      "shareAccessibilityLabel": "Kongsi waktu solat hari ini",
+      "substituted": "anggaran"
     },
     "quran": {
       "loading": "Memuatkan data Al-Quran...",

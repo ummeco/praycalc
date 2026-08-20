@@ -1,3 +1,14 @@
+## [mobile-v2.3.0, tv-v1.1.0] — 2026-08-20 — prayer times inside the polar circles, and honest labelling of substituted ones
+
+### Added
+- **Two high-latitude rules that actually work above the Arctic Circle.** Aqrab al-Bilad (nearest location, the 45th parallel) and Aqrab al-Ayyam (nearest date with a visible dawn) join the three existing rules in Settings. The existing rules all divide the night between sunset and sunrise, so inside the polar circles there is no night to divide and they produce nothing — a user in Longyearbyen or Tromsø previously had no working option for Fajr and Isha at all. Available in all 21 languages, with a one-line hint marking which rules reach those latitudes.
+- **Substituted times are now labelled.** Past the geometric limit there is no observable dawn or nightfall, so any Fajr or Isha is a juristic position rather than a calculation. The prayer list marks such a time as estimated rather than presenting it as computed, and the app still reports a prayer as absent when no rule can supply one.
+- TV gained a high-latitude setting for the first time; it previously had none and always showed "--:--" for Fajr and Isha at those latitudes. Default is to substitute nothing.
+
+### Changed
+- Both apps now use the engine's rule implementation (`pray-calc` 2.3.0) instead of their own copies, so app and engine can no longer drift. The rules are applied to the app's own Fajr/Isha values, which matters because a fixed-method preset or a user's custom depression angles are computed by the app and never seen by the engine.
+- Web, org: Astro 5 → 7, clearing two HIGH advisories that were previously allowlisted. The Lighthouse preview harness gained a bridge for the Vercel adapter's new Web-standard `fetch` entry, which otherwise fails only once a request arrives — the server still binds its port, so a port-only health check would call it healthy.
+
 ## [mobile-v2.2.4, tv-v1.0.2] — 2026-08-19 — engines fixed at the source; Dhuhr and Asr restored inside the polar circles
 
 ### Changed

@@ -9,10 +9,10 @@
  */
 
 import { useState, useEffect, useCallback } from 'react';
-import type { PrayerTimes, PrayerName, HighLatRule } from '../../../types/prayer';
+import type { PrayerTimes, PrayerName, HighLatRule, PrayerProvenance } from '../../../types/prayer';
 import type { CalcMethodKey } from '../../../constants/methods';
 import type { Madhab } from '../../../types/prayer';
-import { calculatePrayerTimes, isPrayerTimeValid } from '../../../lib/prayer-calc';
+import { calculatePrayerTimesDetailed, isPrayerTimeValid } from '../../../lib/prayer-calc';
 
 export type PrayerTimesStatus =
   | 'loading'
@@ -25,6 +25,11 @@ export type PrayerTimesStatus =
 
 interface UsePrayerTimesResult {
   times: PrayerTimes | null;
+  /**
+   * Origin of Fajr and Isha. Anything other than `observed` means the time was supplied by
+   * a high-latitude rule rather than solved from the sun, and the UI marks it as such.
+   */
+  provenance: PrayerProvenance | null;
   nextPrayer: PrayerName | null;
   secondsToNextPrayer: number;
   status: PrayerTimesStatus;
@@ -60,6 +65,7 @@ export function usePrayerTimes({
   isPermissionDenied = false,
 }: UsePrayerTimesOptions): UsePrayerTimesResult {
   const [times, setTimes] = useState<PrayerTimes | null>(null);
+  const [provenance, setProvenance] = useState<PrayerProvenance | null>(null);
   const [status, setStatus] = useState<PrayerTimesStatus>('skeleton');
   const [error, setError] = useState<string | null>(null);
   const [secondsToNextPrayer, setSecondsToNextPrayer] = useState(0);
@@ -117,7 +123,7 @@ export function usePrayerTimes({
 
     setStatus('loading');
     try {
-      const calculated = calculatePrayerTimes(
+      const { times: calculated, provenance: calcProvenance } = calculatePrayerTimesDetailed(
         date,
         latitude,
         longitude,
@@ -129,6 +135,7 @@ export function usePrayerTimes({
         minuteAdjustments,
       );
       setTimes(calculated);
+      setProvenance(calcProvenance);
       setError(null);
       const { name, seconds } = computeNextPrayer(calculated);
       setNextPrayer(name);
@@ -166,5 +173,5 @@ export function usePrayerTimes({
     }
   }, [tick, times, computeNextPrayer]);
 
-  return { times, nextPrayer, secondsToNextPrayer, status, error, refresh: calculate };
+  return { times, provenance, nextPrayer, secondsToNextPrayer, status, error, refresh: calculate };
 }

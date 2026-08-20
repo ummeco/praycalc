@@ -231,6 +231,10 @@
       "nightMiddle": "Milieu de la nuit",
       "angleBased": "Basé sur l'angle",
       "oneSeventh": "Un septième de la nuit",
+      "aqrabAlBilad": "Aqrab al-Bilad (lieu le plus proche)",
+      "aqrabAlBiladHint": "Utilise le 45e parallèle. Fonctionne à l'intérieur des cercles polaires.",
+      "aqrabAlAyyam": "Aqrab al-Ayyam (jour le plus proche)",
+      "aqrabAlAyyamHint": "Reprend le jour le plus proche où l'aube est visible. Fonctionne à l'intérieur des cercles polaires.",
       "none": "Aucun (peut afficher indisponible)"
     },
     "madhab": {
@@ -558,7 +562,8 @@
       "notMarkedPrayed": "non marqué comme priée",
       "doubleTapToggle": "Appuyez deux fois pour basculer.",
       "shareTimes": "Partager les horaires d'aujourd'hui",
-      "shareAccessibilityLabel": "Partager les horaires de prière d'aujourd'hui"
+      "shareAccessibilityLabel": "Partager les horaires de prière d'aujourd'hui",
+      "substituted": "estimé"
     },
     "quran": {
       "loading": "Chargement des données du Coran...",

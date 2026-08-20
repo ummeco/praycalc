@@ -231,6 +231,10 @@
       "nightMiddle": "Mitte der Nacht",
       "angleBased": "Winkelbasiert",
       "oneSeventh": "Ein Siebtel der Nacht",
+      "aqrabAlBilad": "Aqrab al-Bilad (nächstgelegener Ort)",
+      "aqrabAlBiladHint": "Nutzt den 45. Breitengrad. Funktioniert auch innerhalb der Polarkreise.",
+      "aqrabAlAyyam": "Aqrab al-Ayyam (nächstgelegener Tag)",
+      "aqrabAlAyyamHint": "Übernimmt den nächsten Tag mit sichtbarer Morgendämmerung. Funktioniert auch innerhalb der Polarkreise.",
       "none": "Keine (kann als nicht verfügbar angezeigt werden)"
     },
     "madhab": {
@@ -558,7 +562,8 @@
       "notMarkedPrayed": "nicht als gebetet markiert",
       "doubleTapToggle": "Doppeltippen zum Umschalten.",
       "shareTimes": "Heutige Zeiten teilen",
-      "shareAccessibilityLabel": "Heutige Gebetszeiten teilen"
+      "shareAccessibilityLabel": "Heutige Gebetszeiten teilen",
+      "substituted": "geschätzt"
     },
     "quran": {
       "loading": "Koran-Daten werden geladen...",

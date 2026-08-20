@@ -9,7 +9,7 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { TvSettings, Madhab } from '../types';
+import { TvSettings, Madhab, HighLatRule } from '../types';
 import { DEFAULT_IQAMA_OFFSETS } from '../lib/settings/tvSettingsSync';
 
 interface SettingsStore {
@@ -26,6 +26,9 @@ const DEFAULT_SETTINGS: TvSettings = {
   timezone: 'Asia/Riyadh',
   calculationMethodId: 'dpc',
   madhab: 'shafi' as Madhab,
+  // Substitute nothing by default: past the geometric limit the choice is juristic, and
+  // only aqrabAlBilad/aqrabAlAyyam produce a time inside the polar circles.
+  highLatitudeRule: 'none' as HighLatRule,
   language: 'en',
   autoAdvanceScreens: false,
   screensaverTimeoutMinutes: 5,

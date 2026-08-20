@@ -57,6 +57,7 @@ export default function HomeScreen(): React.JSX.Element {
       timezone: settings.timezone,
       methodId: settings.calculationMethodId,
       madhab: settings.madhab,
+      highLatitudeRule: settings.highLatitudeRule,
     });
     setPrayerDay(day);
     // Determine next prayer

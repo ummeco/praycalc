@@ -105,7 +105,7 @@ export default function PrayerTimesScreen() {
     : resolveTimezoneOffset(activeLocation?.timezone, today);
   const hijriDate = gregorianToHijri(today, settings.hijriDayAdjustment);
 
-  const { times, nextPrayer, secondsToNextPrayer, status, error, refresh } = usePrayerTimes({
+  const { times, provenance, nextPrayer, secondsToNextPrayer, status, error, refresh } = usePrayerTimes({
     date: today,
     latitude: currentCoords?.lat ?? null,
     longitude: currentCoords?.lng ?? null,
@@ -160,7 +160,7 @@ export default function PrayerTimesScreen() {
   if (status === 'offline' || isOffline) {
     return (
       <OfflineState message={t('screens.prayerTimes.offlineMessage')}>
-        {times ? <PrayerList times={times} nextPrayer={nextPrayer} secondsToNextPrayer={secondsToNextPrayer} settings={settings} colors={colors} styles={styles} t={t} /> : null}
+        {times ? <PrayerList times={times} provenance={provenance} nextPrayer={nextPrayer} secondsToNextPrayer={secondsToNextPrayer} settings={settings} colors={colors} styles={styles} t={t} /> : null}
       </OfflineState>
     );
   }
@@ -227,6 +227,7 @@ export default function PrayerTimesScreen() {
       {times && (
         <PrayerList
           times={times}
+          provenance={provenance}
           nextPrayer={nextPrayer}
           secondsToNextPrayer={secondsToNextPrayer}
           settings={settings}

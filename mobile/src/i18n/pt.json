@@ -231,6 +231,10 @@
       "nightMiddle": "Meio da Noite",
       "angleBased": "Baseado em Ângulo",
       "oneSeventh": "Um Sétimo da Noite",
+      "aqrabAlBilad": "Aqrab al-Bilad (local mais próximo)",
+      "aqrabAlBiladHint": "Usa o paralelo 45. Funciona dentro dos círculos polares.",
+      "aqrabAlAyyam": "Aqrab al-Ayyam (dia mais próximo)",
+      "aqrabAlAyyamHint": "Usa o dia mais próximo com aurora visível. Funciona dentro dos círculos polares.",
       "none": "Nenhum (pode aparecer como indisponível)"
     },
     "madhab": {
@@ -558,7 +562,8 @@
       "notMarkedPrayed": "não marcada como orada",
       "doubleTapToggle": "Toque duas vezes para alternar.",
       "shareTimes": "Compartilhar os horários de hoje",
-      "shareAccessibilityLabel": "Compartilhar os horários de oração de hoje"
+      "shareAccessibilityLabel": "Compartilhar os horários de oração de hoje",
+      "substituted": "estimado"
     },
     "quran": {
       "loading": "Carregando dados do Alcorão...",

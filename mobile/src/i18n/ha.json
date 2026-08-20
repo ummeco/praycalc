@@ -231,6 +231,10 @@
       "nightMiddle": "Tsakiyar Dare",
       "angleBased": "Bisa Kusurwa",
       "oneSeventh": "Kashi Bakwai na Dare",
+      "aqrabAlBilad": "Aqrab al-Bilad (Wuri Mafi Kusa)",
+      "aqrabAlBiladHint": "Yana amfani da layin latitude 45. Yana aiki cikin da'irorin pole.",
+      "aqrabAlAyyam": "Aqrab al-Ayyam (Rana Mafi Kusa)",
+      "aqrabAlAyyamHint": "Yana ɗaukar ranar da ta fi kusa da ake ganin alfijir. Yana aiki cikin da'irorin pole.",
       "none": "Babu (na iya nuna 'babu')"
     },
     "madhab": {
@@ -558,7 +562,8 @@
       "notMarkedPrayed": "ba a yiwa alama a matsayin an yi sallah ba",
       "doubleTapToggle": "Danna sau biyu don canzawa.",
       "shareTimes": "Raba lokutan yau",
-      "shareAccessibilityLabel": "Raba lokutan sallah na yau"
+      "shareAccessibilityLabel": "Raba lokutan sallah na yau",
+      "substituted": "kiyasi"
     },
     "quran": {
       "loading": "Ana lodin bayanan Alkur'ani...",

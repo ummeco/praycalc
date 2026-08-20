@@ -59,6 +59,7 @@ export default function DashboardScreen(): React.JSX.Element {
       timezone: settings.timezone,
       methodId: settings.calculationMethodId,
       madhab: settings.madhab,
+      highLatitudeRule: settings.highLatitudeRule,
     });
     setPrayerDay(day);
     const nowMs =

@@ -231,6 +231,10 @@
       "nightMiddle": "منتصف الليل",
       "angleBased": "على أساس الزاوية",
       "oneSeventh": "سُبع الليل",
+      "aqrabAlBilad": "أقرب البلاد",
+      "aqrabAlBiladHint": "يستخدم دائرة العرض 45. يعمل داخل الدائرتين القطبيتين.",
+      "aqrabAlAyyam": "أقرب الأيام",
+      "aqrabAlAyyamHint": "يأخذ بأقرب يوم يظهر فيه الفجر. يعمل داخل الدائرتين القطبيتين.",
       "none": "بدون (قد يظهر غير متاح)"
     },
     "madhab": {
@@ -558,7 +562,8 @@
       "notMarkedPrayed": "غير مُعلَّمة كمُصلَّاة",
       "doubleTapToggle": "اضغط مرتين للتبديل.",
       "shareTimes": "مشاركة أوقات اليوم",
-      "shareAccessibilityLabel": "مشاركة أوقات صلاة اليوم"
+      "shareAccessibilityLabel": "مشاركة أوقات صلاة اليوم",
+      "substituted": "تقديري"
     },
     "quran": {
       "loading": "جارٍ تحميل بيانات القرآن...",

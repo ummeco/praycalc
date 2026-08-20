@@ -44,6 +44,13 @@ export const createStyles = (colors: ThemeColors) => StyleSheet.create({
   prayerName: { flex: 1, fontSize: 16, color: colors.text.primary, fontWeight: '500' },
   prayerNameNext: { color: colors.brand.light },
   prayerTime: { fontSize: 16, color: colors.text.secondary, fontWeight: '600' },
+  prayerTimeGroup: { alignItems: 'flex-end' },
+  prayerTimeSubstituted: {
+    fontSize: 10,
+    color: colors.text.muted,
+    marginTop: 1,
+    fontStyle: 'italic',
+  },
   prayerTimeNext: { color: colors.brand.light },
   section: { gap: 8 },
   sectionTitle: { fontSize: 13, color: colors.text.muted, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 0.5 },

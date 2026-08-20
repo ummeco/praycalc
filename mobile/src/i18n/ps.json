@@ -231,6 +231,10 @@
       "nightMiddle": "د شپې مینځ",
       "angleBased": "د زاویې پر بنسټ",
       "oneSeventh": "د شپې اوومه برخه",
+      "aqrabAlBilad": "اقرب البلاد",
+      "aqrabAlBiladHint": "د ۴۵ درجې عرض البلد کارول. د قطبي کړیو دننه هم کار کوي.",
+      "aqrabAlAyyam": "اقرب الایام",
+      "aqrabAlAyyamHint": "تر ټولو نږدې ورځ چې سهار پکې ښکاري. د قطبي کړیو دننه هم کار کوي.",
       "none": "هېڅ یو (ممکن نه شتون وښیي)"
     },
     "madhab": {
@@ -558,7 +562,8 @@
       "notMarkedPrayed": "نه لوستل شوی نښه شوی",
       "doubleTapToggle": "د بدلولو لپاره دوه ځلې ټک ورکړئ.",
       "shareTimes": "د نن وختونه شریک کړئ",
-      "shareAccessibilityLabel": "د نن ورځې د لمانځه وختونه شریک کړئ"
+      "shareAccessibilityLabel": "د نن ورځې د لمانځه وختونه شریک کړئ",
+      "substituted": "اټکلي"
     },
     "quran": {
       "loading": "د قرآن معلومات بارېږي...",

@@ -231,6 +231,10 @@
       "nightMiddle": "Katikati ya Usiku",
       "angleBased": "Kwa Msingi wa Pembe",
       "oneSeventh": "Sehemu ya Saba ya Usiku",
+      "aqrabAlBilad": "Aqrab al-Bilad (Mahali pa Karibu)",
+      "aqrabAlBiladHint": "Hutumia latitudo 45. Hufanya kazi ndani ya duara za polar.",
+      "aqrabAlAyyam": "Aqrab al-Ayyam (Siku ya Karibu)",
+      "aqrabAlAyyamHint": "Huchukua siku ya karibu ambayo alfajiri inaonekana. Hufanya kazi ndani ya duara za polar.",
       "none": "Hakuna (inaweza kuonyesha 'haipatikani')"
     },
     "madhab": {
@@ -558,7 +562,8 @@
       "notMarkedPrayed": "haijatiwa alama kuwa imeswaliwa",
       "doubleTapToggle": "Gusa mara mbili ili kubadilisha.",
       "shareTimes": "Shiriki nyakati za leo",
-      "shareAccessibilityLabel": "Shiriki nyakati za sala za leo"
+      "shareAccessibilityLabel": "Shiriki nyakati za sala za leo",
+      "substituted": "makadirio"
     },
     "quran": {
       "loading": "Data ya Qur'ani inapakia...",

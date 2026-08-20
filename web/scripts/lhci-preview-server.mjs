@@ -40,7 +40,49 @@ if (!existsSync(entryPath)) {
   process.exit(1);
 }
 
-const { default: handler } = await import(pathToFileURL(entryPath).href);
+const entryModule = await import(pathToFileURL(entryPath).href);
+
+/**
+ * Node-style `(req, res)` request handler for whichever entry shape the adapter emitted.
+ *
+ * @astrojs/vercel changed its function entry between Astro 5 and 7: it used to default-export
+ * a Node handler, and now default-exports `{ fetch }`, a Web-standard handler. Supporting
+ * both keeps this harness working across the upgrade instead of dying with
+ * "handler is not a function" only once a request arrives — the server still binds a port,
+ * so a naive smoke check that only waits for the port would call it healthy.
+ */
+const handler = await (async () => {
+  const entry = entryModule.default ?? entryModule;
+  if (typeof entry === 'function') return entry;
+  if (typeof entry?.fetch !== 'function') {
+    throw new TypeError(
+      `[lhci-preview-server] Unrecognised entry export: ${Object.keys(entry ?? {}).join(', ') || typeof entry}`,
+    );
+  }
+  return async (req, res) => {
+    const requestUrl = new URL(req.url ?? '/', `http://localhost:${port}`);
+    const body =
+      req.method === 'GET' || req.method === 'HEAD'
+        ? undefined
+        : await new Promise((resolve) => {
+            const chunks = [];
+            req.on('data', (c) => chunks.push(c));
+            req.on('end', () => resolve(Buffer.concat(chunks)));
+          });
+    const response = await entry.fetch(
+      new Request(requestUrl, {
+        method: req.method,
+        headers: /** @type {HeadersInit} */ (req.headers),
+        body,
+        duplex: body ? 'half' : undefined,
+      }),
+    );
+    res.statusCode = response.status;
+    response.headers.forEach((value, key) => res.setHeader(key, value));
+    if (!response.body) return res.end();
+    res.end(Buffer.from(await response.arrayBuffer()));
+  };
+})();
 
 /** @type {Record<string, string>} */
 const MIME_TYPES = {
@@ -181,7 +223,11 @@ const server = createServer((req, rawRes) => {
     return;
   }
 
-  handler(req, res);
+  Promise.resolve(handler(req, res)).catch((err) => {
+    console.error('[lhci-preview-server] request failed:', err);
+    if (!res.headersSent) res.statusCode = 500;
+    res.end('Internal Server Error');
+  });
 });
 
 server.listen(port, () => {

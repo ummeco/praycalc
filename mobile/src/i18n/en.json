@@ -231,6 +231,10 @@
       "nightMiddle": "Middle of the Night",
       "angleBased": "Angle-Based",
       "oneSeventh": "One-Seventh of Night",
+      "aqrabAlBilad": "Nearest Location (Aqrab al-Bilad)",
+      "aqrabAlBiladHint": "Uses the 45th parallel. Works inside the polar circles.",
+      "aqrabAlAyyam": "Nearest Day (Aqrab al-Ayyam)",
+      "aqrabAlAyyamHint": "Borrows the closest date with a visible dawn. Works inside the polar circles.",
       "none": "None (may show unavailable)"
     },
     "madhab": {
@@ -558,7 +562,8 @@
       "notMarkedPrayed": "not marked prayed",
       "doubleTapToggle": "Double-tap to toggle.",
       "shareTimes": "Share today's times",
-      "shareAccessibilityLabel": "Share today's prayer times"
+      "shareAccessibilityLabel": "Share today's prayer times",
+      "substituted": "estimated"
     },
     "quran": {
       "loading": "Quran data loading...",

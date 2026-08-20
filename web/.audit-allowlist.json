@@ -46,13 +46,5 @@
   "1138809": {
     "reason": "image-size JXL/HEIF parser DoS. Same dev-only Metro bundler path as 1138808, same absent upstream patch.",
     "expires": "2026-12-31"
-  },
-  "1139377": {
-    "reason": "Astro Host-header SSRF in the prerendered error page fetch. org/ and web/ are on Astro 5.18.2; the fix lands in 6.4.6, a major upgrade that is its own migration task and out of scope for a patch release. Both sites are static output (output:'static') deployed to Vercel's CDN, so there is no origin server performing the vulnerable fetch. Tracked for the Astro 6 migration.",
-    "expires": "2026-11-30"
-  },
-  "1139378": {
-    "reason": "Astro reflected XSS via unescaped slot name. Fix is in 6.x (major upgrade, own task). Exploitation requires an attacker-controlled slot name; every slot in web/ and org/ is a compile-time literal, none derived from request input. Tracked for the Astro 6 migration.",
-    "expires": "2026-11-30"
   }
 }

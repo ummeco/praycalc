@@ -20,10 +20,25 @@ import { CALC_METHODS } from '../../../constants/methods';
 import type { Madhab, HighLatRule } from '../../../types/prayer';
 import { SectionHeader } from './SettingsSectionHeader';
 
-const HIGH_LAT_RULES: { key: HighLatRule; labelKey: string }[] = [
+/**
+ * Ordered so the two rules that work inside the polar circles sit together and carry their
+ * own hint. The first three divide the night between sunset and sunrise, so above the
+ * Arctic and Antarctic circles there is nothing to divide and they produce no time at all.
+ */
+const HIGH_LAT_RULES: { key: HighLatRule; labelKey: string; hintKey?: string }[] = [
   { key: 'NightMiddle', labelKey: 'settings.highLatitude.nightMiddle' },
   { key: 'AngleBased', labelKey: 'settings.highLatitude.angleBased' },
   { key: 'OneSeventh', labelKey: 'settings.highLatitude.oneSeventh' },
+  {
+    key: 'AqrabAlBilad',
+    labelKey: 'settings.highLatitude.aqrabAlBilad',
+    hintKey: 'settings.highLatitude.aqrabAlBiladHint',
+  },
+  {
+    key: 'AqrabAlAyyam',
+    labelKey: 'settings.highLatitude.aqrabAlAyyam',
+    hintKey: 'settings.highLatitude.aqrabAlAyyamHint',
+  },
   { key: 'None', labelKey: 'settings.highLatitude.none' },
 ];
 
@@ -127,9 +142,14 @@ export function SettingsCalculationSection({
               <View style={[styles.radio, isSelected && styles.radioSelected]}>
                 {isSelected && <View style={styles.radioInner} />}
               </View>
-              <Text style={[styles.optionLabel, isSelected && styles.optionLabelSelected]}>
-                {label}
-              </Text>
+              <View style={styles.optionTextGroup}>
+                <Text style={[styles.optionLabel, isSelected && styles.optionLabelSelected]}>
+                  {label}
+                </Text>
+                {rule.hintKey && (
+                  <Text style={styles.optionSubLabel}>{t(rule.hintKey)}</Text>
+                )}
+              </View>
             </TouchableOpacity>
           );
         })}
@@ -211,7 +231,9 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
   },
   radioSelected: { borderColor: colors.brand.dark },
   radioInner: { width: 10, height: 10, borderRadius: 5, backgroundColor: colors.brand.dark },
+  optionTextGroup: { flex: 1 },
   optionLabel: { fontSize: 14, color: colors.text.primary, flex: 1 },
+  optionSubLabel: { fontSize: 12, color: colors.text.muted, marginTop: 2, lineHeight: 16 },
   optionLabelSelected: { fontWeight: '600', color: colors.brand.dark },
   toggle: { flexDirection: 'row', borderRadius: 8, overflow: 'hidden', backgroundColor: colors.background.secondary },
   toggleOption: { flex: 1, padding: 12, alignItems: 'center' },

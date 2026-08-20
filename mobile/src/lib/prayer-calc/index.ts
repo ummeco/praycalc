@@ -22,8 +22,12 @@
  * SPORT: REGISTRY-FUNCTIONS.md#praycalc-mobile-lib-prayer-calc
  */
 
-import { getTimesAll, solarEphemeris, toJulianDate } from 'pray-calc';
-import type { PrayerTimes, Madhab, HighLatRule, PrayerName } from '../../types/prayer';
+import { getTimesAll, getTimes, solarEphemeris, toJulianDate, applyHighLatitudeRule } from 'pray-calc';
+import type { HighLatitudeRule as EngineRule, TimeSource as EngineSource } from 'pray-calc';
+import type {
+  PrayerTimes, Madhab, HighLatRule, PrayerName, PrayerProvenance, PrayerTimeSource,
+  DetailedPrayerTimes,
+} from '../../types/prayer';
 import type { CalcMethodKey } from '../../constants/methods';
 import { CALC_METHODS } from '../../constants/methods';
 
@@ -109,45 +113,33 @@ function solveDepressionTime(
   return before ? noon - hourAngleHours : noon + hourAngleHours;
 }
 
-/** Fraction-of-night portion for each high-latitude rule. NaN ('None') means "do not adjust". */
-function highLatPortion(rule: HighLatRule, angleDeg: number): number {
-  switch (rule) {
-    case 'AngleBased':
-      return angleDeg / 60;
-    case 'OneSeventh':
-      return 1 / 7;
-    case 'NightMiddle':
-      return 1 / 2;
-    case 'None':
-    default:
-      return NaN;
-  }
-}
-
 /**
- * Apply the high-latitude fallback to an unreachable Fajr/Isha time, per the
- * praytimes.org reference convention: nightLength = 24 - dayLength (same-day
- * Sunrise/Maghrib), then offset Sunrise/Maghrib by `portion * nightLength`.
+ * App rule name -> engine rule name.
+ *
+ * The substitution logic itself lives in pray-calc so both stay in step; this file only
+ * decides WHICH values to run through it. That matters because the app computes Fajr and
+ * Isha in three different ways (the engine's dynamic angles, a fixed-method overlay, or a
+ * user's custom depression angles) and the engine only ever sees the first.
  */
-function applyHighLatFallback(
-  rawTime: number,
-  sunrise: number,
-  maghrib: number,
-  rule: HighLatRule,
-  angleDeg: number,
-  isFajr: boolean,
-): number {
-  if (Number.isFinite(rawTime)) return rawTime;
-  if (!Number.isFinite(sunrise) || !Number.isFinite(maghrib)) return NaN;
-  const portion = highLatPortion(rule, angleDeg);
-  if (!Number.isFinite(portion)) return NaN; // 'None' — leave unreachable
-  // At extreme latitudes, sunset can fall just after local midnight and comes back
-  // as a small fractional-hour value (e.g. 0.06 = 00:04) that is numerically less
-  // than sunrise — unwrap it onto the same 24h+ axis before measuring night length.
-  const maghribUnwrapped = maghrib < sunrise ? maghrib + 24 : maghrib;
-  const nightLength = 24 - (maghribUnwrapped - sunrise);
-  return isFajr ? sunrise - portion * nightLength : maghribUnwrapped + portion * nightLength;
-}
+const ENGINE_RULE: Record<HighLatRule, EngineRule> = {
+  NightMiddle: 'middleOfNight',
+  AngleBased: 'angleBased',
+  OneSeventh: 'oneSeventh',
+  AqrabAlBilad: 'aqrabAlBilad',
+  AqrabAlAyyam: 'aqrabAlAyyam',
+  None: 'none',
+};
+
+/** Engine provenance value -> the app's own naming. */
+const APP_SOURCE: Record<EngineSource, PrayerTimeSource> = {
+  observed: 'observed',
+  middleOfNight: 'NightMiddle',
+  angleBased: 'AngleBased',
+  oneSeventh: 'OneSeventh',
+  aqrabAlBilad: 'AqrabAlBilad',
+  aqrabAlAyyam: 'AqrabAlAyyam',
+  unavailable: 'unavailable',
+};
 
 /**
  * Convert fractional hours (may be NaN or slightly out of [0,24)) onto a base Date, local time.
@@ -189,7 +181,7 @@ export function isPrayerTimeValid(date: Date | null | undefined): date is Date {
  * A prayer with no time today is returned as an Invalid Date — never as midnight and
  * never as an engine sentinel. Gate on `isPrayerTimeValid` before using any value.
  */
-export function calculatePrayerTimes(
+export function calculatePrayerTimesDetailed(
   date: Date,
   latitude: number,
   longitude: number,
@@ -199,7 +191,7 @@ export function calculatePrayerTimes(
   highLatRule: HighLatRule = 'NightMiddle',
   customAngles?: { fajr: number; isha: number },
   minuteAdjustments?: Partial<Record<PrayerName, number>>,
-): PrayerTimes {
+): DetailedPrayerTimes {
   const hanafi = madhab === 'Hanafi';
   const engine = getTimesAll(date, latitude, longitude, timezone, 0, undefined, undefined, hanafi);
 
@@ -245,8 +237,40 @@ export function calculatePrayerTimes(
     isha = methodEntry?.[1] ?? raw.Isha;
   }
 
-  fajr = applyHighLatFallback(fajr, raw.Sunrise, raw.Maghrib, highLatRule, fajrAngle, true);
-  isha = applyHighLatFallback(isha, raw.Sunrise, raw.Maghrib, highLatRule, ishaAngle, false);
+  // Run the app's own Fajr/Isha through the engine's substitution rules. The engine
+  // applies them to its dynamic angles internally, but the values above may come from a
+  // fixed-method overlay or a custom-angle solve, which it never sees — so they are
+  // applied here explicitly rather than by passing a rule into getTimesAll.
+  const highLat = applyHighLatitudeRule(
+    {
+      rule: ENGINE_RULE[highLatRule],
+      date,
+      lat: latitude,
+      lng: longitude,
+      fajrAngle,
+      ishaAngle,
+      // Aqrab al-Bilad and Aqrab al-Ayyam need other days/latitudes resolved. Always with
+      // rule 'none' so a fallback can never recurse into another fallback.
+      resolveDay: (d, resolveLat, resolveLng) => {
+        const r = getTimes(d, resolveLat, resolveLng, timezone, 0, undefined, undefined, hanafi, 'none');
+        return {
+          Fajr: sanitizeHours(r.Fajr),
+          Isha: sanitizeHours(r.Isha),
+          Noon: sanitizeHours(r.Noon),
+        };
+      },
+    },
+    fajr,
+    isha,
+    raw.Sunrise,
+    raw.Maghrib,
+  );
+  fajr = highLat.Fajr;
+  isha = highLat.Isha;
+  const provenance: PrayerProvenance = {
+    Fajr: APP_SOURCE[highLat.provenance.Fajr],
+    Isha: APP_SOURCE[highLat.provenance.Isha],
+  };
 
   const times: PrayerTimes = {
     Fajr: hoursToDate(date, fajr),
@@ -264,5 +288,16 @@ export function calculatePrayerTimes(
     }
   }
 
-  return times;
+  return { times, provenance };
+}
+
+/**
+ * Prayer times only. Thin wrapper over [calculatePrayerTimesDetailed] for the many callers
+ * that just render a timetable; use the detailed form when the caller needs to distinguish
+ * a computed time from a juristic substitution.
+ */
+export function calculatePrayerTimes(
+  ...args: Parameters<typeof calculatePrayerTimesDetailed>
+): PrayerTimes {
+  return calculatePrayerTimesDetailed(...args).times;
 }

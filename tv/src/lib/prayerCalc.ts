@@ -13,8 +13,8 @@
  * SPORT: praycalc/tv lib
  */
 
-import { getTimesAll } from 'pray-calc';
-import { PrayerDay, Madhab } from '../types';
+import { getTimesAll, getTimes, applyHighLatitudeRule } from 'pray-calc';
+import { PrayerDay, Madhab, HighLatRule } from '../types';
 import { resolveTimezoneOffset } from './timezone';
 import { PRAY_CALC_METHOD_ID } from '../constants/methods';
 
@@ -25,6 +25,8 @@ interface CalcOptions {
   timezone: string;
   methodId: string;
   madhab: Madhab;
+  /** Defaults to 'none': report Fajr/Isha absent rather than substituting silently. */
+  highLatitudeRule?: HighLatRule;
 }
 
 /**
@@ -71,8 +73,37 @@ export function calculatePrayerTimes(opts: CalcOptions): PrayerDay {
   const methodKey = PRAY_CALC_METHOD_ID[opts.methodId];
   const methodEntry = methodKey ? raw.Methods[methodKey] : undefined; // [Fajr, Isha] fractional hours
   // Sanitize at the boundary — the `??` below must not treat a sentinel as a real value.
-  const fajr = sanitizeHours(methodEntry?.[0] ?? raw.Fajr); // DPC / unknown -> dynamic
-  const isha = sanitizeHours(methodEntry?.[1] ?? raw.Isha);
+  const rawFajr = sanitizeHours(methodEntry?.[0] ?? raw.Fajr); // DPC / unknown -> dynamic
+  const rawIsha = sanitizeHours(methodEntry?.[1] ?? raw.Isha);
+
+  // Apply the substitution rule to the app's own Fajr/Isha. A fixed-method overlay is
+  // never seen by the engine, so passing a rule into getTimesAll would leave those
+  // untouched — the rule has to be applied to these values explicitly.
+  const highLat = applyHighLatitudeRule(
+    {
+      rule: opts.highLatitudeRule ?? 'none',
+      date: opts.date,
+      lat: opts.latitude,
+      lng: opts.longitude,
+      fajrAngle: raw.angles.fajrAngle,
+      ishaAngle: raw.angles.ishaAngle,
+      // Always resolved with 'none' so a fallback can never recurse into another.
+      resolveDay: (d, resolveLat, resolveLng) => {
+        const r = getTimes(d, resolveLat, resolveLng, tz, 0, undefined, undefined, hanafi, 'none');
+        return {
+          Fajr: sanitizeHours(r.Fajr),
+          Isha: sanitizeHours(r.Isha),
+          Noon: sanitizeHours(r.Noon),
+        };
+      },
+    },
+    rawFajr,
+    rawIsha,
+    sanitizeHours(raw.Sunrise),
+    sanitizeHours(raw.Maghrib),
+  );
+  const fajr = highLat.Fajr;
+  const isha = highLat.Isha;
 
   return {
     fajr: hoursToHHMM(fajr),

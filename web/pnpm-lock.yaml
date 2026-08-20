@@ -53,8 +53,8 @@ importers:
         specifier: ^2.0.0
         version: 2.0.0
       pray-calc:
-        specifier: ^2.2.0
-        version: 2.2.0
+        specifier: ^2.3.0
+        version: 2.3.0
       react:
         specifier: ^19.2.8
         version: 19.2.8
@@ -3673,8 +3673,8 @@ packages:
     resolution: {integrity: sha512-vuwillviilfKZsg0VGj5R/YwwcHx4SLsIOI/7K6mQkWx+l5cUHTjj5g0AasTBcyXsbfTgrwsUNmVUb5xVwyPwg==}
     engines: {node: ^10 || ^12 || >=14}
 
-  pray-calc@2.2.0:
-    resolution: {integrity: sha512-vnTzZ9wpTrAn49d2G/14GaetMObBEfU/litMqKhSjbdgLPhDFpg7n5+9+44j/LG48jWuG2qy2x4SzZY+8+H0HQ==}
+  pray-calc@2.3.0:
+    resolution: {integrity: sha512-qWYcatm6AbmWw8G9uZ26y5twE3R0tpGbV06n12btAmvSAt7Wy6jG+89WoPEvMAxE7CpHFXdZpz90iGj9lwzS8A==}
     engines: {node: '>=20'}
 
   prelude-ls@1.2.1:
@@ -8630,7 +8630,7 @@ snapshots:
       picocolors: 1.1.1
       source-map-js: 1.2.1
 
-  pray-calc@2.2.0:
+  pray-calc@2.3.0:
     dependencies:
       nrel-spa: 2.1.0
 

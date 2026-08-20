@@ -23,6 +23,7 @@ import type { PrayerTimesScreenStyles } from '../PrayerTimesScreen.styles';
 
 interface PrayerListProps {
   times: ReturnType<typeof usePrayerTimes>['times'];
+  provenance: ReturnType<typeof usePrayerTimes>['provenance'];
   nextPrayer: PrayerName | null;
   secondsToNextPrayer: number;
   settings: SettingsState;
@@ -31,7 +32,7 @@ interface PrayerListProps {
   t: (key: string, options?: Record<string, unknown>) => string;
 }
 
-export function PrayerList({ times, nextPrayer, settings, colors, styles, t }: PrayerListProps) {
+export function PrayerList({ times, provenance, nextPrayer, settings, colors, styles, t }: PrayerListProps) {
   const [completedTick, setCompletedTick] = useState(0);
   if (!times) return null;
 
@@ -41,6 +42,12 @@ export function PrayerList({ times, nextPrayer, settings, colors, styles, t }: P
     <View key={completedTick} style={styles.prayerList}>
       {PRAYER_ORDER.map((name) => {
         const isNext = name === nextPrayer;
+        // Fajr and Isha are the only prayers a high-latitude rule can supply. Anything
+        // other than 'observed' means the sun did not provide this time — it is a
+        // juristic substitution, and the row says so rather than presenting it as a
+        // calculation.
+        const source = name === 'Fajr' ? provenance?.Fajr : name === 'Isha' ? provenance?.Isha : undefined;
+        const substituted = source !== undefined && source !== 'observed' && source !== 'unavailable';
         const completed = canLog(name) && isPrayerCompleted(name);
         const muted = canLog(name) && settings.perPrayerNotificationEnabled[name] === false;
         const label = t(PRAYER_LABEL_KEYS[name]);
@@ -67,9 +74,16 @@ export function PrayerList({ times, nextPrayer, settings, colors, styles, t }: P
               {label}
             </Text>
             {muted && <Text style={styles.muteIcon}>🔕</Text>}
-            <Text style={[styles.prayerTime, isNext && styles.prayerTimeNext]}>
-              {formatTime(times[name], settings.timeFormat, i18next.language)}
-            </Text>
+            <View style={styles.prayerTimeGroup}>
+              <Text style={[styles.prayerTime, isNext && styles.prayerTimeNext]}>
+                {formatTime(times[name], settings.timeFormat, i18next.language)}
+              </Text>
+              {substituted && (
+                <Text style={styles.prayerTimeSubstituted}>
+                  {t('screens.prayerTimes.substituted')}
+                </Text>
+              )}
+            </View>
             {canLog(name) && (
               <Text style={[styles.completedCheck, completed && styles.completedCheckActive]}>
                 {completed ? '✓' : '○'}

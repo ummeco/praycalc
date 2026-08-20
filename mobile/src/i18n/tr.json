@@ -231,6 +231,10 @@
       "nightMiddle": "Gecenin Ortası",
       "angleBased": "Açıya Dayalı",
       "oneSeventh": "Gecenin Yedide Biri",
+      "aqrabAlBilad": "Akrabü'l-Bilâd (En Yakın Yer)",
+      "aqrabAlBiladHint": "45. paraleli kullanır. Kutup daireleri içinde de çalışır.",
+      "aqrabAlAyyam": "Akrabü'l-Eyyâm (En Yakın Gün)",
+      "aqrabAlAyyamHint": "Fecrin göründüğü en yakın günü esas alır. Kutup daireleri içinde de çalışır.",
       "none": "Yok (kullanılamaz gösterilebilir)"
     },
     "madhab": {
@@ -558,7 +562,8 @@
       "notMarkedPrayed": "kılındı olarak işaretlenmedi",
       "doubleTapToggle": "Değiştirmek için çift dokunun.",
       "shareTimes": "Bugünün vakitlerini paylaş",
-      "shareAccessibilityLabel": "Bugünün namaz vakitlerini paylaş"
+      "shareAccessibilityLabel": "Bugünün namaz vakitlerini paylaş",
+      "substituted": "tahmini"
     },
     "quran": {
       "loading": "Kur'an verileri yükleniyor...",

@@ -231,6 +231,10 @@
       "nightMiddle": "Badhtanka Habeenka",
       "angleBased": "Ku Salaysan Xagasha",
       "oneSeventh": "Toddobaadka Habeenka",
+      "aqrabAlBilad": "Aqrab al-Bilad (Goobta Ugu Dhow)",
+      "aqrabAlBiladHint": "Waxay isticticmaashaa loox 45-aad. Way ka shaqaysaa gudaha wareegyada cirifka.",
+      "aqrabAlAyyam": "Aqrab al-Ayyam (Maalinta Ugu Dhow)",
+      "aqrabAlAyyamHint": "Waxay qaadataa maalinta ugu dhow ee waaberigu muuqdo. Way ka shaqaysaa gudaha wareegyada cirifka.",
       "none": "Midna (waxay muujin kartaa 'lama hayo')"
     },
     "madhab": {
@@ -558,7 +562,8 @@
       "notMarkedPrayed": "looma calaamadayn in la tukaday",
       "doubleTapToggle": "Laba jeer taabo si aad u bedasho.",
       "shareTimes": "La wadaag waqtiyada maanta",
-      "shareAccessibilityLabel": "La wadaag waqtiyada salaadda maanta"
+      "shareAccessibilityLabel": "La wadaag waqtiyada salaadda maanta",
+      "substituted": "qiyaas"
     },
     "quran": {
       "loading": "Xogta Qur'aanka waa la soo rarayaa...",

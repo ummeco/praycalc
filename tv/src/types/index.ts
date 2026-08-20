@@ -46,6 +46,15 @@ export interface CalculationMethod {
   ishaInterval?: number;
 }
 
+/** High-latitude substitution rule. Mirrors pray-calc's own rule names. */
+export type HighLatRule =
+  | 'none'
+  | 'middleOfNight'
+  | 'angleBased'
+  | 'oneSeventh'
+  | 'aqrabAlBilad'
+  | 'aqrabAlAyyam';
+
 export type Madhab = 'shafi' | 'hanafi';
 
 /** Per-prayer minutes-after-adhan offsets for iqama times. No sunrise key (matches DB contract). */
@@ -74,6 +83,12 @@ export interface TvSettings {
   timezone: string;
   calculationMethodId: string;
   madhab: Madhab;
+  /**
+   * Substitution rule for Fajr and Isha where the sun never reaches the required
+   * depression. The three night-proportion rules need a real sunset to measure against,
+   * so only 'aqrabAlBilad' and 'aqrabAlAyyam' produce a time inside the polar circles.
+   */
+  highLatitudeRule: HighLatRule;
   language: 'en' | 'ar';
   autoAdvanceScreens: boolean;
   screensaverTimeoutMinutes: number;

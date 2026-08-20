@@ -231,6 +231,10 @@
       "nightMiddle": "Àárín Òru",
       "angleBased": "Bí Igun Ṣe Rí",
       "oneSeventh": "Ìdá Méje Òru",
+      "aqrabAlBilad": "Aqrab al-Bilad (Ibi Tí Ó Sún Mọ́)",
+      "aqrabAlBiladHint": "Ó ń lo ìlà ìdábùú 45. Ó ń ṣiṣẹ́ nínú àwọn àyíká pola.",
+      "aqrabAlAyyam": "Aqrab al-Ayyam (Ọjọ́ Tí Ó Sún Mọ́)",
+      "aqrabAlAyyamHint": "Ó ń mú ọjọ́ tí ó sún mọ́ tí àfẹ̀mọ́júmọ́ hàn. Ó ń ṣiṣẹ́ nínú àwọn àyíká pola.",
       "none": "Kò Sí (lè fi 'kò sí' hàn)"
     },
     "madhab": {
@@ -558,7 +562,8 @@
       "notMarkedPrayed": "a kò sàmì sí i pé a ti gbàdúrà",
       "doubleTapToggle": "Tẹ ìlọ́po méjì láti yí padà.",
       "shareTimes": "Pín àkókò òní",
-      "shareAccessibilityLabel": "Pín àkókò àdúrà òní"
+      "shareAccessibilityLabel": "Pín àkókò àdúrà òní",
+      "substituted": "ìfojúsùn"
     },
     "quran": {
       "loading": "Ń gba dátà Kùránì...",

@@ -231,6 +231,10 @@
       "nightMiddle": "رات کا وسط",
       "angleBased": "زاویہ پر مبنی",
       "oneSeventh": "رات کا ساتواں حصہ",
+      "aqrabAlBilad": "اقرب البلاد",
+      "aqrabAlBiladHint": "45 ویں عرض بلد کا استعمال۔ قطبی حلقوں کے اندر بھی کام کرتا ہے۔",
+      "aqrabAlAyyam": "اقرب الایام",
+      "aqrabAlAyyamHint": "قریب ترین دن جس میں فجر ظاہر ہو۔ قطبی حلقوں کے اندر بھی کام کرتا ہے۔",
       "none": "کوئی نہیں (دستیاب نہیں دکھا سکتا ہے)"
     },
     "madhab": {
@@ -558,7 +562,8 @@
       "notMarkedPrayed": "نہیں پڑھی ہوئی نشان زد",
       "doubleTapToggle": "تبدیل کرنے کے لیے ڈبل ٹیپ کریں۔",
       "shareTimes": "آج کے اوقات شیئر کریں",
-      "shareAccessibilityLabel": "آج کے نماز کے اوقات شیئر کریں"
+      "shareAccessibilityLabel": "آج کے نماز کے اوقات شیئر کریں",
+      "substituted": "تخمینی"
     },
     "quran": {
       "loading": "قرآن ڈیٹا لوڈ ہو رہا ہے...",
