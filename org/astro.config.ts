@@ -18,6 +18,7 @@
 // REF: T-01 (P2-E3-W01-S01) · D-P2-STACK-CANON · D-P2-REACT19
 
 import { defineConfig } from 'astro/config';
+import type { RehypePlugin } from '@astrojs/markdown-remark';
 import type { AstroIntegration } from 'astro';
 import react from '@astrojs/react';
 import mdx from '@astrojs/mdx';
@@ -168,7 +169,12 @@ export default defineConfig({
     },
     rehypePlugins: [
       [
-        rehypeAutolinkHeadings,
+        // Typed explicitly because two copies of @astrojs/markdown-remark can end up in a
+        // pnpm workspace tree (one pulled by another member still on an older Astro), and
+        // tsc then checks this tuple against the wrong copy's RehypePlugin. The plugin
+        // itself is compatible — the build succeeds either way — so the annotation pins
+        // the intended contract rather than papering over a real mismatch.
+        rehypeAutolinkHeadings as RehypePlugin,
         {
           behavior: 'append',
           properties: {
