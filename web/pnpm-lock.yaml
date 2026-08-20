@@ -53,8 +53,8 @@ importers:
         specifier: ^2.0.0
         version: 2.0.0
       pray-calc:
-        specifier: ^2.1.2
-        version: 2.1.2
+        specifier: ^2.2.0
+        version: 2.2.0
       react:
         specifier: ^19.2.7
         version: 19.2.7
@@ -3476,8 +3476,8 @@ packages:
     resolution: {integrity: sha512-6eZs5Ls3WtCisHWp9S2GUy8dqkpGi4BVSz3GaqiE6ezub0512ESztXUwUB6C6IKbQkY2Pnb/mD4WYojCRwcwLA==}
     engines: {node: '>=0.10.0'}
 
-  nrel-spa@2.0.1:
-    resolution: {integrity: sha512-KwsudVfAHMUwz9RwhriI7oNqFYz77+VGi2vUpJeR+xNx57MU28EYcdt1TQ1frEDbpBXkF4EJxM62Hi2iX6QNCA==}
+  nrel-spa@2.1.0:
+    resolution: {integrity: sha512-YM5Ry7HRg8PNrM6EymFmdYV8yQhs5NXd06GZzLwhYN9Ppd3CmtMGsvVMubM0bvTjJAAOt0JFzYRh3Cnh5NBOhg==}
     engines: {node: '>=20'}
 
   nth-check@2.1.1:
@@ -3638,8 +3638,8 @@ packages:
     resolution: {integrity: sha512-vuwillviilfKZsg0VGj5R/YwwcHx4SLsIOI/7K6mQkWx+l5cUHTjj5g0AasTBcyXsbfTgrwsUNmVUb5xVwyPwg==}
     engines: {node: ^10 || ^12 || >=14}
 
-  pray-calc@2.1.2:
-    resolution: {integrity: sha512-fhtpubQpZp+7yMtKdtIWX1ZXb8MLrhOs+Xfm/OJ02dT8lJkmxlvUGQjh2wCMLPMa35s45kXc+krsrvnHnl9+Sg==}
+  pray-calc@2.2.0:
+    resolution: {integrity: sha512-vnTzZ9wpTrAn49d2G/14GaetMObBEfU/litMqKhSjbdgLPhDFpg7n5+9+44j/LG48jWuG2qy2x4SzZY+8+H0HQ==}
     engines: {node: '>=20'}
 
   prelude-ls@1.2.1:
@@ -8405,7 +8405,7 @@ snapshots:
 
   normalize-path@3.0.0: {}
 
-  nrel-spa@2.0.1: {}
+  nrel-spa@2.1.0: {}
 
   nth-check@2.1.1:
     dependencies:
@@ -8577,9 +8577,9 @@ snapshots:
       picocolors: 1.1.1
       source-map-js: 1.2.1
 
-  pray-calc@2.1.2:
+  pray-calc@2.2.0:
     dependencies:
-      nrel-spa: 2.0.1
+      nrel-spa: 2.1.0
 
   prelude-ls@1.2.1: {}
 
