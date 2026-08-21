@@ -29,20 +29,30 @@ const funcRoot = resolve(web, '.vercel/output/functions/_render.func');
 
 // --- 1. Copy nrel-spa/lib/spa.js ---
 /**
- * The `lib/` directory of the exact nrel-spa that Node resolves from web/.
+ * The `lib/` directory of the exact nrel-spa that the build actually imports.
  *
- * Resolved rather than found by scanning the pnpm store. Scanning returned whichever
- * `nrel-spa@*` entry readdirSync happened to yield first, which is not necessarily the
- * copy the build imports: on Vercel it picked a stale one whose lib/ held only `spa.js`,
- * so every SSR page threw "Cannot find module '../lib/spa.cjs'" at runtime while the
- * build itself stayed green. require.resolve cannot pick the wrong copy.
+ * Resolved along the real dependency chain (web -> pray-calc -> nrel-spa) rather than
+ * scanned out of the pnpm store or resolved directly from web/.
+ *
+ * Two earlier approaches both failed on Vercel while passing locally:
+ *   - scanning `node_modules/.pnpm` returned whichever `nrel-spa@*` readdirSync yielded
+ *     first, which on Vercel was a stale copy whose lib/ held only `spa.js`, so the file
+ *     the Lambda requires was never copied and every SSR page 500'd at runtime;
+ *   - `require.resolve('nrel-spa/...', { paths: [web] })` works locally because the local
+ *     .npmrc hoists, but nrel-spa is a TRANSITIVE dep (via pray-calc), so it is not
+ *     resolvable from web/ in pnpm's strict layout that Vercel builds with.
+ *
+ * Going through pray-calc is correct in both layouts: pray-calc is a direct dependency of
+ * web, and nrel-spa is a direct dependency of pray-calc.
  */
 function findNrelSpaLib() {
-  const require = createRequire(import.meta.url);
-  const pkgJson = require.resolve('nrel-spa/package.json', { paths: [web] });
-  const libDir = resolve(dirname(pkgJson), 'lib');
+  const requireFromWeb = createRequire(resolve(web, 'package.json'));
+  const prayCalcPkg = requireFromWeb.resolve('pray-calc/package.json');
+  const requireFromPrayCalc = createRequire(prayCalcPkg);
+  const nrelPkg = requireFromPrayCalc.resolve('nrel-spa/package.json');
+  const libDir = resolve(dirname(nrelPkg), 'lib');
   if (!existsSync(libDir)) {
-    console.error(`[postbuild] ERROR: resolved nrel-spa at ${dirname(pkgJson)} but it has no lib/`);
+    console.error(`[postbuild] ERROR: resolved nrel-spa at ${dirname(nrelPkg)} but it has no lib/`);
     process.exit(1);
   }
   return libDir;
