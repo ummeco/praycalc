@@ -1,3 +1,13 @@
+## [mobile-v2.3.1, tv-v1.1.1] — 2026-08-21 — a post-midnight Isha no longer sorts before Fajr
+
+### Fixed
+- **Substituted Fajr/Isha were wrapped onto the same calendar day, which could put Isha ahead of Fajr in the list.** The engine reports an Isha that falls after midnight as e.g. 24.16 (00:09 the next morning); the app wrapped that to 00:09 *today*, so it jumped to the top of the timetable and also sat in the past for the countdown and the notification scheduler. The app now rolls the date instead of wrapping the clock, using `setDate`/`setHours` so the platform handles DST. Engine side fixed in `pray-calc` 2.3.1 / `pray_calc_dart` 1.1.1, which stop wrapping substituted times at all and so match the convention computed times already used.
+- Affected every high-latitude rule. At Longyearbyen under Aqrab al-Ayyam it was 158 days a year; Tromsø 131; Helsinki 65. This is the same "the times are out of order" symptom users report from other prayer libraries.
+
+### Notes
+- Under Middle-of-the-Night on a very short night, Fajr and Isha now land at the same clock time exactly 24h apart. That is correct and was previously hidden: they are the midpoints of two *different* nights (the one ending this morning and the one beginning tonight), and wrapping had been collapsing them into one instant.
+- The mobile OTA workflow now raises a warning annotation and a job summary when it skips for a missing `EXPO_TOKEN`, instead of a quiet notice on a green run. `mobile-v2.2.3` and `v2.2.4` both reported success while publishing no OTA at all.
+
 ## [mobile-v2.3.0, tv-v1.1.0] — 2026-08-20 — prayer times inside the polar circles, and honest labelling of substituted ones
 
 ### Added

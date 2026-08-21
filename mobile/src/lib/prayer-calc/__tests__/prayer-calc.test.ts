@@ -77,11 +77,19 @@ describe('calculatePrayerTimes — high-latitude fallback', () => {
     },
   );
 
-  it('NightMiddle collapses Fajr and Isha toward the same point on a very short night', () => {
+  it('NightMiddle puts Fajr and Isha at the same point of two CONSECUTIVE nights', () => {
     const times = calculatePrayerTimes(
       summerSolstice, reykjavik.lat, reykjavik.lng, reykjavik.tz, 'MWL', 'Shafi', 'NightMiddle',
     );
-    expect(minutesBetween(times.Fajr, times.Isha)).toBeLessThan(5);
+    // Both land on the midpoint of a night, but they are different nights: Fajr belongs to
+    // the night ENDING this morning, Isha to the night BEGINNING tonight. So they share a
+    // clock time exactly 24h apart (Fajr 01:29 today, Isha 01:29 tomorrow).
+    //
+    // This test previously asserted they were under 5 minutes apart, which only held
+    // because substituted times were wrapped onto the same civil day — conflating two
+    // separate nights into one instant.
+    expect(minutesBetween(times.Fajr, times.Isha)).toBeCloseTo(24 * 60, 0);
+    expect(times.Isha.getTime()).toBeGreaterThan(times.Fajr.getTime());
   });
 
   it('does not need the fallback at a normal winter latitude (London)', () => {

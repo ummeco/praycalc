@@ -100,3 +100,38 @@ describe('high-latitude rules through the app layer', () => {
     expect(provenance.Fajr).toBe('AqrabAlAyyam');
   });
 });
+
+describe('ordering — a post-midnight Isha must not sort before Fajr', () => {
+  // The engine reports an Isha past midnight as e.g. 24.16. If the app wraps that onto the
+  // same civil day it renders as 00:09 and jumps to the top of the list, which is the
+  // "times are out of order" symptom users report from other libraries.
+  const PLACES = [
+    { name: 'Longyearbyen', lat: 78.22334, lng: 15.64689, tz: 2 },
+    { name: 'Tromso', lat: 69.6492, lng: 18.9553, tz: 2 },
+    { name: 'Helsinki', lat: 60.1733, lng: 24.941, tz: 3 },
+  ] as const;
+  const RULES: HighLatRule[] = ['NightMiddle', 'OneSeventh', 'AngleBased', 'AqrabAlBilad', 'AqrabAlAyyam'];
+
+  it.each(PLACES)('$name — Fajr strictly precedes Isha every day, every rule', ({ lat, lng, tz }) => {
+    for (const rule of RULES) {
+      for (let i = 0; i < 365; i++) {
+        const d = new Date(2026, 0, 1 + i);
+        const { times } = calculatePrayerTimesDetailed(d, lat, lng, tz, 'MWL', 'Shafi', rule);
+        if (!isPrayerTimeValid(times.Fajr) || !isPrayerTimeValid(times.Isha)) continue;
+        // `>=` not `>`: NightMiddle legitimately collapses both onto the midpoint of a
+        // very short night (41 days a year at Longyearbyen). What must never happen is
+        // Isha landing BEFORE Fajr.
+        expect(times.Isha.getTime()).toBeGreaterThanOrEqual(times.Fajr.getTime());
+      }
+    }
+  });
+
+  it('a past-midnight Isha lands on the following calendar day', () => {
+    // Helsinki mid-May: engine Isha is ~24.1, i.e. just after midnight.
+    const d = new Date(2026, 4, 14);
+    const { times } = calculatePrayerTimesDetailed(d, 60.1733, 24.941, 3, 'MWL');
+    if (isPrayerTimeValid(times.Isha) && times.Isha.getHours() < 12) {
+      expect(times.Isha.getDate()).not.toBe(d.getDate());
+    }
+  });
+});

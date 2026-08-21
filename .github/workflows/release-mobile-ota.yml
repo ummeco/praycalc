@@ -13,7 +13,9 @@ name: Publish Mobile OTA Update (EAS Update)
 #
 # Activation: paste the real EXPO_TOKEN repo secret and replace
 # UD-PENDING-EAS-PROJECT-ID in mobile/app.json (see .github/docs/CREDENTIALS.md).
-# Until then this workflow no-ops with a clear notice instead of failing.
+# Until then this workflow no-ops. It does NOT fail the run (a missing optional credential
+# is not a broken build), but it raises a WARNING annotation and writes a job summary so a
+# skipped publish is visible on the run page rather than buried in the step log.
 
 on:
   push:
@@ -38,12 +40,35 @@ jobs:
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
         run: |
+          # A skip is reported as a WARNING, not a notice, and is restated in the job
+          # summary. A tag push that silently no-ops while the run goes green is how a
+          # release gets believed to have shipped when it did not: mobile-v2.2.3 and
+          # v2.2.4 both "succeeded" here having published nothing, and the gap was only
+          # caught by reading the logs by hand.
           if [ -z "$EXPO_TOKEN" ]; then
-            echo "::notice::EXPO_TOKEN secret not set — OTA publish skipped. Paste it per .github/docs/CREDENTIALS.md to activate."
+            echo "::warning title=OTA NOT PUBLISHED::EXPO_TOKEN secret is not set. This tag shipped NO over-the-air update — users only get the fix by installing the APK from GitHub Releases. Paste the secret per .github/docs/CREDENTIALS.md to activate."
+            {
+              echo "## OTA update was NOT published"
+              echo ""
+              echo "\`EXPO_TOKEN\` is not set, so \`${GITHUB_REF_NAME:-this run}\` published no over-the-air update."
+              echo ""
+              echo "Existing installs will **not** receive this release. They can only get it by"
+              echo "installing the APK attached to the GitHub Release, or from a store build."
+              echo ""
+              echo "To activate: see \`.github/docs/CREDENTIALS.md\`."
+            } >> "$GITHUB_STEP_SUMMARY"
             echo "ready=false" >> "$GITHUB_OUTPUT"; exit 0
           fi
           if grep -q "UD-PENDING-EAS-PROJECT-ID" app.json; then
-            echo "::notice::mobile/app.json still has the placeholder EAS projectId — OTA publish skipped."
+            echo "::warning title=OTA NOT PUBLISHED::mobile/app.json still has the placeholder EAS projectId. This tag shipped NO over-the-air update."
+            {
+              echo "## OTA update was NOT published"
+              echo ""
+              echo "\`mobile/app.json\` still contains the placeholder EAS projectId, so"
+              echo "\`${GITHUB_REF_NAME:-this run}\` published no over-the-air update."
+              echo ""
+              echo "To activate: see \`.github/docs/CREDENTIALS.md\`."
+            } >> "$GITHUB_STEP_SUMMARY"
             echo "ready=false" >> "$GITHUB_OUTPUT"; exit 0
           fi
           echo "ready=true" >> "$GITHUB_OUTPUT"

@@ -5,14 +5,13 @@
  *   with fixed-angle method presets and Hanafi/Shafi Asr. Adds two layers on top:
  *   (1) user-supplied custom Fajr/Isha depression angles, solved via the standard solar
  *   hour-angle equation against pray-calc's own solar ephemeris/noon outputs;
- *   (2) the app's own high-latitude fallback (Angle-Based / Middle-of-the-Night /
- *   One-Seventh) applied whenever a depression angle is geometrically unreachable,
- *   using the classical night-length approximation from the praytimes.org reference
- *   algorithm. NOTE: pray-calc 2.2.0 added its own `highLatitudeRule` option covering
- *   these three plus Aqrab al-Bilad and Aqrab al-Ayyam, which are the only rules that
- *   reach inside the polar circles. The app layer has not been migrated onto it yet —
- *   doing so would also surface `provenance`, letting the UI distinguish a computed
- *   time from a juristic substitution.
+ *   (2) high-latitude substitution, delegated to pray-calc's own `applyHighLatitudeRule`
+ *   rather than reimplemented here, so app and engine cannot drift. Six rules: the three
+ *   night-proportion ones plus Aqrab al-Bilad and Aqrab al-Ayyam, which are the only rules
+ *   that reach inside the polar circles. The rules are applied to the app's OWN Fajr/Isha
+ *   because a fixed-method overlay and custom angles are computed here and never seen by
+ *   the engine. `provenance` comes back with the result so the UI can mark a juristic
+ *   substitution instead of presenting it as a calculation.
  * Inputs: latitude, longitude, date, method key, madhab, tz offset (hours),
  *   optional highLatRule + custom angles + per-prayer manual minute adjustments
  *   (±30, matching a local mosque timetable — applied AFTER high-lat fallback so
@@ -149,11 +148,19 @@ const APP_SOURCE: Record<EngineSource, PrayerTimeSource> = {
  * 12:00 AM. Callers must test with `isPrayerTimeValid` before formatting or scheduling.
  */
 function hoursToDate(base: Date, hours: number): Date {
-  const d = new Date(base);
   if (!Number.isFinite(hours)) return new Date(NaN);
-  const wrapped = ((hours % 24) + 24) % 24;
-  const h = Math.floor(wrapped);
-  const remainderMinutes = (wrapped - h) * 60;
+  const d = new Date(base);
+  // Roll the date rather than wrapping the clock. The engine reports a time past midnight
+  // as e.g. 24.16 (00:09 tomorrow), and wrapping that to 00:09 TODAY moved Isha to the
+  // start of the day — ahead of Fajr in any sorted list, and ahead of "now" for the
+  // countdown and the notification scheduler. Shifting the date keeps the instant correct.
+  // setDate/setHours are used rather than millisecond arithmetic so DST transitions are
+  // handled by the platform.
+  const dayOffset = Math.floor(hours / 24);
+  const within = hours - dayOffset * 24;
+  if (dayOffset !== 0) d.setDate(d.getDate() + dayOffset);
+  const h = Math.floor(within);
+  const remainderMinutes = (within - h) * 60;
   const m = Math.floor(remainderMinutes);
   const s = Math.round((remainderMinutes - m) * 60);
   d.setHours(h, m, s, 0);
