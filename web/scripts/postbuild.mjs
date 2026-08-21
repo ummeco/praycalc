@@ -21,23 +21,31 @@
 import { copyFileSync, cpSync, mkdirSync, existsSync, readdirSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { createRequire } from 'node:module';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const web = resolve(__dirname, '..');
 const funcRoot = resolve(web, '.vercel/output/functions/_render.func');
 
 // --- 1. Copy nrel-spa/lib/spa.js ---
-// In pnpm workspaces the virtual store can be at the workspace root (parent of web/)
-// rather than inside web/node_modules/.pnpm. Search both locations, version-agnostic.
-function findNrelSpaLib(searchRoot) {
-  const pnpmStore = resolve(searchRoot, 'node_modules/.pnpm');
-  if (!existsSync(pnpmStore)) return null;
-  for (const entry of readdirSync(pnpmStore)) {
-    if (!entry.startsWith('nrel-spa@')) continue;
-    const candidate = resolve(pnpmStore, entry, 'node_modules/nrel-spa/lib');
-    if (existsSync(candidate)) return candidate;
+/**
+ * The `lib/` directory of the exact nrel-spa that Node resolves from web/.
+ *
+ * Resolved rather than found by scanning the pnpm store. Scanning returned whichever
+ * `nrel-spa@*` entry readdirSync happened to yield first, which is not necessarily the
+ * copy the build imports: on Vercel it picked a stale one whose lib/ held only `spa.js`,
+ * so every SSR page threw "Cannot find module '../lib/spa.cjs'" at runtime while the
+ * build itself stayed green. require.resolve cannot pick the wrong copy.
+ */
+function findNrelSpaLib() {
+  const require = createRequire(import.meta.url);
+  const pkgJson = require.resolve('nrel-spa/package.json', { paths: [web] });
+  const libDir = resolve(dirname(pkgJson), 'lib');
+  if (!existsSync(libDir)) {
+    console.error(`[postbuild] ERROR: resolved nrel-spa at ${dirname(pkgJson)} but it has no lib/`);
+    process.exit(1);
   }
-  return null;
+  return libDir;
 }
 
 /**
@@ -68,11 +76,7 @@ function findBundledNrelSpaDists(root) {
   return found;
 }
 
-const spaLibDir = findNrelSpaLib(web) ?? findNrelSpaLib(resolve(web, '..'));
-if (!spaLibDir) {
-  console.error('[postbuild] ERROR: nrel-spa/lib not found in web or workspace root .pnpm store');
-  process.exit(1);
-}
+const spaLibDir = findNrelSpaLib();
 const libFiles = readdirSync(spaLibDir);
 if (libFiles.length === 0) {
   console.error('[postbuild] ERROR: nrel-spa/lib is empty');
