@@ -1,9 +1,13 @@
 buildscript {
     ext {
-        buildToolsVersion = "34.0.0"
+        // API 36 (Android 16). Google Play requires every app UPDATE published from
+        // 2026-08-31 to target 36; 35 only keeps an unchanged listing discoverable.
+        // Pinned explicitly rather than inherited so a toolchain change cannot silently
+        // drop it back below the floor.
+        buildToolsVersion = "36.0.0"
         minSdkVersion = 23
-        compileSdkVersion = 34
-        targetSdkVersion = 34
+        compileSdkVersion = 36
+        targetSdkVersion = 36
         ndkVersion = "26.1.10909125"
         kotlinVersion = "1.9.22"
     }

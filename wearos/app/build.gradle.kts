@@ -14,15 +14,16 @@ if (localPropsFile.exists()) {
 
 android {
     namespace = "app.praycalc"
-    compileSdk = 34
+    // API 36 (Android 16) — Play requires it for any update published from 2026-08-31.
+    compileSdk = 36
     ndkVersion = "27.1.12297006"
 
     defaultConfig {
         applicationId = "app.praycalc"
         minSdk = 30
-        targetSdk = 34
-        versionCode = 2
-        versionName = "1.2.0"
+        targetSdk = 36
+        versionCode = 3
+        versionName = "1.2.1"
 
         ndk {
             abiFilters += listOf("armeabi-v7a", "arm64-v8a", "x86", "x86_64")

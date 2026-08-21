@@ -1,3 +1,15 @@
+## [mobile-v2.3.2, tv-v1.1.2] — 2026-08-21 — Google Play API 36 compliance
+
+### Changed
+- **All Android surfaces now target API 36 (Android 16).** Google Play requires every app *update* published from **2026-08-31** to target 36; API 35 only keeps an unchanged listing discoverable to new users. TV and wearOS were still on 34, and mobile inherited whatever the Expo toolchain defaulted to rather than pinning a value.
+  - `tv/android/build.gradle`: compile/target 34 → 36, buildTools 36.0.0
+  - `wearos/app/build.gradle.kts`: compile/target 34 → 36
+  - `mobile`: pinned explicitly via a new `expo-build-properties` plugin entry (compile/target 36, buildTools 36.0.0) instead of inheriting. Verified by running `expo prebuild` and reading the generated `android/gradle.properties`, which now carries `android.targetSdkVersion=36`.
+- `flutter/` needs no change: its release workflow is disabled and the directory is an archived read-only reference, so it publishes nothing.
+
+### Notes
+- Pinning rather than inheriting is deliberate — an inherited target can silently drop below the floor on a toolchain change, and it cannot be audited without running a prebuild.
+
 ## [mobile-v2.3.1, tv-v1.1.1] — 2026-08-21 — a post-midnight Isha no longer sorts before Fajr
 
 ### Fixed
