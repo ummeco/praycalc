@@ -86,7 +86,14 @@ export function buildUpcomingEvents(sources: EventSource[], today: Date): TvIsla
 export default function IslamicEventsScreen(): React.JSX.Element {
   const navigation = useNavigation<EventsNavProp>();
   const [firstNode, firstRef] = useFocusDestination<TouchableHighlight>();
-  const todayStr = new Date().toISOString().split('T')[0];
+  // The device's own calendar day. toISOString() would give the UTC day, which west of
+  // UTC is tomorrow's date all evening — so the "today" marker and the upcoming-events
+  // cutoff would both land on the wrong day. en-CA formats as YYYY-MM-DD.
+  const todayStr = new Intl.DateTimeFormat('en-CA', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).format(new Date());
 
   const [{ data, fetching, error }] = useQuery<{ pc_islamic_event: PcIslamicEventRow[] }>({
     query: GET_ISLAMIC_EVENTS,
