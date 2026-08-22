@@ -11,7 +11,7 @@
  */
 
 import { geocodeSlugParts } from '@/lib/geo.server';
-import { getUtcOffset } from '@/lib/geo';
+import { getUtcOffset, civilDayIn } from '@/lib/geo';
 import { getPrayerTimes, isKnownMethod, DPC_METHOD_ID } from '@/lib/prayers.server';
 
 const p = Astro.url.searchParams;
@@ -35,10 +35,14 @@ if (!geo) {
 }
 
 const timezone = geo.timezone ?? 'UTC';
+// `now` resolves the offset at this instant only. The calendar day comes from the embedded
+// location, never from the server: this renders inside other people's sites, so a wrong day
+// appears under someone else's brand and we would not necessarily hear about it. See P12-E01.
 const now = new Date();
 const tzOffset = getUtcOffset(timezone, now);
+const today = civilDayIn(timezone, now);
 // method=DPC (or any unset value) returns the dynamic default; a fixed preset overrides Fajr/Isha.
-const prayers = getPrayerTimes(now, geo.lat, geo.lng, tzOffset, false, false, method);
+const prayers = getPrayerTimes(today, geo.lat, geo.lng, tzOffset, false, false, method);
 
 const PRAYERS = ['Fajr', 'Sunrise', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'] as const;
 

@@ -53,11 +53,28 @@ function nowHHMMSS(tz: string): string {
   }
 }
 
-/** Today's date as YYYY-MM-DD for the /api/prayers range. */
-function todayISODate(): string {
-  const d = new Date();
-  const pad = (n: number) => n.toString().padStart(2, '0');
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+/**
+ * Today's date as YYYY-MM-DD **in the city being displayed**, for the /api/prayers range.
+ *
+ * WHY the timezone argument: this used to read the viewer's own device day, so someone in
+ * London looking at Auckland's page requested London's date for Auckland's times. The page
+ * and the range have to agree on which day "today" is. See P12-E01.
+ */
+function todayISODate(tz: string): string {
+  try {
+    // en-CA formats as YYYY-MM-DD, which is exactly the form /api/prayers expects.
+    return new Intl.DateTimeFormat('en-CA', {
+      timeZone: tz,
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    }).format(new Date());
+  } catch {
+    // An unusable zone falls back to the device day rather than failing the whole island.
+    const d = new Date();
+    const pad = (n: number) => n.toString().padStart(2, '0');
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+  }
 }
 
 /** Public entry point — wraps the island body in an error boundary. */
@@ -118,7 +135,7 @@ function CityClientInner({
       return;
     }
     let cancelled = false;
-    const iso = todayISODate();
+    const iso = todayISODate(timezone);
     const params = new URLSearchParams({
       lat: String(lat),
       lng: String(lng),

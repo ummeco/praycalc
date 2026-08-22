@@ -62,3 +62,59 @@ describe("GET /api/calendar.ics", () => {
     expect(body).toContain("\r\n"); // RFC 5545 CRLF line endings
   });
 });
+
+// ---------------------------------------------------------------------------
+// P12-E01-T04 — the feed is anchored on the SUBSCRIBER's calendar day.
+// It previously started from the server's UTC day, so a subscriber far from UTC
+// got a feed beginning on the wrong date. An ICS feed is subscribed once and
+// re-fetched for months, so that error persisted silently in their calendar app.
+// ---------------------------------------------------------------------------
+describe("calendar.ics — subscriber's calendar day", () => {
+  /** The day a zone is on right now, via Intl — an independent oracle. */
+  function oracleToday(tz: string): string {
+    return new Intl.DateTimeFormat('en-CA', {
+      timeZone: tz, year: 'numeric', month: '2-digit', day: '2-digit',
+    }).format(new Date());
+  }
+
+  it('starts on the subscriber\'s day, not the server\'s UTC day', async () => {
+    for (const tz of ['Pacific/Auckland', 'Pacific/Honolulu', 'Asia/Tokyo', 'UTC']) {
+      const { status, body } = await callIcs(
+        `lat=21.3891&lng=39.8579&tz=${encodeURIComponent(tz)}&days=3`,
+      );
+      expect(status).toBe(200);
+
+      // DTSTART is emitted as a UTC instant (correct ICS), so its printed date is the UTC
+      // date, NOT the subscriber's. Resolve each instant back into the subscriber's zone
+      // before comparing — comparing the printed date against a local day is precisely the
+      // frame-mixing mistake this whole ticket exists to fix.
+      const instants = [...body.matchAll(/DTSTART:(\d{8})T(\d{6})Z/g)].map((m) => {
+        const d = m[1] as string;
+        const t = m[2] as string;
+        return new Date(
+          `${d.slice(0, 4)}-${d.slice(4, 6)}-${d.slice(6, 8)}` +
+            `T${t.slice(0, 2)}:${t.slice(2, 4)}:${t.slice(4, 6)}Z`,
+        );
+      });
+      expect(instants.length, `${tz} produced no timed events`).toBeGreaterThan(0);
+
+      const localDays = instants
+        .map((at) =>
+          new Intl.DateTimeFormat('en-CA', {
+            timeZone: tz, year: 'numeric', month: '2-digit', day: '2-digit',
+          }).format(at),
+        )
+        .sort();
+
+      expect(localDays[0], `${tz} feed start`).toBe(oracleToday(tz));
+    }
+  });
+
+  it('rejects an unusable tz with 400, not an uncaught throw', async () => {
+    // The day anchor and the offset both parse tz, so the guard has to run before either.
+    for (const bad of ['Not/AZone', '99']) {
+      const { status } = await callIcs(`lat=21.3891&lng=39.8579&tz=${encodeURIComponent(bad)}&days=2`);
+      expect(status, `tz=${bad}`).toBe(400);
+    }
+  });
+});

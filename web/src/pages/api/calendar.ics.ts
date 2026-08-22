@@ -16,7 +16,7 @@
 
 import type { APIRoute } from 'astro';
 import { getPrayerTimes } from '@/lib/prayers.server';
-import { getUtcOffset } from '@/lib/geo';
+import { getUtcOffset, civilDayIn } from '@/lib/geo';
 import { getIslamicEventsForGregorianYear } from '@/lib/islamic-dates';
 
 const PRAYER_NAMES = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'] as const;
@@ -93,23 +93,28 @@ export const GET: APIRoute = ({ url }) => {
 
   const uid_base = `praycalc-${lat.toFixed(4)}-${lng.toFixed(4)}`.replace(/\./g, 'p');
 
+  // Resolve the timezone once, before it is needed, so an unusable value is a 400 rather
+  // than an uncaught throw. Both the offset and the day anchor depend on it.
+  let tzOffset: number;
+  let startDay: string;
+  try {
+    tzOffset = getUtcOffset(tz, now);
+    // Anchor the feed on the SUBSCRIBER's calendar day, not the server's. An ICS feed is
+    // subscribed once and re-fetched for months, so a day-boundary error here persists
+    // silently in the subscriber's calendar app rather than being noticed. See P12-E01.
+    startDay = civilDayIn(tz, now);
+  } catch (e) {
+    return new Response(e instanceof Error ? e.message : 'Invalid tz', { status: 400 });
+  }
+
+  const [sy, sm, sd] = startDay.split('-').map(Number) as [number, number, number];
+
   for (let d = 0; d < days; d++) {
-    const dayDate = new Date(now);
-    dayDate.setUTCDate(now.getUTCDate() + d);
+    // Step in whole calendar days from the anchor. UTC noon is a safe carrier for a pure
+    // calendar day: it is furthest from either boundary, so no rounding can cross it.
+    const dayDate = new Date(Date.UTC(sy, sm - 1, sd + d, 12, 0, 0));
     const dateStr = dayDate.toISOString().slice(0, 10);
-
-    let tzOffset: number;
-
-    try {
-
-      tzOffset = getUtcOffset(tz);
-
-    } catch (e) {
-
-      return new Response(e instanceof Error ? e.message : 'Invalid tz', { status: 400 });
-
-    }
-    const times = getPrayerTimes(dayDate, lat, lng, tzOffset, hanafi);
+    const times = getPrayerTimes(dateStr, lat, lng, tzOffset, hanafi);
 
     for (let pi = 0; pi < PRAYER_NAMES.length; pi++) {
       const name = PRAYER_NAMES[pi] as PrayerName;
@@ -152,7 +157,9 @@ export const GET: APIRoute = ({ url }) => {
   if (includeEvents) {
     // Window covers [today, today + days). Gather events across every Gregorian
     // year the window spans (usually 1, but 2 near a Dec/Jan boundary).
-    const windowStart = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+    // Same anchor as the prayer window above, or the two halves of one feed disagree
+    // about which day "today" is.
+    const windowStart = new Date(Date.UTC(sy, sm - 1, sd));
     const windowEnd = new Date(windowStart);
     windowEnd.setUTCDate(windowEnd.getUTCDate() + days);
 

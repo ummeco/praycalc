@@ -16,7 +16,7 @@
 import RootLayout from '@/layouts/RootLayout.astro';
 import CityClient from '@/islands/city/CityClient';
 import { geocodeSlugParts } from '@/lib/geo.server';
-import { getUtcOffset } from '@/lib/geo';
+import { getUtcOffset, civilDayIn } from '@/lib/geo';
 import { getPrayerTimes } from '@/lib/prayers.server';
 import { placeSchema, breadcrumbSchema, type Crumb } from '@/lib/structured-data';
 
@@ -29,10 +29,15 @@ if (!geo) {
 }
 
 const timezone = geo.timezone ?? 'UTC';
+// `now` is only ever used to resolve the zone's offset AT this instant (DST moves it).
+// The calendar day must come from the city, not from the server: this page renders on a
+// UTC box, so using the server's date paired with the city's offset served the wrong day
+// for 12 hours out of every 24 in Auckland, 10 in Honolulu, 9 in Tokyo. See P12-E01.
 const now = new Date();
 const tzOffset = getUtcOffset(timezone, now);
-const shafiPrayers = getPrayerTimes(now, geo.lat, geo.lng, tzOffset, false);
-const hanafiPrayers = getPrayerTimes(now, geo.lat, geo.lng, tzOffset, true);
+const today = civilDayIn(timezone, now);
+const shafiPrayers = getPrayerTimes(today, geo.lat, geo.lng, tzOffset, false);
+const hanafiPrayers = getPrayerTimes(today, geo.lat, geo.lng, tzOffset, true);
 
 const BASE_URL = 'https://praycalc.com';
 const pageUrl = `${BASE_URL}/${slug}`;

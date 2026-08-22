@@ -11,6 +11,7 @@
  */
 
 import { calcTimes, calcTimesAll, METHODS } from 'pray-calc';
+import type { CivilDateInput } from 'pray-calc';
 import type { FormattedPrayerTimes, FormattedPrayerTimesAll } from 'pray-calc';
 import type { PrayerResult } from './prayer-utils';
 
@@ -92,6 +93,10 @@ const _HANAFI_ANGLES_METHOD_ID = 'MWL' as const;
  * @param lng - Longitude
  * @param tzOffset - UTC offset in hours (from luxon DateTime)
  * @param hanafi - Use Hanafi Asr calculation (shadow = 2x)
+ * @param date - The calendar day to compute. Prefer the unambiguous 'YYYY-MM-DD' form: a
+ *   Date is an instant, not a day, and which day it denotes depends on the host timezone.
+ *   Callers rendering for a location should pass `civilDayIn(timezone)` so the date and the
+ *   offset come from the same zone (see P12-E01).
  * @param hanafiAngles - Use MWL fixed-angle Fajr (18°) / Isha (17°) instead of dynamic calculation
  * @param method - Optional method ID (see KNOWN_METHOD_IDS). 'DPC' (or omitting method)
  *   returns the PrayCalc Dynamic Method's own per-location/season Fajr/Isha times. Any
@@ -99,7 +104,7 @@ const _HANAFI_ANGLES_METHOD_ID = 'MWL' as const;
  *   seasonal times. Unknown/absent -> DPC dynamic default (backward compatible).
  */
 export function getPrayerTimes(
-  date: Date,
+  date: CivilDateInput,
   lat: number,
   lng: number,
   tzOffset: number,
