@@ -1,5 +1,14 @@
 # praycalc/mobile Changelog
 
+## [2.3.3] - 2026-08-22
+
+### Fixed
+- **Prayer times for a given day no longer drift as the day goes on.** The engine took the exact moment you asked rather than the calendar day, so the same day's times shifted by up to 79 seconds between morning and night. On device that showed as a countdown that crept. Via `pray-calc` 2.4.0.
+- **Devices east of UTC no longer compute the wrong calendar day.** A phone in Tokyo asking for a date got the previous day's times, out by about a minute and a half at the equinox.
+
+### Changed
+- The app no longer builds its own UTC-noon date; it uses the normalisation `pray-calc` exports, so the two cannot drift apart.
+
 ## [2.2.2] - 2026-07-12
 
 ### Added

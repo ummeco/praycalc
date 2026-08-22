@@ -1,5 +1,11 @@
 # Changelog — PrayCalc TV
 
+## [1.1.3] - 2026-08-22
+
+### Fixed
+- **The Islamic events screen no longer shows tomorrow's date all evening.** "Today" was derived from UTC, so west of UTC the today marker and the upcoming-events cutoff both landed a day ahead after local afternoon. It now uses the TV's own calendar day.
+- **Prayer times for a given day no longer drift as the day goes on**, via `pray-calc` 2.4.0 — the engine took the exact moment rather than the calendar day, shifting the same day's times by up to 79 seconds.
+
 ## [1.0.0] - 2026-07-11
 
 ### Added
