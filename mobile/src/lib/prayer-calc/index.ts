@@ -21,7 +21,7 @@
  * SPORT: REGISTRY-FUNCTIONS.md#praycalc-mobile-lib-prayer-calc
  */
 
-import { getTimesAll, getTimes, solarEphemeris, toJulianDate, applyHighLatitudeRule } from 'pray-calc';
+import { getTimesAll, getTimes, solarEphemeris, toJulianDate, applyHighLatitudeRule, toCivilDate } from 'pray-calc';
 import type { HighLatitudeRule as EngineRule, TimeSource as EngineSource } from 'pray-calc';
 import type {
   PrayerTimes, Madhab, HighLatRule, PrayerName, PrayerProvenance, PrayerTimeSource,
@@ -226,7 +226,9 @@ export function calculatePrayerTimesDetailed(
   let ishaAngle: number;
 
   if (methodKey === 'Custom' && customAngles) {
-    const noonUtc = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), 12, 0, 0));
+    // Same normalisation the engine applies internally — imported rather than repeated so
+    // the two cannot drift apart (pray-calc >= 2.4.0 exports it).
+    const noonUtc = toCivilDate(date);
     const { decl } = solarEphemeris(toJulianDate(noonUtc));
     fajrAngle = customAngles.fajr;
     ishaAngle = customAngles.isha;

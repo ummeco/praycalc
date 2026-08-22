@@ -64,7 +64,7 @@
     "memoize-one": "^4.0.3",
     "nrel-spa": "^2.1.0",
     "nullthrows": "^1.1.1",
-    "pray-calc": "^2.3.1",
+    "pray-calc": "^2.4.0",
     "promise": "^8.3.0",
     "react": "19.0.0",
     "react-i18next": "^15.1.2",
