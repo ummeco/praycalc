@@ -110,9 +110,14 @@ export function calculatePrayerTimes(
   const cached = cache.get<PrayerTimesResponse>(key);
   if (cached) return cached;
 
+  // Anchored at UTC noon deliberately, so every field below must be read in UTC. Reading
+  // local components off a UTC-noon instant lands a day late at UTC+13 and UTC+14, where
+  // noon reads as 01:00 or 02:00 of the following local day — verified: day-of-year came
+  // back as 2 instead of 1 for 2026-01-01 under Pacific/Kiritimati, shifting the solar
+  // declination by a full day.
   const date = new Date(dateStr + 'T12:00:00Z');
   const dayOfYear = getDayOfYear(date);
-  const year = date.getFullYear();
+  const year = date.getUTCFullYear();
 
   // Solar calculations (simplified NREL SPA approximation)
   const d = dayOfYear - 1 + 0.5;
@@ -230,11 +235,38 @@ export function calculatePrayerTimes(
 }
 
 function getDayOfYear(date: Date): number {
-  const start = new Date(date.getFullYear(), 0, 0);
-  const diff = date.getTime() - start.getTime();
+  // UTC throughout: `date` is a UTC-noon anchor, so a local year-start would be measured
+  // from a different instant than the date itself and drift by a day near the extremes.
+  const start = Date.UTC(date.getUTCFullYear(), 0, 0);
+  const diff = date.getTime() - start;
   return Math.floor(diff / 86400000);
 }
 
 function jdFromDate(date: Date): number {
   return date.getTime() / 86400000 + 2440587.5;
+}
+
+/**
+ * The calendar day currently in progress at a given longitude, as 'YYYY-MM-DD'.
+ *
+ * WHY: the voice surfaces answer "what are today's prayer times" for a person standing
+ * somewhere. Defaulting to `new Date().toISOString().split('T')[0]` gives the SERVER's UTC
+ * day, so a user in Auckland asking at 10am local was answered for the previous day.
+ *
+ * WHY longitude rather than a timezone database: this package has no tz dependency and the
+ * voice payloads carry only coordinates. Solar offset (longitude / 15) picks the right
+ * calendar day everywhere except within roughly an hour of local midnight, where political
+ * timezone borders and DST can disagree with solar time. That is a large improvement on
+ * assuming UTC, which is wrong for up to half the day at high longitudes.
+ *
+ * Prefer an explicit IANA timezone if one ever becomes available in these payloads.
+ *
+ * @param lng - Longitude in decimal degrees, east positive
+ * @param at  - The instant to resolve at; defaults to now
+ * @returns The local calendar day as 'YYYY-MM-DD'
+ */
+export function localDayAtLongitude(lng: number, at: Date = new Date()): string {
+  const offsetHours = Math.round(lng / 15);
+  const shifted = new Date(at.getTime() + offsetHours * 3_600_000);
+  return shifted.toISOString().split('T')[0] as string;
 }

@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { calculatePrayerTimes } from '../lib/prayer-calculator.js';
+import { calculatePrayerTimes, localDayAtLongitude } from '../lib/prayer-calculator.js';
 import { hasUmmatPlus, checkFreeQueryLimit } from '../lib/subscription.js';
 import { resolveUserFromToken } from './oauth.js';
 import { getUserLocation, NO_LOCATION_SPEECH } from '../lib/user-location.js';
@@ -39,7 +39,8 @@ alexaRouter.post('/fulfillment', async (req, res) => {
   }
   const lat = userLocation.lat;
   const lng = userLocation.lng;
-  const dateStr = new Date().toISOString().split('T')[0];
+  // The user's calendar day, not the server's — see localDayAtLongitude.
+  const dateStr = localDayAtLongitude(lng);
   const times = calculatePrayerTimes(lat, lng, dateStr);
 
   // Handle request types
