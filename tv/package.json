@@ -1,6 +1,6 @@
 {
   "name": "praycalc-tv",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "private": true,
   "scripts": {
     "start": "react-native start",
@@ -25,7 +25,10 @@
     "react": "18.2.0",
     "react-i18next": "^15.0.0",
     "react-native": "npm:react-native-tvos@0.74.5-0",
+    "react-native-gesture-handler": "2.16.2",
     "react-native-qrcode-svg": "^6.3.2",
+    "react-native-safe-area-context": "4.10.5",
+    "react-native-screens": "3.31.1",
     "react-native-svg": "15.2.0",
     "react-native-video": "6.10.1",
     "urql": "^4.1.0",
