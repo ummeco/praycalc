@@ -133,5 +133,6 @@ coverage/
 
 # C + Python build artifacts (PKG-09 test binary, bytecode caches)
 __pycache__/
+.pytest_cache/
 core/c/test_pray_calc
 core/c/libpraycalc.a

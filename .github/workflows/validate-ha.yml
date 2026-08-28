@@ -8,6 +8,11 @@ name: Validate Home Assistant Integration
 # a monorepo can never satisfy. HACS distribution therefore lives in the dedicated mirror
 # repo ummeco/praycalc-ha, where both hassfest and hacs/action run green on every push.
 # Sync procedure: smart/homeassistant/HACS.md.
+#
+# hassfest does NOT validate custom-integration translations, and it does not boot Home
+# Assistant. The `translations` and `pytest` jobs below cover that gap — v0.7.1 shipped with
+# no translations/ directory and a Hijri sensor that raised AttributeError on every update,
+# both with fully green CI.
 
 on:
   push:
@@ -39,3 +44,87 @@ jobs:
           ls -la "${GITHUB_WORKSPACE}"
 
       - uses: home-assistant/actions/hassfest@master
+
+  translations:
+    name: translations present and in sync
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Every translation key in strings.json exists in translations/en.json
+        working-directory: smart/homeassistant/custom_components/praycalc
+        run: |
+          python3 - <<'PY'
+          import json, sys
+          from pathlib import Path
+
+          strings = Path("strings.json")
+          runtime = Path("translations/en.json")
+
+          if not runtime.exists():
+              sys.exit(
+                  "translations/en.json is missing. Home Assistant loads runtime "
+                  "translations only from translations/<lang>.json; strings.json is "
+                  "never read by a custom integration at runtime."
+              )
+
+          def flatten(node, prefix=""):
+              if isinstance(node, dict):
+                  for key, value in node.items():
+                      yield from flatten(value, f"{prefix}.{key}" if prefix else key)
+              else:
+                  yield prefix
+
+          src = set(flatten(json.loads(strings.read_text())))
+          dst = set(flatten(json.loads(runtime.read_text())))
+
+          if missing := sorted(src - dst):
+              sys.exit("Keys in strings.json missing from translations/en.json:\n  "
+                       + "\n  ".join(missing))
+
+          print(f"OK: {len(src)} keys present in translations/en.json")
+          PY
+
+      - name: Every translation_key used in code has a matching entry
+        working-directory: smart/homeassistant/custom_components/praycalc
+        run: |
+          python3 - <<'PY'
+          import json, re, sys
+          from pathlib import Path
+
+          entity = json.loads(Path("translations/en.json").read_text())["entity"]["sensor"]
+
+          # Literal keys assigned on the entity classes.
+          keys = set(re.findall(
+              r'_attr_translation_key\s*=\s*"([^"]+)"', Path("sensor.py").read_text()
+          ))
+          # Prayer sensors set their key from PRAYER_NAMES at runtime.
+          keys |= set(re.findall(
+              r'PRAYER_NAMES\s*=\s*\[([^\]]+)\]', Path("const.py").read_text()
+          )[0].replace('"', '').replace("'", "").replace(" ", "").split(","))
+
+          if missing := sorted(k for k in keys - set(entity) if k):
+              sys.exit(f"translation_key values with no translation: {missing}")
+
+          print(f"OK: {len(keys)} translation keys resolve")
+          PY
+
+  pytest:
+    name: pytest (real Home Assistant)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.14'
+
+      - name: Install test dependencies
+        working-directory: smart/homeassistant
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-test.txt
+
+      - name: Run tests
+        working-directory: smart/homeassistant
+        run: pytest tests/ -v

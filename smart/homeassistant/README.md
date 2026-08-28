@@ -12,7 +12,8 @@ Powered by the [PrayCalc Smart API](https://praycalc.com).
 - **Hijri date** sensor with day, month name, and year
 - Six calculation methods: ISNA, MWL, Egypt, Umm al-Qura, Tehran, Karachi
 - Two madhab options for Asr: Shafi'i (standard) and Hanafi (double shadow)
-- Updates every 60 seconds
+- Countdown updates every minute; prayer times are fetched twice an hour
+- Change your method or madhab any time from the integration's **Configure** button
 - Pre-fills location from your Home Assistant configuration
 - Supports self-hosted PrayCalc Smart API instances
 
@@ -40,31 +41,58 @@ Powered by the [PrayCalc Smart API](https://praycalc.com).
 4. Select your calculation method and madhab
 5. Click **Submit**
 
+### Changing settings later
+
+- **Calculation method, madhab or API URL** — open the PrayCalc integration and
+  click **Configure**. The entry reloads in place and keeps its history.
+- **Location** — use the three-dot menu on the integration entry and choose
+  **Reconfigure**. Changing coordinates rewrites the entry's identity, so this
+  is deliberately kept separate from the options above.
+
+## Requirements
+
+Home Assistant **2026.3.0** or newer. The integration's brand icons are only
+served from 2026.3 onward, and the config flow uses APIs added in 2024.4.
+
 ## Sensors
 
-| Entity | Type | Description |
+> **Your entity IDs include your city.** Home Assistant builds each entity ID
+> from the device name, and the device is named after the city you entered
+> during setup. Entering "Detroit" produces `sensor.praycalc_detroit_fajr`;
+> leaving the city blank produces `sensor.praycalc_fajr`. The examples below use
+> the blank-city form. Check **Settings > Devices & Services > PrayCalc >
+> entities** for your exact IDs, or copy them from Developer Tools > States.
+
+| Entity (no city set) | Type | Description |
 | --- | --- | --- |
-| `sensor.praycalc_next_prayer` | string | Name of the next prayer (e.g., "Dhuhr") |
+| `sensor.praycalc_next_prayer` | enum | Next prayer as a lowercase key: `fajr`, `dhuhr`, `asr`, `maghrib`, `isha` |
 | `sensor.praycalc_fajr` | timestamp | Fajr prayer time |
-| `sensor.praycalc_sunrise` | timestamp | Sunrise time |
+| `sensor.praycalc_sunrise` | timestamp | Sunrise time (end of the Fajr window) |
 | `sensor.praycalc_dhuhr` | timestamp | Dhuhr prayer time |
 | `sensor.praycalc_asr` | timestamp | Asr prayer time |
 | `sensor.praycalc_maghrib` | timestamp | Maghrib prayer time |
 | `sensor.praycalc_isha` | timestamp | Isha prayer time |
-| `sensor.praycalc_qibla` | degrees | Qibla bearing from your location |
-| `sensor.praycalc_hijri_date` | string | Current Hijri date (e.g., "15 Ramadan 1447") |
+| `sensor.praycalc_qibla_direction` | degrees | Qibla bearing from your location |
+| `sensor.praycalc_hijri_date` | string | Current Hijri date (e.g., "15 Ramadan 1447 AH") |
+
+The next-prayer sensor's **state** is the lowercase key, while the UI shows the
+translated label ("Fajr"). Compare against the key in automations. Sunrise is
+never reported as the next prayer, since it ends the Fajr window rather than
+beginning a new one.
 
 ### Next Prayer Attributes
 
 | Attribute | Example | Description |
 | --- | --- | --- |
 | `prayer_name` | `dhuhr` | Lowercase prayer name |
-| `prayer_time` | `12:34` | 24-hour time string |
+| `prayer_time` | `2026-08-28T13:35:00-04:00` | Prayer time as an ISO timestamp |
 | `countdown` | `1h 23m` | Human-readable countdown |
 | `countdown_minutes` | `83` | Minutes until the prayer |
 | `calculation_method` | `ISNA (...)` | Full method name |
 | `madhab` | `shafii` | Selected madhab |
 | `city` | `Detroit` | Configured city name |
+| `latitude` | `42.3314` | Configured latitude |
+| `longitude` | `-83.0458` | Configured longitude |
 
 ### Individual Prayer Attributes
 
@@ -80,7 +108,6 @@ Powered by the [PrayCalc Smart API](https://praycalc.com).
 | --- | --- | --- |
 | `qibla_bearing` | `56.3` | Bearing in degrees |
 | `qibla_compass` | `ENE` | Compass direction |
-| `distance_km` | `10432` | Distance to Kaaba in km |
 
 ### Hijri Date Attributes
 
@@ -89,8 +116,8 @@ Powered by the [PrayCalc Smart API](https://praycalc.com).
 | `hijri_day` | `15` | Day of the Hijri month |
 | `hijri_month` | `Ramadan` | Hijri month name |
 | `hijri_year` | `1447` | Hijri year |
+| `hijri_date` | `15 Ramadan 1447 AH` | Full formatted date |
 | `hijri_month_number` | `9` | Hijri month number |
-| `hijri_weekday` | `Friday` | Day of the week |
 
 ## Automation Examples
 
@@ -106,7 +133,8 @@ automation:
     condition:
       - condition: state
         entity_id: sensor.praycalc_next_prayer
-        state: "Fajr"
+        # The state is the lowercase key, not the display label.
+        state: "fajr"
       - condition: numeric_state
         entity_id: sensor.praycalc_next_prayer
         attribute: countdown_minutes
@@ -161,7 +189,7 @@ entities:
   - entity: sensor.praycalc_next_prayer
     name: Next Prayer
     icon: mdi:mosque
-  - entity: sensor.praycalc_qibla
+  - entity: sensor.praycalc_qibla_direction
     name: Qibla Direction
     icon: mdi:compass-rose
 ```
