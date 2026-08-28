@@ -120,6 +120,65 @@ jobs:
           cp "$APK" "/tmp/PrayCalc-TV-${VERSION}.apk"
           cd /tmp && shasum -a 256 "PrayCalc-TV-${VERSION}.apk" > "PrayCalc-TV-${VERSION}.apk.sha256"
 
+      - name: Upload APK for the smoke gate
+        uses: actions/upload-artifact@v4
+        with:
+          name: tv-apk
+          path: |
+            /tmp/PrayCalc-TV-*.apk
+            /tmp/PrayCalc-TV-*.apk.sha256
+          retention-days: 7
+          if-no-files-found: error
+
+  # Boot the APK that is about to be published on a real Android TV emulator and
+  # assert it survives launch. v1.1.3 shipped and crashed on every cold start
+  # (React 19 against react-native-tvos 0.74, which pins React 18.2.0) because
+  # nothing between "gradle produced an APK" and "gh release create" ever ran it.
+  # This job is that missing step. A red smoke means no release is published.
+  smoke:
+    name: Boot smoke before publishing
+    needs: build-apk
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Enable KVM for emulator
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: tv-apk
+          path: /tmp
+
+      - name: Boot Android TV emulator + install + launch + assert alive
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          # No x86_64 Android TV system image exists below API 36; 33 and 34 ship
+          # only x86 and arm64-v8a. 36 also matches the app's compileSdk/targetSdk.
+          api-level: 36
+          target: android-tv
+          arch: x86_64
+          profile: tv_1080p
+          disable-animations: true
+          emulator-boot-timeout: 900
+          # Single line: this action runs each line of `script` as its own `sh -c`,
+          # so shell variables do not survive between lines.
+          script: bash .github/scripts/tv-smoke.sh /tmp/PrayCalc-TV-*.apk
+
+  publish:
+    name: Publish GitHub Release
+    needs: smoke
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: tv-apk
+          path: /tmp
+
       - name: Publish GitHub Release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -128,6 +187,6 @@ jobs:
           gh release create "$GITHUB_REF_NAME" \
             --repo "$GITHUB_REPOSITORY" \
             --title "PrayCalc TV ${VERSION} (Android TV / Fire TV)" \
-            --notes "Direct-install Android APK (signed) for Android TV and Fire TV sideload: download, transfer to the device (adb install or a sideload app like Downloader), and allow the install prompt. Amazon Appstore (Fire TV) and Google Play (Android TV listing) submissions ship separately via the store pipelines (release-tv.yml, manual dispatch) — this release is the fast, no-store-review path." \
+            --notes "Direct-install Android APK (signed) for Android TV and Fire TV sideload: download, transfer to the device (adb install or a sideload app like Downloader), and allow the install prompt. Amazon Appstore (Fire TV) and Google Play (Android TV listing) submissions ship separately via the store pipelines (release-tv.yml, manual dispatch) — this release is the fast, no-store-review path. This APK was booted on an Android TV emulator and verified to survive launch before publishing." \
             --latest=false \
             "/tmp/PrayCalc-TV-${VERSION}.apk" "/tmp/PrayCalc-TV-${VERSION}.apk.sha256"
