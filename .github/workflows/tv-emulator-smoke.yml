@@ -19,6 +19,11 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 40
     steps:
+      # Required for .github/scripts/tv-smoke.sh. This job used to run entirely
+      # from a downloaded release artifact and had no checkout, so omitting it
+      # fails the smoke step with exit 127 (command not found).
+      - uses: actions/checkout@v7
+
       - name: Enable KVM for emulator
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
