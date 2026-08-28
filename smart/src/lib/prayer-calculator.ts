@@ -45,11 +45,38 @@ function cacheKey(lat: number, lng: number, date: string, method: string, madhab
 }
 
 /** Convert decimal hours to HH:MM format. Wraps times past midnight UTC (e.g. Isha in western zones). */
+/**
+ * Format an hour-of-day float as "HH:MM" in UTC.
+ *
+ * WHY the normalisation is two-sided: solar noon is `12 - EoT/60 - lng/15`, so
+ * east of Greenwich the whole day shifts earlier in UTC and Fajr routinely
+ * lands before 00:00 as a negative number (Jakarta -2.08, Tokyo -4.2, Auckland
+ * -6.5). Rejecting `h < 0` returned "--:--" for Fajr and Sunrise across
+ * Indonesia, Malaysia, Japan, Australia and New Zealand. West of Greenwich the
+ * opposite happens and Isha exceeds 24. JavaScript's `%` keeps the sign of the
+ * dividend, so `((h % 24) + 24) % 24` is required to bring both ends into range.
+ *
+ * WHY the minute carry: `Math.round` on the fractional part can yield exactly
+ * 60, producing invalid strings like "01:60" (observed for Mecca's Fajr). The
+ * carry promotes it to the next hour, wrapping 23:60 to 00:00.
+ *
+ * Callers receive a UTC wall-clock time with no date attached; the consumer is
+ * responsible for anchoring it to a real instant.
+ */
 function hoursToTime(h: number): string {
-  if (!isFinite(h) || h < 0) return '--:--';
-  h = h % 24; // Wrap e.g. 24.82 → 0.82 for Isha that crosses midnight UTC
-  const hours = Math.floor(h);
-  const minutes = Math.round((h - hours) * 60);
+  if (!isFinite(h)) return '--:--';
+
+  h = ((h % 24) + 24) % 24;
+
+  let hours = Math.floor(h);
+  let minutes = Math.round((h - hours) * 60);
+
+  if (minutes === 60) {
+    minutes = 0;
+    hours += 1;
+  }
+  hours = hours % 24;
+
   return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
 }
 
@@ -117,10 +144,8 @@ export function calculatePrayerTimes(
   // declination by a full day.
   const date = new Date(dateStr + 'T12:00:00Z');
   const dayOfYear = getDayOfYear(date);
-  const year = date.getUTCFullYear();
 
   // Solar calculations (simplified NREL SPA approximation)
-  const d = dayOfYear - 1 + 0.5;
   const g = (357.529 + 0.98560028 * (jdFromDate(date) - 2451545.0)) % 360;
   const gRad = (g * Math.PI) / 180;
   const q = (280.459 + 0.98564736 * (jdFromDate(date) - 2451545.0)) % 360;
@@ -191,9 +216,20 @@ export function calculatePrayerTimes(
     isha: hoursToTime(isha),
   };
 
-  // Determine next prayer
+  // Determine next prayer.
+  //
+  // WHY normalise both sides: the prayer hours above are UTC, so "now" must be
+  // UTC too. Adding `lng / 15` to the current time (as this once did) compares
+  // local solar hours against UTC prayer hours — two different frames — which
+  // made every prayer look past-due and returned null for most of the world.
+  // Both sides are wrapped into [0, 24) so a day that crosses midnight UTC
+  // still orders correctly.
   const now = new Date();
-  const currentHours = now.getUTCHours() + now.getUTCMinutes() / 60 + lng / 15;
+  const currentHours =
+    now.getUTCHours() + now.getUTCMinutes() / 60 + now.getUTCSeconds() / 3600;
+
+  const norm = (h: number): number => ((h % 24) + 24) % 24;
+
   const prayerHours = [
     { name: 'Fajr', h: fajr },
     { name: 'Sunrise', h: sunrise },
@@ -201,18 +237,26 @@ export function calculatePrayerTimes(
     { name: 'Asr', h: asr },
     { name: 'Maghrib', h: maghrib },
     { name: 'Isha', h: isha },
-  ];
+  ]
+    .filter((p) => isFinite(p.h))
+    .map((p) => ({ name: p.name, h: norm(p.h) }))
+    .sort((a, b) => a.h - b.h);
 
   let nextPrayer: PrayerTimesResponse['nextPrayer'] = null;
-  for (const p of prayerHours) {
-    if (isFinite(p.h) && p.h > currentHours) {
-      nextPrayer = {
-        name: p.name,
-        time: hoursToTime(p.h),
-        minutesUntil: Math.round((p.h - currentHours) * 60),
-      };
-      break;
-    }
+  if (prayerHours.length > 0) {
+    // First prayer still ahead today, else wrap to the earliest one tomorrow.
+    const upcoming =
+      prayerHours.find((p) => p.h > currentHours) ?? prayerHours[0]!;
+    const delta =
+      upcoming.h > currentHours
+        ? upcoming.h - currentHours
+        : upcoming.h + 24 - currentHours;
+
+    nextPrayer = {
+      name: upcoming.name,
+      time: hoursToTime(upcoming.h),
+      minutesUntil: Math.round(delta * 60),
+    };
   }
 
   const result: PrayerTimesResponse = {

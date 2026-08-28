@@ -1,0 +1,7 @@
+# Test-only dependencies for the PrayCalc Home Assistant integration.
+#
+# pytest-homeassistant-custom-component pins an exact Home Assistant release,
+# which is what makes the entity-ID assertions meaningful: they are checked
+# against the real naming machinery rather than a reimplementation of it.
+# Bump this deliberately when raising the floor in hacs.json.
+pytest-homeassistant-custom-component==0.13.359

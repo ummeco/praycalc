@@ -12,7 +12,34 @@ CONF_API_URL = "api_url"
 
 DEFAULT_API_URL = "https://smart.praycalc.com/api/v1/times"
 
-UPDATE_INTERVAL_SECONDS = 60
+# Prayer times for a given date are fixed once calculated, so polling the API
+# more than a couple of times an hour is pure waste. The live countdown is kept
+# fresh locally by LOCAL_REFRESH_SECONDS, which re-renders entity state from
+# already-cached data without any network traffic.
+UPDATE_INTERVAL_SECONDS = 1800
+
+# How often entity state is recomputed from cached coordinator data, so the
+# next-prayer countdown ticks smoothly between API polls. No network I/O.
+LOCAL_REFRESH_SECONDS = 60
+
+# Order matters: the API returns wall-clock times in UTC without a date, so the
+# sequence is used to detect midnight rollovers when rebuilding real datetimes.
+PRAYER_ORDER = ["fajr", "sunrise", "dhuhr", "asr", "maghrib", "isha"]
+
+HIJRI_MONTHS = [
+    "Muharram",
+    "Safar",
+    "Rabi al-Awwal",
+    "Rabi al-Thani",
+    "Jumada al-Ula",
+    "Jumada al-Thani",
+    "Rajab",
+    "Shaban",
+    "Ramadan",
+    "Shawwal",
+    "Dhul Qadah",
+    "Dhul Hijjah",
+]
 
 CALC_METHODS = {
     "isna": "ISNA (Islamic Society of North America)",
@@ -29,6 +56,10 @@ MADHABS = {
 }
 
 PRAYER_NAMES = ["fajr", "sunrise", "dhuhr", "asr", "maghrib", "isha"]
+
+# Sunrise is excluded: it marks the end of the Fajr window rather than a prayer,
+# so it is never reported as the "next prayer".
+NEXT_PRAYER_OPTIONS = ["fajr", "dhuhr", "asr", "maghrib", "isha"]
 
 PRAYER_ICONS = {
     "fajr": "mdi:weather-sunset-up",
