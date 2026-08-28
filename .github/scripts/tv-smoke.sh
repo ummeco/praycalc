@@ -69,6 +69,23 @@ if adb shell pidof "$PKG" > /dev/null 2>&1; then
 fi
 
 echo "::error::${PKG} was not running 20s after launch."
-echo "Last 60 crash-related log lines:"
-adb logcat -d -t 200 2>/dev/null | grep -iE "fatal|androidruntime|crash" | tail -60 || true
+
+# Diagnostics. The first attempt at this filtered `logcat -d -t 200` through a
+# narrow crash pattern and printed nothing at all, which said only that the app
+# was absent, not why. Widen the net and capture the app's own output too: a
+# clean exit and a crash need different fixes, and on a software-GPU emulator a
+# TV app can also die for reasons that would not reproduce on real hardware.
+
+echo "--- launcher activities declared for ${PKG} ---"
+adb shell "cmd package resolve-activity --brief -c android.intent.category.LEANBACK_LAUNCHER ${PKG}" 2>/dev/null || echo "  (leanback resolve failed)"
+adb shell "cmd package resolve-activity --brief ${PKG}" 2>/dev/null || echo "  (default resolve failed)"
+
+echo "--- crash buffer ---"
+adb logcat -b crash -d -t 200 2>/dev/null | tail -80 || echo "  (crash buffer empty)"
+
+echo "--- anything mentioning the package or a fatal ---"
+adb logcat -b all -d -t 3000 2>/dev/null \
+  | grep -iE "praycalc|ummeco|FATAL|AndroidRuntime|ActivityManager.*(die|kill|crash|ANR)" \
+  | tail -80 || echo "  (nothing matched)"
+
 exit 1
