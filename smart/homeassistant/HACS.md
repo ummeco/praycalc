@@ -12,14 +12,29 @@ Distribution therefore lives in a mirror repo:
   `custom_components/praycalc/brand/`, `Validate` workflow running hassfest + hacs/action —
   both green as of 2026-07-12)
 
-## Validation status (2026-07-12)
+## Validation status (2026-08-28)
 
 | Check | Where | Status |
 |---|---|---|
 | hassfest | monorepo `validate-ha.yml` + praycalc-ha `validate.yml` | green |
 | hacs/action (9 checks incl. brands/topics/license) | praycalc-ha `validate.yml` | green |
-| Release | praycalc-ha `v0.7.0` | published |
-| HACS default-registry PR | hacs/default | see PR link in the task log |
+| translations parity | both repos | green |
+| pytest (real Home Assistant) | both repos | green, 62 tests |
+| Release | praycalc-ha `v0.8.0` | published |
+| HACS default-registry PR | [hacs/default#9123](https://github.com/hacs/default/pull/9123) | changes requested 2026-08-28, addressed in v0.8.0, review re-requested |
+
+## What hassfest and hacs/action do NOT check
+
+Both were green for v0.7.1, which shipped with no `translations/` directory and
+a Hijri sensor that raised `AttributeError` on every state update. Neither tool
+validates custom-integration translations, and neither boots Home Assistant.
+The `translations` and `pytest` jobs exist to cover exactly that gap. Do not
+treat a green hassfest as evidence the integration works.
+
+Minimum Home Assistant version is **2026.3.0** (`hacs.json`). Raise it only
+deliberately: `config_flow.py` needs 2024.4 for `ConfigFlowResult`, and the
+in-repo brand assets are only served from 2026.3. When bumping, also bump the
+pin in `requirements-test.txt` so tests run against the version being claimed.
 
 The brands requirement is satisfied via HACS's **in-repo brand assets** fallback
 (`custom_components/praycalc/brand/icon.png`, `icon@2x.png`, `logo.png`) — no
