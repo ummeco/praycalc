@@ -37,7 +37,15 @@ jobs:
       - name: Boot Android TV emulator + install + launch + assert alive
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: 33
+          # api-level 36, NOT 33. Google publishes no x86_64 Android TV system
+          # image below API 36: android-33 and android-34 ship only `x86` and
+          # `arm64-v8a`. Requesting `system-images;android-33;android-tv;x86_64`
+          # made sdkmanager warn "Failed to find package" and continue, so the
+          # emulator never booted and the job failed at "adb emu kill" with
+          # "could not connect to TCP port 5554". This workflow had never passed.
+          # 36 also matches the TV app's compileSdk/targetSdk (tv/android/build.gradle).
+          # Verify before changing: dl.google.com/android/repository/sys-img/android-tv/sys-img2-3.xml
+          api-level: 36
           target: android-tv
           arch: x86_64
           profile: tv_1080p
