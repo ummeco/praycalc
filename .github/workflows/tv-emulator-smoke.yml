@@ -51,10 +51,9 @@ jobs:
           profile: tv_1080p
           disable-animations: true
           emulator-boot-timeout: 900
-          script: |
-            adb install /tmp/PrayCalc-TV-*.apk
-            PKG=$(adb shell pm list packages | grep -i praycalc | head -1 | cut -d: -f2 | tr -d '\r')
-            echo "package: $PKG"
-            adb shell monkey -p "$PKG" -c android.intent.category.LEANBACK_LAUNCHER 1 || adb shell monkey -p "$PKG" 1
-            sleep 20
-            adb shell pidof "$PKG" && echo "SMOKE PASS: app process alive after 20s"
+          # Single line on purpose. This action runs each line of `script` as its
+          # own `sh -c`, so shell variables do not survive between lines. The
+          # previous inline version assigned PKG on one line and read it on the
+          # next, where it was always empty, and monkey then parsed the intent
+          # category as its repeat count ("Count is not a number").
+          script: bash .github/scripts/tv-smoke.sh /tmp/PrayCalc-TV-*.apk
