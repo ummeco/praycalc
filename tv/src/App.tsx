@@ -2,7 +2,8 @@
  * Purpose: Root entry point for PrayCalc TV — react-native-tvos
  * Inputs: urql Provider, RootNavigator, boot-time paired-state check
  * Outputs: Full app tree with GraphQL and navigation context
- * Constraints: react-native-tvos (NOT Expo Router); react-navigation v6; React 19.
+ * Constraints: react-native-tvos (NOT Expo Router); react-navigation v6; React 18.2.0,
+ *   pinned to match react-native-tvos 0.74's exact peer (see ADR-tv-react-18-pin).
  *   A fresh/unpaired TV MUST show the pairing code immediately on launch — the boot
  *   gate below resolves paired state before the navigator mounts so it can pick the
  *   correct initial route (never flashes Dashboard on Mecca defaults first).
