@@ -29,7 +29,7 @@
     "@react-navigation/native": "^6.1.18",
     "@sentry/react-native": "^6.3.0",
     "@umalqura/core": "^0.0.7",
-    "@urql/exchange-auth": "^3.0.0",
+    "@urql/exchange-auth": "^2.2.1",
     "abort-controller": "^3.0.0",
     "ansi-regex": "^4.1.1",
     "base64-js": "^1.5.1",
