@@ -1,6 +1,6 @@
 # Lighthouse CI — reusable workflow (local copy)
 # Sprint B9 DR-B9-PERF-01 | Ticket TB9-17
-# Source: /Volumes/X9/Sites/ummeco/.github/workflows/lighthouse-ci-reusable.yml
+# Source: /Volumes/UG/Sites/ummeco/.github/workflows/lighthouse-ci-reusable.yml
 # Keep in sync with the monorepo-root version.
 
 name: Lighthouse CI (reusable)

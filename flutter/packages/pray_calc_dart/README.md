@@ -9,7 +9,7 @@
 | Published on [pub.dev](https://pub.dev/packages/pray_calc_dart) | **1.2.1** | present |
 
 **The real source lives at <https://github.com/acamarata/pray-calc-dart>** — a separate
-standalone repository, not this monorepo. It was never cloned into `/Volumes/X9/Sites`.
+standalone repository, not this monorepo. It was never cloned into `/Volumes/UG/Sites`.
 This copy is a vendored snapshot that diverged from upstream releases.
 
 ## Why this file exists

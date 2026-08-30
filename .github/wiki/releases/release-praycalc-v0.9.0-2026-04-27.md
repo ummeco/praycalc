@@ -68,7 +68,7 @@ N/A — praycalc has no backend migrations (uses ummat backend shared schema wit
 
 ## Tag command
 ```
-git -C /Volumes/X9/Sites/ummeco/praycalc tag v0.9.0 && git -C /Volumes/X9/Sites/ummeco/praycalc push origin v0.9.0
+git -C /Volumes/UG/Sites/ummeco/praycalc tag v0.9.0 && git -C /Volumes/UG/Sites/ummeco/praycalc push origin v0.9.0
 ```
 
 ## gh release create command
@@ -76,5 +76,5 @@ git -C /Volumes/X9/Sites/ummeco/praycalc tag v0.9.0 && git -C /Volumes/X9/Sites/
 gh release create v0.9.0 \
   --repo ummeco/praycalc \
   --title "praycalc v0.9.0" \
-  --notes-file /Volumes/X9/Sites/ummeco/praycalc/.github/wiki/releases/release-praycalc-v0.9.0-2026-04-27.md
+  --notes-file /Volumes/UG/Sites/ummeco/praycalc/.github/wiki/releases/release-praycalc-v0.9.0-2026-04-27.md
 ```
