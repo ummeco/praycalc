@@ -1,6 +1,6 @@
 # axe-core CI — reusable workflow (local copy)
 # Sprint B9 DR-B9-A11Y-01 | Ticket TB9-17
-# Source: /Volumes/X9/Sites/ummeco/.github/workflows/axe-ci-reusable.yml
+# Source: /Volumes/UG/Sites/ummeco/.github/workflows/axe-ci-reusable.yml
 # Keep in sync with the monorepo-root version.
 
 name: axe-core CI (reusable)
