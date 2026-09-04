@@ -63,8 +63,25 @@ jobs:
           AXE_PORT: ${{ inputs.port }}
         run: npx wait-on "http://localhost:${AXE_PORT}" -t 60000
 
+      # @axe-core/cli bundles a `chromedriver` pinned to the latest Chrome stable,
+      # which drifts out of sync with the runner's installed Chrome. When they
+      # disagree the session comes up broken and axe fails with
+      # "Cannot read properties of undefined (reading 'runPartial')" - axe-core
+      # never finishes injecting. That is what started failing here between
+      # 2026-09-01 (green) and 2026-09-04 (red) with no change to this repo:
+      # the runner moved to Chrome 151. `which chromedriver` finds the bundled
+      # mismatched binary, so pointing at it does not help.
+      # nanasess/setup-chromedriver drops the driver matching THIS runner's
+      # Chrome at /usr/local/bin/chromedriver. Same fix chatislam already uses.
+      - name: Setup matching ChromeDriver
+        uses: nanasess/setup-chromedriver@v3
+
       - name: Install axe-core CLI
         run: npm install -g @axe-core/cli
+        # Make the bundled chromedriver npm package reuse the matched binary
+        # rather than downloading its own (dequelabs/axe-core-npm#370).
+        env:
+          CHROMEDRIVER_FILEPATH: /usr/local/bin/chromedriver
 
       - name: Run axe — root route
         working-directory: ${{ inputs.project_path }}
@@ -75,7 +92,8 @@ jobs:
             "http://localhost:${AXE_PORT}" \
             --exit \
             --tags wcag2a,wcag2aa,wcag21a,wcag21aa \
-            --chromedriver-path "$(which chromedriver)"
+            --chromedriver-path /usr/local/bin/chromedriver \
+            --chrome-options="no-sandbox,disable-setuid-sandbox,disable-dev-shm-usage"
 
       - name: Run axe — extra routes
         if: ${{ inputs.extra_urls != '' }}
@@ -84,12 +102,13 @@ jobs:
           AXE_PORT: ${{ inputs.port }}
           AXE_EXTRA_URLS: ${{ inputs.extra_urls }}
         run: |
-          CHROMEDRIVER="$(which chromedriver)"
+          CHROMEDRIVER=/usr/local/bin/chromedriver
           for path in ${AXE_EXTRA_URLS}; do
             echo "--- axe: http://localhost:${AXE_PORT}${path} ---"
             axe \
               "http://localhost:${AXE_PORT}${path}" \
               --exit \
               --tags wcag2a,wcag2aa,wcag21a,wcag21aa \
-              --chromedriver-path "$CHROMEDRIVER"
+              --chromedriver-path "$CHROMEDRIVER" \
+              --chrome-options="no-sandbox,disable-setuid-sandbox,disable-dev-shm-usage"
           done
