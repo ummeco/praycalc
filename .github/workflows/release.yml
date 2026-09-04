@@ -384,7 +384,7 @@ jobs:
         with:
           node-version: '22'
           cache: 'pnpm'
-          cache-dependency-path: web/pnpm-lock.yaml
+          cache-dependency-path: pnpm-lock.yaml
       - run: pnpm install --frozen-lockfile
       - name: Generate CycloneDX SBOM
         uses: CycloneDX/gh-node-npm-buildplugin@v1

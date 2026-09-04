@@ -5,20 +5,20 @@ on:
     branches: [main]
     paths:
       - 'web/package.json'
-      - 'web/pnpm-lock.yaml'
+      - 'pnpm-lock.yaml'
       - 'smart/package.json'
       - 'smart/pnpm-lock.yaml'
       - 'org/package.json'
-      - 'org/pnpm-lock.yaml'
+      - 'pnpm-lock.yaml'
   pull_request:
     branches: [main]
     paths:
       - 'web/package.json'
-      - 'web/pnpm-lock.yaml'
+      - 'pnpm-lock.yaml'
       - 'smart/package.json'
       - 'smart/pnpm-lock.yaml'
       - 'org/package.json'
-      - 'org/pnpm-lock.yaml'
+      - 'pnpm-lock.yaml'
   schedule:
     # Daily at 6:00 AM UTC — catches new CVE disclosures against pinned deps
     - cron: '0 6 * * *'
@@ -48,7 +48,7 @@ jobs:
         with:
           node-version: '22'
           cache: 'pnpm'
-          cache-dependency-path: web/pnpm-lock.yaml
+          cache-dependency-path: pnpm-lock.yaml
 
       - name: Install dependencies
         working-directory: web

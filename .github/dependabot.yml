@@ -7,31 +7,20 @@ version: 2
 
 updates:
   # npm — web app (Next.js)
+  # npm — pnpm workspace root (covers web/, org/, mobile/, tv/, desktop/,
+  # packages/*). It MUST be the root, not the individual members: pnpm keeps a
+  # single lockfile at the workspace root, so a PR that bumps web/package.json
+  # without touching that lockfile fails CI with ERR_PNPM_OUTDATED_LOCKFILE.
+  # smart/ and homebridge/ stay separate below - they are genuinely standalone
+  # and excluded from the workspace in pnpm-workspace.yaml.
   - package-ecosystem: npm
-    directory: /web
+    directory: /
     schedule:
       interval: monthly
     groups:
       all-minor-patch:
         update-types: ["minor", "patch"]
     open-pull-requests-limit: 10
-    labels:
-      - dependencies
-      - javascript
-    reviewers:
-      - acamarata
-    commit-message:
-      prefix: 'chore(deps)'
-
-  # npm — org docs site
-  - package-ecosystem: npm
-    directory: /org
-    schedule:
-      interval: monthly
-    groups:
-      all-minor-patch:
-        update-types: ["minor", "patch"]
-    open-pull-requests-limit: 5
     labels:
       - dependencies
       - javascript
