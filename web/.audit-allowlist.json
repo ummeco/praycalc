@@ -1,44 +1,4 @@
 {
-  "1116375": {
-    "reason": "Next.js 16.1.7 CVE-2026-23869 (DoS in Server Components). Affects org/ only (not web/). org/ must remain on 16.1.7 due to webpack regression in 16.2.x (breaks MDX metadata exports).",
-    "expires": "2026-12-31"
-  },
-  "1117930": {
-    "reason": "Next.js 16.1.7 DoS (Server Components). Affects org/ only. org/ pinned at 16.1.7 due to webpack/MDX regression in 16.2.x \u2014 cannot upgrade. No upstream patch path.",
-    "expires": "2026-12-31"
-  },
-  "1118938": {
-    "reason": "Next.js 16.1.7 Middleware/Proxy bypass (App Router). Affects org/ only. org/ pinned at 16.1.7 due to webpack/MDX regression in 16.2.x \u2014 cannot upgrade.",
-    "expires": "2026-12-31"
-  },
-  "1118949": {
-    "reason": "Next.js 16.1.7 DoS via connection. Affects org/ only. org/ pinned at 16.1.7 due to webpack/MDX regression in 16.2.x \u2014 cannot upgrade.",
-    "expires": "2026-12-31"
-  },
-  "1118953": {
-    "reason": "Next.js 16.1.7 SSRF. Affects org/ only. org/ pinned at 16.1.7 due to webpack/MDX regression in 16.2.x \u2014 cannot upgrade.",
-    "expires": "2026-12-31"
-  },
-  "1118955": {
-    "reason": "Next.js 16.1.7 Middleware/Proxy bypass. Affects org/ only. org/ pinned at 16.1.7 due to webpack/MDX regression in 16.2.x \u2014 cannot upgrade.",
-    "expires": "2026-12-31"
-  },
-  "1118959": {
-    "reason": "Next.js 16.1.7 Middleware/Proxy bypass (App Router). Affects org/ only. org/ pinned at 16.1.7 due to webpack/MDX regression in 16.2.x \u2014 cannot upgrade.",
-    "expires": "2026-12-31"
-  },
-  "1118961": {
-    "reason": "Next.js 16.1.7 Middleware/Proxy bypass (Pages Router i18n). Affects org/ only. org/ pinned at 16.1.7 due to webpack/MDX regression in 16.2.x \u2014 cannot upgrade.",
-    "expires": "2026-12-31"
-  },
-  "1120912": {
-    "reason": "Astro <6.3.3 reflected XSS via unescaped slot name. web/ is on Astro 5.18.2; patch requires Astro 6.x (major version, breaking). Accepted-risk pending tracked Astro 6 migration. praycalc.com routes are largely prerendered, reducing exposure.",
-    "expires": "2026-09-30"
-  },
-  "1120917": {
-    "reason": "Astro <6.4.6 host-header SSRF in prerendered error page. web/ is on Astro 5.18.2; patch requires Astro 6.x (major version, breaking). Accepted-risk pending tracked Astro 6 migration; error pages prerendered on Vercel with fixed host.",
-    "expires": "2026-09-30"
-  },
   "1138808": {
     "reason": "image-size ICNS parser DoS. Dev-only, transitive via mobile>expo>@expo/metro-config>metro. No patched version exists upstream (advisory reports patched=<0.0.0). Reached only by the Metro bundler parsing local project assets at build time, never by user-supplied input at runtime. Re-check when Expo bumps metro.",
     "expires": "2026-12-31"
