@@ -41,7 +41,9 @@ jobs:
         with:
           node-version: 22
           cache: 'pnpm'
-          cache-dependency-path: '${{ inputs.project_path }}/pnpm-lock.yaml'
+          # One lockfile at the workspace root (0b69f051); the per-member
+          # lockfiles this used to point at no longer exist.
+          cache-dependency-path: 'pnpm-lock.yaml'
 
       - name: Install dependencies
         working-directory: ${{ inputs.project_path }}
