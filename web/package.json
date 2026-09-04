@@ -61,12 +61,5 @@
   "overrides": {
     "react": "^19.2.8",
     "react-dom": "^19.2.8"
-  },
-  "pnpm": {
-    "overrides": {
-      "react": "^19.2.8",
-      "react-dom": "^19.2.8",
-      "vite": ">=7.3.2 <8 || >=8.0.16"
-    }
   }
 }
