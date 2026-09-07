@@ -39,9 +39,26 @@ jobs:
             $(gh release list --repo "$GITHUB_REPOSITORY" --json tagName -q '.[].tagName' | grep '^tv-v' | head -1)
           ls -la /tmp/PrayCalc-TV-*.apk
 
-      - name: Boot Android TV emulator + install + launch + assert alive
+      # reactivecircus/android-emulator-runner's own post-boot handshake (the
+      # HOME keyevent, then `adb emu kill` at teardown) intermittently hits
+      # "adb: device offline" on this action even after the emulator itself
+      # has already logged "Boot completed" and sys.boot_completed=1 — the
+      # AVD boots fine, the action's bookkeeping around it flakes. Confirmed
+      # 2026-09-07 against run 34122475379: .github/scripts/tv-smoke.sh never
+      # even started (no "Installing ..." log line); the job died inside the
+      # action's internal Launch/Terminate Emulator groups before the script
+      # step ran. 8 of the last 10 scheduled runs failed with this exact
+      # signature; one run on identical code passed clean, so it is infra
+      # flake, not a code regression. `uses:` steps can't be wrapped by a
+      # generic retry action (no passthrough for `with:`), so the retry is
+      # done as repeated attempts, each gated on the previous one failing.
+      # force-avd-creation recreates the AVD fresh on every attempt. This
+      # changes no test assertions in tv-smoke.sh.
+      - name: Boot Android TV emulator + install + launch + assert alive (attempt 1)
+        id: tv_smoke_1
+        continue-on-error: true
         uses: reactivecircus/android-emulator-runner@v2
-        with:
+        with: &tv_smoke_params
           # api-level 36, NOT 33. Google publishes no x86_64 Android TV system
           # image below API 36: android-33 and android-34 ship only `x86` and
           # `arm64-v8a`. Requesting `system-images;android-33;android-tv;x86_64`
@@ -56,9 +73,32 @@ jobs:
           profile: tv_1080p
           disable-animations: true
           emulator-boot-timeout: 900
+          force-avd-creation: true
           # Single line on purpose. This action runs each line of `script` as its
           # own `sh -c`, so shell variables do not survive between lines. The
           # previous inline version assigned PKG on one line and read it on the
           # next, where it was always empty, and monkey then parsed the intent
           # category as its repeat count ("Count is not a number").
           script: bash .github/scripts/tv-smoke.sh /tmp/PrayCalc-TV-*.apk
+
+      - name: Boot Android TV emulator + install + launch + assert alive (attempt 2)
+        id: tv_smoke_2
+        if: steps.tv_smoke_1.outcome == 'failure'
+        continue-on-error: true
+        uses: reactivecircus/android-emulator-runner@v2
+        with: *tv_smoke_params
+
+      - name: Boot Android TV emulator + install + launch + assert alive (attempt 3)
+        id: tv_smoke_3
+        if: steps.tv_smoke_1.outcome == 'failure' && steps.tv_smoke_2.outcome == 'failure'
+        uses: reactivecircus/android-emulator-runner@v2
+        with: *tv_smoke_params
+
+      - name: Fail job if every attempt failed
+        if: >
+          steps.tv_smoke_1.outcome == 'failure' &&
+          steps.tv_smoke_2.outcome == 'failure' &&
+          steps.tv_smoke_3.outcome == 'failure'
+        run: |
+          echo "::error::All 3 TV emulator smoke attempts failed."
+          exit 1
