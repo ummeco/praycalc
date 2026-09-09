@@ -30,7 +30,7 @@
     "@ummat/astro-preset": "file:./vendor/astro-preset",
     "@ummat/consent": "file:./vendor/consent",
     "@praycalc/ui-utils": "file:vendor/ui-utils",
-    "astro": "^7.2.4",
+    "astro": "^7.2.8",
     "clsx": "^2.1.1",
     "luxon": "^3.5.0",
     "moon-cycle": "^2.0.0",
