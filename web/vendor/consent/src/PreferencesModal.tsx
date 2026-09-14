@@ -48,6 +48,12 @@ function Toggle({ id, label, description, checked, disabled, onChange, alwaysOnL
       </div>
       <div className="flex-shrink-0 mt-0.5">
         {disabled ? (
+          /* This modal renders on bg-[#0D2F17] (see the dialog container below),
+             not on white. Measured in a browser: #79C24C on #0D2F17 is 6.71:1,
+             while the #5A9438 the rule recommends is 3.99:1 there — its advice
+             is inverted for this surface. The rule reads the class list, not the
+             ancestor background, so it cannot tell the two cases apart. */
+          /* eslint-disable-next-line ummat/no-brand-light-on-light */
           <span className="text-xs text-[#79C24C] font-medium">{alwaysOnLabel}</span>
         ) : (
           <button
