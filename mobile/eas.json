@@ -4,17 +4,21 @@
       "developmentClient": true,
       "distribution": "internal",
       "channel": "development",
+      "pnpm": "10.30.1",
+      "node": "22.11.0",
       "ios": {
         "simulator": true
       },
       "android": {
-        "buildType": "debug"
+        "buildType": "apk"
       }
     },
     "preview": {
       "distribution": "internal",
       "channel": "preview",
       "autoIncrement": true,
+      "pnpm": "10.30.1",
+      "node": "22.11.0",
       "android": {
         "buildType": "apk"
       }
@@ -22,8 +26,10 @@
     "production": {
       "channel": "production",
       "autoIncrement": true,
+      "pnpm": "10.30.1",
+      "node": "22.11.0",
       "android": {
-        "buildType": "aab"
+        "buildType": "app-bundle"
       }
     }
   },

@@ -2,7 +2,7 @@
   "expo": {
     "name": "PrayCalc",
     "slug": "praycalc",
-    "owner": "ummeco",
+    "owner": "vector-web-co",
     "version": "2.3.3",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -36,10 +36,22 @@
           "fetch",
           "remote-notification",
           "audio"
-        ]
+        ],
+        "UIApplicationSceneManifest": {
+          "UIApplicationSupportsMultipleScenes": false,
+          "UISceneConfigurations": {
+            "UIWindowSceneSessionRoleApplication": [
+              {
+                "UISceneConfigurationName": "Default Configuration",
+                "UISceneDelegateClassName": "PrayCalc.SceneDelegate"
+              }
+            ]
+          }
+        }
       }
     },
     "android": {
+      "edgeToEdgeEnabled": true,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#1E5E2F"
@@ -133,7 +145,9 @@
           ]
         }
       ],
-      "@bacons/apple-targets"
+      "@bacons/apple-targets",
+      "react-native-iap",
+      "./plugins/withAndroidLintFix.js"
     ],
     "experiments": {
       "typedRoutes": true
@@ -163,13 +177,13 @@
     },
     "extra": {
       "eas": {
-        "projectId": "UD-PENDING-EAS-PROJECT-ID"
+        "projectId": "8150e6eb-0afc-4aa3-a8c0-caa37a324709"
       },
       "graphqlUrl": "https://api.ummat.dev/v1/graphql",
       "authUrl": "https://auth.ummat.dev"
     },
     "updates": {
-      "url": "https://u.expo.dev/UD-PENDING-EAS-PROJECT-ID",
+      "url": "https://u.expo.dev/8150e6eb-0afc-4aa3-a8c0-caa37a324709",
       "checkAutomatically": "ON_LOAD",
       "fallbackToCacheTimeout": 0,
       "requestHeaders": {

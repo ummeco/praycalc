@@ -29,11 +29,11 @@ payment method, and 2FA; only you can complete it.
 
 ## 1. Expo/EAS account + projects
 
-1. Create a free account at expo.dev (use an org account if `ummeco` already has one — check before making a personal one).
+1. Create a free account at expo.dev (the original `ummeco` Expo account was deleted; the project is now provisioned under the `vector-web-co` organization).
 2. Install the CLI locally once: `npx eas-cli login`.
-3. From `mobile/`, run `eas init` — this creates a real EAS project and writes the real project ID into `mobile/app.json`'s `extra.eas.projectId` (currently `UD-PENDING-EAS-PROJECT-ID`).
+3. From `mobile/`, run `eas init` — this creates a real EAS project and writes the real project ID into `mobile/app.json`'s `extra.eas.projectId` (done: `8150e6eb-0afc-4aa3-a8c0-caa37a324709`, under `@vector-web-co/praycalc`).
 4. From `tv/`, run `eas init` — same thing, but note `tv/app.json` is NOT an Expo config (tv/ is a bare project), so `eas init` here just registers the project with EAS's backend; it won't try to write an `extra.eas` block into a non-Expo app.json. If `eas init` complains about missing Expo config, use `eas project:init` instead, which only requires an `eas.json` (already present).
-5. Generate a robot-account access token for CI: `eas credentials --platform android` won't do this — instead go to expo.dev → account settings → Access Tokens → create a token scoped to the `ummeco` org. This is the value for the `EXPO_TOKEN` GitHub secret (see § 5).
+5. Generate a robot-account access token for CI: `eas credentials --platform android` won't do this — instead go to expo.dev → account settings → Access Tokens → create a token scoped to the `vector-web-co` organization. This is the value for the `EXPO_TOKEN` GitHub secret (see § 5).
 
 ---
 

@@ -16,6 +16,33 @@ import * as Localization from 'expo-localization';
 import { I18nManager } from 'react-native';
 import { MMKV } from 'react-native-mmkv';
 
+// Hermes on some platforms ships without Intl.PluralRules; i18next needs it
+// for plural-form resolution, so polyfill it before init if missing.
+if (typeof (Intl as { PluralRules?: unknown }).PluralRules === 'undefined') {
+  require('@formatjs/intl-pluralrules/polyfill-force');
+  require('@formatjs/intl-pluralrules/locale-data/en');
+  require('@formatjs/intl-pluralrules/locale-data/ar');
+  require('@formatjs/intl-pluralrules/locale-data/fr');
+  require('@formatjs/intl-pluralrules/locale-data/ur');
+  require('@formatjs/intl-pluralrules/locale-data/tr');
+  require('@formatjs/intl-pluralrules/locale-data/id');
+  require('@formatjs/intl-pluralrules/locale-data/ms');
+  require('@formatjs/intl-pluralrules/locale-data/bn');
+  require('@formatjs/intl-pluralrules/locale-data/sw');
+  require('@formatjs/intl-pluralrules/locale-data/es');
+  require('@formatjs/intl-pluralrules/locale-data/de');
+  require('@formatjs/intl-pluralrules/locale-data/nl');
+  require('@formatjs/intl-pluralrules/locale-data/pt');
+  require('@formatjs/intl-pluralrules/locale-data/it');
+  require('@formatjs/intl-pluralrules/locale-data/ru');
+  require('@formatjs/intl-pluralrules/locale-data/hi');
+  require('@formatjs/intl-pluralrules/locale-data/ps');
+  require('@formatjs/intl-pluralrules/locale-data/fa');
+  require('@formatjs/intl-pluralrules/locale-data/so');
+  require('@formatjs/intl-pluralrules/locale-data/ha');
+  require('@formatjs/intl-pluralrules/locale-data/yo');
+}
+
 // --- locale catalog imports ---
 import en from './en.json';
 import ar from './ar.json';

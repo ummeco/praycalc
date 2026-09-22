@@ -1,0 +1,14 @@
+diff --git a/dist/index.cjs b/dist/index.cjs
+index c85fb8ff4b4a1d6906c8a4934f89c8e8d77ad6ba..86ea1ea9ebdfb227db9d8b9d45d3f8b2feb89d57 100644
+--- a/dist/index.cjs
++++ b/dist/index.cjs
+@@ -122,8 +122,7 @@ var SPA_ALL = 3;
+ 
+ // src/index.ts
+ var DEG = Math.PI / 180;
+-var _load = typeof __require === "function" ? __require : require;
+-var spa = _load("../lib/spa.cjs");
++var spa = require("../lib/spa.cjs");
+ function assertFiniteNumber(value, name) {
+   if (typeof value !== "number" || !isFinite(value)) {
+     throw new TypeError(

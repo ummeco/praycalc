@@ -15,8 +15,8 @@ payment method, and 2FA (mobile-tv-release-provisioning.md § intro).
 
 | Placeholder / secret | File / location | Who provides | Consumed by |
 |---|---|---|---|
-| `EXPO_TOKEN` | GitHub repo secret (Settings → Secrets and variables → Actions) | User — EAS robot access token from expo.dev → account settings → Access Tokens, scoped to the `ummeco` org | `release-mobile.yml`, `release-tv.yml` |
-| `extra.eas.projectId` (currently `UD-PENDING-EAS-PROJECT-ID`) | `mobile/app.json` — the placeholder appears TWICE (`extra.eas.projectId` and `updates.url`); one find/replace of `UD-PENDING-EAS-PROJECT-ID` fixes both | User — created by running `eas init` from `mobile/` once an Expo/EAS org account exists | EAS build/submit AND background OTA updates (`release-mobile-ota.yml`) for `mobile/` |
+| `EXPO_TOKEN` | GitHub repo secret (Settings → Secrets and variables → Actions) | User — EAS robot access token from expo.dev → account settings → Access Tokens, scoped to the `vector-web-co` organization (the old `ummeco` Expo account was deleted; `mobile/app.json`'s `owner` now points at `vector-web-co`) | `release-mobile.yml`, `release-tv.yml` |
+| `extra.eas.projectId` (now `8150e6eb-0afc-4aa3-a8c0-caa37a324709`) | `mobile/app.json` — appears in `extra.eas.projectId`; `app.config.js` derives `updates.url` from it automatically | Set — created by running `eas init` from `mobile/` under the `vector-web-co` organization | EAS build/submit AND background OTA updates (`release-mobile-ota.yml`) for `mobile/` |
 | `ASC_API_KEY_P8` | GitHub repo secret | User — App Store Connect API key `.p8` file, base64-encoded (`base64 -i AuthKey_XXXXX.p8`) | `release-mobile.yml`, `release-tv.yml` |
 | `ascApiKeyIssuerId` (`UD-PENDING-ASC-API-KEY-ISSUER-ID`) | `mobile/eas.json` line 42, `tv/eas.json` line 43 | User — Issuer ID from the same App Store Connect API key (not a GH secret; committed directly, it's an identifier, not a credential) | EAS build/submit, both apps |
 | `ascApiKeyId` (`UD-PENDING-ASC-API-KEY-ID`) | `mobile/eas.json` line 43, `tv/eas.json` line 44 | User — Key ID from the same API key (not a GH secret) | EAS build/submit, both apps |

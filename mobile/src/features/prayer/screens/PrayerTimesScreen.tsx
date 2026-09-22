@@ -96,7 +96,11 @@ export default function PrayerTimesScreen() {
     });
   }, [activeLocation]);
 
-  const today = new Date();
+  // Memoized to a stable instance for this mount/day: `usePrayerTimes` depends on `date`
+  // (transitively, via its `calculate` callback), so a fresh `new Date()` on every render
+  // would recreate that callback every render, re-firing its effect and setting state in
+  // a tight loop ("Maximum update depth exceeded"). Recomputed once per calendar day.
+  const today = useMemo(() => new Date(), [new Date().toDateString()]);
   // Live GPS fix present → device offset is authoritative (matches the coords just read).
   // Otherwise we're rendering a STORED city (home or travel) with no live fix — resolve
   // its own IANA/offset timezone field instead of assuming the device's current zone.
@@ -104,6 +108,16 @@ export default function PrayerTimesScreen() {
     ? getTimezoneOffset()
     : resolveTimezoneOffset(activeLocation?.timezone, today);
   const hijriDate = gregorianToHijri(today, settings.hijriDayAdjustment);
+
+  // Same reasoning as `today` above: a fresh object literal here on every render would
+  // likewise destabilize `calculate`'s dependency array for Custom-method users.
+  const customAngles = useMemo(
+    () =>
+      settings.method === 'Custom'
+        ? { fajr: settings.customFajrAngle, isha: settings.customIshaAngle }
+        : undefined,
+    [settings.method, settings.customFajrAngle, settings.customIshaAngle],
+  );
 
   const { times, provenance, nextPrayer, secondsToNextPrayer, status, error, refresh } = usePrayerTimes({
     date: today,
@@ -113,9 +127,7 @@ export default function PrayerTimesScreen() {
     method: settings.method as CalcMethodKey,
     madhab: settings.madhab,
     highLatRule: settings.highLatRule,
-    customAngles: settings.method === 'Custom'
-      ? { fajr: settings.customFajrAngle, isha: settings.customIshaAngle }
-      : undefined,
+    customAngles,
     minuteAdjustments: settings.prayerMinuteAdjustments,
     isOffline,
     isPermissionDenied: locationPermission === 'denied',

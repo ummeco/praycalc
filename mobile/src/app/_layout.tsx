@@ -15,9 +15,22 @@ import '../i18n';
 import { useEffect, useRef } from 'react';
 import { Stack, router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { useColorScheme } from 'react-native';
+import { Dimensions, useColorScheme } from 'react-native';
 import * as Notifications from 'expo-notifications';
 import * as Linking from 'expo-linking';
+import { SafeAreaProvider, initialWindowMetrics } from 'react-native-safe-area-context';
+
+// `initialWindowMetrics` is captured from a native constant that isn't always ready
+// yet under Fabric/bridgeless at cold start (it can be `null`) — falling back to a
+// zero-inset frame (same fallback @react-navigation/elements' SafeAreaProviderCompat
+// uses) keeps <SafeAreaProvider> from ever handing out a `null` context value, which
+// is what makes useSafeAreaInsets() throw "No safe area value available" on the
+// first render of any screen that calls it before the real native measurement lands.
+const { width: initialWindowWidth = 0, height: initialWindowHeight = 0 } = Dimensions.get('window');
+const rootSafeAreaMetrics = initialWindowMetrics ?? {
+  frame: { x: 0, y: 0, width: initialWindowWidth, height: initialWindowHeight },
+  insets: { top: 0, left: 0, right: 0, bottom: 0 },
+};
 import i18next, { useTranslation } from '../i18n';
 import { GqlClientProvider } from '../lib/graphql';
 import { parseDeepLink } from '../lib/deepLinkRoutes';
@@ -160,25 +173,27 @@ export default function RootLayout() {
   }, []);
 
   return (
-    <GqlClientProvider>
-      <StatusBar style={isDark ? 'light' : 'dark'} />
-      <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-        <Stack.Screen name="settings" options={{ headerShown: true, title: t('settings.title') }} />
-        <Stack.Screen name="city-search" options={{ headerShown: true, title: t('screens.citySearch.findCityTitle') }} />
-        <Stack.Screen name="timetable" options={{ headerShown: true, title: t('menu.timetable.label') }} />
-        <Stack.Screen name="mosques" options={{ headerShown: true, title: t('menu.mosques.label') }} />
-        <Stack.Screen name="jumuah" options={{ headerShown: true, title: t('menu.jumuah.label') }} />
-        <Stack.Screen name="masjid-mute" options={{ headerShown: true, title: t('menu.masjidMute.label') }} />
-        <Stack.Screen name="fasting" options={{ headerShown: true, title: t('menu.fasting.label') }} />
-        <Stack.Screen name="qada" options={{ headerShown: true, title: t('menu.qada.label') }} />
-        <Stack.Screen name="pair-tv" options={{ headerShown: true, title: t('menu.pairTv.label') }} />
-        <Stack.Screen name="tvs" options={{ headerShown: true, title: t('menu.tvManager.label') }} />
-        <Stack.Screen name="privacy" options={{ headerShown: true, title: t('menu.privacy.label') }} />
-        <Stack.Screen name="onboarding" options={{ presentation: 'modal', headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-    </GqlClientProvider>
+    <SafeAreaProvider initialMetrics={rootSafeAreaMetrics}>
+      <GqlClientProvider>
+        <StatusBar style={isDark ? 'light' : 'dark'} />
+        <Stack screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+          <Stack.Screen name="settings/index" options={{ headerShown: true, title: t('settings.title') }} />
+          <Stack.Screen name="city-search/index" options={{ headerShown: true, title: t('screens.citySearch.findCityTitle') }} />
+          <Stack.Screen name="timetable/index" options={{ headerShown: true, title: t('menu.timetable.label') }} />
+          <Stack.Screen name="mosques/index" options={{ headerShown: true, title: t('menu.mosques.label') }} />
+          <Stack.Screen name="jumuah/index" options={{ headerShown: true, title: t('menu.jumuah.label') }} />
+          <Stack.Screen name="masjid-mute/index" options={{ headerShown: true, title: t('menu.masjidMute.label') }} />
+          <Stack.Screen name="fasting/index" options={{ headerShown: true, title: t('menu.fasting.label') }} />
+          <Stack.Screen name="qada/index" options={{ headerShown: true, title: t('menu.qada.label') }} />
+          <Stack.Screen name="pair-tv/index" options={{ headerShown: true, title: t('menu.pairTv.label') }} />
+          <Stack.Screen name="tvs/index" options={{ headerShown: true, title: t('menu.tvManager.label') }} />
+          <Stack.Screen name="privacy/index" options={{ headerShown: true, title: t('menu.privacy.label') }} />
+          <Stack.Screen name="onboarding/index" options={{ presentation: 'modal', headerShown: false }} />
+          <Stack.Screen name="+not-found" />
+        </Stack>
+      </GqlClientProvider>
+    </SafeAreaProvider>
   );
 }
