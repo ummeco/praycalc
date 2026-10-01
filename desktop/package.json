@@ -11,30 +11,30 @@
   },
   "dependencies": {
     "@praycalc/ui-utils": "workspace:*",
-    "@tauri-apps/api": "^2.5.0",
-    "@tauri-apps/plugin-opener": "^2.2.0",
-    "@tauri-apps/plugin-process": "^2.2.0",
-    "@tauri-apps/plugin-store": "^2.2.0",
-    "@tauri-apps/plugin-updater": "^2.2.0",
+    "@tauri-apps/api": "^2.12.0",
+    "@tauri-apps/plugin-opener": "^2.6.0",
+    "@tauri-apps/plugin-process": "^2.4.0",
+    "@tauri-apps/plugin-store": "^2.5.0",
+    "@tauri-apps/plugin-updater": "^2.13.0",
     "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "react-dom": "^19.3.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.27.0",
-    "@tailwindcss/vite": "^4.1.8",
-    "@tauri-apps/cli": "^2.5.0",
+    "@tailwindcss/vite": "^4.3.3",
+    "@tauri-apps/cli": "^2.12.0",
     "@types/react": "^19.0.0",
-    "@types/react-dom": "^19.0.0",
+    "@types/react-dom": "^19.3.0",
     "@typescript-eslint/eslint-plugin": "^8.62.1",
     "@typescript-eslint/parser": "^8.62.1",
     "@vitejs/plugin-react": "^4.4.1",
     "eslint": "^9.27.0",
     "eslint-plugin-jsx-a11y": "^6.10.2",
     "eslint-plugin-react-hooks": "^5.2.0",
-    "eslint-plugin-react-refresh": "^0.4.20",
+    "eslint-plugin-react-refresh": "^0.5.7",
     "globals": "^16.0.0",
-    "tailwindcss": "^4.1.8",
+    "tailwindcss": "^4.3.3",
     "typescript": "^5.8.3",
-    "vite": "^6.3.5"
+    "vite": "^8.3.1"
   }
 }
