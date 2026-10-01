@@ -26,7 +26,7 @@
     "@react-native-async-storage/async-storage": "^2.1.2",
     "@react-native/virtualized-lists": "0.79.6",
     "@react-navigation/elements": "^1.3.31",
-    "@react-navigation/native": "^6.1.18",
+    "@react-navigation/native": "^7.4.1",
     "@sentry/react-native": "^6.3.0",
     "@umalqura/core": "^0.0.7",
     "@urql/exchange-auth": "^2.2.1",
