@@ -71,7 +71,7 @@
     "react-native": "0.79.6",
     "react-native-android-widget": "0.17.2",
     "react-native-gesture-handler": "~2.24.0",
-    "react-native-iap": "13.0.4",
+    "react-native-iap": "16.7.1",
     "react-native-is-edge-to-edge": "^1.1.7",
     "react-native-mmkv": "^3.2.0",
     "react-native-reanimated": "~3.17.4",
