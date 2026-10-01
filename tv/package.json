@@ -16,7 +16,7 @@
     "@praycalc/ui-utils": "workspace:*",
     "@react-native-async-storage/async-storage": "^2.0.0",
     "@react-navigation/native": "^6.1.18",
-    "@react-navigation/stack": "^6.4.1",
+    "@react-navigation/stack": "^7.11.2",
     "@umalqura/core": "^0.0.7",
     "@urql/core": "^5.0.6",
     "graphql": "^16.9.0",
